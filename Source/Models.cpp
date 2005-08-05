@@ -952,11 +952,11 @@ void Model::draw()
 	if(color)glInterleavedArrays( GL_T2F_C3F_V3F,8*sizeof(GLfloat),&vArray[0]);
 	glBindTexture(GL_TEXTURE_2D,(unsigned long)textureptr);
 
-#ifndef WIN32
+#if PLATFORM_MACOSX
 	glLockArraysEXT( 0, TriangleNum*3);
 #endif
 	glDrawArrays(GL_TRIANGLES, 0, TriangleNum*3);
-#ifndef WIN32
+#if PLATFORM_MACOSX
 	glUnlockArraysEXT();
 #endif
 

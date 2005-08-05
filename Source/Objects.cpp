@@ -770,9 +770,9 @@ Objects::Objects()
 
 Objects::~Objects()
 {
-	if (boxtextureptr) glDeleteTextures( 1, (const unsigned long *)&boxtextureptr );
-	if (treetextureptr) glDeleteTextures( 1, (const unsigned long *)&treetextureptr );
-	if (bushtextureptr) glDeleteTextures( 1, (const unsigned long *)&bushtextureptr );
-	if (rocktextureptr) glDeleteTextures( 1, (const unsigned long *)&rocktextureptr );
+	if (boxtextureptr) glDeleteTextures( 1, &boxtextureptr );
+	if (treetextureptr) glDeleteTextures( 1, &treetextureptr );
+	if (bushtextureptr) glDeleteTextures( 1, &bushtextureptr );
+	if (rocktextureptr) glDeleteTextures( 1, &rocktextureptr );
 };
 

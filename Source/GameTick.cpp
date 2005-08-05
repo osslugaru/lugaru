@@ -1,4 +1,11 @@
+#if PLATFORM_UNIX
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+#else
 #include <direct.h>
+#endif
+
 #include <ctime>
 #include "Game.h"
 
@@ -208,7 +215,7 @@ void Screenshot	(void)
 	struct	tm *tme = localtime(&t);
 	sprintf(temp, "Screenshots\\Screenshot_%04d_%02d_%02d--%02d_%02d_%02d.png", tme->tm_year + 1900, tme->tm_mon + 1, tme->tm_mday, tme->tm_hour, tme->tm_min, tme->tm_sec);
 
-	mkdir("Screenshots");
+	mkdir("Screenshots", S_IRWXU);
 	ScreenShot(temp/*"Screenshots\\Screenshot.png"*/);
 
 	/*FSSpec 				MAC_file;
@@ -624,10 +631,10 @@ void 	Game::Setenvironment(int which)
 		FSOUND_Sample_Free(samp[footstepsound2]);
 		FSOUND_Sample_Free(samp[footstepsound3]);
 		FSOUND_Sample_Free(samp[footstepsound4]);
-		samp[footstepsound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepsnow1.ogg", FSOUND_HW3D, 0);
-		samp[footstepsound2] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepsnow2.ogg", FSOUND_HW3D, 0);
-		samp[footstepsound3] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepstone1.ogg", FSOUND_HW3D, 0);
-		samp[footstepsound4] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepstone2.ogg", FSOUND_HW3D, 0);
+		samp[footstepsound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepsnow1.ogg", FSOUND_HW3D, 0, 0);
+		samp[footstepsound2] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepsnow2.ogg", FSOUND_HW3D, 0, 0);
+		samp[footstepsound3] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepstone1.ogg", FSOUND_HW3D, 0, 0);
+		samp[footstepsound4] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepstone2.ogg", FSOUND_HW3D, 0, 0);
 		FSOUND_Sample_SetMinMaxDistance(samp[footstepsound], 4.0f, 1000.0f);	
 		FSOUND_Sample_SetMinMaxDistance(samp[footstepsound2], 4.0f, 1000.0f);	
 		FSOUND_Sample_SetMinMaxDistance(samp[footstepsound3], 4.0f, 1000.0f);	
@@ -678,10 +685,10 @@ void 	Game::Setenvironment(int which)
 		FSOUND_Sample_Free(samp[footstepsound2]);
 		FSOUND_Sample_Free(samp[footstepsound3]);
 		FSOUND_Sample_Free(samp[footstepsound4]);
-		samp[footstepsound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepsnow1.ogg", FSOUND_HW3D, 0);
-		samp[footstepsound2] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepsnow2.ogg", FSOUND_HW3D, 0);
-		samp[footstepsound3] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepsnow1.ogg", FSOUND_HW3D, 0);
-		samp[footstepsound4] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepsnow2.ogg", FSOUND_HW3D, 0);
+		samp[footstepsound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepsnow1.ogg", FSOUND_HW3D, 0, 0);
+		samp[footstepsound2] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepsnow2.ogg", FSOUND_HW3D, 0, 0);
+		samp[footstepsound3] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepsnow1.ogg", FSOUND_HW3D, 0, 0);
+		samp[footstepsound4] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepsnow2.ogg", FSOUND_HW3D, 0, 0);
 		FSOUND_Sample_SetMinMaxDistance(samp[footstepsound], 4.0f, 1000.0f);	
 		FSOUND_Sample_SetMinMaxDistance(samp[footstepsound2], 4.0f, 1000.0f);	
 		FSOUND_Sample_SetMinMaxDistance(samp[footstepsound3], 4.0f, 1000.0f);	
@@ -729,10 +736,10 @@ void 	Game::Setenvironment(int which)
 		FSOUND_Sample_Free(samp[footstepsound2]);
 		FSOUND_Sample_Free(samp[footstepsound3]);
 		FSOUND_Sample_Free(samp[footstepsound4]);
-		samp[footstepsound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepgrass1.ogg", FSOUND_HW3D, 0);
-		samp[footstepsound2] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepgrass2.ogg", FSOUND_HW3D, 0);
-		samp[footstepsound3] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepstone1.ogg", FSOUND_HW3D, 0);
-		samp[footstepsound4] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepstone2.ogg", FSOUND_HW3D, 0);
+		samp[footstepsound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepgrass1.ogg", FSOUND_HW3D, 0, 0);
+		samp[footstepsound2] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepgrass2.ogg", FSOUND_HW3D, 0, 0);
+		samp[footstepsound3] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepstone1.ogg", FSOUND_HW3D, 0, 0);
+		samp[footstepsound4] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepstone2.ogg", FSOUND_HW3D, 0, 0);
 		FSOUND_Sample_SetMinMaxDistance(samp[footstepsound], 4.0f, 1000.0f);	
 		FSOUND_Sample_SetMinMaxDistance(samp[footstepsound2], 4.0f, 1000.0f);	
 		FSOUND_Sample_SetMinMaxDistance(samp[footstepsound3], 4.0f, 1000.0f);	
@@ -3202,7 +3209,7 @@ void 	Game::Tick()
 									if(displaytext[0][j]!=tempstring[j]&&tempstring[j]!=' '&&tempstring[j]!='\0')goodcode--;
 								}
 
-								if(longnum==5077041556214789)goodcode=-1;
+								if(longnum==LONGLONGCONST(5077041556214789))goodcode=-1;
 
 								if(goodcode<0)goodcode=0;
 

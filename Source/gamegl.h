@@ -11,6 +11,7 @@
 
 #ifndef WIN32
   #if PLATFORM_LINUX
+    #define GL_GLEXT_PROTOTYPES
     #include "gl.h"
     #include "glu.h"
     #include "glext.h"

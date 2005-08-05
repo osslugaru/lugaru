@@ -13,15 +13,6 @@ extern float sps;
 extern float viewdistance;
 extern float fadestart;
 extern float screenwidth,screenheight;
-#ifdef WIN32
-extern HDC hDC;
-#elif PLATFORM_MACOSX
-extern AGLContext gaglContext;
-#elif USE_SDL
-extern SDL_Surface *sdlscreen;
-#else
-#error please define your platform.
-#endif
 extern int kTextureSize;
 extern FRUSTUM frustum;
 extern Light light;
@@ -165,12 +156,6 @@ extern bool gamestarted;
 extern FSOUND_SAMPLE	*samp[100];
 extern int channels[100];
 extern "C" 	void PlaySoundEx(int channel, FSOUND_SAMPLE *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused);
-
-#ifdef __GNUC__
-#define LONGLONGCONST(x) (x##ll)
-#else
-#define LONGLONGCONST(x) (x)
-#endif
 
 /*********************> DrawGLScene() <*****/
 long long Game::MD5_string (char *string){
@@ -3956,15 +3941,8 @@ int Game::DrawGLScene(GLvoid)
 
 	//glFlush();
 	if(drawmode!=motionblurmode||mainmenu){
-#ifdef WIN32
-		if(drawmode!=motionblurmode) SwapBuffers( hDC);
-#elif PLATFORM_MACOSX
-		if(drawmode!=motionblurmode)aglSwapBuffers(gaglContext); // send swap command
-#elif USE_SDL
-        if(drawmode!=motionblurmode)SDL_GL_SwapBuffers();
-#else
-        #error define your platform.
-#endif // send swap command
+		if(drawmode!=motionblurmode)
+			swap_gl_buffers();
 	}
 
 	//myassert(glGetError() == GL_NO_ERROR);

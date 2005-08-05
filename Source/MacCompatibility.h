@@ -21,10 +21,11 @@
 #pragma warning(disable:4101)
 #endif
 
-#ifdef __GNUC__
-#define __forceinline inline __attribute__((always_inline))
+#ifndef __forceinline
+#  ifdef __GNUC__
+#    define __forceinline inline __attribute__((always_inline))
+#  endif
 #endif
-
 
 typedef bool Boolean;
 

@@ -14,6 +14,10 @@
 
 #include "Constants.h"
 
+#if USE_SDL
+#include "SDL.h"
+#endif
+
 bool visibleloading = 0;
 FSOUND_SAMPLE	*samp[100] = {0};
 FSOUND_STREAM * strm[20] = {0};
@@ -57,8 +61,12 @@ Sprites sprites;
 float sps = 0;
 #ifdef WIN32
 HDC hDC;
-#else
+#elif USE_SDL
+SDL_Surface *sdlscreen;
+#elif PLATFORM_MACOSX
 AGLContext gaglContext;
+#else
+#error Define your platform.
 #endif
 int kTextureSize = 0;
 int detail = 0;

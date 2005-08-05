@@ -279,4 +279,31 @@ public:
 
 };
 
+#ifndef __forceinline
+#  ifdef __GNUC__
+#    define __forceinline inline __attribute__((always_inline))
+#  endif
+#endif
+
+static __forceinline void swap_gl_buffers(void)
+{
+#ifdef WIN32
+    extern HDC hDC;
+    SwapBuffers( hDC);
+#elif USE_SDL
+    SDL_GL_SwapBuffers();
+#elif PLATFORM_MACOSX
+    extern AGLContext gaglContext;
+    aglSwapBuffers(gaglContext);
+#else
+    #error define your platform.
+#endif
+}
+
+#ifdef __GNUC__
+#define LONGLONGCONST(x) (x##ll)
+#else
+#define LONGLONGCONST(x) (x)
+#endif
+
 #endif
