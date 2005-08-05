@@ -8,8 +8,8 @@
 
 //#include "Carbon.h"
 #include "math.h"
-#include "Physicsmath.h"
-#include "gl.h"
+#include "PhysicsMath.h"
+#include "gamegl.h"
 
 /**> Quaternion Structures <**/
 #define PI      3.14159265355555897932384626
@@ -207,9 +207,7 @@ inline void CrossProduct(XYZ P, XYZ Q, XYZ *V){
 
 inline float fast_sqrt (register float arg)
 {	
-#ifdef WIN32
-	return sqrtf( arg);
-#else
+#if PLATFORM_MACOSX
 	// Can replace with slower return std::sqrt(arg);
 	register float result;
 
@@ -224,6 +222,8 @@ inline float fast_sqrt (register float arg)
 	result = result + 0.5 * result * (1.0 - arg * result * result);
 
 	return result * arg;
+#else
+	return sqrtf( arg);
 #endif
 }
 

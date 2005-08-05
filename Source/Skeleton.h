@@ -7,10 +7,10 @@
 
 
 /**> HEADER FILES <**/
-#include "gl.h"
+#include "gamegl.h"
 #include "Quaternions.h"
 #include "fmod.h"
-#include "objects.h"
+#include "Objects.h"
 #include "Sprites.h"
 #include "binio.h"
 

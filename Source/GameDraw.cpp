@@ -15,8 +15,12 @@ extern float fadestart;
 extern float screenwidth,screenheight;
 #ifdef WIN32
 extern HDC hDC;
-#else
+#elif PLATFORM_MACOSX
 extern AGLContext gaglContext;
+#elif USE_SDL
+extern SDL_Surface *sdlscreen;
+#else
+#error please define your platform.
 #endif
 extern int kTextureSize;
 extern FRUSTUM frustum;
@@ -162,6 +166,12 @@ extern FSOUND_SAMPLE	*samp[100];
 extern int channels[100];
 extern "C" 	void PlaySoundEx(int channel, FSOUND_SAMPLE *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused);
 
+#ifdef __GNUC__
+#define LONGLONGCONST(x) (x##ll)
+#else
+#define LONGLONGCONST(x) (x)
+#endif
+
 /*********************> DrawGLScene() <*****/
 long long Game::MD5_string (char *string){
 	char temp[256]="";
@@ -181,11 +191,11 @@ long long Game::MD5_string (char *string){
 	num=abs(num);
 	if(num==0)num+=1452;
 
-	while(num<5000000000000000){
+	while(num<LONGLONGCONST(5000000000000000)){
 		num*=1.85421521;
 	}
 
-	while(num>9900000000000000){
+	while(num>LONGLONGCONST(9900000000000000)){
 		num/=1.235421521;
 	}
 
@@ -282,7 +292,7 @@ int Game::DrawGLScene(GLvoid)
 			color2.red=0;
 			color2.green=0;
 			color2.blue=0;
-#ifndef WIN32
+#if PLATFORM_MACOSX
 			DSpContext_FadeGamma(NULL,200,&color2);
 #endif
 		}

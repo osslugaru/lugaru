@@ -3,11 +3,11 @@
 
 /**> HEADER FILES <**/
 
-#include "gl.h"
+#include "gamegl.h"
 #include "Quaternions.h"
 #include "fmod.h"
-#include "skeleton.h"
-#include "models.h"
+#include "Skeleton.h"
+#include "Models.h"
 #include "Constants.h"
 #include "Terrain.h"
 #include "Sprites.h"

@@ -15,7 +15,7 @@
 #undef Polygon
 #include <gl/gl.h>
 #else
-#include "gl.h"
+#include "gamegl.h"
 //	#include "MoreFilesX.h"
 #endif
 

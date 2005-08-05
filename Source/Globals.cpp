@@ -1,4 +1,4 @@
-#include "gl.h"
+#include "gamegl.h"
 #include "Quaternions.h"
 #include "Lights.h"
 #include "Skeleton.h"

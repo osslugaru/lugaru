@@ -76,7 +76,7 @@ extern float oldgamespeed;
     #include <Profiler.h>
 
 	#include "agl.h"
-    #include "gl.h"
+    #include "gamegl.h"
 	#include "glu.h"
 #endif
 

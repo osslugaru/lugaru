@@ -1,7 +1,7 @@
 #ifndef _TERRAIN_H_
 #define _TERRAIN_H_
 
-#include "gl.h"
+#include "gamegl.h"
 #include "Frustum.h"
 #include "Lights.h"
 #include "TGALoader.h"

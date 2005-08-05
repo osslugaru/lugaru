@@ -6,7 +6,7 @@
 #include "Quaternions.h"
 //#include "Files.h"
 #include "Quaternions.h"
-#include "gl.h"
+#include "gamegl.h"
 #include "TGALoader.h"
 
 class Text{

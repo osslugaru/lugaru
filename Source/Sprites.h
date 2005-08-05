@@ -2,7 +2,7 @@
 #define _SPRITES_H_
 
 #include "Quaternions.h"
-#include "gl.h"
+#include "gamegl.h"
 #include "TGALoader.h"
 #include "Quaternions.h"
 #include "Frustum.h"

@@ -1,7 +1,7 @@
 #include "Frustum.h"
 #include <math.h>
 
-#include "gl.h"
+#include "gamegl.h"
 
 
 void FRUSTUM::

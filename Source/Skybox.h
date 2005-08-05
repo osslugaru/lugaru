@@ -4,7 +4,7 @@
 #include "Quaternions.h"
 #include "TGALoader.h"
 #include "Quaternions.h"
-#include "gl.h"		
+#include "gamegl.h"
 
 class SkyBox{
 public:

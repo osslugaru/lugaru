@@ -59,7 +59,7 @@ extern float volume;
 #include <string.h>
 #include <fstream>
 #include <iostream>
-#include "gl.h"
+#include "gamegl.h"
 #include "WinDefs.h"
 #include <shellapi.h>
 #include "fmod.h"

@@ -2,15 +2,21 @@
 #define _GAME_H_
 
 #ifndef WIN32
+#ifdef PLATFORM_MACOSX
 #include <Carbon.h>
 #include "Quicktime.h"
 #endif
+#endif
+
 //Jordan included glut.h
 //#include <glut.h>
 
 #include "TGALoader.h"
 #ifdef WIN32
 #include "WinInput.h"
+#elif USE_SDL
+#include "SDL.h"
+//#include "SDLInput.h"
 #else
 #include "Macinput.h"
 #endif
@@ -30,7 +36,7 @@
 #include "Weapons.h"
 #include "binio.h"
 #include <fstream>
-#include "gl.h"
+#include "gamegl.h"
 
 extern GLuint rabbittexture;
 
@@ -248,19 +254,19 @@ public:
 	Game();
 	~Game() {		
 		for(int i=0;i<10;i++){
-			if(Mainmenuitems[i])glDeleteTextures( 1, (const unsigned long *)&Mainmenuitems[i] );
+			if(Mainmenuitems[i])glDeleteTextures( 1, &Mainmenuitems[i] );
 		}
-		glDeleteTextures( 1, (const unsigned long *)&cursortexture );
-		glDeleteTextures( 1, (const unsigned long *)&Maparrowtexture );
-		glDeleteTextures( 1, (const unsigned long *)&Mapboxtexture );
-		glDeleteTextures( 1, (const unsigned long *)&Mapcircletexture );
-		glDeleteTextures( 1, (const unsigned long *)&terraintexture );
-		glDeleteTextures( 1, (const unsigned long *)&terraintexture2 );
-		if(screentexture>0)glDeleteTextures( 1, (const unsigned long *)&screentexture );
-		if(screentexture2>0)glDeleteTextures( 1, (const unsigned long *)&screentexture2 );
-		glDeleteTextures( 1, (const unsigned long *)&hawktexture );
-		glDeleteTextures( 1, (const unsigned long *)&logotexture );
-		glDeleteTextures( 1, (const unsigned long *)&loadscreentexture );
+		glDeleteTextures( 1, &cursortexture );
+		glDeleteTextures( 1, &Maparrowtexture );
+		glDeleteTextures( 1, &Mapboxtexture );
+		glDeleteTextures( 1, &Mapcircletexture );
+		glDeleteTextures( 1, &terraintexture );
+		glDeleteTextures( 1, &terraintexture2 );
+		if(screentexture>0)glDeleteTextures( 1, &screentexture );
+		if(screentexture2>0)glDeleteTextures( 1, &screentexture2 );
+		glDeleteTextures( 1, &hawktexture );
+		glDeleteTextures( 1, &logotexture );
+		glDeleteTextures( 1, &loadscreentexture );
 
 		Dispose();
 	}

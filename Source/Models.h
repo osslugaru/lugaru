@@ -5,7 +5,7 @@
 //
 // Model Maximums
 //
-#include "gl.h"
+#include "gamegl.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

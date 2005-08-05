@@ -3,7 +3,7 @@
 
 
 /**> HEADER FILES <**/
-#include "gl.h"
+#include "gamegl.h"
 #include "Quaternions.h"
 
 class Light{
