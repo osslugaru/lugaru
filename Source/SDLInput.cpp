@@ -2,7 +2,9 @@
 
 /**> HEADER FILES <**/
 #include "SDLInput.h"
-#include "String.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 extern bool keyboardfrozen;
 extern bool buttons[3];

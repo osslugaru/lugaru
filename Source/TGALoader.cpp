@@ -19,7 +19,7 @@ bool upload_image(const unsigned char* filePath, bool hasalpha)
 		pgame->LoadingScreen();
 	}
 
-#ifdef WIN32
+#if !PLATFORM_MACOSX
 
 	// for Windows, just use TGA loader for now
 	char fileName[ 256];

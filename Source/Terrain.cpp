@@ -1530,12 +1530,12 @@ Terrain::Terrain()
 }
 Terrain::~Terrain()
 {
-	if(terraintexture)glDeleteTextures( 1, (const unsigned long *)&terraintexture );
-	if(shadowtexture) glDeleteTextures( 1, (const unsigned long *)&shadowtexture );
-	if(bodyprinttexture) glDeleteTextures( 1, (const unsigned long *)&bodyprinttexture );
-	if(footprinttexture) glDeleteTextures( 1, (const unsigned long *)&footprinttexture );
-	if(bloodtexture) glDeleteTextures( 1, (const unsigned long *)&bloodtexture );
-	if(bloodtexture2) glDeleteTextures( 1, (const unsigned long *)&bloodtexture2 );
-	if(breaktexture) glDeleteTextures( 1, (const unsigned long *)&breaktexture );
+	if(terraintexture)glDeleteTextures( 1, &terraintexture );
+	if(shadowtexture) glDeleteTextures( 1, &shadowtexture );
+	if(bodyprinttexture) glDeleteTextures( 1, &bodyprinttexture );
+	if(footprinttexture) glDeleteTextures( 1, &footprinttexture );
+	if(bloodtexture) glDeleteTextures( 1, &bloodtexture );
+	if(bloodtexture2) glDeleteTextures( 1, &bloodtexture2 );
+	if(breaktexture) glDeleteTextures( 1, &breaktexture );
 }
 

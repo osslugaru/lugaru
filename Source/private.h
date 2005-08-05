@@ -17,6 +17,8 @@
 #define BinIO_HOST_BYTE_ORDER          'H'
 #define BinIO_NETWORK_BYTE_ORDER       'N'
 
+#ifndef ALREADY_DID_BINIO_STDINT
+#define ALREADY_DID_BINIO_STDINT
 #if defined(BinIO_STDINT_HEADER)
 #include BinIO_STDINT_HEADER
 typedef float              float32_t;
@@ -32,6 +34,7 @@ typedef unsigned long      uint32_t;
 #endif
 typedef float              float32_t;
 typedef double             float64_t;
+#endif
 #endif
 
 #ifndef BinIO_INLINE

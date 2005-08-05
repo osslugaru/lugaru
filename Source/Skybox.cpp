@@ -1,4 +1,4 @@
-#include "skybox.h"
+#include "Skybox.h"
 #include "Game.h"
 
 extern float viewdistance;
@@ -347,13 +347,13 @@ SkyBox::SkyBox()
 }
 SkyBox::~SkyBox()
 {
-	if (front) glDeleteTextures( 1, (const unsigned long *)&front );
-	if (left) glDeleteTextures( 1, (const unsigned long *)&left );
-	if (back) glDeleteTextures( 1, (const unsigned long *)&back );
-	if (right) glDeleteTextures( 1, (const unsigned long *)&right );
-	if (up) glDeleteTextures( 1, (const unsigned long *)&up );
-	if (down) glDeleteTextures( 1, (const unsigned long *)&down );
-	if (cloud) glDeleteTextures( 1, (const unsigned long *)&cloud );
-	if (reflect) glDeleteTextures( 1, (const unsigned long *)&reflect );
+	if (front) glDeleteTextures( 1, &front );
+	if (left) glDeleteTextures( 1, &left );
+	if (back) glDeleteTextures( 1, &back );
+	if (right) glDeleteTextures( 1, &right );
+	if (up) glDeleteTextures( 1, &up );
+	if (down) glDeleteTextures( 1, &down );
+	if (cloud) glDeleteTextures( 1, &cloud );
+	if (reflect) glDeleteTextures( 1, &reflect );
 };
 

@@ -45,6 +45,8 @@ extern "C" {
 	N network byte order
 	*/
 
+#ifndef ALREADY_DID_BINIO_STDINT
+#define ALREADY_DID_BINIO_STDINT
 #if defined(BinIO_STDINT_HEADER)
 #include BinIO_STDINT_HEADER
 	typedef float              float32_t;
@@ -60,6 +62,7 @@ extern "C" {
 #endif
 	typedef float              float32_t;
 	typedef double             float64_t;
+#endif
 #endif
 
 	typedef struct

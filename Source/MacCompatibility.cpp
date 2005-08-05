@@ -2,12 +2,21 @@
 
 /**> HEADER FILES <**/
 #include "MacCompatibility.h"
+
+#ifdef WIN32
 #include <windows.h>
+#endif
+
 #include <errno.h>
 #include <time.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #if PLATFORM_UNIX
+#include <unistd.h>
+#include <sys/time.h>
+#include <assert.h>
 typedef long long __int64;
 typedef __int64 LARGE_INTEGER;
 static int QueryPerformanceFrequency(LARGE_INTEGER *liptr)
@@ -18,7 +27,7 @@ static int QueryPerformanceFrequency(LARGE_INTEGER *liptr)
     return(1);
 }
 
-static void QueryPerformanceCounter(LARGE_INTEGER *liptr)
+static int QueryPerformanceCounter(LARGE_INTEGER *liptr)
 {
     struct timeval tv;
     gettimeofday(&tv, NULL);

@@ -28,6 +28,9 @@ DEFINES := \
 	-DPLATFORM_UNIX=1 \
 	-DPLATFORM_LINUX=1 \
 	-DUSE_SDL=1 \
+	-DTRUE=1 \
+	-DFALSE=0 \
+	-Dstricmp=strcasecmp \
 
 INCLUDES := \
 			-I./SDL12/include \
@@ -46,7 +49,7 @@ ifeq ($(strip $(macosx)),true)
 else
   CFLAGS += -DPLATFORM_LINUX=1
   #CFLAGS += -msse -mmmx
-  LDFLAGS := -lSDL
+  LDFLAGS := -lSDL -lGL -lGLU -L$(RUNDIR) -lfmod
 endif
 
 CXXFLAGS := $(CFLAGS)
@@ -60,7 +63,6 @@ SRCS := \
 	Lights.cpp \
 	Models.cpp \
 	Objects.cpp \
-	OpenGL_Windows.cpp \
 	pack.c \
 	pack_private.c \
 	Person.cpp \
@@ -77,14 +79,17 @@ SRCS := \
 	unpack_private.c \
 	Weapons.cpp \
 	MacCompatibility.cpp \
-	WinInput.cpp \
 	logger/logger.cpp \
-	Driver.cc \
-	Md5.cc \
+	DRIVER.CC \
+	MD5.CC \
 	SDLInput.cpp \
 
+UNUSED_SRCS := \
+	OpenGL_Windows.cpp \
 
-OBJS := $(SRCS:.cpp=.o)
+OBJS := $(SRCS:.CC=.o)
+OBJS := $(OBJS:.cc=.o)
+OBJS := $(OBJS:.cpp=.o)
 OBJS := $(OBJS:.c=.o)
 OBJS := $(OBJS:.m=.o)
 OBJS := $(foreach f,$(OBJS),$(BINDIR)/$(f))
@@ -99,6 +104,9 @@ $(BINDIR)/%.o : $(SRCDIR)/%.cpp
 	$(CXX) -o $@ $(CXXFLAGS) $<
 
 $(BINDIR)/%.o : $(SRCDIR)/%.CC
+	$(CXX) -o $@ $(CXXFLAGS) $<
+
+$(BINDIR)/%.o : $(SRCDIR)/%.cc
 	$(CXX) -o $@ $(CXXFLAGS) $<
 
 $(BINDIR)/%.o : $(SRCDIR)/%.m
@@ -116,6 +124,7 @@ endif
 
 clean:
 	rm -rf $(BINDIR)/*.o
+	rm -rf $(BINDIR)/logger/*.o
 	rm -rf $(EXE)
 
 # end of makefile ...

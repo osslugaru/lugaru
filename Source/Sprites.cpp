@@ -429,16 +429,16 @@ Sprites::Sprites()
 }
 Sprites::~Sprites()
 {
-	if (toothtexture) glDeleteTextures( 1, (const unsigned long *)&toothtexture );
-	if (cloudtexture) glDeleteTextures( 1, (const unsigned long *)&cloudtexture );
-	if (cloudimpacttexture) glDeleteTextures( 1, (const unsigned long *)&cloudimpacttexture );
-	if (bloodtexture) glDeleteTextures( 1, (const unsigned long *)&bloodtexture );
-	if (flametexture) glDeleteTextures( 1, (const unsigned long *)&flametexture );
-	if (bloodflametexture) glDeleteTextures( 1, (const unsigned long *)&bloodflametexture );
-	if (smoketexture) glDeleteTextures( 1, (const unsigned long *)&smoketexture );
-	if (snowflaketexture) glDeleteTextures( 1, (const unsigned long *)&snowflaketexture );
-	if (shinetexture) glDeleteTextures( 1, (const unsigned long *)&shinetexture );
-	if (splintertexture) glDeleteTextures( 1, (const unsigned long *)&splintertexture );
-	if (leaftexture) glDeleteTextures( 1, (const unsigned long *)&leaftexture );
+	if (toothtexture) glDeleteTextures( 1, &toothtexture );
+	if (cloudtexture) glDeleteTextures( 1, &cloudtexture );
+	if (cloudimpacttexture) glDeleteTextures( 1, &cloudimpacttexture );
+	if (bloodtexture) glDeleteTextures( 1, &bloodtexture );
+	if (flametexture) glDeleteTextures( 1, &flametexture );
+	if (bloodflametexture) glDeleteTextures( 1, &bloodflametexture );
+	if (smoketexture) glDeleteTextures( 1, &smoketexture );
+	if (snowflaketexture) glDeleteTextures( 1, &snowflaketexture );
+	if (shinetexture) glDeleteTextures( 1, &shinetexture );
+	if (splintertexture) glDeleteTextures( 1, &splintertexture );
+	if (leaftexture) glDeleteTextures( 1, &leaftexture );
 }
 
