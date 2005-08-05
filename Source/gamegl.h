@@ -29,7 +29,7 @@
   #include <gl/glu.h>
   #include <gl/glaux.h>
   #include <gl/glext.h>
-  #include "WinDefs.h"
+  #include "MacCompatibility.h"
   #include "il/ilut.h"
 
   #define glDeleteTextures( a, b) glDeleteTextures( (a), (const unsigned int *)(b) );

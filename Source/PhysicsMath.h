@@ -3,9 +3,7 @@
 
 //#include <Carbon.h>
 
-#ifdef WIN32
-#include "WinDefs.h"
-#endif
+#include "MacCompatibility.h"
 
 //------------------------------------------------------------------------//
 // Misc. Constants

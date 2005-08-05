@@ -4,7 +4,7 @@
 #define _FMODWRAPPER_H_
 
 #include "fmod_header.h"
-#include "WinDefs.h"
+#include "MacCompatibility.h"
 
 
 #ifdef WIN32

@@ -1,7 +1,7 @@
-#ifndef _WINDEFS_H_
-#define _WINDEFS_H_
-#ifdef WIN32
+#ifndef _MACCOMPATIBLITY_H_
+#define _MACCOMPATIBLITY_H_
 
+#if !PLATFORM_MACOSX
 
 #include <stdio.h>
 #include <float.h>
@@ -100,3 +100,4 @@ inline long long abs( long long f)
 }
 #endif
 #endif
+

@@ -4,7 +4,7 @@
 /**> HEADER FILES <**/
 #include <stdlib.h>
 #include <stdio.h>
-#include "WinDefs.h"
+#include "MacCompatibility.h"
 
 /**> CONSTANT DECLARATIONS <**/
 // Mac Keyboard Codes

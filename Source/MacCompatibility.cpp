@@ -1,5 +1,5 @@
 /**> HEADER FILES <**/
-#include "WinDefs.h"
+#include "MacCompatibility.h"
 #include <windows.h>
 #include <errno.h>
 #include <time.h>

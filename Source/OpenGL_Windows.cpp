@@ -60,7 +60,7 @@ extern float volume;
 #include <fstream>
 #include <iostream>
 #include "gamegl.h"
-#include "WinDefs.h"
+#include "MacCompatibility.h"
 #include <shellapi.h>
 #include "fmod.h"
 

@@ -26,6 +26,8 @@ endif
 
 DEFINES := \
 	-DPLATFORM_UNIX=1 \
+	-DPLATFORM_LINUX=1 \
+	-DUSE_SDL=1 \
 
 INCLUDES := \
 			-I./SDL12/include \
@@ -73,9 +75,9 @@ SRCS := \
 	unpack.c \
 	unpack_private.c \
 	Weapons.cpp \
-	WinDefs.cpp \
+	MacCompatibility.cpp \
 	WinInput.cpp \
-	logger\logger.cpp \
+	logger/logger.cpp \
 	Driver.cc \
 	Md5.cc \
 
