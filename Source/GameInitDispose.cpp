@@ -2017,3 +2017,4 @@ Game::Game()
 	musicselected = 0;
 	change = 0;
 }
+

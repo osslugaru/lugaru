@@ -3982,3 +3982,4 @@ int Game::DrawGLScene(GLvoid)
 	//Jordan fixed your warning!
 	return 0;
 }
+

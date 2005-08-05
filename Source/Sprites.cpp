@@ -441,3 +441,4 @@ Sprites::~Sprites()
 	if (splintertexture) glDeleteTextures( 1, (const unsigned long *)&splintertexture );
 	if (leaftexture) glDeleteTextures( 1, (const unsigned long *)&leaftexture );
 }
+

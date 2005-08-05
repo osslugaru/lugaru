@@ -1341,3 +1341,4 @@ Weapons::~Weapons()
 	if (lightbloodswordtextureptr) glDeleteTextures( 1, (const unsigned long *)&lightbloodswordtextureptr );
 	if (bloodswordtextureptr) glDeleteTextures( 1, (const unsigned long *)&bloodswordtextureptr );
 }
+

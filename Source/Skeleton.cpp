@@ -1710,3 +1710,4 @@ Animation & Animation::operator = (const Animation & ani)
 
 	return (*this);
 }
+

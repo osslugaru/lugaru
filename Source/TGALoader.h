@@ -38,3 +38,4 @@ TGAImageRec*	LoadTGA( char *filename );
 
 
 #endif
+

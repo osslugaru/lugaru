@@ -775,3 +775,4 @@ Objects::~Objects()
 	if (bushtextureptr) glDeleteTextures( 1, (const unsigned long *)&bushtextureptr );
 	if (rocktextureptr) glDeleteTextures( 1, (const unsigned long *)&rocktextureptr );
 };
+

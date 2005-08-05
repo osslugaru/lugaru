@@ -259,3 +259,4 @@ Text::~Text()
 	}
 	if (FontTexture) glDeleteTextures( 1, (const unsigned long *)&FontTexture );
 }
+

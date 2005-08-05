@@ -132,3 +132,4 @@ extern void BinIOCountBytes(void *context, int type, int byte_order, int count);
 extern size_t BinIOFormatByteCount(const char *format);
 
 #endif
+

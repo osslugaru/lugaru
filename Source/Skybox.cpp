@@ -356,3 +356,4 @@ SkyBox::~SkyBox()
 	if (cloud) glDeleteTextures( 1, (const unsigned long *)&cloud );
 	if (reflect) glDeleteTextures( 1, (const unsigned long *)&reflect );
 };
+

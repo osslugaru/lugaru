@@ -506,3 +506,4 @@ float LineFacetd(XYZ *p1,XYZ *p2,XYZ *pa,XYZ *pb,XYZ *pc, XYZ *n, XYZ *p)
 	return 1;
 }
 
+

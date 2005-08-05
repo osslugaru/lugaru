@@ -1538,3 +1538,4 @@ Terrain::~Terrain()
 	if(bloodtexture2) glDeleteTextures( 1, (const unsigned long *)&bloodtexture2 );
 	if(breaktexture) glDeleteTextures( 1, (const unsigned long *)&breaktexture );
 }
+

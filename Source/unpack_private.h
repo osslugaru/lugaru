@@ -12,3 +12,4 @@ struct BinIOUnpackContext
 extern void BinIOUnpack(void *context, int type, int byte_order, int count);
 
 #endif
+

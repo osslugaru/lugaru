@@ -12,3 +12,4 @@ struct BinIOPackContext
 extern void BinIOPack(void *context, int type, int byte_order, int count);
 
 #endif
+
