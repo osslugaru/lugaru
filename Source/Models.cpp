@@ -500,7 +500,7 @@ bool Model::load(char *filename,bool texture )
 	type = normaltype;
 	color=0;
 
-	tfile=fopen( filename, "rb" );
+	tfile=fopen( ConvertFileName(filename), "rb" );
 	// read model settings
 
 

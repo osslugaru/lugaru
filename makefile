@@ -37,6 +37,7 @@ INCLUDES := \
 			-I./OpenGL/ \
 			-I./OpenGL/GL \
 			-I$(SRCDIR) \
+			-I$(SRCDIR)/devil/include \
 
 CFLAGS := -g -c $(OPT) $(INCLUDES) $(DEFINES) -fsigned-char
 CFLAGS += -w
@@ -49,7 +50,7 @@ ifeq ($(strip $(macosx)),true)
 else
   CFLAGS += -DPLATFORM_LINUX=1
   #CFLAGS += -msse -mmmx
-  LDFLAGS := -lSDL -lGL -lGLU -L$(RUNDIR) -lfmod
+  LDFLAGS := ./libSDL-1.2.so.0 -lGL -lGLU ./libfmod.so ./libIL.so.1 ./libILU.so.1 ./libILUT.so.1
 endif
 
 CXXFLAGS := $(CFLAGS)
@@ -83,9 +84,8 @@ SRCS := \
 	DRIVER.CC \
 	MD5.CC \
 	SDLInput.cpp \
-
-UNUSED_SRCS := \
 	OpenGL_Windows.cpp \
+
 
 OBJS := $(SRCS:.CC=.o)
 OBJS := $(OBJS:.cc=.o)

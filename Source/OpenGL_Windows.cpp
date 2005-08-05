@@ -1,10 +1,19 @@
+
+#ifdef WIN32
 #include <vld.h>
+#endif
+
 #include "Game.h"
+#include "IL/il.h"
+#include "IL/ilu.h"
+#include "IL/ilut.h"
 
 // ADDED GWC
+#ifdef _MSC_VER
 #pragma comment(lib, "opengl32.lib")
 #pragma comment(lib, "glu32.lib")
 #pragma comment(lib, "glaux.lib")
+#endif
 
 extern bool buttons[3];
 extern float multiplier;
@@ -61,7 +70,11 @@ extern float volume;
 #include <iostream>
 #include "gamegl.h"
 #include "MacCompatibility.h"
+
+#ifdef WIN32
 #include <shellapi.h>
+#endif
+
 #include "fmod.h"
 
 #include "res/resource.h"
@@ -92,14 +105,37 @@ void CleanUp (void);
 
 
 // statics/globals (internal only) ------------------------------------------
+#ifndef WIN32
+typedef struct tagPOINT { 
+  int x;
+  int y;
+} POINT, *PPOINT; 
+#endif
+
+#if USE_SDL
+void sdlGetCursorPos(POINT *pt)
+{
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+    pt->x = x;
+    pt->y = y;
+}
+#define GetCursorPos(x) sdlGetCursorPos(x)
+#define SetCursorPos(x, y) SDL_WarpMouse(x, y)
+#define ScreenToClient(x, pt)
+#define ClientToScreen(x, pt)
+#define MessageBox(hwnd,text,title,flags) STUBBED("msgbox")
+#endif
 
 Point delta;
 
+#ifdef WIN32
 static const char g_wndClassName[]={ "LUGARUWINDOWCLASS" };
-
 static HINSTANCE g_appInstance;
 static HWND g_windowHandle;
 static HGLRC hRC;
+#endif
+
 static bool g_button, fullscreen = true;
 
 
@@ -121,7 +157,6 @@ int kContextHeight;
 
 const RGBColor rgbBlack = { 0x0000, 0x0000, 0x0000 };
 
-extern HDC hDC;
 GLuint gFontList;
 char gcstrMode [256] = "";
 
@@ -134,7 +169,9 @@ Game * pgame = 0;
 
 void ReportError (char * strError)
 {
+#ifdef WIN32  // !!! FIXME.  --ryan.
 	throw std::exception( strError);
+#endif
 
 	/*	char errMsgCStr [256];
 	Str255 strErr;
@@ -149,6 +186,7 @@ void ReportError (char * strError)
 
 void SetupDSpFullScreen ()
 {
+#ifdef WIN32
 	LOGFUNC;
 
 	if (fullscreen)
@@ -170,11 +208,13 @@ void SetupDSpFullScreen ()
 	}
 
 	ShowCursor(FALSE);
+#endif
 }
 
 
 void ShutdownDSp ()
 {
+#ifdef WIN32
 	LOGFUNC;
 
 	if (fullscreen)
@@ -183,6 +223,7 @@ void ShutdownDSp ()
 	}
 
 	ShowCursor(TRUE);
+#endif
 }
 
 
@@ -192,13 +233,54 @@ void ShutdownDSp ()
 
 void DrawGL (Game & game)
 {
+#ifdef WIN32
 	if (hDC == 0)
 		return;
+#endif
 
 	game.DrawGLScene();
 }
 
 
+#if USE_SDL
+static inline int clamp_sdl_mouse_button(Uint8 button)
+{
+    if ((button >= 1) && (button <= 3))
+        return button - 1;
+    return -1;
+}
+
+static void sdlEventProc(const SDL_Event &e)
+{
+    int val;
+    switch(e.type)
+	{
+		case SDL_MOUSEBUTTONDOWN:
+			{
+                val = clamp_sdl_mouse_button(e.button.button);
+                if (val >= 0)
+                {
+                    if (val == 0)
+    				    g_button = true;
+    				buttons[val] = true;
+                }
+			}
+			return;
+
+		case SDL_MOUSEBUTTONUP:
+			{
+                val = clamp_sdl_mouse_button(e.button.button);
+                if (val >= 0)
+                {
+                    if (val == 0)
+    				    g_button = false;
+    				buttons[val] = false;
+                }
+			}
+            return;
+    }
+}
+#endif
 
 // --------------------------------------------------------------------------
 
@@ -502,6 +584,26 @@ Boolean SetUp (Game & game)
 
 	SetupDSpFullScreen();
 
+#if USE_SDL
+    if (!SDL_WasInit(SDL_INIT_VIDEO))
+    {
+        if (SDL_Init(SDL_INIT_VIDEO) == -1)
+        {
+            fprintf(stderr, "SDL_Init() failed: %s\n", SDL_GetError());
+            return false;
+        }
+    }
+
+    Uint32 sdlflags = SDL_OPENGL;
+    SDL_WM_SetCaption("Lugaru", "lugaru");
+    SDL_ShowCursor(0);
+    if (SDL_SetVideoMode(kContextWidth, kContextHeight, 0, sdlflags) == NULL)
+    {
+        fprintf(stderr, "SDL_SetVideoMode() failed: %s\n", SDL_GetError());
+        return false;
+    }
+
+#elif (defined WIN32)
 	//------------------------------------------------------------------
 	// create window
 	int x = 0, y = 0;
@@ -540,7 +642,6 @@ Boolean SetUp (Game & game)
 		ReportError("Could not create window");
 		return false;
 	}
-
 
 	//------------------------------------------------------------------
 	// setup OpenGL
@@ -610,9 +711,10 @@ Boolean SetUp (Game & game)
 
 	SetForegroundWindow(g_windowHandle);
 	SetFocus(g_windowHandle);
+#endif
 
 	glClear( GL_COLOR_BUFFER_BIT );
-	SwapBuffers( hDC );
+	swap_gl_buffers();
 
 	// clear all states
 	glDisable( GL_ALPHA_TEST);
@@ -869,6 +971,10 @@ void CleanUp (void)
 
 	ilShutDown();
 
+#if USE_SDL
+    SDL_Quit();
+
+#elif (defined WIN32)
 	if (hRC)
 	{
 		wglMakeCurrent( NULL, NULL);
@@ -891,6 +997,7 @@ void CleanUp (void)
 
 	ShutdownDSp ();
 	ClipCursor(NULL);
+#endif
 }
 
 // --------------------------------------------------------------------------
@@ -900,6 +1007,7 @@ static bool g_focused = true;
 
 static bool IsFocused()
 {
+#ifdef WIN32
 	if (!g_focused)
 		return false;
 
@@ -908,6 +1016,7 @@ static bool IsFocused()
 
 	if (IsIconic( g_windowHandle))
 		return false;
+#endif
 
 	return true;
 }
@@ -938,6 +1047,19 @@ int main (void)
 					gameFocused = true;
 
 					// check windows messages
+                    #if USE_SDL
+					SDL_Event e;
+					// message pump
+					while( SDL_PollEvent( &e ) )
+					{
+						if( e.type == SDL_QUIT )
+						{
+							gDone=true;
+							break;
+						}
+                        sdlEventProc(e);
+					}
+                    #elif (defined WIN32)
 					MSG msg;
 					// message pump
 					while( PeekMessage( &msg, NULL, 0, 0, PM_REMOVE | PM_NOYIELD ) )
@@ -953,6 +1075,7 @@ int main (void)
 							DispatchMessage( &msg );
 						}
 					}
+                    #endif
 
 					// game
 					DoUpdate(game);
@@ -967,6 +1090,7 @@ int main (void)
 					}
 
 					// game is not in focus, give CPU time to other apps by waiting for messages instead of 'peeking'
+                    #ifdef WIN32
 					MSG msg;
 					BOOL bRet;
 					//if (GetMessage( &msg, g_windowHandle, 0, 0 ))
@@ -988,6 +1112,9 @@ int main (void)
 							DispatchMessage(&msg); 
 						}
 					}
+                    #else
+                    STUBBED("give up CPU but sniff the event queue");
+                    #endif
 				}
 			}
 
@@ -999,10 +1126,14 @@ int main (void)
 //		if(game.registernow){
 		if(regnow)
 		{
+            #ifndef WIN32
+            STUBBED("launch a web browser");
+            #else
 			char url[100];
 			sprintf(url,"http://www.wolfire.com/registerpc.html");
 			//			LaunchURL(url);
 			ShellExecute(NULL, "open", url, NULL, NULL, SW_SHOWNORMAL);
+            #endif
 		}
 		return 0;
 	}
@@ -1313,6 +1444,7 @@ int main (void)
 	}
 
 
+#ifdef WIN32
 	void ClipMouseToWindow(HWND window)
 	{
 		RECT wRect;
@@ -1566,6 +1698,7 @@ int main (void)
 
 		return TRUE;
 	}
+#endif
 
 	int resolutionID(int width, int height)
 	{
@@ -1667,6 +1800,7 @@ int main (void)
 		return res;
 	}
 
+    #ifdef WIN32
 	int __stdcall WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,int nShowCmd)
 	{
 		int argc = 0;
@@ -1729,6 +1863,7 @@ int main (void)
 		return TRUE;
 
 	}
+    #endif
 
 	extern int channels[100];
 	extern FSOUND_SAMPLE * samp[100];
@@ -1874,4 +2009,5 @@ int main (void)
 
 		free(f);
 	}
+
 

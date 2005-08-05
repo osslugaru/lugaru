@@ -297,4 +297,9 @@ static __forceinline void swap_gl_buffers(void)
 #define LONGLONGCONST(x) (x)
 #endif
 
+extern "C" { void UndefinedSymbolToExposeStubbedCode(void); }
+//#define STUBBED(x) UndefinedSymbolToExposeStubbedCode();
+#define STUBBED(x) { static bool seen = false; if (!seen) { seen = true; fprintf(stderr, "STUBBED: %s at %s:%d\n", x, __FILE__, __LINE__); } }
+//#define STUBBED(x)
+
 #endif
