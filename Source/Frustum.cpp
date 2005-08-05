@@ -1,4 +1,4 @@
-#include "frustum.h"
+#include "Frustum.h"
 #include <math.h>
 
 #include "gl.h"
