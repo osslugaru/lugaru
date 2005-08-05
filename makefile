@@ -35,7 +35,8 @@ INCLUDES := \
 			-I./OpenGL/GL \
 			-I$(SRCDIR) \
 
-CFLAGS := -w -g -c $(OPT) $(INCLUDES) $(DEFINES) -fsigned-char
+CFLAGS := -g -c $(OPT) $(INCLUDES) $(DEFINES) -fsigned-char
+#CFLAGS += -w
 
 ifeq ($(strip $(macosx)),true)
   CFLAGS += -fpascal-strings -faltivec -fasm -force_cpusubtype_ALL -Wno-long-double -mdynamic-no-pic
