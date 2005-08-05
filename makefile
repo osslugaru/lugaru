@@ -36,7 +36,7 @@ INCLUDES := \
 			-I$(SRCDIR) \
 
 CFLAGS := -g -c $(OPT) $(INCLUDES) $(DEFINES) -fsigned-char
-#CFLAGS += -w
+CFLAGS += -w
 
 ifeq ($(strip $(macosx)),true)
   CFLAGS += -fpascal-strings -faltivec -fasm -force_cpusubtype_ALL -Wno-long-double -mdynamic-no-pic
