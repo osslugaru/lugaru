@@ -80,6 +80,7 @@ SRCS := \
 	logger/logger.cpp \
 	Driver.cc \
 	Md5.cc \
+	SDLInput.cpp \
 
 
 OBJS := $(SRCS:.cpp=.o)

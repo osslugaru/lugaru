@@ -1,3 +1,5 @@
+#if !PLATFORM_MACOSX
+
 /**> HEADER FILES <**/
 #include "MacCompatibility.h"
 #include <windows.h>
@@ -5,6 +7,26 @@
 #include <time.h>
 #include <stdio.h>
 
+#if PLATFORM_UNIX
+typedef long long __int64;
+typedef __int64 LARGE_INTEGER;
+static int QueryPerformanceFrequency(LARGE_INTEGER *liptr)
+{
+    assert(sizeof (__int64) == 8);
+    assert(sizeof (LARGE_INTEGER) == 8);
+    *liptr = 1000;
+    return(1);
+}
+
+static void QueryPerformanceCounter(LARGE_INTEGER *liptr)
+{
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    *liptr = ( (((LARGE_INTEGER) tv.tv_sec) * 1000) +
+               (((LARGE_INTEGER) tv.tv_usec) / 1000) );
+    return(1);
+}
+#endif
 
 class AppTime
 {
@@ -20,7 +42,6 @@ public:
 	__int64 baseCounter;
 };
 static AppTime g_appTime;
-
 
 
 void CopyCStringToPascal( const char* src, unsigned char dst[256])
@@ -106,3 +127,6 @@ char* ConvertFileName( const char* orgfilename)
 
 	return g_filename;
 }
+
+#endif
+

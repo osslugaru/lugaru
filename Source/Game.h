@@ -1,11 +1,9 @@
 #ifndef _GAME_H_
 #define _GAME_H_
 
-#ifndef WIN32
 #ifdef PLATFORM_MACOSX
 #include <Carbon.h>
 #include "Quicktime.h"
-#endif
 #endif
 
 //Jordan included glut.h
@@ -16,7 +14,7 @@
 #include "WinInput.h"
 #elif USE_SDL
 #include "SDL.h"
-//#include "SDLInput.h"
+#include "SDLInput.h"
 #else
 #include "Macinput.h"
 #endif

@@ -5,10 +5,11 @@
 
 #include <stdio.h>
 #include <float.h>
+#include <math.h>
 
-// stuff to make Mac code compatable with Windows
+// stuff to make Mac code compatable with Windows/Linux/etc
 
-
+#ifdef _MSC_VER
 // disable warnings about double to float conversions
 #pragma warning(disable:4305)
 #pragma warning(disable:4244)
@@ -18,6 +19,12 @@
 
 // disable warning about unreferenced local variables
 #pragma warning(disable:4101)
+#endif
+
+#ifdef __GNUC__
+#define __forceinline inline __attribute__((always_inline))
+#endif
+
 
 typedef bool Boolean;
 
@@ -63,12 +70,13 @@ enum
 
 Duration AbsoluteDeltaToDuration( AbsoluteTime& a, AbsoluteTime& b);
 
-
+#ifdef _MSC_VER
 inline bool isnormal( double x)
 {
 	int ret = _fpclass( x);
 	return (ret == _FPCLASS_NN || ret == _FPCLASS_PN);
 }
+#endif
 
 typedef unsigned int uintptr_t;
 
@@ -92,7 +100,7 @@ return -f;
 return f;
 }
 */
-inline long long abs( long long f)
+__forceinline long long longlongabs( long long f)
 {
 	if (f < 0)
 		return -f;

@@ -188,7 +188,7 @@ long long Game::MD5_string (char *string){
 		i++;
 	}
 
-	num=abs(num);
+	num=longlongabs(num);
 	if(num==0)num+=1452;
 
 	while(num<LONGLONGCONST(5000000000000000)){
