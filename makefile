@@ -83,7 +83,7 @@ SRCS := \
 	logger/logger.cpp \
 	DRIVER.CC \
 	MD5.CC \
-	SDLInput.cpp \
+	WinInput.cpp \
 	OpenGL_Windows.cpp \
 
 

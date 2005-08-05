@@ -1,6 +1,13 @@
 /**> HEADER FILES <**/
 #include "WinInput.h"
+
+#ifdef WIN32
 #include "String.h"
+#else
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#endif
 
 extern bool keyboardfrozen;
 extern bool buttons[3];
