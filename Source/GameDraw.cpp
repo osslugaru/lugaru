@@ -3958,8 +3958,12 @@ int Game::DrawGLScene(GLvoid)
 	if(drawmode!=motionblurmode||mainmenu){
 #ifdef WIN32
 		if(drawmode!=motionblurmode) SwapBuffers( hDC);
-#else
+#elif PLATFORM_MACOSX
 		if(drawmode!=motionblurmode)aglSwapBuffers(gaglContext); // send swap command
+#elif USE_SDL
+        if(drawmode!=motionblurmode)SDL_GL_SwapBuffers();
+#else
+        #error define your platform.
 #endif // send swap command
 	}
 
