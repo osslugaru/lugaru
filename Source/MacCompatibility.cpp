@@ -120,6 +120,78 @@ Duration AbsoluteDeltaToDuration( AbsoluteTime& a, AbsoluteTime& b)
 }
 
 
+#if PLATFORM_UNIX
+#include <sys/types.h>
+#include <dirent.h>
+
+// public domain code from PhysicsFS: http://icculus.org/physfs/
+static int locateOneElement(char *buf)
+{
+    char *ptr;
+    char **rc;
+    char **i;
+    DIR *dirp;
+
+    //if (PHYSFS_exists(buf))
+    if (access(buf, F_OK) == 0)
+        return(1);  /* quick rejection: exists in current case. */
+
+    ptr = strrchr(buf, '/');  /* find entry at end of path. */
+    if (ptr == NULL)
+    {
+        dirp = opendir(".");
+        ptr = buf;
+    } /* if */
+    else
+    {
+        *ptr = '\0';
+        dirp = opendir(buf);
+        *ptr = '/';
+        ptr++;  /* point past dirsep to entry itself. */
+    } /* else */
+
+    struct dirent *dent;
+    while ((dent = readdir(dirp)) != NULL)
+    {
+        if (stricmp(dent->d_name, ptr) == 0)
+        {
+            strcpy(ptr, dent->d_name); /* found a match. Overwrite with this case. */
+            closedir(dirp);
+            return(1);
+        } /* if */
+    } /* for */
+
+    /* no match at all... */
+    closedir(dirp);
+    return(0);
+} /* locateOneElement */
+
+
+static inline int PHYSFSEXT_locateCorrectCase(char *buf)
+{
+    int rc;
+    char *ptr;
+    char *prevptr;
+
+    ptr = prevptr = buf;
+    if (*ptr == '\0')
+        return(0);  /* Uh...I guess that's success. */
+
+    while (ptr = strchr(ptr + 1, '/'))
+    {
+        *ptr = '\0';  /* block this path section off */
+        rc = locateOneElement(buf);
+        *ptr = '/'; /* restore path separator */
+        if (!rc)
+            return(-2);  /* missing element in path. */
+    } /* while */
+
+    /* check final element... */
+    return(locateOneElement(buf) ? 0 : -1);
+} /* PHYSFSEXT_locateCorrectCase */
+#endif
+
+
 static char g_filename[ 256];
 char* ConvertFileName( const char* orgfilename)
 {
@@ -133,6 +205,10 @@ char* ConvertFileName( const char* orgfilename)
 		if (g_filename[ n] == ':')
 			g_filename[ n] = '/';
 	}
+
+    #if PLATFORM_UNIX
+    PHYSFSEXT_locateCorrectCase(g_filename);
+    #endif
 
 	return g_filename;
 }
