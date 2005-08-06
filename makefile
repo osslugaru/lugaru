@@ -60,8 +60,8 @@ ifeq ($(strip $(macosx)),true)
   APPLDFLAGS := $(SDLDIR)/lib/libSDL-1.2.0.dylib $(SDLDIR)/lib/libSDLmain-osx.a
 else
   CFLAGS += -DPLATFORM_LINUX=1
-  #CFLAGS += -msse -mmmx
-  LDFLAGS := ./libSDL-1.2.so.0 -lGL -lGLU ./libfmod.so
+  LDFLAGS := ./libSDL-1.2.so.0 ./libfmod.so
+  POSTLDFLAGS := /usr/lib/libGLU.a
 
   ifeq ($(strip $(use_devil)),true)
     LDFLAGS += ./libIL.so.1 ./libILU.so.1 ./libILUT.so.1
@@ -228,7 +228,7 @@ ifeq ($(strip $(macosx)),true)
 	ranlib $(SDLDIR)/lib/libSDLmain-osx.a
 	ranlib $(FREETYPEDIR)/lib/libfreetype-osx.a
 endif
-	$(LD) -o $@ $(APPLDFLAGS) $(LDFLAGS) $(OBJS) $(APPOBJS)
+	$(LD) -o $@ $(APPLDFLAGS) $(LDFLAGS) $(OBJS) $(APPOBJS) $(POSTLDFLAGS)
 
 clean:
 	rm -f $(BINDIR)/*.o

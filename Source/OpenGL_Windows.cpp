@@ -134,6 +134,43 @@ typedef struct tagPOINT {
 #endif
 
 #if USE_SDL
+#define GL_FUNC(ret,fn,params,call,rt) \
+    extern "C" { \
+        static ret GLAPIENTRY (*p##fn) params = NULL; \
+        ret GLAPIENTRY fn params { rt p##fn call; } \
+    }
+#include "glstubs.h"
+#undef GL_FUNC
+
+static bool lookup_glsym(const char *funcname, void **func, const char *libname)
+{
+    *func = SDL_GL_GetProcAddress(funcname);
+    if (*func == NULL)
+    {
+        fprintf(stderr, "Failed to find OpenGL symbol \"%s\" in \"%s\"\n",
+                 funcname, libname);
+        return false;
+    }
+    return true;
+}
+
+static bool lookup_all_glsyms(const char *libname)
+{
+    bool retval = true;
+    #define GL_FUNC(ret,fn,params,call,rt) \
+        if (!lookup_glsym(#fn, (void **) &p##fn, libname)) retval = false;
+    #include "glstubs.h"
+    #undef GL_FUNC
+    return retval;
+}
+
+static void GLAPIENTRY glDeleteTextures_doNothing(GLsizei n, const GLuint *textures)
+{
+    // no-op.
+}
+
+
+
 void sdlGetCursorPos(POINT *pt)
 {
     int x, y;
@@ -798,9 +835,20 @@ Boolean SetUp (Game & game)
             fprintf(stderr, "SDL_Init() failed: %s\n", SDL_GetError());
             return false;
         }
+
+        const char *libname = "libGL.so.1";  // !!! FIXME: Linux specific!
+        if (SDL_GL_LoadLibrary(libname) == -1)
+        {
+            fprintf(stderr, "SDL_GL_LoadLibrary(\"%s\") failed: %s\n",
+                    libname, SDL_GetError());
+            return false;
+        }
+
+        if (!lookup_all_glsyms(libname))
+            return false;
     }
 
-    Uint32 sdlflags = SDL_OPENGL;
+    Uint32 sdlflags = SDL_OPENGL;  // !!! FIXME: SDL_FULLSCREEN?
     SDL_WM_SetCaption("Lugaru", "lugaru");
     SDL_ShowCursor(0);
     if (SDL_SetVideoMode(kContextWidth, kContextHeight, 0, sdlflags) == NULL)
@@ -808,6 +856,8 @@ Boolean SetUp (Game & game)
         fprintf(stderr, "SDL_SetVideoMode() failed: %s\n", SDL_GetError());
         return false;
     }
+
+
 
 #elif (defined WIN32)
 	//------------------------------------------------------------------
@@ -1183,6 +1233,12 @@ void CleanUp (void)
 
 #if USE_SDL
     SDL_Quit();
+    #define GL_FUNC(ret,fn,params,call,rt) p##fn = NULL;
+    #include "glstubs.h"
+    #undef GL_FUNC
+    // cheat here...static destructors are calling glDeleteTexture() after
+    //  the context is destroyed and libGL unloaded by SDL_Quit().
+    pglDeleteTextures = glDeleteTextures_doNothing;
 
 #elif (defined WIN32)
 	if (hRC)
@@ -1254,7 +1310,8 @@ int main (void)
 			//ofstream os("log.txt");
 			//os.close();
 
-			SetUp (game);
+			if (!SetUp (game))
+                return 42;
 
 			while (!gDone&&!game.quit&&(!game.tryquit||!game.registered))
 			{
