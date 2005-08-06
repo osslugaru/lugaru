@@ -7,6 +7,7 @@ RUNDIR := run
 SRCDIR := Source
 SDLDIR := SDL12
 LIBPNGDIR := libpng-1.2.8
+JPEGLIBDIR := jpeg-6b
 ZLIBDIR := zlib-1.2.3
 
 EXE := $(RUNDIR)/lugaru-bin
@@ -46,7 +47,7 @@ ifeq ($(strip $(use_devil)),true)
 	INCLUDES += -I$(SRCDIR)/devil/include
 else
     DEFINES += -DZ_PREFIX=1
-    INCLUDES += -I$(ZLIBDIR) -I$(LIBPNGDIR)
+    INCLUDES += -I$(ZLIBDIR) -I$(LIBPNGDIR) -I$(JPEGLIBDIR)
 endif
 
 CFLAGS := -g -c $(OPT) $(INCLUDES) $(DEFINES) -fsigned-char
@@ -103,7 +104,7 @@ SRCS := \
 SRCS := $(foreach f,$(SRCS),$(SRCDIR)/$(f))
 
 
-IMGSRCS := \
+PNGSRCS := \
     png.c \
     pngerror.c \
     pnggccrd.c \
@@ -122,7 +123,56 @@ IMGSRCS := \
     pngwtran.c \
     pngwutil.c \
 
-IMGSRCS := $(foreach f,$(IMGSRCS),$(LIBPNGDIR)/$(f))
+PNGSRCS := $(foreach f,$(PNGSRCS),$(LIBPNGDIR)/$(f))
+
+JPEGSRCS := \
+	jdapistd.c \
+    jdmaster.c \
+    jdapimin.c \
+    jcapimin.c \
+    jdmerge.c \
+    jdatasrc.c \
+    jdatadst.c \
+    jdcoefct.c \
+    jdcolor.c \
+    jddctmgr.c \
+    jdhuff.c \
+    jdinput.c \
+    jdmainct.c \
+    jdmarker.c \
+    jdphuff.c \
+    jdpostct.c \
+    jdsample.c \
+    jdtrans.c \
+    jerror.c \
+    jidctflt.c \
+    jidctfst.c \
+    jidctint.c \
+    jidctred.c \
+    jmemmgr.c \
+    jutils.c \
+    jmemnobs.c \
+    jquant1.c \
+    jquant2.c \
+    jcomapi.c \
+    jcmarker.c \
+    jcapistd.c \
+    jcparam.c \
+    jcinit.c \
+    jcdctmgr.c \
+    jccoefct.c \
+    jcmainct.c \
+    jfdctflt.c \
+    jfdctint.c \
+    jfdctfst.c \
+    jchuff.c \
+    jcphuff.c \
+    jcsample.c \
+    jcmaster.c \
+    jccolor.c \
+    jcprepct.c \
+
+JPEGSRCS := $(foreach f,$(JPEGSRCS),$(JPEGLIBDIR)/$(f))
 
 
 ZLIBSRCS = \
@@ -143,7 +193,7 @@ ZLIBSRCS := $(foreach f,$(ZLIBSRCS),$(ZLIBDIR)/$(f))
 
 
 ifneq ($(strip $(use_devil)),true)
-    SRCS += $(IMGSRCS) $(ZLIBSRCS)
+    SRCS += $(PNGSRCS) $(JPEGSRCS) $(ZLIBSRCS)
 endif
 
 OBJS := $(SRCS:.CC=.o)
@@ -185,6 +235,7 @@ clean:
 	rm -f $(BINDIR)/$(SRCDIR)/*.o
 	rm -f $(BINDIR)/$(SRCDIR)/logger/*.o
 	rm -f $(BINDIR)/$(LIBPNGDIR)/*.o
+	rm -f $(BINDIR)/$(JPEGLIB)/*.o
 	rm -f $(BINDIR)/$(ZLIBDIR)/*.o
 	rm -f $(EXE)
 

@@ -18,7 +18,10 @@
 #else
     // just use libpng and libjpg directly; it's lighter-weight and easier
     //  to manage the dependencies on Linux...
-    #include "png.h"
+    extern "C" {
+        #include "png.h"
+        #include "jpeglib.h"
+    }
     static bool load_image(const char * fname, TGAImageRec & tex);
     static bool load_png(const char * fname, TGAImageRec & tex);
     static bool load_jpg(const char * fname, TGAImageRec & tex);
@@ -2175,7 +2178,7 @@ int main (void)
 		free(f);
         #else
         res = load_image(fname, tex);
-        if (!res) STUBBED("load_image() failed!");
+        //if (!res) printf("failed to load %s\n", fname);
         #endif
 
 		return res;
@@ -2222,11 +2225,65 @@ static bool load_image(const char *file_name, TGAImageRec &tex)
     return false;
 }
 
+
+struct my_error_mgr {
+  struct jpeg_error_mgr pub;	/* "public" fields */
+  jmp_buf setjmp_buffer;	/* for return to caller */
+};
+typedef struct my_error_mgr * my_error_ptr;
+
+
+static void my_error_exit(j_common_ptr cinfo)
+{
+	struct my_error_mgr *err = (struct my_error_mgr *)cinfo->err;
+	longjmp(err->setjmp_buffer, 1);
+}
+
+/* stolen from public domain example.c code in libjpg distribution. */
 static bool load_jpg(const char *file_name, TGAImageRec &tex)
 {
-    // !!! FIXME: write this.
-    STUBBED("load_jpg");
-    return false;
+    struct jpeg_decompress_struct cinfo;
+    struct my_error_mgr jerr;
+    JSAMPROW buffer[1];		/* Output row buffer */
+    int row_stride;		/* physical row width in output buffer */
+    FILE *infile = fopen(file_name, "rb")
+
+    if (infile == NULL)
+        return false;
+
+    cinfo.err = jpeg_std_error(&jerr.pub);
+    jerr.pub.error_exit = my_error_exit;
+    if (setjmp(jerr.setjmp_buffer)) {
+        jpeg_destroy_decompress(&cinfo);
+        fclose(infile);
+        return false;
+    }
+
+    jpeg_create_decompress(&cinfo);
+    jpeg_stdio_src(&cinfo, infile);
+    (void) jpeg_read_header(&cinfo, TRUE);
+
+    cinfo.out_color_space = JCS_RGB;
+    cinfo.quantize_colors = 0;
+    (void) jpeg_calc_output_dimensions(&cinfo);
+    (void) jpeg_start_decompress(&cinfo);
+
+    row_stride = cinfo.output_width * cinfo.output_components;
+    tex.sizeX = cinfo.output_width;
+    tex.sizeY = cinfo.output_height;
+    tex.bpp = 24;
+
+    while (cinfo.output_scanline < cinfo.output_height) {
+        buffer[0] = (JSAMPROW)(char *)tex.data +
+                        ((cinfo.output_height-1) - cinfo.output_scanline) * row_stride;
+        (void) jpeg_read_scanlines(&cinfo, buffer, 1);
+    }
+
+    (void) jpeg_finish_decompress(&cinfo);
+    jpeg_destroy_decompress(&cinfo);
+    fclose(infile);
+
+    return true;
 }
 
 /* stolen from public domain example.c code in libpng distribution. */
@@ -2317,5 +2374,49 @@ png_done:
    fclose(fp);
    return (retval);
 }
+
+#if 0
+void save_png(char *file_name /* , ... other image information ... */)
+{
+   FILE *fp;
+   png_structp png_ptr;
+   png_infop info_ptr;
+
+   /* open the file */
+   fp = fopen(file_name, "wb");
+   if (fp == NULL)
+      return (ERROR);
+
+   png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+   if (png_ptr == NULL)
+   {
+      fclose(fp);
+      return (ERROR);
+   }
+
+   info_ptr = png_create_info_struct(png_ptr);
+   if (info_ptr == NULL)
+   {
+      fclose(fp);
+      png_destroy_write_struct(&png_ptr,  png_infopp_NULL);
+      return (ERROR);
+   }
+
+   if (setjmp(png_jmpbuf(png_ptr)))
+   {
+      /* If we get here, we had a problem reading the file */
+      fclose(fp);
+      png_destroy_write_struct(&png_ptr, &info_ptr);
+      return (ERROR);
+   }
+
+   png_init_io(png_ptr, fp);
+   png_write_png(png_ptr, info_ptr, png_transforms, png_voidp_NULL);
+   png_destroy_write_struct(&png_ptr, &info_ptr);
+   fclose(fp);
+   return (OK);
+}
+#endif
+
 #endif
 
