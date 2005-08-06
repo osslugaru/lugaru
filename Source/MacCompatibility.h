@@ -85,7 +85,7 @@ typedef unsigned int uintptr_t;
 // fix file names to use '/' instead of ':'
 char* ConvertFileName( const char* orgfilename);
 
-#define fopen( a, b) fopen( ConvertFileName( a), b);
+#define fopen( a, b) fopen( ConvertFileName( a), b)
 /*
 inline float abs( float f)
 {

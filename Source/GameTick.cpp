@@ -213,7 +213,7 @@ void Screenshot	(void)
 	char temp[1024];
 	time_t	t = time(NULL);
 	struct	tm *tme = localtime(&t);
-	sprintf(temp, "Screenshots\\Screenshot_%04d_%02d_%02d--%02d_%02d_%02d.png", tme->tm_year + 1900, tme->tm_mon + 1, tme->tm_mday, tme->tm_hour, tme->tm_min, tme->tm_sec);
+	sprintf(temp, "Screenshots/Screenshot_%04d_%02d_%02d--%02d_%02d_%02d.png", tme->tm_year + 1900, tme->tm_mon + 1, tme->tm_mday, tme->tm_hour, tme->tm_min, tme->tm_sec);
 
 	mkdir("Screenshots", S_IRWXU);
 	ScreenShot(temp/*"Screenshots\\Screenshot.png"*/);
