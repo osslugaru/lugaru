@@ -10,14 +10,17 @@
 //#include <glut.h>
 
 #include "TGALoader.h"
-#ifdef WIN32
-#include "WinInput.h"
-#elif USE_SDL
+
+#if USE_SDL
 #include "SDL.h"
-#include "SDLInput.h"
+#endif
+
+#if !PLATFORM_MACOSX
+#include "WinInput.h"
 #else
 #include "Macinput.h"
 #endif
+
 #include "Terrain.h"
 #include "Skybox.h"
 #include "Skeleton.h"

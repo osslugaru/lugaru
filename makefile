@@ -1,10 +1,13 @@
 
 macosx := false
+use_devil := false
 
 BINDIR := bin
 RUNDIR := run
 SRCDIR := Source
 SDLDIR := SDL12
+LIBPNGDIR := libpng-1.2.8
+ZLIBDIR := zlib-1.2.3
 
 EXE := $(RUNDIR)/lugaru-bin
 
@@ -33,11 +36,18 @@ DEFINES := \
 	-Dstricmp=strcasecmp \
 
 INCLUDES := \
-			-I./SDL12/include \
+			-I$(SRCDIR) \
+			-I$(SDLDIR)/include \
 			-I./OpenGL/ \
 			-I./OpenGL/GL \
-			-I$(SRCDIR) \
-			-I$(SRCDIR)/devil/include \
+
+ifeq ($(strip $(use_devil)),true)
+    DEFINES += -DUSE_DEVIL=1
+	INCLUDES += -I$(SRCDIR)/devil/include
+else
+    DEFINES += -DZ_PREFIX=1
+    INCLUDES += -I$(ZLIBDIR) -I$(LIBPNGDIR)
+endif
 
 CFLAGS := -g -c $(OPT) $(INCLUDES) $(DEFINES) -fsigned-char
 CFLAGS += -w
@@ -50,7 +60,11 @@ ifeq ($(strip $(macosx)),true)
 else
   CFLAGS += -DPLATFORM_LINUX=1
   #CFLAGS += -msse -mmmx
-  LDFLAGS := ./libSDL-1.2.so.0 -lGL -lGLU ./libfmod.so ./libIL.so.1 ./libILU.so.1 ./libILUT.so.1
+  LDFLAGS := ./libSDL-1.2.so.0 -lGL -lGLU ./libfmod.so
+
+  ifeq ($(strip $(use_devil)),true)
+    LDFLAGS += ./libIL.so.1 ./libILU.so.1 ./libILUT.so.1
+  endif
 endif
 
 CXXFLAGS := $(CFLAGS)
@@ -86,6 +100,51 @@ SRCS := \
 	WinInput.cpp \
 	OpenGL_Windows.cpp \
 
+SRCS := $(foreach f,$(SRCS),$(SRCDIR)/$(f))
+
+
+IMGSRCS := \
+    png.c \
+    pngerror.c \
+    pnggccrd.c \
+    pngget.c \
+    pngmem.c \
+    pngpread.c \
+    pngread.c \
+    pngrio.c \
+    pngrtran.c \
+    pngrutil.c \
+    pngset.c \
+    pngtrans.c \
+    pngvcrd.c \
+    pngwio.c \
+    pngwrite.c \
+    pngwtran.c \
+    pngwutil.c \
+
+IMGSRCS := $(foreach f,$(IMGSRCS),$(LIBPNGDIR)/$(f))
+
+
+ZLIBSRCS = \
+	adler32.c \
+	compress.c \
+	crc32.c \
+	deflate.c \
+	gzio.c \
+	infback.c \
+	inffast.c \
+	inflate.c \
+	inftrees.c \
+	trees.c \
+	uncompr.c \
+	zutil.c \
+
+ZLIBSRCS := $(foreach f,$(ZLIBSRCS),$(ZLIBDIR)/$(f))
+
+
+ifneq ($(strip $(use_devil)),true)
+    SRCS += $(IMGSRCS) $(ZLIBSRCS)
+endif
 
 OBJS := $(SRCS:.CC=.o)
 OBJS := $(OBJS:.cc=.o)
@@ -93,26 +152,25 @@ OBJS := $(OBJS:.cpp=.o)
 OBJS := $(OBJS:.c=.o)
 OBJS := $(OBJS:.m=.o)
 OBJS := $(foreach f,$(OBJS),$(BINDIR)/$(f))
-SRCS := $(foreach f,$(SRCS),$(SRCDIR)/$(f))
 
 
 .PHONY: clean all
 
 all : $(EXE)
 
-$(BINDIR)/%.o : $(SRCDIR)/%.cpp
+$(BINDIR)/%.o : %.cpp
 	$(CXX) -o $@ $(CXXFLAGS) $<
 
-$(BINDIR)/%.o : $(SRCDIR)/%.CC
+$(BINDIR)/%.o : %.CC
 	$(CXX) -o $@ $(CXXFLAGS) $<
 
-$(BINDIR)/%.o : $(SRCDIR)/%.cc
+$(BINDIR)/%.o : %.cc
 	$(CXX) -o $@ $(CXXFLAGS) $<
 
-$(BINDIR)/%.o : $(SRCDIR)/%.m
+$(BINDIR)/%.o : %.m
 	$(CC) -o $@ $(CFLAGS) $<
 
-$(BINDIR)/%.o : $(SRCDIR)/%.c
+$(BINDIR)/%.o : %.c
 	$(CC) -o $@ $(CFLAGS) $<
 
 $(EXE) : $(OBJS) $(APPOBJS)
@@ -123,9 +181,12 @@ endif
 	$(LD) -o $@ $(APPLDFLAGS) $(LDFLAGS) $(OBJS) $(APPOBJS)
 
 clean:
-	rm -rf $(BINDIR)/*.o
-	rm -rf $(BINDIR)/logger/*.o
-	rm -rf $(EXE)
+	rm -f $(BINDIR)/*.o
+	rm -f $(BINDIR)/$(SRCDIR)/*.o
+	rm -f $(BINDIR)/$(SRCDIR)/logger/*.o
+	rm -f $(BINDIR)/$(LIBPNGDIR)/*.o
+	rm -f $(BINDIR)/$(ZLIBDIR)/*.o
+	rm -f $(EXE)
 
 # end of makefile ...
 

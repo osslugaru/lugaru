@@ -4,9 +4,25 @@
 #endif
 
 #include "Game.h"
-#include "IL/il.h"
-#include "IL/ilu.h"
-#include "IL/ilut.h"
+
+#ifndef USE_DEVIL
+#  ifdef WIN32
+#    define USE_DEVIL
+#  endif
+#endif
+
+#if USE_DEVIL
+    #include "IL/il.h"
+    #include "IL/ilu.h"
+    #include "IL/ilut.h"
+#else
+    // just use libpng and libjpg directly; it's lighter-weight and easier
+    //  to manage the dependencies on Linux...
+    #include "png.h"
+    static bool load_image(const char * fname, TGAImageRec & tex);
+    static bool load_png(const char * fname, TGAImageRec & tex);
+    static bool load_jpg(const char * fname, TGAImageRec & tex);
+#endif
 
 // ADDED GWC
 #ifdef _MSC_VER
@@ -940,6 +956,7 @@ Boolean SetUp (Game & game)
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glAlphaFunc( GL_GREATER, 0.5f);
 
+#if USE_DEVIL
 	if (ilGetInteger(IL_VERSION_NUM) < IL_VERSION ||
 		iluGetInteger(ILU_VERSION_NUM) < ILU_VERSION ||
 		ilutGetInteger(ILUT_VERSION_NUM) < ILUT_VERSION)
@@ -956,6 +973,7 @@ Boolean SetUp (Game & game)
 
 	ilEnable(IL_ORIGIN_SET);
 	ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
+#endif
 
 	GLint width = kContextWidth;
 	GLint height = kContextHeight;
@@ -1154,7 +1172,9 @@ void CleanUp (void)
 
 //	game.Dispose();
 
+#if USE_DEVIL
 	ilShutDown();
+#endif
 
 #if USE_SDL
     SDL_Quit();
@@ -2096,6 +2116,7 @@ int main (void)
 			return false;
 		}
 
+        #if USE_DEVIL
 		ILstring f = strdup(ConvertFileName(fname));
 		if (!f)
 		{
@@ -2152,12 +2173,17 @@ int main (void)
 		}
 */
 		free(f);
+        #else
+        res = load_image(fname, tex);
+        if (!res) STUBBED("load_image() failed!");
+        #endif
 
 		return res;
 	}
 
 	void ScreenShot(const char * fname)
 	{
+        #if USE_DEVIL
 		ILstring f = strdup(fname);
 		if (!f)
 		{
@@ -2174,6 +2200,122 @@ int main (void)
 		ilDeleteImages(1, &iid);
 
 		free(f);
+        #else
+        STUBBED("Non-DevIL screenshot");
+        #endif
 	}
 
+
+#if !USE_DEVIL
+static bool load_image(const char *file_name, TGAImageRec &tex)
+{
+    char *ptr = strrchr(file_name, '.');
+    if (ptr)
+    {
+        if (stricmp(ptr+1, "png") == 0)
+            return load_png(file_name, tex);
+        else if (stricmp(ptr+1, "jpg") == 0)
+            return load_jpg(file_name, tex);
+    }
+
+    STUBBED("Unsupported image type");
+    return false;
+}
+
+static bool load_jpg(const char *file_name, TGAImageRec &tex)
+{
+    // !!! FIXME: write this.
+    STUBBED("load_jpg");
+    return false;
+}
+
+/* stolen from public domain example.c code in libpng distribution. */
+static bool load_png(const char *file_name, TGAImageRec &tex)
+{
+    bool hasalpha = false;
+    png_structp png_ptr = NULL;
+    png_infop info_ptr = NULL;
+    png_uint_32 width, height;
+    int bit_depth, color_type, interlace_type;
+    png_byte **rows = NULL;
+    bool retval = false;
+    png_byte **row_pointers = NULL;
+    FILE *fp = fopen(file_name, "rb");
+
+    if (fp == NULL)
+        return(NULL);
+
+    png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    if (png_ptr == NULL)
+        goto png_done;
+
+    info_ptr = png_create_info_struct(png_ptr);
+    if (info_ptr == NULL)
+        goto png_done;
+
+    if (setjmp(png_jmpbuf(png_ptr)))
+        goto png_done;
+
+    png_init_io(png_ptr, fp);
+    png_read_png(png_ptr, info_ptr,
+                 PNG_TRANSFORM_STRIP_16 | PNG_TRANSFORM_PACKING,
+                 png_voidp_NULL);
+    png_get_IHDR(png_ptr, info_ptr, &width, &height,
+                 &bit_depth, &color_type, &interlace_type, NULL, NULL);
+
+    if (bit_depth != 8)  // transform SHOULD handle this...
+        goto png_done;
+
+    if (color_type & PNG_COLOR_MASK_PALETTE)  // !!! FIXME?
+        goto png_done;
+
+    if ((color_type & PNG_COLOR_MASK_COLOR) == 0)  // !!! FIXME?
+        goto png_done;
+
+    hasalpha = ((color_type & PNG_COLOR_MASK_ALPHA) != 0);
+    row_pointers = png_get_rows(png_ptr, info_ptr);
+    if (!row_pointers)
+        goto png_done;
+
+    retval = malloc(width * height * 4);
+    if (!retval)
+        goto png_done;
+
+    if (!hasalpha)
+    {
+        png_byte *dst = tex.data;
+        for (int i = height-1; i >= 0; i--)
+        {
+            png_byte *src = row_pointers[i];
+            for (int j = 0; j < width; j++)
+            {
+                dst[0] = src[0];
+                dst[1] = src[1];
+                dst[2] = src[2];
+                dst[3] = 0xFF;
+                src += 3;
+                dst += 4;
+            }
+        }
+    }
+
+    else
+    {
+        png_byte *dst = tex.data;
+        int pitch = width * 4;
+        for (int i = height-1; i >= 0; i--, dst += pitch)
+            memcpy(dst, row_pointers[i], pitch);
+    }
+
+    tex.sizeX = width;
+    tex.sizeY = height;
+    tex.bpp = 32;
+    retval = true;
+
+png_done:
+   png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
+   fclose(fp);
+   return (retval);
+}
+#endif
 
