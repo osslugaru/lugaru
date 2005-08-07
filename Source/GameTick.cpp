@@ -213,7 +213,7 @@ void Screenshot	(void)
 	char temp[1024];
 	time_t	t = time(NULL);
 	struct	tm *tme = localtime(&t);
-	sprintf(temp, "Screenshots/Screenshot_%04d_%02d_%02d--%02d_%02d_%02d.png", tme->tm_year + 1900, tme->tm_mon + 1, tme->tm_mday, tme->tm_hour, tme->tm_min, tme->tm_sec);
+	sprintf(temp, "Screenshots\\Screenshot_%04d_%02d_%02d--%02d_%02d_%02d.png", tme->tm_year + 1900, tme->tm_mon + 1, tme->tm_mday, tme->tm_hour, tme->tm_min, tme->tm_sec);
 
 	mkdir("Screenshots", S_IRWXU);
 	ScreenShot(temp/*"Screenshots\\Screenshot.png"*/);
@@ -1849,8 +1849,7 @@ void 	Game::Tick()
 				if(newscreenheight>3000)newscreenheight=screenheight;
 				if(newscreenheight<0)newscreenheight=screenheight;
 
-				//ofstream opstream(":Data:config.txt"); 
-				ofstream opstream("./Data/config.txt"); 
+				ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
 				opstream << "Screenwidth:\n";
 				opstream << newscreenwidth;
 				opstream << "\nScreenheight:\n";
@@ -2246,8 +2245,7 @@ void 	Game::Tick()
 				if(newscreenheight<0)newscreenheight=screenheight;
 
 
-				//ofstream opstream(":Data:config.txt"); 
-				ofstream opstream("./Data/config.txt"); 
+				ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
 				opstream << "Screenwidth:\n";
 				opstream << newscreenwidth;
 				opstream << "\nScreenheight:\n";
@@ -2992,8 +2990,7 @@ void 	Game::Tick()
 				if(newscreenheight>3000)newscreenheight=screenheight;
 				if(newscreenheight<0)newscreenheight=screenheight;
 
-				//ofstream opstream(":Data:config.txt"); 
-				ofstream opstream("./Data/config.txt"); 
+				ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
 				opstream << "Screenwidth:\n";
 				opstream << newscreenwidth;
 				opstream << "\nScreenheight:\n";
@@ -4518,7 +4515,7 @@ void 	Game::Tick()
 									}
 								}
 
-								ifstream ipstream(mapname);
+								ifstream ipstream(ConvertFileName(mapname));
 								ipstream.ignore(256,':');
 								ipstream >> numdialogueboxes[numdialogues];
 								for(i=0;i<numdialogueboxes[numdialogues];i++){
@@ -4611,7 +4608,7 @@ void 	Game::Tick()
 									}
 								}
 
-								ifstream ipstream(mapname);
+								ifstream ipstream(ConvertFileName(mapname));
 								ipstream.ignore(256,':');
 								ipstream >> numdialogueboxes[whichdi];
 								for(i=0;i<numdialogueboxes[whichdi];i++){
@@ -5631,8 +5628,7 @@ void 	Game::Tick()
 				if(newscreenheight>3000)newscreenheight=screenheight;
 				if(newscreenheight<0)newscreenheight=screenheight;
 
-				//ofstream opstream(":Data:config.txt"); 
-				ofstream opstream("./Data/config.txt"); 
+				ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
 				opstream << "Screenwidth:\n";
 				opstream << newscreenwidth;
 				opstream << "\nScreenheight:\n";
@@ -11346,8 +11342,7 @@ void 	Game::TickOnceAfter(){
 
 								startbonustotal=0;
 
-								//		ifstream ipstream(":Data:Campaigns:main.txt");	
-								ifstream ipstream("./Data/Campaigns/main.txt");	
+								ifstream ipstream(ConvertFileName(":Data:Campaigns:main.txt"));
 								//campaignnumlevels=0;
 								//accountcampaignchoicesmade[accountactive]=0;
 								ipstream.ignore(256,':');

@@ -549,8 +549,7 @@ Boolean SetUp (Game & game)
 	randSeed = UpTime().lo;
 
 	osx = 0;
-//	ifstream ipstream(":Data:config.txt", std::ios::in /*| std::ios::nocreate*/);
-	ifstream ipstream("./Data/config.txt", std::ios::in /*| std::ios::nocreate*/);
+	ifstream ipstream(ConvertFileName(":Data:config.txt"), std::ios::in /*| std::ios::nocreate*/);
 	detail=1;
 	ismotionblur=0;
 	usermousesensitivity=1;
@@ -600,8 +599,7 @@ Boolean SetUp (Game & game)
 	selectDetail(kContextWidth, kContextHeight, kBitsPerPixel, detail);
 
 	if(!ipstream) {
-		//ofstream opstream(":Data:config.txt"); 
-		ofstream opstream("./Data/config.txt"); 
+		ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
 		opstream << "Screenwidth:\n";
 		opstream << kContextWidth;
 		opstream << "\nScreenheight:\n";

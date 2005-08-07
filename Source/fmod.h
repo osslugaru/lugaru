@@ -7,12 +7,9 @@
 #include "MacCompatibility.h"
 
 
-#ifdef WIN32
-
-#define FSOUND_Sample_Load( a, b, c, d) FSOUND_Sample_Load( a, ConvertFileName( b), c, d, 0);
-
+#if !PLATFORM_MACOSX
+#define FSOUND_Sample_Load( a, b, c, d, e) FSOUND_Sample_Load( a, ConvertFileName( b), c, d, e);
 #endif
-
 
 #endif
 

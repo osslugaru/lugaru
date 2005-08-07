@@ -144,7 +144,7 @@ static void MD5_testSuite ()
 
 static void MD5_file (char *filename){
 
-  ifstream file(filename);
+  ifstream file(ConvertFileName(filename));
 
   if (!file)
     cerr << filename <<" can't be opened" << endl;

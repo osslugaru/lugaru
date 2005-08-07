@@ -2250,8 +2250,7 @@ int Game::DrawGLScene(GLvoid)
 		}
 		if(lastcheck>.5||oldmainmenu!=mainmenu){
 			if(mainmenu==5){
-				//				ifstream ipstream(":Data:Campaigns:main.txt");	
-				ifstream ipstream("./Data/Campaigns/main.txt");	
+				ifstream ipstream(ConvertFileName(":Data:Campaigns:main.txt"));
 				//campaignnumlevels=0;
 				//accountcampaignchoicesmade[accountactive]=0;
 				ipstream.ignore(256,':');
