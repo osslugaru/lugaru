@@ -425,6 +425,11 @@ static void initSDLKeyTable(void)
 
 static inline int clamp_sdl_mouse_button(Uint8 button)
 {
+    if (button == 2)   // right mouse button is button 3 in SDL.
+        button = 3;
+    else if (button == 3)
+        button = 2;
+
     if ((button >= 1) && (button <= 3))
         return button - 1;
     return -1;
