@@ -223,8 +223,6 @@ Boolean gDone = false, gfFrontProcess = true;
 
 Game * pgame = 0;
 
-static bool gMouseGrabbed = true;
-
 // --------------------------------------------------------------------------
 
 void ReportError (char * strError)
@@ -432,11 +430,16 @@ static inline int clamp_sdl_mouse_button(Uint8 button)
     return -1;
 }
 
-static void sdlEventProc(const SDL_Event &e)
+static void sdlEventProc(const SDL_Event &e, Game &game)
 {
     int val;
     switch(e.type)
 	{
+        case SDL_MOUSEMOTION:
+            game.deltah += e.motion.xrel;
+            game.deltav += e.motion.yrel;
+            return;
+
 		case SDL_MOUSEBUTTONDOWN:
 			{
                 val = clamp_sdl_mouse_button(e.button.button);
@@ -479,7 +482,15 @@ static void sdlEventProc(const SDL_Event &e)
             if (e.key.keysym.sym == SDLK_g)
             {
                 if (e.key.keysym.mod & KMOD_CTRL)
-                    gMouseGrabbed = !gMouseGrabbed;
+                {
+                    SDL_GrabMode mode = SDL_GRAB_ON;
+                    if ((SDL_GetVideoSurface()->flags & SDL_FULLSCREEN) == 0)
+                    {
+                        mode = SDL_WM_GrabInput(SDL_GRAB_QUERY);
+                        mode = (mode==SDL_GRAB_ON) ? SDL_GRAB_OFF:SDL_GRAB_ON;
+                    }
+                    SDL_WM_GrabInput(mode);
+                }
             }
 
             else if (e.key.keysym.sym == SDLK_RETURN)
@@ -1049,6 +1060,23 @@ Boolean SetUp (Game & game)
 
 static void DoMouse(Game & game)
 {
+#if USE_SDL
+	if(mainmenu||(abs(game.deltah)<10*realmultiplier*1000&&abs(game.deltav)<10*realmultiplier*1000))
+	{
+		game.deltah *= usermousesensitivity;
+		game.deltav *= usermousesensitivity;
+		game.mousecoordh += game.deltah;
+		game.mousecoordv += game.deltav;
+        if (game.mousecoordh < 0)
+            game.mousecoordh = 0;
+        else if (game.mousecoordh >= kContextWidth)
+            game.mousecoordh = kContextWidth - 1;
+        if (game.mousecoordv < 0)
+            game.mousecoordv = 0;
+        else if (game.mousecoordv >= kContextHeight)
+            game.mousecoordv = kContextHeight - 1;
+	}
+#else
 	static Point lastMouse = {-1,-1};
 	Point globalMouse;
 
@@ -1080,7 +1108,7 @@ static void DoMouse(Game & game)
 			game.mousecoordv=globalMouse.v;
 		}
 
-		if((!mainmenu)&&(gMouseGrabbed))
+		if(!mainmenu)
 		{
 			if(lastMouse.h>gMidPoint.h+100||lastMouse.h<gMidPoint.h-100||lastMouse.v>gMidPoint.v+100||lastMouse.v<gMidPoint.v-100){
 				pos.x = gMidPoint.h;
@@ -1092,6 +1120,7 @@ static void DoMouse(Game & game)
 			}
 		}
 	}
+#endif
 }
 
 
@@ -1320,7 +1349,9 @@ int main (void)
 					gameFocused = true;
 
 					// check windows messages
-                    #if USE_SDL
+					#if USE_SDL
+					game.deltah = 0;
+					game.deltav = 0;
 					SDL_Event e;
 					// message pump
 					while( SDL_PollEvent( &e ) )
@@ -1330,9 +1361,10 @@ int main (void)
 							gDone=true;
 							break;
 						}
-                        sdlEventProc(e);
+						sdlEventProc(e, game);
 					}
-                    #elif (defined WIN32)
+
+					#elif (defined WIN32)
 					MSG msg;
 					// message pump
 					while( PeekMessage( &msg, NULL, 0, 0, PM_REMOVE | PM_NOYIELD ) )
@@ -1348,7 +1380,7 @@ int main (void)
 							DispatchMessage( &msg );
 						}
 					}
-                    #endif
+					#endif
 
 					// game
 					DoUpdate(game);
