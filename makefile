@@ -18,8 +18,8 @@ CC := ccache gcc
 #CC := gcc
 LD := g++
 
-OPT := -O0
-#OPT := -O3 -fno-strict-aliasing -falign-loops=16 -fno-math-errno
+#OPT := -O0
+OPT := -O3 -fno-strict-aliasing -falign-loops=16 -fno-math-errno
 #OPT := -Os -fno-strict-aliasing
 
 # always use this on the Mac, even in debug builds, since we aren't building
