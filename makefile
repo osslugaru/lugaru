@@ -1,6 +1,7 @@
 
 macosx := false
 use_devil := false
+use_fmod := false
 
 BINDIR := bin
 RUNDIR := run
@@ -50,6 +51,11 @@ else
     INCLUDES += -I$(ZLIBDIR) -I$(LIBPNGDIR) -I$(JPEGLIBDIR)
 endif
 
+ifeq ($(strip $(use_fmod)),false)
+    DEFINES += -DUSE_OPENAL=1
+endif
+
+
 CFLAGS := -g -c $(OPT) $(INCLUDES) $(DEFINES) -fsigned-char -pipe
 CFLAGS += -w
 
@@ -60,11 +66,15 @@ ifeq ($(strip $(macosx)),true)
   APPLDFLAGS := $(SDLDIR)/lib/libSDL-1.2.0.dylib $(SDLDIR)/lib/libSDLmain-osx.a
 else
   CFLAGS += -DPLATFORM_LINUX=1
-  LDFLAGS := ./libSDL-1.2.so.0 ./libfmod.so
+  LDFLAGS := ./libSDL-1.2.so.0
   POSTLDFLAGS := /usr/lib/libGLU.a
 
   ifeq ($(strip $(use_devil)),true)
     LDFLAGS += ./libIL.so.1 ./libILU.so.1 ./libILUT.so.1
+  endif
+
+  ifeq ($(strip $(use_fmod)),true)
+	./libfmod.so
   endif
 endif
 
@@ -98,6 +108,7 @@ SRCS := \
 	logger/logger.cpp \
 	WinInput.cpp \
 	OpenGL_Windows.cpp \
+	openal_wrapper.cpp \
 
 SRCS := $(foreach f,$(SRCS),$(SRCDIR)/$(f))
 
