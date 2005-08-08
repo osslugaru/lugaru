@@ -16,14 +16,14 @@ LIBVORBISDIR := libvorbis-1.0.1
 
 EXE := $(RUNDIR)/lugaru-bin
 
-CXX := ccache g++
-CC := ccache gcc
-#CXX := g++
-#CC := gcc
+#CXX := ccache g++
+#CC := ccache gcc
+CXX := g++
+CC := gcc
 LD := g++
 
-OPT := -O0
-#OPT := -O3 -fno-strict-aliasing -falign-loops=16 -fno-math-errno
+#OPT := -O0
+OPT := -O3 -fno-strict-aliasing -falign-loops=16 -fno-math-errno
 #OPT := -Os -fno-strict-aliasing
 
 # always use this on the Mac, even in debug builds, since we aren't building
@@ -78,7 +78,7 @@ else
   endif
 
   ifeq ($(strip $(use_fmod)),true)
-    LDFLAGS += ./libfmod.so
+    POSTLDFLAGS += -lpthread ./libfmod-linux-x86.a
   else
     LDFLAGS += ./openal.so
   endif
@@ -289,7 +289,7 @@ clean:
 	rm -f $(BINDIR)/$(SRCDIR)/*.o
 	rm -f $(BINDIR)/$(SRCDIR)/logger/*.o
 	rm -f $(BINDIR)/$(LIBPNGDIR)/*.o
-	rm -f $(BINDIR)/$(JPEGLIB)/*.o
+	rm -f $(BINDIR)/$(JPEGLIBDIR)/*.o
 	rm -f $(BINDIR)/$(ZLIBDIR)/*.o
 	rm -f $(BINDIR)/$(LIBOGGDIR)/src/*.o
 	rm -f $(BINDIR)/$(LIBVORBISDIR)/lib/*.o
