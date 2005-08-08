@@ -1319,6 +1319,88 @@ static bool IsFocused()
 	return true;
 }
 
+
+#if PLATFORM_LINUX
+#include <stdlib.h>
+#include <ctype.h>
+static bool try_launch_browser(const char *browser, const char *url)
+{
+    // make sure string isn't empty...
+    while ( (*browser) && (isspace(*browser)) ) browser++;
+    if (*browser == '\0') return false;
+
+    bool seenurl = false;
+    char buf[4096];  // !!! FIXME: we aren't checking for overflow here!
+    char *dst = buf;
+    while (*browser)
+    {
+        char ch = *(browser++);
+        if (ch == '%')
+        {
+            ch = *(browser++);
+            if (ch == '%')
+                *(dst++) = '%';
+            else if (ch == 's')  // "%s" == insert URL here.
+            {
+                *(dst++) = '\'';
+                strcpy(dst, url);
+                dst += strlen(url);
+                *(dst++) = '\'';
+                seenurl = true;
+            }
+            // (not %% or %s? Drop the char.)
+        }
+        else
+        {
+            *(dst++) = ch;
+        }
+    }
+
+    *dst = '\0';
+    if (!seenurl)
+    {
+        strcat(dst, " ");
+        strcat(dst, url);
+    }
+    return(system(buf) == 0);
+}
+#endif
+
+
+static void launch_web_browser(const char *url)
+{
+#ifdef WIN32
+    ShellExecute(NULL, "open", url, NULL, NULL, SW_SHOWNORMAL);
+
+// lousy linux doesn't have a clean way to do this, but you can point people
+//  to docs on the BROWSER variable:
+//     http://www.catb.org/~esr/BROWSER/
+#elif PLATFORM_LINUX
+    if (strchr(url, '\'') != NULL)  // Prevent simple shell injection.
+        return;
+
+    const char *envr = getenv("BROWSER");
+    if (envr == NULL)  // not specified? We'll try a pseudo-sane list...
+        envr = "opera:mozilla:konqueror:firefox:netscape:xterm -e links:xterm -e lynx:";
+
+    char *ptr = (char *) alloca(strlen(envr) + 1);
+    if (ptr == NULL)
+        return;
+    strcpy(ptr, envr);
+    envr = ptr;
+
+    while ((ptr = strchr(envr, ':')) != NULL)
+    {
+        *ptr = '\0';
+        if (try_launch_browser(envr, url))
+            return;
+        envr = ptr + 1;
+    }
+
+    try_launch_browser(envr, url);
+#endif
+}
+
 int main (void)
 {
 	LOGFUNC;
@@ -1434,14 +1516,7 @@ int main (void)
 //		if(game.registernow){
 		if(regnow)
 		{
-            #ifndef WIN32
-            STUBBED("launch a web browser");
-            #else
-			char url[100];
-			sprintf(url,"http://www.wolfire.com/registerpc.html");
-			//			LaunchURL(url);
-			ShellExecute(NULL, "open", url, NULL, NULL, SW_SHOWNORMAL);
-            #endif
+            launch_web_browser("http://www.wolfire.com/registerpc.html");
 		}
 		return 0;
 	}
