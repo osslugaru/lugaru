@@ -10,17 +10,20 @@ SDLDIR := SDL12
 LIBPNGDIR := libpng-1.2.8
 JPEGLIBDIR := jpeg-6b
 ZLIBDIR := zlib-1.2.3
+OPENALDIR := OpenAL
+LIBOGGDIR := libogg-1.0
+LIBVORBISDIR := libvorbis-1.0.1
 
 EXE := $(RUNDIR)/lugaru-bin
 
-#CXX := ccache g++
-#CC := ccache gcc
-CXX := g++
-CC := gcc
+CXX := ccache g++
+CC := ccache gcc
+#CXX := g++
+#CC := gcc
 LD := g++
 
-#OPT := -O0
-OPT := -O3 -fno-strict-aliasing -falign-loops=16 -fno-math-errno
+OPT := -O0
+#OPT := -O3 -fno-strict-aliasing -falign-loops=16 -fno-math-errno
 #OPT := -Os -fno-strict-aliasing
 
 # always use this on the Mac, even in debug builds, since we aren't building
@@ -53,6 +56,7 @@ endif
 
 ifeq ($(strip $(use_fmod)),false)
     DEFINES += -DUSE_OPENAL=1
+    INCLUDES += -I$(OPENALDIR)/include -I$(LIBOGGDIR)/include -I$(LIBVORBISDIR)/include
 endif
 
 
@@ -75,6 +79,8 @@ else
 
   ifeq ($(strip $(use_fmod)),true)
     LDFLAGS += ./libfmod.so
+  else
+    LDFLAGS += ./openal.so
   endif
 endif
 
@@ -205,9 +211,43 @@ ZLIBSRCS = \
 
 ZLIBSRCS := $(foreach f,$(ZLIBSRCS),$(ZLIBDIR)/$(f))
 
+OGGSRCS := \
+	bitwise.o \
+	framing.o
 
-ifneq ($(strip $(use_devil)),true)
+OGGSRCS := $(foreach f,$(OGGSRCS),$(LIBOGGDIR)/src/$(f))
+
+VORBISSRCS := \
+	analysis.o \
+    bitrate.o \
+    block.o \
+    codebook.o \
+    envelope.o \
+    floor0.o \
+    floor1.o \
+    info.o \
+    lpc.o \
+    lsp.o \
+    mapping0.o \
+    mdct.o \
+    psy.o \
+    registry.o \
+    res0.o \
+    sharedbook.o \
+    smallft.o \
+    synthesis.o \
+    vorbisfile.o \
+    window.o
+
+VORBISSRCS := $(foreach f,$(VORBISSRCS),$(LIBVORBISDIR)/lib/$(f))
+
+
+ifeq ($(strip $(use_devil)),false)
     SRCS += $(PNGSRCS) $(JPEGSRCS) $(ZLIBSRCS)
+endif
+
+ifeq ($(strip $(use_fmod)),false)
+    SRCS += $(OGGSRCS) $(VORBISSRCS)
 endif
 
 OBJS := $(SRCS:.CC=.o)
@@ -251,6 +291,8 @@ clean:
 	rm -f $(BINDIR)/$(LIBPNGDIR)/*.o
 	rm -f $(BINDIR)/$(JPEGLIB)/*.o
 	rm -f $(BINDIR)/$(ZLIBDIR)/*.o
+	rm -f $(BINDIR)/$(LIBOGGDIR)/src/*.o
+	rm -f $(BINDIR)/$(LIBVORBISDIR)/lib/*.o
 	rm -f $(EXE)
 
 # end of makefile ...

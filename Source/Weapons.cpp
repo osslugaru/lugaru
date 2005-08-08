@@ -670,7 +670,7 @@ void 	Weapons::DoStuff(){
 						else velocity[i]=0;
 						if(terrain.getOpacity(position[i].x,position[i].z)<.2)velocity[i]+=bounceness*elasticity*.3;
 						else velocity[i]+=bounceness*elasticity;
-
+//if (type[i]==knife) printf("velocity of knife %d now %f,%f,%f.\n", i, velocity[i].x, velocity[i].y, velocity[i].z);
 						if(findLengthfast(&bounceness)>1){
 							float gLoc[3];
 							float vel[3];
@@ -723,6 +723,7 @@ void 	Weapons::DoStuff(){
 						else tipvelocity[i]=0;
 						if(terrain.getOpacity(tippoint[i].x,tippoint[i].z)<.2)tipvelocity[i]+=bounceness*elasticity*.3;
 						else tipvelocity[i]+=bounceness*elasticity;
+//if (type[i]==knife) printf("tipvelocity of knife %d now %f,%f,%f.\n", i, tipvelocity[i].x, tipvelocity[i].y, tipvelocity[i].z);
 
 						if(findLengthfast(&bounceness)>1){
 							float gLoc[3];

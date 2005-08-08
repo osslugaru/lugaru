@@ -255,6 +255,9 @@ static int locateCorrectFile(char *buf, const char *mode)
 static char g_filename[4096];
 char* ConvertFileName( const char* orgfilename, const char *mode)
 {
+    if (orgfilename == g_filename) // recursion?
+        return g_filename;
+
 	// translate filename into proper path name
 	if (orgfilename[ 0] == ':')
 		orgfilename++;
