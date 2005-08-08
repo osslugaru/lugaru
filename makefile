@@ -1,7 +1,7 @@
 
 macosx := false
 use_devil := false
-use_fmod := false
+use_fmod := true
 
 BINDIR := bin
 RUNDIR := run
@@ -45,7 +45,7 @@ INCLUDES := \
 
 ifeq ($(strip $(use_devil)),true)
     DEFINES += -DUSE_DEVIL=1
-	INCLUDES += -I$(SRCDIR)/devil/include
+    INCLUDES += -I$(SRCDIR)/devil/include
 else
     DEFINES += -DZ_PREFIX=1
     INCLUDES += -I$(ZLIBDIR) -I$(LIBPNGDIR) -I$(JPEGLIBDIR)
@@ -74,7 +74,7 @@ else
   endif
 
   ifeq ($(strip $(use_fmod)),true)
-	./libfmod.so
+    LDFLAGS += ./libfmod.so
   endif
 endif
 
