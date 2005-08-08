@@ -223,6 +223,25 @@ Boolean gDone = false, gfFrontProcess = true;
 
 Game * pgame = 0;
 
+
+static int _argc = 0;
+static char **_argv = NULL;
+
+static bool cmdline(const char *cmd)
+{
+    for (int i = 1; i < _argc; i++)
+    {
+        char *arg = _argv[i];
+        while (*arg == '-')
+            arg++;
+        if (stricmp(arg, cmd) == 0)
+            return true;
+    }
+
+    return false;
+}
+
+
 // --------------------------------------------------------------------------
 
 void ReportError (char * strError)
@@ -862,15 +881,22 @@ Boolean SetUp (Game & game)
             return false;
     }
 
-    Uint32 sdlflags = SDL_OPENGL;  // !!! FIXME: SDL_FULLSCREEN?
+    Uint32 sdlflags = SDL_OPENGL;
+    if (!cmdline("windowed"))
+        sdlflags |= SDL_FULLSCREEN;
+
     SDL_WM_SetCaption("Lugaru", "lugaru");
+
+    if (!cmdline("nomousegrab"))
+        SDL_WM_GrabInput(SDL_GRAB_ON);
+
     SDL_ShowCursor(0);
+
     if (SDL_SetVideoMode(kContextWidth, kContextHeight, 0, sdlflags) == NULL)
     {
         fprintf(stderr, "SDL_SetVideoMode() failed: %s\n", SDL_GetError());
         return false;
     }
-
 
 
 #elif (defined WIN32)
@@ -1402,8 +1428,104 @@ static void launch_web_browser(const char *url)
 #endif
 }
 
-int main (void)
+
+#ifndef WIN32
+// (code lifted from physfs: http://icculus.org/physfs/ ... zlib license.)
+static char *findBinaryInPath(const char *bin, char *envr)
 {
+    size_t alloc_size = 0;
+    char *exe = NULL;
+    char *start = envr;
+    char *ptr;
+
+    do
+    {
+        size_t size;
+        ptr = strchr(start, ':');  /* find next $PATH separator. */
+        if (ptr)
+            *ptr = '\0';
+
+        size = strlen(start) + strlen(bin) + 2;
+        if (size > alloc_size)
+        {
+            char *x = (char *) realloc(exe, size);
+            if (x == NULL)
+            {
+                if (exe != NULL)
+                    free(exe);
+                return(NULL);
+            } /* if */
+
+            alloc_size = size;
+            exe = x;
+        } /* if */
+
+        /* build full binary path... */
+        strcpy(exe, start);
+        if ((exe[0] == '\0') || (exe[strlen(exe) - 1] != '/'))
+            strcat(exe, "/");
+        strcat(exe, bin);
+
+        if (access(exe, X_OK) == 0)  /* Exists as executable? We're done. */
+        {
+            strcpy(exe, start);  /* i'm lazy. piss off. */
+            return(exe);
+        } /* if */
+
+        start = ptr + 1;  /* start points to beginning of next element. */
+    } while (ptr != NULL);
+
+    if (exe != NULL)
+        free(exe);
+
+    return(NULL);  /* doesn't exist in path. */
+} /* findBinaryInPath */
+
+
+char *calcBaseDir(const char *argv0)
+{
+    /* If there isn't a path on argv0, then look through the $PATH for it. */
+    char *retval;
+    char *envr;
+
+    char *ptr = strrchr(argv0, '/');
+    if (strchr(argv0, '/'))
+    {
+        retval = strdup(argv0);
+        if (retval)
+            *(strrchr(retval, '/')) = '\0';
+        return(retval);
+    }
+
+    envr = getenv("PATH");
+    if (!envr) return NULL;
+    envr = strdup(envr);
+    if (!envr) return NULL;
+    retval = findBinaryInPath(argv0, envr);
+    free(envr);
+    return(retval);
+}
+
+static inline void chdirToAppPath(const char *argv0)
+{
+    char *dir = calcBaseDir(argv0);
+    if (dir)
+    {
+        chdir(dir);
+        free(dir);
+    }
+}
+#endif
+
+
+int main(int argc, char **argv)
+{
+    _argc = argc;
+    _argv = argv;
+#ifndef WIN32
+    chdirToAppPath(argv[0]);
+#endif
+
 	LOGFUNC;
 
 #ifndef WIN32  // this is in WinMain, too.
@@ -2215,7 +2337,7 @@ int main (void)
 
 		g_appInstance=hInstance;
 
-		main();
+		main(0, NULL);
 
 		UnregisterClass( g_wndClassName, hInstance);
 
