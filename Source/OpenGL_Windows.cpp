@@ -1323,6 +1323,7 @@ static bool IsFocused()
 #if PLATFORM_LINUX
 #include <stdlib.h>
 #include <ctype.h>
+#include <unistd.h>
 static bool try_launch_browser(const char *browser, const char *url)
 {
     // make sure string isn't empty...
