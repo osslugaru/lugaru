@@ -12,10 +12,10 @@ ZLIBDIR := zlib-1.2.3
 
 EXE := $(RUNDIR)/lugaru-bin
 
-CXX := ccache g++
-CC := ccache gcc
-#CXX := g++
-#CC := gcc
+#CXX := ccache g++
+#CC := ccache gcc
+CXX := g++
+CC := gcc
 LD := g++
 
 #OPT := -O0
@@ -50,7 +50,7 @@ else
     INCLUDES += -I$(ZLIBDIR) -I$(LIBPNGDIR) -I$(JPEGLIBDIR)
 endif
 
-CFLAGS := -g -c $(OPT) $(INCLUDES) $(DEFINES) -fsigned-char
+CFLAGS := -g -c $(OPT) $(INCLUDES) $(DEFINES) -fsigned-char -pipe
 CFLAGS += -w
 
 ifeq ($(strip $(macosx)),true)
@@ -96,12 +96,15 @@ SRCS := \
 	Weapons.cpp \
 	MacCompatibility.cpp \
 	logger/logger.cpp \
-	DRIVER.CC \
-	MD5.CC \
 	WinInput.cpp \
 	OpenGL_Windows.cpp \
 
 SRCS := $(foreach f,$(SRCS),$(SRCDIR)/$(f))
+
+
+UNUSED_SRCS := \
+	DRIVER.CC \
+	MD5.CC \
 
 
 PNGSRCS := \
@@ -212,7 +215,7 @@ $(BINDIR)/%.o : %.cpp
 	$(CXX) -o $@ $(CXXFLAGS) $<
 
 $(BINDIR)/%.o : %.CC
-	$(CXX) -o $@ $(CXXFLAGS) $<
+	$(CXX) -x c++ -o $@ $(CXXFLAGS) $<
 
 $(BINDIR)/%.o : %.cc
 	$(CXX) -o $@ $(CXXFLAGS) $<
