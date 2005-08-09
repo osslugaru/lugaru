@@ -242,7 +242,7 @@ static int locateCorrectFile(char *buf, const char *mode)
     snprintf(prefpathfile, len, "%s/%s", prefpath, buf);
 
     int rc = locateCorrectCase(prefpathfile, iswriting);  /* favor prefpath. */
-    if (rc == 0)  // found?
+    if ( (rc == 0) || ((rc == -1) && (iswriting)) ) // found or create?
         strcpy(buf, prefpathfile);
     else if ((rc < 0) && (!iswriting))  /* not writing? Try game dir... */
         rc = locateCorrectCase(buf, iswriting);
