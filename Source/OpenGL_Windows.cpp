@@ -2193,6 +2193,7 @@ int main(int argc, char **argv)
 		if(width==840 && height==524)whichres=5;
 		if(width==1024 && height==640)whichres=6;
 		if(width==1344 && height==840)whichres=7;
+		if(width==1920 && height==1200)whichres=8;
 
 		return whichres;
 	}
@@ -2209,6 +2210,7 @@ int main(int argc, char **argv)
 		if(width==840 && height==524)whichres=5;
 		if(width==1024 && height==640)whichres=6;
 		if(width==1344 && height==840)whichres=7;
+		if(width>=1920 && height>=1200)whichres=8;
 
 		return whichres;
 	}
@@ -2220,7 +2222,7 @@ int main(int argc, char **argv)
 
 		while (true)
 		{
-			if(whichres<=0 || whichres>7){
+			if(whichres<=0 || whichres>8){
 				whichres = 0;
 				width=640;
 				height=480;
@@ -2253,6 +2255,16 @@ int main(int argc, char **argv)
 				width=1344;
 				height=840;
 			}
+			if(whichres==8){
+				width=1920;
+				height=1200;
+			}
+
+            // currently with SDL, we just use whatever the native bitdepth
+            //  of the display is and don't care.
+            #if USE_SDL
+            break;
+            #endif
 
 			if ((detail != 0) && (resolutionDepths[whichres][1] != 0))
 			{
@@ -2268,7 +2280,9 @@ int main(int argc, char **argv)
 				detail = 0;
 				break;
 			}
-			else if (0 == whichres)
+			else
+
+            if (0 == whichres)
 			{
 				break;
 			}

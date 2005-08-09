@@ -2116,8 +2116,9 @@ void 	Game::Tick()
 				if(newscreenwidth==840&&newscreenheight==524)whichres=5;
 				if(newscreenwidth==1024&&newscreenheight==640)whichres=6;
 				if(newscreenwidth==1344&&newscreenheight==840)whichres=7;
+				if(newscreenwidth==1920&&newscreenheight==1200)whichres=8;
 
-				if(whichres==-1||whichres==7){
+				if(whichres==-1||whichres==8){
 					newscreenwidth=640;
 					newscreenheight=480;
 				}
@@ -2148,6 +2149,10 @@ void 	Game::Tick()
 				if(whichres==6){
 					newscreenwidth=1344;
 					newscreenheight=840;
+				}
+				if(whichres==7){
+					newscreenwidth=1920;
+					newscreenheight=1200;
 				}
 			}
 			if(Button()&&!oldbutton&&selected==1){
