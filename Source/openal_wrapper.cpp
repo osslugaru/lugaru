@@ -528,5 +528,10 @@ void F_API OPENAL_Update()
     alcProcessContext(alcGetCurrentContext());
 }
 
+signed char F_API OPENAL_SetOutput(int outputtype)
+{
+    return TRUE;
+}
+
 #endif
 
