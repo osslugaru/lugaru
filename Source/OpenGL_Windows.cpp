@@ -525,7 +525,7 @@ static void sdlEventProc(const SDL_Event &e, Game &game)
                     SDL_WM_ToggleFullScreen(SDL_GetVideoSurface());
             }
 
-            else if (e.key.keysym.sym < SDLK_LAST)
+            if (e.key.keysym.sym < SDLK_LAST)
             {
                 if (KeyTable[e.key.keysym.sym] != 0xffff)
                     SetKey(KeyTable[e.key.keysym.sym]);
