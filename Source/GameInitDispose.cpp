@@ -1191,7 +1191,40 @@ void Game::InitGame()
 
 	LOG("Initializing sound system...");
 
+    int output = -1;
+
+    #if PLATFORM_LINUX
+    extern bool cmdline(const char *cmd);
+    unsigned char rc = 0;
+    output = FSOUND_OUTPUT_ALSA;  // Try alsa first...
+    if (cmdline("forceoss"))      //  ...but let user override that.
+        output = FSOUND_OUTPUT_OSS;
+    else if (cmdline("nosound"))
+        output = FSOUND_OUTPUT_NOSOUND;
+
+    FSOUND_SetOutput(output);
+	if ((rc = FSOUND_Init(44100, 32, 0)) == FALSE)
+    {
+        // if we tried ALSA and failed, fall back to OSS.
+        if ( (output == FSOUND_OUTPUT_ALSA) && (!cmdline("forcealsa")) )
+        {
+            FSOUND_Close();
+            output = FSOUND_OUTPUT_OSS;
+            FSOUND_SetOutput(output);
+	        rc = FSOUND_Init(44100, 32, 0);
+        }
+    }
+
+    if (rc == FALSE)
+    {
+        FSOUND_Close();
+        output = FSOUND_OUTPUT_NOSOUND;  // we tried! just do silence.
+        FSOUND_SetOutput(output);
+	    rc = FSOUND_Init(44100, 32, 0);
+    }
+    #else
 	FSOUND_Init(44100, 32, 0);
+    #endif
 
 	FSOUND_SetSFXMasterVolume((int)(volume*255));
 

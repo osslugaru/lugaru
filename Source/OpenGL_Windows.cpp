@@ -227,7 +227,7 @@ Game * pgame = 0;
 static int _argc = 0;
 static char **_argv = NULL;
 
-static bool cmdline(const char *cmd)
+bool cmdline(const char *cmd)
 {
     for (int i = 1; i < _argc; i++)
     {
