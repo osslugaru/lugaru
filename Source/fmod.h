@@ -30,6 +30,7 @@
 #define FSOUND_Stream_SetMode OPENAL_Stream_SetMode
 #define FSOUND_Stream_Stop OPENAL_Stream_Stop
 #define FSOUND_Update OPENAL_Update
+#define FSOUND_SetOutput OPENAL_SetOutput
 #endif
 
 #include "fmod_header.h"
