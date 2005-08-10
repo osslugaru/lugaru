@@ -457,6 +457,8 @@ static inline int clamp_sdl_mouse_button(Uint8 button)
 static void sdlEventProc(const SDL_Event &e, Game &game)
 {
     int val;
+    SDLMod mod;
+
     switch(e.type)
 	{
         case SDL_MOUSEMOTION:
@@ -523,19 +525,20 @@ static void sdlEventProc(const SDL_Event &e, Game &game)
                     SDL_WM_ToggleFullScreen(SDL_GetVideoSurface());
             }
 
-            if (e.key.keysym.sym < SDLK_LAST)
+            else if (e.key.keysym.sym < SDLK_LAST)
             {
                 if (KeyTable[e.key.keysym.sym] != 0xffff)
                     SetKey(KeyTable[e.key.keysym.sym]);
             }
 
-            if (e.key.keysym.mod & KMOD_CTRL)
+            mod = SDL_GetModState();
+            if (mod & KMOD_CTRL)
                 SetKey(MAC_CONTROL_KEY);
-            if (e.key.keysym.mod & KMOD_ALT)
+            if (mod & KMOD_ALT)
                 SetKey(MAC_OPTION_KEY);
-            if (e.key.keysym.mod & KMOD_SHIFT)
+            if (mod & KMOD_SHIFT)
                 SetKey(MAC_SHIFT_KEY);
-            if (e.key.keysym.mod & KMOD_CAPS)
+            if (mod & KMOD_CAPS)
                 SetKey(MAC_CAPS_LOCK_KEY);
 
             return;
@@ -547,13 +550,14 @@ static void sdlEventProc(const SDL_Event &e, Game &game)
                     ClearKey(KeyTable[e.key.keysym.sym]);
             }
 
-            if (e.key.keysym.mod & KMOD_CTRL)
+            mod = SDL_GetModState();
+            if ((mod & KMOD_CTRL) == 0)
                 ClearKey(MAC_CONTROL_KEY);
-            if (e.key.keysym.mod & KMOD_ALT)
+            if ((mod & KMOD_ALT) == 0)
                 ClearKey(MAC_OPTION_KEY);
-            if (e.key.keysym.mod & KMOD_SHIFT)
+            if ((mod & KMOD_SHIFT) == 0)
                 ClearKey(MAC_SHIFT_KEY);
-            if (e.key.keysym.mod & KMOD_CAPS)
+            if ((mod & KMOD_CAPS) == 0)
                 ClearKey(MAC_CAPS_LOCK_KEY);
             return;
     }
