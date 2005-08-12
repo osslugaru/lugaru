@@ -92,13 +92,15 @@ typedef struct
     ALuint sid;
     FSOUND_SAMPLE *sample;
     bool startpaused;
+    FSOUND_STREAM *stream;
 } OPENAL_Channels;
 
 typedef struct FSOUND_SAMPLE
 {
     ALuint bid;  // buffer id.
     int mode;
-} FSOUND_SAMPLE;
+} FSOUND_SAMPLE, FSOUND_STREAM;
+
 
 static size_t num_channels = 0;
 static OPENAL_Channels *channels = NULL;
@@ -268,7 +270,6 @@ int F_API OPENAL_PlaySoundEx(int channel, FSOUND_SAMPLE *sptr, FSOUND_DSPUNIT *d
     }
 
     if ((channel < 0) || (channel >= num_channels)) return -1;
-    ALint state = 0;
     alSourceStop(channels[channel].sid);
     channels[channel].sample = sptr;
     alSourcei(channels[channel].sid, AL_BUFFER, sptr->bid);
@@ -420,7 +421,7 @@ void F_API OPENAL_Sample_Free(FSOUND_SAMPLE *sptr)
 signed char F_API OPENAL_Sample_SetMode(FSOUND_SAMPLE *sptr, unsigned int mode)
 {
     if (!initialized) return FALSE;
-    if (mode != FSOUND_LOOP_NORMAL) return FALSE;
+    if ((mode != FSOUND_LOOP_NORMAL) && (mode != FSOUND_LOOP_OFF)) return FALSE;
     if (!sptr) return FALSE;
     sptr->mode = mode;
     return TRUE;
@@ -500,38 +501,42 @@ signed char F_API OPENAL_StopSound(int channel)
 
 FSOUND_STREAM * F_API OPENAL_Stream_Open(const char *name_or_data, unsigned int mode, int offset, int length)
 {
-    if (!initialized) return NULL;
-    return 0;
+    return OPENAL_Sample_Load(FSOUND_FREE, name_or_data, mode, offset, length)
 }
 
 signed char F_API OPENAL_Stream_Close(FSOUND_STREAM *stream)
 {
-    if (!initialized) return FALSE;
-    return 0;
+    OPENAL_Sample_Free(stream);
 }
 
 FSOUND_SAMPLE * F_API OPENAL_Stream_GetSample(FSOUND_STREAM *stream)
 {
     if (!initialized) return NULL;
-    return 0;
+    return NULL;  // this is wrong, but it works for Lugaru 1.
 }
 
 int F_API OPENAL_Stream_PlayEx(int channel, FSOUND_STREAM *stream, FSOUND_DSPUNIT *dsp, signed char startpaused)
 {
-    if (!initialized) return -1;
-    return 0;
+    return OPENAL_PlaySoundEx(channel, stream, dsp, startpaused);
 }
 
 signed char F_API OPENAL_Stream_Stop(FSOUND_STREAM *stream)
 {
     if (!initialized) return FALSE;
-    return 0;
+    for (int i = 0; i < num_channels; i++)
+    {
+        if (channels[i].sample == stream)
+        {
+            alSourceStop(channels[i].sid);
+            channels[i].startpaused = false;
+        }
+    }
+    return TRUE;
 }
 
 signed char F_API OPENAL_Stream_SetMode(FSOUND_STREAM *stream, unsigned int mode)
 {
-    if (!initialized) return FALSE;
-    return 0;
+    return OPENAL_Sample_SetMode(stream, mode);
 }
 
 void F_API OPENAL_Update()
