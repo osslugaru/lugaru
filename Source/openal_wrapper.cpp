@@ -313,6 +313,7 @@ static void *decode_to_pcm(const char *_fname, ALenum &format, ALsizei &size, AL
 
     ALubyte *retval = NULL;
 
+    #if 0  // untested, so disable this!
     // Can we just feed it to the AL compressed?
     if (alIsExtensionPresent((const ALubyte *) "AL_EXT_vorbis"))
     {
@@ -331,6 +332,7 @@ static void *decode_to_pcm(const char *_fname, ALenum &format, ALsizei &size, AL
         }
         return retval;
     }
+    #endif
 
     // Uncompress and feed to the AL.
     OggVorbis_File vf;
