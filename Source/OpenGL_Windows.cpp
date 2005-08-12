@@ -1302,10 +1302,6 @@ void CleanUp (void)
     //  the context is destroyed and libGL unloaded by SDL_Quit().
     pglDeleteTextures = glDeleteTextures_doNothing;
 
-    #if PLATFORM_LINUX
-    _exit(0);  // !!! FIXME: hack...crashes on exit!
-    #endif
-
 #elif (defined WIN32)
 	if (hRC)
 	{
@@ -1649,6 +1645,10 @@ int main(int argc, char **argv)
 		{
             launch_web_browser("http://www.wolfire.com/registerpc.html");
 		}
+
+        #if PLATFORM_LINUX  // (this may not be necessary any more.)
+        _exit(0);  // !!! FIXME: hack...crashes on exit!
+        #endif
 		return 0;
 	}
 	catch (const std::exception& error)
