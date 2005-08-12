@@ -96,6 +96,7 @@ typedef struct
 
 typedef struct FSOUND_SAMPLE
 {
+    char *name;
     ALuint bid;  // buffer id.
     int mode;
     int is2d;
@@ -103,6 +104,7 @@ typedef struct FSOUND_SAMPLE
 
 typedef struct FSOUND_STREAM
 {
+    char *name;
     ALuint bid;  // buffer id.
     int mode;
     int is2d;
@@ -174,10 +176,14 @@ signed char F_API OPENAL_Init(int mixrate, int maxsoftwarechannels, unsigned int
     alcMakeContextCurrent(ctx);
     alcProcessContext(ctx);
 
-    printf("AL_VENDOR: %s\n", (char *) alGetString(AL_VENDOR));
-    printf("AL_RENDERER: %s\n", (char *) alGetString(AL_RENDERER));
-    printf("AL_VERSION: %s\n", (char *) alGetString(AL_VERSION));
-    printf("AL_EXTENSIONS: %s\n", (char *) alGetString(AL_EXTENSIONS));
+    bool cmdline(const char *cmd);
+    if (cmdline("openalinfo"))
+    {
+        printf("AL_VENDOR: %s\n", (char *) alGetString(AL_VENDOR));
+        printf("AL_RENDERER: %s\n", (char *) alGetString(AL_RENDERER));
+        printf("AL_VERSION: %s\n", (char *) alGetString(AL_VERSION));
+        printf("AL_EXTENSIONS: %s\n", (char *) alGetString(AL_EXTENSIONS));
+    }
 
     num_channels = maxsoftwarechannels;
     channels = new OPENAL_Channels[maxsoftwarechannels];
@@ -403,6 +409,9 @@ FSOUND_SAMPLE * F_API OPENAL_Sample_Load(int index, const char *name_or_data, un
         retval->bid = bid;
         retval->mode = FSOUND_LOOP_OFF;
         retval->is2d = (mode == FSOUND_2D);
+        retval->name = new char[strlen(name_or_data) + 1];
+        if (retval->name)
+            strcpy(retval->name, name_or_data);
     }
 
     free(data);
@@ -424,6 +433,7 @@ void F_API OPENAL_Sample_Free(FSOUND_SAMPLE *sptr)
             }
         }
         alDeleteBuffers(1, &sptr->bid);
+        delete[] sptr->name;
         delete sptr;
     }
 }
@@ -460,14 +470,24 @@ signed char F_API OPENAL_SetFrequency(int channel, int freq)
         alSourcef(channels[channel].sid, AL_PITCH, 8012.0f / 44100.0f);
     else
         alSourcef(channels[channel].sid, AL_PITCH, 1.0f);
-    return TRUE;  // ignore this for now...
+    return TRUE;
 }
 
 signed char F_API OPENAL_SetVolume(int channel, int vol)
 {
     if (!initialized) return FALSE;
+
+    if (channel == FSOUND_ALL)
+    {
+        for (int i = 0; i < num_channels; i++)
+            OPENAL_SetVolume(i, vol);
+        return TRUE;
+    }
+
     if ((channel < 0) || (channel >= num_channels)) return FALSE;
-    if ((vol < 0) || (vol > 255)) return FALSE;
+
+    if (vol < 0) vol = 0;
+    else if (vol > 255) vol = 255;
     ALfloat gain = ((ALfloat) vol) / 255.0f;
     alSourcef(channels[channel].sid, AL_GAIN, gain);
     return TRUE;
@@ -476,6 +496,14 @@ signed char F_API OPENAL_SetVolume(int channel, int vol)
 signed char F_API OPENAL_SetPaused(int channel, signed char paused)
 {
     if (!initialized) return FALSE;
+
+    if (channel == FSOUND_ALL)
+    {
+        for (int i = 0; i < num_channels; i++)
+            OPENAL_SetPaused(i, paused);
+        return TRUE;
+    }
+
     if ((channel < 0) || (channel >= num_channels)) return FALSE;
 
     ALint state = 0;
@@ -504,8 +532,17 @@ void F_API OPENAL_SetSFXMasterVolume(int volume)
 signed char F_API OPENAL_StopSound(int channel)
 {
     if (!initialized) return FALSE;
+
+    if (channel == FSOUND_ALL)
+    {
+        for (int i = 0; i < num_channels; i++)
+            OPENAL_StopSound(i);
+        return TRUE;
+    }
+
     if ((channel < 0) || (channel >= num_channels)) return FALSE;
     alSourceStop(channels[channel].sid);
+    channels[channel].startpaused = false;
     return TRUE;
 }
 
@@ -522,7 +559,7 @@ signed char F_API OPENAL_Stream_Close(FSOUND_STREAM *stream)
 FSOUND_SAMPLE * F_API OPENAL_Stream_GetSample(FSOUND_STREAM *stream)
 {
     if (!initialized) return NULL;
-    return NULL;  // this is wrong, but it works for Lugaru 1.
+    return (FSOUND_SAMPLE *) stream;
 }
 
 int F_API OPENAL_Stream_PlayEx(int channel, FSOUND_STREAM *stream, FSOUND_DSPUNIT *dsp, signed char startpaused)
