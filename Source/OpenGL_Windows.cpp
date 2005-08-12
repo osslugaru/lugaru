@@ -1302,6 +1302,10 @@ void CleanUp (void)
     //  the context is destroyed and libGL unloaded by SDL_Quit().
     pglDeleteTextures = glDeleteTextures_doNothing;
 
+    #if PLATFORM_LINUX
+    _exit(0);  // !!! FIXME: hack...crashes on exit!
+    #endif
+
 #elif (defined WIN32)
 	if (hRC)
 	{
@@ -2366,7 +2370,7 @@ int main(int argc, char **argv)
 
 	extern int channels[100];
 	extern FSOUND_SAMPLE * samp[100];
-	extern FSOUND_STREAM * strm[10];
+	extern FSOUND_STREAM * strm[20];
 
 	extern "C" void PlaySoundEx(int chan, FSOUND_SAMPLE *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused)
 	{

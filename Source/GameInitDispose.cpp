@@ -89,7 +89,7 @@ extern float accountcampaigntime[10];
 extern int accountcampaignchoicesmade[10];
 extern int accountcampaignchoices[10][5000];
 
-extern FSOUND_STREAM * strm[10];
+extern FSOUND_STREAM * strm[20];
 
 extern "C" 	void PlaySoundEx(int channel, FSOUND_SAMPLE *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused);
 extern "C" void PlayStreamEx(int chan, FSOUND_STREAM *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused);
@@ -169,6 +169,9 @@ void Game::Dispose()
 
 	FSOUND_StopSound(FSOUND_ALL);
 
+// this is causing problems on Linux, but we'll force an _exit() a little
+//  later in the shutdown process.  --ryan.
+#if !PLATFORM_LINUX
 #define streamcount 20
 #define samplecount 100
 
@@ -188,6 +191,7 @@ void Game::Dispose()
 		free(texture.data);
 	}
 	texture.data = 0;
+#endif
 }
 
 

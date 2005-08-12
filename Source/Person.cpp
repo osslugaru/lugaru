@@ -87,7 +87,7 @@ extern int indialogue;
 
 extern bool gamestarted;
 
-extern FSOUND_STREAM * strm[10];
+extern FSOUND_STREAM * strm[20];
 extern "C" 	void PlaySoundEx(int channel, FSOUND_SAMPLE *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused);
 extern "C" void PlayStreamEx(int chan, FSOUND_STREAM *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused);
 
