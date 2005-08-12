@@ -437,6 +437,18 @@ signed char F_API OPENAL_Sample_SetMinMaxDistance(FSOUND_SAMPLE *sptr, float min
 signed char F_API OPENAL_SetFrequency(int channel, int freq)
 {
     if (!initialized) return FALSE;
+    if (channel == FSOUND_ALL)
+    {
+        for (int i = 0; i < num_channels; i++)
+            OPENAL_SetFrequency(i, freq);
+        return TRUE;
+    }
+
+    if ((channel < 0) || (channel >= num_channels)) return FALSE;
+    if (freq == 8012)  // hack
+        alSourcef(channels[channel].sid, AL_PITCH, 8012.0f / 44100.0f);
+    else
+        alSourcef(channels[channel].sid, AL_PITCH, 1.0f);
     return TRUE;  // ignore this for now...
 }
 
