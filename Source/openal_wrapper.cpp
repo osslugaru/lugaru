@@ -92,15 +92,21 @@ typedef struct
     ALuint sid;
     FSOUND_SAMPLE *sample;
     bool startpaused;
-    FSOUND_STREAM *stream;
 } OPENAL_Channels;
 
 typedef struct FSOUND_SAMPLE
 {
     ALuint bid;  // buffer id.
     int mode;
-} FSOUND_SAMPLE, FSOUND_STREAM;
+    int is2d;
+} FSOUND_SAMPLE;
 
+typedef struct FSOUND_STREAM
+{
+    ALuint bid;  // buffer id.
+    int mode;
+    int is2d;
+} FSOUND_STREAM;
 
 static size_t num_channels = 0;
 static OPENAL_Channels *channels = NULL;
@@ -123,7 +129,7 @@ signed char F_API OPENAL_3D_SetAttributes(int channel, const float *pos, const f
     if (!initialized) return FALSE;
     if ((channel < 0) || (channel >= num_channels)) return FALSE;
 
-    if (pos != NULL)
+    if ((pos != NULL) && (!channels[channel].sample->is2d))
         alSource3f(channels[channel].sid, AL_POSITION, pos[0], pos[1], -pos[2]);
 
     // we ignore velocity, since doppler's broken in the Linux AL at the moment...
@@ -274,6 +280,9 @@ int F_API OPENAL_PlaySoundEx(int channel, FSOUND_SAMPLE *sptr, FSOUND_DSPUNIT *d
     channels[channel].sample = sptr;
     alSourcei(channels[channel].sid, AL_BUFFER, sptr->bid);
     alSourcei(channels[channel].sid, AL_LOOPING, (sptr->mode == FSOUND_LOOP_OFF) ? AL_FALSE : AL_TRUE);
+    alSourcei(channels[channel].sid, AL_SOURCE_RELATIVE, (sptr->is2d) ? AL_TRUE : AL_FALSE);
+    alSource3f(channels[channel].sid, AL_POSITION, 0.0f, 0.0f, 0.0f);
+
     channels[channel].startpaused = ((startpaused) ? true : false);
     if (!startpaused)
         alSourcePlay(channels[channel].sid);
@@ -393,6 +402,7 @@ FSOUND_SAMPLE * F_API OPENAL_Sample_Load(int index, const char *name_or_data, un
         retval = new FSOUND_SAMPLE;
         retval->bid = bid;
         retval->mode = FSOUND_LOOP_OFF;
+        retval->is2d = (mode == FSOUND_2D);
     }
 
     free(data);
@@ -501,12 +511,12 @@ signed char F_API OPENAL_StopSound(int channel)
 
 FSOUND_STREAM * F_API OPENAL_Stream_Open(const char *name_or_data, unsigned int mode, int offset, int length)
 {
-    return OPENAL_Sample_Load(FSOUND_FREE, name_or_data, mode, offset, length)
+    return (FSOUND_STREAM *) OPENAL_Sample_Load(FSOUND_FREE, name_or_data, mode, offset, length);
 }
 
 signed char F_API OPENAL_Stream_Close(FSOUND_STREAM *stream)
 {
-    OPENAL_Sample_Free(stream);
+    OPENAL_Sample_Free((FSOUND_SAMPLE *) stream);
 }
 
 FSOUND_SAMPLE * F_API OPENAL_Stream_GetSample(FSOUND_STREAM *stream)
@@ -517,7 +527,7 @@ FSOUND_SAMPLE * F_API OPENAL_Stream_GetSample(FSOUND_STREAM *stream)
 
 int F_API OPENAL_Stream_PlayEx(int channel, FSOUND_STREAM *stream, FSOUND_DSPUNIT *dsp, signed char startpaused)
 {
-    return OPENAL_PlaySoundEx(channel, stream, dsp, startpaused);
+    return OPENAL_PlaySoundEx(channel, (FSOUND_SAMPLE *) stream, dsp, startpaused);
 }
 
 signed char F_API OPENAL_Stream_Stop(FSOUND_STREAM *stream)
@@ -525,7 +535,7 @@ signed char F_API OPENAL_Stream_Stop(FSOUND_STREAM *stream)
     if (!initialized) return FALSE;
     for (int i = 0; i < num_channels; i++)
     {
-        if (channels[i].sample == stream)
+        if (channels[i].sample == (FSOUND_SAMPLE *) stream)
         {
             alSourceStop(channels[i].sid);
             channels[i].startpaused = false;
@@ -536,7 +546,7 @@ signed char F_API OPENAL_Stream_Stop(FSOUND_STREAM *stream)
 
 signed char F_API OPENAL_Stream_SetMode(FSOUND_STREAM *stream, unsigned int mode)
 {
-    return OPENAL_Sample_SetMode(stream, mode);
+    return OPENAL_Sample_SetMode((FSOUND_SAMPLE *) stream, mode);
 }
 
 void F_API OPENAL_Update()

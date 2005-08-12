@@ -1,7 +1,7 @@
 
 macosx := false
 use_devil := false
-use_fmod := true
+use_fmod := false
 
 BINDIR := bin
 RUNDIR := run
@@ -16,10 +16,10 @@ LIBVORBISDIR := libvorbis-1.0.1
 
 EXE := $(RUNDIR)/lugaru-bin
 
-#CXX := ccache g++
-#CC := ccache gcc
-CXX := g++
-CC := gcc
+CXX := ccache g++
+CC := ccache gcc
+#CXX := g++
+#CC := gcc
 LD := g++
 
 #OPT := -O0
