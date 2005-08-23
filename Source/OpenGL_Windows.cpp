@@ -891,9 +891,6 @@ Boolean SetUp (Game & game)
 
     SDL_WM_SetCaption("Lugaru", "lugaru");
 
-    if (!cmdline("nomousegrab"))
-        SDL_WM_GrabInput(SDL_GRAB_ON);
-
     SDL_ShowCursor(0);
 
     if (SDL_SetVideoMode(kContextWidth, kContextHeight, 0, sdlflags) == NULL)
@@ -902,6 +899,8 @@ Boolean SetUp (Game & game)
         return false;
     }
 
+    if (!cmdline("nomousegrab"))
+        SDL_WM_GrabInput(SDL_GRAB_ON);
 
 #elif (defined WIN32)
 	//------------------------------------------------------------------
