@@ -10767,6 +10767,7 @@ void 	Game::Tick()
 									oldtemp2=temp2;
 									if(tutorialstage>=51)
 										if(findDistancefast(&temp,&player[0].coords)>=findDistancefast(&temp,&temp2)-1||findDistancefast(&temp3,&player[0].coords)<4){
+		                                    FSOUND_StopSound(FSOUND_ALL);  // hack...OpenAL renderer isn't stopping music after tutorial goes to level menu...
 											FSOUND_SetFrequency(FSOUND_ALL, 0.001);
 
 											PlayStreamEx( stream_music3, strm[stream_music3], NULL, TRUE);
