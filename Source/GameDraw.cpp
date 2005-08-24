@@ -3940,8 +3940,14 @@ int Game::DrawGLScene(GLvoid)
 
 	//glFlush();
 	if(drawmode!=motionblurmode||mainmenu){
+        #if !USE_SDL
+        // this prevents menus from rendering if you hit ESC during
+        //  motion blur sequences...maybe SDL is buffering differently?
 		if(drawmode!=motionblurmode)
 			swap_gl_buffers();
+        #else
+		swap_gl_buffers();
+        #endif
 	}
 
 	//myassert(glGetError() == GL_NO_ERROR);
