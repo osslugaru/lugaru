@@ -2679,10 +2679,6 @@ static bool load_png(const char *file_name, TGAImageRec &tex)
     if (!row_pointers)
         goto png_done;
 
-    retval = malloc(width * height * 4);
-    if (!retval)
-        goto png_done;
-
     if (!hasalpha)
     {
         png_byte *dst = tex.data;
