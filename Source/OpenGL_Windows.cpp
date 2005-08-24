@@ -1392,7 +1392,34 @@ static bool try_launch_browser(const char *browser, const char *url)
         strcat(dst, " ");
         strcat(dst, url);
     }
-    return(system(buf) == 0);
+
+    #define MAX_BROWSER_ARGS 512
+    char *args[MAX_BROWSER_ARGS];
+    char *path = NULL;
+    memset(args, '\0', sizeof (args));
+    path = args[0] = strtok(buf, " ");
+    if (path == NULL)
+        return false;
+
+    size_t i = 0;
+    for (i = 1; i < MAX_BROWSER_ARGS; i++)
+    {
+        args[i] = strtok(NULL, " ");
+        if (args[i] == NULL)
+            break;
+    }
+
+    if (i == MAX_BROWSER_ARGS)
+        return false;
+    #undef MAX_BROWSER_ARGS
+
+    //printf("calling execvp(\"%s\"", path);
+    //for (i = 0; args[i]; i++)
+    //    printf(", \"%s\"", args[i]);
+    //printf("); ...\n\n\n");
+
+    execvp(path, args);
+    return(false);  // exec shouldn't return unless there's an error.
 }
 #endif
 
@@ -1642,7 +1669,11 @@ int main(int argc, char **argv)
 //		if(game.registernow){
 		if(regnow)
 		{
+            #if PLATFORM_LINUX  // (this may not be necessary any more.)
+            launch_web_browser("http://www.wolfire.com/registerlinux.html");
+            #else
             launch_web_browser("http://www.wolfire.com/registerpc.html");
+            #endif
 		}
 
         #if PLATFORM_LINUX  // (this may not be necessary any more.)
