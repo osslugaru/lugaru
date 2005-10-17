@@ -71,7 +71,7 @@ ifeq ($(strip $(macosx)),true)
 else
   CFLAGS += -DPLATFORM_LINUX=1
   LDFLAGS := ./libSDL-1.2.so.0
-  POSTLDFLAGS := /usr/lib/libGLU.a
+  POSTLDFLAGS := ./libGLU.a
 
   ifeq ($(strip $(use_devil)),true)
     LDFLAGS += ./libIL.so.1 ./libILU.so.1 ./libILUT.so.1
