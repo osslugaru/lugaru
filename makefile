@@ -263,21 +263,27 @@ OBJS := $(foreach f,$(OBJS),$(BINDIR)/$(f))
 all : $(EXE)
 
 $(BINDIR)/%.o : %.cpp
+	@mkdir -p $(dir $@)
 	$(CXX) -o $@ $(CXXFLAGS) $<
 
 $(BINDIR)/%.o : %.CC
+	@mkdir -p $(dir $@)
 	$(CXX) -x c++ -o $@ $(CXXFLAGS) $<
 
 $(BINDIR)/%.o : %.cc
+	@mkdir -p $(dir $@)
 	$(CXX) -o $@ $(CXXFLAGS) $<
 
 $(BINDIR)/%.o : %.m
+	@mkdir -p $(dir $@)
 	$(CC) -o $@ $(CFLAGS) $<
 
 $(BINDIR)/%.o : %.c
+	@mkdir -p $(dir $@)
 	$(CC) -o $@ $(CFLAGS) $<
 
 $(EXE) : $(OBJS) $(APPOBJS)
+	@mkdir -p $(dir $@)
 ifeq ($(strip $(macosx)),true)
 	ranlib $(SDLDIR)/lib/libSDLmain-osx.a
 	ranlib $(FREETYPEDIR)/lib/libfreetype-osx.a
