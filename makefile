@@ -218,6 +218,7 @@ GLUSRCS := \
 	geom.c \
 	memalloc.c \
 	mesh.c \
+	mipmap.c \
 	normal.c \
 	priorityq.c \
 	render.c \
