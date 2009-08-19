@@ -468,17 +468,10 @@ static void sdlEventProc(const SDL_Event &e, Game &game)
 		case SDL_MOUSEBUTTONDOWN:
 			{
                 val = clamp_sdl_mouse_button(e.button.button);
-                if (val >= 0)
+                if ((val >= 0) && (val <= 2))
                 {
                     if (val == 0)
-                    {
     				    g_button = true;
-                        SetKey(MAC_MOUSEBUTTON1);
-                    }
-
-                    else if (val == 1)
-                        SetKey(MAC_MOUSEBUTTON2);
-
     				buttons[val] = true;
                 }
 			}
@@ -487,17 +480,10 @@ static void sdlEventProc(const SDL_Event &e, Game &game)
 		case SDL_MOUSEBUTTONUP:
 			{
                 val = clamp_sdl_mouse_button(e.button.button);
-                if (val >= 0)
+                if ((val >= 0) && (val <= 2))
                 {
                     if (val == 0)
-                    {
     				    g_button = false;
-                        ClearKey(MAC_MOUSEBUTTON1);
-                    }
-
-                    else if (val == 1)
-                        ClearKey(MAC_MOUSEBUTTON2);
-
     				buttons[val] = false;
                 }
 			}
