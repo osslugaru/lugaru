@@ -97,26 +97,26 @@ void Objects::Draw()
 								if(type[i]==bushtype){
 									messedwith[i]-=multiplier;
 									if(rotxvel[i]||rotx[i]){
-										if(rotx[i]>0)rotxvel[i]-=multiplier*8*abs(rotx[i]);
-										if(rotx[i]<0)rotxvel[i]+=multiplier*8*abs(rotx[i]);
+										if(rotx[i]>0)rotxvel[i]-=multiplier*8*fabs(rotx[i]);
+										if(rotx[i]<0)rotxvel[i]+=multiplier*8*fabs(rotx[i]);
 										if(rotx[i]>0)rotxvel[i]-=multiplier*4;
 										if(rotx[i]<0)rotxvel[i]+=multiplier*4;
 										if(rotxvel[i]>0)rotxvel[i]-=multiplier*4;
 										if(rotxvel[i]<0)rotxvel[i]+=multiplier*4;
-										if(abs(rotx[i])<multiplier*4)rotx[i]=0;
-										if(abs(rotxvel[i])<multiplier*4)rotxvel[i]=0;
+										if(fabs(rotx[i])<multiplier*4)rotx[i]=0;
+										if(fabs(rotxvel[i])<multiplier*4)rotxvel[i]=0;
 
 										rotx[i]+=rotxvel[i]*multiplier*4;
 									}
 									if(rotyvel[i]||roty[i]){
-										if(roty[i]>0)rotyvel[i]-=multiplier*8*abs(roty[i]);
-										if(roty[i]<0)rotyvel[i]+=multiplier*8*abs(roty[i]);
+										if(roty[i]>0)rotyvel[i]-=multiplier*8*fabs(roty[i]);
+										if(roty[i]<0)rotyvel[i]+=multiplier*8*fabs(roty[i]);
 										if(roty[i]>0)rotyvel[i]-=multiplier*4;
 										if(roty[i]<0)rotyvel[i]+=multiplier*4;
 										if(rotyvel[i]>0)rotyvel[i]-=multiplier*4;
 										if(rotyvel[i]<0)rotyvel[i]+=multiplier*4;
-										if(abs(roty[i])<multiplier*4)roty[i]=0;
-										if(abs(rotyvel[i])<multiplier*4)rotyvel[i]=0;
+										if(fabs(roty[i])<multiplier*4)roty[i]=0;
+										if(fabs(rotyvel[i])<multiplier*4)rotyvel[i]=0;
 
 										roty[i]+=rotyvel[i]*multiplier*4;
 									}
@@ -135,26 +135,26 @@ void Objects::Draw()
 									if(type[i]==treetrunktype||environment==2){
 										messedwith[i]-=multiplier;
 										if(rotxvel[i]||rotx[i]){
-											if(rotx[i]>0)rotxvel[i]-=multiplier*8*abs(rotx[i]);
-											if(rotx[i]<0)rotxvel[i]+=multiplier*8*abs(rotx[i]);
+											if(rotx[i]>0)rotxvel[i]-=multiplier*8*fabs(rotx[i]);
+											if(rotx[i]<0)rotxvel[i]+=multiplier*8*fabs(rotx[i]);
 											if(rotx[i]>0)rotxvel[i]-=multiplier*4;
 											if(rotx[i]<0)rotxvel[i]+=multiplier*4;
 											if(rotxvel[i]>0)rotxvel[i]-=multiplier*4;
 											if(rotxvel[i]<0)rotxvel[i]+=multiplier*4;
-											if(abs(rotx[i])<multiplier*4)rotx[i]=0;
-											if(abs(rotxvel[i])<multiplier*4)rotxvel[i]=0;
+											if(fabs(rotx[i])<multiplier*4)rotx[i]=0;
+											if(fabs(rotxvel[i])<multiplier*4)rotxvel[i]=0;
 
 											rotx[i]+=rotxvel[i]*multiplier*4;
 										}
 										if(rotyvel[i]||roty[i]){
-											if(roty[i]>0)rotyvel[i]-=multiplier*8*abs(roty[i]);
-											if(roty[i]<0)rotyvel[i]+=multiplier*8*abs(roty[i]);
+											if(roty[i]>0)rotyvel[i]-=multiplier*8*fabs(roty[i]);
+											if(roty[i]<0)rotyvel[i]+=multiplier*8*fabs(roty[i]);
 											if(roty[i]>0)rotyvel[i]-=multiplier*4;
 											if(roty[i]<0)rotyvel[i]+=multiplier*4;
 											if(rotyvel[i]>0)rotyvel[i]-=multiplier*4;
 											if(rotyvel[i]<0)rotyvel[i]+=multiplier*4;
-											if(abs(roty[i])<multiplier*4)roty[i]=0;
-											if(abs(rotyvel[i])<multiplier*4)rotyvel[i]=0;
+											if(fabs(roty[i])<multiplier*4)roty[i]=0;
+											if(fabs(rotyvel[i])<multiplier*4)rotyvel[i]=0;
 
 											roty[i]+=rotyvel[i]*multiplier*4;
 										}
@@ -173,26 +173,26 @@ void Objects::Draw()
 									{
 										messedwith[i]-=multiplier;
 										if(rotxvel[i]||rotx[i]){
-											if(rotx[i]>0)rotxvel[i]-=multiplier*8*abs(rotx[i]);
-											if(rotx[i]<0)rotxvel[i]+=multiplier*8*abs(rotx[i]);
+											if(rotx[i]>0)rotxvel[i]-=multiplier*8*fabs(rotx[i]);
+											if(rotx[i]<0)rotxvel[i]+=multiplier*8*fabs(rotx[i]);
 											if(rotx[i]>0)rotxvel[i]-=multiplier*4;
 											if(rotx[i]<0)rotxvel[i]+=multiplier*4;
 											if(rotxvel[i]>0)rotxvel[i]-=multiplier*4;
 											if(rotxvel[i]<0)rotxvel[i]+=multiplier*4;
-											if(abs(rotx[i])<multiplier*4)rotx[i]=0;
-											if(abs(rotxvel[i])<multiplier*4)rotxvel[i]=0;
+											if(fabs(rotx[i])<multiplier*4)rotx[i]=0;
+											if(fabs(rotxvel[i])<multiplier*4)rotxvel[i]=0;
 
 											rotx[i]+=rotxvel[i]*multiplier*4;
 										}
 										if(rotyvel[i]||roty[i]){
-											if(roty[i]>0)rotyvel[i]-=multiplier*8*abs(roty[i]);
-											if(roty[i]<0)rotyvel[i]+=multiplier*8*abs(roty[i]);
+											if(roty[i]>0)rotyvel[i]-=multiplier*8*fabs(roty[i]);
+											if(roty[i]<0)rotyvel[i]+=multiplier*8*fabs(roty[i]);
 											if(roty[i]>0)rotyvel[i]-=multiplier*4;
 											if(roty[i]<0)rotyvel[i]+=multiplier*4;
 											if(rotyvel[i]>0)rotyvel[i]-=multiplier*4;
 											if(rotyvel[i]<0)rotyvel[i]+=multiplier*4;
-											if(abs(roty[i])<multiplier*4)roty[i]=0;
-											if(abs(rotyvel[i])<multiplier*4)rotyvel[i]=0;
+											if(fabs(roty[i])<multiplier*4)roty[i]=0;
+											if(fabs(rotyvel[i])<multiplier*4)rotyvel[i]=0;
 
 											roty[i]+=rotyvel[i]*multiplier*4;
 										}
@@ -324,26 +324,26 @@ void Objects::Draw()
 								if(type[i]==bushtype){
 									messedwith[i]-=multiplier;
 									if(rotxvel[i]||rotx[i]){
-										if(rotx[i]>0)rotxvel[i]-=multiplier*8*abs(rotx[i]);
-										if(rotx[i]<0)rotxvel[i]+=multiplier*8*abs(rotx[i]);
+										if(rotx[i]>0)rotxvel[i]-=multiplier*8*fabs(rotx[i]);
+										if(rotx[i]<0)rotxvel[i]+=multiplier*8*fabs(rotx[i]);
 										if(rotx[i]>0)rotxvel[i]-=multiplier*4;
 										if(rotx[i]<0)rotxvel[i]+=multiplier*4;
 										if(rotxvel[i]>0)rotxvel[i]-=multiplier*4;
 										if(rotxvel[i]<0)rotxvel[i]+=multiplier*4;
-										if(abs(rotx[i])<multiplier*4)rotx[i]=0;
-										if(abs(rotxvel[i])<multiplier*4)rotxvel[i]=0;
+										if(fabs(rotx[i])<multiplier*4)rotx[i]=0;
+										if(fabs(rotxvel[i])<multiplier*4)rotxvel[i]=0;
 
 										rotx[i]+=rotxvel[i]*multiplier*4;
 									}
 									if(rotyvel[i]||roty[i]){
-										if(roty[i]>0)rotyvel[i]-=multiplier*8*abs(roty[i]);
-										if(roty[i]<0)rotyvel[i]+=multiplier*8*abs(roty[i]);
+										if(roty[i]>0)rotyvel[i]-=multiplier*8*fabs(roty[i]);
+										if(roty[i]<0)rotyvel[i]+=multiplier*8*fabs(roty[i]);
 										if(roty[i]>0)rotyvel[i]-=multiplier*4;
 										if(roty[i]<0)rotyvel[i]+=multiplier*4;
 										if(rotyvel[i]>0)rotyvel[i]-=multiplier*4;
 										if(rotyvel[i]<0)rotyvel[i]+=multiplier*4;
-										if(abs(roty[i])<multiplier*4)roty[i]=0;
-										if(abs(rotyvel[i])<multiplier*4)rotyvel[i]=0;
+										if(fabs(roty[i])<multiplier*4)roty[i]=0;
+										if(fabs(rotyvel[i])<multiplier*4)rotyvel[i]=0;
 
 										roty[i]+=rotyvel[i]*multiplier*4;
 									}
@@ -361,26 +361,26 @@ void Objects::Draw()
 								if(type[i]==treetrunktype||type[i]==treeleavestype){
 									messedwith[i]-=multiplier;
 									if(rotxvel[i]||rotx[i]){
-										if(rotx[i]>0)rotxvel[i]-=multiplier*8*abs(rotx[i]);
-										if(rotx[i]<0)rotxvel[i]+=multiplier*8*abs(rotx[i]);
+										if(rotx[i]>0)rotxvel[i]-=multiplier*8*fabs(rotx[i]);
+										if(rotx[i]<0)rotxvel[i]+=multiplier*8*fabs(rotx[i]);
 										if(rotx[i]>0)rotxvel[i]-=multiplier*4;
 										if(rotx[i]<0)rotxvel[i]+=multiplier*4;
 										if(rotxvel[i]>0)rotxvel[i]-=multiplier*4;
 										if(rotxvel[i]<0)rotxvel[i]+=multiplier*4;
-										if(abs(rotx[i])<multiplier*4)rotx[i]=0;
-										if(abs(rotxvel[i])<multiplier*4)rotxvel[i]=0;
+										if(fabs(rotx[i])<multiplier*4)rotx[i]=0;
+										if(fabs(rotxvel[i])<multiplier*4)rotxvel[i]=0;
 
 										rotx[i]+=rotxvel[i]*multiplier*4;
 									}
 									if(rotyvel[i]||roty[i]){
-										if(roty[i]>0)rotyvel[i]-=multiplier*8*abs(roty[i]);
-										if(roty[i]<0)rotyvel[i]+=multiplier*8*abs(roty[i]);
+										if(roty[i]>0)rotyvel[i]-=multiplier*8*fabs(roty[i]);
+										if(roty[i]<0)rotyvel[i]+=multiplier*8*fabs(roty[i]);
 										if(roty[i]>0)rotyvel[i]-=multiplier*4;
 										if(roty[i]<0)rotyvel[i]+=multiplier*4;
 										if(rotyvel[i]>0)rotyvel[i]-=multiplier*4;
 										if(rotyvel[i]<0)rotyvel[i]+=multiplier*4;
-										if(abs(roty[i])<multiplier*4)roty[i]=0;
-										if(abs(rotyvel[i])<multiplier*4)rotyvel[i]=0;
+										if(fabs(roty[i])<multiplier*4)roty[i]=0;
+										if(fabs(rotyvel[i])<multiplier*4)rotyvel[i]=0;
 
 										roty[i]+=rotyvel[i]*multiplier*4;
 									}
@@ -467,7 +467,7 @@ void Objects::DeleteObject(int which)
 void Objects::MakeObject(int atype, XYZ where, float arotation, float ascale){
 	if((atype!=treeleavestype&&atype!=bushtype)||foliage==1){
 		scale[numobjects]=ascale;
-		if(atype==treeleavestype)scale[numobjects]+=abs((float)(Random()%100)/900)*ascale;
+		if(atype==treeleavestype)scale[numobjects]+=fabs((float)(Random()%100)/900)*ascale;
 
 		onfire[numobjects]=0;
 		flamedelay[numobjects]=0;
@@ -550,7 +550,7 @@ void Objects::MakeObject(int atype, XYZ where, float arotation, float ascale){
 void Objects::MakeObject(int atype, XYZ where, float arotation, float arotation2, float ascale){
 	if((atype!=treeleavestype&&atype!=bushtype)||foliage==1){
 		scale[numobjects]=ascale;
-		if(atype==treeleavestype)scale[numobjects]+=abs((float)(Random()%100)/900)*ascale;
+		if(atype==treeleavestype)scale[numobjects]+=fabs((float)(Random()%100)/900)*ascale;
 
 		onfire[numobjects]=0;
 		flamedelay[numobjects]=0;
@@ -597,7 +597,7 @@ void Objects::MakeObject(int atype, XYZ where, float arotation, float arotation2
 		if(atype==treetrunktype)friction[numobjects]=.4;
 		if(atype==treeleavestype)friction[numobjects]=0;
 
-		if(friction[numobjects]==1.5&&abs(arotation2)>5)friction[numobjects]=.5;
+		if(friction[numobjects]==1.5&&fabs(arotation2)>5)friction[numobjects]=.5;
 
 		if(atype==platformtype){
 			model[numobjects].loaddecal((char *)":Data:Models:Platform.solid",0);

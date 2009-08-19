@@ -40,6 +40,7 @@ DEFINES := \
 	-DTRUE=1 \
 	-DFALSE=0 \
 	-Dstricmp=strcasecmp \
+	-DBinIO_STDINT_HEADER="<stdint.h>" \
 
 INCLUDES := \
 			-I$(SRCDIR) \
