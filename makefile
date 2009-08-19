@@ -16,11 +16,11 @@ LIBVORBISDIR := libvorbis-1.0.1
 
 EXE := $(RUNDIR)/lugaru-bin
 
-CXX := ccache g++
-CC := ccache gcc
+CXX := ccache /opt/crosstool/gcc-4.1.2-glibc-2.3.6/i686-unknown-linux-gnu/i686-unknown-linux-gnu/bin/g++
+CC := ccache /opt/crosstool/gcc-4.1.2-glibc-2.3.6/i686-unknown-linux-gnu/i686-unknown-linux-gnu/bin/gcc
 #CXX := g++
 #CC := gcc
-LD := g++
+LD := /opt/crosstool/gcc-4.1.2-glibc-2.3.6/i686-unknown-linux-gnu/i686-unknown-linux-gnu/bin/g++
 
 #OPT := -O0
 OPT := -O3 -fno-strict-aliasing -falign-loops=16 -fno-math-errno
