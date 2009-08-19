@@ -142,23 +142,22 @@ typedef struct tagPOINT {
 #include "glstubs.h"
 #undef GL_FUNC
 
-static bool lookup_glsym(const char *funcname, void **func, const char *libname)
+static bool lookup_glsym(const char *funcname, void **func)
 {
     *func = SDL_GL_GetProcAddress(funcname);
     if (*func == NULL)
     {
-        fprintf(stderr, "Failed to find OpenGL symbol \"%s\" in \"%s\"\n",
-                 funcname, libname);
+        fprintf(stderr, "Failed to find OpenGL symbol \"%s\"\n", funcname);
         return false;
     }
     return true;
 }
 
-static bool lookup_all_glsyms(const char *libname)
+static bool lookup_all_glsyms(void)
 {
     bool retval = true;
     #define GL_FUNC(ret,fn,params,call,rt) \
-        if (!lookup_glsym(#fn, (void **) &p##fn, libname)) retval = false;
+        if (!lookup_glsym(#fn, (void **) &p##fn)) retval = false;
     #include "glstubs.h"
     #undef GL_FUNC
     return retval;
@@ -873,16 +872,12 @@ Boolean SetUp (Game & game)
             return false;
         }
 
-        const char *libname = "libGL.so.1";  // !!! FIXME: Linux specific!
-        if (SDL_GL_LoadLibrary(libname) == -1)
+        if (SDL_GL_LoadLibrary(NULL) == -1)
         {
-            fprintf(stderr, "SDL_GL_LoadLibrary(\"%s\") failed: %s\n",
-                    libname, SDL_GetError());
+            fprintf(stderr, "SDL_GL_LoadLibrary() failed: %s\n", SDL_GetError());
+            SDL_Quit();
             return false;
         }
-
-        if (!lookup_all_glsyms(libname))
-            return false;
     }
 
     Uint32 sdlflags = SDL_OPENGL;
@@ -896,6 +891,12 @@ Boolean SetUp (Game & game)
     if (SDL_SetVideoMode(kContextWidth, kContextHeight, 0, sdlflags) == NULL)
     {
         fprintf(stderr, "SDL_SetVideoMode() failed: %s\n", SDL_GetError());
+        return false;
+    }
+
+    if (!lookup_all_glsyms())
+    {
+        SDL_Quit();
         return false;
     }
 
