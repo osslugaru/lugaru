@@ -11,6 +11,7 @@ LIBPNGDIR := libpng-1.2.8
 JPEGLIBDIR := jpeg-6b
 ZLIBDIR := zlib-1.2.3
 OPENALDIR := OpenAL
+GLUDIR := GLU
 LIBOGGDIR := libogg-1.0
 LIBVORBISDIR := libvorbis-1.0.1
 
@@ -71,7 +72,6 @@ ifeq ($(strip $(macosx)),true)
 else
   CFLAGS += -DPLATFORM_LINUX=1
   LDFLAGS := ./libSDL-1.2.so.0
-  POSTLDFLAGS := ./libGLU.a
 
   ifeq ($(strip $(use_devil)),true)
     LDFLAGS += ./libIL.so.1 ./libILU.so.1 ./libILUT.so.1
@@ -211,6 +211,23 @@ ZLIBSRCS = \
 
 ZLIBSRCS := $(foreach f,$(ZLIBSRCS),$(ZLIBDIR)/$(f))
 
+
+GLUSRCS := \
+	dict.c \
+	geom.c \
+	memalloc.c \
+	mesh.c \
+	normal.c \
+	priorityq.c \
+	render.c \
+	sweep.c \
+	tess.c \
+	tessmono.c \
+	util.c \
+
+GLUSRCS := $(foreach f,$(GLUSRCS),$(GLUDIR)/$(f))
+
+
 OGGSRCS := \
 	bitwise.o \
 	framing.o
@@ -241,6 +258,9 @@ VORBISSRCS := \
 
 VORBISSRCS := $(foreach f,$(VORBISSRCS),$(LIBVORBISDIR)/lib/$(f))
 
+ifeq ($(strip $(macosx)),false)
+	SRCS += $(GLUSRCS)
+endif
 
 ifeq ($(strip $(use_devil)),false)
     SRCS += $(PNGSRCS) $(JPEGSRCS) $(ZLIBSRCS)
@@ -294,6 +314,7 @@ clean:
 	rm -f $(BINDIR)/*.o
 	rm -f $(BINDIR)/$(SRCDIR)/*.o
 	rm -f $(BINDIR)/$(SRCDIR)/logger/*.o
+	rm -f $(BINDIR)/$(GLUDIR)/*.o
 	rm -f $(BINDIR)/$(LIBPNGDIR)/*.o
 	rm -f $(BINDIR)/$(JPEGLIBDIR)/*.o
 	rm -f $(BINDIR)/$(ZLIBDIR)/*.o
