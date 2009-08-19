@@ -1350,112 +1350,18 @@ static bool IsFocused()
 }
 
 
-#if PLATFORM_LINUX
-#include <stdlib.h>
-#include <ctype.h>
-#include <unistd.h>
-static bool try_launch_browser(const char *browser, const char *url)
-{
-    // make sure string isn't empty...
-    while ( (*browser) && (isspace(*browser)) ) browser++;
-    if (*browser == '\0') return false;
-
-    bool seenurl = false;
-    char buf[4096];  // !!! FIXME: we aren't checking for overflow here!
-    char *dst = buf;
-    while (*browser)
-    {
-        char ch = *(browser++);
-        if (ch == '%')
-        {
-            ch = *(browser++);
-            if (ch == '%')
-                *(dst++) = '%';
-            else if (ch == 's')  // "%s" == insert URL here.
-            {
-                *(dst++) = '\'';
-                strcpy(dst, url);
-                dst += strlen(url);
-                *(dst++) = '\'';
-                seenurl = true;
-            }
-            // (not %% or %s? Drop the char.)
-        }
-        else
-        {
-            *(dst++) = ch;
-        }
-    }
-
-    *dst = '\0';
-    if (!seenurl)
-    {
-        strcat(dst, " ");
-        strcat(dst, url);
-    }
-
-    #define MAX_BROWSER_ARGS 512
-    char *args[MAX_BROWSER_ARGS];
-    char *path = NULL;
-    memset(args, '\0', sizeof (args));
-    path = args[0] = strtok(buf, " ");
-    if (path == NULL)
-        return false;
-
-    size_t i = 0;
-    for (i = 1; i < MAX_BROWSER_ARGS; i++)
-    {
-        args[i] = strtok(NULL, " ");
-        if (args[i] == NULL)
-            break;
-    }
-
-    if (i == MAX_BROWSER_ARGS)
-        return false;
-    #undef MAX_BROWSER_ARGS
-
-    //printf("calling execvp(\"%s\"", path);
-    //for (i = 0; args[i]; i++)
-    //    printf(", \"%s\"", args[i]);
-    //printf("); ...\n\n\n");
-
-    execvp(path, args);
-    return(false);  // exec shouldn't return unless there's an error.
-}
-#endif
-
-
 static void launch_web_browser(const char *url)
 {
 #ifdef WIN32
     ShellExecute(NULL, "open", url, NULL, NULL, SW_SHOWNORMAL);
 
-// lousy linux doesn't have a clean way to do this, but you can point people
-//  to docs on the BROWSER variable:
-//     http://www.catb.org/~esr/BROWSER/
 #elif PLATFORM_LINUX
-    if (strchr(url, '\'') != NULL)  // Prevent simple shell injection.
-        return;
-
-    const char *envr = getenv("BROWSER");
-    if (envr == NULL)  // not specified? We'll try a pseudo-sane list...
-        envr = "opera:mozilla:konqueror:firefox:netscape:xterm -e links:xterm -e lynx:";
-
-    char *ptr = (char *) alloca(strlen(envr) + 1);
-    if (ptr == NULL)
-        return;
-    strcpy(ptr, envr);
-    envr = ptr;
-
-    while ((ptr = strchr(envr, ':')) != NULL)
-    {
-        *ptr = '\0';
-        if (try_launch_browser(envr, url))
-            return;
-        envr = ptr + 1;
-    }
-
-    try_launch_browser(envr, url);
+    const char *fmt = "PATH=$PATH:. xdg-open '%s'";
+    const size_t len = strlen(fmt) + strlen(url) + 16;
+    char *buf = new char[len];
+    snprintf(buf, len, fmt, url);
+    system(buf);
+    delete[] buf;
 #endif
 }
 
