@@ -81,7 +81,7 @@ else
   ifeq ($(strip $(use_fmod)),true)
     POSTLDFLAGS += -lpthread ./libfmod-linux-x86.a
   else
-    LDFLAGS += ./openal.so
+    LDFLAGS += ./libopenal.so.1
   endif
 endif
 
