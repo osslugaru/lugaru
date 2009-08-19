@@ -72,7 +72,7 @@ ifeq ($(strip $(macosx)),true)
   APPLDFLAGS := $(SDLDIR)/lib/libSDL-1.2.0.dylib $(SDLDIR)/lib/libSDLmain-osx.a
 else
   CFLAGS += -DPLATFORM_LINUX=1
-  LDFLAGS := ./libSDL-1.2.so.0
+  LDFLAGS := ./libSDL-1.2.so.0 -Wl,-rpath,\$$ORIGIN
 
   ifeq ($(strip $(use_devil)),true)
     LDFLAGS += ./libIL.so.1 ./libILU.so.1 ./libILUT.so.1
