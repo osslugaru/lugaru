@@ -870,7 +870,7 @@ Boolean SetUp (Game & game)
     if (!cmdline("windowed"))
         sdlflags |= SDL_FULLSCREEN;
 
-    SDL_WM_SetCaption("Lugaru", "lugaru");
+    SDL_WM_SetCaption("Lugaru", "Lugaru");
 
     SDL_ShowCursor(0);
 
