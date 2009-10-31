@@ -36,9 +36,11 @@ extern void vspackf(void *buffer, const char *format, va_list args)
     BinIOInitFormatCursor(&cursor, format);
 
     context.buffer = (unsigned char *)buffer;
-    context.args = args;
-    
+    va_copy(context.args, args);
+
     while (BinIONextChar(&context, &cursor, BinIOPack)) {}
+
+    va_end(context.args);
 }
 
 extern void vfpackf(FILE *file, const char *format, va_list args)

@@ -36,9 +36,11 @@ void vsunpackf(const void *buffer, const char *format, va_list args)
     BinIOInitFormatCursor(&cursor, format);
     
     context.data = (const unsigned char*)buffer;
-    context.args = args;
+    va_copy(context.args, args);
     
     while (BinIONextChar(&context, &cursor, BinIOUnpack)) {}
+
+    va_end(context.args);
 }
 
 void vfunpackf(FILE *file, const char *format, va_list args)
