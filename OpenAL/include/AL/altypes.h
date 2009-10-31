@@ -32,11 +32,11 @@ typedef double ALdouble;
 typedef signed int ALsizei;
 
 /** OpenAL void type (for params, not returns). */
-#ifdef __GNUC__
-typedef void ALvoid;
-#else
+//#ifdef __GNUC__
+//typedef void ALvoid;
+//#else
 #define ALvoid void
-#endif /* __GNUC__ */
+//#endif /* __GNUC__ */
 
 /** OpenAL enumerations. */
 typedef int ALenum;
