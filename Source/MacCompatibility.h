@@ -77,9 +77,9 @@ inline bool isnormal( double x)
 	int ret = _fpclass( x);
 	return (ret == _FPCLASS_NN || ret == _FPCLASS_PN);
 }
+#else
+#include <stdint.h>
 #endif
-
-typedef unsigned int uintptr_t;
 
 
 // fix file names to use '/' instead of ':'

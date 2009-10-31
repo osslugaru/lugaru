@@ -16,6 +16,7 @@
 #if PLATFORM_UNIX
 #include <unistd.h>
 #include <sys/time.h>
+#include <sys/stat.h>
 #include <assert.h>
 typedef long long __int64;
 typedef __int64 LARGE_INTEGER;
