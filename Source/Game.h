@@ -223,7 +223,7 @@ public:
 	void LoadingScreen();
 	void FadeLoadingScreen(float howmuch);
 	void Dispose();
-	int DrawGLScene(GLvoid);
+	int DrawGLScene(void);
 	void Tick();
 	void TickOnce();
 	void TickOnceAfter();

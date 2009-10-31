@@ -189,7 +189,7 @@ long long Game::MD5_string (char *string){
 	//return 1111111111111111;
 }
 
-int Game::DrawGLScene(GLvoid)									
+int Game::DrawGLScene(void)
 {	
 	static float texcoordwidth,texcoordheight;
 	static float texviewwidth, texviewheight;
