@@ -17,11 +17,15 @@ LIBVORBISDIR := libvorbis-1.0.1
 
 EXE := $(RUNDIR)/lugaru-bin
 
+ifeq ($(strip $(macosx)),true)
+CXX := g++-4.0
+CC := gcc-4.0
+LD := g++-4.0
+else
 CXX := /opt/crosstool/gcc-4.1.2-glibc-2.3.6/i686-unknown-linux-gnu/i686-unknown-linux-gnu/bin/g++
 CC := /opt/crosstool/gcc-4.1.2-glibc-2.3.6/i686-unknown-linux-gnu/i686-unknown-linux-gnu/bin/gcc
-#CXX := g++
-#CC := gcc
 LD := /opt/crosstool/gcc-4.1.2-glibc-2.3.6/i686-unknown-linux-gnu/i686-unknown-linux-gnu/bin/g++
+endif
 
 #OPT := -O0
 OPT := -O3 -fno-strict-aliasing -falign-loops=16 -fno-math-errno
@@ -66,10 +70,9 @@ CFLAGS := -g -c $(OPT) $(INCLUDES) $(DEFINES) -fsigned-char -pipe
 CFLAGS += -w
 
 ifeq ($(strip $(macosx)),true)
-  CFLAGS += -fpascal-strings -faltivec -fasm -force_cpusubtype_ALL -Wno-long-double -mdynamic-no-pic
-  CFLAGS += -DPLATFORM_BIGENDIAN=1 -DMACOSX=1 -DPLATFORM_MACOSX=1
-  LDFLAGS := -framework Cocoa -framework OpenGL -framework IOKit -framework CoreFoundation -framework Carbon
-  APPLDFLAGS := $(SDLDIR)/lib/libSDL-1.2.0.dylib $(SDLDIR)/lib/libSDLmain-osx.a
+  CFLAGS += -mdynamic-no-pic
+  LDFLAGS := -framework Cocoa -framework OpenGL -framework IOKit -framework CoreFoundation -framework Carbon -framework OpenAL
+  APPLDFLAGS := ./libSDL-1.2.0.dylib ./libSDLmain-osx.a
 else
   CFLAGS += -DPLATFORM_LINUX=1
   LDFLAGS := ./libSDL-1.2.so.0 -Wl,-rpath,\$$ORIGIN
@@ -307,8 +310,7 @@ $(BINDIR)/%.o : %.c
 $(EXE) : $(OBJS) $(APPOBJS)
 	@mkdir -p $(dir $@)
 ifeq ($(strip $(macosx)),true)
-	ranlib $(SDLDIR)/lib/libSDLmain-osx.a
-	ranlib $(FREETYPEDIR)/lib/libfreetype-osx.a
+	ranlib ./libSDLmain-osx.a
 endif
 	$(LD) -o $@ $(APPLDFLAGS) $(LDFLAGS) $(OBJS) $(APPOBJS) $(POSTLDFLAGS)
 
