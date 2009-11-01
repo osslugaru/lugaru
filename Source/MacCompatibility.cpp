@@ -192,7 +192,11 @@ static inline const char *getPrefPath(void)
         if (homedir == NULL)
             homedir = ".";  // oh well.
 
+#if (defined(__APPLE__) && defined(__MACH__))
+        const char *PREFPATHNAME = "Library/Application Support/Lugaru";
+#else
         const char *PREFPATHNAME = ".lugaru";
+#endif
         size_t len = strlen(homedir) + strlen(PREFPATHNAME) + 2;
         prefpath = new char[len];
         snprintf(prefpath, len, "%s/%s", homedir, PREFPATHNAME);
