@@ -1442,6 +1442,19 @@ static inline void chdirToAppPath(const char *argv0)
     char *dir = calcBaseDir(argv0);
     if (dir)
     {
+        #if (defined(__APPLE__) && defined(__MACH__))
+        // Chop off /Contents/MacOS if it's at the end of the string, so we
+        //  land in the base of the app bundle.
+        const size_t len = strlen(dir);
+        const char *bundledirs = "/Contents/MacOS";
+        const size_t bundledirslen = strlen(bundledirs);
+        if (len > bundledirslen)
+        {
+            char *ptr = (dir + len) - bundledirslen;
+            if (strcasecmp(ptr, bundledirs) == 0)
+                *ptr = '\0';
+        }
+        #endif
         chdir(dir);
         free(dir);
     }
