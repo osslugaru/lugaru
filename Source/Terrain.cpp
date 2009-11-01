@@ -1495,7 +1495,7 @@ Terrain::Terrain()
 	memset(patchobjectnum, 0, sizeof(patchobjectnum));
 	memset(patchobjects, 0, sizeof(patchobjects));
 
-	scale = 0;
+	scale = 1.0f;
 	type = 0;
 	memset(heightmap, 0, sizeof(heightmap));
 	memset(normals, 0, sizeof(normals));
