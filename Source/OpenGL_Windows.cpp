@@ -1341,6 +1341,14 @@ static void launch_web_browser(const char *url)
 #ifdef WIN32
     ShellExecute(NULL, "open", url, NULL, NULL, SW_SHOWNORMAL);
 
+#elif (defined(__APPLE__) && defined(__MACH__))
+    const char *fmt = "open '%s'";
+    const size_t len = strlen(fmt) + strlen(url) + 16;
+    char *buf = new char[len];
+    snprintf(buf, len, fmt, url);
+    system(buf);
+    delete[] buf;
+
 #elif PLATFORM_LINUX
     const char *fmt = "PATH=$PATH:. xdg-open '%s'";
     const size_t len = strlen(fmt) + strlen(url) + 16;
@@ -1562,10 +1570,12 @@ int main(int argc, char **argv)
 //		if(game.registernow){
 		if(regnow)
 		{
-            #if PLATFORM_LINUX  // (this may not be necessary any more.)
-            launch_web_browser("http://www.wolfire.com/registerlinux.html");
+            #if (defined(__APPLE__) && defined(__MACH__))
+            launch_web_browser("http://www.wolfire.com/purchase/lugaru/mac");
+            #elif PLATFORM_LINUX
+            launch_web_browser("http://www.wolfire.com/purchase/lugaru/linux");
             #else
-            launch_web_browser("http://www.wolfire.com/registerpc.html");
+            launch_web_browser("http://www.wolfire.com/purchase/lugaru/pc");
             #endif
 		}
 
