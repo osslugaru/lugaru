@@ -10,7 +10,7 @@
 #include <string>
 
 #ifndef WIN32
-  #if PLATFORM_LINUX
+  #if PLATFORM_UNIX
     #define GL_GLEXT_PROTOTYPES
     #include "gl.h"
     #include "glu.h"

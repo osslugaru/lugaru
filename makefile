@@ -18,28 +18,21 @@ LIBVORBISDIR := libvorbis-1.0.1
 EXE := $(RUNDIR)/lugaru-bin
 
 ifeq ($(strip $(macosx)),true)
-CXX := g++-4.0
-CC := gcc-4.0
-LD := g++-4.0
+	CXX := g++-4.0
+	CC := gcc-4.0
+	LD := g++-4.0
 else
-CXX := /opt/crosstool/gcc-4.1.2-glibc-2.3.6/i686-unknown-linux-gnu/i686-unknown-linux-gnu/bin/g++
-CC := /opt/crosstool/gcc-4.1.2-glibc-2.3.6/i686-unknown-linux-gnu/i686-unknown-linux-gnu/bin/gcc
-LD := /opt/crosstool/gcc-4.1.2-glibc-2.3.6/i686-unknown-linux-gnu/i686-unknown-linux-gnu/bin/g++
+	CXX := /opt/crosstool/gcc-4.1.2-glibc-2.3.6/i686-unknown-linux-gnu/i686-unknown-linux-gnu/bin/g++
+	CC := /opt/crosstool/gcc-4.1.2-glibc-2.3.6/i686-unknown-linux-gnu/i686-unknown-linux-gnu/bin/gcc
+	LD := /opt/crosstool/gcc-4.1.2-glibc-2.3.6/i686-unknown-linux-gnu/i686-unknown-linux-gnu/bin/g++
 endif
 
 #OPT := -O0
 OPT := -O3 -fno-strict-aliasing -falign-loops=16 -fno-math-errno
 #OPT := -Os -fno-strict-aliasing
 
-# always use this on the Mac, even in debug builds, since we aren't building
-#  a dylib at this point.
-ifeq ($(strip $(macosx)),true)
-  OPT += -mdynamic-no-pic
-endif
-
 DEFINES := \
 	-DPLATFORM_UNIX=1 \
-	-DPLATFORM_LINUX=1 \
 	-DUSE_SDL=1 \
 	-DTRUE=1 \
 	-DFALSE=0 \
@@ -73,6 +66,12 @@ ifeq ($(strip $(macosx)),true)
   CFLAGS += -mdynamic-no-pic
   LDFLAGS := -framework Cocoa -framework OpenGL -framework IOKit -framework CoreFoundation -framework Carbon -framework OpenAL
   APPLDFLAGS := ./libSDL-1.2.0.dylib ./libSDLmain-osx.a
+  APPLDFLAGS := /usr/local/lib/libSDL-1.2.0.dylib /usr/local/lib/libSDLmain.a
+  ifneq ($(strip $(macosx_arch)),)
+	  CFLAGS += -arch $(macosx_arch)
+	  LDFLAGS += -arch $(macosx_arch)
+	  APPLDFLAGS += -arch $(macosx_arch)
+  endif
 else
   CFLAGS += -DPLATFORM_LINUX=1
   LDFLAGS := ./libSDL-1.2.so.0 -Wl,-rpath,\$$ORIGIN
@@ -309,9 +308,9 @@ $(BINDIR)/%.o : %.c
 
 $(EXE) : $(OBJS) $(APPOBJS)
 	@mkdir -p $(dir $@)
-ifeq ($(strip $(macosx)),true)
-	ranlib ./libSDLmain-osx.a
-endif
+#ifeq ($(strip $(macosx)),true)
+#	ranlib ./libSDLmain-osx.a libSDLmain-osx-ranlib
+#endif
 	$(LD) -o $@ $(APPLDFLAGS) $(LDFLAGS) $(OBJS) $(APPOBJS) $(POSTLDFLAGS)
 
 clean:
