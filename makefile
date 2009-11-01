@@ -15,7 +15,18 @@ GLUDIR := GLU
 LIBOGGDIR := libogg-1.0
 LIBVORBISDIR := libvorbis-1.0.1
 
-EXE := $(RUNDIR)/lugaru-bin
+
+ifeq ($(strip $(macosx_arch)),)
+  macosx_arch := i386
+endif
+
+ifeq ($(strip $(macosx)),true)
+   EXEEXT := $(macosx_arch)
+else
+   EXEEXT := bin
+endif
+
+EXE := $(RUNDIR)/lugaru-$(EXEEXT)
 
 ifeq ($(strip $(macosx)),true)
 	CXX := g++-4.0
@@ -66,7 +77,6 @@ ifeq ($(strip $(macosx)),true)
   CFLAGS += -mdynamic-no-pic
   LDFLAGS := -framework Cocoa -framework OpenGL -framework IOKit -framework CoreFoundation -framework Carbon -framework OpenAL
   APPLDFLAGS := ./libSDL-1.2.0.dylib ./libSDLmain-osx.a
-  APPLDFLAGS := /usr/local/lib/libSDL-1.2.0.dylib /usr/local/lib/libSDLmain.a
   ifneq ($(strip $(macosx_arch)),)
 	  CFLAGS += -arch $(macosx_arch)
 	  LDFLAGS += -arch $(macosx_arch)
@@ -308,9 +318,6 @@ $(BINDIR)/%.o : %.c
 
 $(EXE) : $(OBJS) $(APPOBJS)
 	@mkdir -p $(dir $@)
-#ifeq ($(strip $(macosx)),true)
-#	ranlib ./libSDLmain-osx.a libSDLmain-osx-ranlib
-#endif
 	$(LD) -o $@ $(APPLDFLAGS) $(LDFLAGS) $(OBJS) $(APPOBJS) $(POSTLDFLAGS)
 
 clean:
