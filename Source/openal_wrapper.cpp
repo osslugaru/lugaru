@@ -298,6 +298,12 @@ int F_API OPENAL_PlaySoundEx(int channel, FSOUND_SAMPLE *sptr, FSOUND_DSPUNIT *d
 
 static void *decode_to_pcm(const char *_fname, ALenum &format, ALsizei &size, ALuint &freq)
 {
+#ifdef __POWERPC__
+    const int bigendian = 1;
+#else
+    const int bigendian = 0;
+#endif
+
     // !!! FIXME: if it's not Ogg, we don't have a decoder. I'm lazy.  :/
     char *fname = (char *) alloca(strlen(_fname) + 16);
     strcpy(fname, _fname);
@@ -355,7 +361,7 @@ static void *decode_to_pcm(const char *_fname, ALenum &format, ALsizei &size, AL
         long rc = 0;
         size_t allocated = 64 * 1024;
         retval = (ALubyte *) malloc(allocated);
-        while ( (rc = ov_read(&vf, buf, sizeof (buf), 0, 2, 1, &bitstream)) != 0 )
+        while ( (rc = ov_read(&vf, buf, sizeof (buf), bigendian, 2, 1, &bitstream)) != 0 )
         {
             if (rc > 0)
             {
