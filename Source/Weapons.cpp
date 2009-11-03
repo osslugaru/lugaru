@@ -1270,53 +1270,7 @@ int Weapons::Draw()
 
 Weapons::Weapons()
 {
-	rotation1.resize(max_weaponinstances);
-	rotation2.resize(max_weaponinstances);
-	rotation3.resize(max_weaponinstances);
-	bigrotation.resize(max_weaponinstances);
-	bigtilt.resize(max_weaponinstances);
-	bigtilt2.resize(max_weaponinstances);
-	smallrotation.resize(max_weaponinstances);
-	smallrotation2.resize(max_weaponinstances);
-	damage.resize(max_weaponinstances);
-
 	numweapons = 0;
-	tippoint.resize(max_weaponinstances);
-	oldtippoint.resize(max_weaponinstances);
-	position.resize(max_weaponinstances);
-	lastmult.resize(max_weaponinstances);
-	oldposition.resize(max_weaponinstances);
-	velocity.resize(max_weaponinstances);
-	tipvelocity.resize(max_weaponinstances);
-	type.resize(max_weaponinstances);
-	oldowner.resize(max_weaponinstances);
-	owner.resize(max_weaponinstances);
-	bloody.resize(max_weaponinstances);
-	blooddrip.resize(max_weaponinstances);
-	blooddripdelay.resize(max_weaponinstances);
-	onfire.resize(max_weaponinstances);
-	flamedelay.resize(max_weaponinstances);
-	missed.resize(max_weaponinstances);
-	mass.resize(max_weaponinstances);
-	tipmass.resize(max_weaponinstances);
-	length.resize(max_weaponinstances);
-	freetime.resize(max_weaponinstances);
-	firstfree.resize(max_weaponinstances);
-	physics.resize(max_weaponinstances);
-	drawhowmany.resize(max_weaponinstances);
-	hitsomething.resize(max_weaponinstances);
-
-	lastdrawnposition.resize(max_weaponinstances);
-	lastdrawntippoint.resize(max_weaponinstances);
-	lastdrawnrotation1.resize(max_weaponinstances);
-	lastdrawnrotation2.resize(max_weaponinstances);
-	lastdrawnrotation3.resize(max_weaponinstances);
-	lastdrawnbigrotation.resize(max_weaponinstances);
-	lastdrawnbigtilt.resize(max_weaponinstances);
-	lastdrawnbigtilt2.resize(max_weaponinstances);
-	lastdrawnsmallrotation.resize(max_weaponinstances);
-	lastdrawnsmallrotation2.resize(max_weaponinstances);
-	lastdrawnanim.resize(max_weaponinstances);
 
 	//		Model throwingknifemodel;
 	knifetextureptr = 0;
