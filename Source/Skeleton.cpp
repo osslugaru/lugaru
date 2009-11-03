@@ -1062,7 +1062,9 @@ void Animation::Load(char *filename, int aheight, int aattack)
 				funpackf(tfile, "Bf", &twist[j][i]);
 			}
 			for(j=0;j<joints;j++){
-				funpackf(tfile, "Bb", &onground[j][i]);
+				unsigned char uch;
+				funpackf(tfile, "Bb", &uch);
+				onground[j][i] = (uch != 0);
 			}
 			funpackf(tfile, "Bf", &speed[i]);
 		}
@@ -1274,21 +1276,21 @@ void Skeleton::Load(char *filename,char *lowfilename,char *clothesfilename, char
 			fseek ( tfile, lSize, SEEK_CUR);
 			lSize=sizeof(float);
 			fseek ( tfile, lSize, SEEK_CUR);
-			lSize=sizeof(bool);
+			lSize=1;//sizeof(bool);
 			fseek ( tfile, lSize, SEEK_CUR);
-			lSize=sizeof(bool);
-			fseek ( tfile, lSize, SEEK_CUR);
-			lSize=sizeof(int);
-			fseek ( tfile, lSize, SEEK_CUR);
-			lSize=sizeof(bool);
-			fseek ( tfile, lSize, SEEK_CUR);
-			lSize=sizeof(bool);
+			lSize=1;//sizeof(bool);
 			fseek ( tfile, lSize, SEEK_CUR);
 			lSize=sizeof(int);
 			fseek ( tfile, lSize, SEEK_CUR);
+			lSize=1;//sizeof(bool);
+			fseek ( tfile, lSize, SEEK_CUR);
+			lSize=1;//sizeof(bool);
+			fseek ( tfile, lSize, SEEK_CUR);
 			lSize=sizeof(int);
 			fseek ( tfile, lSize, SEEK_CUR);
-			lSize=sizeof(bool);
+			lSize=sizeof(int);
+			fseek ( tfile, lSize, SEEK_CUR);
+			lSize=1;//sizeof(bool);
 			fseek ( tfile, lSize, SEEK_CUR);
 			lSize=sizeof(int);
 			fseek ( tfile, lSize, SEEK_CUR);
@@ -1329,7 +1331,7 @@ void Skeleton::Load(char *filename,char *lowfilename,char *clothesfilename, char
 
 
 			}
-			lSize=sizeof(bool);
+			lSize=1;//sizeof(bool);
 			fseek ( tfile, lSize, SEEK_CUR);
 			lSize=sizeof(int);
 			fseek ( tfile, lSize, SEEK_CUR);
@@ -1379,21 +1381,21 @@ void Skeleton::Load(char *filename,char *lowfilename,char *clothesfilename, char
 			fseek ( tfile, lSize, SEEK_CUR);
 			lSize=sizeof(float);
 			fseek ( tfile, lSize, SEEK_CUR);
-			lSize=sizeof(bool);
+			lSize=1;//sizeof(bool);
 			fseek ( tfile, lSize, SEEK_CUR);
-			lSize=sizeof(bool);
-			fseek ( tfile, lSize, SEEK_CUR);
-			lSize=sizeof(int);
-			fseek ( tfile, lSize, SEEK_CUR);
-			lSize=sizeof(bool);
-			fseek ( tfile, lSize, SEEK_CUR);
-			lSize=sizeof(bool);
+			lSize=1;//sizeof(bool);
 			fseek ( tfile, lSize, SEEK_CUR);
 			lSize=sizeof(int);
 			fseek ( tfile, lSize, SEEK_CUR);
+			lSize=1;//sizeof(bool);
+			fseek ( tfile, lSize, SEEK_CUR);
+			lSize=1;//sizeof(bool);
+			fseek ( tfile, lSize, SEEK_CUR);
 			lSize=sizeof(int);
 			fseek ( tfile, lSize, SEEK_CUR);
-			lSize=sizeof(bool);
+			lSize=sizeof(int);
+			fseek ( tfile, lSize, SEEK_CUR);
+			lSize=1;//sizeof(bool);
 			fseek ( tfile, lSize, SEEK_CUR);
 			lSize=sizeof(int);
 			fseek ( tfile, lSize, SEEK_CUR);
@@ -1432,7 +1434,7 @@ void Skeleton::Load(char *filename,char *lowfilename,char *clothesfilename, char
 					}
 				}
 			}
-			lSize=sizeof(bool);
+			lSize=1;//sizeof(bool);
 			fseek ( tfile, lSize, SEEK_CUR);
 			lSize=sizeof(int);
 			fseek ( tfile, lSize, SEEK_CUR);
