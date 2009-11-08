@@ -518,16 +518,6 @@ static void sdlEventProc(const SDL_Event &e, Game &game)
                 }
             }
 
-            #if (defined(__APPLE__) && defined(__MACH__))
-            if (e.key.keysym.sym == SDLK_q)
-            {
-                if (e.key.keysym.mod & KMOD_META)
-                {
-                    gDone=true;
-                }
-            }
-            #endif
-
             else if (e.key.keysym.sym == SDLK_RETURN)
             {
                 if (e.key.keysym.mod & KMOD_ALT)
@@ -545,6 +535,8 @@ static void sdlEventProc(const SDL_Event &e, Game &game)
                 SetKey(MAC_CONTROL_KEY);
             if (mod & KMOD_ALT)
                 SetKey(MAC_OPTION_KEY);
+            if (mod & KMOD_META)
+                SetKey(MAC_COMMAND_KEY);
             if (mod & KMOD_SHIFT)
                 SetKey(MAC_SHIFT_KEY);
             if (mod & KMOD_CAPS)
