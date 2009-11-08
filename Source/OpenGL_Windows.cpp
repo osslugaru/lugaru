@@ -887,7 +887,20 @@ Boolean SetUp (Game & game)
     if (SDL_SetVideoMode(kContextWidth, kContextHeight, 0, sdlflags) == NULL)
     {
         fprintf(stderr, "SDL_SetVideoMode() failed: %s\n", SDL_GetError());
-        return false;
+        fprintf(stderr, "forcing 640x480...\n");
+        kContextWidth = 640;
+        kContextHeight = 480;
+        if (SDL_SetVideoMode(kContextWidth, kContextHeight, 0, sdlflags) == NULL)
+        {
+            fprintf(stderr, "SDL_SetVideoMode() failed: %s\n", SDL_GetError());
+            fprintf(stderr, "forcing 640x480 windowed mode...\n");
+            sdlflags &= ~SDL_FULLSCREEN;
+            if (SDL_SetVideoMode(kContextWidth, kContextHeight, 0, sdlflags) == NULL)
+            {
+                fprintf(stderr, "SDL_SetVideoMode() failed: %s\n", SDL_GetError());
+                return false;
+            }
+        }
     }
 
     if (!lookup_all_glsyms())
