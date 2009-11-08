@@ -1008,8 +1008,14 @@ void Game::InitGame()
 				longnum=num2+num1*100000000;
 
 				char tempstring[256];
+				#if defined(__APPLE__)
+				sprintf (tempstring, "%s", registrationname);
+				#elif defined(_MSC_VER) || defined(__linux__)
 				sprintf (tempstring, "%s-windows", registrationname);
-				longnuma = MD5_string ( tempstring);	
+				#else
+				#error Please make sure you have the right registration key stuff here!
+				#endif
+				longnuma = MD5_string ( tempstring);
 				num1a = longnuma/100000000;
 				num2a = longnuma%100000000;
 				//if(num1a==num1&&num2a==num2)registered=1;
