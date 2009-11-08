@@ -956,10 +956,12 @@ Boolean SetUp (void)
 	    
 	    if(detail>2)detail=2;
 	    if(detail<0)detail=0;
-	    if(screenwidth>3000)screenwidth=640;
 		if(screenwidth<0)screenwidth=640;
-		if(screenheight>3000)screenheight=480;
 		if(screenheight<0)screenheight=480;
+#if !USE_SDL  // we'll take anything that works.
+	    if(screenwidth>3000)screenwidth=640;
+		if(screenheight>3000)screenheight=480;
+#endif
 	}
 
 	

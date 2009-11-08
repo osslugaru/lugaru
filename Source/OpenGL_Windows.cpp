@@ -103,6 +103,20 @@ extern float volume;
 using namespace std;
 
 
+#if USE_SDL
+SDL_Rect **resolutions = NULL;
+static SDL_Rect rect_1024_768 = { 0, 0, 1024, 768 };
+static SDL_Rect rect_800_600  = { 0, 0, 800,  600 };
+static SDL_Rect rect_640_480  = { 0, 0, 640,  480 };
+static SDL_Rect *hardcoded_resolutions[] = {
+    &rect_1024_768,
+    &rect_800_600,
+    &rect_640_480,
+    NULL
+};
+#endif
+
+
 unsigned int resolutionDepths[8][2] = {0};
 
 bool selectDetail(int & width, int & height, int & bpp, int & detail);
@@ -845,10 +859,12 @@ Boolean SetUp (Game & game)
 
 		if(detail>2)detail=2;
 		if(detail<0)detail=0;
-		if(screenwidth>3000)screenwidth=640;
 		if(screenwidth<0)screenwidth=640;
-		if(screenheight>3000)screenheight=480;
 		if(screenheight<0)screenheight=480;
+#if !USE_SDL  // we'll take anything that works.
+		if(screenwidth>3000)screenwidth=640;
+		if(screenheight>3000)screenheight=480;
+#endif
 	}
 	if(kBitsPerPixel!=32&&kBitsPerPixel!=16){
 		kBitsPerPixel=16;
@@ -873,6 +889,42 @@ Boolean SetUp (Game & game)
             fprintf(stderr, "SDL_GL_LoadLibrary() failed: %s\n", SDL_GetError());
             SDL_Quit();
             return false;
+        }
+
+        SDL_Rect **res = SDL_ListModes(NULL, SDL_FULLSCREEN|SDL_OPENGL);
+        if ( (res == NULL) || (res == ((SDL_Rect **)-1)) || (res[0] == NULL) || (res[0]->w < 640) || (res[0]->h < 480) )
+            res = hardcoded_resolutions;
+
+        // reverse list (it was sorted biggest to smallest by SDL)...
+        int count;
+        for (count = 0; res[count]; count++)
+        {
+            if ((res[count]->w < 640) || (res[count]->h < 480))
+                break;   // sane lower limit.
+        }
+
+        static SDL_Rect *resolutions_block = NULL;
+        resolutions_block = (SDL_Rect*) realloc(resolutions_block, sizeof (SDL_Rect) * count);
+        resolutions = (SDL_Rect**) realloc(resolutions, sizeof (SDL_Rect *) * (count + 1));
+        if ((resolutions_block == NULL) || (resolutions == NULL))
+        {
+            SDL_Quit();
+            fprintf(stderr, "Out of memory!\n");
+            return false;
+        }
+
+        resolutions[count--] = NULL;
+        for (int i = 0; count >= 0; i++, count--)
+        {
+            memcpy(&resolutions_block[count], res[i], sizeof (SDL_Rect));
+            resolutions[count] = &resolutions_block[count];
+        }
+
+        if (cmdline("showresolutions"))
+        {
+            printf("Resolutions we think are okay:\n");
+            for (int i = 0; resolutions[i]; i++)
+                printf("  %d x %d\n", (int) resolutions[i]->w, (int) resolutions[i]->h);
         }
     }
 
@@ -2158,6 +2210,7 @@ int main(int argc, char **argv)
 	}
 #endif
 
+#if !USE_SDL
 	int resolutionID(int width, int height)
 	{
 		int whichres;
@@ -2191,10 +2244,15 @@ int main(int argc, char **argv)
 
 		return whichres;
 	}
+#endif
 
 	bool selectDetail(int & width, int & height, int & bpp, int & detail)
 	{
 		bool res = true;
+
+		// currently with SDL, we just use whatever is requested
+		//  and don't care.  --ryan.
+		#if !USE_SDL
 		int whichres = closestResolution(width, height);
 
 		while (true)
@@ -2237,12 +2295,6 @@ int main(int argc, char **argv)
 				height=1200;
 			}
 
-            // currently with SDL, we just use whatever the native bitdepth
-            //  of the display is and don't care.
-            #if USE_SDL
-            break;
-            #endif
-
 			if ((detail != 0) && (resolutionDepths[whichres][1] != 0))
 			{
 				break;
@@ -2268,6 +2320,7 @@ int main(int argc, char **argv)
 		}
 
 		bpp = resolutionDepths[whichres][(detail != 0)];
+		#endif
 
 		return res;
 	}

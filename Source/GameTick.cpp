@@ -1844,9 +1844,11 @@ void 	Game::Tick()
 
 				if(newdetail>2)newdetail=detail;
 				if(newdetail<0)newdetail=detail;
+#if !USE_SDL  // we'll take anything that works.
 				if(newscreenwidth>3000)newscreenwidth=screenwidth;
-				if(newscreenwidth<0)newscreenwidth=screenwidth;
 				if(newscreenheight>3000)newscreenheight=screenheight;
+#endif
+				if(newscreenwidth<0)newscreenwidth=screenwidth;
 				if(newscreenheight<0)newscreenheight=screenheight;
 
 				ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
@@ -2106,6 +2108,52 @@ void 	Game::Tick()
 				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);	
 			}
 			if(Button()&&!oldbutton&&selected==0){
+				#if USE_SDL
+				extern SDL_Rect **resolutions;
+				bool isCustomResolution = true;
+				bool found = false;
+				for (int i = 0; (!found) && (resolutions[i]); i++)
+				{
+					if ((resolutions[i]->w == screenwidth) && (resolutions[i]->h == screenwidth))
+						isCustomResolution = false;
+
+					if ((resolutions[i]->w == newscreenwidth) && (resolutions[i]->h == newscreenheight))
+					{
+						i++;
+						if (resolutions[i] != NULL)
+						{
+							newscreenwidth = (int) resolutions[i]->w;
+							newscreenheight = (int) resolutions[i]->h;
+						}
+						else if (isCustomResolution)
+						{
+							if ((screenwidth == newscreenwidth) && (screenheight == newscreenheight))
+							{
+								newscreenwidth = (int) resolutions[0]->w;
+								newscreenheight = (int) resolutions[0]->h;
+							}
+							else
+							{
+								newscreenwidth = screenwidth;
+								newscreenheight = screenheight;
+							}
+						}
+						else
+						{
+							newscreenwidth = (int) resolutions[0]->w;
+							newscreenheight = (int) resolutions[0]->h;
+						}
+						found = true;
+					}
+				}
+
+				if (!found)
+				{
+					newscreenwidth = (int) resolutions[0]->w;
+					newscreenheight = (int) resolutions[0]->h;
+				}
+
+				#else
 				int whichres;
 				whichres=-1;
 				if(newscreenwidth==640&&newscreenheight==480)whichres=0;
@@ -2154,6 +2202,7 @@ void 	Game::Tick()
 					newscreenwidth=1920;
 					newscreenheight=1200;
 				}
+				#endif
 			}
 			if(Button()&&!oldbutton&&selected==1){
 				newdetail++;
@@ -2244,9 +2293,11 @@ void 	Game::Tick()
 
 				if(newdetail>2)newdetail=detail;
 				if(newdetail<0)newdetail=detail;
+#if !USE_SDL  // we'll take anything that works.
 				if(newscreenwidth>3000)newscreenwidth=screenwidth;
-				if(newscreenwidth<0)newscreenwidth=screenwidth;
 				if(newscreenheight>3000)newscreenheight=screenheight;
+#endif
+				if(newscreenwidth<0)newscreenwidth=screenwidth;
 				if(newscreenheight<0)newscreenheight=screenheight;
 
 
@@ -2990,9 +3041,11 @@ void 	Game::Tick()
 			if(mainmenu==3){
 				if(newdetail>2)newdetail=detail;
 				if(newdetail<0)newdetail=detail;
+#if !USE_SDL  // we'll take anything that works.
 				if(newscreenwidth>3000)newscreenwidth=screenwidth;
-				if(newscreenwidth<0)newscreenwidth=screenwidth;
 				if(newscreenheight>3000)newscreenheight=screenheight;
+#endif
+				if(newscreenwidth<0)newscreenwidth=screenwidth;
 				if(newscreenheight<0)newscreenheight=screenheight;
 
 				ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
@@ -5634,9 +5687,11 @@ void 	Game::Tick()
 			if(mainmenu==3){
 				if(newdetail>2)newdetail=detail;
 				if(newdetail<0)newdetail=detail;
+#if !USE_SDL  // we'll take anything that works.
 				if(newscreenwidth>3000)newscreenwidth=screenwidth;
-				if(newscreenwidth<0)newscreenwidth=screenwidth;
 				if(newscreenheight>3000)newscreenheight=screenheight;
+#endif
+				if(newscreenwidth<0)newscreenwidth=screenwidth;
 				if(newscreenheight<0)newscreenheight=screenheight;
 
 				ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
