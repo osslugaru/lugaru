@@ -504,6 +504,16 @@ static void sdlEventProc(const SDL_Event &e, Game &game)
                 }
             }
 
+            #if (defined(__APPLE__) && defined(__MACH__))
+            if (e.key.keysym.sym == SDLK_q)
+            {
+                if (e.key.keysym.mod & KMOD_META)
+                {
+                    gDone=true;
+                }
+            }
+            #endif
+
             else if (e.key.keysym.sym == SDLK_RETURN)
             {
                 if (e.key.keysym.mod & KMOD_ALT)
