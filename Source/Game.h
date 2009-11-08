@@ -1,6 +1,12 @@
 #ifndef _GAME_H_
 #define _GAME_H_
 
+#if (defined(__APPLE__) && defined(__MACH__))
+#  ifdef PLATFORM_MACOSX
+#    error Do not define PLATFORM_MACOSX for new builds. It is for the old Carbonized build.
+#  endif
+#endif
+
 #ifdef PLATFORM_MACOSX
 #include <Carbon.h>
 #include "Quicktime.h"
