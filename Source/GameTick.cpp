@@ -3174,7 +3174,13 @@ void 	Game::Tick()
 							if(displaychars[0]){
 								char serialstring[256];
 								char tempstring[256];
+								#if defined(__APPLE__)
+								sprintf (tempstring, "%s", registrationname);
+								#elif defined(_MSC_VER) || defined(__linux__)
 								sprintf (tempstring, "%s-windows", registrationname);
+								#else
+								#error Please make sure you have the right registration key stuff here!
+								#endif
 								long num1;
 								long num2;
 								long num3;
