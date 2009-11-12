@@ -92,6 +92,7 @@ typedef struct
     ALuint sid;
     FSOUND_SAMPLE *sample;
     bool startpaused;
+    float position[3];
 } OPENAL_Channels;
 
 typedef struct FSOUND_SAMPLE
@@ -100,6 +101,7 @@ typedef struct FSOUND_SAMPLE
     ALuint bid;  // buffer id.
     int mode;
     int is2d;
+    float min_distance;
 } FSOUND_SAMPLE;
 
 typedef struct FSOUND_STREAM
@@ -113,17 +115,71 @@ typedef struct FSOUND_STREAM
 static size_t num_channels = 0;
 static OPENAL_Channels *channels = NULL;
 static bool initialized = false;
+static float listener_position[3];
+
+
+static inline bool source_too_close(const int channel)
+{
+    const OPENAL_Channels *chan = &channels[channel];
+    const float *pos = chan->position;
+    const float distance = sqrtf(powf((pos[0] - listener_position[0]), 2.0f) +
+                                 powf((pos[1] - listener_position[1]), 2.0f) +
+                                 powf((pos[2] - listener_position[2]), 2.0f));
+    return (distance <= chan->sample->min_distance);
+}
+
+
+static void set_channel_position(const int channel, const float x,
+                                 const float y, const float z)
+{
+    OPENAL_Channels *chan = &channels[channel];
+
+    chan->position[0] = x;
+    chan->position[1] = y;
+    chan->position[2] = z;
+
+    FSOUND_SAMPLE *sptr = chan->sample;
+    if (sptr == NULL)
+        return;
+
+    const ALuint sid = chan->sid;
+    const bool no_attenuate = ((sptr->is2d) || (source_too_close(channel)));
+
+    if (no_attenuate)
+    {
+        alSourcei(sid, AL_SOURCE_RELATIVE, AL_TRUE);
+        alSource3f(sid, AL_POSITION, 0.0f, 0.0f, 0.0f);
+    }
+    else
+    {
+        alSourcei(sid, AL_SOURCE_RELATIVE, AL_FALSE);
+        alSource3f(sid, AL_POSITION, x, y, z);
+    }
+}
 
 
 void F_API OPENAL_3D_Listener_SetAttributes(const float *pos, const float *vel, float fx, float fy, float fz, float tx, float ty, float tz)
 {
     if (!initialized) return;
     if (pos != NULL)
+    {
         alListener3f(AL_POSITION, pos[0], pos[1], -pos[2]);
+        listener_position[0] = pos[0];
+        listener_position[1] = pos[1];
+        listener_position[2] = -pos[2];
+    }
+
     ALfloat vec[6] = { fx, fy, -fz, tz, ty, -tz };
     alListenerfv(AL_ORIENTATION, vec);
 
     // we ignore velocity, since doppler's broken in the Linux AL at the moment...
+
+    // adjust existing positions...
+    for (int i = 0; i < num_channels; i++)
+    {
+        const float *p = channels[i].position;
+        set_channel_position(i, p[0], p[1], p[2]);
+    }
 }
 
 signed char F_API OPENAL_3D_SetAttributes(int channel, const float *pos, const float *vel)
@@ -131,10 +187,11 @@ signed char F_API OPENAL_3D_SetAttributes(int channel, const float *pos, const f
     if (!initialized) return FALSE;
     if ((channel < 0) || (channel >= num_channels)) return FALSE;
 
-    if ((pos != NULL) && (!channels[channel].sample->is2d))
-        alSource3f(channels[channel].sid, AL_POSITION, pos[0], pos[1], -pos[2]);
+    if (pos != NULL)
+        set_channel_position(channel, pos[0], pos[1], -pos[2]);
 
     // we ignore velocity, since doppler's broken in the Linux AL at the moment...
+
     return TRUE;
 }
 
@@ -286,8 +343,7 @@ int F_API OPENAL_PlaySoundEx(int channel, FSOUND_SAMPLE *sptr, FSOUND_DSPUNIT *d
     channels[channel].sample = sptr;
     alSourcei(channels[channel].sid, AL_BUFFER, sptr->bid);
     alSourcei(channels[channel].sid, AL_LOOPING, (sptr->mode == FSOUND_LOOP_OFF) ? AL_FALSE : AL_TRUE);
-    alSourcei(channels[channel].sid, AL_SOURCE_RELATIVE, (sptr->is2d) ? AL_TRUE : AL_FALSE);
-    alSource3f(channels[channel].sid, AL_POSITION, 0.0f, 0.0f, 0.0f);
+    set_channel_position(channel, 0.0f, 0.0f, 0.0f);
 
     channels[channel].startpaused = ((startpaused) ? true : false);
     if (!startpaused)
@@ -455,11 +511,24 @@ signed char F_API OPENAL_Sample_SetMode(FSOUND_SAMPLE *sptr, unsigned int mode)
     return TRUE;
 }
 
-signed char F_API OPENAL_Sample_SetMinMaxDistance(FSOUND_SAMPLE *sptr, float min, float max)
+signed char F_API OPENAL_Sample_SetMinMaxDistance(FSOUND_SAMPLE *sptr, float mindist, float maxdist)
 {
     if (!initialized) return FALSE;
     if (sptr == NULL) return FALSE;
-    // !!! FIXME: write me
+    sptr->min_distance = mindist;
+    // we ignore maxdist. It's not really important to this game, and the
+    //  FMOD docs suggest that it's worthless anyhow.
+
+    // recalc sources to see if we need to adjust attenuation.
+    for (int i = 0; i < num_channels; i++)
+    {
+        if (channels[i].sample == sptr)
+        {
+            const float *p = channels[i].position;
+            set_channel_position(i, p[0], p[1], p[2]);
+        }
+    }
+
     return 0;
 }
 
