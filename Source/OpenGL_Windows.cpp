@@ -928,6 +928,8 @@ Boolean SetUp (Game & game)
 
     SDL_ShowCursor(0);
 
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
     if (SDL_SetVideoMode(kContextWidth, kContextHeight, 0, sdlflags) == NULL)
     {
         fprintf(stderr, "SDL_SetVideoMode() failed: %s\n", SDL_GetError());
@@ -945,6 +947,14 @@ Boolean SetUp (Game & game)
                 return false;
             }
         }
+    }
+
+    int dblbuf = 0;
+    if ((SDL_GL_GetAttribute(SDL_GL_DOUBLEBUFFER, &dblbuf) == -1) || (!dblbuf))
+    {
+        fprintf(stderr, "Failed to get double buffered GL context!\n");
+        SDL_Quit();
+        return false;
     }
 
     if (!lookup_all_glsyms())
