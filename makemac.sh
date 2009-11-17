@@ -8,6 +8,8 @@ NCPU=`sysctl -n hw.ncpu`
 for arch in ppc i386 x86_64 ; do
     make macosx=true macosx_arch=$arch clean
     make macosx=true macosx_arch=$arch -j$NCPU
+    # We always strip here. For debugging, you should do "make" directly.
+    strip run/lugaru-$arch
     BINS="$BINS run/lugaru-$arch"
 done
 

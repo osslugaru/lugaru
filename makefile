@@ -3,6 +3,14 @@ macosx := false
 use_devil := false
 use_fmod := false
 
+ifeq ($(strip $(shell uname -s)),Darwin)
+	macosx := true
+endif
+
+#OPT += -O0
+OPT += -O3 -fno-strict-aliasing -falign-loops=16 -fno-math-errno
+#OPT += -Os -fno-strict-aliasing
+
 BINDIR := bin
 RUNDIR := run
 SRCDIR := Source
@@ -15,34 +23,103 @@ GLUDIR := GLU
 LIBOGGDIR := libogg-1.0
 LIBVORBISDIR := libvorbis-1.0.1
 
-
-ifeq ($(strip $(macosx_arch)),)
-  macosx_arch := i386
-endif
-
-ifeq ($(strip $(macosx)),true)
-   EXEEXT := $(macosx_arch)
-else
-   EXEEXT := bin
-endif
-
-EXE := $(RUNDIR)/lugaru-$(EXEEXT)
-
 ifeq ($(strip $(macosx)),true)
 	CXX := g++-4.0
 	CC := gcc-4.0
 	LD := g++-4.0
+
+  	ifeq ($(strip $(use_devil)),true)
+        $(error DEVIL isn't supported in the Mac OS X builds right now.)
+    endif
+
+  	ifeq ($(strip $(use_fmod)),true)
+        $(error FMOD isn't supported in the Mac OS X builds right now.)
+    endif
+
+	ifeq ($(strip $(XCODE_DIR)),)
+        XCODE_DIR := /Developer
+    endif
+
+	ifeq ($(strip $(macosx_arch)),)
+	  	macosx_arch := $(shell uname -m)
+	endif
+
+	ifeq ($(strip $(macosx_arch)),ppc)
+        macosx_arch_okay := true
+        macosx_version_min := 10.4
+        macosx_version_min_required := 1040
+		macosx_sdk_dir := MacOSX10.4u.sdk
+		macosx_gcc_dir := powerpc-apple-darwin10/4.0.1
+		macosx_gcc_libdir := $(macosx_gcc_dir)
+		macosx_cxx_dir := powerpc-apple-darwin8
+    endif
+
+	ifeq ($(strip $(macosx_arch)),i386)
+        macosx_arch_okay := true
+        macosx_version_min := 10.4
+        macosx_version_min_required := 1040
+		macosx_sdk_dir := MacOSX10.4u.sdk
+		macosx_gcc_dir := i686-apple-darwin10/4.0.1
+		macosx_gcc_libdir := $(macosx_gcc_dir)
+		macosx_cxx_dir := i686-apple-darwin8
+    endif
+
+	ifeq ($(strip $(macosx_arch)),x86_64)
+        macosx_arch_okay := true
+        macosx_version_min := 10.6
+        macosx_version_min_required := 1060
+		macosx_sdk_dir := MacOSX10.6.sdk
+		macosx_gcc_dir := i686-apple-darwin10/4.0.1
+		macosx_gcc_libdir := $(macosx_gcc_dir)/x86_64
+		macosx_cxx_dir := x86_64-apple-darwin8
+    endif
+
+	ifneq ($(strip $(macosx_arch_okay)),true)
+        $(error Unknown Mac OS X architecture. Please update the makefile.)
+    endif
+
+   	EXEEXT := $(macosx_arch)
+
+    CFLAGS += -arch $(macosx_arch)
+    CFLAGS += -mmacosx-version-min=$(macosx_version_min)
+    CFLAGS += -DMAC_OS_X_VERSION_MIN_REQUIRED=$(macosx_version_min_required)
+    CFLAGS += -nostdinc
+    CFLAGS += -F$(XCODE_DIR)/SDKs/$(macosx_sdk_dir)/System/Library/Frameworks
+    CFLAGS += -I$(XCODE_DIR)/SDKs/$(macosx_sdk_dir)/usr/lib/gcc/$(macosx_gcc_dir)/include
+    CFLAGS += -isystem $(XCODE_DIR)/SDKs/$(macosx_sdk_dir)/usr/include
+    CFLAGS += -isystem $(XCODE_DIR)/SDKs/$(macosx_sdk_dir)/usr/include/c++/4.0.0
+    CFLAGS += -isystem $(XCODE_DIR)/SDKs/$(macosx_sdk_dir)/usr/include/c++/4.0.0/$(macosx_cxx_dir)
+    CFLAGS += -isystem $(XCODE_DIR)/SDKs/$(macosx_sdk_dir)/usr/include/c++/4.0.0/$(macosx_cxx_dir)/bits
+    CFLAGS += -isystem $(XCODE_DIR)/SDKs/$(macosx_sdk_dir)/usr/include/c++/4.0.0/backward
+  	CFLAGS += -mdynamic-no-pic
+
+    LDFLAGS += -arch $(macosx_arch)
+    LDFLAGS += -mmacosx-version-min=$(macosx_version_min)
+    LDFLAGS += -F$(XCODE_DIR)/SDKs/$(macosx_sdk_dir)/System/Library/Frameworks
+    LDFLAGS += -L$(XCODE_DIR)/SDKs/$(macosx_sdk_dir)/usr/lib/gcc/$(macosx_gcc_libdir)
+    LDFLAGS += -Wl,-syslibroot,$(XCODE_DIR)/SDKs/$(macosx_sdk_dir)
+  	LDFLAGS += -framework Cocoa -framework OpenGL -framework IOKit -framework CoreFoundation -framework Carbon -framework OpenAL
+  	LDFLAGS += ./libSDL-1.2.0.dylib ./libSDLmain-osx.a
 else
 	CXX := /opt/crosstool/gcc-4.1.2-glibc-2.3.6/i686-unknown-linux-gnu/i686-unknown-linux-gnu/bin/g++
 	CC := /opt/crosstool/gcc-4.1.2-glibc-2.3.6/i686-unknown-linux-gnu/i686-unknown-linux-gnu/bin/gcc
 	LD := /opt/crosstool/gcc-4.1.2-glibc-2.3.6/i686-unknown-linux-gnu/i686-unknown-linux-gnu/bin/g++
+
+  	CFLAGS += -DPLATFORM_LINUX=1
+  	LDFLAGS += ./libSDL-1.2.so.0 -Wl,-rpath,\$$ORIGIN
+
+  	ifeq ($(strip $(use_devil)),true)
+    	LDFLAGS += ./libIL.so.1 ./libILU.so.1 ./libILUT.so.1
+  	endif
+
+  	ifeq ($(strip $(use_fmod)),true)
+    	POSTLDFLAGS += -lpthread ./libfmod-linux-x86.a
+  	else
+    	LDFLAGS += ./libopenal.so.1
+  	endif
 endif
 
-#OPT := -O0
-OPT := -O3 -fno-strict-aliasing -falign-loops=16 -fno-math-errno
-#OPT := -Os -fno-strict-aliasing
-
-DEFINES := \
+DEFINES += \
 	-DPLATFORM_UNIX=1 \
 	-DUSE_SDL=1 \
 	-DTRUE=1 \
@@ -50,7 +127,7 @@ DEFINES := \
 	-Dstricmp=strcasecmp \
 	-DBinIO_STDINT_HEADER="<stdint.h>" \
 
-INCLUDES := \
+INCLUDES += \
 			-I$(SRCDIR) \
 			-I$(SDLDIR)/include \
 			-I./OpenGL/ \
@@ -69,33 +146,13 @@ ifeq ($(strip $(use_fmod)),false)
     INCLUDES += -I$(OPENALDIR)/include -I$(LIBOGGDIR)/include -I$(LIBVORBISDIR)/include
 endif
 
+CFLAGS += -g -c $(OPT) $(INCLUDES) $(DEFINES) -fsigned-char -pipe -w
 
-CFLAGS := -g -c $(OPT) $(INCLUDES) $(DEFINES) -fsigned-char -pipe
-CFLAGS += -w
 
-ifeq ($(strip $(macosx)),true)
-  CFLAGS += -mdynamic-no-pic
-  LDFLAGS := -framework Cocoa -framework OpenGL -framework IOKit -framework CoreFoundation -framework Carbon -framework OpenAL
-  APPLDFLAGS := ./libSDL-1.2.0.dylib ./libSDLmain-osx.a
-  ifneq ($(strip $(macosx_arch)),)
-	  CFLAGS += -arch $(macosx_arch)
-	  LDFLAGS += -arch $(macosx_arch)
-	  APPLDFLAGS += -arch $(macosx_arch)
-  endif
-else
-  CFLAGS += -DPLATFORM_LINUX=1
-  LDFLAGS := ./libSDL-1.2.so.0 -Wl,-rpath,\$$ORIGIN
-
-  ifeq ($(strip $(use_devil)),true)
-    LDFLAGS += ./libIL.so.1 ./libILU.so.1 ./libILUT.so.1
-  endif
-
-  ifeq ($(strip $(use_fmod)),true)
-    POSTLDFLAGS += -lpthread ./libfmod-linux-x86.a
-  else
-    LDFLAGS += ./libopenal.so.1
-  endif
+ifeq ($(strip $(EXEEXT)),)
+   	EXEEXT := bin
 endif
+EXE := $(RUNDIR)/lugaru-$(EXEEXT)
 
 CXXFLAGS := $(CFLAGS)
 
@@ -318,7 +375,7 @@ $(BINDIR)/%.o : %.c
 
 $(EXE) : $(OBJS) $(APPOBJS)
 	@mkdir -p $(dir $@)
-	$(LD) -o $@ $(APPLDFLAGS) $(LDFLAGS) $(OBJS) $(APPOBJS) $(POSTLDFLAGS)
+	$(LD) -o $@ $(LDFLAGS) $(OBJS) $(APPOBJS) $(POSTLDFLAGS)
 
 clean:
 	rm -f $(BINDIR)/*.o
