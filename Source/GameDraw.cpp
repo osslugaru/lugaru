@@ -1939,7 +1939,7 @@ int Game::DrawGLScene(void)
 
 		if(drawmode!=normalmode){
 			glEnable(GL_TEXTURE_2D);
-			//glFinish();
+			glFinish();
 			if(!drawtoggle||drawmode!=realmotionblurmode||(drawtoggle==2||change==1)){
 				if(screentexture){
 
