@@ -470,6 +470,7 @@ static inline int clamp_sdl_mouse_button(Uint8 button)
 static void sdlEventProc(const SDL_Event &e, Game &game)
 {
     int val;
+    bool skipkey = false;
     SDLMod mod;
 
     switch(e.type)
@@ -508,6 +509,7 @@ static void sdlEventProc(const SDL_Event &e, Game &game)
             {
                 if (e.key.keysym.mod & KMOD_CTRL)
                 {
+                    skipkey = true;
                     SDL_GrabMode mode = SDL_GRAB_ON;
                     if ((SDL_GetVideoSurface()->flags & SDL_FULLSCREEN) == 0)
                     {
@@ -521,10 +523,13 @@ static void sdlEventProc(const SDL_Event &e, Game &game)
             else if (e.key.keysym.sym == SDLK_RETURN)
             {
                 if (e.key.keysym.mod & KMOD_ALT)
+                {
+                    skipkey = true;
                     SDL_WM_ToggleFullScreen(SDL_GetVideoSurface());
+                }
             }
 
-            if (e.key.keysym.sym < SDLK_LAST)
+            if ((!skipkey) && (e.key.keysym.sym < SDLK_LAST))
             {
                 if (KeyTable[e.key.keysym.sym] != 0xffff)
                     SetKey(KeyTable[e.key.keysym.sym]);
