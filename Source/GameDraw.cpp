@@ -2218,6 +2218,10 @@ int Game::DrawGLScene(void)
 	}
 
 	if(mainmenu){
+#if USE_SDL
+        // !!! FIXME: hack: clamp framerate in menu so text input works correctly on fast systems.
+        SDL_Delay(15);
+#endif
 		glDrawBuffer(GL_BACK);
 		glReadBuffer(GL_BACK);
 		glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
