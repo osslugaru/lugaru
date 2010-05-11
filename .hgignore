@@ -2,5 +2,5 @@ syntax:glob
 bin
 run
 Xcode/build
-
-
+Xcode/*.xcodeproj/*.mode1v3
+Xcode/*.xcodeproj/*.pbxuser
