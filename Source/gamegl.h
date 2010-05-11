@@ -33,13 +33,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef WIN32
   #if PLATFORM_UNIX
     #define GL_GLEXT_PROTOTYPES
-    #include "gl.h"
-    #include "glu.h"
-    #include "glext.h"
+    #include "GL/gl.h"
+    #include "GL/glu.h"
+    #include "GL/glext.h"
   #else
-    #include <gl.h>
-    #include <glu.h>
-    #include <glext.h>
+    #include <GL/gl.h>
+    #include <GL/glu.h>
+    #include <GL/glext.h>
   #endif
 #else
   #define WIN32_LEAN_AND_MEAN

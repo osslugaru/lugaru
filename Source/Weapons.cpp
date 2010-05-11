@@ -10,7 +10,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -58,9 +58,9 @@ extern float bonustotal;
 extern float bonustime;
 extern int tutoriallevel;
 extern int numthrowkill;
-extern "C" 	void PlaySoundEx(int channel, FSOUND_SAMPLE *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused);
+extern "C"	void PlaySoundEx(int channel, FSOUND_SAMPLE *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused);
 
-void 	Weapons::DoStuff(){
+void	Weapons::DoStuff(){
 	static int i,whichpatchx,whichpatchz,j,k,whichhit,m;
 	static XYZ start,end,colpoint,normalrot,footvel,footpoint;
 	static XYZ terrainnormal;
@@ -97,10 +97,10 @@ void 	Weapons::DoStuff(){
 			vel[0]=0;
 			vel[1]=0;
 			vel[2]=0;
-			PlaySoundEx( staffbreaksound, samp[staffbreaksound], NULL, TRUE);
+			PlaySoundEx( staffbreaksound, samp[staffbreaksound], NULL, true);
 			FSOUND_3D_SetAttributes(channels[staffbreaksound], gLoc, vel);
 			FSOUND_SetVolume(channels[staffbreaksound], 256);
-			FSOUND_SetPaused(channels[staffbreaksound], FALSE);
+			FSOUND_SetPaused(channels[staffbreaksound], false);
 			XYZ tempvel;
 			XYZ speed;
 			//speed=(tippoint[i]-oldtippoint[i])/multiplier/6;
@@ -188,14 +188,14 @@ void 	Weapons::DoStuff(){
 								vel[0]=0;
 								vel[1]=0;
 								vel[2]=0;
-								PlaySoundEx( knifesheathesound, samp[knifesheathesound], NULL, TRUE);
+								PlaySoundEx( knifesheathesound, samp[knifesheathesound], NULL, true);
 								FSOUND_3D_SetAttributes(channels[knifesheathesound], gLoc, vel);
 								FSOUND_SetVolume(channels[knifesheathesound], 128);
-								FSOUND_SetPaused(channels[knifesheathesound], FALSE);
+								FSOUND_SetPaused(channels[knifesheathesound], false);
 
 								bloody[i]=0;
 
-								sprites.MakeSprite(cloudimpactsprite, position[i],velocity[i], 1,1,1, .8, .3);				
+								sprites.MakeSprite(cloudimpactsprite, position[i],velocity[i], 1,1,1, .8, .3);
 							}
 							else {
 								physics[i]=1;
@@ -204,13 +204,13 @@ void 	Weapons::DoStuff(){
 								tippoint[i]-=velocity[i]*multiplier;
 								tipvelocity[i]=velocity[i];
 							}
-						}	
+						}
 					}
 				}
 				if(velocity[i].x||velocity[i].y||velocity[i].z)
 					for(j=0;j<numplayers;j++){
 						footvel=0;
-						footpoint=DoRotation((player[j].skeleton.joints[player[j].skeleton.jointlabels[abdomen]].position+player[j].skeleton.joints[player[j].skeleton.jointlabels[neck]].position)/2,0,player[j].rotation,0)*player[j].scale+player[j].coords;				
+						footpoint=DoRotation((player[j].skeleton.joints[player[j].skeleton.jointlabels[abdomen]].position+player[j].skeleton.joints[player[j].skeleton.jointlabels[neck]].position)/2,0,player[j].rotation,0)*player[j].scale+player[j].coords;
 						if(owner[i]==-1&&findDistancefastflat(&position[i],&player[j].coords)<1.5&&findDistancefast(&position[i],&player[j].coords)<4&&player[j].weaponstuck==-1&&!player[j].skeleton.free&&j!=oldowner[i]){
 							if((player[j].aitype!=attacktypecutoff||abs(Random()%6)==0||(player[j].targetanimation!=backhandspringanim&&player[j].targetanimation!=rollanim&&player[j].targetanimation!=flipanim&&Random()%2==0))&&!missed[i]){
 								bool caught=0;
@@ -223,10 +223,10 @@ void 	Weapons::DoStuff(){
 									vel[0]=player[j].velocity.x;
 									vel[1]=player[j].velocity.y;
 									vel[2]=player[j].velocity.z;
-									PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, TRUE);
+									PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, true);
 									FSOUND_3D_SetAttributes(channels[knifedrawsound], gLoc, vel);
 									FSOUND_SetVolume(channels[knifedrawsound], 128);
-									FSOUND_SetPaused(channels[knifedrawsound], FALSE);
+									FSOUND_SetPaused(channels[knifedrawsound], false);
 
 									player[j].weaponactive=0;
 									player[j].targetanimation=removeknifeanim;
@@ -281,10 +281,10 @@ void 	Weapons::DoStuff(){
 									vel[0]=0;
 									vel[1]=0;
 									vel[2]=0;
-									PlaySoundEx( fleshstabsound, samp[fleshstabsound], NULL, TRUE);
+									PlaySoundEx( fleshstabsound, samp[fleshstabsound], NULL, true);
 									FSOUND_3D_SetAttributes(channels[fleshstabsound], gLoc, vel);
 									FSOUND_SetVolume(channels[fleshstabsound], 128);
-									FSOUND_SetPaused(channels[fleshstabsound], FALSE);
+									FSOUND_SetPaused(channels[fleshstabsound], false);
 
 									if(animation[player[0].targetanimation].height==highheight){
 										bonus=ninja;
@@ -299,7 +299,7 @@ void 	Weapons::DoStuff(){
 								}
 							}
 							else missed[i]=1;
-						}	
+						}
 					}
 					if(position[i].y<terrain.getHeight(position[i].x,position[i].z)){
 						if(terrain.getOpacity(position[i].x,position[i].z)<.2){
@@ -325,7 +325,7 @@ void 	Weapons::DoStuff(){
 								glRotatef(-rotation3[i],0,1,0);
 								glRotatef(smallrotation[i],1,0,0);
 								glRotatef(smallrotation2[i],0,1,0);
-								glTranslatef(0,0,1);		
+								glTranslatef(0,0,1);
 								glGetFloatv(GL_MODELVIEW_MATRIX,M);
 								tippoint[i].x=M[12];
 								tippoint[i].y=M[13];
@@ -350,10 +350,10 @@ void 	Weapons::DoStuff(){
 							vel[0]=0;
 							vel[1]=0;
 							vel[2]=0;
-							PlaySoundEx( knifesheathesound, samp[knifesheathesound], NULL, TRUE);
+							PlaySoundEx( knifesheathesound, samp[knifesheathesound], NULL, true);
 							FSOUND_3D_SetAttributes(channels[knifesheathesound], gLoc, vel);
 							FSOUND_SetVolume(channels[knifesheathesound], 128);
-							FSOUND_SetPaused(channels[knifesheathesound], FALSE);
+							FSOUND_SetPaused(channels[knifesheathesound], false);
 
 							XYZ terrainlight;
 							terrainlight=terrain.getLighting(position[i].x,position[i].z);
@@ -448,7 +448,7 @@ void 	Weapons::DoStuff(){
 										hitsomething[i]=1;
 
 										position[i]+=(colpoint-tippoint[i])+diff*.05;
-										tippoint[i]=colpoint+diff*.05;							
+										tippoint[i]=colpoint+diff*.05;
 										oldposition[i]=position[i];
 										oldtippoint[i]=tippoint[i];
 									}
@@ -464,7 +464,7 @@ void 	Weapons::DoStuff(){
 										hitsomething[i]=1;
 
 										tippoint[i]+=(colpoint-position[i])+diff*.05;
-										position[i]=colpoint+diff*.05;							
+										position[i]=colpoint+diff*.05;
 										oldtippoint[i]=tippoint[i];
 										oldposition[i]=tippoint[i];
 									}
@@ -476,7 +476,7 @@ void 	Weapons::DoStuff(){
 							whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
 							if(whichhit!=-1){
 								hitsomething[i]=1;
-								position[i]=colpoint;			
+								position[i]=colpoint;
 								terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
 								ReflectVector(&velocity[i],&terrainnormal);
 								position[i]+=terrainnormal*.002;
@@ -501,10 +501,10 @@ void 	Weapons::DoStuff(){
 									vel[0]=0;
 									vel[1]=0;
 									vel[2]=0;
-									PlaySoundEx( whichsound, samp[whichsound], NULL, TRUE);
+									PlaySoundEx( whichsound, samp[whichsound], NULL, true);
 									FSOUND_3D_SetAttributes(channels[whichsound], gLoc, vel);
 									FSOUND_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
-									FSOUND_SetPaused(channels[whichsound], FALSE);
+									FSOUND_SetPaused(channels[whichsound], false);
 								}
 							}
 							start=oldtippoint[i];
@@ -512,7 +512,7 @@ void 	Weapons::DoStuff(){
 							whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
 							if(whichhit!=-1){
 								hitsomething[i]=1;
-								tippoint[i]=colpoint;			
+								tippoint[i]=colpoint;
 								terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
 								ReflectVector(&tipvelocity[i],&terrainnormal);
 								tippoint[i]+=terrainnormal*.002;
@@ -538,10 +538,10 @@ void 	Weapons::DoStuff(){
 									vel[0]=0;
 									vel[1]=0;
 									vel[2]=0;
-									PlaySoundEx( whichsound, samp[whichsound], NULL, TRUE);
+									PlaySoundEx( whichsound, samp[whichsound], NULL, true);
 									FSOUND_3D_SetAttributes(channels[whichsound], gLoc, vel);
 									FSOUND_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
-									FSOUND_SetPaused(channels[whichsound], FALSE);
+									FSOUND_SetPaused(channels[whichsound], false);
 								}
 							}
 
@@ -556,7 +556,7 @@ void 	Weapons::DoStuff(){
 									whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
 									if(whichhit!=-1){
 										hitsomething[i]=1;
-										mid=colpoint;			
+										mid=colpoint;
 										terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
 										ReflectVector(&velocity[i],&terrainnormal);
 
@@ -580,10 +580,10 @@ void 	Weapons::DoStuff(){
 											vel[0]=0;
 											vel[1]=0;
 											vel[2]=0;
-											PlaySoundEx( whichsound, samp[whichsound], NULL, TRUE);
+											PlaySoundEx( whichsound, samp[whichsound], NULL, true);
 											FSOUND_3D_SetAttributes(channels[whichsound], gLoc, vel);
 											FSOUND_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
-											FSOUND_SetPaused(channels[whichsound], FALSE);
+											FSOUND_SetPaused(channels[whichsound], false);
 										}
 										position[i]+=(mid-oldmid2)*(20/(1+(float)m*10));
 									}
@@ -597,7 +597,7 @@ void 	Weapons::DoStuff(){
 									whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
 									if(whichhit!=-1){
 										hitsomething[i]=1;
-										mid=colpoint;			
+										mid=colpoint;
 										terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
 										ReflectVector(&tipvelocity[i],&terrainnormal);
 
@@ -621,10 +621,10 @@ void 	Weapons::DoStuff(){
 											vel[0]=0;
 											vel[1]=0;
 											vel[2]=0;
-											PlaySoundEx( whichsound, samp[whichsound], NULL, TRUE);
+											PlaySoundEx( whichsound, samp[whichsound], NULL, true);
 											FSOUND_3D_SetAttributes(channels[whichsound], gLoc, vel);
 											FSOUND_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
-											FSOUND_SetPaused(channels[whichsound], FALSE);
+											FSOUND_SetPaused(channels[whichsound], false);
 										}
 										tippoint[i]+=(mid-oldmid2)*(20/(1+(float)m*10));
 									}
@@ -664,7 +664,7 @@ void 	Weapons::DoStuff(){
 														closestswordpoint=colpoint;
 														velocity[i]+=(closestpoint-closestswordpoint);
 														tipvelocity[i]+=(closestpoint-closestswordpoint);
-														position[i]+=(closestpoint-closestswordpoint);		
+														position[i]+=(closestpoint-closestswordpoint);
 														tippoint[i]+=(closestpoint-closestswordpoint);
 													}
 												}
@@ -707,11 +707,11 @@ void 	Weapons::DoStuff(){
 							vel[0]=0;
 							vel[1]=0;
 							vel[2]=0;
-							PlaySoundEx( whichsound, samp[whichsound], NULL, TRUE);
+							PlaySoundEx( whichsound, samp[whichsound], NULL, true);
 							FSOUND_3D_SetAttributes(channels[whichsound], gLoc, vel);
 							if(terrain.getOpacity(position[i].x,position[i].z)>.2)FSOUND_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
 							else FSOUND_SetVolume(channels[whichsound], 32*findLengthfast(&bounceness));
-							FSOUND_SetPaused(channels[whichsound], FALSE);
+							FSOUND_SetPaused(channels[whichsound], false);
 
 							if(terrain.getOpacity(position[i].x,position[i].z)<.2){
 								XYZ terrainlight;
@@ -761,11 +761,11 @@ void 	Weapons::DoStuff(){
 							vel[0]=0;
 							vel[1]=0;
 							vel[2]=0;
-							PlaySoundEx( whichsound, samp[whichsound], NULL, TRUE);
+							PlaySoundEx( whichsound, samp[whichsound], NULL, true);
 							FSOUND_3D_SetAttributes(channels[whichsound], gLoc, vel);
 							if(terrain.getOpacity(tippoint[i].x,tippoint[i].z)>.2)FSOUND_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
 							else FSOUND_SetVolume(channels[whichsound], 32*findLengthfast(&bounceness));
-							FSOUND_SetPaused(channels[whichsound], FALSE);
+							FSOUND_SetPaused(channels[whichsound], false);
 
 							if(terrain.getOpacity(tippoint[i].x,tippoint[i].z)<.2){
 								XYZ terrainlight;
@@ -819,11 +819,11 @@ void 	Weapons::DoStuff(){
 							vel[0]=0;
 							vel[1]=0;
 							vel[2]=0;
-							PlaySoundEx( whichsound, samp[whichsound], NULL, TRUE);
+							PlaySoundEx( whichsound, samp[whichsound], NULL, true);
 							FSOUND_3D_SetAttributes(channels[whichsound], gLoc, vel);
 							if(terrain.getOpacity(position[i].x,position[i].z)>.2)FSOUND_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
 							else FSOUND_SetVolume(channels[whichsound], 32*findLengthfast(&bounceness));
-							FSOUND_SetPaused(channels[whichsound], FALSE);
+							FSOUND_SetPaused(channels[whichsound], false);
 						}
 						position[i]+=(mid-oldmid)*20;
 					}
@@ -863,11 +863,11 @@ void 	Weapons::DoStuff(){
 							vel[0]=0;
 							vel[1]=0;
 							vel[2]=0;
-							PlaySoundEx( whichsound, samp[whichsound], NULL, TRUE);
+							PlaySoundEx( whichsound, samp[whichsound], NULL, true);
 							FSOUND_3D_SetAttributes(channels[whichsound], gLoc, vel);
 							if(terrain.getOpacity(position[i].x,position[i].z)>.2)FSOUND_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
 							else FSOUND_SetVolume(channels[whichsound], 32*findLengthfast(&bounceness));
-							FSOUND_SetPaused(channels[whichsound], FALSE);
+							FSOUND_SetPaused(channels[whichsound], false);
 						}
 						tippoint[i]+=(mid-oldmid)*20;
 					}
@@ -905,11 +905,11 @@ void 	Weapons::DoStuff(){
 					vel[0]=0;
 					vel[1]=0;
 					vel[2]=0;
-					PlaySoundEx( whichsound, samp[whichsound], NULL, TRUE);
+					PlaySoundEx( whichsound, samp[whichsound], NULL, true);
 					FSOUND_3D_SetAttributes(channels[whichsound], gLoc, vel);
 					if(terrain.getOpacity(position[i].x,position[i].z)>.2)FSOUND_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
 					else FSOUND_SetVolume(channels[whichsound], 32*findLengthfast(&bounceness));
-					FSOUND_SetPaused(channels[whichsound], FALSE);
+					FSOUND_SetPaused(channels[whichsound], false);
 					}
 					}
 
@@ -944,11 +944,11 @@ void 	Weapons::DoStuff(){
 					vel[0]=0;
 					vel[1]=0;
 					vel[2]=0;
-					PlaySoundEx( whichsound, samp[whichsound], NULL, TRUE);
+					PlaySoundEx( whichsound, samp[whichsound], NULL, true);
 					FSOUND_3D_SetAttributes(channels[whichsound], gLoc, vel);
 					if(terrain.getOpacity(tippoint[i].x,tippoint[i].z)>.2)FSOUND_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
 					else FSOUND_SetVolume(channels[whichsound], 32*findLengthfast(&bounceness));
-					FSOUND_SetPaused(channels[whichsound], FALSE);
+					FSOUND_SetPaused(channels[whichsound], false);
 					}
 					}*/
 
@@ -1060,7 +1060,7 @@ void 	Weapons::DoStuff(){
 					}
 
 					//velocity[i]=(position[i]-oldposition[i])/multiplier;
-					//tipvelocity[i]==(tippoint[i-+oldtippoint[i])/multiplier;			
+					//tipvelocity[i]==(tippoint[i-+oldtippoint[i])/multiplier;
 					if(freetime[i]>.4){
 						velocity[i]=0;
 						tipvelocity[i]=0;
@@ -1083,7 +1083,7 @@ void 	Weapons::DoStuff(){
 				if(bloodtoggle){
 					bloodvel=0;
 					sprites.MakeSprite(bloodsprite, bloodloc,bloodvel, 1,1,1, .03, 1);
-				}			
+				}
 			}
 		}
 		if(onfire[i]){
@@ -1182,8 +1182,8 @@ int Weapons::Draw()
 					glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 					glPushMatrix();
 						glColor4f(terrainlight.x,terrainlight.y,terrainlight.z,j/drawhowmany[i]);
-						if(owner[i]!=-1)glTranslatef(position[i].x*(((float)(j))/drawhowmany[i])+lastdrawnposition[i].x*(1-((float)(j))/drawhowmany[i]),position[i].y*(((float)(j))/drawhowmany[i])-.02+lastdrawnposition[i].y*(1-((float)(j))/drawhowmany[i]),position[i].z*(((float)(j))/drawhowmany[i])+lastdrawnposition[i].z*(1-((float)(j))/drawhowmany[i]));		
-						if(owner[i]==-1)glTranslatef(position[i].x*(((float)(j))/drawhowmany[i])+lastdrawnposition[i].x*(1-((float)(j))/drawhowmany[i]),position[i].y*(((float)(j))/drawhowmany[i])+lastdrawnposition[i].y*(1-((float)(j))/drawhowmany[i]),position[i].z*(((float)(j))/drawhowmany[i])+lastdrawnposition[i].z*(1-((float)(j))/drawhowmany[i]));			
+						if(owner[i]!=-1)glTranslatef(position[i].x*(((float)(j))/drawhowmany[i])+lastdrawnposition[i].x*(1-((float)(j))/drawhowmany[i]),position[i].y*(((float)(j))/drawhowmany[i])-.02+lastdrawnposition[i].y*(1-((float)(j))/drawhowmany[i]),position[i].z*(((float)(j))/drawhowmany[i])+lastdrawnposition[i].z*(1-((float)(j))/drawhowmany[i]));
+						if(owner[i]==-1)glTranslatef(position[i].x*(((float)(j))/drawhowmany[i])+lastdrawnposition[i].x*(1-((float)(j))/drawhowmany[i]),position[i].y*(((float)(j))/drawhowmany[i])+lastdrawnposition[i].y*(1-((float)(j))/drawhowmany[i]),position[i].z*(((float)(j))/drawhowmany[i])+lastdrawnposition[i].z*(1-((float)(j))/drawhowmany[i]));
 						//glTranslatef(position[i].x,position[i].y-.02,position[i].z);
 						glRotatef(bigrotation[i]*(((float)(j))/drawhowmany[i])+lastdrawnbigrotation[i]*(1-((float)(j))/drawhowmany[i]),0,1,0);
 						glRotatef(bigtilt2[i]*(((float)(j))/drawhowmany[i])+lastdrawnbigtilt2[i]*(1-((float)(j))/drawhowmany[i]),1,0,0);
@@ -1213,7 +1213,7 @@ int Weapons::Draw()
 
 						if(type[i]==knife)
 						{
-							glEnable(GL_LIGHTING);	
+							glEnable(GL_LIGHTING);
 							if(!bloody[i]||!bloodtoggle)throwingknifemodel.drawdifftex(knifetextureptr);
 							if(bloodtoggle)
 							{
@@ -1223,7 +1223,7 @@ int Weapons::Draw()
 						}
 						if(type[i]==sword)
 						{
-							glEnable(GL_LIGHTING);	
+							glEnable(GL_LIGHTING);
 							if(!bloody[i]||!bloodtoggle)swordmodel.drawdifftex(swordtextureptr);
 							if(bloodtoggle)
 							{
@@ -1233,7 +1233,7 @@ int Weapons::Draw()
 						}
 						if(type[i]==staff)
 						{
-							glEnable(GL_LIGHTING);	
+							glEnable(GL_LIGHTING);
 							staffmodel.drawdifftex(stafftextureptr);
 						}
 
@@ -1266,7 +1266,7 @@ int Weapons::Draw()
 					glRotatef(-rotation3[i],0,1,0);
 					glRotatef(smallrotation[i],1,0,0);
 					glRotatef(smallrotation2[i],0,1,0);
-					glTranslatef(0,0,length[i]);		
+					glTranslatef(0,0,length[i]);
 					glGetFloatv(GL_MODELVIEW_MATRIX,M);
 					tippoint[i].x=M[12];
 					tippoint[i].y=M[13];

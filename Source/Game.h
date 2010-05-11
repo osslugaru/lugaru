@@ -10,7 +10,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -51,7 +51,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Terrain.h"
 #include "Skybox.h"
 #include "Skeleton.h"
-#include "Models.h"   
+#include "Models.h"
 #include "Lights.h"
 #include "Person.h"
 #include "Constants.h"
@@ -68,7 +68,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern GLuint rabbittexture;
 
-class Game		
+class Game
 {
 public:
 
@@ -279,7 +279,7 @@ public:
 	int musicselected;
 	int change;
 	Game();
-	~Game() {		
+	~Game() {
 		for(int i=0;i<10;i++){
 			if(Mainmenuitems[i])glDeleteTextures( 1, &Mainmenuitems[i] );
 		}

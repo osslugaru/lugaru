@@ -64,297 +64,297 @@ Boolean	IsKeyDown( unsigned char *keyMap, unsigned short theKey )
 unsigned short 	CharToKey(char* which)
 {
 	// alphabetic keys
-	if(!stricmp(which,"a")){
+	if(!strcasecmp(which,"a")){
 		return MAC_A_KEY;
 	}
-	if(!stricmp(which,"b")){
+	if(!strcasecmp(which,"b")){
 		return MAC_B_KEY;
 	}
-	if(!stricmp(which,"c")){
+	if(!strcasecmp(which,"c")){
 		return MAC_C_KEY;
 	}
-	if(!stricmp(which,"d")){
+	if(!strcasecmp(which,"d")){
 		return MAC_D_KEY;
 	}
-	if(!stricmp(which,"e")){
+	if(!strcasecmp(which,"e")){
 		return MAC_E_KEY;
 	}
-	if(!stricmp(which,"f")){
+	if(!strcasecmp(which,"f")){
 		return MAC_F_KEY;
 	}
-	if(!stricmp(which,"g")){
+	if(!strcasecmp(which,"g")){
 		return MAC_G_KEY;
 	}
-	if(!stricmp(which,"h")){
+	if(!strcasecmp(which,"h")){
 		return MAC_H_KEY;
 	}
-	if(!stricmp(which,"i")){
+	if(!strcasecmp(which,"i")){
 		return MAC_I_KEY;
 	}
-	if(!stricmp(which,"j")){
+	if(!strcasecmp(which,"j")){
 		return MAC_J_KEY;
 	}
-	if(!stricmp(which,"k")){
+	if(!strcasecmp(which,"k")){
 		return MAC_K_KEY;
 	}
-	if(!stricmp(which,"l")){
+	if(!strcasecmp(which,"l")){
 		return MAC_L_KEY;
 	}
-	if(!stricmp(which,"m")){
+	if(!strcasecmp(which,"m")){
 		return MAC_M_KEY;
 	}
-	if(!stricmp(which,"n")){
+	if(!strcasecmp(which,"n")){
 		return MAC_N_KEY;
 	}
-	if(!stricmp(which,"o")){
+	if(!strcasecmp(which,"o")){
 		return MAC_O_KEY;
 	}
-	if(!stricmp(which,"p")){
+	if(!strcasecmp(which,"p")){
 		return MAC_P_KEY;
 	}
-	if(!stricmp(which,"q")){
+	if(!strcasecmp(which,"q")){
 		return MAC_Q_KEY;
 	}
-	if(!stricmp(which,"r")){
+	if(!strcasecmp(which,"r")){
 		return MAC_R_KEY;
 	}
-	if(!stricmp(which,"s")){
+	if(!strcasecmp(which,"s")){
 		return MAC_S_KEY;
 	}
-	if(!stricmp(which,"t")){
+	if(!strcasecmp(which,"t")){
 		return MAC_T_KEY;
 	}
-	if(!stricmp(which,"u")){
+	if(!strcasecmp(which,"u")){
 		return MAC_U_KEY;
 	}
-	if(!stricmp(which,"v")){
+	if(!strcasecmp(which,"v")){
 		return MAC_V_KEY;
 	}
-	if(!stricmp(which,"w")){
+	if(!strcasecmp(which,"w")){
 		return MAC_W_KEY;
 	}
-	if(!stricmp(which,"x")){
+	if(!strcasecmp(which,"x")){
 		return MAC_X_KEY;
 	}
-	if(!stricmp(which,"y")){
+	if(!strcasecmp(which,"y")){
 		return MAC_Y_KEY;
 	}
-	if(!stricmp(which,"z")){
+	if(!strcasecmp(which,"z")){
 		return MAC_Z_KEY;
 	}
 
 	// keypad keys
-	if(!stricmp(which,"KP0")){
+	if(!strcasecmp(which,"KP0")){
 		return MAC_NUMPAD_0_KEY;
 	}
-	if(!stricmp(which,"KP1")){
+	if(!strcasecmp(which,"KP1")){
 		return MAC_NUMPAD_1_KEY;
 	}
-	if(!stricmp(which,"KP2")){
+	if(!strcasecmp(which,"KP2")){
 		return MAC_NUMPAD_2_KEY;
 	}
-	if(!stricmp(which,"KP3")){
+	if(!strcasecmp(which,"KP3")){
 		return MAC_NUMPAD_3_KEY;
 	}
-	if(!stricmp(which,"KP4")){
+	if(!strcasecmp(which,"KP4")){
 		return MAC_NUMPAD_4_KEY;
 	}
-	if(!stricmp(which,"KP5")){
+	if(!strcasecmp(which,"KP5")){
 		return MAC_NUMPAD_5_KEY;
 	}
-	if(!stricmp(which,"KP6")){
+	if(!strcasecmp(which,"KP6")){
 		return MAC_NUMPAD_6_KEY;
 	}
-	if(!stricmp(which,"KP7")){
+	if(!strcasecmp(which,"KP7")){
 		return MAC_NUMPAD_7_KEY;
 	}
-	if(!stricmp(which,"KP8")){
+	if(!strcasecmp(which,"KP8")){
 		return MAC_NUMPAD_8_KEY;
 	}
-	if(!stricmp(which,"KP9")){
+	if(!strcasecmp(which,"KP9")){
 		return MAC_NUMPAD_9_KEY;
 	}
 
 	// enter
-	if(!stricmp(which,"enter")){
+	if(!strcasecmp(which,"enter")){
 		return MAC_ENTER_KEY;
 	}
 
 	// number keys
-	if(!stricmp(which,"0")){
+	if(!strcasecmp(which,"0")){
 		return MAC_0_KEY;
 	}
-	if(!stricmp(which,"1")){
+	if(!strcasecmp(which,"1")){
 		return MAC_1_KEY;
 	}
-	if(!stricmp(which,"2")){
+	if(!strcasecmp(which,"2")){
 		return MAC_2_KEY;
 	}
-	if(!stricmp(which,"3")){
+	if(!strcasecmp(which,"3")){
 		return MAC_3_KEY;
 	}
-	if(!stricmp(which,"4")){
+	if(!strcasecmp(which,"4")){
 		return MAC_4_KEY;
 	}
-	if(!stricmp(which,"5")){
+	if(!strcasecmp(which,"5")){
 		return MAC_5_KEY;
 	}
-	if(!stricmp(which,"6")){
+	if(!strcasecmp(which,"6")){
 		return MAC_6_KEY;
 	}
-	if(!stricmp(which,"7")){
+	if(!strcasecmp(which,"7")){
 		return MAC_7_KEY;
 	}
-	if(!stricmp(which,"8")){
+	if(!strcasecmp(which,"8")){
 		return MAC_8_KEY;
 	}
-	if(!stricmp(which,"9")){
+	if(!strcasecmp(which,"9")){
 		return MAC_9_KEY;
 	}
 
 	// function keys
-	if(!stricmp(which,"F1")){
+	if(!strcasecmp(which,"F1")){
 		return MAC_F1_KEY;
 	}
-	if(!stricmp(which,"F2")){
+	if(!strcasecmp(which,"F2")){
 		return MAC_F2_KEY;
 	}
-	if(!stricmp(which,"F3")){
+	if(!strcasecmp(which,"F3")){
 		return MAC_F3_KEY;
 	}
-	if(!stricmp(which,"F4")){
+	if(!strcasecmp(which,"F4")){
 		return MAC_F4_KEY;
 	}
-	if(!stricmp(which,"F5")){
+	if(!strcasecmp(which,"F5")){
 		return MAC_F5_KEY;
 	}
-	if(!stricmp(which,"F6")){
+	if(!strcasecmp(which,"F6")){
 		return MAC_F6_KEY;
 	}
-	if(!stricmp(which,"F7")){
+	if(!strcasecmp(which,"F7")){
 		return MAC_F7_KEY;
 	}
-	if(!stricmp(which,"F8")){
+	if(!strcasecmp(which,"F8")){
 		return MAC_F8_KEY;
 	}
-	if(!stricmp(which,"F9")){
+	if(!strcasecmp(which,"F9")){
 		return MAC_F9_KEY;
 	}
-	if(!stricmp(which,"F10")){
+	if(!strcasecmp(which,"F10")){
 		return MAC_F10_KEY;
 	}
-	if(!stricmp(which,"F11")){
+	if(!strcasecmp(which,"F11")){
 		return MAC_F11_KEY;
 	}
-	if(!stricmp(which,"F12")){
+	if(!strcasecmp(which,"F12")){
 		return MAC_F12_KEY;
 	}
 
 	// escape
-	if(!stricmp(which,"escape")){
+	if(!strcasecmp(which,"escape")){
 		return MAC_ESCAPE_KEY;
 	}
-	if(!stricmp(which,"backspace")){
+	if(!strcasecmp(which,"backspace")){
 		return MAC_DELETE_KEY;
 	}
-	if(!stricmp(which,"tab")){
+	if(!strcasecmp(which,"tab")){
 		return MAC_TAB_KEY;
 	}
-	if(!stricmp(which,"`")){
+	if(!strcasecmp(which,"`")){
 		return MAC_TILDE_KEY;
 	}
-	if(!stricmp(which,"caps_lock")){
+	if(!strcasecmp(which,"caps_lock")){
 		return MAC_CAPS_LOCK_KEY;
 	}
 //	if(which==){
 //		return "";
 //	}
-	if(!stricmp(which,"command")){
+	if(!strcasecmp(which,"command")){
 		return MAC_COMMAND_KEY;
 	}
-	if(!stricmp(which,"option")){
+	if(!strcasecmp(which,"option")){
 		return MAC_OPTION_KEY;
 	}
-	if(!stricmp(which,"delete")){
+	if(!strcasecmp(which,"delete")){
 		return MAC_DEL_KEY;
 	}
-	if(!stricmp(which,"insert")){
+	if(!strcasecmp(which,"insert")){
 		return MAC_INSERT_KEY;
 	}
-	if(!stricmp(which,"home")){
+	if(!strcasecmp(which,"home")){
 		return MAC_HOME_KEY;
 	}
-	if(!stricmp(which,"end")){
+	if(!strcasecmp(which,"end")){
 		return MAC_END_KEY;
 	}
-	if(!stricmp(which,"page_up")){
+	if(!strcasecmp(which,"page_up")){
 		return MAC_PAGE_UP_KEY;
 	}
-	if(!stricmp(which,"page_down")){
+	if(!strcasecmp(which,"page_down")){
 		return MAC_PAGE_DOWN_KEY;
 	}
-	if(!stricmp(which,"clear")){
+	if(!strcasecmp(which,"clear")){
 		return MAC_NUMPAD_CLEAR_KEY;
 	}
 
-	if(!stricmp(which,"control")){
+	if(!strcasecmp(which,"control")){
 		return MAC_CONTROL_KEY;
 	}
-	if(!stricmp(which,"return")){
+	if(!strcasecmp(which,"return")){
 		return MAC_RETURN_KEY;
 	}
-	if(!stricmp(which,"space")){
+	if(!strcasecmp(which,"space")){
 		return MAC_SPACE_KEY;
 	}
-	if(!stricmp(which,"shift")){
+	if(!strcasecmp(which,"shift")){
 		return MAC_SHIFT_KEY;
 	}
-	if(!stricmp(which,"uparrow")){
+	if(!strcasecmp(which,"uparrow")){
 		return MAC_ARROW_UP_KEY;
 	}
-	if(!stricmp(which,"downarrow")){
+	if(!strcasecmp(which,"downarrow")){
 		return MAC_ARROW_DOWN_KEY;
 	}
-	if(!stricmp(which,"leftarrow")){
+	if(!strcasecmp(which,"leftarrow")){
 		return MAC_ARROW_LEFT_KEY;
 	}
-	if(!stricmp(which,"rightarrow")){
+	if(!strcasecmp(which,"rightarrow")){
 		return MAC_ARROW_RIGHT_KEY;
 	}
-	if(!stricmp(which,"mouse1")){
+	if(!strcasecmp(which,"mouse1")){
 		return MAC_MOUSEBUTTON1;
 	}
-	if(!stricmp(which,"mouse2")){
+	if(!strcasecmp(which,"mouse2")){
 		return MAC_MOUSEBUTTON2;
 	}
-	if(!stricmp(which,"+")){
+	if(!strcasecmp(which,"+")){
 		return MAC_NUMPAD_PLUS_KEY;
 	}
-	if(!stricmp(which,"*")){
+	if(!strcasecmp(which,"*")){
 		return MAC_NUMPAD_ASTERISK_KEY;
 	}
-	if(!stricmp(which,"/")){
+	if(!strcasecmp(which,"/")){
 		return MAC_SLASH_KEY;
 	}
-	if(!stricmp(which,"\\")){
+	if(!strcasecmp(which,"\\")){
 		return MAC_BACKSLASH_KEY;
 	}
-	if(!stricmp(which,"[")){
+	if(!strcasecmp(which,"[")){
 		return MAC_LEFTBRACKET_KEY;
 	}
-	if(!stricmp(which,"]")){
+	if(!strcasecmp(which,"]")){
 		return MAC_RIGHTBRACKET_KEY;
 	}
-	if(!stricmp(which,".")){
+	if(!strcasecmp(which,".")){
 		return MAC_PERIOD_KEY;
 	}
-	if(!stricmp(which,",")){
+	if(!strcasecmp(which,",")){
 		return MAC_COMMA_KEY;
 	}
-	if(!stricmp(which,"\"")){
+	if(!strcasecmp(which,"\"")){
 		return MAC_APOSTROPHE_KEY;
 	}
-	if(!stricmp(which,";")){
+	if(!strcasecmp(which,";")){
 		return MAC_SEMICOLON_KEY;
 	}
 	return UNKNOWN_KEY;

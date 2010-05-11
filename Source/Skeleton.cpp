@@ -10,7 +10,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -49,7 +49,7 @@ extern int whichjointendarray[26];
 #include "Game.h"
 extern Game * pgame;
 extern bool visibleloading;
-extern "C" 	void PlaySoundEx(int channel, FSOUND_SAMPLE *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused);
+extern "C"	void PlaySoundEx(int channel, FSOUND_SAMPLE *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused);
 
 void dealloc2(void* param){
 	free(param);
@@ -203,7 +203,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 		objects.SphereCheckPossible(&terrainlight, 1);
 		/*
 		for(i=0; i<num_joints; i++){
-		oldpos[i]=joints[i].position;		
+		oldpos[i]=joints[i].position;
 		}*/
 
 		//Add velocity
@@ -211,9 +211,9 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 			//if(!isnormal(joints[i].velocity.x)||!isnormal(joints[i].velocity.y)||!isnormal(joints[i].velocity.z))joints[i].velocity=0;
 			joints[i].position=joints[i].position+joints[i].velocity*multiplier;
 			groundlevel=.15;
-			if(joints[i].label==head)groundlevel=.8;	
-			if(joints[i].label==righthand||joints[i].label==rightwrist||joints[i].label==rightelbow)groundlevel=.2;	
-			if(joints[i].label==lefthand||joints[i].label==leftwrist||joints[i].label==leftelbow)groundlevel=.2;			
+			if(joints[i].label==head)groundlevel=.8;
+			if(joints[i].label==righthand||joints[i].label==rightwrist||joints[i].label==rightelbow)groundlevel=.2;
+			if(joints[i].label==lefthand||joints[i].label==leftwrist||joints[i].label==leftelbow)groundlevel=.2;
 			joints[i].position.y-=groundlevel;
 			//if(!joints[i].locked&&!broken)joints[i].velocity+=joints[i].velchange*multiplier*10*(500-longdead)/500;
 			joints[i].oldvelocity=joints[i].velocity;
@@ -294,10 +294,10 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 			vel[0]=joints[jointlabels[head]].velocity.x;
 			vel[1]=joints[jointlabels[head]].velocity.y;
 			vel[2]=joints[jointlabels[head]].velocity.z;
-			PlaySoundEx( landsound1, samp[landsound1], NULL, TRUE);
+			PlaySoundEx( landsound1, samp[landsound1], NULL, true);
 			FSOUND_3D_SetAttributes(channels[landsound1], gLoc, vel);
 			FSOUND_SetVolume(channels[landsound1], 128);
-			FSOUND_SetPaused(channels[landsound1], FALSE);
+			FSOUND_SetPaused(channels[landsound1], false);
 
 			breaking=1;
 			}
@@ -313,10 +313,10 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 			vel[0]=joints[jointlabels[head]].velocity.x;
 			vel[1]=joints[jointlabels[head]].velocity.y;
 			vel[2]=joints[jointlabels[head]].velocity.z;
-			PlaySoundEx( landsound2, samp[landsound2], NULL, TRUE);
+			PlaySoundEx( landsound2, samp[landsound2], NULL, true);
 			FSOUND_3D_SetAttributes(channels[landsound2], gLoc, vel);
 			FSOUND_SetVolume(channels[landsound2], 128);
-			FSOUND_SetPaused(channels[landsound2], FALSE);
+			FSOUND_SetPaused(channels[landsound2], false);
 			}
 
 			terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
@@ -340,10 +340,10 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 			vel[0]=joints[jointlabels[head]].velocity.x;
 			vel[1]=joints[jointlabels[head]].velocity.y;
 			vel[2]=joints[jointlabels[head]].velocity.z;
-			PlaySoundEx( breaksound2, samp[breaksound2], NULL, TRUE);
+			PlaySoundEx( breaksound2, samp[breaksound2], NULL, true);
 			FSOUND_3D_SetAttributes(channels[breaksound2], gLoc, vel);
 			FSOUND_SetVolume(channels[breaksound2], 300);
-			FSOUND_SetPaused(channels[breaksound2], FALSE);
+			FSOUND_SetPaused(channels[breaksound2], false);
 
 			envsound[numenvsounds]=*coords;
 			envsoundvol[numenvsounds]=64;
@@ -425,10 +425,10 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 							vel[1]=joints[i].velocity.y;
 							vel[2]=joints[i].velocity.z;
 							if(tutoriallevel!=1||id==0){
-								PlaySoundEx( landsound1, samp[landsound1], NULL, TRUE);
+								PlaySoundEx( landsound1, samp[landsound1], NULL, true);
 								FSOUND_3D_SetAttributes(channels[landsound1], gLoc, vel);
 								FSOUND_SetVolume(channels[landsound1], 128);
-								FSOUND_SetPaused(channels[landsound1], FALSE);
+								FSOUND_SetPaused(channels[landsound1], false);
 							}
 							breaking=1;
 						}
@@ -445,10 +445,10 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 							vel[1]=joints[i].velocity.y;
 							vel[2]=joints[i].velocity.z;
 							if(tutoriallevel!=1||id==0){
-								PlaySoundEx( landsound2, samp[landsound2], NULL, TRUE);
+								PlaySoundEx( landsound2, samp[landsound2], NULL, true);
 								FSOUND_3D_SetAttributes(channels[landsound2], gLoc, vel);
 								FSOUND_SetVolume(channels[landsound2], 128);
-								FSOUND_SetPaused(channels[landsound2], FALSE);
+								FSOUND_SetPaused(channels[landsound2], false);
 							}
 						}
 
@@ -478,10 +478,10 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 								vel[0]=joints[i].velocity.x;
 								vel[1]=joints[i].velocity.y;
 								vel[2]=joints[i].velocity.z;
-								PlaySoundEx( breaksound2, samp[breaksound2], NULL, TRUE);
+								PlaySoundEx( breaksound2, samp[breaksound2], NULL, true);
 								FSOUND_3D_SetAttributes(channels[breaksound2], gLoc, vel);
 								FSOUND_SetVolume(channels[breaksound2], 300);
-								FSOUND_SetPaused(channels[breaksound2], FALSE);
+								FSOUND_SetPaused(channels[breaksound2], false);
 
 								envsound[numenvsounds]=*coords;
 								envsoundvol[numenvsounds]=64;
@@ -492,7 +492,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 							if(findLengthfast(&bounceness)>2500){
 								Normalise(&bounceness);
 								bounceness=bounceness*50;
-							}	
+							}
 
 							joints[i].velocity+=bounceness*elasticity;
 
@@ -547,10 +547,10 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 											vel[1]=joints[i].velocity.y;
 											vel[2]=joints[i].velocity.z;
 											if(tutoriallevel!=1||id==0){
-												PlaySoundEx( landsound1, samp[landsound1], NULL, TRUE);
+												PlaySoundEx( landsound1, samp[landsound1], NULL, true);
 												FSOUND_3D_SetAttributes(channels[landsound1], gLoc, vel);
 												FSOUND_SetVolume(channels[landsound1], 128);
-												FSOUND_SetPaused(channels[landsound1], FALSE);
+												FSOUND_SetPaused(channels[landsound1], false);
 											}
 											breaking=1;
 										}
@@ -567,10 +567,10 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 											vel[1]=joints[i].velocity.y;
 											vel[2]=joints[i].velocity.z;
 											if(tutoriallevel!=1||id==0){
-												PlaySoundEx( landsound2, samp[landsound2], NULL, TRUE);
+												PlaySoundEx( landsound2, samp[landsound2], NULL, true);
 												FSOUND_3D_SetAttributes(channels[landsound2], gLoc, vel);
 												FSOUND_SetVolume(channels[landsound2], 128);
-												FSOUND_SetPaused(channels[landsound2], FALSE);
+												FSOUND_SetPaused(channels[landsound2], false);
 											}
 										}
 
@@ -596,10 +596,10 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 												vel[0]=joints[i].velocity.x;
 												vel[1]=joints[i].velocity.y;
 												vel[2]=joints[i].velocity.z;
-												PlaySoundEx( breaksound2, samp[breaksound2], NULL, TRUE);
+												PlaySoundEx( breaksound2, samp[breaksound2], NULL, true);
 												FSOUND_3D_SetAttributes(channels[breaksound2], gLoc, vel);
 												FSOUND_SetVolume(channels[breaksound2], 300);
-												FSOUND_SetPaused(channels[breaksound2], FALSE);
+												FSOUND_SetPaused(channels[breaksound2], false);
 
 												envsound[numenvsounds]=*coords;
 												envsoundvol[numenvsounds]=64;
@@ -683,9 +683,9 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 
 			for(i=0; i<num_joints; i++){
 				groundlevel=.15;
-				if(joints[i].label==head)groundlevel=.8;	
-				if(joints[i].label==righthand||joints[i].label==rightwrist||joints[i].label==rightelbow)groundlevel=.2;	
-				if(joints[i].label==lefthand||joints[i].label==leftwrist||joints[i].label==leftelbow)groundlevel=.2;			
+				if(joints[i].label==head)groundlevel=.8;
+				if(joints[i].label==righthand||joints[i].label==rightwrist||joints[i].label==rightelbow)groundlevel=.2;
+				if(joints[i].label==lefthand||joints[i].label==leftwrist||joints[i].label==leftelbow)groundlevel=.2;
 				joints[i].position.y+=groundlevel;
 				joints[i].mass=1;
 				if(joints[i].label==lefthip||joints[i].label==leftknee||joints[i].label==leftankle||joints[i].label==righthip||joints[i].label==rightknee||joints[i].label==rightankle)joints[i].mass=2;
@@ -800,7 +800,7 @@ void Skeleton::Draw(int  muscleview)
 				glVertex3f(muscles[i].parent1->position.x,muscles[i].parent1->position.y,muscles[i].parent1->position.z);
 				glVertex3f(muscles[i].parent2->position.x,muscles[i].parent2->position.y,muscles[i].parent2->position.z);
 			}
-		}	
+		}
 		glEnd();
 
 		if(muscleview!=2){
@@ -906,7 +906,7 @@ void Skeleton::SetJoint(float x, float y, float z, int which, int whichjoint)
 			joints[whichjoint].parent=&joints[which];
 			joints[whichjoint].hasparent=1;
 			joints[whichjoint].length=findDistance(&joints[whichjoint].position,&joints[whichjoint].parent->position);
-		}	
+		}
 	}
 }
 
@@ -1102,7 +1102,7 @@ void Animation::Load(char *filename, int aheight, int aattack)
 			funpackf(tfile, "Bf Bf Bf", &weapontarget[i].x,&weapontarget[i].y,&weapontarget[i].z);
 		}
 
-		fclose(tfile);	
+		fclose(tfile);
 	}
 
 	startoffset=0;
@@ -1250,8 +1250,8 @@ void Skeleton::Load(char *filename,char *lowfilename,char *clothesfilename, char
 			funpackf(tfile, "Bi", &lowforwardjoints[j]);
 		}
 		for(j=0;j<num_muscles;j++){
-			for(i=0;i<muscles[j].numvertices;i++){	
-				for(int k=0;k<num_models;k++){						
+			for(i=0;i<muscles[j].numvertices;i++){
+				for(int k=0;k<num_models;k++){
 					if(muscles[j].numvertices&&muscles[j].vertices[i]<model[k].vertexNum)model[k].owner[muscles[j].vertices[i]]=j;
 				}
 			}
@@ -1282,7 +1282,7 @@ void Skeleton::Load(char *filename,char *lowfilename,char *clothesfilename, char
 			model[k].CalculateNormals(0);
 		}
 	}
-	fclose(tfile);		
+	fclose(tfile);
 
 	tfile=fopen( lowfilename, "rb" );
 	if(1){
@@ -1360,7 +1360,7 @@ void Skeleton::Load(char *filename,char *lowfilename,char *clothesfilename, char
 		}
 		lSize=sizeof(int);
 		for(j=0;j<num_muscles;j++){
-			for(i=0;i<muscles[j].numverticeslow;i++){	
+			for(i=0;i<muscles[j].numverticeslow;i++){
 				if(muscles[j].numverticeslow&&muscles[j].verticeslow[i]<modellow.vertexNum)modellow.owner[muscles[j].verticeslow[i]]=j;
 			}
 		}
@@ -1463,7 +1463,7 @@ void Skeleton::Load(char *filename,char *lowfilename,char *clothesfilename, char
 		}
 		lSize=sizeof(int);
 		for(j=0;j<num_muscles;j++){
-			for(i=0;i<muscles[j].numverticesclothes;i++){	
+			for(i=0;i<muscles[j].numverticesclothes;i++){
 				if(muscles[j].numverticesclothes&&muscles[j].verticesclothes[i]<modelclothes.vertexNum)modelclothes.owner[muscles[j].verticesclothes[i]]=j;
 			}
 		}
@@ -1491,7 +1491,7 @@ void Skeleton::Load(char *filename,char *lowfilename,char *clothesfilename, char
 		}
 		modelclothes.CalculateNormals(0);
 	}
-	fclose(tfile);		
+	fclose(tfile);
 
 	for(i=0;i<num_joints;i++){
 		for(j=0;j<num_joints;j++){
