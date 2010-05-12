@@ -111,7 +111,42 @@ if(CMAKE_HOST_APPLE)
 		CarbonStdCLib.h)
 endif(CMAKE_HOST_APPLE)
 
+if(WIN32)
+  if(CMAKE_CROSSCOMPILING)
+    ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
+						  COMMAND i686-pc-mingw32-windres
+							  -I${CMAKE_CURRENT_SOURCE_DIR}/res
+							  -o ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
+							  -i${CMAKE_CURRENT_SOURCE_DIR}/res/lugaru.rc
+					      DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/res/lugaru.rc
+						  )
+  endif(CMAKE_CROSSCOMPILING)
+  if(NOT CMAKE_CROSSCOMPILING)
+    ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
+						  COMMAND windres
+							  -I${CMAKE_CURRENT_SOURCE_DIR}/res
+							  -o ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
+							  -i${CMAKE_CURRENT_SOURCE_DIR}/res/lugaru.rc
+					      DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/res/lugaru.rc
+						  )
+  endif(NOT CMAKE_CROSSCOMPILING)
+
+  set(LUGARU_H
+	${LUGARU_H}
+	res/lugaru.h)
+endif(WIN32)
+
+if(WIN32)
+add_executable(lugaru ${LUGARU_SRCS} ${LUGARU_H} lugaru_resource.obj)
+else(WIN32)
 add_executable(lugaru ${LUGARU_SRCS} ${LUGARU_H})
+endif(WIN32)
+
 target_link_libraries(lugaru ${LUGARU_LIBS})
 
-add_definitions(-DPLATFORM_LINUX=1 -DPLATFORM_UNIX=1 -DUSE_OPENAL=1 -DUSE_SDL=1 -DBinIO_STDINT_HEADER=<stdint.h>)
+if(WIN32)
+	add_definitions(-DUSE_OPENAL=1 -DUSE_SDL=1 -DBinIO_STDINT_HEADER=<stdint.h>)
+else(WIN32)
+	add_definitions(-DPLATFORM_LINUX=1 -DPLATFORM_UNIX=1 -DUSE_OPENAL=1 -DUSE_SDL=1 -DBinIO_STDINT_HEADER=<stdint.h>)
+endif(WIN32)
+
