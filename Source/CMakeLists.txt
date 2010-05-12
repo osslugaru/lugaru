@@ -131,8 +131,13 @@ if(WIN32)
 						  )
   endif(NOT CMAKE_CROSSCOMPILING)
 
+  set(LUGARU_SRCS
+	${LUGARU_SRCS}
+	WinDefs.cpp)
+
   set(LUGARU_H
 	${LUGARU_H}
+	WinDefs.h
 	res/lugaru.h)
 endif(WIN32)
 
