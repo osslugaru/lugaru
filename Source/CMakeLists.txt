@@ -137,7 +137,7 @@ if(WIN32)
   set(LUGARU_H
 	${LUGARU_H}
 	WinDefs.h
-	res/lugaru.h)
+	res/resource.h)
 endif(WIN32)
 
 if(WIN32)
