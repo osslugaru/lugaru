@@ -2,6 +2,7 @@ project(lugaru)
 
 cmake_minimum_required(VERSION 2.6)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 find_package(OpenAL REQUIRED)
 find_package(BZip2 REQUIRED)
 find_package(PNG REQUIRED)
@@ -10,6 +11,7 @@ find_package(ZLIB REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLU REQUIRED)
 find_package(SDL REQUIRED)
+find_package(OggVorbis REQUIRED)
 
 include_directories(
 	${OPENAL_INCLUDES}
@@ -20,8 +22,10 @@ include_directories(
 	${OPENGL_INCLUDE_DIR}
 	${GLU_INCLUDE_DIR}
 	${SDL_INCLUDE_DIR}
+	${VORBISFILE_INCLUDE_DIR}
+	${OGG_INCLUDE_DIR}
 	${CMAKE_SOURCE_DIR}/Source)
 
-set(LUGARU_LIBS ${OPENAL_LIBRARY} ${PNG_LIBRARY} ${JPEG_LIBRARY} ${BZIP2_LIBRARIES} ${ZLIB_LIBRARIES} ${SDL_LIBRARY} ${GLU_LIBRARY} ${OPENGL_LIBRARY} -lvorbisfile -logg)
+set(LUGARU_LIBS ${OPENAL_LIBRARY} ${PNG_LIBRARY} ${JPEG_LIBRARY} ${BZIP2_LIBRARIES} ${ZLIB_LIBRARIES} ${SDL_LIBRARY} ${GLU_LIBRARY} ${OPENGL_LIBRARY} ${VORBISFILE_LIBS} ${OGG_LIBS})
 
 add_subdirectory(Source)
