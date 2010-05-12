@@ -371,7 +371,7 @@ void Terrain::UpdateVertexArray(int whichx, int whichy){
 }
 
 
-bool Terrain::load(char *fileName)
+bool Terrain::load(const char *fileName)
 {
 	static long				i,j;
 	static long x,y;

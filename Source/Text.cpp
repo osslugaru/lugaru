@@ -24,7 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Game.h"
 extern TGAImageRec texture;
 
-void Text::LoadFontTexture(char *fileName)
+void Text::LoadFontTexture(const char *fileName)
 {
 	GLuint		type;
 

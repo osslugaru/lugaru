@@ -32,7 +32,7 @@ public:
 	GLuint 				front,left,back,right,up,down,cloud,reflect;
 	float cloudmove;
 
-	bool load(char *ffront,char *fleft,char *fback,char *fright,char *fup,char *fdown,char *fcloud,char *freflect);
+	bool load(const char *ffront,const char *fleft,const char *fback,const char *fright,const char *fup,const char *fdown,const char *fcloud,const char *freflect);
 	void draw();
 
 	SkyBox();

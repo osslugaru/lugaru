@@ -241,10 +241,10 @@ public:
 	bool oldattackkey;
 
 	long long MD5_string (char *string);
-	static void LoadTexture(char *fileName, GLuint *textureid,int mipmap, bool hasalpha);
-	static void LoadTextureSave(char *fileName, GLuint *textureid,int mipmap,GLubyte *array, int *skinsize);
-	void LoadSave(char *fileName, GLuint *textureid,bool mipmap,GLubyte *array, int *skinsize);
-	bool AddClothes(char *fileName, GLuint *textureid,bool mipmap,GLubyte *array, int *skinsize);
+	static void LoadTexture(const char *fileName, GLuint *textureid,int mipmap, bool hasalpha);
+	static void LoadTextureSave(const char *fileName, GLuint *textureid,int mipmap,GLubyte *array, int *skinsize);
+	void LoadSave(const char *fileName, GLuint *textureid,bool mipmap,GLubyte *array, int *skinsize);
+	bool AddClothes(const char *fileName, GLuint *textureid,bool mipmap,GLubyte *array, int *skinsize);
 	void InitGame();
 	void LoadStuff();
 	void LoadingScreen();

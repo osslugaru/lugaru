@@ -34,7 +34,7 @@ extern float skyboxg;
 extern float skyboxb;
 extern int tutoriallevel;
 
-bool	SkyBox::load( char *ffront,char *fleft,char *fback,char *fright,char *fup,char *fdown,char *fcloud,char *freflect)
+bool	SkyBox::load( const char *ffront,const char *fleft,const char *fback,const char *fright,const char *fup,const char *fdown,const char *fcloud,const char *freflect)
 {
 /*	static GLuint		type;
 	unsigned char fileNamep[256];

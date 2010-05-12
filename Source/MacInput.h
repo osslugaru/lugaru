@@ -135,10 +135,10 @@ void 	InitMouse();
 void 	MoveMouse(int xcoord, int ycoord, Point *mouseloc);
 void 	RefreshMouse(Point *mouseloc);
 void 	DisposeMouse();
-unsigned short 	CharToKey(char* which);
-char* 	KeyToChar(unsigned short which);
+unsigned short 	CharToKey(const char* which);
+const char* 	KeyToChar(unsigned short which);
 char 	KeyToSingleChar(unsigned short which);
 char 	Shift(char which);
-bool 	Compare(char *thestring, char *tocompare, int start, int end);
+bool 	Compare(const char *thestring, const char *tocompare, int start, int end);
 
 #endif

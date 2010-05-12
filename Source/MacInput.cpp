@@ -48,7 +48,7 @@ Boolean	IsKeyDown( unsigned char *keyMap, unsigned short theKey )
 	
 }
 
-unsigned short 	CharToKey(char* which)
+unsigned short 	CharToKey(const char* which)
 {
 	if(!strcmp(which,"a")){
 		return MAC_A_KEY;
@@ -187,7 +187,7 @@ unsigned short 	CharToKey(char* which)
 	}
 }
 
-char* 	KeyToChar(unsigned short which)
+const char* 	KeyToChar(unsigned short which)
 {
 	static int i;
 	
@@ -814,7 +814,7 @@ char 	Shift(char which)
 	return which;
 }
 
-bool 	Compare(char *thestring, char *tocompare, int start, int end)
+bool 	Compare(const char *thestring, const char *tocompare, int start, int end)
 {
 	static int i;
 	for(i=start;i<=end;i++){

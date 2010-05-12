@@ -421,7 +421,7 @@ void Game::LoadSounds()
 
 }
 
-void Game::LoadTexture(char *fileName, GLuint *textureid,int mipmap, bool hasalpha)
+void Game::LoadTexture(const char *fileName, GLuint *textureid,int mipmap, bool hasalpha)
 {
 	GLuint		type;
 
@@ -474,7 +474,7 @@ void Game::LoadTexture(char *fileName, GLuint *textureid,int mipmap, bool hasalp
 //	}
 }
 
-void Game::LoadTextureSave(char *fileName, GLuint *textureid,int mipmap,GLubyte *array, int *skinsize)
+void Game::LoadTextureSave(const char *fileName, GLuint *textureid,int mipmap,GLubyte *array, int *skinsize)
 {
 	GLuint		type;
 	int i;
@@ -538,7 +538,7 @@ void Game::LoadTextureSave(char *fileName, GLuint *textureid,int mipmap,GLubyte 
 //	}
 }
 
-void Game::LoadSave(char *fileName, GLuint *textureid,bool mipmap,GLubyte *array, int *skinsize)
+void Game::LoadSave(const char *fileName, GLuint *textureid,bool mipmap,GLubyte *array, int *skinsize)
 {
 	int i;
 	int bytesPerPixel;
@@ -573,7 +573,7 @@ void Game::LoadSave(char *fileName, GLuint *textureid,bool mipmap,GLubyte *array
 	}
 }
 
-bool Game::AddClothes(char *fileName, GLuint *textureid,bool mipmap,GLubyte *array, int *skinsize)
+bool Game::AddClothes(const char *fileName, GLuint *textureid,bool mipmap,GLubyte *array, int *skinsize)
 {
 	int i;
 	int bytesPerPixel;
