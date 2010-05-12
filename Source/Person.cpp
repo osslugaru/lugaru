@@ -10,7 +10,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -109,7 +109,7 @@ extern int indialogue;
 extern bool gamestarted;
 
 extern FSOUND_STREAM * strm[20];
-extern "C" 	void PlaySoundEx(int channel, FSOUND_SAMPLE *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused);
+extern "C"	void PlaySoundEx(int channel, FSOUND_SAMPLE *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused);
 extern "C" void PlayStreamEx(int chan, FSOUND_STREAM *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused);
 
 void Person::CheckKick(){
@@ -139,10 +139,10 @@ void Person::CheckKick(){
 						vel[1]=velocity.y;
 						vel[2]=velocity.z;
 						if(tutoriallevel!=1){
-							PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, TRUE);
+							PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
 							FSOUND_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
 							FSOUND_SetVolume(channels[heavyimpactsound], 128);
-							FSOUND_SetPaused(channels[heavyimpactsound], FALSE);
+							FSOUND_SetPaused(channels[heavyimpactsound], false);
 						}
 						victim->RagDoll(0);
 						relative=velocity;
@@ -162,7 +162,7 @@ void Person::CheckKick(){
 						velocity=facing*-10;
 						velocity.y=5;
 						skeleton.free=0;
-						if(id==0)FSOUND_SetPaused(channels[whooshsound], FALSE);
+						if(id==0)FSOUND_SetPaused(channels[whooshsound], false);
 
 						//if(victim->damage>victim->damagetolerance){
 						if(id==0){
@@ -214,19 +214,19 @@ void Person::CatchFire(){
 	vel[0]=0;
 	vel[1]=0;
 	vel[2]=0;
-	PlaySoundEx( firestartsound, samp[firestartsound], NULL, TRUE);
+	PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
 	FSOUND_3D_SetAttributes(channels[firestartsound], gLoc, vel);
 	FSOUND_SetVolume(channels[firestartsound], 256);
-	FSOUND_SetPaused(channels[firestartsound], FALSE);
+	FSOUND_SetPaused(channels[firestartsound], false);
 
 	vel[0]=velocity.x;
 	vel[1]=velocity.y;
 	vel[2]=velocity.z;
-	//PlaySoundEx( firesound, samp[firesound], NULL, TRUE);
-	PlayStreamEx( stream_firesound, strm[stream_firesound], NULL, TRUE);
+	//PlaySoundEx( firesound, samp[firesound], NULL, true);
+	PlayStreamEx( stream_firesound, strm[stream_firesound], NULL, true);
 	FSOUND_3D_SetAttributes(channels[stream_firesound], gLoc, vel);
 	FSOUND_SetVolume(channels[stream_firesound], 256);
-	FSOUND_SetPaused(channels[stream_firesound], FALSE);
+	FSOUND_SetPaused(channels[stream_firesound], false);
 
 	flamedelay=0;
 
@@ -440,7 +440,7 @@ void Person::DoBlood(float howmuch,int which){
 				if(!skeleton.free){
 					sprites.MakeSprite(bloodsprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2,0,rotation,0)*scale+coords,bloodvel, 1,1,1, .05, 1);
 					sprites.MakeSprite(bloodflamesprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2,0,rotation,0)*scale+coords,bloodvel, 1,1,1, .3, 1);
-				}		
+				}
 			}
 			if(Random()%2==0)
 				for(int i=0;i<3;i++){
@@ -531,10 +531,10 @@ void Person::DoBloodBig(float howmuch,int which){
 			}
 
 			if(whichsound!=-1){
-				PlaySoundEx( whichsound, samp[whichsound], NULL, TRUE);
+				PlaySoundEx( whichsound, samp[whichsound], NULL, true);
 				FSOUND_3D_SetAttributes(channels[whichsound], gLoc, vel);
 				FSOUND_SetVolume(channels[whichsound], 512);
-				FSOUND_SetPaused(channels[whichsound], FALSE);
+				FSOUND_SetPaused(channels[whichsound], false);
 			}
 		}
 
@@ -567,7 +567,7 @@ void Person::DoBloodBig(float howmuch,int which){
 					if(!skeleton.free){
 						sprites.MakeSprite(bloodsprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2,0,rotation,0)*scale+coords,bloodvel, 1,1,1, .05, 1);
 						sprites.MakeSprite(bloodflamesprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2,0,rotation,0)*scale+coords,bloodvel, 1,1,1, .3, 1);
-					}	
+					}
 				}
 			}
 			int offsetx=0,offsety=0;
@@ -608,7 +608,7 @@ void Person::DoBloodBig(float howmuch,int which){
 							if(i>endx)endx=i;
 							if(j>endy)endy=j;
 						}
-					}	
+					}
 				}
 				if(creature==wolftype)
 					for(i=0;i<512;i++){
@@ -619,7 +619,7 @@ void Person::DoBloodBig(float howmuch,int which){
 								if(i>endx)endx=i;
 								if(j>endy)endy=j;
 							}
-						}	
+						}
 					}
 
 					startx+=offsetx;
@@ -697,7 +697,7 @@ void Person::DoBloodBig(float howmuch,int which){
 		bloodloss+=bleeding*3;
 
 		if(tutoriallevel!=1&&aitype!=playercontrolled&&bloodloss>damagetolerance*2/3&&bloodloss<damagetolerance&&creature==rabbittype){
-			if(abs(Random()%2)==0){aitype=gethelptype; 
+			if(abs(Random()%2)==0){aitype=gethelptype;
 			lastseentime=12;
 			}
 			else aitype=attacktypecutoff;
@@ -794,7 +794,7 @@ bool Person::DoBloodBigWhere(float howmuch,int which, XYZ where){
 					if(!skeleton.free){
 						sprites.MakeSprite(bloodsprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2,0,rotation,0)*scale+coords,bloodvel, 1,1,1, .05, 1);
 						sprites.MakeSprite(bloodflamesprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2,0,rotation,0)*scale+coords,bloodvel, 1,1,1, .3, 1);
-					}	
+					}
 				}
 			}
 			int offsetx=0,offsety=0;
@@ -824,7 +824,7 @@ bool Person::DoBloodBigWhere(float howmuch,int which, XYZ where){
 							if(i>endx)endx=i;
 							if(j>endy)endy=j;
 						}
-					}	
+					}
 				}
 				if(creature==wolftype)
 					for(i=0;i<512;i++){
@@ -835,7 +835,7 @@ bool Person::DoBloodBigWhere(float howmuch,int which, XYZ where){
 								if(i>endx)endx=i;
 								if(j>endy)endy=j;
 							}
-						}	
+						}
 					}
 					startx+=offsetx;
 					endx+=offsetx;
@@ -915,7 +915,7 @@ bool Person::DoBloodBigWhere(float howmuch,int which, XYZ where){
 	bloodloss+=bleeding*3;
 
 	if(tutoriallevel!=1&&aitype!=playercontrolled&&bloodloss>damagetolerance*2/3&&bloodloss<damagetolerance&&creature==rabbittype){
-		if(abs(Random()%2)==0){aitype=gethelptype; 
+		if(abs(Random()%2)==0){aitype=gethelptype;
 		lastseentime=12;
 		}
 		else aitype=attacktypecutoff;
@@ -1184,16 +1184,16 @@ void Person::Reverse(){
 							if(weapons.type[victim->weaponids[0]]==staff)weapons.damage[victim->weaponids[0]]+=.2+float(abs(Random()%100)-50)/250;
 							if(weapons.type[weaponids[0]]==staff)weapons.damage[weaponids[0]]+=.2+float(abs(Random()%100)-50)/250;
 
-							PlaySoundEx( swordstaffsound, samp[swordstaffsound], NULL, TRUE);
+							PlaySoundEx( swordstaffsound, samp[swordstaffsound], NULL, true);
 							FSOUND_3D_SetAttributes(channels[swordstaffsound], gLoc, vel);
 							FSOUND_SetVolume(channels[swordstaffsound], 512);
-							FSOUND_SetPaused(channels[swordstaffsound], FALSE);
+							FSOUND_SetPaused(channels[swordstaffsound], false);
 						}
 						else{
-							PlaySoundEx( metalhitsound, samp[metalhitsound], NULL, TRUE);
+							PlaySoundEx( metalhitsound, samp[metalhitsound], NULL, true);
 							FSOUND_3D_SetAttributes(channels[metalhitsound], gLoc, vel);
 							FSOUND_SetVolume(channels[metalhitsound], 512);
-							FSOUND_SetPaused(channels[metalhitsound], FALSE);
+							FSOUND_SetPaused(channels[metalhitsound], false);
 						}
 					}
 					XYZ aim;
@@ -1227,10 +1227,10 @@ void Person::Reverse(){
 
 
 
-					/*PlaySoundEx( metalhitsound, samp[metalhitsound], NULL, TRUE);
+					/*PlaySoundEx( metalhitsound, samp[metalhitsound], NULL, true);
 					FSOUND_3D_SetAttributes(channels[metalhitsound], gLoc, vel);
 					FSOUND_SetVolume(channels[metalhitsound], 512);
-					FSOUND_SetPaused(channels[metalhitsound], FALSE);*/
+					FSOUND_SetPaused(channels[metalhitsound], false);*/
 				}
 
 				if(abs(Random()%20)==0){
@@ -1247,16 +1247,16 @@ void Person::Reverse(){
 							if(weapons.type[victim->weaponids[0]]==staff)weapons.damage[victim->weaponids[0]]+=.2+float(abs(Random()%100)-50)/250;
 							if(weapons.type[weaponids[0]]==staff)weapons.damage[weaponids[0]]+=.2+float(abs(Random()%100)-50)/250;
 
-							PlaySoundEx( swordstaffsound, samp[swordstaffsound], NULL, TRUE);
+							PlaySoundEx( swordstaffsound, samp[swordstaffsound], NULL, true);
 							FSOUND_3D_SetAttributes(channels[swordstaffsound], gLoc, vel);
 							FSOUND_SetVolume(channels[swordstaffsound], 512);
-							FSOUND_SetPaused(channels[swordstaffsound], FALSE);
+							FSOUND_SetPaused(channels[swordstaffsound], false);
 						}
 						else{
-							PlaySoundEx( metalhitsound, samp[metalhitsound], NULL, TRUE);
+							PlaySoundEx( metalhitsound, samp[metalhitsound], NULL, true);
 							FSOUND_3D_SetAttributes(channels[metalhitsound], gLoc, vel);
 							FSOUND_SetVolume(channels[metalhitsound], 512);
-							FSOUND_SetPaused(channels[metalhitsound], FALSE);
+							FSOUND_SetPaused(channels[metalhitsound], false);
 						}
 					}
 
@@ -1288,10 +1288,10 @@ void Person::Reverse(){
 				 }
 
 
-					/*PlaySoundEx( metalhitsound, samp[metalhitsound], NULL, TRUE);
+					/*PlaySoundEx( metalhitsound, samp[metalhitsound], NULL, true);
 					FSOUND_3D_SetAttributes(channels[metalhitsound], gLoc, vel);
 					FSOUND_SetVolume(channels[metalhitsound], 512);
-					FSOUND_SetPaused(channels[metalhitsound], FALSE);*/
+					FSOUND_SetPaused(channels[metalhitsound], false);*/
 				}
 			}
 			if(hasvictim)
@@ -1366,7 +1366,7 @@ void Person::DoDamage(float howmuch){
 
 	if(aitype==passivetype&&damage<damagetolerance&&((tutoriallevel!=1||cananger)&&hostile))aitype=attacktypecutoff;
 	if(tutoriallevel!=1&&aitype!=playercontrolled&&damage<damagetolerance&&damage>damagetolerance*2/3&&creature==rabbittype){
-		if(abs(Random()%2)==0){aitype=gethelptype; 
+		if(abs(Random()%2)==0){aitype=gethelptype;
 		lastseentime=12;
 		}
 		else aitype=attacktypecutoff;
@@ -1397,10 +1397,10 @@ void Person::DoDamage(float howmuch){
 		vel[0]=0;
 		vel[1]=0;
 		vel[2]=0;
-		PlaySoundEx( splattersound, samp[splattersound], NULL, TRUE);
+		PlaySoundEx( splattersound, samp[splattersound], NULL, true);
 		FSOUND_3D_SetAttributes(channels[splattersound], gLoc, vel);
 		FSOUND_SetVolume(channels[splattersound], 256);
-		FSOUND_SetPaused(channels[splattersound], FALSE);
+		FSOUND_SetPaused(channels[splattersound], false);
 
 		skeleton.free=2;
 		DoDamage(10000);
@@ -1412,7 +1412,7 @@ void Person::DoDamage(float howmuch){
 		if(!dead&&creature==wolftype){
 			bonus=Wolfbonus;
 			bonustime=0;
-			bonusvalue=300;	
+			bonusvalue=300;
 		}
 		dead=2;
 		coords=20;
@@ -1451,10 +1451,10 @@ void Person::DoDamage(float howmuch){
 			}
 
 			if(whichsound!=-1){
-				PlaySoundEx( whichsound, samp[whichsound], NULL, TRUE);
+				PlaySoundEx( whichsound, samp[whichsound], NULL, true);
 				FSOUND_3D_SetAttributes(channels[whichsound], gLoc, vel);
 				FSOUND_SetVolume(channels[whichsound], 512);
-				FSOUND_SetPaused(channels[whichsound], FALSE);
+				FSOUND_SetPaused(channels[whichsound], false);
 			}
 		}
 		speechdelay=.3;
@@ -1758,7 +1758,7 @@ void Person::Puff(int whichlabel){
 
 
 /*
-HitStruct 	Person::BulletCollideWithPlayer(XYZ start, XYZ end){
+HitStruct	Person::BulletCollideWithPlayer(XYZ start, XYZ end){
 float damage=20;
 XYZ tempbulletloc[2];
 XYZ collisionpoint;
@@ -1926,7 +1926,7 @@ hitstruct.hitlocation=hitstruct.hitlocation+coords;
 return hitstruct;
 }
 */
-void 	Person::DoAnimations(){	
+void	Person::DoAnimations(){
 	if(!skeleton.free){
 		int i = 0;
 		static float oldtarget;
@@ -1934,7 +1934,7 @@ void 	Person::DoAnimations(){
 		if(isIdle()&&currentanimation!=getIdle())normalsupdatedelay=0;
 
 		if(targetanimation==tempanim||currentanimation==tempanim){
-			animation[tempanim]=tempanimation;			
+			animation[tempanim]=tempanimation;
 		}
 		if(targetanimation==jumpupanim||targetanimation==jumpdownanim||isFlip()){
 			float gLoc[3];
@@ -1950,7 +1950,7 @@ void 	Person::DoAnimations(){
 				FSOUND_3D_SetAttributes(channels[whooshsound], gLoc, vel);
 				FSOUND_SetVolume(channels[whooshsound], 64*findLength(&velocity)/5);
 			}
-			if(((velocity.y<-15)||(crouchkeydown&&velocity.y<-8))&&abs(velocity.y)*4>fast_sqrt(velocity.x*velocity.x*velocity.z*velocity.z))landhard=1;			
+			if(((velocity.y<-15)||(crouchkeydown&&velocity.y<-8))&&abs(velocity.y)*4>fast_sqrt(velocity.x*velocity.x*velocity.z*velocity.z))landhard=1;
 			if(!crouchkeydown&&velocity.y>=-15)landhard=0;
 		}
 		if((currentanimation==jumpupanim||targetanimation==jumpdownanim)/*&&velocity.y<40*/&&!isFlip()&&(!isLanding()&&!isLandhard())&&((crouchkeydown&&!crouchtogglekeydown))){
@@ -1974,7 +1974,7 @@ void 	Person::DoAnimations(){
 			crouchtogglekeydown=0;
 			if(aitype==playercontrolled)feint=0;
 		}
-		else 
+		else
 		{
 			if(!crouchtogglekeydown&&animation[targetanimation].attack==reversed&&aitype==playercontrolled&&(escapednum<2||reversaltrain))feint=1;
 			if(!isFlip())crouchtogglekeydown=1;
@@ -1996,11 +1996,11 @@ void 	Person::DoAnimations(){
 				vel[0]=0;
 				vel[1]=0;
 				vel[2]=0;
-				PlaySoundEx( fireendsound, samp[fireendsound], NULL, TRUE);
+				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
 				FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
 				FSOUND_SetVolume(channels[fireendsound], 256);
-				FSOUND_SetPaused(channels[fireendsound], FALSE);
-				FSOUND_SetPaused(channels[stream_firesound], TRUE);
+				FSOUND_SetPaused(channels[fireendsound], false);
+				FSOUND_SetPaused(channels[stream_firesound], true);
 				deathbleeding=0;
 			}
 
@@ -2026,10 +2026,10 @@ void 	Person::DoAnimations(){
 						vel[0]=velocity.x;
 						vel[1]=velocity.y;
 						vel[2]=velocity.z;
-						PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, TRUE);
+						PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, true);
 						FSOUND_3D_SetAttributes(channels[clawslicesound], gLoc, vel);
 						FSOUND_SetVolume(channels[clawslicesound], 128);
-						FSOUND_SetPaused(channels[clawslicesound], FALSE);
+						FSOUND_SetPaused(channels[clawslicesound], false);
 						victim->spurt=1;
 						victim->DoBloodBig(1/victim->armorhead,210);
 					}
@@ -2057,10 +2057,10 @@ void 	Person::DoAnimations(){
 						vel[1]=velocity.y;
 						vel[2]=velocity.z;
 
-						PlaySoundEx( knifesheathesound, samp[knifesheathesound], NULL, TRUE);
+						PlaySoundEx( knifesheathesound, samp[knifesheathesound], NULL, true);
 						FSOUND_3D_SetAttributes(channels[knifesheathesound], gLoc, vel);
 						FSOUND_SetVolume(channels[knifesheathesound], 128);
-						FSOUND_SetPaused(channels[knifesheathesound], FALSE);	
+						FSOUND_SetPaused(channels[knifesheathesound], false);
 					}
 					if(weaponactive!=-1){
 						float gLoc[3];
@@ -2072,10 +2072,10 @@ void 	Person::DoAnimations(){
 						vel[1]=velocity.y;
 						vel[2]=velocity.z;
 
-						PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, TRUE);
+						PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, true);
 						FSOUND_3D_SetAttributes(channels[knifedrawsound], gLoc, vel);
 						FSOUND_SetVolume(channels[knifedrawsound], 128);
-						FSOUND_SetPaused(channels[knifedrawsound], FALSE);	
+						FSOUND_SetPaused(channels[knifedrawsound], false);
 					}
 				}
 				drawtogglekeydown=1;
@@ -2103,11 +2103,11 @@ void 	Person::DoAnimations(){
 								FootLand(0,1);
 							}
 
-						}	
+						}
 						if(terrain.getOpacity(coords.x,coords.z)>=.2){
 							if(animation[targetanimation].label[targetframe]==1)whichsound=footstepsound3;
 							else whichsound=footstepsound4;
-						}			
+						}
 					}
 					if(!onterrain){
 						if(animation[targetanimation].label[targetframe]==1)whichsound=footstepsound3;
@@ -2125,12 +2125,12 @@ void 	Person::DoAnimations(){
 					else if(animation[targetanimation].label[targetframe]==4)whichsound=knifeswishsound;
 					if(animation[targetanimation].label[targetframe]==8&&tutoriallevel!=1)whichsound=landsound2;
 
-					PlaySoundEx( whichsound, samp[whichsound], NULL, TRUE);
+					PlaySoundEx( whichsound, samp[whichsound], NULL, true);
 					FSOUND_3D_SetAttributes(channels[whichsound], gLoc, vel);
 					if(whichsound!=knifeswishsound)FSOUND_SetVolume(channels[whichsound], 128);
 					if(whichsound!=knifeswishsound&&(targetanimation==staffhitanim||targetanimation==staffgroundsmashanim||targetanimation==staffspinhitanim))FSOUND_SetVolume(channels[whichsound], 256);
 					if(whichsound==knifeswishsound)FSOUND_SetVolume(channels[whichsound], 512);
-					FSOUND_SetPaused(channels[whichsound], FALSE);
+					FSOUND_SetPaused(channels[whichsound], false);
 
 					if(id==0)
 						if(whichsound==footstepsound||whichsound==footstepsound2||whichsound==footstepsound3||whichsound==footstepsound4){
@@ -2143,10 +2143,10 @@ void 	Person::DoAnimations(){
 
 						if(animation[targetanimation].label[targetframe]==3){
 							whichsound--;
-							PlaySoundEx( whichsound, samp[whichsound], NULL, TRUE);
+							PlaySoundEx( whichsound, samp[whichsound], NULL, true);
 							FSOUND_3D_SetAttributes(channels[whichsound], gLoc, vel);
 							FSOUND_SetVolume(channels[whichsound], 128);
-							FSOUND_SetPaused(channels[whichsound], FALSE);
+							FSOUND_SetPaused(channels[whichsound], false);
 						}
 				}
 
@@ -2187,16 +2187,16 @@ void 	Person::DoAnimations(){
 								//if(animation[targetanimation].label[targetframe]==8)whichsound=landsound2;
 
 								if(whichsound!=-1){
-									PlaySoundEx( whichsound, samp[whichsound], NULL, TRUE);
+									PlaySoundEx( whichsound, samp[whichsound], NULL, true);
 									FSOUND_3D_SetAttributes(channels[whichsound], gLoc, vel);
 									FSOUND_SetVolume(channels[whichsound], 512);
-									FSOUND_SetPaused(channels[whichsound], FALSE);
+									FSOUND_SetPaused(channels[whichsound], false);
 								}
 							}
 
 
 
-							if((!wasLanding()&&!wasLandhard())&&currentanimation!=getIdle()&&(isLanding()||isLandhard())){				
+							if((!wasLanding()&&!wasLandhard())&&currentanimation!=getIdle()&&(isLanding()||isLandhard())){
 								FootLand(0,1);
 								FootLand(1,1);
 							}
@@ -2221,10 +2221,10 @@ void 	Person::DoAnimations(){
 													vel[0]=velocity.x;
 													vel[1]=velocity.y;
 													vel[2]=velocity.z;
-													PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, TRUE);
+													PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, true);
 													FSOUND_3D_SetAttributes(channels[knifedrawsound], gLoc, vel);
 													FSOUND_SetVolume(channels[knifedrawsound], 128);
-													FSOUND_SetPaused(channels[knifedrawsound], FALSE);
+													FSOUND_SetPaused(channels[knifedrawsound], false);
 												}
 
 												weaponactive=0;
@@ -2267,17 +2267,17 @@ void 	Person::DoAnimations(){
 													}
 													if(!fleshstuck){
 														if(weapons.type[i]!=staff){
-															PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, TRUE);
+															PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, true);
 															FSOUND_3D_SetAttributes(channels[knifedrawsound], gLoc, vel);
 															FSOUND_SetVolume(channels[knifedrawsound], 128);
-															FSOUND_SetPaused(channels[knifedrawsound], FALSE);
+															FSOUND_SetPaused(channels[knifedrawsound], false);
 														}
 													}
 													if(fleshstuck){
-														PlaySoundEx( fleshstabremovesound, samp[fleshstabremovesound], NULL, TRUE);
+														PlaySoundEx( fleshstabremovesound, samp[fleshstabremovesound], NULL, true);
 														FSOUND_3D_SetAttributes(channels[fleshstabremovesound], gLoc, vel);
 														FSOUND_SetVolume(channels[fleshstabremovesound], 128);
-														FSOUND_SetPaused(channels[fleshstabremovesound], FALSE);
+														FSOUND_SetPaused(channels[fleshstabremovesound], false);
 													}
 													weaponactive=0;
 													if(weapons.owner[i]!=-1){
@@ -2354,10 +2354,10 @@ void 	Person::DoAnimations(){
 									vel[1]=velocity.y;
 									vel[2]=velocity.z;
 
-									PlaySoundEx( knifesheathesound, samp[knifesheathesound], NULL, TRUE);
+									PlaySoundEx( knifesheathesound, samp[knifesheathesound], NULL, true);
 									FSOUND_3D_SetAttributes(channels[knifesheathesound], gLoc, vel);
 									FSOUND_SetVolume(channels[knifesheathesound], 128);
-									FSOUND_SetPaused(channels[knifesheathesound], FALSE);	
+									FSOUND_SetPaused(channels[knifesheathesound], false);
 								}
 								if(weaponactive!=-1){
 									float gLoc[3];
@@ -2369,10 +2369,10 @@ void 	Person::DoAnimations(){
 									vel[1]=velocity.y;
 									vel[2]=velocity.z;
 
-									PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, TRUE);
+									PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, true);
 									FSOUND_3D_SetAttributes(channels[knifedrawsound], gLoc, vel);
 									FSOUND_SetVolume(channels[knifedrawsound], 128);
-									FSOUND_SetPaused(channels[knifedrawsound], FALSE);	
+									FSOUND_SetPaused(channels[knifedrawsound], false);
 								}
 							}
 
@@ -2406,10 +2406,10 @@ void 	Person::DoAnimations(){
 									vel[1]=velocity.y;
 									vel[2]=velocity.z;
 
-									PlaySoundEx( jumpsound, samp[jumpsound], NULL, TRUE);
+									PlaySoundEx( jumpsound, samp[jumpsound], NULL, true);
 									FSOUND_3D_SetAttributes(channels[jumpsound], gLoc, vel);
 									FSOUND_SetVolume(channels[jumpsound], 128);
-									FSOUND_SetPaused(channels[jumpsound], FALSE);
+									FSOUND_SetPaused(channels[jumpsound], false);
 								}
 
 								float closestdist;
@@ -2454,10 +2454,10 @@ void 	Person::DoAnimations(){
 											vel[1]=velocity.y;
 											vel[2]=velocity.z;
 
-											PlaySoundEx( jumpsound, samp[jumpsound], NULL, TRUE);
+											PlaySoundEx( jumpsound, samp[jumpsound], NULL, true);
 											FSOUND_3D_SetAttributes(channels[jumpsound], gLoc, vel);
 											FSOUND_SetVolume(channels[jumpsound], 128);
-											FSOUND_SetPaused(channels[jumpsound], FALSE);
+											FSOUND_SetPaused(channels[jumpsound], false);
 										}
 									}
 							}
@@ -2486,16 +2486,16 @@ void 	Person::DoAnimations(){
 										vel[1]=velocity.y;
 										vel[2]=velocity.z;
 										if(tutoriallevel!=1){
-											PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, TRUE);
+											PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
 											FSOUND_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
 											FSOUND_SetVolume(channels[heavyimpactsound], 128);
-											FSOUND_SetPaused(channels[heavyimpactsound], FALSE);
+											FSOUND_SetPaused(channels[heavyimpactsound], false);
 										}
 										if(creature==wolftype){
-											PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, TRUE);
+											PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, true);
 											FSOUND_3D_SetAttributes(channels[clawslicesound], gLoc, vel);
 											FSOUND_SetVolume(channels[clawslicesound], 128);
-											FSOUND_SetPaused(channels[clawslicesound], FALSE);
+											FSOUND_SetPaused(channels[clawslicesound], false);
 											victim->spurt=1;
 											victim->DoBloodBig(2/victim->armorhead,175);
 										}
@@ -2535,15 +2535,15 @@ void 	Person::DoAnimations(){
 										vel[0]=velocity.x;
 										vel[1]=velocity.y;
 										vel[2]=velocity.z;
-										PlaySoundEx( whooshhitsound, samp[whooshhitsound], NULL, TRUE);
+										PlaySoundEx( whooshhitsound, samp[whooshhitsound], NULL, true);
 										FSOUND_3D_SetAttributes(channels[whooshhitsound], gLoc, vel);
 										FSOUND_SetVolume(channels[whooshhitsound], 512);
-										FSOUND_SetPaused(channels[whooshhitsound], FALSE);
+										FSOUND_SetPaused(channels[whooshhitsound], false);
 										if(creature==wolftype){
-											PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, TRUE);
+											PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, true);
 											FSOUND_3D_SetAttributes(channels[clawslicesound], gLoc, vel);
 											FSOUND_SetVolume(channels[clawslicesound], 128);
-											FSOUND_SetPaused(channels[clawslicesound], FALSE);
+											FSOUND_SetPaused(channels[clawslicesound], false);
 											victim->spurt=1;
 											victim->DoBloodBig(2,175);
 										}
@@ -2580,16 +2580,16 @@ void 	Person::DoAnimations(){
 										vel[1]=velocity.y;
 										vel[2]=velocity.z;
 										if(tutoriallevel!=1){
-											PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, TRUE);
+											PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
 											FSOUND_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
 											FSOUND_SetVolume(channels[heavyimpactsound], 160);
-											FSOUND_SetPaused(channels[heavyimpactsound], FALSE);
+											FSOUND_SetPaused(channels[heavyimpactsound], false);
 										}
 										if(creature==wolftype){
-											PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, TRUE);
+											PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, true);
 											FSOUND_3D_SetAttributes(channels[clawslicesound], gLoc, vel);
 											FSOUND_SetVolume(channels[clawslicesound], 128);
-											FSOUND_SetPaused(channels[clawslicesound], FALSE);
+											FSOUND_SetPaused(channels[clawslicesound], false);
 											victim->spurt=1;
 											victim->DoBloodBig(2/victim->armorhead,175);
 										}
@@ -2635,16 +2635,16 @@ void 	Person::DoAnimations(){
 										vel[1]=velocity.y;
 										vel[2]=velocity.z;
 										if(tutoriallevel!=1){
-											PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, TRUE);
+											PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
 											FSOUND_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
 											FSOUND_SetVolume(channels[heavyimpactsound], 160);
-											FSOUND_SetPaused(channels[heavyimpactsound], FALSE);
+											FSOUND_SetPaused(channels[heavyimpactsound], false);
 										}
 										if(creature==wolftype){
-											PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, TRUE);
+											PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, true);
 											FSOUND_3D_SetAttributes(channels[clawslicesound], gLoc, vel);
 											FSOUND_SetVolume(channels[clawslicesound], 128);
-											FSOUND_SetPaused(channels[clawslicesound], FALSE);
+											FSOUND_SetPaused(channels[clawslicesound], false);
 											victim->spurt=1;
 											victim->DoBloodBig(2/victim->armorhead,175);
 										}
@@ -2691,10 +2691,10 @@ void 	Person::DoAnimations(){
 										vel[0]=velocity.x;
 										vel[1]=velocity.y;
 										vel[2]=velocity.z;
-										PlaySoundEx( whooshhitsound, samp[whooshhitsound], NULL, TRUE);
+										PlaySoundEx( whooshhitsound, samp[whooshhitsound], NULL, true);
 										FSOUND_3D_SetAttributes(channels[whooshhitsound], gLoc, vel);
 										FSOUND_SetVolume(channels[whooshhitsound], 512);
-										FSOUND_SetPaused(channels[whooshhitsound], FALSE);
+										FSOUND_SetPaused(channels[whooshhitsound], false);
 										victim->RagDoll(0);
 										XYZ relative;
 										relative=victim->coords-coords;
@@ -2722,15 +2722,15 @@ void 	Person::DoAnimations(){
 										vel[0]=velocity.x;
 										vel[1]=velocity.y;
 										vel[2]=velocity.z;
-										/*PlaySoundEx( landsound2, samp[landsound2], NULL, TRUE);
+										/*PlaySoundEx( landsound2, samp[landsound2], NULL, true);
 										FSOUND_3D_SetAttributes(channels[landsound2], gLoc, vel);
 										FSOUND_SetVolume(channels[landsound2], 128);
-										FSOUND_SetPaused(channels[landsound2], FALSE);
+										FSOUND_SetPaused(channels[landsound2], false);
 										*/
-										PlaySoundEx( movewhooshsound, samp[movewhooshsound], NULL, TRUE);
+										PlaySoundEx( movewhooshsound, samp[movewhooshsound], NULL, true);
 										FSOUND_3D_SetAttributes(channels[movewhooshsound], gLoc, vel);
 										FSOUND_SetVolume(channels[movewhooshsound], 128);
-										FSOUND_SetPaused(channels[movewhooshsound], FALSE);
+										FSOUND_SetPaused(channels[movewhooshsound], false);
 
 										victim->skeleton.longdead=0;
 										victim->skeleton.free=1;
@@ -2772,10 +2772,10 @@ void 	Person::DoAnimations(){
 										vel[1]=velocity.y;
 										vel[2]=velocity.z;
 										if(tutoriallevel!=1){
-											PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, TRUE);
+											PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
 											FSOUND_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
 											FSOUND_SetVolume(channels[heavyimpactsound], 128);
-											FSOUND_SetPaused(channels[heavyimpactsound], FALSE);
+											FSOUND_SetPaused(channels[heavyimpactsound], false);
 										}
 										XYZ relative;
 										relative=victim->coords-coords;
@@ -2807,10 +2807,10 @@ void 	Person::DoAnimations(){
 										vel[1]=velocity.y;
 										vel[2]=velocity.z;
 										if(tutoriallevel!=1){
-											PlaySoundEx( thudsound, samp[thudsound], NULL, TRUE);
+											PlaySoundEx( thudsound, samp[thudsound], NULL, true);
 											FSOUND_3D_SetAttributes(channels[thudsound], gLoc, vel);
 											FSOUND_SetVolume(channels[thudsound], 400);
-											FSOUND_SetPaused(channels[thudsound], FALSE);
+											FSOUND_SetPaused(channels[thudsound], false);
 										}
 
 										victim->skeleton.longdead=0;
@@ -2862,10 +2862,10 @@ void 	Person::DoAnimations(){
 
 									if(!hasvictim){
 										terrain.MakeDecal(blooddecalfast,(weapons.tippoint[weaponids[weaponactive]]*.8+weapons.position[weaponids[weaponactive]]*.2),.08,.6,Random()%360);
-										PlaySoundEx( knifesheathesound, samp[knifesheathesound], NULL, TRUE);
+										PlaySoundEx( knifesheathesound, samp[knifesheathesound], NULL, true);
 										FSOUND_3D_SetAttributes(channels[knifesheathesound], gLoc, vel);
 										FSOUND_SetVolume(channels[knifesheathesound], 128);
-										FSOUND_SetPaused(channels[knifesheathesound], FALSE);
+										FSOUND_SetPaused(channels[knifesheathesound], false);
 									}
 
 									if(victim&&hasvictim){
@@ -2928,10 +2928,10 @@ void 	Person::DoAnimations(){
 													victim->skeleton.joints[i].locked=0;
 													//victim->skeleton.joints[i].velocity=0;
 												}
-												PlaySoundEx( fleshstabsound, samp[fleshstabsound], NULL, TRUE);
+												PlaySoundEx( fleshstabsound, samp[fleshstabsound], NULL, true);
 												FSOUND_3D_SetAttributes(channels[fleshstabsound], gLoc, vel);
 												FSOUND_SetVolume(channels[fleshstabsound], 128);
-												FSOUND_SetPaused(channels[fleshstabsound], FALSE);
+												FSOUND_SetPaused(channels[fleshstabsound], false);
 
 											}
 											if(whichtri!=-1||weapons.bloody[weaponids[weaponactive]]){
@@ -2940,10 +2940,10 @@ void 	Person::DoAnimations(){
 											}
 											if(whichtri==-1){
 												hasvictim=0;
-												PlaySoundEx( knifesheathesound, samp[knifesheathesound], NULL, TRUE);
+												PlaySoundEx( knifesheathesound, samp[knifesheathesound], NULL, true);
 												FSOUND_3D_SetAttributes(channels[knifesheathesound], gLoc, vel);
 												FSOUND_SetVolume(channels[knifesheathesound], 128);
-												FSOUND_SetPaused(channels[knifesheathesound], FALSE);								
+												FSOUND_SetPaused(channels[knifesheathesound], false);
 											}
 										}
 									}
@@ -2961,19 +2961,19 @@ void 	Person::DoAnimations(){
 									vel[1]=velocity.y;
 									vel[2]=velocity.z;
 									if(!hasvictim){
-										PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, TRUE);
+										PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, true);
 										FSOUND_3D_SetAttributes(channels[knifedrawsound], gLoc, vel);
 										FSOUND_SetVolume(channels[knifedrawsound], 128);
-										FSOUND_SetPaused(channels[knifedrawsound], FALSE);							
+										FSOUND_SetPaused(channels[knifedrawsound], false);
 									}
 
 									if(victim&&hasvictim){
-										XYZ footvel,footpoint;	
+										XYZ footvel,footpoint;
 
-										PlaySoundEx( fleshstabremovesound, samp[fleshstabremovesound], NULL, TRUE);
+										PlaySoundEx( fleshstabremovesound, samp[fleshstabremovesound], NULL, true);
 										FSOUND_3D_SetAttributes(channels[fleshstabremovesound], gLoc, vel);
 										FSOUND_SetVolume(channels[fleshstabremovesound], 128);
-										FSOUND_SetPaused(channels[fleshstabremovesound], FALSE);
+										FSOUND_SetPaused(channels[fleshstabremovesound], false);
 
 										footvel=0;
 										footpoint=(weapons.tippoint[weaponids[weaponactive]]*.8+weapons.position[weaponids[weaponactive]]*.2);
@@ -3033,7 +3033,7 @@ void 	Person::DoAnimations(){
 
 												for(i=0;i<victim->skeleton.num_joints;i++){
 													victim->skeleton.joints[i].velchange=0;
-													victim->skeleton.joints[i].locked=0;								
+													victim->skeleton.joints[i].locked=0;
 													//victim->skeleton.joints[i].velocity=0;
 												}
 
@@ -3056,7 +3056,7 @@ void 	Person::DoAnimations(){
 									if(!hasvictim&&onterrain){
 										weapons.bloody[weaponids[weaponactive]]=0;
 										weapons.blooddrip[weaponids[weaponactive]]=0;
-									}					
+									}
 								}
 
 								if(targetanimation==upunchanim&&animation[targetanimation].label[currentframe]==5){
@@ -3078,18 +3078,18 @@ void 	Person::DoAnimations(){
 										//if(!victim->isIdle()||victim->damage>victim->damagetolerance-60){
 										if(1==1){
 											if(tutoriallevel!=1){
-												PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, TRUE);
+												PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
 												FSOUND_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
 												FSOUND_SetVolume(channels[heavyimpactsound], 128);
-												FSOUND_SetPaused(channels[heavyimpactsound], FALSE);
+												FSOUND_SetPaused(channels[heavyimpactsound], false);
 											}
 										}
 										else {
 											if(tutoriallevel!=1){
-												PlaySoundEx( landsound2, samp[landsound2], NULL, TRUE);
+												PlaySoundEx( landsound2, samp[landsound2], NULL, true);
 												FSOUND_3D_SetAttributes(channels[landsound2], gLoc, vel);
 												FSOUND_SetVolume(channels[landsound2], 256);
-												FSOUND_SetPaused(channels[landsound2], FALSE);							
+												FSOUND_SetPaused(channels[landsound2], false);
 											}
 										}
 
@@ -3136,27 +3136,27 @@ void 	Person::DoAnimations(){
 										//if(!victim->isIdle()||victim->damage>victim->damagetolerance-60){
 										if(victim->damage<=victim->damagetolerance-60&&normaldotproduct(victim->facing,victim->coords-coords)<(scale*5)*(scale*5)*0&&animation[victim->targetanimation].height!=lowheight){
 											if(tutoriallevel!=1){
-												PlaySoundEx( thudsound, samp[thudsound], NULL, TRUE);
+												PlaySoundEx( thudsound, samp[thudsound], NULL, true);
 												FSOUND_3D_SetAttributes(channels[thudsound], gLoc, vel);
 												FSOUND_SetVolume(channels[thudsound], 512);
-												FSOUND_SetPaused(channels[thudsound], FALSE);
+												FSOUND_SetPaused(channels[thudsound], false);
 											}
 										}
 										else if(victim->damage<=victim->damagetolerance-60&&normaldotproduct(victim->facing,victim->coords-coords)<(scale*5)*(scale*5)*0&&animation[victim->targetanimation].height==lowheight){
 											if(tutoriallevel!=1){
-												PlaySoundEx( whooshhitsound, samp[whooshhitsound], NULL, TRUE);
+												PlaySoundEx( whooshhitsound, samp[whooshhitsound], NULL, true);
 												FSOUND_3D_SetAttributes(channels[whooshhitsound], gLoc, vel);
 												FSOUND_SetVolume(channels[whooshhitsound], 512);
-												FSOUND_SetPaused(channels[whooshhitsound], FALSE);
+												FSOUND_SetPaused(channels[whooshhitsound], false);
 											}
 										}
 										else {
 											if(tutoriallevel!=1){
-												PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, TRUE);
+												PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
 												FSOUND_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
 												FSOUND_SetVolume(channels[heavyimpactsound], 256);
-												FSOUND_SetPaused(channels[heavyimpactsound], FALSE);
-											}							
+												FSOUND_SetPaused(channels[heavyimpactsound], false);
+											}
 										}
 
 										if(victim->damage>victim->damagetolerance-60||normaldotproduct(victim->facing,victim->coords-coords)>0||animation[victim->targetanimation].height==lowheight)
@@ -3199,10 +3199,10 @@ void 	Person::DoAnimations(){
 										vel[1]=velocity.y;
 										vel[2]=velocity.z;
 
-										PlaySoundEx( landsound2, samp[landsound2], NULL, TRUE);
+										PlaySoundEx( landsound2, samp[landsound2], NULL, true);
 										FSOUND_3D_SetAttributes(channels[landsound2], gLoc, vel);
 										FSOUND_SetVolume(channels[landsound2], 256);
-										FSOUND_SetPaused(channels[landsound2], FALSE);
+										FSOUND_SetPaused(channels[landsound2], false);
 
 										Puff(righthand);
 									}
@@ -3225,16 +3225,16 @@ void 	Person::DoAnimations(){
 												if(weapons.type[victim->weaponids[0]]==staff)weapons.damage[victim->weaponids[0]]+=.2+float(abs(Random()%100)-50)/250;
 												if(weapons.type[weaponids[0]]==staff)weapons.damage[weaponids[0]]+=.2+float(abs(Random()%100)-50)/250;
 
-												PlaySoundEx( swordstaffsound, samp[swordstaffsound], NULL, TRUE);
+												PlaySoundEx( swordstaffsound, samp[swordstaffsound], NULL, true);
 												FSOUND_3D_SetAttributes(channels[swordstaffsound], gLoc, vel);
 												FSOUND_SetVolume(channels[swordstaffsound], 512);
-												FSOUND_SetPaused(channels[swordstaffsound], FALSE);
+												FSOUND_SetPaused(channels[swordstaffsound], false);
 											}
 											else{
-												PlaySoundEx( metalhitsound, samp[metalhitsound], NULL, TRUE);
+												PlaySoundEx( metalhitsound, samp[metalhitsound], NULL, true);
 												FSOUND_3D_SetAttributes(channels[metalhitsound], gLoc, vel);
 												FSOUND_SetVolume(channels[metalhitsound], 512);
-												FSOUND_SetPaused(channels[metalhitsound], FALSE);
+												FSOUND_SetPaused(channels[metalhitsound], false);
 											}
 										}
 
@@ -3247,7 +3247,7 @@ void 	Person::DoAnimations(){
 										escapednum=0;
 										XYZ aim;
 										weapons.owner[weaponids[0]]=-1;
-										aim=victim->coords+DoRotation(victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].position,0,victim->rotation,0)*victim->scale+victim->velocity*findDistance(&victim->coords,&coords)/50-(coords+DoRotation(skeleton.joints[skeleton.jointlabels[righthand]].position,0,rotation,0)*scale);					 	
+										aim=victim->coords+DoRotation(victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].position,0,victim->rotation,0)*victim->scale+victim->velocity*findDistance(&victim->coords,&coords)/50-(coords+DoRotation(skeleton.joints[skeleton.jointlabels[righthand]].position,0,rotation,0)*scale);
 										Normalise(&aim);
 										/*if(victim->targetanimation==jumpupanim||victim->targetanimation==jumpdownanim){
 										aim=DoRotation(aim,(float)abs(Random()%15)-7,(float)abs(Random()%15)-7,0);
@@ -3264,7 +3264,7 @@ void 	Person::DoAnimations(){
 											weaponids[0]=weaponids[num_weapons];
 										}
 										weaponactive=-1;
-									}		
+									}
 								}
 
 								if(targetanimation==knifeslashstartanim&&animation[targetanimation].label[currentframe]==5){
@@ -3289,10 +3289,10 @@ void 	Person::DoAnimations(){
 												vel[0]=velocity.x;
 												vel[1]=velocity.y;
 												vel[2]=velocity.z;
-												PlaySoundEx( knifeslicesound, samp[knifeslicesound], NULL, TRUE);
+												PlaySoundEx( knifeslicesound, samp[knifeslicesound], NULL, true);
 												FSOUND_3D_SetAttributes(channels[knifeslicesound], gLoc, vel);
 												FSOUND_SetVolume(channels[knifeslicesound], 512);
-												FSOUND_SetPaused(channels[knifeslicesound], FALSE);
+												FSOUND_SetPaused(channels[knifeslicesound], false);
 											}
 											//victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].velocity+=relative*damagemult*200;
 											if(animation[victim->targetanimation].attack&&(victim->aitype!=playercontrolled||victim->targetanimation==knifeslashstartanim)&&(victim->creature==rabbittype||victim->deathbleeding<=0)){
@@ -3310,14 +3310,14 @@ void 	Person::DoAnimations(){
 											if(tutoriallevel!=1)if(bloodtoggle&&!weapons.bloody[weaponids[weaponactive]])weapons.bloody[weaponids[weaponactive]]=1;
 											if(tutoriallevel!=1)weapons.blooddrip[weaponids[weaponactive]]+=3;
 
-											XYZ footvel,footpoint;	
+											XYZ footvel,footpoint;
 											footvel=0;
 											if(skeleton.free){
 												footpoint=(victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].position+victim->skeleton.joints[victim->skeleton.jointlabels[neck]].position)/2*victim->scale+victim->coords;
 											}
 											if(!skeleton.free){
 												footpoint=DoRotation((victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].position+victim->skeleton.joints[victim->skeleton.jointlabels[neck]].position)/2,0,victim->rotation,0)*victim->scale+victim->coords;
-											}		
+											}
 											if(tutoriallevel!=1){
 												if(bloodtoggle)sprites.MakeSprite(cloudimpactsprite, footpoint,footvel, 1,0,0, .6, .3);
 												footvel=DoRotation(facing,0,90,0)*.8;
@@ -3341,7 +3341,7 @@ void 	Person::DoAnimations(){
 												bonustime=0;
 												bonusvalue=40;
 											}
-											escapednum=0; 
+											escapednum=0;
 											if(tutoriallevel!=1){
 												if(normaldotproduct(victim->facing,victim->coords-coords)<0)victim->DoBloodBig(2/victim->armorhigh,190);
 												else victim->DoBloodBig(2/victim->armorhigh,185);
@@ -3354,10 +3354,10 @@ void 	Person::DoAnimations(){
 												vel[0]=velocity.x;
 												vel[1]=velocity.y;
 												vel[2]=velocity.z;
-												PlaySoundEx( swordslicesound, samp[swordslicesound], NULL, TRUE);
+												PlaySoundEx( swordslicesound, samp[swordslicesound], NULL, true);
 												FSOUND_3D_SetAttributes(channels[swordslicesound], gLoc, vel);
 												FSOUND_SetVolume(channels[swordslicesound], 512);
-												FSOUND_SetPaused(channels[swordslicesound], FALSE);
+												FSOUND_SetPaused(channels[swordslicesound], false);
 											}
 											//victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].velocity+=relative*damagemult*200;
 											//if(animation[victim->targetanimation].attack){
@@ -3381,14 +3381,14 @@ void 	Person::DoAnimations(){
 												//victim->bloodloss+=100*(6.5-findDistancefast(&coords,&victim->coords));
 												victim->DoDamage(damagemult*0);
 
-												XYZ footvel,footpoint;	
+												XYZ footvel,footpoint;
 												footvel=0;
 												if(skeleton.free){
 													footpoint=(victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].position+victim->skeleton.joints[victim->skeleton.jointlabels[neck]].position)/2*victim->scale+victim->coords;
 												}
 												if(!skeleton.free){
 													footpoint=DoRotation((victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].position+victim->skeleton.joints[victim->skeleton.jointlabels[neck]].position)/2,0,victim->rotation,0)*victim->scale+victim->coords;
-												}		
+												}
 												if(bloodtoggle)sprites.MakeSprite(cloudimpactsprite, footpoint,footvel, 1,0,0, .9, .3);
 												footvel=DoRotation(facing,0,90,0)*.8;
 												footvel.y-=.3;
@@ -3414,16 +3414,16 @@ void 	Person::DoAnimations(){
 													if(weapons.type[victim->weaponids[0]]==staff)weapons.damage[victim->weaponids[0]]+=.2+float(abs(Random()%100)-50)/250;
 													if(weapons.type[weaponids[0]]==staff)weapons.damage[weaponids[0]]+=.2+float(abs(Random()%100)-50)/250;
 
-													PlaySoundEx( swordstaffsound, samp[swordstaffsound], NULL, TRUE);
+													PlaySoundEx( swordstaffsound, samp[swordstaffsound], NULL, true);
 													FSOUND_3D_SetAttributes(channels[swordstaffsound], gLoc, vel);
 													FSOUND_SetVolume(channels[swordstaffsound], 512);
-													FSOUND_SetPaused(channels[swordstaffsound], FALSE);
+													FSOUND_SetPaused(channels[swordstaffsound], false);
 												}
 												else{
-													PlaySoundEx( metalhitsound, samp[metalhitsound], NULL, TRUE);
+													PlaySoundEx( metalhitsound, samp[metalhitsound], NULL, true);
 													FSOUND_3D_SetAttributes(channels[metalhitsound], gLoc, vel);
 													FSOUND_SetVolume(channels[metalhitsound], 512);
-													FSOUND_SetPaused(channels[metalhitsound], FALSE);
+													FSOUND_SetPaused(channels[metalhitsound], false);
 												}
 											}
 
@@ -3455,10 +3455,10 @@ void 	Person::DoAnimations(){
 												player[i].wentforweapon=0;
 											}
 
-											/*PlaySoundEx( metalhitsound, samp[metalhitsound], NULL, TRUE);
+											/*PlaySoundEx( metalhitsound, samp[metalhitsound], NULL, true);
 											FSOUND_3D_SetAttributes(channels[metalhitsound], gLoc, vel);
 											FSOUND_SetVolume(channels[metalhitsound], 512);
-											FSOUND_SetPaused(channels[metalhitsound], FALSE);*/
+											FSOUND_SetPaused(channels[metalhitsound], false);*/
 
 										}
 									}
@@ -3481,10 +3481,10 @@ void 	Person::DoAnimations(){
 											vel[0]=velocity.x;
 											vel[1]=velocity.y;
 											vel[2]=velocity.z;
-											PlaySoundEx( staffheadsound, samp[staffheadsound], NULL, TRUE);
+											PlaySoundEx( staffheadsound, samp[staffheadsound], NULL, true);
 											FSOUND_3D_SetAttributes(channels[staffheadsound], gLoc, vel);
 											FSOUND_SetVolume(channels[staffheadsound], 256);
-											FSOUND_SetPaused(channels[staffheadsound], FALSE);
+											FSOUND_SetPaused(channels[staffheadsound], false);
 										}
 										victim->RagDoll(0);
 										XYZ relative;
@@ -3530,10 +3530,10 @@ void 	Person::DoAnimations(){
 											vel[0]=velocity.x;
 											vel[1]=velocity.y;
 											vel[2]=velocity.z;
-											PlaySoundEx( staffheadsound, samp[staffheadsound], NULL, TRUE);
+											PlaySoundEx( staffheadsound, samp[staffheadsound], NULL, true);
 											FSOUND_3D_SetAttributes(channels[staffheadsound], gLoc, vel);
 											FSOUND_SetVolume(channels[staffheadsound], 256);
-											FSOUND_SetPaused(channels[staffheadsound], FALSE);
+											FSOUND_SetPaused(channels[staffheadsound], false);
 										}
 										victim->RagDoll(0);
 										XYZ relative;
@@ -3576,10 +3576,10 @@ void 	Person::DoAnimations(){
 											vel[0]=velocity.x;
 											vel[1]=velocity.y;
 											vel[2]=velocity.z;
-											PlaySoundEx( staffbodysound, samp[staffbodysound], NULL, TRUE);
+											PlaySoundEx( staffbodysound, samp[staffbodysound], NULL, true);
 											FSOUND_3D_SetAttributes(channels[staffbodysound], gLoc, vel);
 											FSOUND_SetVolume(channels[staffbodysound], 256);
-											FSOUND_SetPaused(channels[staffbodysound], FALSE);
+											FSOUND_SetPaused(channels[staffbodysound], false);
 										}
 										victim->skeleton.longdead=0;
 										victim->skeleton.free=1;
@@ -3587,7 +3587,7 @@ void 	Person::DoAnimations(){
 
 										for(i=0;i<victim->skeleton.num_joints;i++){
 											victim->skeleton.joints[i].velchange=0;
-											victim->skeleton.joints[i].locked=0;								
+											victim->skeleton.joints[i].locked=0;
 											//victim->skeleton.joints[i].velocity=0;
 										}
 
@@ -3660,19 +3660,19 @@ void 	Person::DoAnimations(){
 											}
 											victim->skeleton.joints[victim->skeleton.jointlabels[head]].velocity+=relative*damagemult*200;
 											if(tutoriallevel!=1){
-												PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, TRUE);
+												PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
 												FSOUND_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
 												FSOUND_SetVolume(channels[heavyimpactsound], 128);
-												FSOUND_SetPaused(channels[heavyimpactsound], FALSE);
+												FSOUND_SetPaused(channels[heavyimpactsound], false);
 											}
 											victim->Puff(head);
 											victim->DoDamage(damagemult*100/victim->protectionhead);
 											if(victim->howactive==typesleeping)victim->DoDamage(damagemult*150/victim->protectionhead);
 											if(creature==wolftype){
-												PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, TRUE);
+												PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, true);
 												FSOUND_3D_SetAttributes(channels[clawslicesound], gLoc, vel);
 												FSOUND_SetVolume(channels[clawslicesound], 128);
-												FSOUND_SetPaused(channels[clawslicesound], FALSE);
+												FSOUND_SetPaused(channels[clawslicesound], false);
 												victim->spurt=1;
 												victim->DoBloodBig(2/victim->armorhead,175);
 											}
@@ -3688,18 +3688,18 @@ void 	Person::DoAnimations(){
 											victim->targetrotation=targetrotation+180;
 											victim->target=0;
 											if(tutoriallevel!=1){
-												PlaySoundEx( landsound2, samp[landsound2], NULL, TRUE);
+												PlaySoundEx( landsound2, samp[landsound2], NULL, true);
 												FSOUND_3D_SetAttributes(channels[landsound2], gLoc, vel);
 												FSOUND_SetVolume(channels[landsound2], 128);
-												FSOUND_SetPaused(channels[landsound2], FALSE);
+												FSOUND_SetPaused(channels[landsound2], false);
 											}
 											victim->Puff(abdomen);
 											victim->DoDamage(damagemult*30/victim->protectionhigh);
 											if(creature==wolftype){
-												PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, TRUE);
+												PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, true);
 												FSOUND_3D_SetAttributes(channels[clawslicesound], gLoc, vel);
 												FSOUND_SetVolume(channels[clawslicesound], 128);
-												FSOUND_SetPaused(channels[clawslicesound], FALSE);
+												FSOUND_SetPaused(channels[clawslicesound], false);
 												victim->spurt=1;
 												victim->DoBloodBig(2/victim->armorhigh,170);
 											}
@@ -3721,10 +3721,10 @@ void 	Person::DoAnimations(){
 										vel[1]=velocity.y;
 										vel[2]=velocity.z;
 										if(tutoriallevel!=1){
-											PlaySoundEx( landsound2, samp[landsound2], NULL, TRUE);
+											PlaySoundEx( landsound2, samp[landsound2], NULL, true);
 											FSOUND_3D_SetAttributes(channels[landsound2], gLoc, vel);
 											FSOUND_SetVolume(channels[landsound2], 128);
-											FSOUND_SetPaused(channels[landsound2], FALSE);
+											FSOUND_SetPaused(channels[landsound2], false);
 										}
 										XYZ relative;
 										relative=victim->coords-coords;
@@ -3763,10 +3763,10 @@ void 	Person::DoAnimations(){
 											victim->targetrotation=targetrotation+180;
 											victim->target=0;
 											if(tutoriallevel!=1){
-												PlaySoundEx( landsound2, samp[landsound2], NULL, TRUE);
+												PlaySoundEx( landsound2, samp[landsound2], NULL, true);
 												FSOUND_3D_SetAttributes(channels[landsound2], gLoc, vel);
 												FSOUND_SetVolume(channels[landsound2], 128);
-												FSOUND_SetPaused(channels[landsound2], FALSE);
+												FSOUND_SetPaused(channels[landsound2], false);
 											}
 											victim->Puff(abdomen);
 											victim->DoDamage(damagemult*30/victim->protectionlow);
@@ -3778,7 +3778,7 @@ void 	Person::DoAnimations(){
 
 									}
 								}
-							}				
+							}
 							if(animation[targetanimation].attack==reversal&&(!victim->feint||(victim->lastattack==victim->lastattack2&&victim->lastattack2==victim->lastattack3&&Random()%2)||targetanimation==knifefollowanim)){
 								if(targetanimation==spinkickreversalanim&&animation[targetanimation].label[currentframe]==7){
 									escapednum=0;
@@ -3796,16 +3796,16 @@ void 	Person::DoAnimations(){
 									vel[1]=velocity.y;
 									vel[2]=velocity.z;
 									if(tutoriallevel!=1){
-										PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, TRUE);
+										PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
 										FSOUND_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
 										FSOUND_SetVolume(channels[heavyimpactsound], 128);
-										FSOUND_SetPaused(channels[heavyimpactsound], FALSE);
+										FSOUND_SetPaused(channels[heavyimpactsound], false);
 									}
 									if(creature==wolftype){
-										PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, TRUE);
+										PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, true);
 										FSOUND_3D_SetAttributes(channels[clawslicesound], gLoc, vel);
 										FSOUND_SetVolume(channels[clawslicesound], 128);
-										FSOUND_SetPaused(channels[clawslicesound], FALSE);
+										FSOUND_SetPaused(channels[clawslicesound], false);
 										victim->spurt=1;
 										victim->DoBloodBig(2/victim->armorhigh,170);
 									}
@@ -3865,10 +3865,10 @@ void 	Person::DoAnimations(){
 									vel[0]=velocity.x;
 									vel[1]=velocity.y;
 									vel[2]=velocity.z;
-									PlaySoundEx( whooshhitsound, samp[whooshhitsound], NULL, TRUE);
+									PlaySoundEx( whooshhitsound, samp[whooshhitsound], NULL, true);
 									FSOUND_3D_SetAttributes(channels[whooshhitsound], gLoc, vel);
 									FSOUND_SetVolume(channels[whooshhitsound], 128);
-									FSOUND_SetPaused(channels[whooshhitsound], FALSE);
+									FSOUND_SetPaused(channels[whooshhitsound], false);
 									victim->RagDoll(0);
 									XYZ relative;
 									relative=victim->coords-oldcoords;
@@ -3907,10 +3907,10 @@ void 	Person::DoAnimations(){
 									}
 
 									if(tutoriallevel!=1){
-										PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, TRUE);
+										PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
 										FSOUND_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
 										FSOUND_SetVolume(channels[heavyimpactsound], 128);
-										FSOUND_SetPaused(channels[heavyimpactsound], FALSE);
+										FSOUND_SetPaused(channels[heavyimpactsound], false);
 									}
 									victim->RagDoll(0);
 									if(id==0){
@@ -3978,18 +3978,18 @@ void 	Person::DoAnimations(){
 										vel[2]=velocity.z;
 										if(weaponactive!=-1){
 											victim->DoBloodBig(2/victim->armorhigh,225);
-											PlaySoundEx( knifeslicesound, samp[knifeslicesound], NULL, TRUE);
+											PlaySoundEx( knifeslicesound, samp[knifeslicesound], NULL, true);
 											FSOUND_3D_SetAttributes(channels[knifeslicesound], gLoc, vel);
 											FSOUND_SetVolume(channels[knifeslicesound], 512);
-											FSOUND_SetPaused(channels[knifeslicesound], FALSE);
+											FSOUND_SetPaused(channels[knifeslicesound], false);
 											if(bloodtoggle&&!weapons.bloody[weaponids[weaponactive]])weapons.bloody[weaponids[weaponactive]]=1;
 											weapons.blooddrip[weaponids[weaponactive]]+=3;
 										}
 										if(weaponactive==-1&&creature==wolftype){
-											PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, TRUE);
+											PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, true);
 											FSOUND_3D_SetAttributes(channels[clawslicesound], gLoc, vel);
 											FSOUND_SetVolume(channels[clawslicesound], 128);
-											FSOUND_SetPaused(channels[clawslicesound], FALSE);
+											FSOUND_SetPaused(channels[clawslicesound], false);
 											victim->spurt=1;
 											victim->DoBloodBig(2/victim->armorhigh,175);
 										}
@@ -4036,10 +4036,10 @@ void 	Person::DoAnimations(){
 									vel[1]=velocity.y;
 									vel[2]=velocity.z;
 									victim->DoBloodBig(2,225);
-									PlaySoundEx( knifeslicesound, samp[knifeslicesound], NULL, TRUE);
+									PlaySoundEx( knifeslicesound, samp[knifeslicesound], NULL, true);
 									FSOUND_3D_SetAttributes(channels[knifeslicesound], gLoc, vel);
 									FSOUND_SetVolume(channels[knifeslicesound], 512);
-									FSOUND_SetPaused(channels[knifeslicesound], FALSE);
+									FSOUND_SetPaused(channels[knifeslicesound], false);
 									if(bloodtoggle&&!weapons.bloody[weaponids[weaponactive]])weapons.bloody[weaponids[weaponactive]]=1;
 									weapons.blooddrip[weaponids[weaponactive]]+=3;
 									}*/
@@ -4061,10 +4061,10 @@ void 	Person::DoAnimations(){
 									vel[1]=velocity.y;
 									vel[2]=velocity.z;
 									if(tutoriallevel!=1){
-										PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, TRUE);
+										PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
 										FSOUND_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
 										FSOUND_SetVolume(channels[heavyimpactsound], 128);
-										FSOUND_SetPaused(channels[heavyimpactsound], FALSE);
+										FSOUND_SetPaused(channels[heavyimpactsound], false);
 									}
 									victim->RagDoll(0);
 									XYZ relative;
@@ -4117,19 +4117,19 @@ void 	Person::DoAnimations(){
 										vel[2]=velocity.z;
 										if(weaponactive!=-1){
 											victim->DoBloodBig(200,225);
-											PlaySoundEx( knifeslicesound, samp[knifeslicesound], NULL, TRUE);
+											PlaySoundEx( knifeslicesound, samp[knifeslicesound], NULL, true);
 											FSOUND_3D_SetAttributes(channels[knifeslicesound], gLoc, vel);
 											FSOUND_SetVolume(channels[knifeslicesound], 512);
-											FSOUND_SetPaused(channels[knifeslicesound], FALSE);
+											FSOUND_SetPaused(channels[knifeslicesound], false);
 											if(bloodtoggle)weapons.bloody[weaponids[weaponactive]]=2;
 											weapons.blooddrip[weaponids[weaponactive]]+=5;
 										}
 
 										if(creature==wolftype&&weaponactive==-1){
-											PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, TRUE);
+											PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, true);
 											FSOUND_3D_SetAttributes(channels[clawslicesound], gLoc, vel);
 											FSOUND_SetVolume(channels[clawslicesound], 128);
-											FSOUND_SetPaused(channels[clawslicesound], FALSE);
+											FSOUND_SetPaused(channels[clawslicesound], false);
 											victim->spurt=1;
 											victim->DoBloodBig(2,175);
 										}
@@ -4154,7 +4154,7 @@ void 	Person::DoAnimations(){
 											bloodvel=DoRotation(bloodvel,((float)(Random()%100))/4,rotation+((float)(Random()%100))/4,0)*scale;
 											sprites.MakeSprite(bloodsprite, DoRotation(skeleton.joints[skeleton.jointlabels[neck]].position,0,rotation,0)*scale+coords,bloodvel, 1,1,1, .05, 1);
 											*/
-											XYZ footvel,footpoint;	
+											XYZ footvel,footpoint;
 											footvel=0;
 											footpoint=weapons.tippoint[weaponids[0]];
 											if(bloodtoggle)sprites.MakeSprite(cloudimpactsprite, footpoint,footvel, 1,0,0, .9, .3);
@@ -4178,7 +4178,7 @@ void 	Person::DoAnimations(){
 												bonustime=0;
 												bonusvalue=40;
 											}
-											XYZ footvel,footpoint;	
+											XYZ footvel,footpoint;
 											footvel=0;
 											footpoint=weapons.tippoint[weaponids[0]];
 											if(bloodtoggle)sprites.MakeSprite(cloudimpactsprite, footpoint,footvel, 1,0,0, .9, .3);
@@ -4199,10 +4199,10 @@ void 	Person::DoAnimations(){
 										vel[0]=velocity.x;
 										vel[1]=velocity.y;
 										vel[2]=velocity.z;
-										PlaySoundEx( fleshstabsound, samp[fleshstabsound], NULL, TRUE);
+										PlaySoundEx( fleshstabsound, samp[fleshstabsound], NULL, true);
 										FSOUND_3D_SetAttributes(channels[fleshstabsound], gLoc, vel);
 										FSOUND_SetVolume(channels[fleshstabsound], 512);
-										FSOUND_SetPaused(channels[fleshstabsound], FALSE);
+										FSOUND_SetPaused(channels[fleshstabsound], false);
 										if(bloodtoggle)weapons.bloody[weaponids[weaponactive]]=2;
 										weapons.blooddrip[weaponids[weaponactive]]+=5;
 									}
@@ -4229,14 +4229,14 @@ void 	Person::DoAnimations(){
 										vel[0]=velocity.x;
 										vel[1]=velocity.y;
 										vel[2]=velocity.z;
-										PlaySoundEx( fleshstabremovesound, samp[fleshstabremovesound], NULL, TRUE);
+										PlaySoundEx( fleshstabremovesound, samp[fleshstabremovesound], NULL, true);
 										FSOUND_3D_SetAttributes(channels[fleshstabremovesound], gLoc, vel);
 										FSOUND_SetVolume(channels[fleshstabremovesound], 512);
-										FSOUND_SetPaused(channels[fleshstabremovesound], FALSE);
+										FSOUND_SetPaused(channels[fleshstabremovesound], false);
 										if(bloodtoggle)weapons.bloody[weaponids[weaponactive]]=2;
 										weapons.blooddrip[weaponids[weaponactive]]+=5;
 
-										XYZ footvel,footpoint;	
+										XYZ footvel,footpoint;
 										footvel=0;
 										footpoint=weapons.tippoint[weaponids[0]];
 										if(bloodtoggle)sprites.MakeSprite(cloudimpactsprite, footpoint,footvel, 1,0,0, .9, .3);
@@ -4258,7 +4258,7 @@ void 	Person::DoAnimations(){
 
 										escapednum=0;
 
-										XYZ footvel,footpoint;	
+										XYZ footvel,footpoint;
 										footvel=0;
 										footpoint=(weapons.tippoint[weaponids[0]]+weapons.position[weaponids[0]])/2;
 										if(bloodtoggle)sprites.MakeSprite(cloudimpactsprite, footpoint,footvel, 1,0,0, .9, .3);
@@ -4279,10 +4279,10 @@ void 	Person::DoAnimations(){
 										vel[0]=velocity.x;
 										vel[1]=velocity.y;
 										vel[2]=velocity.z;
-										PlaySoundEx( fleshstabsound, samp[fleshstabsound], NULL, TRUE);
+										PlaySoundEx( fleshstabsound, samp[fleshstabsound], NULL, true);
 										FSOUND_3D_SetAttributes(channels[fleshstabsound], gLoc, vel);
 										FSOUND_SetVolume(channels[fleshstabsound], 512);
-										FSOUND_SetPaused(channels[fleshstabsound], FALSE);
+										FSOUND_SetPaused(channels[fleshstabsound], false);
 										if(bloodtoggle)weapons.bloody[weaponids[weaponactive]]=2;
 										weapons.blooddrip[weaponids[weaponactive]]+=5;
 									}
@@ -4303,14 +4303,14 @@ void 	Person::DoAnimations(){
 										vel[0]=velocity.x;
 										vel[1]=velocity.y;
 										vel[2]=velocity.z;
-										PlaySoundEx( fleshstabremovesound, samp[fleshstabremovesound], NULL, TRUE);
+										PlaySoundEx( fleshstabremovesound, samp[fleshstabremovesound], NULL, true);
 										FSOUND_3D_SetAttributes(channels[fleshstabremovesound], gLoc, vel);
 										FSOUND_SetVolume(channels[fleshstabremovesound], 512);
-										FSOUND_SetPaused(channels[fleshstabremovesound], FALSE);
+										FSOUND_SetPaused(channels[fleshstabremovesound], false);
 										if(bloodtoggle)weapons.bloody[weaponids[weaponactive]]=2;
 										weapons.blooddrip[weaponids[weaponactive]]+=5;
 
-										XYZ footvel,footpoint;	
+										XYZ footvel,footpoint;
 										footvel=0;
 										footpoint=weapons.tippoint[weaponids[0]];
 										if(bloodtoggle)sprites.MakeSprite(cloudimpactsprite, footpoint,footvel, 1,0,0, .9, .3);
@@ -4339,10 +4339,10 @@ void 	Person::DoAnimations(){
 									vel[2]=velocity.z;
 									if(weaponactive==-1){
 										if(tutoriallevel!=1){
-											PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, TRUE);
+											PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
 											FSOUND_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
 											FSOUND_SetVolume(channels[heavyimpactsound], 128);
-											FSOUND_SetPaused(channels[heavyimpactsound], FALSE);
+											FSOUND_SetPaused(channels[heavyimpactsound], false);
 										}
 									}
 									bool doslice;
@@ -4352,18 +4352,18 @@ void 	Person::DoAnimations(){
 									if(doslice){
 										if(weaponactive!=-1){
 											victim->DoBloodBig(2/victim->armorhead,225);
-											PlaySoundEx( knifeslicesound, samp[knifeslicesound], NULL, TRUE);
+											PlaySoundEx( knifeslicesound, samp[knifeslicesound], NULL, true);
 											FSOUND_3D_SetAttributes(channels[knifeslicesound], gLoc, vel);
 											FSOUND_SetVolume(channels[knifeslicesound], 512);
-											FSOUND_SetPaused(channels[knifeslicesound], FALSE);
+											FSOUND_SetPaused(channels[knifeslicesound], false);
 											if(bloodtoggle&&!weapons.bloody[weaponids[weaponactive]])weapons.bloody[weaponids[weaponactive]]=1;
 											weapons.blooddrip[weaponids[weaponactive]]+=3;
 										}
-										if(weaponactive==-1&&creature==wolftype){	
-											PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, TRUE);
+										if(weaponactive==-1&&creature==wolftype){
+											PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, true);
 											FSOUND_3D_SetAttributes(channels[clawslicesound], gLoc, vel);
 											FSOUND_SetVolume(channels[clawslicesound], 128);
-											FSOUND_SetPaused(channels[clawslicesound], FALSE);
+											FSOUND_SetPaused(channels[clawslicesound], false);
 											victim->spurt=1;
 											victim->DoBloodBig(2/victim->armorhead,175);
 										}
@@ -4442,10 +4442,10 @@ void 	Person::DoAnimations(){
 									vel[1]=velocity.y;
 									vel[2]=velocity.z;
 
-									PlaySoundEx( movewhooshsound, samp[movewhooshsound], NULL, TRUE);
+									PlaySoundEx( movewhooshsound, samp[movewhooshsound], NULL, true);
 									FSOUND_3D_SetAttributes(channels[movewhooshsound], gLoc, vel);
 									FSOUND_SetVolume(channels[movewhooshsound], 128);
-									FSOUND_SetPaused(channels[movewhooshsound], FALSE);
+									FSOUND_SetPaused(channels[movewhooshsound], false);
 								}
 								if(currentanimation==staggerbackhighanim){
 									targetanimation=getIdle();
@@ -4494,10 +4494,10 @@ void 	Person::DoAnimations(){
 										vel[1]=velocity.y;
 										vel[2]=velocity.z;
 
-										PlaySoundEx( knifesheathesound, samp[knifesheathesound], NULL, TRUE);
+										PlaySoundEx( knifesheathesound, samp[knifesheathesound], NULL, true);
 										FSOUND_3D_SetAttributes(channels[knifesheathesound], gLoc, vel);
 										FSOUND_SetVolume(channels[knifesheathesound], 128);
-										FSOUND_SetPaused(channels[knifesheathesound], FALSE);	
+										FSOUND_SetPaused(channels[knifesheathesound], false);
 									}
 									if(weaponactive!=-1){
 										float gLoc[3];
@@ -4509,10 +4509,10 @@ void 	Person::DoAnimations(){
 										vel[1]=velocity.y;
 										vel[2]=velocity.z;
 
-										PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, TRUE);
+										PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, true);
 										FSOUND_3D_SetAttributes(channels[knifedrawsound], gLoc, vel);
 										FSOUND_SetVolume(channels[knifedrawsound], 128);
-										FSOUND_SetPaused(channels[knifedrawsound], FALSE);	
+										FSOUND_SetPaused(channels[knifedrawsound], false);
 									}
 								}
 								if(currentanimation==rollanim){
@@ -4587,7 +4587,7 @@ void 	Person::DoAnimations(){
 										targetframe=3;
 										velocity=facing*-8;
 										velocity.y=4;
-										if(id==0)FSOUND_SetPaused(channels[whooshsound], FALSE);
+										if(id==0)FSOUND_SetPaused(channels[whooshsound], false);
 									}
 									if(targetanimation==walljumprightanim){
 										targetanimation=rightflipanim;
@@ -4605,7 +4605,7 @@ void 	Person::DoAnimations(){
 										velocity=facing*8;
 										velocity.y=4;
 									}
-									if(id==0)FSOUND_SetPaused(channels[whooshsound], FALSE);
+									if(id==0)FSOUND_SetPaused(channels[whooshsound], false);
 								}
 								if(targetanimation==walljumpleftanim){
 									if(attackkeydown){
@@ -4645,7 +4645,7 @@ void 	Person::DoAnimations(){
 										velocity=DoRotation(facing,0,-30,0)*-8;
 										velocity.y=4;
 									}
-									if(id==0)FSOUND_SetPaused(channels[whooshsound], FALSE);
+									if(id==0)FSOUND_SetPaused(channels[whooshsound], false);
 								}
 								if(targetanimation==sneakattackanim){
 									float ycoords=oldcoords.y;
@@ -4740,10 +4740,10 @@ void 	Person::DoAnimations(){
 									vel[0]=velocity.x;
 									vel[1]=velocity.y;
 									vel[2]=velocity.z;
-									PlaySoundEx( landsound, samp[landsound], NULL, TRUE);
+									PlaySoundEx( landsound, samp[landsound], NULL, true);
 									FSOUND_3D_SetAttributes(channels[landsound], gLoc, vel);
 									FSOUND_SetVolume(channels[landsound], 128);
-									FSOUND_SetPaused(channels[landsound], FALSE);
+									FSOUND_SetPaused(channels[landsound], false);
 
 									if(currentanimation==upunchreversedanim||currentanimation==swordslashreversedanim){
 										targetanimation=rollanim;
@@ -4809,7 +4809,7 @@ void 	Person::DoAnimations(){
 										escapednum++;
 										targetanimation=rollanim;
 										coords+=facing;
-										if(id==0)FSOUND_SetPaused(channels[whooshsound], TRUE);
+										if(id==0)FSOUND_SetPaused(channels[whooshsound], true);
 									}
 									lastfeint=0;
 								}
@@ -4832,7 +4832,7 @@ void 	Person::DoAnimations(){
 										escapednum++;
 										targetanimation=rollanim;
 										coords+=facing*2;
-										if(id==0)FSOUND_SetPaused(channels[whooshsound], TRUE);
+										if(id==0)FSOUND_SetPaused(channels[whooshsound], true);
 									}
 									lastfeint=0;
 								}
@@ -4864,7 +4864,7 @@ void 	Person::DoAnimations(){
 								targetanimation=jumpdownanim;
 							}
 		}
-		if(!skeleton.free){		
+		if(!skeleton.free){
 			oldtarget=target;
 			if(!transspeed&&animation[targetanimation].attack!=2&&animation[targetanimation].attack!=3){
 				if(!isRun()||!wasRun()){
@@ -4904,7 +4904,7 @@ void 	Person::DoAnimations(){
 			if(currentanimation!=oldcurrentanimation||targetanimation!=oldtargetanimation||((currentframe!=oldcurrentframe||targetframe!=oldtargetframe)&&!calcrot)){
 				//Old rotates
 				for(i=0;i<skeleton.num_joints;i++){
-					skeleton.joints[i].position=animation[currentanimation].position[i][currentframe];	
+					skeleton.joints[i].position=animation[currentanimation].position[i][currentframe];
 				}
 
 				skeleton.FindForwards();
@@ -4926,7 +4926,7 @@ void 	Person::DoAnimations(){
 
 				//New rotates
 				for(i=0;i<skeleton.num_joints;i++){
-					skeleton.joints[i].position=animation[targetanimation].position[i][targetframe];	
+					skeleton.joints[i].position=animation[targetanimation].position[i][targetframe];
 				}
 
 				skeleton.FindForwards();
@@ -4988,7 +4988,7 @@ void 	Person::DoAnimations(){
 	//skeleton.DoConstraints();
 }
 
-void 	Person::DoStuff(){
+void	Person::DoStuff(){
 	static XYZ terrainnormal;
 	static XYZ flatfacing;
 	static XYZ flatvelocity;
@@ -5107,7 +5107,7 @@ void 	Person::DoStuff(){
 		if(skeleton.free)flatvelocity=skeleton.joints[howmany].velocity*scale/2;
 		if(!skeleton.free)flatfacing=DoRotation(DoRotation(DoRotation(skeleton.joints[howmany].position,0,0,tilt),tilt2,0,0),0,rotation,0)*scale+coords;
 		if(skeleton.free)flatfacing=skeleton.joints[howmany].position*scale+coords;
-		sprites.MakeSprite(breathsprite, flatfacing,flatvelocity, 1,1,1, .6+(float)abs(Random()%100)/200-.25, .3);	
+		sprites.MakeSprite(breathsprite, flatfacing,flatvelocity, 1,1,1, .6+(float)abs(Random()%100)/200-.25, .3);
 	}
 
 	if(bleeding>0){
@@ -5155,7 +5155,7 @@ void 	Person::DoStuff(){
 				if(!skeleton.free)bloodvel+=DoRotation(velocity,((float)(Random()%100))/4,((float)(Random()%100))/4,0)*scale;
 				if(skeleton.free)sprites.MakeSprite(bloodsprite, skeleton.joints[skeleton.jointlabels[abdomen]].position*scale+coords,bloodvel, 1,1,1, .05, 1);
 				if(!skeleton.free)sprites.MakeSprite(bloodsprite, DoRotation((skeleton.joints[skeleton.jointlabels[abdomen]].position+skeleton.joints[skeleton.jointlabels[abdomen]].position)/2,0,rotation,0)*scale+coords,bloodvel, 1,1,1, .05, 1);
-			}			
+			}
 		}
 		/*if(id==0){
 		bloodloss+=deathbleeding*40;
@@ -5164,7 +5164,7 @@ void 	Person::DoStuff(){
 		bloodloss+=deathbleeding*multiplier*80;
 		deathbleeding-=multiplier*1.6;
 		//if(id==0)deathbleeding-=multiplier*.2;
-		if(deathbleeding<0)deathbleeding=0;	
+		if(deathbleeding<0)deathbleeding=0;
 		if(bloodloss>damagetolerance&&animation[targetanimation].attack==neutral){
 			if(weaponactive!=-1){
 				weapons.owner[weaponids[0]]=-1;
@@ -5198,7 +5198,7 @@ void 	Person::DoStuff(){
 			if(!dead&&creature==wolftype){
 				bonus=Wolfbonus;
 				bonustime=0;
-				bonusvalue=300;	
+				bonusvalue=300;
 			}
 			dead=2;
 			if(targetanimation==knifefollowedanim&&!skeleton.free){
@@ -5380,7 +5380,7 @@ void 	Person::DoStuff(){
 				if(!skeleton.free)footpoint=DoRotation((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2,0,rotation,0)*scale+coords;
 				if(skeleton.free)footpoint=((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2)*scale+coords;
 				if(targetanimation==sleepanim)footvel=DoRotation(footvel,0,90,0);
-				sprites.MakeSprite(breathsprite, footpoint+footvel*.2,footvel*.4, 1,1,1, .4, .3);							
+				sprites.MakeSprite(breathsprite, footpoint+footvel*.2,footvel*.4, 1,1,1, .4, .3);
 			}
 		}
 
@@ -5468,7 +5468,7 @@ void 	Person::DoStuff(){
 			}
 		}
 	}
-	if(creature==wolftype){				
+	if(creature==wolftype){
 		twitchdelay2-=multiplier*1.5;
 		if(tailmorphend!=0)
 			if((isRun()||targetanimation==jumpupanim||targetanimation==jumpdownanim||targetanimation==backflipanim)&&!skeleton.free){
@@ -5579,7 +5579,7 @@ void 	Person::DoStuff(){
 		if(creature==wolftype){
 			bonus=Wolfbonus;
 			bonustime=0;
-			bonusvalue=300;	
+			bonusvalue=300;
 		}
 
 		RagDoll(0);
@@ -5617,7 +5617,7 @@ void 	Person::DoStuff(){
 		/*
 		if(bloodloss<damagetolerance)
 		for(i=0;i<skeleton.num_joints;i++){
-		skeleton.joints[i].velocity*=1.5;	
+		skeleton.joints[i].velocity*=1.5;
 		}*/
 	}
 
@@ -5643,7 +5643,7 @@ void 	Person::DoStuff(){
 		skeleton.free=1;
 		damage-=20;
 		for(i=0;i<skeleton.num_joints;i++){
-			skeleton.joints[i].velocity=0;	
+			skeleton.joints[i].velocity=0;
 		}
 	}
 	if(permanentdamage>damagetolerance&&dead!=2){
@@ -5675,7 +5675,7 @@ void 	Person::DoStuff(){
 		if(!dead&&creature==wolftype){
 			bonus=Wolfbonus;
 			bonustime=0;
-			bonusvalue=300;	
+			bonusvalue=300;
 		}
 
 		if(id!=0&&unconscioustime<.1&&(bonus!=spinecrusher||bonustime>1)&&(bonus!=FinishedBonus||bonustime>1)&&bloodloss<damagetolerance){
@@ -5699,10 +5699,10 @@ void 	Person::DoStuff(){
 		vel[0]=velocity.x;
 		vel[1]=velocity.y;
 		vel[2]=velocity.z;
-		PlaySoundEx( breaksound, samp[breaksound], NULL, TRUE);
+		PlaySoundEx( breaksound, samp[breaksound], NULL, true);
 		FSOUND_3D_SetAttributes(channels[breaksound], gLoc, vel);
 		FSOUND_SetVolume(channels[breaksound], 512);
-		FSOUND_SetPaused(channels[breaksound], FALSE);
+		FSOUND_SetPaused(channels[breaksound], false);
 		/*if(id==0||findDistancefast(&coords,&viewer)<50){
 		slomo=1;
 		slomodelay=.2;
@@ -5710,7 +5710,7 @@ void 	Person::DoStuff(){
 	}
 
 	if(skeleton.free==1){
-		if(id==0)FSOUND_SetPaused(channels[whooshsound], TRUE);
+		if(id==0)FSOUND_SetPaused(channels[whooshsound], true);
 
 		if(!dead){
 			//If knocked over, open hands and close mouth
@@ -5776,7 +5776,7 @@ void 	Person::DoStuff(){
 			skeleton.longdead+=(2000-findLength(&average))*multiplier+multiplier;
 			if(skeleton.longdead>2000){
 				if(skeleton.longdead>6000){
-					if(id==0)FSOUND_SetPaused(channels[whooshsound], TRUE);
+					if(id==0)FSOUND_SetPaused(channels[whooshsound], true);
 					skeleton.free=3;
 					DrawSkeleton();
 					skeleton.free=2;
@@ -5832,7 +5832,7 @@ void 	Person::DoStuff(){
 				if(objects.type[i]!=treeleavestype&&objects.type[i]!=bushtype&&objects.type[i]!=firetype){
 					colviewer=startpoint;
 					coltarget=endpoint;
-					if(objects.model[i].LineCheck(&colviewer,&coltarget,&colpoint,&objects.position[i],&objects.rotation[i])!=-1)canrecover=0;	
+					if(objects.model[i].LineCheck(&colviewer,&coltarget,&colpoint,&objects.position[i],&objects.rotation[i])!=-1)canrecover=0;
 				}
 			}
 			if(canrecover){
@@ -5889,7 +5889,7 @@ void 	Person::DoStuff(){
 		if(findLength(&average)<10&&!dead&&skeleton.free){
 			skeleton.longdead+=(2000-findLength(&average))*multiplier+multiplier;
 			if(skeleton.longdead>(damage+500)*1.5){
-				if(id==0)FSOUND_SetPaused(channels[whooshsound], TRUE);
+				if(id==0)FSOUND_SetPaused(channels[whooshsound], true);
 				skeleton.free=0;
 				velocity=0;
 				XYZ middle;
@@ -6016,10 +6016,10 @@ void 	Person::DoStuff(){
 				vel[0]=velocity.x;
 				vel[1]=velocity.y;
 				vel[2]=velocity.z;
-				PlaySoundEx( movewhooshsound, samp[movewhooshsound], NULL, TRUE);
+				PlaySoundEx( movewhooshsound, samp[movewhooshsound], NULL, true);
 				FSOUND_3D_SetAttributes(channels[movewhooshsound], gLoc, vel);
 				FSOUND_SetVolume(channels[movewhooshsound], 128);
-				FSOUND_SetPaused(channels[movewhooshsound], FALSE);
+				FSOUND_SetPaused(channels[movewhooshsound], false);
 
 				currentanimation=targetanimation;
 				currentframe=targetframe-1;
@@ -6056,10 +6056,10 @@ void 	Person::DoStuff(){
 								vel[0]=0;
 								vel[1]=0;
 								vel[2]=0;
-								PlaySoundEx( firestartsound, samp[firestartsound], NULL, TRUE);
+								PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
 								FSOUND_3D_SetAttributes(channels[firestartsound], gLoc, vel);
 								FSOUND_SetVolume(channels[firestartsound], 256);
-								FSOUND_SetPaused(channels[firestartsound], FALSE);
+								FSOUND_SetPaused(channels[firestartsound], false);
 							}
 							objects.onfire[i]=1;
 						}
@@ -6081,10 +6081,10 @@ void 	Person::DoStuff(){
 									vel[0]=0;
 									vel[1]=0;
 									vel[2]=0;
-									PlaySoundEx( firestartsound, samp[firestartsound], NULL, TRUE);
+									PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
 									FSOUND_3D_SetAttributes(channels[firestartsound], gLoc, vel);
 									FSOUND_SetVolume(channels[firestartsound], 256);
-									FSOUND_SetPaused(channels[firestartsound], FALSE);
+									FSOUND_SetPaused(channels[firestartsound], false);
 								}
 								objects.onfire[i]=1;
 							}
@@ -6106,10 +6106,10 @@ void 	Person::DoStuff(){
 								vel[0]=velocity.x;
 								vel[1]=velocity.y;
 								vel[2]=velocity.z;
-								PlaySoundEx( bushrustle, samp[bushrustle], NULL, TRUE);
+								PlaySoundEx( bushrustle, samp[bushrustle], NULL, true);
 								FSOUND_3D_SetAttributes(channels[bushrustle], gLoc, vel);
 								FSOUND_SetVolume(channels[bushrustle], 40*findLength(&velocity));
-								FSOUND_SetPaused(channels[bushrustle], FALSE);
+								FSOUND_SetPaused(channels[bushrustle], false);
 
 								if(id==0){
 									envsound[numenvsounds]=coords;
@@ -6152,7 +6152,7 @@ void 	Person::DoStuff(){
 												}
 							}
 							objects.rotx[i]+=velocity.x*multiplier*6;
-							objects.roty[i]+=velocity.z*multiplier*6;	
+							objects.roty[i]+=velocity.z*multiplier*6;
 							objects.messedwith[i]=.5;
 						}
 						XYZ tempcoord;
@@ -6175,10 +6175,10 @@ void 	Person::DoStuff(){
 								vel[0]=0;
 								vel[1]=0;
 								vel[2]=0;
-								PlaySoundEx( firestartsound, samp[firestartsound], NULL, TRUE);
+								PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
 								FSOUND_3D_SetAttributes(channels[firestartsound], gLoc, vel);
 								FSOUND_SetVolume(channels[firestartsound], 256);
-								FSOUND_SetPaused(channels[firestartsound], FALSE);
+								FSOUND_SetPaused(channels[firestartsound], false);
 								objects.onfire[i]=1;
 								}
 								}*/
@@ -6194,10 +6194,10 @@ void 	Person::DoStuff(){
 									vel[0]=velocity.x;
 									vel[1]=velocity.y;
 									vel[2]=velocity.z;
-									PlaySoundEx( bushrustle, samp[bushrustle], NULL, TRUE);
+									PlaySoundEx( bushrustle, samp[bushrustle], NULL, true);
 									FSOUND_3D_SetAttributes(channels[bushrustle], gLoc, vel);
 									FSOUND_SetVolume(channels[bushrustle], 40*findLength(&velocity));
-									FSOUND_SetPaused(channels[bushrustle], FALSE);
+									FSOUND_SetPaused(channels[bushrustle], false);
 
 									if(id==0){
 										envsound[numenvsounds]=coords;
@@ -6242,11 +6242,11 @@ void 	Person::DoStuff(){
 													}
 								}
 								objects.messedwith[i]=.5;
-							}	
+							}
 						}
 			}
 
-			if(!skeleton.free){	
+			if(!skeleton.free){
 				bool play;
 				play=0;
 				if((stunned>0||surprised>0)&&numplayers>2&&aitype!=passivetype)play=1;
@@ -6279,12 +6279,12 @@ void 	Person::DoStuff(){
 					//if(animation[targetanimation].label[targetframe]==8)whichsound=landsound2;
 
 					if(whichsound!=-1){
-						PlaySoundEx( whichsound, samp[whichsound], NULL, TRUE);
+						PlaySoundEx( whichsound, samp[whichsound], NULL, true);
 						FSOUND_3D_SetAttributes(channels[whichsound], gLoc, vel);
 						FSOUND_SetVolume(channels[whichsound], 512);
-						FSOUND_SetPaused(channels[whichsound], FALSE);
-					}	
-				}	
+						FSOUND_SetPaused(channels[whichsound], false);
+					}
+				}
 
 				if(targetanimation==staggerbackhighanim)staggerdelay=1;
 				if(targetanimation==staggerbackhardanim)staggerdelay=1;
@@ -6400,7 +6400,7 @@ void 	Person::DoStuff(){
 					}
 				}
 				/*
-				if(speechdelay>.25){			
+				if(speechdelay>.25){
 				if(headmorphend!=2)headmorphness=0;
 				headmorphend=2;
 				targetheadmorphness=1;
@@ -6494,7 +6494,7 @@ void 	Person::DoStuff(){
 					//if(!creature==wolftype||targetanimation==rabbitkickanim)
 					if(targetanimation==rabbittackleanim){
 						velocity+=facing*multiplier*speed*700*scale;
-						velspeed=findLength(&velocity);	
+						velspeed=findLength(&velocity);
 						if(velspeed>speed*65*scale){
 							velocity/=velspeed;
 							velspeed=speed*65*scale;
@@ -6502,13 +6502,13 @@ void 	Person::DoStuff(){
 						}
 						velocity.y+=gravity*multiplier*20;
 						ReflectVector(&velocity,&terrain.getNormal(coords.x,coords.z));
-						velspeed=findLength(&velocity);	
+						velspeed=findLength(&velocity);
 						velocity=flatfacing*velspeed;
 					}
 					if(targetanimation!=rabbitrunninganim&&targetanimation!=wolfrunninganim){
 						if(isRun()||targetanimation==rabbitkickanim){
 							velocity+=facing*multiplier*speed*700*scale;
-							velspeed=findLength(&velocity);	
+							velspeed=findLength(&velocity);
 							if(velspeed>speed*45*scale){
 								velocity/=velspeed;
 								velspeed=speed*45*scale;
@@ -6516,14 +6516,14 @@ void 	Person::DoStuff(){
 							}
 							velocity.y+=gravity*multiplier*20;
 							ReflectVector(&velocity,&terrain.getNormal(coords.x,coords.z));
-							velspeed=findLength(&velocity);	
+							velspeed=findLength(&velocity);
 							if(velspeed<speed*30*scale)velspeed=speed*30*scale;
 							velocity=flatfacing*velspeed;
 						}
 					}
 					else if(isRun()){
 						velocity+=facing*multiplier*speed*700*scale;
-						velspeed=findLength(&velocity);	
+						velspeed=findLength(&velocity);
 						if(creature==rabbittype){
 							if(velspeed>speed*55*scale){
 								velocity/=velspeed;
@@ -6540,14 +6540,14 @@ void 	Person::DoStuff(){
 						}
 						velocity.y+=gravity*multiplier*20;
 						ReflectVector(&velocity,&terrain.getNormal(coords.x,coords.z));
-						velspeed=findLength(&velocity);	
+						velspeed=findLength(&velocity);
 						velocity=flatfacing*velspeed;
 					}
 
 					/*if(creature==wolftype)
 					if(isRun()){
 					velocity+=facing*multiplier*speed*700*scale;
-					velspeed=findLength(&velocity);	
+					velspeed=findLength(&velocity);
 					if(velspeed>speed*55*scale){
 					velocity/=velspeed;
 					velspeed=speed*55*scale;
@@ -6555,13 +6555,13 @@ void 	Person::DoStuff(){
 					}
 					velocity.y+=gravity*multiplier*20;
 					ReflectVector(&velocity,&terrain.getNormal(coords.x,coords.z));
-					velspeed=findLength(&velocity);	
+					velspeed=findLength(&velocity);
 					velocity=flatfacing*velspeed;
 					}*/
 
 					if(targetanimation==rollanim&&animation[targetanimation].label[targetframe]!=6){
 						velocity+=facing*multiplier*speed*700*scale;
-						velspeed=findLength(&velocity);	
+						velspeed=findLength(&velocity);
 						if(velspeed>speed*45*scale){
 							velocity/=velspeed;
 							velspeed=speed*45*scale;
@@ -6569,14 +6569,14 @@ void 	Person::DoStuff(){
 						}
 						velocity.y+=gravity*multiplier*20;
 						ReflectVector(&velocity,&terrain.getNormal(coords.x,coords.z));
-						velspeed=findLength(&velocity);	
+						velspeed=findLength(&velocity);
 						velocity=flatfacing*velspeed;
 					}
 
 
 					/*if(currentanimation==rollanim&&(isCrouch()||isIdle())){
 					velocity+=facing*multiplier*speed*700*scale;
-					velspeed=findLength(&velocity);	
+					velspeed=findLength(&velocity);
 					if(velspeed>speed*25*scale){
 					velocity/=velspeed;
 					velspeed=speed*25*scale;
@@ -6584,13 +6584,13 @@ void 	Person::DoStuff(){
 					}
 					velocity.y+=gravity*multiplier*20;
 					ReflectVector(&velocity,&terrain.getNormal(coords.x,coords.z));
-					velspeed=findLength(&velocity);	
+					velspeed=findLength(&velocity);
 					velocity=flatfacing*velspeed;
 					}*/
 
 					if(targetanimation==sneakanim||targetanimation==walkanim){
 						velocity+=facing*multiplier*speed*700*scale;
-						velspeed=findLength(&velocity);	
+						velspeed=findLength(&velocity);
 						if(velspeed>speed*12*scale){
 							velocity/=velspeed;
 							velspeed=speed*12*scale;
@@ -6598,13 +6598,13 @@ void 	Person::DoStuff(){
 						}
 						velocity.y+=gravity*multiplier*20;
 						ReflectVector(&velocity,&terrain.getNormal(coords.x,coords.z));
-						velspeed=findLength(&velocity);	
+						velspeed=findLength(&velocity);
 						velocity=flatfacing*velspeed;
 					}
 
 					if((targetanimation==fightidleanim||targetanimation==knifefightidleanim)&&(currentanimation==bounceidleanim||currentanimation==hurtidleanim)){
 						velocity+=facing*multiplier*speed*700*scale;
-						velspeed=findLength(&velocity);	
+						velspeed=findLength(&velocity);
 						if(velspeed>speed*2*scale){
 							velocity/=velspeed;
 							velspeed=speed*2*scale;
@@ -6612,14 +6612,14 @@ void 	Person::DoStuff(){
 						}
 						velocity.y+=gravity*multiplier*20;
 						ReflectVector(&velocity,&terrain.getNormal(coords.x,coords.z));
-						velspeed=findLength(&velocity);	
+						velspeed=findLength(&velocity);
 						velocity=flatfacing*velspeed;
 					}
 
 
 					if((targetanimation==bounceidleanim||currentanimation==hurtidleanim)&&(currentanimation==fightidleanim||currentanimation==knifefightidleanim)){
 						velocity-=facing*multiplier*speed*700*scale;
-						velspeed=findLength(&velocity);	
+						velspeed=findLength(&velocity);
 						if(velspeed>speed*2*scale){
 							velocity/=velspeed;
 							velspeed=speed*2*scale;
@@ -6627,13 +6627,13 @@ void 	Person::DoStuff(){
 						}
 						velocity.y+=gravity*multiplier*20;
 						ReflectVector(&velocity,&terrain.getNormal(coords.x,coords.z));
-						velspeed=findLength(&velocity);	
+						velspeed=findLength(&velocity);
 						velocity=flatfacing*velspeed*-1;
 					}
 
 					if(targetanimation==fightsidestep){
 						velocity+=DoRotation(facing*multiplier*speed*700*scale,0,-90,0);
-						velspeed=findLength(&velocity);	
+						velspeed=findLength(&velocity);
 						if(velspeed>speed*12*scale){
 							velocity/=velspeed;
 							velspeed=speed*12*scale;
@@ -6641,7 +6641,7 @@ void 	Person::DoStuff(){
 						}
 						velocity.y+=gravity*multiplier*20;
 						ReflectVector(&velocity,&terrain.getNormal(coords.x,coords.z));
-						velspeed=findLength(&velocity);	
+						velspeed=findLength(&velocity);
 						velocity=DoRotation(flatfacing*velspeed,0,-90,0);
 					}
 
@@ -6657,7 +6657,7 @@ void 	Person::DoStuff(){
 					if(targetanimation==backhandspringanim){
 						//coords-=facing*multiplier*50*scale;
 						velocity+=facing*multiplier*speed*700*scale*-1;
-						velspeed=findLength(&velocity);	
+						velspeed=findLength(&velocity);
 						if(velspeed>speed*50*scale){
 							velocity/=velspeed;
 							velspeed=speed*50*scale;
@@ -6665,13 +6665,13 @@ void 	Person::DoStuff(){
 						}
 						velocity.y+=gravity*multiplier*20;
 						ReflectVector(&velocity,&terrain.getNormal(coords.x,coords.z));
-						velspeed=findLength(&velocity);	
+						velspeed=findLength(&velocity);
 						velocity=flatfacing*velspeed*-1;
 					}
 					if(targetanimation==dodgebackanim){
 						//coords-=facing*multiplier*50*scale;
 						velocity+=facing*multiplier*speed*700*scale*-1;
-						velspeed=findLength(&velocity);	
+						velspeed=findLength(&velocity);
 						if(velspeed>speed*60*scale){
 							velocity/=velspeed;
 							velspeed=speed*60*scale;
@@ -6679,12 +6679,12 @@ void 	Person::DoStuff(){
 						}
 						velocity.y+=gravity*multiplier*20;
 						ReflectVector(&velocity,&terrain.getNormal(coords.x,coords.z));
-						velspeed=findLength(&velocity);	
+						velspeed=findLength(&velocity);
 						velocity=flatfacing*velspeed*-1;
 					}
 
 					if(targetanimation==jumpupanim||targetanimation==jumpdownanim||isFlip()){
-						velspeed=findLength(&velocity);	
+						velspeed=findLength(&velocity);
 					}
 
 
@@ -6699,11 +6699,11 @@ void 	Person::DoStuff(){
 
 						if(targetanimation==jumpupanim){jumppower=-4;targetanimation=getIdle();}
 						target=0;
-						targetframe=0;	
+						targetframe=0;
 						onterrain=1;
 
 						if(id==0){
-							FSOUND_SetPaused(channels[whooshsound], TRUE);
+							FSOUND_SetPaused(channels[whooshsound], true);
 							FSOUND_SetVolume(channels[whooshsound], 0);
 						}
 
@@ -6718,10 +6718,10 @@ void 	Person::DoStuff(){
 							vel[0]=velocity.x;
 							vel[1]=velocity.y;
 							vel[2]=velocity.z;
-							PlaySoundEx( landsound, samp[landsound], NULL, TRUE);
+							PlaySoundEx( landsound, samp[landsound], NULL, true);
 							FSOUND_3D_SetAttributes(channels[landsound], gLoc, vel);
 							FSOUND_SetVolume(channels[landsound], 128);
-							FSOUND_SetPaused(channels[landsound], FALSE);
+							FSOUND_SetPaused(channels[landsound], false);
 
 							if(id==0){
 								envsound[numenvsounds]=coords;
@@ -6740,7 +6740,7 @@ void 	Person::DoStuff(){
 
 
 					if(isIdle()||targetanimation==drawrightanim||targetanimation==drawleftanim||targetanimation==crouchdrawrightanim||targetanimation==crouchstabanim||targetanimation==swordgroundstabanim||isStop()||targetanimation==removeknifeanim||targetanimation==crouchremoveknifeanim||isLanding()||isCrouch()||animation[targetanimation].attack||(targetanimation==rollanim&&animation[targetanimation].label[targetframe]==6)){
-						velspeed=findLength(&velocity);	
+						velspeed=findLength(&velocity);
 						velocity.y=0;
 						if(velspeed<multiplier*300*scale){
 							velocity=0;
@@ -6757,7 +6757,7 @@ void 	Person::DoStuff(){
 					}
 
 					if(isLandhard()){
-						velspeed=findLength(&velocity);	
+						velspeed=findLength(&velocity);
 						velocity.y=0;
 						if(velspeed<multiplier*600*scale){
 							velocity=0;
@@ -6786,16 +6786,16 @@ void 	Person::DoStuff(){
 						vel[1]=velocity.y;
 						vel[2]=velocity.z;
 						if(!onterrain||environment==grassyenvironment){
-							PlaySoundEx( skidsound, samp[skidsound], NULL, TRUE);
+							PlaySoundEx( skidsound, samp[skidsound], NULL, true);
 							FSOUND_3D_SetAttributes(channels[skidsound], gLoc, vel);
 							FSOUND_SetVolume(channels[skidsound], 128*velspeed/10);
-							FSOUND_SetPaused(channels[skidsound], FALSE);
+							FSOUND_SetPaused(channels[skidsound], false);
 						}
 						else {
-							PlaySoundEx( snowskidsound, samp[snowskidsound], NULL, TRUE);
+							PlaySoundEx( snowskidsound, samp[snowskidsound], NULL, true);
 							FSOUND_3D_SetAttributes(channels[snowskidsound], gLoc, vel);
 							FSOUND_SetVolume(channels[snowskidsound], 128*velspeed/10);
-							FSOUND_SetPaused(channels[snowskidsound], FALSE);
+							FSOUND_SetPaused(channels[snowskidsound], false);
 						}
 					}
 
@@ -6815,7 +6815,7 @@ void 	Person::DoStuff(){
 						coords=victim->coords;
 					}
 			}
-			skeleton.oldfree=skeleton.free;	
+			skeleton.oldfree=skeleton.free;
 
 			XYZ midterrain;
 			midterrain=0;
@@ -6834,7 +6834,7 @@ void 	Person::DoStuff(){
 
 int Person::DrawSkeleton(){
 	int oldplayerdetail;
-	if((frustum.SphereInFrustum(coords.x,coords.y+scale*3,coords.z,scale*8)&&findDistancefast(&viewer,&coords)<viewdistance*viewdistance)||skeleton.free==3){  
+	if((frustum.SphereInFrustum(coords.x,coords.y+scale*3,coords.z,scale*8)&&findDistancefast(&viewer,&coords)<viewdistance*viewdistance)||skeleton.free==3){
 		if(onterrain&&(isIdle()||isCrouch()||wasIdle()||wasCrouch())&&!skeleton.free){
 			calcrot=1;
 		}
@@ -7375,7 +7375,7 @@ int Person::DrawSkeleton(){
 		if(num_weapons>0){
 			for(k=0;k<num_weapons;k++){
 				i=weaponids[k];
-				if(weaponactive==k){						
+				if(weaponactive==k){
 					if(weapons.type[i]!=staff){
 						for(j=0;j<skeleton.num_muscles;j++){
 							if((skeleton.muscles[j].parent1->label==righthand||skeleton.muscles[j].parent2->label==righthand)&&skeleton.muscles[j].numvertices>0){
@@ -7419,7 +7419,7 @@ int Person::DrawSkeleton(){
 						}*/
 					}
 				}
-				if(weaponactive!=k&&weaponstuck!=k){						
+				if(weaponactive!=k&&weaponstuck!=k){
 					if(weapons.type[i]==knife)weaponpoint=skeleton.joints[skeleton.jointlabels[abdomen]].position+(skeleton.joints[skeleton.jointlabels[righthip]].position-skeleton.joints[skeleton.jointlabels[lefthip]].position)*.1+(skeleton.joints[skeleton.jointlabels[rightshoulder]].position-skeleton.joints[skeleton.jointlabels[leftshoulder]].position)*.35;
 					if(weapons.type[i]==sword)weaponpoint=skeleton.joints[skeleton.jointlabels[abdomen]].position+(skeleton.joints[skeleton.jointlabels[lefthip]].position-skeleton.joints[skeleton.jointlabels[righthip]].position)*.09+(skeleton.joints[skeleton.jointlabels[leftshoulder]].position-skeleton.joints[skeleton.jointlabels[rightshoulder]].position)*.33;
 					if(weapons.type[i]==staff)weaponpoint=skeleton.joints[skeleton.jointlabels[abdomen]].position+(skeleton.joints[skeleton.jointlabels[lefthip]].position-skeleton.joints[skeleton.jointlabels[righthip]].position)*.09+(skeleton.joints[skeleton.jointlabels[leftshoulder]].position-skeleton.joints[skeleton.jointlabels[rightshoulder]].position)*.33;
@@ -7429,7 +7429,7 @@ int Person::DrawSkeleton(){
 						}
 					}
 				}
-				if(weaponstuck==k){						
+				if(weaponstuck==k){
 					if(weaponstuckwhere==0)weaponpoint=skeleton.joints[skeleton.jointlabels[abdomen]].position*.5+skeleton.joints[skeleton.jointlabels[neck]].position*.5-skeleton.forward*.8;
 					else weaponpoint=skeleton.joints[skeleton.jointlabels[abdomen]].position*.5+skeleton.joints[skeleton.jointlabels[neck]].position*.5+skeleton.forward*.8;
 					for(j=0;j<skeleton.num_muscles;j++){
@@ -7479,7 +7479,7 @@ int Person::DrawSkeleton(){
 							weapons.rotation3[i]=0;
 							weapons.smallrotation[i]=-90;
 							weapons.smallrotation2[i]=0;
-							if(temppoint1.x>temppoint2.x)weapons.rotation1[i]=360-weapons.rotation1[i];							
+							if(temppoint1.x>temppoint2.x)weapons.rotation1[i]=360-weapons.rotation1[i];
 						}
 						if((currentanimation==knifeslashreversalanim&&targetanimation==knifeslashreversalanim)||(currentanimation==knifeslashreversedanim&&targetanimation==knifeslashreversedanim)){
 							XYZ temppoint1,temppoint2,tempforward;
@@ -7497,7 +7497,7 @@ int Person::DrawSkeleton(){
 							weapons.rotation3[i]=0;
 							weapons.smallrotation[i]=90;
 							weapons.smallrotation2[i]=0;
-							if(temppoint1.x>temppoint2.x)weapons.rotation1[i]=360-weapons.rotation1[i];							
+							if(temppoint1.x>temppoint2.x)weapons.rotation1[i]=360-weapons.rotation1[i];
 						}
 						if(targetanimation==knifethrowanim){
 							weapons.smallrotation[i]=90;
@@ -7540,7 +7540,7 @@ int Person::DrawSkeleton(){
 							weapons.rotation3[i]=0;
 							weapons.smallrotation[i]=90;
 							weapons.smallrotation2[i]=0;
-							if(temppoint1.x>temppoint2.x)weapons.rotation1[i]=360-weapons.rotation1[i];			
+							if(temppoint1.x>temppoint2.x)weapons.rotation1[i]=360-weapons.rotation1[i];
 						}
 					}
 					if(weapons.type[i]==staff){
@@ -7562,7 +7562,7 @@ int Person::DrawSkeleton(){
 							weapons.rotation3[i]=0;
 							weapons.smallrotation[i]=90;
 							weapons.smallrotation2[i]=0;
-							if(temppoint1.x>temppoint2.x)weapons.rotation1[i]=360-weapons.rotation1[i];			
+							if(temppoint1.x>temppoint2.x)weapons.rotation1[i]=360-weapons.rotation1[i];
 						}
 					}
 				}
@@ -7649,11 +7649,11 @@ int Person::SphereCheck(XYZ *p1,float radius, XYZ *p, XYZ *move, float *rotate, 
 
 								if(targetanimation==jumpupanim){jumppower=-4;targetanimation=getIdle();}
 								target=0;
-								targetframe=0;	
+								targetframe=0;
 								onterrain=1;
 
 								if(id==0){
-									FSOUND_SetPaused(channels[whooshsound], TRUE);
+									FSOUND_SetPaused(channels[whooshsound], true);
 									FSOUND_SetVolume(channels[whooshsound], 0);
 								}
 
@@ -7668,10 +7668,10 @@ int Person::SphereCheck(XYZ *p1,float radius, XYZ *p, XYZ *move, float *rotate, 
 									vel[0]=velocity.x;
 									vel[1]=velocity.y;
 									vel[2]=velocity.z;
-									PlaySoundEx( landsound, samp[landsound], NULL, TRUE);
+									PlaySoundEx( landsound, samp[landsound], NULL, true);
 									FSOUND_3D_SetAttributes(channels[landsound], gLoc, vel);
 									FSOUND_SetVolume(channels[landsound], 128);
-									FSOUND_SetPaused(channels[landsound], FALSE);
+									FSOUND_SetPaused(channels[landsound], false);
 
 									if(id==0){
 										envsound[numenvsounds]=coords;

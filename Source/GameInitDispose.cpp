@@ -10,7 +10,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -19,7 +19,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include "Game.h"	
+#include "Game.h"
 extern float screenwidth,screenheight;
 extern float viewdistance;
 extern XYZ viewer;
@@ -112,7 +112,7 @@ extern int accountcampaignchoices[10][5000];
 
 extern FSOUND_STREAM * strm[20];
 
-extern "C" 	void PlaySoundEx(int channel, FSOUND_SAMPLE *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused);
+extern "C"	void PlaySoundEx(int channel, FSOUND_SAMPLE *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused);
 extern "C" void PlayStreamEx(int chan, FSOUND_STREAM *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused);
 
 Game::TextureList Game::textures;
@@ -226,69 +226,69 @@ void Game::LoadSounds()
 	FSOUND_3D_SetDopplerFactor(0);
 
 	FSOUND_SetSFXMasterVolume((int)(volume*255));
-	
+
 	samp[footstepsound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepsnow1.ogg", FSOUND_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
 	FSOUND_Sample_SetMinMaxDistance(samp[footstepsound], 4.0f, 1000.0f);
 
 	samp[footstepsound2] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepsnow2.ogg", FSOUND_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	FSOUND_Sample_SetMinMaxDistance(samp[footstepsound2], 4.0f, 1000.0f);	
+	FSOUND_Sample_SetMinMaxDistance(samp[footstepsound2], 4.0f, 1000.0f);
 
 	samp[footstepsound3] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepstone1.ogg", FSOUND_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	FSOUND_Sample_SetMinMaxDistance(samp[footstepsound3], 4.0f, 1000.0f);	
+	FSOUND_Sample_SetMinMaxDistance(samp[footstepsound3], 4.0f, 1000.0f);
 
 	samp[footstepsound4] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepstone2.ogg", FSOUND_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	FSOUND_Sample_SetMinMaxDistance(samp[footstepsound4], 4.0f, 1000.0f);	
+	FSOUND_Sample_SetMinMaxDistance(samp[footstepsound4], 4.0f, 1000.0f);
 
 	samp[landsound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:land.ogg", FSOUND_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	FSOUND_Sample_SetMinMaxDistance(samp[landsound], 4.0f, 1000.0f);	
+	FSOUND_Sample_SetMinMaxDistance(samp[landsound], 4.0f, 1000.0f);
 
 	samp[jumpsound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:jump.ogg", FSOUND_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	FSOUND_Sample_SetMinMaxDistance(samp[jumpsound], 4.0f, 1000.0f);	
+	FSOUND_Sample_SetMinMaxDistance(samp[jumpsound], 4.0f, 1000.0f);
 
 	samp[hawksound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:hawk.ogg", FSOUND_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	FSOUND_Sample_SetMinMaxDistance(samp[hawksound], 40.0f, 10000.0f);	
+	FSOUND_Sample_SetMinMaxDistance(samp[hawksound], 40.0f, 10000.0f);
 
 	samp[whooshsound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:whoosh.ogg", FSOUND_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	FSOUND_Sample_SetMinMaxDistance(samp[whooshsound], 4.0f, 1000.0f);	
+	FSOUND_Sample_SetMinMaxDistance(samp[whooshsound], 4.0f, 1000.0f);
 	FSOUND_Sample_SetMode(samp[whooshsound], FSOUND_LOOP_NORMAL);
 
 	samp[landsound1] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:land1.ogg", FSOUND_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	FSOUND_Sample_SetMinMaxDistance(samp[landsound1], 4.0f, 1000.0f);	
+	FSOUND_Sample_SetMinMaxDistance(samp[landsound1], 4.0f, 1000.0f);
 
 
 
 	samp[landsound2] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:land2.ogg", FSOUND_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	FSOUND_Sample_SetMinMaxDistance(samp[landsound2], 4.0f, 1000.0f);	
+	FSOUND_Sample_SetMinMaxDistance(samp[landsound2], 4.0f, 1000.0f);
 
 	samp[breaksound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:broken.ogg", FSOUND_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	FSOUND_Sample_SetMinMaxDistance(samp[breaksound], 8.0f, 2000.0f);	
+	FSOUND_Sample_SetMinMaxDistance(samp[breaksound], 8.0f, 2000.0f);
 
 	samp[lowwhooshsound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:Lowwhoosh.ogg", FSOUND_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	FSOUND_Sample_SetMinMaxDistance(samp[lowwhooshsound], 8.0f, 2000.0f);	
+	FSOUND_Sample_SetMinMaxDistance(samp[lowwhooshsound], 8.0f, 2000.0f);
 
 	samp[midwhooshsound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:midwhoosh.ogg", FSOUND_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	FSOUND_Sample_SetMinMaxDistance(samp[midwhooshsound], 8.0f, 2000.0f);	
+	FSOUND_Sample_SetMinMaxDistance(samp[midwhooshsound], 8.0f, 2000.0f);
 
 	samp[highwhooshsound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:highwhoosh.ogg", FSOUND_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	FSOUND_Sample_SetMinMaxDistance(samp[highwhooshsound], 8.0f, 2000.0f);	
+	FSOUND_Sample_SetMinMaxDistance(samp[highwhooshsound], 8.0f, 2000.0f);
 
 	samp[movewhooshsound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:movewhoosh.ogg", FSOUND_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	FSOUND_Sample_SetMinMaxDistance(samp[movewhooshsound], 8.0f, 2000.0f);	
+	FSOUND_Sample_SetMinMaxDistance(samp[movewhooshsound], 8.0f, 2000.0f);
 
 	samp[heavyimpactsound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:heavyimpact.ogg", FSOUND_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	FSOUND_Sample_SetMinMaxDistance(samp[heavyimpactsound], 8.0f, 2000.0f);	
+	FSOUND_Sample_SetMinMaxDistance(samp[heavyimpactsound], 8.0f, 2000.0f);
 
 	samp[whooshhitsound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:Whooshhit.ogg", FSOUND_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	FSOUND_Sample_SetMinMaxDistance(samp[whooshhitsound], 8.0f, 2000.0f);	
+	FSOUND_Sample_SetMinMaxDistance(samp[whooshhitsound], 8.0f, 2000.0f);
 
 	samp[thudsound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:thud.ogg", FSOUND_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	FSOUND_Sample_SetMinMaxDistance(samp[thudsound], 8.0f, 2000.0f);	
+	FSOUND_Sample_SetMinMaxDistance(samp[thudsound], 8.0f, 2000.0f);
 
 	samp[alarmsound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:alarm.ogg", FSOUND_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	FSOUND_Sample_SetMinMaxDistance(samp[alarmsound], 8.0f, 2000.0f);	
+	FSOUND_Sample_SetMinMaxDistance(samp[alarmsound], 8.0f, 2000.0f);
 
 	samp[breaksound2] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:break.ogg", FSOUND_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	FSOUND_Sample_SetMinMaxDistance(samp[breaksound2], 8.0f, 2000.0f);	
+	FSOUND_Sample_SetMinMaxDistance(samp[breaksound2], 8.0f, 2000.0f);
 
 	samp[knifedrawsound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:knifedraw.ogg", FSOUND_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
 	FSOUND_Sample_SetMinMaxDistance(samp[knifedrawsound], 8.0f, 2000.0f);
@@ -318,7 +318,7 @@ void Game::LoadSounds()
 	FSOUND_Sample_SetMinMaxDistance(samp[snowskidsound], 8.0f, 2000.0f);
 
 	samp[bushrustle] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:bushrustle.ogg", FSOUND_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	FSOUND_Sample_SetMinMaxDistance(samp[bushrustle], 4.0f, 1000.0f);	
+	FSOUND_Sample_SetMinMaxDistance(samp[bushrustle], 4.0f, 1000.0f);
 
 	samp[clank1sound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:clank1.ogg", FSOUND_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
 	FSOUND_Sample_SetMinMaxDistance(samp[clank1sound], 8.0f, 2000.0f);
@@ -333,10 +333,10 @@ void Game::LoadSounds()
 	FSOUND_Sample_SetMinMaxDistance(samp[clank4sound], 8.0f, 2000.0f);
 
 	samp[consolesuccesssound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:consolesuccess.ogg", FSOUND_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	FSOUND_Sample_SetMinMaxDistance(samp[consolesuccesssound], 4.0f, 1000.0f);	
+	FSOUND_Sample_SetMinMaxDistance(samp[consolesuccesssound], 4.0f, 1000.0f);
 
 	samp[consolefailsound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:consolefail.ogg", FSOUND_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	FSOUND_Sample_SetMinMaxDistance(samp[consolefailsound], 4.0f, 1000.0f);	
+	FSOUND_Sample_SetMinMaxDistance(samp[consolefailsound], 4.0f, 1000.0f);
 
 	samp[metalhitsound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:MetalHit.ogg", FSOUND_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
 	FSOUND_Sample_SetMinMaxDistance(samp[metalhitsound], 8.0f, 2000.0f);
@@ -426,7 +426,7 @@ void Game::LoadTexture(char *fileName, GLuint *textureid,int mipmap, bool hasalp
 	unsigned char fileNamep[256];
 	CopyCStringToPascal(fileName,fileNamep);
 	//Load Image
-	upload_image( fileNamep ,hasalpha); 
+	upload_image( fileNamep ,hasalpha);
 
 //	std::string fname(fileName);
 //	std::transform(fname.begin(), fname.end(), tolower);
@@ -482,8 +482,8 @@ void Game::LoadTextureSave(char *fileName, GLuint *textureid,int mipmap,GLubyte 
 	unsigned char fileNamep[256];
 	CopyCStringToPascal(fileName,fileNamep);
 	//Load Image
-	upload_image( fileNamep ,0); 
-	//LoadTGA( fileName ); 
+	upload_image( fileNamep ,0);
+	//LoadTGA( fileName );
 
 //	std::string fname(fileName);
 //	std::transform(fname.begin(), fname.end(), tolower);
@@ -544,13 +544,13 @@ void Game::LoadSave(char *fileName, GLuint *textureid,bool mipmap,GLubyte *array
 	//Load Image
 	float temptexdetail=texdetail;
 	texdetail=1;
-	//upload_image( fileName ); 
-	//LoadTGA( fileName ); 
+	//upload_image( fileName );
+	//LoadTGA( fileName );
 	//Load Image
 	unsigned char fileNamep[256];
 	CopyCStringToPascal(fileName,fileNamep);
 	//Load Image
-	upload_image( fileNamep ,0); 
+	upload_image( fileNamep ,0);
 	texdetail=temptexdetail;
 
 	//Is it valid?
@@ -574,14 +574,14 @@ bool Game::AddClothes(char *fileName, GLuint *textureid,bool mipmap,GLubyte *arr
 
 	LOGFUNC;
 
-	//upload_image( fileName ); 
-	//LoadTGA( fileName ); 
+	//upload_image( fileName );
+	//LoadTGA( fileName );
 	//Load Image
 	unsigned char fileNamep[256];
 	CopyCStringToPascal(fileName,fileNamep);
 	//Load Image
 	bool opened;
-	opened=upload_image( fileNamep ,1); 
+	opened=upload_image( fileNamep ,1);
 
 	float alphanum;
 	//Is it valid?
@@ -631,11 +631,11 @@ GLvoid Game::ReSizeGLScene(float fov, float pnear)
 
 	gluPerspective(fov,(GLfloat)screenwidth/(GLfloat)screenheight,pnear,viewdistance);
 
-	glMatrixMode(GL_MODELVIEW);							
-	glLoadIdentity();									
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 }
 
-void Game::LoadingScreen()										
+void Game::LoadingScreen()
 {
 	static float loadprogress,minprogress,maxprogress;
 	static AbsoluteTime time = {0,0};
@@ -702,13 +702,13 @@ void Game::LoadingScreen()
 		//glScalef(.25,.25,.25);
 		glBegin(GL_QUADS);
 		glTexCoord2f(.1-loadprogress/100,0+loadprogress/100+.3);
-		glVertex3f(-1,		-1, 	 0.0f);
+		glVertex3f(-1,		-1,	 0.0f);
 		glTexCoord2f(.1-loadprogress/100,0+loadprogress/100+.3);
-		glVertex3f(1,	-1, 	 0.0f);
+		glVertex3f(1,	-1,	 0.0f);
 		glTexCoord2f(.1-loadprogress/100,1+loadprogress/100+.3);
 		glVertex3f(1,	1, 0.0f);
 		glTexCoord2f(.1-loadprogress/100,1+loadprogress/100+.3);
-		glVertex3f(-1, 	1, 0.0f);
+		glVertex3f(-1,	1, 0.0f);
 		glEnd();
 		glPopMatrix();
 		glEnable(GL_BLEND);
@@ -716,13 +716,13 @@ void Game::LoadingScreen()
 		//glScalef(.25,.25,.25);
 		glBegin(GL_QUADS);
 		glTexCoord2f(.4+loadprogress/100,0+loadprogress/100);
-		glVertex3f(-1,		-1, 	 0.0f);
+		glVertex3f(-1,		-1,	 0.0f);
 		glTexCoord2f(.4+loadprogress/100,0+loadprogress/100);
-		glVertex3f(1,	-1, 	 0.0f);
+		glVertex3f(1,	-1,	 0.0f);
 		glTexCoord2f(.4+loadprogress/100,1+loadprogress/100);
 		glVertex3f(1,	1, 0.0f);
 		glTexCoord2f(.4+loadprogress/100,1+loadprogress/100);
-		glVertex3f(-1, 	1, 0.0f);
+		glVertex3f(-1,	1, 0.0f);
 		glEnd();
 		glPopMatrix();
 		glDisable(GL_TEXTURE_2D);
@@ -765,13 +765,13 @@ void Game::LoadingScreen()
 		//glScalef(.25,.25,.25);
 		glBegin(GL_QUADS);
 		glTexCoord2f(0+.5,0+.5);
-		glVertex3f(-1,		-1, 	 0.0f);
+		glVertex3f(-1,		-1,	 0.0f);
 		glTexCoord2f(1+.5,0+.5);
-		glVertex3f(1,	-1, 	 0.0f);
+		glVertex3f(1,	-1,	 0.0f);
 		glTexCoord2f(1+.5,1+.5);
 		glVertex3f(1,	1, 0.0f);
 		glTexCoord2f(0+.5,1+.5);
-		glVertex3f(-1, 	1, 0.0f);
+		glVertex3f(-1,	1, 0.0f);
 		glEnd();
 		glPopMatrix();
 		glDisable(GL_TEXTURE_2D);
@@ -806,13 +806,13 @@ void Game::LoadingScreen()
 		//glScalef(.25,.25,.25);
 		glBegin(GL_QUADS);
 		glTexCoord2f(0+.2,0+.8);
-		glVertex3f(-1,		-1, 	 0.0f);
+		glVertex3f(-1,		-1,	 0.0f);
 		glTexCoord2f(1+.2,0+.8);
-		glVertex3f(1,	-1, 	 0.0f);
+		glVertex3f(1,	-1,	 0.0f);
 		glTexCoord2f(1+.2,1+.8);
 		glVertex3f(1,	1, 0.0f);
 		glTexCoord2f(0+.2,1+.8);
-		glVertex3f(-1, 	1, 0.0f);
+		glVertex3f(-1,	1, 0.0f);
 		glEnd();
 		glPopMatrix();
 		glDisable(GL_TEXTURE_2D);
@@ -856,10 +856,10 @@ void Game::LoadingScreen()
 			glEnable(GL_BLEND);
 			glColor4f(flashr,flashg,flashb,flashamount);
 			glBegin(GL_QUADS);
-			glVertex3f(0,		0, 	 0.0f);
-			glVertex3f(256,	0, 	 0.0f);
+			glVertex3f(0,		0,	 0.0f);
+			glVertex3f(256,	0,	 0.0f);
 			glVertex3f(256,	256, 0.0f);
-			glVertex3f(0, 	256, 0.0f);
+			glVertex3f(0,	256, 0.0f);
 			glEnd();
 			glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
 			glPopMatrix();										// Restore The Old Projection Matrix
@@ -869,14 +869,14 @@ void Game::LoadingScreen()
 			glEnable(GL_CULL_FACE);
 			glDisable(GL_BLEND);
 			glDepthMask(1);
-		}	
+		}
 
 		swap_gl_buffers();
 		loadscreencolor=0;
 	}
 }
 
-void Game::FadeLoadingScreen(float howmuch)										
+void Game::FadeLoadingScreen(float howmuch)
 {
 	static float loadprogress,minprogress,maxprogress;
 
@@ -924,13 +924,13 @@ void Game::FadeLoadingScreen(float howmuch)
 	//glScalef(.25,.25,.25);
 	glBegin(GL_QUADS);
 	glTexCoord2f(0,0);
-	glVertex3f(-1,		-1, 	 0.0f);
+	glVertex3f(-1,		-1,	 0.0f);
 	glTexCoord2f(1,0);
-	glVertex3f(1,	-1, 	 0.0f);
+	glVertex3f(1,	-1,	 0.0f);
 	glTexCoord2f(1,1);
 	glVertex3f(1,	1, 0.0f);
 	glTexCoord2f(0,1);
-	glVertex3f(-1, 	1, 0.0f);
+	glVertex3f(-1,	1, 0.0f);
 	glEnd();
 	glPopMatrix();
 	glDisable(GL_TEXTURE_2D);
@@ -955,7 +955,7 @@ void Game::FadeLoadingScreen(float howmuch)
 }
 
 
-void Game::InitGame()										
+void Game::InitGame()
 {
 #if PLATFORM_MACOSX
 	ProcessSerialNumber PSN;
@@ -1234,7 +1234,7 @@ void Game::InitGame()
         output = FSOUND_OUTPUT_NOSOUND;
 
     FSOUND_SetOutput(output);
-	if ((rc = FSOUND_Init(44100, 32, 0)) == FALSE)
+	if ((rc = FSOUND_Init(44100, 32, 0)) == false)
     {
         // if we tried ALSA and failed, fall back to OSS.
         if ( (output == FSOUND_OUTPUT_ALSA) && (!cmdline("forcealsa")) )
@@ -1246,7 +1246,7 @@ void Game::InitGame()
         }
     }
 
-    if (rc == FALSE)
+    if (rc == false)
     {
         FSOUND_Close();
         output = FSOUND_OUTPUT_NOSOUND;  // we tried! just do silence.
@@ -1260,13 +1260,13 @@ void Game::InitGame()
 	FSOUND_SetSFXMasterVolume((int)(volume*255));
 
 	strm[stream_music3] = FSOUND_Stream_Open(ConvertFileName(":Data:Sounds:music3.mp3"), FSOUND_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=0;}
-//	FSOUND_Sample_SetMinMaxDistance(strm[stream_music3], 4.0f, 1000.0f);	
+//	FSOUND_Sample_SetMinMaxDistance(strm[stream_music3], 4.0f, 1000.0f);
 	FSOUND_Stream_SetMode(strm[stream_music3], FSOUND_LOOP_NORMAL);
 
 	if(musictoggle){
-//		PlaySoundEx( stream_music3, strm[stream_music3], NULL, TRUE);
-		PlayStreamEx(stream_music3, strm[stream_music3], 0, TRUE);
-		FSOUND_SetPaused(channels[stream_music3], FALSE);
+//		PlaySoundEx( stream_music3, strm[stream_music3], NULL, true);
+		PlayStreamEx(stream_music3, strm[stream_music3], 0, true);
+		FSOUND_SetPaused(channels[stream_music3], false);
 		FSOUND_SetVolume(channels[stream_music3], 256);
 	}
 
@@ -1274,48 +1274,48 @@ void Game::InitGame()
 
 	if(ambientsound){
 		strm[stream_wind] = FSOUND_Stream_Open(ConvertFileName(":Data:Sounds:wind.mp3"), FSOUND_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-//		FSOUND_Sample_SetMinMaxDistance(strm[stream_wind], 4.0f, 1000.0f);	
+//		FSOUND_Sample_SetMinMaxDistance(strm[stream_wind], 4.0f, 1000.0f);
 		FSOUND_Stream_SetMode(strm[stream_wind], FSOUND_LOOP_NORMAL);
 
 		FadeLoadingScreen(30);
 
 		strm[stream_desertambient] = FSOUND_Stream_Open(ConvertFileName(":Data:Sounds:desertambient.mp3"), FSOUND_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-//		FSOUND_Sample_SetMinMaxDistance(strm[stream_desertambient], 4.0f, 1000.0f);	
+//		FSOUND_Sample_SetMinMaxDistance(strm[stream_desertambient], 4.0f, 1000.0f);
 		FSOUND_Stream_SetMode(strm[stream_desertambient], FSOUND_LOOP_NORMAL);
 	}
 
 	FadeLoadingScreen(40);
 
 	samp[firestartsound] = FSOUND_Sample_Load(FSOUND_FREE, ConvertFileName(":Data:Sounds:firestart.ogg"), FSOUND_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);	
+	FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 
 	strm[stream_firesound] = FSOUND_Stream_Open(":Data:Sounds:fire.ogg", FSOUND_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-//	FSOUND_Sample_SetMinMaxDistance(strm[stream_firesound], 8.0f, 2000.0f);	
+//	FSOUND_Sample_SetMinMaxDistance(strm[stream_firesound], 8.0f, 2000.0f);
 	FSOUND_Stream_SetMode(strm[stream_firesound], FSOUND_LOOP_NORMAL);
 
 	FadeLoadingScreen(50);
 
 	samp[fireendsound] = FSOUND_Sample_Load(FSOUND_FREE, ConvertFileName(":Data:Sounds:fireend.ogg"), FSOUND_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);	
+	FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 	//if(musictoggle){
 	strm[stream_music1grass] = FSOUND_Stream_Open(ConvertFileName(":Data:Sounds:music1grass.mp3"), FSOUND_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=1;}
-//	FSOUND_Sample_SetMinMaxDistance(strm[stream_music1grass], 4.0f, 1000.0f);	
+//	FSOUND_Sample_SetMinMaxDistance(strm[stream_music1grass], 4.0f, 1000.0f);
 	FSOUND_Stream_SetMode(strm[stream_music1grass], FSOUND_LOOP_NORMAL);
 
 	strm[stream_music1snow] = FSOUND_Stream_Open(ConvertFileName(":Data:Sounds:music1snow.mp3"), FSOUND_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=2;}
-//	FSOUND_Sample_SetMinMaxDistance(strm[stream_music1snow], 4.0f, 1000.0f);	
+//	FSOUND_Sample_SetMinMaxDistance(strm[stream_music1snow], 4.0f, 1000.0f);
 	FSOUND_Stream_SetMode(strm[stream_music1snow], FSOUND_LOOP_NORMAL);
 
 	FadeLoadingScreen(60);
 
 	strm[stream_music1desert] = FSOUND_Stream_Open(ConvertFileName(":Data:Sounds:music1desert.mp3"), FSOUND_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=3;}
-//	FSOUND_Sample_SetMinMaxDistance(strm[stream_music1desert], 4.0f, 1000.0f);	
+//	FSOUND_Sample_SetMinMaxDistance(strm[stream_music1desert], 4.0f, 1000.0f);
 	FSOUND_Stream_SetMode(strm[stream_music1desert], FSOUND_LOOP_NORMAL);
 
 	FadeLoadingScreen(80);
 	strm[stream_music2] = FSOUND_Stream_Open(ConvertFileName(":Data:Sounds:music2.ogg"), FSOUND_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=4;}
-//	FSOUND_Sample_SetMinMaxDistance(strm[stream_music2], 4.0f, 1000.0f);	
+//	FSOUND_Sample_SetMinMaxDistance(strm[stream_music2], 4.0f, 1000.0f);
 	FSOUND_Stream_SetMode(strm[stream_music2], FSOUND_LOOP_NORMAL);
 
 	//}
@@ -1358,17 +1358,17 @@ void Game::InitGame()
 	newscreenwidth=screenwidth;
 	newscreenheight=screenheight;
 
-	
-	
+
+
 	/*
 	float gLoc[3]={0,0,0};
 	float vel[3]={0,0,0};
-	FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);	
-	PlaySoundEx( firestartsound, samp[firestartsound], NULL, TRUE);
+	FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
+	PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
 	FSOUND_3D_SetAttributes(channels[firestartsound], gLoc, vel);
 	FSOUND_SetVolume(channels[firestartsound], 256);
-	FSOUND_SetPaused(channels[firestartsound], FALSE);
-	FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);	
+	FSOUND_SetPaused(channels[firestartsound], false);
+	FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 
 	flashr=1;
 	flashg=0;
@@ -1379,11 +1379,11 @@ void Game::InitGame()
 }
 
 
-void Game::LoadStuff()										
+void Game::LoadStuff()
 {
 	static float temptexdetail;
 	static float viewdistdetail;
-	static int i,j,texsize;	
+	static int i,j,texsize;
 	float megascale =1;
 
 	LOGFUNC;
@@ -1391,8 +1391,8 @@ void Game::LoadStuff()
 	visibleloading=1;
 
 	/*musicvolume[3]=512;
-	PlaySoundEx( music4, samp[music4], NULL, TRUE);
-	FSOUND_SetPaused(channels[music4], FALSE);
+	PlaySoundEx( music4, samp[music4], NULL, true);
+	FSOUND_SetPaused(channels[music4], false);
 	FSOUND_SetVolume(channels[music4], 512);
 	*/
 	loadtime=0;
@@ -1424,7 +1424,7 @@ void Game::LoadStuff()
 	text.BuildFont();
 	texdetail=temptexdetail;
 
-	numsounds=71;		
+	numsounds=71;
 
 	viewdistdetail=2;
 	viewdistance=50*megascale*viewdistdetail;
@@ -1762,7 +1762,7 @@ void Game::LoadStuff()
 	for(i=0;i<player[0].skeleton.num_joints;i++){
 		for(j=0;j<animation[knifesneakattackanim].numframes;j++){
 			animation[knifesneakattackanim].position[i][j]+=moveamount;
-		}	
+		}
 	}
 
 	loadscreencolor=4;
@@ -1771,7 +1771,7 @@ void Game::LoadStuff()
 	for(i=0;i<player[0].skeleton.num_joints;i++){
 		for(j=0;j<animation[knifesneakattackedanim].numframes;j++){
 			animation[knifesneakattackedanim].position[i][j]+=moveamount;
-		}	
+		}
 	}
 
 	loadscreencolor=4;
@@ -1796,13 +1796,13 @@ void Game::LoadStuff()
 	for(i=0;i<player[0].skeleton.num_joints;i++){
 		for(j=0;j<animation[swordsneakattackanim].numframes;j++){
 			animation[swordsneakattackanim].position[i][j]+=moveamount;
-		}	
+		}
 	}
 	loadscreencolor=4;
 	LoadingScreen();
 	for(j=0;j<animation[swordsneakattackanim].numframes;j++){
 		animation[swordsneakattackanim].weapontarget[j]+=moveamount;
-	}	
+	}
 
 	loadscreencolor=4;
 	LoadingScreen();
@@ -1810,13 +1810,13 @@ void Game::LoadStuff()
 	for(i=0;i<player[0].skeleton.num_joints;i++){
 		for(j=0;j<animation[swordsneakattackedanim].numframes;j++){
 			animation[swordsneakattackedanim].position[i][j]+=moveamount;
-		}	
+		}
 	}
 	/*
 	for(i=0;i<player[0].skeleton.num_joints;i++){
 	for(j=0;j<animation[sleepanim].numframes;j++){
 	animation[sleepanim].position[i][j]=DoRotation(animation[sleepanim].position[i][j],0,180,0);
-	}	
+	}
 	}
 	*/
 	loadscreencolor=4;
@@ -1841,25 +1841,25 @@ void Game::LoadStuff()
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 
-		glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, kTextureSize, kTextureSize, 0);		
+		glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, kTextureSize, kTextureSize, 0);
 	}
 	//}
 
 	LoadSounds();
 
-	/*PlaySoundEx( consolesuccesssound, samp[consolesuccesssound], NULL, TRUE);
+	/*PlaySoundEx( consolesuccesssound, samp[consolesuccesssound], NULL, true);
 	FSOUND_SetVolume(channels[consolesuccesssound], 256);
-	FSOUND_SetPaused(channels[consolesuccesssound], FALSE);
+	FSOUND_SetPaused(channels[consolesuccesssound], false);
 	*/
 	if(targetlevel!=7){
 		float gLoc[3]={0,0,0};
 		float vel[3]={0,0,0};
-		FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);	
-		PlaySoundEx( fireendsound, samp[fireendsound], NULL, TRUE);
+		FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+		PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
 		FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
 		FSOUND_SetVolume(channels[fireendsound], 256);
-		FSOUND_SetPaused(channels[fireendsound], FALSE);
-		FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);	
+		FSOUND_SetPaused(channels[fireendsound], false);
+		FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 	}
 
 	stillloading=0;

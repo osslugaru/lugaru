@@ -179,7 +179,7 @@ static int locateOneElement(char *buf)
     struct dirent *dent;
     while ((dent = readdir(dirp)) != NULL)
     {
-        if (stricmp(dent->d_name, ptr) == 0)
+        if (strcasecmp(dent->d_name, ptr) == 0)
         {
             strcpy(ptr, dent->d_name); /* found a match. Overwrite with this case. */
             closedir(dirp);

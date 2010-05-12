@@ -1092,10 +1092,10 @@ int Game::DrawGLScene(void)
 								if(dialogueboxsound[whichdialogue][indialogue]==-2)whichsoundplay=firestartsound;
 								if(dialogueboxsound[whichdialogue][indialogue]==-3)whichsoundplay=consolesuccesssound;
 								if(dialogueboxsound[whichdialogue][indialogue]==-4)whichsoundplay=consolefailsound;
-								PlaySoundEx( whichsoundplay, samp[whichsoundplay], NULL, TRUE);
+								PlaySoundEx( whichsoundplay, samp[whichsoundplay], NULL, true);
 								FSOUND_3D_SetAttributes(channels[whichsoundplay], gLoc, vel);
 								FSOUND_SetVolume(channels[whichsoundplay], 256);
-								FSOUND_SetPaused(channels[whichsoundplay], FALSE);
+								FSOUND_SetPaused(channels[whichsoundplay], false);
 							}
 						}
 					}

@@ -24,8 +24,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <vld.h>
 #endif
 
-#include "Game.h"
-
 #ifndef USE_DEVIL
 #  ifdef WIN32
 #    define USE_DEVIL
@@ -36,13 +34,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     #include "IL/il.h"
     #include "IL/ilu.h"
     #include "IL/ilut.h"
+	#include "Game.h"
 #else
-    // just use libpng and libjpg directly; it's lighter-weight and easier
-    //  to manage the dependencies on Linux...
-    extern "C" {
-        #include "png.h"
-        #include "jpeglib.h"
-    }
+
+	#include <zlib.h>
+	#include <png.h>
+	#include <jpeglib.h>
+	#include "Game.h"
     static bool load_image(const char * fname, TGAImageRec & tex);
     static bool load_png(const char * fname, TGAImageRec & tex);
     static bool load_jpg(const char * fname, TGAImageRec & tex);
@@ -268,7 +266,7 @@ bool cmdline(const char *cmd)
         char *arg = _argv[i];
         while (*arg == '-')
             arg++;
-        if (stricmp(arg, cmd) == 0)
+        if (strcasecmp(arg, cmd) == 0)
             return true;
     }
 
@@ -1522,7 +1520,7 @@ char *calcBaseDir(const char *argv0)
     char *retval;
     char *envr;
 
-    char *ptr = strrchr(argv0, '/');
+    char *ptr = strrchr((char *)argv0, '/');
     if (strchr(argv0, '/'))
     {
         retval = strdup(argv0);
@@ -2576,12 +2574,12 @@ int main(int argc, char **argv)
 #if !USE_DEVIL
 static bool load_image(const char *file_name, TGAImageRec &tex)
 {
-    char *ptr = strrchr(file_name, '.');
+    char *ptr = strrchr((char *)file_name, '.');
     if (ptr)
     {
-        if (stricmp(ptr+1, "png") == 0)
+        if (strcasecmp(ptr+1, "png") == 0)
             return load_png(file_name, tex);
-        else if (stricmp(ptr+1, "jpg") == 0)
+        else if (strcasecmp(ptr+1, "jpg") == 0)
             return load_jpg(file_name, tex);
     }
 
@@ -2681,7 +2679,7 @@ static bool load_png(const char *file_name, TGAImageRec &tex)
     png_init_io(png_ptr, fp);
     png_read_png(png_ptr, info_ptr,
                  PNG_TRANSFORM_STRIP_16 | PNG_TRANSFORM_PACKING,
-                 png_voidp_NULL);
+                 NULL);
     png_get_IHDR(png_ptr, info_ptr, &width, &height,
                  &bit_depth, &color_type, &interlace_type, NULL, NULL);
 
@@ -2731,7 +2729,7 @@ static bool load_png(const char *file_name, TGAImageRec &tex)
     retval = true;
 
 png_done:
-    png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
+    png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
     if (fp)
         fclose(fp);
     return (retval);
@@ -2740,10 +2738,10 @@ png_done:
 
 static bool save_image(const char *file_name)
 {
-    char *ptr = strrchr(file_name, '.');
+    char *ptr = strrchr((char *)file_name, '.');
     if (ptr)
     {
-        if (stricmp(ptr+1, "png") == 0)
+        if (strcasecmp(ptr+1, "png") == 0)
             return save_png(file_name);
     }
 
