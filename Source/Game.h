@@ -22,6 +22,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _GAME_H_
 #define _GAME_H_
 
+#if USE_SDL
+#include "SDL.h"
+#endif
+
 #if (defined(__APPLE__) && defined(__MACH__))
 #  ifdef PLATFORM_MACOSX
 #    error Do not define PLATFORM_MACOSX for new builds. It is for the old Carbonized build.
@@ -37,10 +41,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //#include <glut.h>
 
 #include "TGALoader.h"
-
-#if USE_SDL
-#include "SDL.h"
-#endif
 
 #if !PLATFORM_MACOSX
 #include "WinInput.h"

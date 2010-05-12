@@ -236,7 +236,12 @@ void Screenshot	(void)
 	struct	tm *tme = localtime(&t);
 	sprintf(temp, "Screenshots\\Screenshot_%04d_%02d_%02d--%02d_%02d_%02d.png", tme->tm_year + 1900, tme->tm_mon + 1, tme->tm_mday, tme->tm_hour, tme->tm_min, tme->tm_sec);
 
+	#if defined(_WIN32)
+	mkdir("Screenshots");
+	#else
 	mkdir("Screenshots", S_IRWXU);
+	#endif
+
 	ScreenShot(temp/*"Screenshots\\Screenshot.png"*/);
 
 	/*FSSpec				MAC_file;
@@ -3250,7 +3255,7 @@ void	Game::Tick()
 								char tempstring[256];
 								#if defined(__APPLE__)
 								sprintf (tempstring, "%s", registrationname);
-								#elif defined(_MSC_VER) || defined(__linux__)
+								#elif defined(_WIN32) || defined(__linux__)
 								sprintf (tempstring, "%s-windows", registrationname);
 								#else
 								#error Please make sure you have the right registration key stuff here!
