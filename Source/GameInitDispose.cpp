@@ -1031,7 +1031,7 @@ void Game::InitGame()
 				char tempstring[256];
 				#if defined(__APPLE__)
 				sprintf (tempstring, "%s", registrationname);
-				#elif defined(_MSC_VER) || defined(__linux__)
+				#elif defined(_WIN32) || defined(__linux__)
 				sprintf (tempstring, "%s-windows", registrationname);
 				#else
 				#error Please make sure you have the right registration key stuff here!

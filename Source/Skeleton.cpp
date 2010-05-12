@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 /**> HEADER FILES <**/
+#include "Game.h"
 #include "Skeleton.h"
 
 extern float multiplier;
@@ -46,7 +47,6 @@ extern int tutoriallevel;
 extern int whichjointstartarray[26];
 extern int whichjointendarray[26];
 
-#include "Game.h"
 extern Game * pgame;
 extern bool visibleloading;
 extern "C"	void PlaySoundEx(int channel, FSOUND_SAMPLE *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused);
