@@ -70,7 +70,9 @@ typedef RGBColor * RGBColorPtr;
 
 using namespace std;
 
-#include "logger/logger.h"
+/* !!! FIXME: until we replace logger better. --ryan. */
+#define LOGFUNC
+void LOG(const std::string &fmt, ...);
 
 #endif
 

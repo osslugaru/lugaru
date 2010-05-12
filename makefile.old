@@ -181,7 +181,6 @@ SRCS := \
 	unpack_private.c \
 	Weapons.cpp \
 	MacCompatibility.cpp \
-	logger/logger.cpp \
 	WinInput.cpp \
 	OpenGL_Windows.cpp \
 	openal_wrapper.cpp \
@@ -380,7 +379,6 @@ $(EXE) : $(OBJS) $(APPOBJS)
 clean:
 	rm -f $(BINDIR)/*.o
 	rm -f $(BINDIR)/$(SRCDIR)/*.o
-	rm -f $(BINDIR)/$(SRCDIR)/logger/*.o
 	rm -f $(BINDIR)/$(GLUDIR)/*.o
 	rm -f $(BINDIR)/$(LIBPNGDIR)/*.o
 	rm -f $(BINDIR)/$(JPEGLIBDIR)/*.o

@@ -115,6 +115,12 @@ extern FSOUND_STREAM * strm[20];
 extern "C"	void PlaySoundEx(int channel, FSOUND_SAMPLE *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused);
 extern "C" void PlayStreamEx(int chan, FSOUND_STREAM *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused);
 
+void LOG(const std::string &fmt, ...)
+{
+    // !!! FIXME: write me.
+}
+
+
 Game::TextureList Game::textures;
 
 void Game::Dispose()

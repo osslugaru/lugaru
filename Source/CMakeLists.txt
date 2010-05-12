@@ -54,8 +54,7 @@ set(LUGARU_SRCS
 	unpack_private.c
 	Weapons.cpp
 	MacCompatibility.cpp
-	logger/logger.cpp
-	OpenGL_Windows.cpp 
+	OpenGL_Windows.cpp
 	openal_wrapper.cpp
 	WinInput.cpp)
 

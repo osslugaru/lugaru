@@ -1574,7 +1574,6 @@ int main(int argc, char **argv)
 	LOGFUNC;
 
 #ifndef WIN32  // this is in WinMain, too.
-	logger.start(true);
 	memset( &g_theKeys, 0, sizeof( KeyMap));
 #endif
 
@@ -1705,7 +1704,7 @@ int main(int argc, char **argv)
 		std::string e = "Caught exception: ";
 		e += error.what();
 
-		LOG(e, Logger::LOG_ERR);
+		LOG(e);
 
 		MessageBox(g_windowHandle, error.what(), "ERROR", MB_OK | MB_ICONEXCLAMATION);
 	}
@@ -2363,8 +2362,6 @@ int main(int argc, char **argv)
 				fullscreen = false;
 			}
 		}
-
-		logger.start(true);
 
 		memset( &g_theKeys, 0, sizeof( KeyMap));
 
