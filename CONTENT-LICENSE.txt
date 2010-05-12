@@ -1,0 +1,5 @@
+All game assets and demo data (should all be in "Data" folder 
+in the root of the source tree) are not under the same license 
+as the engine code. Wolfire has allowed the data to be freely redistributed
+for non commercial purposes, but it is forbidden to use in any revenue
+generating works.
