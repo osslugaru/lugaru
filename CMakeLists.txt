@@ -61,8 +61,14 @@ set(LUGARU_SRCS
 	${SRCDIR}/OpenGL_Windows.cpp
 	${SRCDIR}/openal_wrapper.cpp
 	${SRCDIR}/WinInput.cpp
-	${SRCDIR}/MacCompatibility.cpp
 )
+
+if(UNIX)
+	set(LUGARU_SRCS
+		${LUGARU_SRCS}
+		${SRCDIR}/MacCompatibility.cpp
+	)
+endif(UNIX)
 
 set(LUGARU_H
 	${SRCDIR}/Constants.h
@@ -145,7 +151,36 @@ find_package(OpenGL REQUIRED)
 # force this include dir no matter what, so we get sane headers.
 include_directories("${DEPDIR}/OpenGL")
 
-find_package(OpenAL REQUIRED)  # !!! FIXME: package a .dll for Windows?
+option (LUGARU_FORCE_INTERNAL_OPENAL)
+if (NOT LUGARU_FORCE_INTERNAL_OPENAL)
+    find_package(OpenAL REQUIRED)
+endif (NOT LUGARU_FORCE_INTERNAL_OPENAL)
+
+if (NOT OPENAL_FOUND)
+    message(STATUS "Using internal copy of OpenAL")
+    set(LUGARU_MISSING_DEPS "${LUGARU_MISSING_DEPS} OpenAL")
+    set(OPENALDIR "${DEPDIR}/OpenAL")
+    set(OPENAL_INCLUDE_DIR "${OPENALDIR}/include/AL")
+    set(OPENAL_LIBRARY "")
+
+    if (WINDOWS)
+        set(LUGARU_HAS_INTERNAL_OPENAL True)
+#        if (MSVC)                     # !!! FIXME: package MSVC .dll and .lib for Windows?
+#            set(OPENAL_LIBRARY
+#                ${OPENALDIR}/lib/win32/msvc/OpenAL32.lib
+#            )
+#        endif (MSVC)
+        if (MINGW)
+            set(OPENAL_LIBRARY
+                ${OPENALDIR}/lib/win32/mingw/libOpenAL32.dll.a
+            )
+        endif (MINGW)
+     endif(WINDOWS)
+
+    if (NOT LUGARU_HAS_INTERNAL_OPENAL)
+        message(ERROR "We don't have a prebuilt OpenAL for this platform.")
+    endif (NOT LUGARU_HAS_INTERNAL_OPENAL)
+endif (NOT OPENAL_FOUND)
 
 option (LUGARU_FORCE_INTERNAL_SDL "Force internal libSDL, even if there's a system version" False)
 if (NOT LUGARU_FORCE_INTERNAL_SDL)
@@ -404,9 +439,11 @@ if(WIN32)
 	install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/Source/lugaru.exe DESTINATION ${CMAKE_INSTALL_PREFIX})
 	if(MSVC)
 		install(FILES ${SDLDIR}/lib/win32/msvc/SDL.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
+		#install(FILES ${OPENALDIR}/lib/win32/msvc/OpenAL32.dll DESTINATION ${CMAKE_INSTALL_PREFIX}) # FIXME: Add MSVC OpenAL library!
 	endif(MSVC)
 	if(MINGW)
 		install(FILES ${SDLDIR}/lib/win32/mingw/SDL.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
+		install(FILES ${OPENALDIR}/lib/win32/mingw/OpenAL32.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
 	endif(MINGW)
 else(WIN32)
 	install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/Source/lugaru DESTINATION ${CMAKE_INSTALL_PREFIX})
