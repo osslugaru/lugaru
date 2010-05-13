@@ -49,10 +49,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   #define GL_GLEXT_PROTOTYPES
   #include <gl/gl.h>
   #include <gl/glu.h>
-  #include <gl/glaux.h>
+  //#include <gl/glaux.h> -- EVIL and OLD, NEVER USE IT!
   #include <gl/glext.h>
   #include "MacCompatibility.h"
-  #include "il/ilut.h"
+  //#include "il/ilut.h"
 
   #define glDeleteTextures( a, b) glDeleteTextures( (a), (const unsigned int *)(b) );
 #endif
