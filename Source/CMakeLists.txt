@@ -91,8 +91,7 @@ set(LUGARU_H
 	nommgr.h
 	pack_private.h
 	private.h
-	unpack_private.h
-	wincompat.h)
+	unpack_private.h)
 
 if(CMAKE_HOST_APPLE)
 	set(LUGARU_SRCS
