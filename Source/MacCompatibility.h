@@ -30,6 +30,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // stuff to make Mac code compatable with Windows/Linux/etc
 
+#if defined(WIN32) && !defined(strcasecmp)
+#define strcasecmp(a,b) stricmp(a,b)
+#endif
+
 #ifdef _MSC_VER
 // disable warnings about double to float conversions
 #pragma warning(disable:4305)

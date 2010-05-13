@@ -276,21 +276,6 @@ static int _argc = 0;
 static char **_argv = NULL;
 #endif
 
-#ifdef _WIN32
-bool cmdline(const char *cmd)
-{
-    for (int i = 1; i < _argc; i++)
-    {
-        char *arg = _argv[i];
-        while (*arg == '-')
-            arg++;
-        if (stricmp(arg, cmd) == 0)
-            return true;
-    }
-
-    return false;
-}
-#else
 bool cmdline(const char *cmd)
 {
     for (int i = 1; i < _argc; i++)
@@ -304,7 +289,6 @@ bool cmdline(const char *cmd)
 
     return false;
 }
-#endif
 
 
 // --------------------------------------------------------------------------
@@ -1760,22 +1744,6 @@ int main(int argc, char **argv)
 
 
 #if !USE_DEVIL
-#ifdef _WIN32
-static bool load_image(const char *file_name, TGAImageRec &tex)
-{
-    char *ptr = strrchr((char *)file_name, '.');
-    if (ptr)
-    {
-        if (stricmp(ptr+1, "png") == 0)
-            return load_png(file_name, tex);
-        else if (stricmp(ptr+1, "jpg") == 0)
-            return load_jpg(file_name, tex);
-    }
-
-    STUBBED("Unsupported image type");
-    return false;
-}
-#else
 static bool load_image(const char *file_name, TGAImageRec &tex)
 {
     char *ptr = strrchr((char *)file_name, '.');
@@ -1790,7 +1758,6 @@ static bool load_image(const char *file_name, TGAImageRec &tex)
     STUBBED("Unsupported image type");
     return false;
 }
-#endif
 
 
 struct my_error_mgr {
@@ -1941,20 +1908,6 @@ png_done:
 }
 
 
-#ifdef _WIN32
-static bool save_image(const char *file_name)
-{
-    char *ptr = strrchr((char *)file_name, '.');
-    if (ptr)
-    {
-        if (stricmp(ptr+1, "png") == 0)
-            return save_png(file_name);
-    }
-
-    STUBBED("Unsupported image type");
-    return false;
-}
-#else
 static bool save_image(const char *file_name)
 {
     char *ptr = strrchr((char *)file_name, '.');
@@ -1967,7 +1920,6 @@ static bool save_image(const char *file_name)
     STUBBED("Unsupported image type");
     return false;
 }
-#endif
 
 
 static bool save_png(const char *file_name)
