@@ -21,10 +21,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /**> HEADER FILES <**/
 #include "Weapons.h"
+#include "openal_wrapper.h"
 
 extern float multiplier;
 extern Animation animation[animation_count];
-extern FSOUND_SAMPLE	*samp[100];
+extern OPENAL_SAMPLE	*samp[100];
 extern int channels[100];
 extern Terrain terrain;
 extern float gravity;
@@ -58,7 +59,7 @@ extern float bonustotal;
 extern float bonustime;
 extern int tutoriallevel;
 extern int numthrowkill;
-extern "C"	void PlaySoundEx(int channel, FSOUND_SAMPLE *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused);
+extern "C"	void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 
 void	Weapons::DoStuff(){
 	static int i,whichpatchx,whichpatchz,j,k,whichhit,m;
@@ -98,9 +99,9 @@ void	Weapons::DoStuff(){
 			vel[1]=0;
 			vel[2]=0;
 			PlaySoundEx( staffbreaksound, samp[staffbreaksound], NULL, true);
-			FSOUND_3D_SetAttributes(channels[staffbreaksound], gLoc, vel);
-			FSOUND_SetVolume(channels[staffbreaksound], 256);
-			FSOUND_SetPaused(channels[staffbreaksound], false);
+			OPENAL_3D_SetAttributes(channels[staffbreaksound], gLoc, vel);
+			OPENAL_SetVolume(channels[staffbreaksound], 256);
+			OPENAL_SetPaused(channels[staffbreaksound], false);
 			XYZ tempvel;
 			XYZ speed;
 			//speed=(tippoint[i]-oldtippoint[i])/multiplier/6;
@@ -189,9 +190,9 @@ void	Weapons::DoStuff(){
 								vel[1]=0;
 								vel[2]=0;
 								PlaySoundEx( knifesheathesound, samp[knifesheathesound], NULL, true);
-								FSOUND_3D_SetAttributes(channels[knifesheathesound], gLoc, vel);
-								FSOUND_SetVolume(channels[knifesheathesound], 128);
-								FSOUND_SetPaused(channels[knifesheathesound], false);
+								OPENAL_3D_SetAttributes(channels[knifesheathesound], gLoc, vel);
+								OPENAL_SetVolume(channels[knifesheathesound], 128);
+								OPENAL_SetPaused(channels[knifesheathesound], false);
 
 								bloody[i]=0;
 
@@ -224,9 +225,9 @@ void	Weapons::DoStuff(){
 									vel[1]=player[j].velocity.y;
 									vel[2]=player[j].velocity.z;
 									PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, true);
-									FSOUND_3D_SetAttributes(channels[knifedrawsound], gLoc, vel);
-									FSOUND_SetVolume(channels[knifedrawsound], 128);
-									FSOUND_SetPaused(channels[knifedrawsound], false);
+									OPENAL_3D_SetAttributes(channels[knifedrawsound], gLoc, vel);
+									OPENAL_SetVolume(channels[knifedrawsound], 128);
+									OPENAL_SetPaused(channels[knifedrawsound], false);
 
 									player[j].weaponactive=0;
 									player[j].targetanimation=removeknifeanim;
@@ -282,9 +283,9 @@ void	Weapons::DoStuff(){
 									vel[1]=0;
 									vel[2]=0;
 									PlaySoundEx( fleshstabsound, samp[fleshstabsound], NULL, true);
-									FSOUND_3D_SetAttributes(channels[fleshstabsound], gLoc, vel);
-									FSOUND_SetVolume(channels[fleshstabsound], 128);
-									FSOUND_SetPaused(channels[fleshstabsound], false);
+									OPENAL_3D_SetAttributes(channels[fleshstabsound], gLoc, vel);
+									OPENAL_SetVolume(channels[fleshstabsound], 128);
+									OPENAL_SetPaused(channels[fleshstabsound], false);
 
 									if(animation[player[0].targetanimation].height==highheight){
 										bonus=ninja;
@@ -351,9 +352,9 @@ void	Weapons::DoStuff(){
 							vel[1]=0;
 							vel[2]=0;
 							PlaySoundEx( knifesheathesound, samp[knifesheathesound], NULL, true);
-							FSOUND_3D_SetAttributes(channels[knifesheathesound], gLoc, vel);
-							FSOUND_SetVolume(channels[knifesheathesound], 128);
-							FSOUND_SetPaused(channels[knifesheathesound], false);
+							OPENAL_3D_SetAttributes(channels[knifesheathesound], gLoc, vel);
+							OPENAL_SetVolume(channels[knifesheathesound], 128);
+							OPENAL_SetPaused(channels[knifesheathesound], false);
 
 							XYZ terrainlight;
 							terrainlight=terrain.getLighting(position[i].x,position[i].z);
@@ -502,9 +503,9 @@ void	Weapons::DoStuff(){
 									vel[1]=0;
 									vel[2]=0;
 									PlaySoundEx( whichsound, samp[whichsound], NULL, true);
-									FSOUND_3D_SetAttributes(channels[whichsound], gLoc, vel);
-									FSOUND_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
-									FSOUND_SetPaused(channels[whichsound], false);
+									OPENAL_3D_SetAttributes(channels[whichsound], gLoc, vel);
+									OPENAL_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
+									OPENAL_SetPaused(channels[whichsound], false);
 								}
 							}
 							start=oldtippoint[i];
@@ -539,9 +540,9 @@ void	Weapons::DoStuff(){
 									vel[1]=0;
 									vel[2]=0;
 									PlaySoundEx( whichsound, samp[whichsound], NULL, true);
-									FSOUND_3D_SetAttributes(channels[whichsound], gLoc, vel);
-									FSOUND_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
-									FSOUND_SetPaused(channels[whichsound], false);
+									OPENAL_3D_SetAttributes(channels[whichsound], gLoc, vel);
+									OPENAL_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
+									OPENAL_SetPaused(channels[whichsound], false);
 								}
 							}
 
@@ -581,9 +582,9 @@ void	Weapons::DoStuff(){
 											vel[1]=0;
 											vel[2]=0;
 											PlaySoundEx( whichsound, samp[whichsound], NULL, true);
-											FSOUND_3D_SetAttributes(channels[whichsound], gLoc, vel);
-											FSOUND_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
-											FSOUND_SetPaused(channels[whichsound], false);
+											OPENAL_3D_SetAttributes(channels[whichsound], gLoc, vel);
+											OPENAL_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
+											OPENAL_SetPaused(channels[whichsound], false);
 										}
 										position[i]+=(mid-oldmid2)*(20/(1+(float)m*10));
 									}
@@ -622,9 +623,9 @@ void	Weapons::DoStuff(){
 											vel[1]=0;
 											vel[2]=0;
 											PlaySoundEx( whichsound, samp[whichsound], NULL, true);
-											FSOUND_3D_SetAttributes(channels[whichsound], gLoc, vel);
-											FSOUND_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
-											FSOUND_SetPaused(channels[whichsound], false);
+											OPENAL_3D_SetAttributes(channels[whichsound], gLoc, vel);
+											OPENAL_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
+											OPENAL_SetPaused(channels[whichsound], false);
 										}
 										tippoint[i]+=(mid-oldmid2)*(20/(1+(float)m*10));
 									}
@@ -708,10 +709,10 @@ void	Weapons::DoStuff(){
 							vel[1]=0;
 							vel[2]=0;
 							PlaySoundEx( whichsound, samp[whichsound], NULL, true);
-							FSOUND_3D_SetAttributes(channels[whichsound], gLoc, vel);
-							if(terrain.getOpacity(position[i].x,position[i].z)>.2)FSOUND_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
-							else FSOUND_SetVolume(channels[whichsound], 32*findLengthfast(&bounceness));
-							FSOUND_SetPaused(channels[whichsound], false);
+							OPENAL_3D_SetAttributes(channels[whichsound], gLoc, vel);
+							if(terrain.getOpacity(position[i].x,position[i].z)>.2)OPENAL_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
+							else OPENAL_SetVolume(channels[whichsound], 32*findLengthfast(&bounceness));
+							OPENAL_SetPaused(channels[whichsound], false);
 
 							if(terrain.getOpacity(position[i].x,position[i].z)<.2){
 								XYZ terrainlight;
@@ -762,10 +763,10 @@ void	Weapons::DoStuff(){
 							vel[1]=0;
 							vel[2]=0;
 							PlaySoundEx( whichsound, samp[whichsound], NULL, true);
-							FSOUND_3D_SetAttributes(channels[whichsound], gLoc, vel);
-							if(terrain.getOpacity(tippoint[i].x,tippoint[i].z)>.2)FSOUND_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
-							else FSOUND_SetVolume(channels[whichsound], 32*findLengthfast(&bounceness));
-							FSOUND_SetPaused(channels[whichsound], false);
+							OPENAL_3D_SetAttributes(channels[whichsound], gLoc, vel);
+							if(terrain.getOpacity(tippoint[i].x,tippoint[i].z)>.2)OPENAL_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
+							else OPENAL_SetVolume(channels[whichsound], 32*findLengthfast(&bounceness));
+							OPENAL_SetPaused(channels[whichsound], false);
 
 							if(terrain.getOpacity(tippoint[i].x,tippoint[i].z)<.2){
 								XYZ terrainlight;
@@ -820,10 +821,10 @@ void	Weapons::DoStuff(){
 							vel[1]=0;
 							vel[2]=0;
 							PlaySoundEx( whichsound, samp[whichsound], NULL, true);
-							FSOUND_3D_SetAttributes(channels[whichsound], gLoc, vel);
-							if(terrain.getOpacity(position[i].x,position[i].z)>.2)FSOUND_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
-							else FSOUND_SetVolume(channels[whichsound], 32*findLengthfast(&bounceness));
-							FSOUND_SetPaused(channels[whichsound], false);
+							OPENAL_3D_SetAttributes(channels[whichsound], gLoc, vel);
+							if(terrain.getOpacity(position[i].x,position[i].z)>.2)OPENAL_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
+							else OPENAL_SetVolume(channels[whichsound], 32*findLengthfast(&bounceness));
+							OPENAL_SetPaused(channels[whichsound], false);
 						}
 						position[i]+=(mid-oldmid)*20;
 					}
@@ -864,10 +865,10 @@ void	Weapons::DoStuff(){
 							vel[1]=0;
 							vel[2]=0;
 							PlaySoundEx( whichsound, samp[whichsound], NULL, true);
-							FSOUND_3D_SetAttributes(channels[whichsound], gLoc, vel);
-							if(terrain.getOpacity(position[i].x,position[i].z)>.2)FSOUND_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
-							else FSOUND_SetVolume(channels[whichsound], 32*findLengthfast(&bounceness));
-							FSOUND_SetPaused(channels[whichsound], false);
+							OPENAL_3D_SetAttributes(channels[whichsound], gLoc, vel);
+							if(terrain.getOpacity(position[i].x,position[i].z)>.2)OPENAL_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
+							else OPENAL_SetVolume(channels[whichsound], 32*findLengthfast(&bounceness));
+							OPENAL_SetPaused(channels[whichsound], false);
 						}
 						tippoint[i]+=(mid-oldmid)*20;
 					}
@@ -906,10 +907,10 @@ void	Weapons::DoStuff(){
 					vel[1]=0;
 					vel[2]=0;
 					PlaySoundEx( whichsound, samp[whichsound], NULL, true);
-					FSOUND_3D_SetAttributes(channels[whichsound], gLoc, vel);
-					if(terrain.getOpacity(position[i].x,position[i].z)>.2)FSOUND_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
-					else FSOUND_SetVolume(channels[whichsound], 32*findLengthfast(&bounceness));
-					FSOUND_SetPaused(channels[whichsound], false);
+					OPENAL_3D_SetAttributes(channels[whichsound], gLoc, vel);
+					if(terrain.getOpacity(position[i].x,position[i].z)>.2)OPENAL_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
+					else OPENAL_SetVolume(channels[whichsound], 32*findLengthfast(&bounceness));
+					OPENAL_SetPaused(channels[whichsound], false);
 					}
 					}
 
@@ -945,10 +946,10 @@ void	Weapons::DoStuff(){
 					vel[1]=0;
 					vel[2]=0;
 					PlaySoundEx( whichsound, samp[whichsound], NULL, true);
-					FSOUND_3D_SetAttributes(channels[whichsound], gLoc, vel);
-					if(terrain.getOpacity(tippoint[i].x,tippoint[i].z)>.2)FSOUND_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
-					else FSOUND_SetVolume(channels[whichsound], 32*findLengthfast(&bounceness));
-					FSOUND_SetPaused(channels[whichsound], false);
+					OPENAL_3D_SetAttributes(channels[whichsound], gLoc, vel);
+					if(terrain.getOpacity(tippoint[i].x,tippoint[i].z)>.2)OPENAL_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
+					else OPENAL_SetVolume(channels[whichsound], 32*findLengthfast(&bounceness));
+					OPENAL_SetPaused(channels[whichsound], false);
 					}
 					}*/
 

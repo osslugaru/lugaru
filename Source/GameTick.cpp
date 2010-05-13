@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <ctime>
 #include "Game.h"
+#include "openal_wrapper.h"
 
 using namespace std;
 
@@ -37,7 +38,7 @@ extern XYZ viewer;
 extern int environment;
 extern float texscale;
 extern Terrain terrain;
-extern FSOUND_SAMPLE	*samp[100];
+extern OPENAL_SAMPLE	*samp[100];
 extern int channels[100];
 extern Sprites sprites;
 extern int kTextureSize;
@@ -224,9 +225,9 @@ extern float accountcampaigntime[10];
 extern int accountcampaignchoicesmade[10];
 extern int accountcampaignchoices[10][5000];
 /********************> Tick() <*****/
-extern FSOUND_STREAM * strm[20];
-extern "C"	void PlaySoundEx(int channel, FSOUND_SAMPLE *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused);
-extern "C" void PlayStreamEx(int chan, FSOUND_STREAM *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused);
+extern OPENAL_STREAM * strm[20];
+extern "C"	void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
+extern "C" void PlayStreamEx(int chan, OPENAL_STREAM *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 
 extern void ScreenShot(const char * fname);
 void Screenshot	(void)
@@ -625,17 +626,17 @@ void	Game::Setenvironment(int which)
 	float temptexdetail;
 	environment=which;
 /*
-	FSOUND_SetPaused(channels[music1snow], true);
-	FSOUND_SetPaused(channels[music1grass], true);
-	FSOUND_SetPaused(channels[music1desert], true);
-	FSOUND_SetPaused(channels[wind], true);
-	FSOUND_SetPaused(channels[desertambient], true);
+	OPENAL_SetPaused(channels[music1snow], true);
+	OPENAL_SetPaused(channels[music1grass], true);
+	OPENAL_SetPaused(channels[music1desert], true);
+	OPENAL_SetPaused(channels[wind], true);
+	OPENAL_SetPaused(channels[desertambient], true);
 */
-	FSOUND_SetPaused(channels[stream_music1snow], true);
-	FSOUND_SetPaused(channels[stream_music1grass], true);
-	FSOUND_SetPaused(channels[stream_music1desert], true);
-	FSOUND_SetPaused(channels[stream_wind], true);
-	FSOUND_SetPaused(channels[stream_desertambient], true);
+	OPENAL_SetPaused(channels[stream_music1snow], true);
+	OPENAL_SetPaused(channels[stream_music1grass], true);
+	OPENAL_SetPaused(channels[stream_music1desert], true);
+	OPENAL_SetPaused(channels[stream_wind], true);
+	OPENAL_SetPaused(channels[stream_desertambient], true);
 
 
 	if(environment==snowyenvironment){
@@ -644,8 +645,8 @@ void	Game::Setenvironment(int which)
 		if(ambientsound){
 			//PlaySoundEx( wind, samp[wind], NULL, true);
 			PlayStreamEx(stream_wind, strm[stream_wind], 0, true);
-			FSOUND_SetPaused(channels[stream_wind], false);
-			FSOUND_SetVolume(channels[stream_wind], 256);
+			OPENAL_SetPaused(channels[stream_wind], false);
+			OPENAL_SetVolume(channels[stream_wind], 256);
 		}
 
 		LoadTexture(":Data:Textures:snowtree.png",&objects.treetextureptr,0,1);
@@ -653,18 +654,18 @@ void	Game::Setenvironment(int which)
 		LoadTexture(":Data:Textures:bouldersnow.jpg",&objects.rocktextureptr,1,0);
 		LoadTexture(":Data:Textures:snowbox.jpg",&objects.boxtextureptr,1,0);
 
-		FSOUND_Sample_Free(samp[footstepsound]);
-		FSOUND_Sample_Free(samp[footstepsound2]);
-		FSOUND_Sample_Free(samp[footstepsound3]);
-		FSOUND_Sample_Free(samp[footstepsound4]);
-		samp[footstepsound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepsnow1.ogg", FSOUND_HW3D, 0, 0);
-		samp[footstepsound2] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepsnow2.ogg", FSOUND_HW3D, 0, 0);
-		samp[footstepsound3] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepstone1.ogg", FSOUND_HW3D, 0, 0);
-		samp[footstepsound4] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepstone2.ogg", FSOUND_HW3D, 0, 0);
-		FSOUND_Sample_SetMinMaxDistance(samp[footstepsound], 4.0f, 1000.0f);
-		FSOUND_Sample_SetMinMaxDistance(samp[footstepsound2], 4.0f, 1000.0f);
-		FSOUND_Sample_SetMinMaxDistance(samp[footstepsound3], 4.0f, 1000.0f);
-		FSOUND_Sample_SetMinMaxDistance(samp[footstepsound4], 4.0f, 1000.0f);
+		OPENAL_Sample_Free(samp[footstepsound]);
+		OPENAL_Sample_Free(samp[footstepsound2]);
+		OPENAL_Sample_Free(samp[footstepsound3]);
+		OPENAL_Sample_Free(samp[footstepsound4]);
+		samp[footstepsound] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepsnow1.ogg", OPENAL_HW3D, 0, 0);
+		samp[footstepsound2] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepsnow2.ogg", OPENAL_HW3D, 0, 0);
+		samp[footstepsound3] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepstone1.ogg", OPENAL_HW3D, 0, 0);
+		samp[footstepsound4] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepstone2.ogg", OPENAL_HW3D, 0, 0);
+		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound], 4.0f, 1000.0f);
+		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound2], 4.0f, 1000.0f);
+		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound3], 4.0f, 1000.0f);
+		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound4], 4.0f, 1000.0f);
 
 		LoadTexture(":Data:Textures:snow.jpg",&terraintexture,1,0);
 
@@ -703,22 +704,22 @@ void	Game::Setenvironment(int which)
 		if(ambientsound){
 			//PlaySoundEx( desertambient, samp[desertambient], NULL, true);
 			PlayStreamEx( stream_desertambient, strm[stream_desertambient], NULL, true);
-			FSOUND_SetPaused(channels[stream_desertambient], false);
-			FSOUND_SetVolume(channels[stream_desertambient], 256);
+			OPENAL_SetPaused(channels[stream_desertambient], false);
+			OPENAL_SetVolume(channels[stream_desertambient], 256);
 		}
 
-		FSOUND_Sample_Free(samp[footstepsound]);
-		FSOUND_Sample_Free(samp[footstepsound2]);
-		FSOUND_Sample_Free(samp[footstepsound3]);
-		FSOUND_Sample_Free(samp[footstepsound4]);
-		samp[footstepsound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepsnow1.ogg", FSOUND_HW3D, 0, 0);
-		samp[footstepsound2] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepsnow2.ogg", FSOUND_HW3D, 0, 0);
-		samp[footstepsound3] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepsnow1.ogg", FSOUND_HW3D, 0, 0);
-		samp[footstepsound4] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepsnow2.ogg", FSOUND_HW3D, 0, 0);
-		FSOUND_Sample_SetMinMaxDistance(samp[footstepsound], 4.0f, 1000.0f);
-		FSOUND_Sample_SetMinMaxDistance(samp[footstepsound2], 4.0f, 1000.0f);
-		FSOUND_Sample_SetMinMaxDistance(samp[footstepsound3], 4.0f, 1000.0f);
-		FSOUND_Sample_SetMinMaxDistance(samp[footstepsound4], 4.0f, 1000.0f);
+		OPENAL_Sample_Free(samp[footstepsound]);
+		OPENAL_Sample_Free(samp[footstepsound2]);
+		OPENAL_Sample_Free(samp[footstepsound3]);
+		OPENAL_Sample_Free(samp[footstepsound4]);
+		samp[footstepsound] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepsnow1.ogg", OPENAL_HW3D, 0, 0);
+		samp[footstepsound2] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepsnow2.ogg", OPENAL_HW3D, 0, 0);
+		samp[footstepsound3] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepsnow1.ogg", OPENAL_HW3D, 0, 0);
+		samp[footstepsound4] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepsnow2.ogg", OPENAL_HW3D, 0, 0);
+		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound], 4.0f, 1000.0f);
+		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound2], 4.0f, 1000.0f);
+		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound3], 4.0f, 1000.0f);
+		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound4], 4.0f, 1000.0f);
 
 		LoadTexture(":Data:Textures:sand.jpg",&terraintexture,1,0);
 
@@ -754,22 +755,22 @@ void	Game::Setenvironment(int which)
 
 		if(ambientsound){
 			PlayStreamEx( stream_wind, strm[stream_wind], NULL, true);
-			FSOUND_SetPaused(channels[stream_wind], false);
-			FSOUND_SetVolume(channels[stream_wind], 100);
+			OPENAL_SetPaused(channels[stream_wind], false);
+			OPENAL_SetVolume(channels[stream_wind], 100);
 		}
 
-		FSOUND_Sample_Free(samp[footstepsound]);
-		FSOUND_Sample_Free(samp[footstepsound2]);
-		FSOUND_Sample_Free(samp[footstepsound3]);
-		FSOUND_Sample_Free(samp[footstepsound4]);
-		samp[footstepsound] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepgrass1.ogg", FSOUND_HW3D, 0, 0);
-		samp[footstepsound2] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepgrass2.ogg", FSOUND_HW3D, 0, 0);
-		samp[footstepsound3] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepstone1.ogg", FSOUND_HW3D, 0, 0);
-		samp[footstepsound4] = FSOUND_Sample_Load(FSOUND_FREE, ":Data:Sounds:footstepstone2.ogg", FSOUND_HW3D, 0, 0);
-		FSOUND_Sample_SetMinMaxDistance(samp[footstepsound], 4.0f, 1000.0f);
-		FSOUND_Sample_SetMinMaxDistance(samp[footstepsound2], 4.0f, 1000.0f);
-		FSOUND_Sample_SetMinMaxDistance(samp[footstepsound3], 4.0f, 1000.0f);
-		FSOUND_Sample_SetMinMaxDistance(samp[footstepsound4], 4.0f, 1000.0f);
+		OPENAL_Sample_Free(samp[footstepsound]);
+		OPENAL_Sample_Free(samp[footstepsound2]);
+		OPENAL_Sample_Free(samp[footstepsound3]);
+		OPENAL_Sample_Free(samp[footstepsound4]);
+		samp[footstepsound] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepgrass1.ogg", OPENAL_HW3D, 0, 0);
+		samp[footstepsound2] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepgrass2.ogg", OPENAL_HW3D, 0, 0);
+		samp[footstepsound3] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepstone1.ogg", OPENAL_HW3D, 0, 0);
+		samp[footstepsound4] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepstone2.ogg", OPENAL_HW3D, 0, 0);
+		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound], 4.0f, 1000.0f);
+		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound2], 4.0f, 1000.0f);
+		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound3], 4.0f, 1000.0f);
+		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound4], 4.0f, 1000.0f);
 
 		LoadTexture(":Data:Textures:grassdirt.jpg",&terraintexture,1,0);
 
@@ -881,15 +882,15 @@ void	Game::Loadlevel(char *name){
 	if(!firstload){
 		oldlevel=50;
 	}
-	FSOUND_SetPaused(channels[whooshsound], true);
-	FSOUND_SetPaused(channels[stream_firesound], true);
+	OPENAL_SetPaused(channels[whooshsound], true);
+	OPENAL_SetPaused(channels[stream_firesound], true);
 
 	int mapvers;
 	FILE			*tfile;
 	tfile=fopen( name, "rb" );
 	if(tfile)
 	{
-		FSOUND_SetPaused(channels[stream_firesound], true);
+		OPENAL_SetPaused(channels[stream_firesound], true);
 
 
 		scoreadded=0;
@@ -961,8 +962,8 @@ void	Game::Loadlevel(char *name){
 		if(console)
 		{
 			PlaySoundEx( consolesuccesssound, samp[consolesuccesssound], NULL, true);
-			FSOUND_SetVolume(channels[consolesuccesssound], 256);
-			FSOUND_SetPaused(channels[consolesuccesssound], false);
+			OPENAL_SetVolume(channels[consolesuccesssound], 256);
+			OPENAL_SetPaused(channels[consolesuccesssound], false);
 			freeze=0;
 			console=0;
 		}
@@ -1607,19 +1608,19 @@ void	Game::Loadlevel(char *name){
 
 /*		for(i=0;i<32;i++){
 			//if(i<16||i>20)
-			FSOUND_StopSound(i);
+			OPENAL_StopSound(i);
 		}
 */
 		LOG("Starting background music...");
 
-		FSOUND_StopSound(FSOUND_ALL);
+		OPENAL_StopSound(OPENAL_ALL);
 		if(environment==snowyenvironment)
 		{
 			if(ambientsound)
 			{
 				PlayStreamEx(stream_wind, strm[stream_wind], NULL, true);
-				FSOUND_SetPaused(channels[stream_wind], false);
-				FSOUND_SetVolume(channels[stream_wind], 256);
+				OPENAL_SetPaused(channels[stream_wind], false);
+				OPENAL_SetVolume(channels[stream_wind], 256);
 			}
 		}
 		else if(environment==desertenvironment)
@@ -1630,8 +1631,8 @@ void	Game::Loadlevel(char *name){
 				//	samp[desertambient], NULL, true);
 				PlayStreamEx(stream_desertambient,
 					strm[stream_desertambient], NULL, true);
-				FSOUND_SetPaused(channels[stream_desertambient], false);
-				FSOUND_SetVolume(channels[stream_desertambient], 256);
+				OPENAL_SetPaused(channels[stream_desertambient], false);
+				OPENAL_SetVolume(channels[stream_desertambient], 256);
 			}
 		}
 		else if(environment==grassyenvironment)
@@ -1640,8 +1641,8 @@ void	Game::Loadlevel(char *name){
 			{
 				//PlaySoundEx(wind, samp[wind], NULL, true);
 				PlayStreamEx(stream_wind, strm[stream_wind], NULL, true);
-				FSOUND_SetPaused(channels[stream_wind], false);
-				FSOUND_SetVolume(channels[stream_wind], 100);
+				OPENAL_SetPaused(channels[stream_wind], false);
+				OPENAL_SetVolume(channels[stream_wind], 100);
 			}
 		}
 		oldmusicvolume[0]=0;
@@ -1693,8 +1694,8 @@ void	Game::Tick()
 	if(newnetmessages){
 		newnetmessages=0;
 		PlaySoundEx( consolesuccesssound, samp[consolesuccesssound], NULL, true);
-		FSOUND_SetVolume(channels[consolesuccesssound], 256);
-		FSOUND_SetPaused(channels[consolesuccesssound], false);
+		OPENAL_SetVolume(channels[consolesuccesssound], 256);
+		OPENAL_SetPaused(channels[consolesuccesssound], false);
 
 		for(k=14;k>=2;k--){
 			for(j=0;j<255;j++){
@@ -1755,12 +1756,12 @@ void	Game::Tick()
 					if(!stealthloading){
 					float gLoc[3]={0,0,0};
 					float vel[3]={0,0,0};
-					FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
+					OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
 					PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-					FSOUND_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-					FSOUND_SetVolume(channels[firestartsound], 256);
-					FSOUND_SetPaused(channels[firestartsound], false);
-					FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
+					OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
+					OPENAL_SetVolume(channels[firestartsound], 256);
+					OPENAL_SetPaused(channels[firestartsound], false);
+					OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 
 					flashr=1;
 					flashg=0;
@@ -1833,34 +1834,34 @@ void	Game::Tick()
 					campaign=1;
 					mainmenu=0;
 					gameon=1;
-					FSOUND_SetPaused(channels[music3], true);
+					OPENAL_SetPaused(channels[music3], true);
 
 					stealthloading=0;*/
 				}
 				else if(mainmenu==1||mainmenu==2)mainmenu=0;
 				if(mainmenu&&musictoggle){
 					if(mainmenu==1||mainmenu==2||mainmenu==100){
-						FSOUND_SetFrequency(FSOUND_ALL, 0.001);
+						OPENAL_SetFrequency(OPENAL_ALL, 0.001);
 						PlayStreamEx( stream_music3, strm[stream_music3], NULL, true);
-						FSOUND_SetPaused(channels[stream_music3], false);
-						FSOUND_SetVolume(channels[stream_music3], 256);
-						FSOUND_SetPaused(channels[music1], true);
+						OPENAL_SetPaused(channels[stream_music3], false);
+						OPENAL_SetVolume(channels[stream_music3], 256);
+						OPENAL_SetPaused(channels[music1], true);
 					}
 				}
 				if(!mainmenu){
-					FSOUND_SetPaused(channels[stream_music3], true);
-					FSOUND_SetPaused(channels[music1], false);
+					OPENAL_SetPaused(channels[stream_music3], true);
+					OPENAL_SetPaused(channels[music1], false);
 				}
 			}
 			if(mainmenu==3){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
 				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				FSOUND_SetVolume(channels[fireendsound], 256);
-				FSOUND_SetPaused(channels[fireendsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+				OPENAL_SetVolume(channels[fireendsound], 256);
+				OPENAL_SetPaused(channels[fireendsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 				flashr=1;
 				flashg=0;
@@ -1956,12 +1957,12 @@ void	Game::Tick()
 			if(mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==9||mainmenu==12||mainmenu==13||mainmenu==14||mainmenu==10||mainmenu==11||mainmenu==100){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
 				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				FSOUND_SetVolume(channels[fireendsound], 256);
-				FSOUND_SetPaused(channels[fireendsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+				OPENAL_SetVolume(channels[fireendsound], 256);
+				OPENAL_SetPaused(channels[fireendsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 				flashr=1;
 				flashg=0;
@@ -2009,8 +2010,8 @@ void	Game::Tick()
 		if(tutorialstage!=51)
 			tutorialstagetime=tutorialmaxtime;
 		PlaySoundEx( consolefailsound, samp[consolefailsound], NULL, true);
-		FSOUND_SetVolume(channels[consolefailsound], 128);
-		FSOUND_SetPaused(channels[consolefailsound], false);
+		OPENAL_SetVolume(channels[consolefailsound], 128);
+		OPENAL_SetPaused(channels[consolefailsound], false);
 		minimaptogglekeydown=1;
 	}
 	if(!IsKeyDown(theKeyMap, MAC_TAB_KEY)){
@@ -2024,12 +2025,12 @@ void	Game::Tick()
 				if(!gameon){
 					float gLoc[3]={0,0,0};
 					float vel[3]={0,0,0};
-					FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
+					OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
 					PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-					FSOUND_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-					FSOUND_SetVolume(channels[firestartsound], 256);
-					FSOUND_SetPaused(channels[firestartsound], false);
-					FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
+					OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
+					OPENAL_SetVolume(channels[firestartsound], 256);
+					OPENAL_SetPaused(channels[firestartsound], false);
+					OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 
 					flashr=1;
 					flashg=0;
@@ -2052,26 +2053,26 @@ void	Game::Tick()
 					}
 					mainmenu=0;
 					gameon=1;
-					FSOUND_SetPaused(channels[music3], true);	*/
+					OPENAL_SetPaused(channels[music3], true);	*/
 				}
 				else
 				{
 					//resume
 					mainmenu=0;
-					FSOUND_SetPaused(channels[stream_music3], true);
-					FSOUND_SetPaused(channels[music1], false);
+					OPENAL_SetPaused(channels[stream_music3], true);
+					OPENAL_SetPaused(channels[music1], false);
 				}
 			}
 
 			if(Button()&&!oldbutton&&selected==2){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
 				PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-				FSOUND_SetVolume(channels[firestartsound], 256);
-				FSOUND_SetPaused(channels[firestartsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
+				OPENAL_SetVolume(channels[firestartsound], 256);
+				OPENAL_SetPaused(channels[firestartsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 
 				flashr=1;
 				flashg=0;
@@ -2094,12 +2095,12 @@ void	Game::Tick()
 			if(Button()&&!oldbutton&&selected==3){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
 				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				FSOUND_SetVolume(channels[fireendsound], 256);
-				FSOUND_SetPaused(channels[fireendsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+				OPENAL_SetVolume(channels[fireendsound], 256);
+				OPENAL_SetPaused(channels[fireendsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 				flashr=1;
 				flashg=0;
@@ -2110,7 +2111,7 @@ void	Game::Tick()
 				if(!gameon){
 					//quit
 					tryquit=1;
-					if(registered)FSOUND_SetPaused(channels[stream_music3], true);
+					if(registered)OPENAL_SetPaused(channels[stream_music3], true);
 				}
 				else{
 					//end game
@@ -2126,12 +2127,12 @@ void	Game::Tick()
 			if(Button()&&!oldbutton&&selected!=-1){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
 				PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-				FSOUND_SetVolume(channels[firestartsound], 256);
-				FSOUND_SetPaused(channels[firestartsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
+				OPENAL_SetVolume(channels[firestartsound], 256);
+				OPENAL_SetPaused(channels[firestartsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 			}
 			if(Button()&&!oldbutton&&selected==0){
 				#if USE_SDL
@@ -2252,9 +2253,9 @@ void	Game::Tick()
 				musictoggle=1-musictoggle;
 
 				if(!musictoggle){
-					FSOUND_SetPaused(channels[music1], true);
-					FSOUND_SetPaused(channels[stream_music2], true);
-					FSOUND_SetPaused(channels[stream_music3], true);
+					OPENAL_SetPaused(channels[music1], true);
+					OPENAL_SetPaused(channels[stream_music2], true);
+					OPENAL_SetPaused(channels[stream_music3], true);
 
 					for(i=0;i<4;i++){
 						oldmusicvolume[i]=0;
@@ -2264,8 +2265,8 @@ void	Game::Tick()
 
 				if(musictoggle){
 					PlayStreamEx( stream_music3, strm[stream_music3], NULL, true);
-					FSOUND_SetPaused(channels[stream_music3], false);
-					FSOUND_SetVolume(channels[stream_music3], 256);
+					OPENAL_SetPaused(channels[stream_music3], false);
+					OPENAL_SetVolume(channels[stream_music3], 256);
 				}
 			}
 			if(Button()&&!oldbutton&&selected==9){
@@ -2278,17 +2279,17 @@ void	Game::Tick()
 			if(Button()&&!oldbutton&&selected==11){
 				volume+=.1f;
 				if(volume>1.0001f)volume=0;
-				FSOUND_SetSFXMasterVolume((int)(volume*255));
+				OPENAL_SetSFXMasterVolume((int)(volume*255));
 			}
 			if(Button()&&!oldbutton&&selected==7){
 				/*float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
 				PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-				FSOUND_SetVolume(channels[firestartsound], 256);
-				FSOUND_SetPaused(channels[firestartsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
+				OPENAL_SetVolume(channels[firestartsound], 256);
+				OPENAL_SetPaused(channels[firestartsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 				*/
 				flashr=1;
 				flashg=0;
@@ -2304,12 +2305,12 @@ void	Game::Tick()
 			if(Button()&&!oldbutton&&selected==8){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
 				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				FSOUND_SetVolume(channels[fireendsound], 256);
-				FSOUND_SetPaused(channels[fireendsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+				OPENAL_SetVolume(channels[fireendsound], 256);
+				OPENAL_SetPaused(channels[fireendsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 				flashr=1;
 				flashg=0;
@@ -2413,12 +2414,12 @@ void	Game::Tick()
 			if(Button()&&!oldbutton&&selected!=-1&&keyselect==-1){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
 				PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-				FSOUND_SetVolume(channels[firestartsound], 256);
-				FSOUND_SetPaused(channels[firestartsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
+				OPENAL_SetVolume(channels[firestartsound], 256);
+				OPENAL_SetPaused(channels[firestartsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 			}
 			if(Button()&&!oldbutton&&selected<9&&keyselect==-1){
 				keyselect=selected;
@@ -2434,12 +2435,12 @@ void	Game::Tick()
 						if(i!=MAC_ESCAPE_KEY&&(strcmp(KeyToChar(i),"unknown")||(buttons[0]&&!oldbuttons[0]&&!oldbutton)||(buttons[1]&&!oldbuttons[1]&&!oldbutton))){
 							float gLoc[3]={0,0,0};
 							float vel[3]={0,0,0};
-							FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+							OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
 							PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-							FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-							FSOUND_SetVolume(channels[fireendsound], 256);
-							FSOUND_SetPaused(channels[fireendsound], false);
-							FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+							OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+							OPENAL_SetVolume(channels[fireendsound], 256);
+							OPENAL_SetPaused(channels[fireendsound], false);
+							OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 							int keynum;
 							keynum=i;
@@ -2464,12 +2465,12 @@ void	Game::Tick()
 			if(Button()&&!oldbutton&&selected==9){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
 				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				FSOUND_SetVolume(channels[fireendsound], 256);
-				FSOUND_SetPaused(channels[fireendsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+				OPENAL_SetVolume(channels[fireendsound], 256);
+				OPENAL_SetPaused(channels[fireendsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 				flashr=1;
 				flashg=0;
@@ -2490,10 +2491,10 @@ void	Game::Tick()
 
 		if(mainmenu==5){
 			if(accountcampaignchoicesmade[accountactive]>8&&!registered){
-				FSOUND_SetFrequency(FSOUND_ALL, 0.001);
+				OPENAL_SetFrequency(OPENAL_ALL, 0.001);
 				PlayStreamEx( stream_music3, strm[stream_music3], NULL, true);
-				FSOUND_SetPaused(channels[stream_music3], false);
-				FSOUND_SetVolume(channels[stream_music3], 256);
+				OPENAL_SetPaused(channels[stream_music3], false);
+				OPENAL_SetVolume(channels[stream_music3], 256);
 
 				gameon=0;
 				mainmenu=12;
@@ -2503,12 +2504,12 @@ void	Game::Tick()
 
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
 				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				FSOUND_SetVolume(channels[fireendsound], 256);
-				FSOUND_SetPaused(channels[fireendsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+				OPENAL_SetVolume(channels[fireendsound], 256);
+				OPENAL_SetPaused(channels[fireendsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 				flashr=1;
 				flashg=0;
@@ -2527,12 +2528,12 @@ void	Game::Tick()
 			if(Button()&&!oldbutton&&selected==1){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
 				PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-				FSOUND_SetVolume(channels[firestartsound], 256);
-				FSOUND_SetPaused(channels[firestartsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
+				OPENAL_SetVolume(channels[firestartsound], 256);
+				OPENAL_SetPaused(channels[firestartsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 
 				flashr=1;
 				flashg=0;
@@ -2553,17 +2554,17 @@ void	Game::Tick()
 
 				mainmenu=0;
 				gameon=1;
-				FSOUND_SetPaused(channels[stream_music3], true);
+				OPENAL_SetPaused(channels[stream_music3], true);
 			}
 			if(Button()&&!oldbutton&&selected-7>=accountcampaignchoicesmade[accountactive]){//selected>=7&&(selected-7<=campaignnumchoices)){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
 				PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-				FSOUND_SetVolume(channels[firestartsound], 256);
-				FSOUND_SetPaused(channels[firestartsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
+				OPENAL_SetVolume(channels[firestartsound], 256);
+				OPENAL_SetPaused(channels[firestartsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 
 				flashr=1;
 				flashg=0;
@@ -2603,17 +2604,17 @@ void	Game::Tick()
 				campaign=1;
 				mainmenu=0;
 				gameon=1;
-				FSOUND_SetPaused(channels[stream_music3], true);
+				OPENAL_SetPaused(channels[stream_music3], true);
 			}
 			if(Button()&&!oldbutton&&selected==4){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
 				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				FSOUND_SetVolume(channels[fireendsound], 256);
-				FSOUND_SetPaused(channels[fireendsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+				OPENAL_SetVolume(channels[fireendsound], 256);
+				OPENAL_SetPaused(channels[fireendsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 				flashr=1;
 				flashg=0;
@@ -2627,12 +2628,12 @@ void	Game::Tick()
 			if(Button()&&!oldbutton&&selected==5){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
 				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				FSOUND_SetVolume(channels[fireendsound], 256);
-				FSOUND_SetPaused(channels[fireendsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+				OPENAL_SetVolume(channels[fireendsound], 256);
+				OPENAL_SetPaused(channels[fireendsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 				flashr=1;
 				flashg=0;
@@ -2645,12 +2646,12 @@ void	Game::Tick()
 			if(Button()&&!oldbutton&&selected==3){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
 				PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-				FSOUND_SetVolume(channels[firestartsound], 256);
-				FSOUND_SetPaused(channels[firestartsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
+				OPENAL_SetVolume(channels[firestartsound], 256);
+				OPENAL_SetPaused(channels[firestartsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 
 				flashr=1;
 				flashg=0;
@@ -2663,12 +2664,12 @@ void	Game::Tick()
 			if(Button()&&!oldbutton&&selected==2){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
 				PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-				FSOUND_SetVolume(channels[firestartsound], 256);
-				FSOUND_SetPaused(channels[firestartsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
+				OPENAL_SetVolume(channels[firestartsound], 256);
+				OPENAL_SetPaused(channels[firestartsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 
 				flashr=1;
 				flashg=0;
@@ -2685,12 +2686,12 @@ void	Game::Tick()
 			if(Button()&&!oldbutton&&selected<numchallengelevels&&selected>=0&&selected<=accountprogress[accountactive]){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
 				PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-				FSOUND_SetVolume(channels[firestartsound], 256);
-				FSOUND_SetPaused(channels[firestartsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
+				OPENAL_SetVolume(channels[firestartsound], 256);
+				OPENAL_SetPaused(channels[firestartsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 
 				flashr=1;
 				flashg=0;
@@ -2712,17 +2713,17 @@ void	Game::Tick()
 
 				mainmenu=0;
 				gameon=1;
-				FSOUND_SetPaused(channels[stream_music3], true);
+				OPENAL_SetPaused(channels[stream_music3], true);
 			}
 			if(Button()&&!oldbutton&&selected==numchallengelevels){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
 				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				FSOUND_SetVolume(channels[fireendsound], 256);
-				FSOUND_SetPaused(channels[fireendsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+				OPENAL_SetVolume(channels[fireendsound], 256);
+				OPENAL_SetPaused(channels[fireendsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 				flashr=1;
 				flashg=0;
@@ -2739,12 +2740,12 @@ void	Game::Tick()
 			if(Button()&&!oldbutton&&selected<numchallengelevels&&selected>=0&&selected<=accountprogress[accountactive]){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
 				PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-				FSOUND_SetVolume(channels[firestartsound], 256);
-				FSOUND_SetPaused(channels[firestartsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
+				OPENAL_SetVolume(channels[firestartsound], 256);
+				OPENAL_SetPaused(channels[firestartsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 
 				flashr=1;
 				flashg=0;
@@ -2766,17 +2767,17 @@ void	Game::Tick()
 
 				mainmenu=0;
 				gameon=1;
-				FSOUND_SetPaused(channels[stream_music3], true);
+				OPENAL_SetPaused(channels[stream_music3], true);
 			}
 			if(Button()&&!oldbutton&&selected==numchallengelevels){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
 				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				FSOUND_SetVolume(channels[fireendsound], 256);
-				FSOUND_SetPaused(channels[fireendsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+				OPENAL_SetVolume(channels[fireendsound], 256);
+				OPENAL_SetPaused(channels[fireendsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 				flashr=1;
 				flashg=0;
@@ -2794,12 +2795,12 @@ void	Game::Tick()
 			if(Button()&&!oldbutton&&selected==3){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
 				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				FSOUND_SetVolume(channels[fireendsound], 256);
-				FSOUND_SetPaused(channels[fireendsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+				OPENAL_SetVolume(channels[fireendsound], 256);
+				OPENAL_SetPaused(channels[fireendsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 				flashr=1;
 				flashg=0;
@@ -2817,12 +2818,12 @@ void	Game::Tick()
 			if(Button()&&!oldbutton&&selected==1){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
 				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				FSOUND_SetVolume(channels[fireendsound], 256);
-				FSOUND_SetPaused(channels[fireendsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+				OPENAL_SetVolume(channels[fireendsound], 256);
+				OPENAL_SetPaused(channels[fireendsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 				flashr=1;
 				flashg=0;
@@ -2843,12 +2844,12 @@ void	Game::Tick()
 				if(tryquit)quit=1;
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
 				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				FSOUND_SetVolume(channels[fireendsound], 256);
-				FSOUND_SetPaused(channels[fireendsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+				OPENAL_SetVolume(channels[fireendsound], 256);
+				OPENAL_SetPaused(channels[fireendsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 				flashr=1;
 				flashg=0;
@@ -2864,12 +2865,12 @@ void	Game::Tick()
 				quit=1;
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
 				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				FSOUND_SetVolume(channels[fireendsound], 256);
-				FSOUND_SetPaused(channels[fireendsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+				OPENAL_SetVolume(channels[fireendsound], 256);
+				OPENAL_SetPaused(channels[fireendsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 				flashr=1;
 				flashg=0;
@@ -2883,12 +2884,12 @@ void	Game::Tick()
 				tryquit=0;
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
 				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				FSOUND_SetVolume(channels[fireendsound], 256);
-				FSOUND_SetPaused(channels[fireendsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+				OPENAL_SetVolume(channels[fireendsound], 256);
+				OPENAL_SetPaused(channels[fireendsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 				flashr=1;
 				flashg=0;
@@ -2905,22 +2906,22 @@ void	Game::Tick()
 			if(Button()&&!oldbutton&&selected!=-1){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
 				PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-				FSOUND_SetVolume(channels[firestartsound], 256);
-				FSOUND_SetPaused(channels[firestartsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
+				OPENAL_SetVolume(channels[firestartsound], 256);
+				OPENAL_SetPaused(channels[firestartsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 			}
 			if(Button()&&!oldbutton&&selected==1){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
 				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				FSOUND_SetVolume(channels[fireendsound], 256);
-				FSOUND_SetPaused(channels[fireendsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+				OPENAL_SetVolume(channels[fireendsound], 256);
+				OPENAL_SetPaused(channels[fireendsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 				flashr=1;
 				flashg=0;
@@ -2961,12 +2962,12 @@ void	Game::Tick()
 			if(Button()&&!oldbutton&&selected==2){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
 				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				FSOUND_SetVolume(channels[fireendsound], 256);
-				FSOUND_SetPaused(channels[fireendsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+				OPENAL_SetVolume(channels[fireendsound], 256);
+				OPENAL_SetPaused(channels[fireendsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 				flashr=1;
 				flashg=0;
@@ -2983,12 +2984,12 @@ void	Game::Tick()
 			if(Button()&&!oldbutton&&selected!=-1){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
 				PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-				FSOUND_SetVolume(channels[firestartsound], 256);
-				FSOUND_SetPaused(channels[firestartsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
+				OPENAL_SetVolume(channels[firestartsound], 256);
+				OPENAL_SetPaused(channels[firestartsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 			}
 			if(Button()&&!oldbutton&&selected==0&&numaccounts<8){
 				entername=1;
@@ -3005,12 +3006,12 @@ void	Game::Tick()
 			if(Button()&&!oldbutton&&selected==numaccounts+1){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
 				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				FSOUND_SetVolume(channels[fireendsound], 256);
-				FSOUND_SetPaused(channels[fireendsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+				OPENAL_SetVolume(channels[fireendsound], 256);
+				OPENAL_SetPaused(channels[fireendsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 				flashr=1;
 				flashg=0;
@@ -3034,12 +3035,12 @@ void	Game::Tick()
 			if(Button()&&!oldbutton&&selected!=-1){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
-				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
 				PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-				FSOUND_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-				FSOUND_SetVolume(channels[firestartsound], 256);
-				FSOUND_SetPaused(channels[firestartsound], false);
-				FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
+				OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
+				OPENAL_SetVolume(channels[firestartsound], 256);
+				OPENAL_SetPaused(channels[firestartsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 
 				if(selected==0)accountdifficulty[accountactive]=0;
 				if(selected==1)accountdifficulty[accountactive]=1;
@@ -3161,7 +3162,7 @@ void	Game::Tick()
 				loaddistrib=0;
 			}
 		}
-		FSOUND_SetFrequency(channels[stream_music3], 22050);
+		OPENAL_SetFrequency(channels[stream_music3], 22050);
 
 		if(entername||mainmenu==13||mainmenu==14){
 			for(i=0;i<140;i++){
@@ -3233,12 +3234,12 @@ void	Game::Tick()
 
 								float gLoc[3]={0,0,0};
 								float vel[3]={0,0,0};
-								FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
+								OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
 								PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-								FSOUND_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-								FSOUND_SetVolume(channels[firestartsound], 256);
-								FSOUND_SetPaused(channels[firestartsound], false);
-								FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
+								OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
+								OPENAL_SetVolume(channels[firestartsound], 256);
+								OPENAL_SetPaused(channels[firestartsound], false);
+								OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 
 								for(j=0;j<255;j++){
 									displaytext[0][j]=' ';
@@ -3336,12 +3337,12 @@ void	Game::Tick()
 
 								float gLoc[3]={0,0,0};
 								float vel[3]={0,0,0};
-								FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
+								OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
 								PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-								FSOUND_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-								FSOUND_SetVolume(channels[firestartsound], 256);
-								FSOUND_SetPaused(channels[firestartsound], false);
-								FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
+								OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
+								OPENAL_SetVolume(channels[firestartsound], 256);
+								OPENAL_SetPaused(channels[firestartsound], false);
+								OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 
 								for(j=0;j<255;j++){
 									displaytext[0][j]=' ';
@@ -3365,12 +3366,12 @@ void	Game::Tick()
 
 								float gLoc[3]={0,0,0};
 								float vel[3]={0,0,0};
-								FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
+								OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
 								PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-								FSOUND_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-								FSOUND_SetVolume(channels[firestartsound], 256);
-								FSOUND_SetPaused(channels[firestartsound], false);
-								FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
+								OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
+								OPENAL_SetVolume(channels[firestartsound], 256);
+								OPENAL_SetPaused(channels[firestartsound], false);
+								OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 
 								for(j=0;j<255;j++){
 									displaytext[0][j]=' ';
@@ -3502,7 +3503,7 @@ void	Game::Tick()
 		if(IsKeyDown(theKeyMap, MAC_V_KEY)&&!freezetogglekeydown&&debugmode){
 			freeze=1-freeze;
 			if(freeze){
-				FSOUND_SetFrequency(FSOUND_ALL, 0.001);
+				OPENAL_SetFrequency(OPENAL_ALL, 0.001);
 			}
 			freezetogglekeydown=1;
 		}
@@ -3515,7 +3516,7 @@ void	Game::Tick()
 			console=1-console;
 			if(!console)freeze=0;
 			if(console){
-				FSOUND_SetFrequency(FSOUND_ALL, 0.001);
+				OPENAL_SetFrequency(OPENAL_ALL, 0.001);
 			}
 			consoletogglekeydown=1;
 		}
@@ -3587,8 +3588,8 @@ void	Game::Tick()
 							donesomething=0;
 							if(Compare(consoletext[0],"quit ",0,4)||Compare(consoletext[0],"exit ",0,4)){
 								PlaySoundEx( consolesuccesssound, samp[consolesuccesssound], NULL, true);
-								FSOUND_SetVolume(channels[consolesuccesssound], 256);
-								FSOUND_SetPaused(channels[consolesuccesssound], false);
+								OPENAL_SetVolume(channels[consolesuccesssound], 256);
+								OPENAL_SetPaused(channels[consolesuccesssound], false);
 								donesomething=1;
 								tryquit=1;
 							}
@@ -3676,8 +3677,8 @@ void	Game::Tick()
 							{
 							donesomething=1;
 							PlaySoundEx( consolesuccesssound, samp[consolesuccesssound], NULL, true);
-							FSOUND_SetVolume(channels[consolesuccesssound], 256);
-							FSOUND_SetPaused(channels[consolesuccesssound], false);
+							OPENAL_SetVolume(channels[consolesuccesssound], 256);
+							OPENAL_SetPaused(channels[consolesuccesssound], false);
 
 							if(consolechars[0]>0){
 							for(k=14;k>=1;k--){
@@ -3735,8 +3736,8 @@ void	Game::Tick()
 							{
 							donesomething=1;
 							PlaySoundEx( consolesuccesssound, samp[consolesuccesssound], NULL, true);
-							FSOUND_SetVolume(channels[consolesuccesssound], 256);
-							FSOUND_SetPaused(channels[consolesuccesssound], false);
+							OPENAL_SetVolume(channels[consolesuccesssound], 256);
+							OPENAL_SetPaused(channels[consolesuccesssound], false);
 
 							if(consolechars[0]>0){
 							for(k=14;k>=1;k--){
@@ -3774,8 +3775,8 @@ void	Game::Tick()
 								mapname[consolechars[0]-5+11]='\0';
 
 								PlaySoundEx( consolesuccesssound, samp[consolesuccesssound], NULL, true);
-								FSOUND_SetVolume(channels[consolesuccesssound], 256);
-								FSOUND_SetPaused(channels[consolesuccesssound], false);
+								OPENAL_SetVolume(channels[consolesuccesssound], 256);
+								OPENAL_SetPaused(channels[consolesuccesssound], false);
 
 								int mapvers;
 								mapvers=12;
@@ -4098,8 +4099,8 @@ void	Game::Tick()
 							mapname[consolechars[0]-5+11]='\0';
 
 							PlaySoundEx( consolesuccesssound, samp[consolesuccesssound], NULL, true);
-							FSOUND_SetVolume(channels[consolesuccesssound], 256);
-							FSOUND_SetPaused(channels[consolesuccesssound], false);
+							OPENAL_SetVolume(channels[consolesuccesssound], 256);
+							OPENAL_SetPaused(channels[consolesuccesssound], false);
 
 							FILE			*tfile;
 							tfile=fopen( mapname, "wb" );
@@ -4841,9 +4842,9 @@ void	Game::Tick()
 									if(dialogueboxsound[whichdialogue][indialogue]==-3)whichsoundplay=consolesuccesssound;
 									if(dialogueboxsound[whichdialogue][indialogue]==-4)whichsoundplay=consolefailsound;
 									PlaySoundEx( whichsoundplay, samp[whichsoundplay], NULL, true);
-									FSOUND_3D_SetAttributes(channels[whichsoundplay], gLoc, vel);
-									FSOUND_SetVolume(channels[whichsoundplay], 256);
-									FSOUND_SetPaused(channels[whichsoundplay], false);
+									OPENAL_3D_SetAttributes(channels[whichsoundplay], gLoc, vel);
+									OPENAL_SetVolume(channels[whichsoundplay], 256);
+									OPENAL_SetPaused(channels[whichsoundplay], false);
 									//}
 								}
 							}
@@ -5687,8 +5688,8 @@ void	Game::Tick()
 
 								if(!donesomething){
 									PlaySoundEx( consolefailsound, samp[consolefailsound], NULL, true);
-									FSOUND_SetVolume(channels[consolefailsound], 256);
-									FSOUND_SetPaused(channels[consolefailsound], false);
+									OPENAL_SetVolume(channels[consolefailsound], 256);
+									OPENAL_SetPaused(channels[consolefailsound], false);
 								}
 							}
 						}
@@ -5800,10 +5801,10 @@ void	Game::Tick()
 
 		static int oldwinfreeze;
 		if(winfreeze&&!oldwinfreeze){
-			FSOUND_SetFrequency(FSOUND_ALL, 0.001);
+			OPENAL_SetFrequency(OPENAL_ALL, 0.001);
 			PlaySoundEx( consolesuccesssound, samp[consolesuccesssound], NULL, true);
-			FSOUND_SetVolume(channels[consolesuccesssound], 256);
-			FSOUND_SetPaused(channels[consolesuccesssound], false);
+			OPENAL_SetVolume(channels[consolesuccesssound], 256);
+			OPENAL_SetPaused(channels[consolesuccesssound], false);
 		}
 		if(winfreeze==0)oldwinfreeze=winfreeze;
 		else oldwinfreeze++;
@@ -5910,9 +5911,9 @@ void	Game::Tick()
 									if(dialogueboxsound[whichdialogue][indialogue]==-3)whichsoundplay=consolesuccesssound;
 									if(dialogueboxsound[whichdialogue][indialogue]==-4)whichsoundplay=consolefailsound;
 									PlaySoundEx( whichsoundplay, samp[whichsoundplay], NULL, true);
-									FSOUND_3D_SetAttributes(channels[whichsoundplay], gLoc, vel);
-									FSOUND_SetVolume(channels[whichsoundplay], 256);
-									FSOUND_SetPaused(channels[whichsoundplay], false);
+									OPENAL_3D_SetAttributes(channels[whichsoundplay], gLoc, vel);
+									OPENAL_SetVolume(channels[whichsoundplay], 256);
+									OPENAL_SetPaused(channels[whichsoundplay], false);
 								}
 								if(IsKeyDown(theKeyMap, attackkey))oldbuttondialogue=1;
 							}
@@ -6021,9 +6022,9 @@ void	Game::Tick()
 							vel[1]=0;
 							vel[2]=0;
 							PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-							FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-							FSOUND_SetVolume(channels[fireendsound], 256);
-							FSOUND_SetPaused(channels[fireendsound], false);
+							OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+							OPENAL_SetVolume(channels[fireendsound], 256);
+							OPENAL_SetPaused(channels[fireendsound], false);
 
 							for(i=0;i<player[1].skeleton.num_joints;i++){
 								if(Random()%2==0){
@@ -6310,9 +6311,9 @@ void	Game::Tick()
 							vel[1]=0;
 							vel[2]=0;
 							PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-							FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-							FSOUND_SetVolume(channels[fireendsound], 256);
-							FSOUND_SetPaused(channels[fireendsound], false);
+							OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+							OPENAL_SetVolume(channels[fireendsound], 256);
+							OPENAL_SetPaused(channels[fireendsound], false);
 
 							for(i=0;i<player[1].skeleton.num_joints;i++){
 								if(Random()%2==0){
@@ -6458,8 +6459,8 @@ void	Game::Tick()
 
 						if(tutorialstagetime==tutorialmaxtime-3){
 							PlaySoundEx( consolesuccesssound, samp[consolesuccesssound], NULL, true);
-							FSOUND_SetVolume(channels[consolesuccesssound], 256);
-							FSOUND_SetPaused(channels[consolesuccesssound], false);
+							OPENAL_SetVolume(channels[consolesuccesssound], 256);
+							OPENAL_SetPaused(channels[consolesuccesssound], false);
 						}
 
 						if(tutorialsuccess>=1){
@@ -6478,15 +6479,15 @@ void	Game::Tick()
 					if(tutoriallevel!=1){
 						if(bonustime==0&&bonus!=solidhit&&bonus!=spinecrusher&&bonus!=tracheotomy&&bonus!=backstab&&bonusvalue>10){
 							PlaySoundEx( consolesuccesssound, samp[consolesuccesssound], NULL, true);
-							FSOUND_SetVolume(channels[consolesuccesssound], 256);
-							FSOUND_SetPaused(channels[consolesuccesssound], false);
+							OPENAL_SetVolume(channels[consolesuccesssound], 256);
+							OPENAL_SetPaused(channels[consolesuccesssound], false);
 						}
 					}
 					else
 						if(bonustime==0){
 							PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-							FSOUND_SetVolume(channels[fireendsound], 256);
-							FSOUND_SetPaused(channels[fireendsound], false);
+							OPENAL_SetVolume(channels[fireendsound], 256);
+							OPENAL_SetPaused(channels[fireendsound], false);
 						}
 						if(bonustime==0){
 							if(bonus!=solidhit&&bonus!=twoxcombo&&bonus!=threexcombo&&bonus!=fourxcombo&&bonus!=megacombo)bonusnum[bonus]++;
@@ -6601,10 +6602,10 @@ void	Game::Tick()
 															vel[1]=0;
 															vel[2]=0;
 															PlaySoundEx( movewhooshsound, samp[movewhooshsound], NULL, true);
-															FSOUND_3D_SetAttributes(channels[movewhooshsound], gLoc, vel);
-															FSOUND_SetVolume(channels[movewhooshsound], 256);
-															FSOUND_SetPaused(channels[movewhooshsound], false);
-															if(k==0)FSOUND_SetPaused(channels[whooshsound], true);
+															OPENAL_3D_SetAttributes(channels[movewhooshsound], gLoc, vel);
+															OPENAL_SetVolume(channels[movewhooshsound], 256);
+															OPENAL_SetPaused(channels[movewhooshsound], false);
+															if(k==0)OPENAL_SetPaused(channels[whooshsound], true);
 
 															lowpointtarget=DoRotation(objects.model[i].facenormals[whichhit],0,objects.rotation[i],0);
 															player[k].rotation=-asin(0-lowpointtarget.x);
@@ -6632,10 +6633,10 @@ void	Game::Tick()
 																vel[1]=0;
 																vel[2]=0;
 																PlaySoundEx( movewhooshsound, samp[movewhooshsound], NULL, true);
-																FSOUND_3D_SetAttributes(channels[movewhooshsound], gLoc, vel);
-																FSOUND_SetVolume(channels[movewhooshsound], 256);
-																FSOUND_SetPaused(channels[movewhooshsound], false);
-																if(k==0)FSOUND_SetPaused(channels[whooshsound], true);
+																OPENAL_3D_SetAttributes(channels[movewhooshsound], gLoc, vel);
+																OPENAL_SetVolume(channels[movewhooshsound], 256);
+																OPENAL_SetPaused(channels[movewhooshsound], false);
+																if(k==0)OPENAL_SetPaused(channels[whooshsound], true);
 
 																lowpointtarget=DoRotation(objects.model[i].facenormals[whichhit],0,objects.rotation[i],0);
 																player[k].rotation=-asin(0-lowpointtarget.x);
@@ -6663,10 +6664,10 @@ void	Game::Tick()
 																	vel[1]=0;
 																	vel[2]=0;
 																	PlaySoundEx( movewhooshsound, samp[movewhooshsound], NULL, true);
-																	FSOUND_3D_SetAttributes(channels[movewhooshsound], gLoc, vel);
-																	FSOUND_SetVolume(channels[movewhooshsound], 256);
-																	FSOUND_SetPaused(channels[movewhooshsound], false);
-																	if(k==0)FSOUND_SetPaused(channels[whooshsound], true);
+																	OPENAL_3D_SetAttributes(channels[movewhooshsound], gLoc, vel);
+																	OPENAL_SetVolume(channels[movewhooshsound], 256);
+																	OPENAL_SetPaused(channels[movewhooshsound], false);
+																	if(k==0)OPENAL_SetPaused(channels[whooshsound], true);
 
 																	lowpointtarget=DoRotation(objects.model[i].facenormals[whichhit],0,objects.rotation[i],0);
 																	player[k].rotation=-asin(0-lowpointtarget.x);
@@ -6694,10 +6695,10 @@ void	Game::Tick()
 																		vel[1]=0;
 																		vel[2]=0;
 																		PlaySoundEx( movewhooshsound, samp[movewhooshsound], NULL, true);
-																		FSOUND_3D_SetAttributes(channels[movewhooshsound], gLoc, vel);
-																		FSOUND_SetVolume(channels[movewhooshsound], 256);
-																		FSOUND_SetPaused(channels[movewhooshsound], false);
-																		if(k==0)FSOUND_SetPaused(channels[whooshsound], true);
+																		OPENAL_3D_SetAttributes(channels[movewhooshsound], gLoc, vel);
+																		OPENAL_SetVolume(channels[movewhooshsound], 256);
+																		OPENAL_SetPaused(channels[movewhooshsound], false);
+																		if(k==0)OPENAL_SetPaused(channels[whooshsound], true);
 
 																		lowpointtarget=DoRotation(objects.model[i].facenormals[whichhit],0,objects.rotation[i],0);
 																		player[k].rotation=-asin(0-lowpointtarget.x);
@@ -6732,8 +6733,8 @@ void	Game::Tick()
 														player[k].onterrain=1;
 
 														if(player[k].id==0){
-															FSOUND_SetPaused(channels[whooshsound], true);
-															FSOUND_SetVolume(channels[whooshsound], 0);
+															OPENAL_SetPaused(channels[whooshsound], true);
+															OPENAL_SetVolume(channels[whooshsound], 0);
 														}
 
 														if((player[k].targetanimation==jumpdownanim||player[k].isFlip())&&!player[k].wasLanding()){
@@ -6748,9 +6749,9 @@ void	Game::Tick()
 															vel[1]=player[k].velocity.y;
 															vel[2]=player[k].velocity.z;
 															PlaySoundEx( landsound, samp[landsound], NULL, true);
-															FSOUND_3D_SetAttributes(channels[landsound], gLoc, vel);
-															FSOUND_SetVolume(channels[landsound], 128);
-															FSOUND_SetPaused(channels[landsound], false);
+															OPENAL_3D_SetAttributes(channels[landsound], gLoc, vel);
+															OPENAL_SetVolume(channels[landsound], 128);
+															OPENAL_SetPaused(channels[landsound], false);
 															if(k==0){
 																envsound[numenvsounds]=player[k].coords;
 																envsoundvol[numenvsounds]=16;
@@ -6848,7 +6849,7 @@ void	Game::Tick()
 
 																									if(j>10||!player[k].isRun()){
 																										if(player[k].targetanimation==jumpdownanim||player[k].targetanimation==jumpupanim){
-																											if(k==0)FSOUND_SetPaused(channels[whooshsound], true);
+																											if(k==0)OPENAL_SetPaused(channels[whooshsound], true);
 																										}
 																										float gLoc[3];
 																										float vel[3];
@@ -6859,9 +6860,9 @@ void	Game::Tick()
 																										vel[1]=player[k].velocity.y;
 																										vel[2]=player[k].velocity.z;
 																										PlaySoundEx( jumpsound, samp[jumpsound], NULL, true);
-																										FSOUND_3D_SetAttributes(channels[jumpsound], gLoc, vel);
-																										FSOUND_SetVolume(channels[jumpsound], 128);
-																										FSOUND_SetPaused(channels[jumpsound], false);
+																										OPENAL_3D_SetAttributes(channels[jumpsound], gLoc, vel);
+																										OPENAL_SetVolume(channels[jumpsound], 128);
+																										OPENAL_SetPaused(channels[jumpsound], false);
 
 																										lowpointtarget=DoRotation(objects.model[i].facenormals[whichhit],0,objects.rotation[i],0);
 																										player[k].rotation=-asin(0-lowpointtarget.x);
@@ -6921,9 +6922,9 @@ void	Game::Tick()
 														vel[2]=player[k].velocity.z;
 														if(k==0){
 															PlaySoundEx( whooshsound, samp[whooshsound], NULL, true);
-															FSOUND_3D_SetAttributes(channels[whooshsound], gLoc, vel);
-															FSOUND_SetVolume(channels[whooshsound], 128);
-															FSOUND_SetPaused(channels[whooshsound], false);
+															OPENAL_3D_SetAttributes(channels[whooshsound], gLoc, vel);
+															OPENAL_SetVolume(channels[whooshsound], 128);
+															OPENAL_SetPaused(channels[whooshsound], false);
 														}
 													}
 													player[k].velocity.y+=gravity;
@@ -7051,9 +7052,9 @@ void	Game::Tick()
 												if(dialogueboxsound[whichdialogue][indialogue]==-3)whichsoundplay=consolesuccesssound;
 												if(dialogueboxsound[whichdialogue][indialogue]==-4)whichsoundplay=consolefailsound;
 												PlaySoundEx( whichsoundplay, samp[whichsoundplay], NULL, true);
-												FSOUND_3D_SetAttributes(channels[whichsoundplay], gLoc, vel);
-												FSOUND_SetVolume(channels[whichsoundplay], 256);
-												FSOUND_SetPaused(channels[whichsoundplay], false);
+												OPENAL_3D_SetAttributes(channels[whichsoundplay], gLoc, vel);
+												OPENAL_SetVolume(channels[whichsoundplay], 256);
+												OPENAL_SetPaused(channels[whichsoundplay], false);
 											}
 										}
 
@@ -7091,7 +7092,7 @@ void	Game::Tick()
 											}
 							}
 							if(!directing){
-								FSOUND_SetPaused(channels[whooshsound], true);
+								OPENAL_SetPaused(channels[whooshsound], true);
 								viewer=dialoguecamera[whichdialogue][indialogue];
 								if(viewer.y<terrain.getHeight(viewer.x,viewer.z)+.1){
 									viewer.y=terrain.getHeight(viewer.x,viewer.z)+.1;
@@ -7143,9 +7144,9 @@ void	Game::Tick()
 													if(dialogueboxsound[whichdialogue][indialogue]==-6)whichsoundplay=alarmsound;
 													if(dialogueboxsound[whichdialogue][indialogue]!=-5){
 														PlaySoundEx( whichsoundplay, samp[whichsoundplay], NULL, true);
-														FSOUND_3D_SetAttributes(channels[whichsoundplay], gLoc, vel);
-														FSOUND_SetVolume(channels[whichsoundplay], 256);
-														FSOUND_SetPaused(channels[whichsoundplay], false);
+														OPENAL_3D_SetAttributes(channels[whichsoundplay], gLoc, vel);
+														OPENAL_SetVolume(channels[whichsoundplay], 256);
+														OPENAL_SetPaused(channels[whichsoundplay], false);
 													}
 													if(dialogueboxsound[whichdialogue][indialogue]==-5){
 														hotspot[numhotspots]=player[0].coords;
@@ -7330,9 +7331,9 @@ void	Game::Tick()
 							vel[1]=0;
 							vel[2]=0;
 							PlaySoundEx( hawksound, samp[hawksound], NULL, true);
-							FSOUND_3D_SetAttributes(channels[hawksound], gLoc, vel);
-							FSOUND_SetVolume(channels[hawksound], 128);
-							FSOUND_SetPaused(channels[hawksound], false);
+							OPENAL_3D_SetAttributes(channels[hawksound], gLoc, vel);
+							OPENAL_SetVolume(channels[hawksound], 128);
+							OPENAL_SetPaused(channels[hawksound], false);
 
 							hawkcalldelay=16+abs(Random()%8);
 						}
@@ -7699,14 +7700,14 @@ void	Game::Tick()
 									vel[1]=0;
 									vel[2]=0;
 									PlaySoundEx( splattersound, samp[splattersound], NULL, true);
-									FSOUND_3D_SetAttributes(channels[splattersound], gLoc, vel);
-									FSOUND_SetVolume(channels[splattersound], 256);
-									FSOUND_SetPaused(channels[splattersound], false);
+									OPENAL_3D_SetAttributes(channels[splattersound], gLoc, vel);
+									OPENAL_SetVolume(channels[splattersound], 256);
+									OPENAL_SetPaused(channels[splattersound], false);
 
 									PlaySoundEx( breaksound2, samp[breaksound2], NULL, true);
-									FSOUND_3D_SetAttributes(channels[breaksound2], gLoc, vel);
-									FSOUND_SetVolume(channels[breaksound2], 100);
-									FSOUND_SetPaused(channels[breaksound2], false);
+									OPENAL_3D_SetAttributes(channels[breaksound2], gLoc, vel);
+									OPENAL_SetVolume(channels[breaksound2], 100);
+									OPENAL_SetPaused(channels[breaksound2], false);
 
 									if(player[closest].skeleton.free==2)player[closest].skeleton.free=0;
 									player[closest].RagDoll(0);
@@ -7748,14 +7749,14 @@ void	Game::Tick()
 									vel[2]=0;
 
 									PlaySoundEx( splattersound, samp[splattersound], NULL, true);
-									FSOUND_3D_SetAttributes(channels[splattersound], gLoc, vel);
-									FSOUND_SetVolume(channels[splattersound], 256);
-									FSOUND_SetPaused(channels[splattersound], false);
+									OPENAL_3D_SetAttributes(channels[splattersound], gLoc, vel);
+									OPENAL_SetVolume(channels[splattersound], 256);
+									OPENAL_SetPaused(channels[splattersound], false);
 
 									PlaySoundEx( breaksound2, samp[breaksound2], NULL, true);
-									FSOUND_3D_SetAttributes(channels[breaksound2], gLoc, vel);
-									FSOUND_SetVolume(channels[breaksound2], 600);
-									FSOUND_SetPaused(channels[breaksound2], false);
+									OPENAL_3D_SetAttributes(channels[breaksound2], gLoc, vel);
+									OPENAL_SetVolume(channels[breaksound2], 600);
+									OPENAL_SetPaused(channels[breaksound2], false);
 
 									for(i=0;i<player[closest].skeleton.num_joints; i++){
 										if(!player[closest].skeleton.free)flatvelocity2=player[closest].velocity;
@@ -7917,10 +7918,10 @@ void	Game::Tick()
 								vel[1]=0;
 								vel[2]=0;
 								PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-								FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-								FSOUND_SetVolume(channels[fireendsound], 256);
-								FSOUND_SetPaused(channels[fireendsound], false);
-								FSOUND_SetPaused(channels[stream_firesound], true);
+								OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+								OPENAL_SetVolume(channels[fireendsound], 256);
+								OPENAL_SetPaused(channels[fireendsound], false);
+								OPENAL_SetPaused(channels[stream_firesound], true);
 							}
 							slomotogglekeydown=1;
 						}
@@ -8341,10 +8342,10 @@ void	Game::Tick()
 							vel[1]=player[0].velocity.y;
 							vel[2]=player[0].velocity.z;
 							PlaySoundEx( whooshsound, samp[whooshsound], NULL, true);
-							FSOUND_3D_SetAttributes(channels[whooshsound], gLoc, vel);
-							FSOUND_SetVolume(channels[whooshsound], 128);
-							FSOUND_SetPaused(channels[whooshsound], false);
-							//FSOUND_SetPaused(channels[whooshsound], true);
+							OPENAL_3D_SetAttributes(channels[whooshsound], gLoc, vel);
+							OPENAL_SetVolume(channels[whooshsound], 128);
+							OPENAL_SetPaused(channels[whooshsound], false);
+							//OPENAL_SetPaused(channels[whooshsound], true);
 
 							texturesizetogglekeydown=1;
 						}
@@ -8765,9 +8766,9 @@ void	Game::Tick()
 																												vel[2]=player[i].velocity.z;
 																												if(tutoriallevel!=1){
 																													PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
-																													FSOUND_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
-																													FSOUND_SetVolume(channels[heavyimpactsound], 256);
-																													FSOUND_SetPaused(channels[heavyimpactsound], false);
+																													OPENAL_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
+																													OPENAL_SetVolume(channels[heavyimpactsound], 256);
+																													OPENAL_SetPaused(channels[heavyimpactsound], false);
 																												}
 																												//player[i].velocity=player[k].velocity;
 																												//player[k].velocity=player[i].velocity;
@@ -9065,7 +9066,7 @@ void	Game::Tick()
 							/*
 							if(IsKeyDown(theKeyMap, MAC_Z_KEY)){
 							//Respawn
-							FSOUND_SetPaused(channels[whooshsound], true);
+							OPENAL_SetPaused(channels[whooshsound], true);
 							changedelay=0;
 							for(k=0;k<numplayers;k++){
 							player[k].dead=0;
@@ -10139,9 +10140,9 @@ void	Game::Tick()
 																			vel[2]=player[i].velocity.z;
 																			if(weapons.type[j]!=staff){
 																				PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, true);
-																				FSOUND_3D_SetAttributes(channels[knifedrawsound], gLoc, vel);
-																				FSOUND_SetVolume(channels[knifedrawsound], 128);
-																				FSOUND_SetPaused(channels[knifedrawsound], false);
+																				OPENAL_3D_SetAttributes(channels[knifedrawsound], gLoc, vel);
+																				OPENAL_SetVolume(channels[knifedrawsound], 128);
+																				OPENAL_SetPaused(channels[knifedrawsound], false);
 																			}
 
 																			player[i].weaponactive=0;
@@ -10186,9 +10187,9 @@ void	Game::Tick()
 																				vel[2]=player[i].velocity.z;
 																				if(weapons.type[k]!=staff){
 																					PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, true);
-																					FSOUND_3D_SetAttributes(channels[knifedrawsound], gLoc, vel);
-																					FSOUND_SetVolume(channels[knifedrawsound], 128);
-																					FSOUND_SetPaused(channels[knifedrawsound], false);
+																					OPENAL_3D_SetAttributes(channels[knifedrawsound], gLoc, vel);
+																					OPENAL_SetVolume(channels[knifedrawsound], 128);
+																					OPENAL_SetPaused(channels[knifedrawsound], false);
 																				}
 
 																				player[i].weaponactive=0;
@@ -10247,16 +10248,16 @@ void	Game::Tick()
 																			if(!fleshstuck){
 																				if(weapons.type[k]!=staff){
 																					PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, true);
-																					FSOUND_3D_SetAttributes(channels[knifedrawsound], gLoc, vel);
-																					FSOUND_SetVolume(channels[knifedrawsound], 128);
-																					FSOUND_SetPaused(channels[knifedrawsound], false);
+																					OPENAL_3D_SetAttributes(channels[knifedrawsound], gLoc, vel);
+																					OPENAL_SetVolume(channels[knifedrawsound], 128);
+																					OPENAL_SetPaused(channels[knifedrawsound], false);
 																				}
 																			}
 																			if(fleshstuck){
 																				PlaySoundEx( fleshstabremovesound, samp[fleshstabremovesound], NULL, true);
-																				FSOUND_3D_SetAttributes(channels[fleshstabremovesound], gLoc, vel);
-																				FSOUND_SetVolume(channels[fleshstabremovesound], 128);
-																				FSOUND_SetPaused(channels[fleshstabremovesound], false);
+																				OPENAL_3D_SetAttributes(channels[fleshstabremovesound], gLoc, vel);
+																				OPENAL_SetVolume(channels[fleshstabremovesound], 128);
+																				OPENAL_SetPaused(channels[fleshstabremovesound], false);
 																			}
 
 																			player[i].weaponactive=0;
@@ -10682,15 +10683,15 @@ void	Game::Tick()
 
 														if(i==0){
 															PlaySoundEx( whooshsound, samp[whooshsound], NULL, true);
-															FSOUND_3D_SetAttributes(channels[whooshsound], gLoc, vel);
-															FSOUND_SetVolume(channels[whooshsound], 128);
-															FSOUND_SetPaused(channels[whooshsound], false);
+															OPENAL_3D_SetAttributes(channels[whooshsound], gLoc, vel);
+															OPENAL_SetVolume(channels[whooshsound], 128);
+															OPENAL_SetPaused(channels[whooshsound], false);
 														}
 
 														PlaySoundEx( jumpsound, samp[jumpsound], NULL, true);
-														FSOUND_3D_SetAttributes(channels[jumpsound], gLoc, vel);
-														FSOUND_SetVolume(channels[jumpsound], 128);
-														FSOUND_SetPaused(channels[jumpsound], false);
+														OPENAL_3D_SetAttributes(channels[jumpsound], gLoc, vel);
+														OPENAL_SetVolume(channels[jumpsound], 128);
+														OPENAL_SetPaused(channels[jumpsound], false);
 												}
 												if((player[i].isIdle())&&player[i].jumppower>1){
 													player[i].targetanimation=player[i].getLanding();
@@ -10832,8 +10833,8 @@ void	Game::Tick()
 										envsound[j]=envsound[numenvsounds];
 									}
 								}
-								if(!slomo)FSOUND_SetFrequency(FSOUND_ALL, 22050);
-								if(slomo)FSOUND_SetFrequency(FSOUND_ALL, slomofreq);
+								if(!slomo)OPENAL_SetFrequency(OPENAL_ALL, 22050);
+								if(slomo)OPENAL_SetFrequency(OPENAL_ALL, slomofreq);
 
 								if(tutoriallevel==1){
 									XYZ temp;
@@ -10854,24 +10855,24 @@ void	Game::Tick()
 									oldtemp2=temp2;
 									if(tutorialstage>=51)
 										if(findDistancefast(&temp,&player[0].coords)>=findDistancefast(&temp,&temp2)-1||findDistancefast(&temp3,&player[0].coords)<4){
-		                                    FSOUND_StopSound(FSOUND_ALL);  // hack...OpenAL renderer isn't stopping music after tutorial goes to level menu...
-											FSOUND_SetFrequency(FSOUND_ALL, 0.001);
+		                                    OPENAL_StopSound(OPENAL_ALL);  // hack...OpenAL renderer isn't stopping music after tutorial goes to level menu...
+											OPENAL_SetFrequency(OPENAL_ALL, 0.001);
 
 											PlayStreamEx( stream_music3, strm[stream_music3], NULL, true);
-											FSOUND_SetPaused(channels[stream_music3], false);
-											FSOUND_SetVolume(channels[stream_music3], 256);
+											OPENAL_SetPaused(channels[stream_music3], false);
+											OPENAL_SetVolume(channels[stream_music3], 256);
 
 											gameon=0;
 											mainmenu=5;
 
 											float gLoc[3]={0,0,0};
 											float vel[3]={0,0,0};
-											FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+											OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
 											PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-											FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-											FSOUND_SetVolume(channels[fireendsound], 256);
-											FSOUND_SetPaused(channels[fireendsound], false);
-											FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+											OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+											OPENAL_SetVolume(channels[fireendsound], 256);
+											OPENAL_SetPaused(channels[fireendsound], false);
+											OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 											flashr=1;
 											flashg=0;
@@ -10890,9 +10891,9 @@ void	Game::Tick()
 												vel[1]=0;
 												vel[2]=0;
 												PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-												FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-												FSOUND_SetVolume(channels[fireendsound], 256);
-												FSOUND_SetPaused(channels[fireendsound], false);
+												OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+												OPENAL_SetVolume(channels[fireendsound], 256);
+												OPENAL_SetPaused(channels[fireendsound], false);
 
 												player[0].coords=(oldtemp+oldtemp2)/2;
 
@@ -10913,9 +10914,9 @@ void	Game::Tick()
 													vel[1]=0;
 													vel[2]=0;
 													PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-													FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-													FSOUND_SetVolume(channels[fireendsound], 256);
-													FSOUND_SetPaused(channels[fireendsound], false);
+													OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+													OPENAL_SetVolume(channels[fireendsound], 256);
+													OPENAL_SetPaused(channels[fireendsound], false);
 
 													for(int i=0;i<player[1].skeleton.num_joints;i++){
 														if(Random()%2==0){
@@ -10975,8 +10976,8 @@ void	Game::Tick()
 								ori[4] = upvector.y;
 								ori[5] = -upvector.z;
 
-								FSOUND_3D_Listener_SetAttributes(&gLoc[0], &vel[0], ori[0], ori[1], ori[2], ori[3], ori[4], ori[5]);
-								FSOUND_Update();
+								OPENAL_3D_Listener_SetAttributes(&gLoc[0], &vel[0], ori[0], ori[1], ori[2], ori[3], ori[4], ori[5]);
+								OPENAL_Update();
 
 								oldviewer=viewer;
 		}
@@ -11000,22 +11001,22 @@ void	Game::TickOnce(){
 		}
 		if(mainmenu)rotation+=multiplier*5;
 		if(!mainmenu&&!indemo&&!registered){
-			FSOUND_SetFrequency(FSOUND_ALL, 0.001);
+			OPENAL_SetFrequency(OPENAL_ALL, 0.001);
 			PlayStreamEx( stream_music3, strm[stream_music3], NULL, true);
-			FSOUND_SetPaused(channels[stream_music3], false);
-			FSOUND_SetVolume(channels[stream_music3], 256);
+			OPENAL_SetPaused(channels[stream_music3], false);
+			OPENAL_SetVolume(channels[stream_music3], 256);
 
 			gameon=0;
 			mainmenu=12;
 
 			float gLoc[3]={0,0,0};
 			float vel[3]={0,0,0};
-			FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+			OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
 			PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-			FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-			FSOUND_SetVolume(channels[fireendsound], 256);
-			FSOUND_SetPaused(channels[fireendsound], false);
-			FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+			OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+			OPENAL_SetVolume(channels[fireendsound], 256);
+			OPENAL_SetPaused(channels[fireendsound], false);
+			OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 			flashr=1;
 			flashg=0;
@@ -11025,22 +11026,22 @@ void	Game::TickOnce(){
 		}
 
 		if(tryquit==1&&!registered&&mainmenu!=12){
-			FSOUND_SetFrequency(FSOUND_ALL, 0.001);
+			OPENAL_SetFrequency(OPENAL_ALL, 0.001);
 			PlayStreamEx( stream_music3, strm[stream_music3], NULL, true);
-			FSOUND_SetPaused(channels[stream_music3], false);
-			FSOUND_SetVolume(channels[stream_music3], 256);
+			OPENAL_SetPaused(channels[stream_music3], false);
+			OPENAL_SetVolume(channels[stream_music3], 256);
 
 			gameon=0;
 			mainmenu=12;
 
 			float gLoc[3]={0,0,0};
 			float vel[3]={0,0,0};
-			FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+			OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
 			PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-			FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-			FSOUND_SetVolume(channels[fireendsound], 256);
-			FSOUND_SetPaused(channels[fireendsound], false);
-			FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+			OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+			OPENAL_SetVolume(channels[fireendsound], 256);
+			OPENAL_SetPaused(channels[fireendsound], false);
+			OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 			flashr=1;
 			flashg=0;
@@ -11113,8 +11114,8 @@ void	Game::TickOnceAfter(){
 				vel[1]=0;
 				vel[2]=0;
 				PlaySoundEx( alarmsound, samp[alarmsound], NULL, true);
-				FSOUND_SetVolume(channels[alarmsound], 512);
-				FSOUND_SetPaused(channels[alarmsound], false);
+				OPENAL_SetVolume(channels[alarmsound], 512);
+				OPENAL_SetPaused(channels[alarmsound], false);
 
 			}
 		}
@@ -11145,22 +11146,22 @@ void	Game::TickOnceAfter(){
 		if(musictoggle){
 			if(musicvolume[0]>0&&oldmusicvolume[0]<=0){
 				PlayStreamEx( music1, strm[music1], NULL, true);
-				FSOUND_SetPaused(channels[music1], false);
+				OPENAL_SetPaused(channels[music1], false);
 			}
 			if(musicvolume[1]>0&&oldmusicvolume[1]<=0){
 				PlayStreamEx( stream_music2, strm[stream_music2], NULL, true);
-				FSOUND_SetPaused(channels[stream_music2], false);
+				OPENAL_SetPaused(channels[stream_music2], false);
 			}
 			if(musicvolume[2]>0&&oldmusicvolume[2]<=0){
 				PlayStreamEx( stream_music3, strm[stream_music3], NULL, true);
-				FSOUND_SetPaused(channels[stream_music3], false);
+				OPENAL_SetPaused(channels[stream_music3], false);
 			}
 		}
 
 		if(!musictoggle){
-			FSOUND_SetPaused(channels[music1], true);
-			FSOUND_SetPaused(channels[stream_music2], true);
-			FSOUND_SetPaused(channels[stream_music3], true);
+			OPENAL_SetPaused(channels[music1], true);
+			OPENAL_SetPaused(channels[stream_music2], true);
+			OPENAL_SetPaused(channels[stream_music3], true);
 
 			for(i=0;i<4;i++){
 				oldmusicvolume[i]=0;
@@ -11170,23 +11171,23 @@ void	Game::TickOnceAfter(){
 
 		if(musictoggle){
 			if(musicvolume[0]<=0&&oldmusicvolume[0]>0){
-				FSOUND_SetPaused(channels[music1], true);
+				OPENAL_SetPaused(channels[music1], true);
 			}
 			if(musicvolume[1]<=0&&oldmusicvolume[1]>0){
-				FSOUND_SetPaused(channels[stream_music2], true);
+				OPENAL_SetPaused(channels[stream_music2], true);
 			}
 			if(musicvolume[2]<=0&&oldmusicvolume[2]>0){
-				FSOUND_SetPaused(channels[stream_music3], true);
+				OPENAL_SetPaused(channels[stream_music3], true);
 			}
 
 			if(musicvolume[0]!=oldmusicvolume[0]){
-				FSOUND_SetVolume(channels[music1], musicvolume[0]);
+				OPENAL_SetVolume(channels[music1], musicvolume[0]);
 			}
 			if(musicvolume[1]!=oldmusicvolume[1]){
-				FSOUND_SetVolume(channels[stream_music2], musicvolume[1]);
+				OPENAL_SetVolume(channels[stream_music2], musicvolume[1]);
 			}
 			if(musicvolume[2]!=oldmusicvolume[2]){
-				FSOUND_SetVolume(channels[stream_music3], musicvolume[2]);
+				OPENAL_SetVolume(channels[stream_music3], musicvolume[2]);
 			}
 
 			for(i=0;i<3;i++){
@@ -11303,12 +11304,12 @@ void	Game::TickOnceAfter(){
 
 								float gLoc[3]={0,0,0};
 								float vel[3]={0,0,0};
-								FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
+								OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
 								PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-								FSOUND_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-								FSOUND_SetVolume(channels[firestartsound], 256);
-								FSOUND_SetPaused(channels[firestartsound], false);
-								FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
+								OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
+								OPENAL_SetVolume(channels[firestartsound], 256);
+								OPENAL_SetPaused(channels[firestartsound], false);
+								OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 
 								if(!player[0].dead&&targetlevel!=whichlevel){
 									startbonustotal=bonustotal;
@@ -11316,12 +11317,12 @@ void	Game::TickOnceAfter(){
 								if(!player[0].dead)Loadlevel(targetlevel);
 								if(player[0].dead)Loadlevel(whichlevel);
 
-								FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+								OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
 								PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-								FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-								FSOUND_SetVolume(channels[fireendsound], 256);
-								FSOUND_SetPaused(channels[fireendsound], false);
-								FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+								OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+								OPENAL_SetVolume(channels[fireendsound], 256);
+								OPENAL_SetPaused(channels[fireendsound], false);
+								OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 								loading=3;
 							}
@@ -11335,12 +11336,12 @@ void	Game::TickOnceAfter(){
 
 								float gLoc[3]={0,0,0};
 								float vel[3]={0,0,0};
-								FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
+								OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
 								PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-								FSOUND_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-								FSOUND_SetVolume(channels[firestartsound], 256);
-								FSOUND_SetPaused(channels[firestartsound], false);
-								FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
+								OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
+								OPENAL_SetVolume(channels[firestartsound], 256);
+								OPENAL_SetPaused(channels[firestartsound], false);
+								OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 
 								for(i=0;i<255;i++){
 									mapname[i]='\0';
@@ -11359,22 +11360,22 @@ void	Game::TickOnceAfter(){
 								strcat(mapname,campaignmapname[levelorder[accountcampaignchoicesmade[accountactive]]]);//[campaignchoicewhich[whichchoice]]);
 								Loadlevel(mapname);
 
-								FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+								OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
 								PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-								FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-								FSOUND_SetVolume(channels[fireendsound], 256);
-								FSOUND_SetPaused(channels[fireendsound], false);
-								FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+								OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+								OPENAL_SetVolume(channels[fireendsound], 256);
+								OPENAL_SetPaused(channels[fireendsound], false);
+								OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 								loading=3;
 							}
 							if(changedelay<=-999&&whichlevel!=-2&&!loading&&(player[0].dead||(alldead&&maptype==mapkilleveryone)||(winhotspot)||(killhotspot))&&!winfreeze)loading=1;
 							if((player[0].dead||(alldead&&maptype==mapkilleveryone)||(winhotspot)||(windialogue)||(killhotspot))&&changedelay<=0){
 								if(accountprogress[accountactive]>3&&!registered){
-									FSOUND_SetFrequency(FSOUND_ALL, 0.001);
+									OPENAL_SetFrequency(OPENAL_ALL, 0.001);
 									PlayStreamEx( stream_music3, strm[stream_music3], NULL, true);
-									FSOUND_SetPaused(channels[stream_music3], false);
-									FSOUND_SetVolume(channels[stream_music3], 256);
+									OPENAL_SetPaused(channels[stream_music3], false);
+									OPENAL_SetVolume(channels[stream_music3], 256);
 
 									gameon=0;
 									mainmenu=12;
@@ -11382,12 +11383,12 @@ void	Game::TickOnceAfter(){
 
 									float gLoc[3]={0,0,0};
 									float vel[3]={0,0,0};
-									FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+									OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
 									PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-									FSOUND_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-									FSOUND_SetVolume(channels[fireendsound], 256);
-									FSOUND_SetPaused(channels[fireendsound], false);
-									FSOUND_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+									OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+									OPENAL_SetVolume(channels[fireendsound], 256);
+									OPENAL_SetPaused(channels[fireendsound], false);
+									OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 									flashr=1;
 									flashg=0;
@@ -11419,12 +11420,12 @@ void	Game::TickOnceAfter(){
 								if(!stealthloading){
 									float gLoc[3]={0,0,0};
 									float vel[3]={0,0,0};
-									FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
+									OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
 									PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-									FSOUND_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-									FSOUND_SetVolume(channels[firestartsound], 256);
-									FSOUND_SetPaused(channels[firestartsound], false);
-									FSOUND_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
+									OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
+									OPENAL_SetVolume(channels[firestartsound], 256);
+									OPENAL_SetPaused(channels[firestartsound], false);
+									OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 
 									flashr=1;
 									flashg=0;
@@ -11535,7 +11536,7 @@ void	Game::TickOnceAfter(){
 									campaign=1;
 									mainmenu=0;
 									gameon=1;
-									FSOUND_SetPaused(channels[stream_music3], true);
+									OPENAL_SetPaused(channels[stream_music3], true);
 
 									stealthloading=0;
 							}

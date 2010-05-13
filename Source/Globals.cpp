@@ -30,18 +30,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "fmod.h"
 #include "Terrain.h"
 #include "Sprites.h"
-//#include <agl.h>
 #include "Frustum.h"
 #include "Objects.h"
 #include "Weapons.h"
 #include "Person.h"
 #include "TGALoader.h"
+#include "openal_wrapper.h"
 
 #include "Constants.h"
 
 bool visibleloading = 0;
-FSOUND_SAMPLE	*samp[100] = {0};
-FSOUND_STREAM * strm[20] = {0};
+OPENAL_SAMPLE	*samp[100] = {0};
+OPENAL_STREAM * strm[20] = {0};
 int channels[100] = {0};
 
 float volume = 0;bool buttons[3] = {0};

@@ -55,7 +55,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Lights.h"
 #include "Person.h"
 #include "Constants.h"
-#include "fmod.h"
 #include "Sprites.h"
 //#include <agl.h>
 #include "Text.h"
