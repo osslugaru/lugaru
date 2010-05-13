@@ -264,9 +264,10 @@ Boolean gDone = false, gfFrontProcess = true;
 
 Game * pgame = 0;
 
-
+#ifndef WIN32
 static int _argc = 0;
 static char **_argv = NULL;
+#endif
 
 bool cmdline(const char *cmd)
 {
