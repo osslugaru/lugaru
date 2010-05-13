@@ -37,9 +37,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	#include "Game.h"
 #else
 
-	#include <zlib.h>
-	#include <png.h>
-	#include <jpeglib.h>
+    extern "C" {
+    	#include "zlib.h"
+	    #include "png.h"
+    	#include "jpeglib.h"
+    }
 	#include "Game.h"
     static bool load_image(const char * fname, TGAImageRec & tex);
     static bool load_png(const char * fname, TGAImageRec & tex);
