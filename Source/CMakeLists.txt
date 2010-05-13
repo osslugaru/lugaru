@@ -7,7 +7,6 @@ set(LUGARU_SRCS
 	Lights.cpp
 	Models.cpp
 	Objects.cpp
-	OpenGL_Full_Screen.cpp
 	OpenGL_Windows.cpp
 	Person.cpp
 	Quaternions.cpp
@@ -65,9 +64,7 @@ set(LUGARU_H
 	Lights.h
 	LinkedList.h
 	MacCompatibility.h
-	MacInput.h
 	Models.h
-	MoreFilesX.h
 	Objects.h
 	Person.h
 	PhysicsMath.h
@@ -101,9 +98,7 @@ set(LUGARU_H
 if(CMAKE_HOST_APPLE)
 	set(LUGARU_SRCS
 		${LUGARU_SRCS}
-		MacCompatibility.cpp
-		MoreFilesX.c
-		MacInput.cpp)
+		MacCompatibility.cpp)
 	set(LUGARU_H
 		${LUGARU_H}
 		"Carbon Include.h"
