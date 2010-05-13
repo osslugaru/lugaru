@@ -36,7 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define Polygon WinPolygon
 #include <windows.h>
 #undef Polygon
-#include <gl/gl.h>
+#include "GL/gl.h"
 #else
 #include "gamegl.h"
 //	#include "MoreFilesX.h"

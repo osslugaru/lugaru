@@ -46,6 +46,9 @@ public:
 
 	Text();
 	~Text();
+
+private:
+	void _glPrint(float x, float y, char *string, int set, float size, float width, float height, int start, int end, int offset);
 };
 
 #endif

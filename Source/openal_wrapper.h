@@ -1,6 +1,10 @@
 #ifndef OPENAL_WRAPPER_H
 #define OPENAL_WRAPPER_H
 
+#ifdef _WIN32
+#include <malloc.h>
+#endif
+
 #include "AL/al.h"
 #include "AL/alc.h"
 

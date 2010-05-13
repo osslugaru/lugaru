@@ -30,31 +30,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <map>
 #include <string>
 
-#ifndef WIN32
-  #if PLATFORM_UNIX
-    #define GL_GLEXT_PROTOTYPES
-    #include "GL/gl.h"
-    #include "GL/glu.h"
-    #include "GL/glext.h"
-  #else
-    #include <GL/gl.h>
-    #include <GL/glu.h>
-    #include <GL/glext.h>
-  #endif
-#else
+#ifdef WIN32
   #define WIN32_LEAN_AND_MEAN
   #define Polygon WinPolygon
   #include <windows.h>
   #undef Polygon
-  #define GL_GLEXT_PROTOTYPES
-  #include <gl/gl.h>
-  #include <gl/glu.h>
-  //#include <gl/glaux.h> -- EVIL and OLD, NEVER USE IT!
-  #include <gl/glext.h>
-  #include "MacCompatibility.h"
-  //#include "il/ilut.h"
-
 #endif
+
+#define GL_GLEXT_PROTOTYPES 1
+#include "GL/gl.h"
+#include "GL/glu.h"
+#include "GL/glext.h"
+#include "MacCompatibility.h"
 
 #if !PLATFORM_MACOSX
 struct RGBColor
