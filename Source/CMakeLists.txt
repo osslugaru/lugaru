@@ -104,6 +104,13 @@ if(CMAKE_HOST_APPLE)
 		CarbonStdCLib.h)
 endif(CMAKE_HOST_APPLE)
 
+if(CMAKE_HOST_UNIX)
+	set(LUGARU_SRCS
+		${LUGARU_SRCS}
+		MacCompatibility.cpp)
+endif(CMAKE_HOST_UNIX)
+
+
 if(WIN32)
   if(CMAKE_CROSSCOMPILING)
     ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
