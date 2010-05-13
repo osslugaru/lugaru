@@ -12,7 +12,7 @@ OPT += -O3 -fno-strict-aliasing -falign-loops=16 -fno-math-errno
 #OPT += -Os -fno-strict-aliasing
 
 BINDIR := bin
-RUNDIR := Data
+RUNDIR := .
 SRCDIR := Source
 SDLDIR := Dependencies/SDL12
 LIBPNGDIR := Dependencies/libpng

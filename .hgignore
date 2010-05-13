@@ -7,3 +7,4 @@ Xcode/*.xcodeproj/*.pbxuser
 build
 *~
 .*.swp
+lugaru-*
