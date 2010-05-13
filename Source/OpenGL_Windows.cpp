@@ -58,6 +58,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     static bool save_png(const char * fname);
 #endif
 
+#include "openal_wrapper.h"
+
 // ADDED GWC
 #ifdef _MSC_VER
 #pragma comment(lib, "opengl32.lib")
@@ -1165,7 +1167,7 @@ void DoUpdate (Game & game)
 	AbsoluteTime currTime = UpTime ();
 	static int num_channels = 0;
 	
-	num_channels += FSOUND_GetChannelsPlaying();
+	num_channels += OPENAL_GetChannelsPlaying();
 	double deltaTime = (float) AbsoluteDeltaToDuration (currTime, start);
 
 	if (0 > deltaTime)	// if negative microseconds
@@ -1589,58 +1591,58 @@ int main(int argc, char **argv)
 	}
 
 	extern int channels[100];
-	extern FSOUND_SAMPLE * samp[100];
-	extern FSOUND_STREAM * strm[20];
+	extern OPENAL_SAMPLE * samp[100];
+	extern OPENAL_STREAM * strm[20];
 
-	extern "C" void PlaySoundEx(int chan, FSOUND_SAMPLE *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused)
+	extern "C" void PlaySoundEx(int chan, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused)
 	{
-		const FSOUND_SAMPLE * currSample = FSOUND_GetCurrentSample(channels[chan]);
+		const OPENAL_SAMPLE * currSample = OPENAL_GetCurrentSample(channels[chan]);
 		if (currSample && currSample == samp[chan])
 		{
-			if (FSOUND_GetPaused(channels[chan]))
+			if (OPENAL_GetPaused(channels[chan]))
 			{
-				FSOUND_StopSound(channels[chan]);
-				channels[chan] = FSOUND_FREE;
+				OPENAL_StopSound(channels[chan]);
+				channels[chan] = OPENAL_FREE;
 			}
-			else if (FSOUND_IsPlaying(channels[chan]))
+			else if (OPENAL_IsPlaying(channels[chan]))
 			{
-				int loop_mode = FSOUND_GetLoopMode(channels[chan]);
-				if (loop_mode & FSOUND_LOOP_OFF)
+				int loop_mode = OPENAL_GetLoopMode(channels[chan]);
+				if (loop_mode & OPENAL_LOOP_OFF)
 				{
-					channels[chan] = FSOUND_FREE;
+					channels[chan] = OPENAL_FREE;
 				}
 			}
 		}
 		else
 		{
-			channels[chan] = FSOUND_FREE;
+			channels[chan] = OPENAL_FREE;
 		}
 
-		channels[chan] = FSOUND_PlaySoundEx(channels[chan], sptr, dsp, startpaused);
+		channels[chan] = OPENAL_PlaySoundEx(channels[chan], sptr, dsp, startpaused);
 		if (channels[chan] < 0)
 		{
-			channels[chan] = FSOUND_PlaySoundEx(FSOUND_FREE, sptr, dsp, startpaused);
+			channels[chan] = OPENAL_PlaySoundEx(OPENAL_FREE, sptr, dsp, startpaused);
 		}
 	}
 
-	extern "C" void PlayStreamEx(int chan, FSOUND_STREAM *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused)
+	extern "C" void PlayStreamEx(int chan, OPENAL_STREAM *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused)
 	{
-		const FSOUND_SAMPLE * currSample = FSOUND_GetCurrentSample(channels[chan]);
-		if (currSample && currSample == FSOUND_Stream_GetSample(sptr))
+		const OPENAL_SAMPLE * currSample = OPENAL_GetCurrentSample(channels[chan]);
+		if (currSample && currSample == OPENAL_Stream_GetSample(sptr))
 		{
-				FSOUND_StopSound(channels[chan]);
-				FSOUND_Stream_Stop(sptr);
+				OPENAL_StopSound(channels[chan]);
+				OPENAL_Stream_Stop(sptr);
 		}
 		else
 		{
-			FSOUND_Stream_Stop(sptr);
-			channels[chan] = FSOUND_FREE;
+			OPENAL_Stream_Stop(sptr);
+			channels[chan] = OPENAL_FREE;
 		}
 
-		channels[chan] = FSOUND_Stream_PlayEx(channels[chan], sptr, dsp, startpaused);
+		channels[chan] = OPENAL_Stream_PlayEx(channels[chan], sptr, dsp, startpaused);
 		if (channels[chan] < 0)
 		{
-			channels[chan] = FSOUND_Stream_PlayEx(FSOUND_FREE, sptr, dsp, startpaused);
+			channels[chan] = OPENAL_Stream_PlayEx(OPENAL_FREE, sptr, dsp, startpaused);
 		}
 	}
 

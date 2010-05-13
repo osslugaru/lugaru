@@ -22,12 +22,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 /**> HEADER FILES <**/
 #include "Game.h"
 #include "Skeleton.h"
+#include "openal_wrapper.h"
 
 extern float multiplier;
 extern float gravity;
 extern Skeleton testskeleton;
 extern Terrain terrain;
-extern FSOUND_SAMPLE	*samp[100];
+extern OPENAL_SAMPLE	*samp[100];
 extern int channels[100];
 extern Objects objects;
 extern Sprites sprites;
@@ -49,7 +50,7 @@ extern int whichjointendarray[26];
 
 extern Game * pgame;
 extern bool visibleloading;
-extern "C"	void PlaySoundEx(int channel, FSOUND_SAMPLE *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused);
+extern "C"	void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 
 void dealloc2(void* param){
 	free(param);
@@ -295,9 +296,9 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 			vel[1]=joints[jointlabels[head]].velocity.y;
 			vel[2]=joints[jointlabels[head]].velocity.z;
 			PlaySoundEx( landsound1, samp[landsound1], NULL, true);
-			FSOUND_3D_SetAttributes(channels[landsound1], gLoc, vel);
-			FSOUND_SetVolume(channels[landsound1], 128);
-			FSOUND_SetPaused(channels[landsound1], false);
+			OPENAL_3D_SetAttributes(channels[landsound1], gLoc, vel);
+			OPENAL_SetVolume(channels[landsound1], 128);
+			OPENAL_SetPaused(channels[landsound1], false);
 
 			breaking=1;
 			}
@@ -314,9 +315,9 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 			vel[1]=joints[jointlabels[head]].velocity.y;
 			vel[2]=joints[jointlabels[head]].velocity.z;
 			PlaySoundEx( landsound2, samp[landsound2], NULL, true);
-			FSOUND_3D_SetAttributes(channels[landsound2], gLoc, vel);
-			FSOUND_SetVolume(channels[landsound2], 128);
-			FSOUND_SetPaused(channels[landsound2], false);
+			OPENAL_3D_SetAttributes(channels[landsound2], gLoc, vel);
+			OPENAL_SetVolume(channels[landsound2], 128);
+			OPENAL_SetPaused(channels[landsound2], false);
 			}
 
 			terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
@@ -341,9 +342,9 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 			vel[1]=joints[jointlabels[head]].velocity.y;
 			vel[2]=joints[jointlabels[head]].velocity.z;
 			PlaySoundEx( breaksound2, samp[breaksound2], NULL, true);
-			FSOUND_3D_SetAttributes(channels[breaksound2], gLoc, vel);
-			FSOUND_SetVolume(channels[breaksound2], 300);
-			FSOUND_SetPaused(channels[breaksound2], false);
+			OPENAL_3D_SetAttributes(channels[breaksound2], gLoc, vel);
+			OPENAL_SetVolume(channels[breaksound2], 300);
+			OPENAL_SetPaused(channels[breaksound2], false);
 
 			envsound[numenvsounds]=*coords;
 			envsoundvol[numenvsounds]=64;
@@ -426,9 +427,9 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 							vel[2]=joints[i].velocity.z;
 							if(tutoriallevel!=1||id==0){
 								PlaySoundEx( landsound1, samp[landsound1], NULL, true);
-								FSOUND_3D_SetAttributes(channels[landsound1], gLoc, vel);
-								FSOUND_SetVolume(channels[landsound1], 128);
-								FSOUND_SetPaused(channels[landsound1], false);
+								OPENAL_3D_SetAttributes(channels[landsound1], gLoc, vel);
+								OPENAL_SetVolume(channels[landsound1], 128);
+								OPENAL_SetPaused(channels[landsound1], false);
 							}
 							breaking=1;
 						}
@@ -446,9 +447,9 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 							vel[2]=joints[i].velocity.z;
 							if(tutoriallevel!=1||id==0){
 								PlaySoundEx( landsound2, samp[landsound2], NULL, true);
-								FSOUND_3D_SetAttributes(channels[landsound2], gLoc, vel);
-								FSOUND_SetVolume(channels[landsound2], 128);
-								FSOUND_SetPaused(channels[landsound2], false);
+								OPENAL_3D_SetAttributes(channels[landsound2], gLoc, vel);
+								OPENAL_SetVolume(channels[landsound2], 128);
+								OPENAL_SetPaused(channels[landsound2], false);
 							}
 						}
 
@@ -479,9 +480,9 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 								vel[1]=joints[i].velocity.y;
 								vel[2]=joints[i].velocity.z;
 								PlaySoundEx( breaksound2, samp[breaksound2], NULL, true);
-								FSOUND_3D_SetAttributes(channels[breaksound2], gLoc, vel);
-								FSOUND_SetVolume(channels[breaksound2], 300);
-								FSOUND_SetPaused(channels[breaksound2], false);
+								OPENAL_3D_SetAttributes(channels[breaksound2], gLoc, vel);
+								OPENAL_SetVolume(channels[breaksound2], 300);
+								OPENAL_SetPaused(channels[breaksound2], false);
 
 								envsound[numenvsounds]=*coords;
 								envsoundvol[numenvsounds]=64;
@@ -548,9 +549,9 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 											vel[2]=joints[i].velocity.z;
 											if(tutoriallevel!=1||id==0){
 												PlaySoundEx( landsound1, samp[landsound1], NULL, true);
-												FSOUND_3D_SetAttributes(channels[landsound1], gLoc, vel);
-												FSOUND_SetVolume(channels[landsound1], 128);
-												FSOUND_SetPaused(channels[landsound1], false);
+												OPENAL_3D_SetAttributes(channels[landsound1], gLoc, vel);
+												OPENAL_SetVolume(channels[landsound1], 128);
+												OPENAL_SetPaused(channels[landsound1], false);
 											}
 											breaking=1;
 										}
@@ -568,9 +569,9 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 											vel[2]=joints[i].velocity.z;
 											if(tutoriallevel!=1||id==0){
 												PlaySoundEx( landsound2, samp[landsound2], NULL, true);
-												FSOUND_3D_SetAttributes(channels[landsound2], gLoc, vel);
-												FSOUND_SetVolume(channels[landsound2], 128);
-												FSOUND_SetPaused(channels[landsound2], false);
+												OPENAL_3D_SetAttributes(channels[landsound2], gLoc, vel);
+												OPENAL_SetVolume(channels[landsound2], 128);
+												OPENAL_SetPaused(channels[landsound2], false);
 											}
 										}
 
@@ -597,9 +598,9 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 												vel[1]=joints[i].velocity.y;
 												vel[2]=joints[i].velocity.z;
 												PlaySoundEx( breaksound2, samp[breaksound2], NULL, true);
-												FSOUND_3D_SetAttributes(channels[breaksound2], gLoc, vel);
-												FSOUND_SetVolume(channels[breaksound2], 300);
-												FSOUND_SetPaused(channels[breaksound2], false);
+												OPENAL_3D_SetAttributes(channels[breaksound2], gLoc, vel);
+												OPENAL_SetVolume(channels[breaksound2], 300);
+												OPENAL_SetPaused(channels[breaksound2], false);
 
 												envsound[numenvsounds]=*coords;
 												envsoundvol[numenvsounds]=64;

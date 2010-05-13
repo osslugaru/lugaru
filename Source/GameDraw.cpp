@@ -19,7 +19,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include "Game.h"	
+#include "Game.h"
+#include "openal_wrapper.h"
 
 using namespace std;
 
@@ -174,9 +175,9 @@ extern float accountcampaigntime[10];
 
 extern bool gamestarted;
 
-extern FSOUND_SAMPLE	*samp[100];
+extern OPENAL_SAMPLE	*samp[100];
 extern int channels[100];
-extern "C" 	void PlaySoundEx(int channel, FSOUND_SAMPLE *sptr, FSOUND_DSPUNIT *dsp, signed char startpaused);
+extern "C" 	void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 
 /*********************> DrawGLScene() <*****/
 long long Game::MD5_string (char *string){
@@ -1093,9 +1094,9 @@ int Game::DrawGLScene(void)
 								if(dialogueboxsound[whichdialogue][indialogue]==-3)whichsoundplay=consolesuccesssound;
 								if(dialogueboxsound[whichdialogue][indialogue]==-4)whichsoundplay=consolefailsound;
 								PlaySoundEx( whichsoundplay, samp[whichsoundplay], NULL, true);
-								FSOUND_3D_SetAttributes(channels[whichsoundplay], gLoc, vel);
-								FSOUND_SetVolume(channels[whichsoundplay], 256);
-								FSOUND_SetPaused(channels[whichsoundplay], false);
+								OPENAL_3D_SetAttributes(channels[whichsoundplay], gLoc, vel);
+								OPENAL_SetVolume(channels[whichsoundplay], 256);
+								OPENAL_SetPaused(channels[whichsoundplay], false);
 							}
 						}
 					}
