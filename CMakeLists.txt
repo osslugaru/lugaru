@@ -148,7 +148,7 @@ find_package(OpenGL REQUIRED)
 # force this include dir no matter what, so we get sane headers.
 include_directories("${DEPDIR}/OpenGL")
 
-option (LUGARU_FORCE_INTERNAL_OPENAL)
+option (LUGARU_FORCE_INTERNAL_OPENAL "Force internal libOpenAL, even if there's a system version" False)
 if (NOT LUGARU_FORCE_INTERNAL_OPENAL)
     find_package(OpenAL REQUIRED)
 endif (NOT LUGARU_FORCE_INTERNAL_OPENAL)
