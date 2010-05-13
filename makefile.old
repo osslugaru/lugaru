@@ -14,14 +14,14 @@ OPT += -O3 -fno-strict-aliasing -falign-loops=16 -fno-math-errno
 BINDIR := bin
 RUNDIR := Data
 SRCDIR := Source
-SDLDIR := SDL12
-LIBPNGDIR := libpng-1.2.8
-JPEGLIBDIR := jpeg-6b
-ZLIBDIR := zlib-1.2.3
-OPENALDIR := OpenAL
-GLUDIR := GLU
-LIBOGGDIR := libogg-1.0
-LIBVORBISDIR := libvorbis-1.0.1
+SDLDIR := Dependencies/SDL12
+LIBPNGDIR := Dependencies/libpng
+JPEGLIBDIR := Dependencies/libjpeg
+ZLIBDIR := Dependencies/zlib
+OPENALDIR := Dependencies/OpenAL
+GLUDIR := Dependencies/GLU
+LIBOGGDIR := Dependencies/libogg
+LIBVORBISDIR := Dependencies/libvorbis
 
 ifeq ($(strip $(macosx)),true)
 	CXX := g++-4.0
@@ -99,7 +99,7 @@ ifeq ($(strip $(macosx)),true)
     LDFLAGS += -L$(XCODE_DIR)/SDKs/$(macosx_sdk_dir)/usr/lib/gcc/$(macosx_gcc_libdir)
     LDFLAGS += -Wl,-syslibroot,$(XCODE_DIR)/SDKs/$(macosx_sdk_dir)
   	LDFLAGS += -framework Cocoa -framework OpenGL -framework IOKit -framework CoreFoundation -framework Carbon -framework OpenAL
-  	LDFLAGS += ./libSDL-1.2.0.dylib ./libSDLmain-osx.a
+  	LDFLAGS += ./Dependencies/SDL12/lib/macosx/libSDL-1.2.0.dylib ./Dependencies/SDL12/lib/macosx/libSDLmain-osx.a
 else
 	CXX := g++
 	CC := gcc
@@ -136,8 +136,8 @@ DEFINES += \
 INCLUDES += \
 			-I$(SRCDIR) \
 			-I$(SDLDIR)/include \
-			-I./OpenGL/ \
-			-I./OpenGL/GL \
+			-I./Dependencies/OpenGL/ \
+			-I./Dependencies/OpenGL/GL \
 
 ifeq ($(strip $(use_devil)),true)
     DEFINES += -DUSE_DEVIL=1
@@ -198,11 +198,12 @@ UNUSED_SRCS := \
 	DRIVER.CC \
 	MD5.CC \
 
+#    pnggccrd.c \
+#    pngvcrd.c \
 
 PNGSRCS := \
     png.c \
     pngerror.c \
-    pnggccrd.c \
     pngget.c \
     pngmem.c \
     pngpread.c \
@@ -212,13 +213,16 @@ PNGSRCS := \
     pngrutil.c \
     pngset.c \
     pngtrans.c \
-    pngvcrd.c \
     pngwio.c \
     pngwrite.c \
     pngwtran.c \
     pngwutil.c \
 
 PNGSRCS := $(foreach f,$(PNGSRCS),$(LIBPNGDIR)/$(f))
+
+#    jdphuff.c \
+#    jidctred.c \
+#    jcphuff.c \
 
 JPEGSRCS := \
 	jdapistd.c \
@@ -235,7 +239,6 @@ JPEGSRCS := \
     jdinput.c \
     jdmainct.c \
     jdmarker.c \
-    jdphuff.c \
     jdpostct.c \
     jdsample.c \
     jdtrans.c \
@@ -243,7 +246,6 @@ JPEGSRCS := \
     jidctflt.c \
     jidctfst.c \
     jidctint.c \
-    jidctred.c \
     jmemmgr.c \
     jutils.c \
     jmemnobs.c \
@@ -261,21 +263,23 @@ JPEGSRCS := \
     jfdctint.c \
     jfdctfst.c \
     jchuff.c \
-    jcphuff.c \
     jcsample.c \
     jcmaster.c \
     jccolor.c \
     jcprepct.c \
+    jcarith.c \
+    jdarith.c \
+    jaricom.c \
 
 JPEGSRCS := $(foreach f,$(JPEGSRCS),$(JPEGLIBDIR)/$(f))
 
+#	gzio.c \
 
 ZLIBSRCS = \
 	adler32.c \
 	compress.c \
 	crc32.c \
 	deflate.c \
-	gzio.c \
 	infback.c \
 	inffast.c \
 	inflate.c \
