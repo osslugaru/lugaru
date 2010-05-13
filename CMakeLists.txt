@@ -106,19 +106,19 @@ if(WIN32)
   if(CMAKE_CROSSCOMPILING)
     ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
 						  COMMAND i686-pc-mingw32-windres
-							  -I${CMAKE_CURRENT_SOURCE_DIR}/res
+							  -I${SRCDIR}/res
 							  -o ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
-							  -i${CMAKE_CURRENT_SOURCE_DIR}/res/lugaru.rc
-					      DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/res/lugaru.rc
+							  -i${SRCDIR}/res/Lugaru.rc
+					      DEPENDS ${SRCDIR}/res/Lugaru.rc
 						  )
   endif(CMAKE_CROSSCOMPILING)
   if(NOT CMAKE_CROSSCOMPILING)
     ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
 						  COMMAND windres
-							  -I${CMAKE_CURRENT_SOURCE_DIR}/res
+							  -I${SRCDIR}/res
 							  -o ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
-							  -i${CMAKE_CURRENT_SOURCE_DIR}/res/lugaru.rc
-					      DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/res/lugaru.rc
+							  -i${SRCDIR}/res/Lugaru.rc
+					      DEPENDS ${SRCDIR}/res/Lugaru.rc
 						  )
   endif(NOT CMAKE_CROSSCOMPILING)
 
@@ -167,10 +167,18 @@ if (NOT SDL_FOUND)
 
     if (WINDOWS)
         set(LUGARU_HAS_INTERNAL_SDL True)
-        set(SDL_LIBRARY
-            ${SDLDIR}/lib/win32/SDL.lib
-            ${SDLDIR}/lib/win32/SDLmain.lib
-        )
+        if (MSVC)
+          set(SDL_LIBRARY
+              ${SDLDIR}/lib/win32/msvc/SDL.lib
+              ${SDLDIR}/lib/win32/msvc/SDLmain.lib
+          )
+        endif (MSVC)
+        if (MINGW)
+          set(SDL_LIBRARY
+              ${SDLDIR}/lib/win32/mingw/libSDL.dll.a
+              ${SDLDIR}/lib/win32/mingw/libSDLmain.a
+          )
+        endif (MINGW)
     endif (WINDOWS)
 
     if (NOT LUGARU_HAS_INTERNAL_SDL)
@@ -394,6 +402,12 @@ endif(WIN32)
 # Install target
 if(WIN32)
 	install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/Source/lugaru.exe DESTINATION ${CMAKE_INSTALL_PREFIX})
+	if(MSVC)
+		install(FILES ${SDLDIR}/lib/win32/msvc/SDL.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
+	endif(MSVC)
+	if(MINGW)
+		install(FILES ${SDLDIR}/lib/win32/mingw/SDL.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
+	endif(MINGW)
 else(WIN32)
 	install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/Source/lugaru DESTINATION ${CMAKE_INSTALL_PREFIX})
 endif(WIN32)
