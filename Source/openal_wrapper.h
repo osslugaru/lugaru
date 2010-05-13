@@ -5,8 +5,8 @@
 #include <malloc.h>
 #endif
 
-#include "AL/al.h"
-#include "AL/alc.h"
+#include "al.h"
+#include "alc.h"
 
 #include "ogg/ogg.h"
 #include "vorbis/vorbisfile.h"

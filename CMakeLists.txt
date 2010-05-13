@@ -13,11 +13,11 @@ endif(NOT CMAKE_BUILD_TYPE)
 
 if(NOT LUGARU_INSTALL_PREFIX)
   if(WIN32)
-     set(LUGARU_INSTALL_PREFIX C:\Lugaru CACHE PATH
+     set(LUGARU_INSTALL_PREFIX "C:/Lugaru" CACHE PATH
      "LUGARU_INSTALL_PREFIX: Install path prefix, prepended onto install directories."
       FORCE)
   else(WIN32)
-     set(LUGARU_INSTALL_PREFIX /usr/local/lugaru CACHE PATH
+     set(LUGARU_INSTALL_PREFIX "/usr/local/lugaru" CACHE PATH
      "CMAKE_INSTALL_PREFIX: Install path prefix, prepended onto install directories."
       FORCE)
   endif(WIN32)
@@ -148,7 +148,7 @@ find_package(OpenGL REQUIRED)
 # force this include dir no matter what, so we get sane headers.
 include_directories("${DEPDIR}/OpenGL")
 
-option (LUGARU_FORCE_INTERNAL_OPENAL "Force internal OpenAL, even if theer's a system version" False)
+option (LUGARU_FORCE_INTERNAL_OPENAL "Force internal libOpenAL, even if there's a system version" False)
 if (NOT LUGARU_FORCE_INTERNAL_OPENAL)
     find_package(OpenAL REQUIRED)
 else(NOT LUGARU_FORCE_INTERNAL_OPENAL)
@@ -451,7 +451,7 @@ endif(WIN32)
 
 # Install target
 if(WIN32)
-	install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/Source/lugaru.exe DESTINATION ${CMAKE_INSTALL_PREFIX})
+	install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru.exe DESTINATION ${CMAKE_INSTALL_PREFIX})
 	if(MSVC)
 		install(FILES ${SDLDIR}/lib/win32/msvc/SDL.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
 		#install(FILES ${OPENALDIR}/lib/win32/msvc/OpenAL32.dll DESTINATION ${CMAKE_INSTALL_PREFIX}) # FIXME: Add MSVC OpenAL library!
@@ -461,7 +461,7 @@ if(WIN32)
 		install(FILES ${OPENALDIR}/lib/win32/mingw/OpenAL32.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
 	endif(MINGW)
 else(WIN32)
-	install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/Source/lugaru DESTINATION ${CMAKE_INSTALL_PREFIX})
+	install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru DESTINATION ${CMAKE_INSTALL_PREFIX})
 endif(WIN32)
 
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/Data DESTINATION ${CMAKE_INSTALL_PREFIX})
