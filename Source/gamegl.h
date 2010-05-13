@@ -54,7 +54,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   #include "MacCompatibility.h"
   //#include "il/ilut.h"
 
-  #define glDeleteTextures( a, b) glDeleteTextures( (a), (const unsigned int *)(b) );
 #endif
 
 #if !PLATFORM_MACOSX

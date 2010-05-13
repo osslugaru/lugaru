@@ -61,6 +61,306 @@ Boolean	IsKeyDown( unsigned char *keyMap, unsigned short theKey )
 	return 0;
 }
 
+#if defined(_WIN32)
+unsigned short 	CharToKey(const char* which)
+{
+	// alphabetic keys
+	if(!stricmp(which,"a")){
+		return MAC_A_KEY;
+	}
+	if(!stricmp(which,"b")){
+		return MAC_B_KEY;
+	}
+	if(!stricmp(which,"c")){
+		return MAC_C_KEY;
+	}
+	if(!stricmp(which,"d")){
+		return MAC_D_KEY;
+	}
+	if(!stricmp(which,"e")){
+		return MAC_E_KEY;
+	}
+	if(!stricmp(which,"f")){
+		return MAC_F_KEY;
+	}
+	if(!stricmp(which,"g")){
+		return MAC_G_KEY;
+	}
+	if(!stricmp(which,"h")){
+		return MAC_H_KEY;
+	}
+	if(!stricmp(which,"i")){
+		return MAC_I_KEY;
+	}
+	if(!stricmp(which,"j")){
+		return MAC_J_KEY;
+	}
+	if(!stricmp(which,"k")){
+		return MAC_K_KEY;
+	}
+	if(!stricmp(which,"l")){
+		return MAC_L_KEY;
+	}
+	if(!stricmp(which,"m")){
+		return MAC_M_KEY;
+	}
+	if(!stricmp(which,"n")){
+		return MAC_N_KEY;
+	}
+	if(!stricmp(which,"o")){
+		return MAC_O_KEY;
+	}
+	if(!stricmp(which,"p")){
+		return MAC_P_KEY;
+	}
+	if(!stricmp(which,"q")){
+		return MAC_Q_KEY;
+	}
+	if(!stricmp(which,"r")){
+		return MAC_R_KEY;
+	}
+	if(!stricmp(which,"s")){
+		return MAC_S_KEY;
+	}
+	if(!stricmp(which,"t")){
+		return MAC_T_KEY;
+	}
+	if(!stricmp(which,"u")){
+		return MAC_U_KEY;
+	}
+	if(!stricmp(which,"v")){
+		return MAC_V_KEY;
+	}
+	if(!stricmp(which,"w")){
+		return MAC_W_KEY;
+	}
+	if(!stricmp(which,"x")){
+		return MAC_X_KEY;
+	}
+	if(!stricmp(which,"y")){
+		return MAC_Y_KEY;
+	}
+	if(!stricmp(which,"z")){
+		return MAC_Z_KEY;
+	}
+
+	// keypad keys
+	if(!stricmp(which,"KP0")){
+		return MAC_NUMPAD_0_KEY;
+	}
+	if(!stricmp(which,"KP1")){
+		return MAC_NUMPAD_1_KEY;
+	}
+	if(!stricmp(which,"KP2")){
+		return MAC_NUMPAD_2_KEY;
+	}
+	if(!stricmp(which,"KP3")){
+		return MAC_NUMPAD_3_KEY;
+	}
+	if(!stricmp(which,"KP4")){
+		return MAC_NUMPAD_4_KEY;
+	}
+	if(!stricmp(which,"KP5")){
+		return MAC_NUMPAD_5_KEY;
+	}
+	if(!stricmp(which,"KP6")){
+		return MAC_NUMPAD_6_KEY;
+	}
+	if(!stricmp(which,"KP7")){
+		return MAC_NUMPAD_7_KEY;
+	}
+	if(!stricmp(which,"KP8")){
+		return MAC_NUMPAD_8_KEY;
+	}
+	if(!stricmp(which,"KP9")){
+		return MAC_NUMPAD_9_KEY;
+	}
+
+	// enter
+	if(!stricmp(which,"enter")){
+		return MAC_ENTER_KEY;
+	}
+
+	// number keys
+	if(!stricmp(which,"0")){
+		return MAC_0_KEY;
+	}
+	if(!stricmp(which,"1")){
+		return MAC_1_KEY;
+	}
+	if(!stricmp(which,"2")){
+		return MAC_2_KEY;
+	}
+	if(!stricmp(which,"3")){
+		return MAC_3_KEY;
+	}
+	if(!stricmp(which,"4")){
+		return MAC_4_KEY;
+	}
+	if(!stricmp(which,"5")){
+		return MAC_5_KEY;
+	}
+	if(!stricmp(which,"6")){
+		return MAC_6_KEY;
+	}
+	if(!stricmp(which,"7")){
+		return MAC_7_KEY;
+	}
+	if(!stricmp(which,"8")){
+		return MAC_8_KEY;
+	}
+	if(!stricmp(which,"9")){
+		return MAC_9_KEY;
+	}
+
+	// function keys
+	if(!stricmp(which,"F1")){
+		return MAC_F1_KEY;
+	}
+	if(!stricmp(which,"F2")){
+		return MAC_F2_KEY;
+	}
+	if(!stricmp(which,"F3")){
+		return MAC_F3_KEY;
+	}
+	if(!stricmp(which,"F4")){
+		return MAC_F4_KEY;
+	}
+	if(!stricmp(which,"F5")){
+		return MAC_F5_KEY;
+	}
+	if(!stricmp(which,"F6")){
+		return MAC_F6_KEY;
+	}
+	if(!stricmp(which,"F7")){
+		return MAC_F7_KEY;
+	}
+	if(!stricmp(which,"F8")){
+		return MAC_F8_KEY;
+	}
+	if(!stricmp(which,"F9")){
+		return MAC_F9_KEY;
+	}
+	if(!stricmp(which,"F10")){
+		return MAC_F10_KEY;
+	}
+	if(!stricmp(which,"F11")){
+		return MAC_F11_KEY;
+	}
+	if(!stricmp(which,"F12")){
+		return MAC_F12_KEY;
+	}
+
+	// escape
+	if(!stricmp(which,"escape")){
+		return MAC_ESCAPE_KEY;
+	}
+	if(!stricmp(which,"backspace")){
+		return MAC_DELETE_KEY;
+	}
+	if(!stricmp(which,"tab")){
+		return MAC_TAB_KEY;
+	}
+	if(!stricmp(which,"`")){
+		return MAC_TILDE_KEY;
+	}
+	if(!stricmp(which,"caps_lock")){
+		return MAC_CAPS_LOCK_KEY;
+	}
+//	if(which==){
+//		return "";
+//	}
+	if(!stricmp(which,"command")){
+		return MAC_COMMAND_KEY;
+	}
+	if(!stricmp(which,"option")){
+		return MAC_OPTION_KEY;
+	}
+	if(!stricmp(which,"delete")){
+		return MAC_DEL_KEY;
+	}
+	if(!stricmp(which,"insert")){
+		return MAC_INSERT_KEY;
+	}
+	if(!stricmp(which,"home")){
+		return MAC_HOME_KEY;
+	}
+	if(!stricmp(which,"end")){
+		return MAC_END_KEY;
+	}
+	if(!stricmp(which,"page_up")){
+		return MAC_PAGE_UP_KEY;
+	}
+	if(!stricmp(which,"page_down")){
+		return MAC_PAGE_DOWN_KEY;
+	}
+	if(!stricmp(which,"clear")){
+		return MAC_NUMPAD_CLEAR_KEY;
+	}
+
+	if(!stricmp(which,"control")){
+		return MAC_CONTROL_KEY;
+	}
+	if(!stricmp(which,"return")){
+		return MAC_RETURN_KEY;
+	}
+	if(!stricmp(which,"space")){
+		return MAC_SPACE_KEY;
+	}
+	if(!stricmp(which,"shift")){
+		return MAC_SHIFT_KEY;
+	}
+	if(!stricmp(which,"uparrow")){
+		return MAC_ARROW_UP_KEY;
+	}
+	if(!stricmp(which,"downarrow")){
+		return MAC_ARROW_DOWN_KEY;
+	}
+	if(!stricmp(which,"leftarrow")){
+		return MAC_ARROW_LEFT_KEY;
+	}
+	if(!stricmp(which,"rightarrow")){
+		return MAC_ARROW_RIGHT_KEY;
+	}
+	if(!stricmp(which,"mouse1")){
+		return MAC_MOUSEBUTTON1;
+	}
+	if(!stricmp(which,"mouse2")){
+		return MAC_MOUSEBUTTON2;
+	}
+	if(!stricmp(which,"+")){
+		return MAC_NUMPAD_PLUS_KEY;
+	}
+	if(!stricmp(which,"*")){
+		return MAC_NUMPAD_ASTERISK_KEY;
+	}
+	if(!stricmp(which,"/")){
+		return MAC_SLASH_KEY;
+	}
+	if(!stricmp(which,"\\")){
+		return MAC_BACKSLASH_KEY;
+	}
+	if(!stricmp(which,"[")){
+		return MAC_LEFTBRACKET_KEY;
+	}
+	if(!stricmp(which,"]")){
+		return MAC_RIGHTBRACKET_KEY;
+	}
+	if(!stricmp(which,".")){
+		return MAC_PERIOD_KEY;
+	}
+	if(!stricmp(which,",")){
+		return MAC_COMMA_KEY;
+	}
+	if(!stricmp(which,"\"")){
+		return MAC_APOSTROPHE_KEY;
+	}
+	if(!stricmp(which,";")){
+		return MAC_SEMICOLON_KEY;
+	}
+	return UNKNOWN_KEY;
+}
+#else
 unsigned short 	CharToKey(const char* which)
 {
 	// alphabetic keys
@@ -359,6 +659,7 @@ unsigned short 	CharToKey(const char* which)
 	}
 	return UNKNOWN_KEY;
 }
+#endif
 
 const char* 	KeyToChar(unsigned short which)
 {
