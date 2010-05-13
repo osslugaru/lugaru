@@ -13,11 +13,11 @@ endif(NOT CMAKE_BUILD_TYPE)
 
 if(NOT LUGARU_INSTALL_PREFIX)
   if(WIN32)
-     set(LUGARU_INSTALL_PREFIX C:\Lugaru CACHE PATH
+     set(LUGARU_INSTALL_PREFIX "C:/Lugaru" CACHE PATH
      "LUGARU_INSTALL_PREFIX: Install path prefix, prepended onto install directories."
       FORCE)
   else(WIN32)
-     set(LUGARU_INSTALL_PREFIX /usr/local/lugaru CACHE PATH
+     set(LUGARU_INSTALL_PREFIX "/usr/local/lugaru" CACHE PATH
      "CMAKE_INSTALL_PREFIX: Install path prefix, prepended onto install directories."
       FORCE)
   endif(WIN32)
