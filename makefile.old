@@ -100,6 +100,9 @@ ifeq ($(strip $(macosx)),true)
     LDFLAGS += -Wl,-syslibroot,$(XCODE_DIR)/SDKs/$(macosx_sdk_dir)
   	LDFLAGS += -framework Cocoa -framework OpenGL -framework IOKit -framework CoreFoundation -framework Carbon -framework OpenAL
   	LDFLAGS += ./Dependencies/SDL12/lib/macosx/libSDL-1.2.0.dylib ./Dependencies/SDL12/lib/macosx/libSDLmain-osx.a
+
+	INCLUDES += -IDependencies/OpenAL/include/AL
+	INCLUDES += -IDependencies/SDL12/include
 else
 	CXX := g++
 	CC := gcc
