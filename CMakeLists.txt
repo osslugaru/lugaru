@@ -88,10 +88,7 @@ set(LUGARU_H
 	${SRCDIR}/WinInput.h
 	${SRCDIR}/alstubs.h
 	${SRCDIR}/binio.h
-	${SRCDIR}/fmod.h
-	${SRCDIR}/fmod_errors.h
-	${SRCDIR}/fmod_header.h
-	${SRCDIR}/fmoddyn.h
+	${SRCDIR}/openal_wrapper.h
 	${SRCDIR}/gamegl.h
 	${SRCDIR}/glstubs.h
 	${SRCDIR}/md5.h
