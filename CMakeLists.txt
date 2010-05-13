@@ -39,7 +39,7 @@ find_package(SDL REQUIRED)
 find_package(OggVorbis REQUIRED)
 
 include_directories(
-	${OPENAL_INCLUDES}
+	${OPENAL_INCLUDE_DIR}
 	${JPEG_INCLUDE_DIR}
 	${PNG_INCLUDE_DIR}
 	${ZLIB_INCLUDE_DIR}
