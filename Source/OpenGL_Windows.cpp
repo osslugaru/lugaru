@@ -559,6 +559,8 @@ static void sdlEventProc(const SDL_Event &e, Game &game)
                 ClearKey(MAC_CONTROL_KEY);
             if ((mod & KMOD_ALT) == 0)
                 ClearKey(MAC_OPTION_KEY);
+            if ((mod & KMOD_META) == 0)
+                ClearKey(MAC_COMMAND_KEY);
             if ((mod & KMOD_SHIFT) == 0)
                 ClearKey(MAC_SHIFT_KEY);
             if ((mod & KMOD_CAPS) == 0)
