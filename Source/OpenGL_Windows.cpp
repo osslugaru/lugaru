@@ -276,6 +276,21 @@ static int _argc = 0;
 static char **_argv = NULL;
 #endif
 
+#ifdef _WIN32
+bool cmdline(const char *cmd)
+{
+    for (int i = 1; i < _argc; i++)
+    {
+        char *arg = _argv[i];
+        while (*arg == '-')
+            arg++;
+        if (strcasecmp(arg, cmd) == 0)
+            return true;
+    }
+
+    return false;
+}
+#else
 bool cmdline(const char *cmd)
 {
     for (int i = 1; i < _argc; i++)
@@ -289,6 +304,7 @@ bool cmdline(const char *cmd)
 
     return false;
 }
+#endif
 
 
 // --------------------------------------------------------------------------

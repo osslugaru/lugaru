@@ -52,7 +52,6 @@ set(LUGARU_SRCS
 	unpack.c
 	unpack_private.c
 	Weapons.cpp
-	MacCompatibility.cpp
 	OpenGL_Windows.cpp
 	openal_wrapper.cpp
 	WinInput.cpp)
@@ -63,7 +62,6 @@ set(LUGARU_H
 	Game.h
 	Lights.h
 	LinkedList.h
-	MacCompatibility.h
 	Models.h
 	Objects.h
 	Person.h
@@ -102,6 +100,7 @@ if(CMAKE_HOST_APPLE)
 	set(LUGARU_H
 		${LUGARU_H}
 		"Carbon Include.h"
+		MacCompatibility.h
 		CarbonStdCLib.h)
 endif(CMAKE_HOST_APPLE)
 
