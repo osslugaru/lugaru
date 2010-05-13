@@ -127,8 +127,6 @@ extern float volume;
 #include <shellapi.h>
 #endif
 
-#include "fmod.h"
-
 #include "res/resource.h"
 
 using namespace std;
