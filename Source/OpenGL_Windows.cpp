@@ -1314,12 +1314,12 @@ char *calcBaseDir(const char *argv0)
     char *retval;
     char *envr;
 
-    char *ptr = strrchr((char *)argv0, '/');
+    const char *ptr = strrchr((char *)argv0, '/');
     if (strchr(argv0, '/'))
     {
         retval = strdup(argv0);
         if (retval)
-            *(strrchr(retval, '/')) = '\0';
+            *((char *) strrchr(retval, '/')) = '\0';
         return(retval);
     }
 
@@ -1746,7 +1746,7 @@ int main(int argc, char **argv)
 #if !USE_DEVIL
 static bool load_image(const char *file_name, TGAImageRec &tex)
 {
-    char *ptr = strrchr((char *)file_name, '.');
+    const char *ptr = strrchr((char *)file_name, '.');
     if (ptr)
     {
         if (strcasecmp(ptr+1, "png") == 0)
@@ -1910,7 +1910,7 @@ png_done:
 
 static bool save_image(const char *file_name)
 {
-    char *ptr = strrchr((char *)file_name, '.');
+    const char *ptr = strrchr((char *)file_name, '.');
     if (ptr)
     {
         if (strcasecmp(ptr+1, "png") == 0)
