@@ -3270,7 +3270,7 @@ void	Game::Tick()
 								//longnum = 1111111111111111;
 								num1 = longnum/100000000;
 								num2 = longnum%100000000;
-								sprintf (tempstring, "%d-%d-%d-%d\0\0\0\0\0", num1/10000, num1%10000, num2/10000, num2%10000);
+								sprintf (tempstring, "%ld-%ld-%ld-%ld\0\0\0\0\0", num1/10000, num1%10000, num2/10000, num2%10000);
 
 								int goodcode=3;
 								int numchars=3;
