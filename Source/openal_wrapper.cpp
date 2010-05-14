@@ -638,7 +638,7 @@ AL_API OPENAL_STREAM *OPENAL_Stream_Open(const char *name_or_data, unsigned int 
     return (OPENAL_STREAM *) OPENAL_Sample_Load(OPENAL_FREE, name_or_data, mode, offset, length);
 }
 
-AL_API signed char OPENAL_Stream_Close(OPENAL_STREAM *stream)
+AL_API void OPENAL_Stream_Close(OPENAL_STREAM *stream)
 {
     OPENAL_Sample_Free((OPENAL_SAMPLE *) stream);
 }
