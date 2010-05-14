@@ -163,11 +163,16 @@ if (NOT OPENAL_FOUND)
 
     if (WIN32)
         set(LUGARU_HAS_INTERNAL_OPENAL True)
-#        if (MSVC)                     # !!! FIXME: package MSVC .dll and .lib for Windows?
-#            set(OPENAL_LIBRARY
-#                ${OPENALDIR}/lib/win32/msvc/OpenAL32.lib
-#            )
-#        endif (MSVC)
+        if (MSVC80)                     
+            set(OPENAL_LIBRARY
+                ${OPENALDIR}/lib/win32/msvc2005/OpenAL32.lib
+            )
+        endif (MSVC80)
+        if (MSVC90)                     
+            set(OPENAL_LIBRARY
+                ${OPENALDIR}/lib/win32/msvc2008/OpenAL32.lib
+            )
+        endif (MSVC90)
         if (MINGW)
             set(OPENAL_LIBRARY
                 ${OPENALDIR}/lib/win32/mingw/libOpenAL32.dll.a
@@ -203,12 +208,18 @@ if (NOT SDL_FOUND)
 
     if (WIN32)
         set(LUGARU_HAS_INTERNAL_SDL True)
-        if (MSVC)
+        if (MSVC80)
           set(SDL_LIBRARY
-              ${SDLDIR}/lib/win32/msvc/SDLmain.lib
-              ${SDLDIR}/lib/win32/msvc/SDL.lib
+              ${SDLDIR}/lib/win32/msvc2005/SDLmain.lib
+              ${SDLDIR}/lib/win32/msvc2005/SDL.lib
           )
-        endif (MSVC)
+        endif (MSVC80)
+        if (MSVC90)
+          set(SDL_LIBRARY
+              ${SDLDIR}/lib/win32/msvc2008/SDLmain.lib
+              ${SDLDIR}/lib/win32/msvc2008/SDL.lib
+          )
+        endif (MSVC90)
         if (MINGW)
           set(SDL_LIBRARY
               "mingw32"
@@ -453,10 +464,14 @@ endif(WIN32)
 # Install target
 if(WIN32)
 	install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru.exe DESTINATION ${CMAKE_INSTALL_PREFIX})
-	if(MSVC)
-		install(FILES ${SDLDIR}/lib/win32/msvc/SDL.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
-		#install(FILES ${OPENALDIR}/lib/win32/msvc/OpenAL32.dll DESTINATION ${CMAKE_INSTALL_PREFIX}) # FIXME: Add MSVC OpenAL library!
-	endif(MSVC)
+	if(MSVC80)
+		install(FILES ${SDLDIR}/lib/win32/msvc2005/SDL.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
+		install(FILES ${OPENALDIR}/lib/win32/msvc2005/OpenAL32.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
+	endif(MSVC80)
+	if(MSVC90)
+		install(FILES ${SDLDIR}/lib/win32/msvc2008/SDL.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
+		install(FILES ${OPENALDIR}/lib/win32/msvc2008/OpenAL32.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
+	endif(MSVC90)
 	if(MINGW)
 		install(FILES ${SDLDIR}/lib/win32/mingw/SDL.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
 		install(FILES ${OPENALDIR}/lib/win32/mingw/OpenAL32.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
