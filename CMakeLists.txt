@@ -78,13 +78,19 @@ if(MSVC) # MSVC non-C99 support biting us hard
 	)
 endif(MSVC)
 
+if(UNIX)
+	set(LUGARU_H
+		${LUGARU_H}
+		${SRCDIR}/MacCompatibility.h
+	)
+endif(UNIX)
+
 set(LUGARU_H
 	${SRCDIR}/Constants.h
 	${SRCDIR}/Frustum.h
 	${SRCDIR}/Game.h
 	${SRCDIR}/Lights.h
 	${SRCDIR}/LinkedList.h
-	${SRCDIR}/MacCompatibility.h
 	${SRCDIR}/Models.h
 	${SRCDIR}/Objects.h
 	${SRCDIR}/Person.h
