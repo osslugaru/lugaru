@@ -647,43 +647,43 @@ void	Game::Setenvironment(int which)
 			OPENAL_SetVolume(channels[stream_wind], 256);
 		}
 
-		LoadTexture(":Data:Textures:snowtree.png",&objects.treetextureptr,0,1);
-		LoadTexture(":Data:Textures:bushsnow.png",&objects.bushtextureptr,0,1);
-		LoadTexture(":Data:Textures:bouldersnow.jpg",&objects.rocktextureptr,1,0);
-		LoadTexture(":Data:Textures:snowbox.jpg",&objects.boxtextureptr,1,0);
+		LoadTexture(ConvertFileName(":Data:Textures:snowtree.png"),&objects.treetextureptr,0,1);
+		LoadTexture(ConvertFileName(":Data:Textures:bushsnow.png"),&objects.bushtextureptr,0,1);
+		LoadTexture(ConvertFileName(":Data:Textures:bouldersnow.jpg"),&objects.rocktextureptr,1,0);
+		LoadTexture(ConvertFileName(":Data:Textures:snowbox.jpg"),&objects.boxtextureptr,1,0);
 
 		OPENAL_Sample_Free(samp[footstepsound]);
 		OPENAL_Sample_Free(samp[footstepsound2]);
 		OPENAL_Sample_Free(samp[footstepsound3]);
 		OPENAL_Sample_Free(samp[footstepsound4]);
-		samp[footstepsound] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepsnow1.ogg", OPENAL_HW3D, 0, 0);
-		samp[footstepsound2] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepsnow2.ogg", OPENAL_HW3D, 0, 0);
-		samp[footstepsound3] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepstone1.ogg", OPENAL_HW3D, 0, 0);
-		samp[footstepsound4] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepstone2.ogg", OPENAL_HW3D, 0, 0);
+		samp[footstepsound] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepsnow1.ogg"), OPENAL_HW3D, 0, 0);
+		samp[footstepsound2] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepsnow2.ogg"), OPENAL_HW3D, 0, 0);
+		samp[footstepsound3] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepstone1.ogg"), OPENAL_HW3D, 0, 0);
+		samp[footstepsound4] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepstone2.ogg"), OPENAL_HW3D, 0, 0);
 		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound], 4.0f, 1000.0f);
 		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound2], 4.0f, 1000.0f);
 		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound3], 4.0f, 1000.0f);
 		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound4], 4.0f, 1000.0f);
 
-		LoadTexture(":Data:Textures:snow.jpg",&terraintexture,1,0);
+		LoadTexture(ConvertFileName(":Data:Textures:snow.jpg"),&terraintexture,1,0);
 
-		LoadTexture(":Data:Textures:rock.jpg",&terraintexture2,1,0);
+		LoadTexture(ConvertFileName(":Data:Textures:rock.jpg"),&terraintexture2,1,0);
 
-		//LoadTexture(":Data:Textures:detailgrain.png",&terraintexture3,1);
+		//LoadTexture(ConvertFileName(":Data:Textures:detailgrain.png"),&terraintexture3,1);
 
 
 
 
 		temptexdetail=texdetail;
 		if(texdetail>1)texdetail=4;
-		skybox.load(	":Data:Textures:Skybox(snow):Front.jpg",
-			":Data:Textures:Skybox(snow):Left.jpg",
-			":Data:Textures:Skybox(snow):Back.jpg",
-			":Data:Textures:Skybox(snow):Right.jpg",
-			":Data:Textures:Skybox(snow):Up.jpg",
-			":Data:Textures:Skybox(snow):Down.jpg",
-			":Data:Textures:Skybox(snow):Cloud.jpg",
-			":Data:Textures:Skybox(snow):Reflect.jpg");
+		skybox.load(	ConvertFileName(":Data:Textures:Skybox(snow):Front.jpg"),
+			ConvertFileName(":Data:Textures:Skybox(snow):Left.jpg"),
+			ConvertFileName(":Data:Textures:Skybox(snow):Back.jpg"),
+			ConvertFileName(":Data:Textures:Skybox(snow):Right.jpg"),
+			ConvertFileName(":Data:Textures:Skybox(snow):Up.jpg"),
+			ConvertFileName(":Data:Textures:Skybox(snow):Down.jpg"),
+			ConvertFileName(":Data:Textures:Skybox(snow):Cloud.jpg"),
+			ConvertFileName(":Data:Textures:Skybox(snow):Reflect.jpg"));
 
 
 
@@ -693,10 +693,10 @@ void	Game::Setenvironment(int which)
 	if(environment==desertenvironment){
 		windvector=0;
 		windvector.z=2;
-		LoadTexture(":Data:Textures:deserttree.png",&objects.treetextureptr,0,1);
-		LoadTexture(":Data:Textures:bushdesert.png",&objects.bushtextureptr,0,1);
-		LoadTexture(":Data:Textures:boulderdesert.jpg",&objects.rocktextureptr,1,0);
-		LoadTexture(":Data:Textures:desertbox.jpg",&objects.boxtextureptr,1,0);
+		LoadTexture(ConvertFileName(":Data:Textures:deserttree.png"),&objects.treetextureptr,0,1);
+		LoadTexture(ConvertFileName(":Data:Textures:bushdesert.png"),&objects.bushtextureptr,0,1);
+		LoadTexture(ConvertFileName(":Data:Textures:boulderdesert.jpg"),&objects.rocktextureptr,1,0);
+		LoadTexture(ConvertFileName(":Data:Textures:desertbox.jpg"),&objects.boxtextureptr,1,0);
 
 
 		if(ambientsound){
@@ -710,33 +710,33 @@ void	Game::Setenvironment(int which)
 		OPENAL_Sample_Free(samp[footstepsound2]);
 		OPENAL_Sample_Free(samp[footstepsound3]);
 		OPENAL_Sample_Free(samp[footstepsound4]);
-		samp[footstepsound] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepsnow1.ogg", OPENAL_HW3D, 0, 0);
-		samp[footstepsound2] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepsnow2.ogg", OPENAL_HW3D, 0, 0);
-		samp[footstepsound3] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepsnow1.ogg", OPENAL_HW3D, 0, 0);
-		samp[footstepsound4] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepsnow2.ogg", OPENAL_HW3D, 0, 0);
+		samp[footstepsound] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepsnow1.ogg"), OPENAL_HW3D, 0, 0);
+		samp[footstepsound2] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepsnow2.ogg"), OPENAL_HW3D, 0, 0);
+		samp[footstepsound3] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepsnow1.ogg"), OPENAL_HW3D, 0, 0);
+		samp[footstepsound4] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepsnow2.ogg"), OPENAL_HW3D, 0, 0);
 		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound], 4.0f, 1000.0f);
 		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound2], 4.0f, 1000.0f);
 		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound3], 4.0f, 1000.0f);
 		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound4], 4.0f, 1000.0f);
 
-		LoadTexture(":Data:Textures:sand.jpg",&terraintexture,1,0);
+		LoadTexture(ConvertFileName(":Data:Textures:sand.jpg"),&terraintexture,1,0);
 
-		LoadTexture(":Data:Textures:sandslope.jpg",&terraintexture2,1,0);
+		LoadTexture(ConvertFileName(":Data:Textures:sandslope.jpg"),&terraintexture2,1,0);
 
-		//LoadTexture(":Data:Textures:detailgrain.png",&terraintexture3,1);
+		//LoadTexture(ConvertFileName(":Data:Textures:detailgrain.png"),&terraintexture3,1);
 
 
 
 		temptexdetail=texdetail;
 		if(texdetail>1)texdetail=4;
-		skybox.load(	":Data:Textures:Skybox(sand):Front.jpg",
-			":Data:Textures:Skybox(sand):Left.jpg",
-			":Data:Textures:Skybox(sand):Back.jpg",
-			":Data:Textures:Skybox(sand):Right.jpg",
-			":Data:Textures:Skybox(sand):Up.jpg",
-			":Data:Textures:Skybox(sand):Down.jpg",
-			":Data:Textures:Skybox(sand):Cloud.jpg",
-			":Data:Textures:Skybox(sand):Reflect.jpg");
+		skybox.load(	ConvertFileName(":Data:Textures:Skybox(sand):Front.jpg"),
+			ConvertFileName(":Data:Textures:Skybox(sand):Left.jpg"),
+			ConvertFileName(":Data:Textures:Skybox(sand):Back.jpg"),
+			ConvertFileName(":Data:Textures:Skybox(sand):Right.jpg"),
+			ConvertFileName(":Data:Textures:Skybox(sand):Up.jpg"),
+			ConvertFileName(":Data:Textures:Skybox(sand):Down.jpg"),
+			ConvertFileName(":Data:Textures:Skybox(sand):Cloud.jpg"),
+			ConvertFileName(":Data:Textures:Skybox(sand):Reflect.jpg"));
 
 
 
@@ -746,10 +746,10 @@ void	Game::Setenvironment(int which)
 	if(environment==grassyenvironment){
 		windvector=0;
 		windvector.z=2;
-		LoadTexture(":Data:Textures:tree.png",&objects.treetextureptr,0,1);
-		LoadTexture(":Data:Textures:bush.png",&objects.bushtextureptr,0,1);
-		LoadTexture(":Data:Textures:boulder.jpg",&objects.rocktextureptr,1,0);
-		LoadTexture(":Data:Textures:grassbox.jpg",&objects.boxtextureptr,1,0);
+		LoadTexture(ConvertFileName(":Data:Textures:tree.png"),&objects.treetextureptr,0,1);
+		LoadTexture(ConvertFileName(":Data:Textures:bush.png"),&objects.bushtextureptr,0,1);
+		LoadTexture(ConvertFileName(":Data:Textures:boulder.jpg"),&objects.rocktextureptr,1,0);
+		LoadTexture(ConvertFileName(":Data:Textures:grassbox.jpg"),&objects.boxtextureptr,1,0);
 
 		if(ambientsound){
 			PlayStreamEx( stream_wind, strm[stream_wind], NULL, true);
@@ -761,33 +761,33 @@ void	Game::Setenvironment(int which)
 		OPENAL_Sample_Free(samp[footstepsound2]);
 		OPENAL_Sample_Free(samp[footstepsound3]);
 		OPENAL_Sample_Free(samp[footstepsound4]);
-		samp[footstepsound] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepgrass1.ogg", OPENAL_HW3D, 0, 0);
-		samp[footstepsound2] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepgrass2.ogg", OPENAL_HW3D, 0, 0);
-		samp[footstepsound3] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepstone1.ogg", OPENAL_HW3D, 0, 0);
-		samp[footstepsound4] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepstone2.ogg", OPENAL_HW3D, 0, 0);
+		samp[footstepsound] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepgrass1.ogg"), OPENAL_HW3D, 0, 0);
+		samp[footstepsound2] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepgrass2.ogg"), OPENAL_HW3D, 0, 0);
+		samp[footstepsound3] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepstone1.ogg"), OPENAL_HW3D, 0, 0);
+		samp[footstepsound4] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepstone2.ogg"), OPENAL_HW3D, 0, 0);
 		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound], 4.0f, 1000.0f);
 		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound2], 4.0f, 1000.0f);
 		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound3], 4.0f, 1000.0f);
 		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound4], 4.0f, 1000.0f);
 
-		LoadTexture(":Data:Textures:grassdirt.jpg",&terraintexture,1,0);
+		LoadTexture(ConvertFileName(":Data:Textures:grassdirt.jpg"),&terraintexture,1,0);
 
-		LoadTexture(":Data:Textures:mossrock.jpg",&terraintexture2,1,0);
+		LoadTexture(ConvertFileName(":Data:Textures:mossrock.jpg"),&terraintexture2,1,0);
 
-		//LoadTexture(":Data:Textures:detail.png",&terraintexture3,1);
+		//LoadTexture(ConvertFileName(":Data:Textures:detail.png"),&terraintexture3,1);
 
 
 
 		temptexdetail=texdetail;
 		if(texdetail>1)texdetail=4;
-		skybox.load(	":Data:Textures:Skybox(grass):Front.jpg",
-			":Data:Textures:Skybox(grass):Left.jpg",
-			":Data:Textures:Skybox(grass):Back.jpg",
-			":Data:Textures:Skybox(grass):Right.jpg",
-			":Data:Textures:Skybox(grass):Up.jpg",
-			":Data:Textures:Skybox(grass):Down.jpg",
-			":Data:Textures:Skybox(grass):Cloud.jpg",
-			":Data:Textures:Skybox(grass):Reflect.jpg");
+		skybox.load(	ConvertFileName(":Data:Textures:Skybox(grass):Front.jpg"),
+			ConvertFileName(":Data:Textures:Skybox(grass):Left.jpg"),
+			ConvertFileName(":Data:Textures:Skybox(grass):Back.jpg"),
+			ConvertFileName(":Data:Textures:Skybox(grass):Right.jpg"),
+			ConvertFileName(":Data:Textures:Skybox(grass):Up.jpg"),
+			ConvertFileName(":Data:Textures:Skybox(grass):Down.jpg"),
+			ConvertFileName(":Data:Textures:Skybox(grass):Cloud.jpg"),
+			ConvertFileName(":Data:Textures:Skybox(grass):Reflect.jpg"));
 
 
 
@@ -795,7 +795,7 @@ void	Game::Setenvironment(int which)
 	}
 	temptexdetail=texdetail;
 	texdetail=1;
-	terrain.load(":Data:Textures:heightmap.png");
+	terrain.load(ConvertFileName(":Data:Textures:heightmap.png"));
 
 	texdetail=temptexdetail;
 }
@@ -804,24 +804,24 @@ void	Game::Setenvironment(int which)
 void	Game::Loadlevel(int which){
 	stealthloading=0;
 
-	if(which==0)Loadlevel((char *)":Data:Maps:map1");
-	else if(which==1)Loadlevel((char *)":Data:Maps:map2");
-	else if(which==2)Loadlevel((char *)":Data:Maps:map3");
-	else if(which==3)Loadlevel((char *)":Data:Maps:map4");
-	else if(which==4)Loadlevel((char *)":Data:Maps:map5");
-	else if(which==5)Loadlevel((char *)":Data:Maps:map6");
-	else if(which==6)Loadlevel((char *)":Data:Maps:map7");
-	else if(which==7)Loadlevel((char *)":Data:Maps:map8");
-	else if(which==8)Loadlevel((char *)":Data:Maps:map9");
-	else if(which==9)Loadlevel((char *)":Data:Maps:map10");
-	else if(which==10)Loadlevel((char *)":Data:Maps:map11");
-	else if(which==11)Loadlevel((char *)":Data:Maps:map12");
-	else if(which==12)Loadlevel((char *)":Data:Maps:map13");
-	else if(which==13)Loadlevel((char *)":Data:Maps:map14");
-	else if(which==14)Loadlevel((char *)":Data:Maps:map15");
-	else if(which==15)Loadlevel((char *)":Data:Maps:map16");
-	else if(which==-1){tutoriallevel=-1;Loadlevel((char *)":Data:Maps:tutorial");}
-	else Loadlevel((char *)":Data:Maps:mapsave");
+	if(which==0)Loadlevel((char *)ConvertFileName(":Data:Maps:map1"));
+	else if(which==1)Loadlevel((char *)ConvertFileName(":Data:Maps:map2"));
+	else if(which==2)Loadlevel((char *)ConvertFileName(":Data:Maps:map3"));
+	else if(which==3)Loadlevel((char *)ConvertFileName(":Data:Maps:map4"));
+	else if(which==4)Loadlevel((char *)ConvertFileName(":Data:Maps:map5"));
+	else if(which==5)Loadlevel((char *)ConvertFileName(":Data:Maps:map6"));
+	else if(which==6)Loadlevel((char *)ConvertFileName(":Data:Maps:map7"));
+	else if(which==7)Loadlevel((char *)ConvertFileName(":Data:Maps:map8"));
+	else if(which==8)Loadlevel((char *)ConvertFileName(":Data:Maps:map9"));
+	else if(which==9)Loadlevel((char *)ConvertFileName(":Data:Maps:map10"));
+	else if(which==10)Loadlevel((char *)ConvertFileName(":Data:Maps:map11"));
+	else if(which==11)Loadlevel((char *)ConvertFileName(":Data:Maps:map12"));
+	else if(which==12)Loadlevel((char *)ConvertFileName(":Data:Maps:map13"));
+	else if(which==13)Loadlevel((char *)ConvertFileName(":Data:Maps:map14"));
+	else if(which==14)Loadlevel((char *)ConvertFileName(":Data:Maps:map15"));
+	else if(which==15)Loadlevel((char *)ConvertFileName(":Data:Maps:map16"));
+	else if(which==-1){tutoriallevel=-1;Loadlevel((char *)ConvertFileName(":Data:Maps:tutorial"));}
+	else Loadlevel((char *)ConvertFileName(":Data:Maps:mapsave"));
 
 	whichlevel=which;
 }
@@ -902,7 +902,7 @@ void	Game::Loadlevel(char *name){
 		won=0;
 
 		//campaign=0;
-		animation[bounceidleanim].Load((char *)":Data:Animations:Idle",middleheight,neutral);
+		animation[bounceidleanim].Load((char *)ConvertFileName(":Data:Animations:Idle"),middleheight,neutral);
 
 		numdialogues=0;
 
@@ -1513,7 +1513,7 @@ void	Game::Loadlevel(char *name){
 				player[i].proportionlegs.z=0;
 			}
 
-			player[i].tempanimation.Load((char *)":Data:Animations:Tempanim",0,0);
+			player[i].tempanimation.Load((char *)ConvertFileName(":Data:Animations:Tempanim"),0,0);
 
 			player[i].headmorphness=0;
 			player[i].targetheadmorphness=1;
@@ -7761,7 +7761,7 @@ void	Game::Tick()
 									player[numplayers].proportionlegs.z=0;
 								}
 
-								player[numplayers].tempanimation.Load((char *)":Data:Animations:Tempanim",0,0);
+								player[numplayers].tempanimation.Load((char *)ConvertFileName(":Data:Animations:Tempanim"),0,0);
 
 								player[numplayers].damagetolerance=200;
 
