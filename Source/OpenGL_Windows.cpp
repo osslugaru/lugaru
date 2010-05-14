@@ -1187,13 +1187,9 @@ void CleanUp (void)
 
 // --------------------------------------------------------------------------
 
-static bool g_focused = true;
-
-
 static bool IsFocused()
 {
-    STUBBED("write me");
-	return true;
+    return ((SDL_GetAppState() & SDL_APPINPUTFOCUS) != 0);
 }
 
 
