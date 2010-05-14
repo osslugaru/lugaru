@@ -2506,7 +2506,7 @@ int Game::DrawGLScene(void)
 				movex[10]=0;
 				movey[10]=0;
 				
-				sprintf (menustring[11], "Volume: %d%", (int)(volume*100));
+				sprintf (menustring[11], "Volume: %d%%", (int)(volume*100));
 				startx[11]=10+60;
 				starty[11]=155;
 				endx[11]=startx[11]+strlen(menustring[11])*10;
