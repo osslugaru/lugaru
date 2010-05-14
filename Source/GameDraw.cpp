@@ -2688,7 +2688,7 @@ int Game::DrawGLScene(void)
 
 				if(accountcampaignchoicesmade[accountactive])
 					for(i=0;i<accountcampaignchoicesmade[accountactive];i++){
-						sprintf (menustring[7+i], campaigndescription[levelorder[i]]);
+						sprintf (menustring[7+i], "%s", campaigndescription[levelorder[i]]);
 						startx[7+i]=30+120+campaignlocationx[levelorder[i]]*400/512;
 						starty[7+i]=30+30+(512-campaignlocationy[levelorder[i]])*400/512;
 						endx[7+i]=startx[7+i]+10;
@@ -2699,7 +2699,7 @@ int Game::DrawGLScene(void)
 
 					if(campaignchoicenum>0)
 						for(i=accountcampaignchoicesmade[accountactive];i<accountcampaignchoicesmade[accountactive]+campaignchoicenum;i++){
-							sprintf (menustring[7+i], campaigndescription[levelorder[i]]);
+							sprintf (menustring[7+i], "%s", campaigndescription[levelorder[i]]);
 							startx[7+i]=30+120+campaignlocationx[campaignchoicewhich[i-(accountcampaignchoicesmade[accountactive])]]*400/512;
 							starty[7+i]=30+30+(512-campaignlocationy[campaignchoicewhich[i-(accountcampaignchoicesmade[accountactive])]])*400/512;
 							endx[7+i]=startx[7+i]+10;
