@@ -162,7 +162,7 @@ if (NOT OPENAL_FOUND)
     set(OPENAL_INCLUDE_DIR "${OPENALDIR}/include/AL")
     set(OPENAL_LIBRARY "")
 
-    if (WINDOWS)
+    if (WIN32)
         set(LUGARU_HAS_INTERNAL_OPENAL True)
 #        if (MSVC)                     # !!! FIXME: package MSVC .dll and .lib for Windows?
 #            set(OPENAL_LIBRARY
@@ -174,7 +174,7 @@ if (NOT OPENAL_FOUND)
                 ${OPENALDIR}/lib/win32/mingw/libOpenAL32.dll.a
             )
         endif (MINGW)
-     endif(WINDOWS)
+     endif(WIN32)
 
     if (NOT LUGARU_HAS_INTERNAL_OPENAL)
         message(ERROR "We don't have a prebuilt OpenAL for this platform.")
@@ -202,7 +202,7 @@ if (NOT SDL_FOUND)
         )
     endif (APPLE)
 
-    if (WINDOWS)
+    if (WIN32)
         set(LUGARU_HAS_INTERNAL_SDL True)
         if (MSVC)
           set(SDL_LIBRARY
@@ -216,7 +216,7 @@ if (NOT SDL_FOUND)
               ${SDLDIR}/lib/win32/mingw/libSDLmain.a
           )
         endif (MINGW)
-    endif (WINDOWS)
+    endif (WIN32)
 
     if (NOT LUGARU_HAS_INTERNAL_SDL)
         message(ERROR "We don't have a prebuilt SDL for this platform.")
