@@ -141,7 +141,7 @@ void Game::Dispose()
 	sprintf (mapname, ":Data:Users");
 
 	FILE			*tfile;
-	tfile=fopen( mapname, "wb" );
+	tfile=fopen( ConvertFileName(mapname), "wb" );
 	if (tfile)
 	{
 		fpackf(tfile, "Bi", numaccounts);
@@ -1015,7 +1015,7 @@ void Game::InitGame()
 	accountactive=-1;
 
 	sprintf (mapname, ":Data:Users");
-	tfile=fopen( mapname, "rb" );
+	tfile=fopen( ConvertFileName(mapname), "rb" );
 	if(tfile)
 	{
 		funpackf(tfile, "Bi", &numaccounts);
