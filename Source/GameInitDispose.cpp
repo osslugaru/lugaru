@@ -990,8 +990,6 @@ void Game::InitGame()
 
 	numchallengelevels=14;
 
-	registered=0;
-
 	/*char tempstring[256];
 	sprintf (tempstring, "%s", registrationname);
 	long num1;
@@ -1007,51 +1005,6 @@ void Game::InitGame()
 	*/
 
 	FILE			*tfile;
-	tfile=fopen( ":Data:Sounds:flame.ogg", "rb" );
-	if(tfile)
-	{
-		long num1;
-		long num2;
-		long long longnum;
-		long long longnuma;
-		long num1a;
-		long num2a;
-
-		int numchars;
-		funpackf(tfile, "Bb", &registered);
-		if(registered)
-		{
-			funpackf(tfile, "Bi", &numchars);
-			if(numchars>0)
-			{
-				for(j=0;j<numchars;j++)
-				{
-					funpackf(tfile, "Bb",  &registrationname[j]);
-				}
-				registrationname[numchars]='\0';
-				funpackf(tfile, "Bi", &num1);
-				funpackf(tfile, "Bi", &num2);
-				longnum=num2+num1*100000000;
-
-				char tempstring[256];
-				#if defined(__APPLE__)
-				sprintf (tempstring, "%s", registrationname);
-				#elif defined(_WIN32) || defined(__linux__)
-				sprintf (tempstring, "%s-windows", registrationname);
-				#else
-				#error Please make sure you have the right registration key stuff here!
-				#endif
-				longnuma = MD5_string ( tempstring);
-				num1a = longnuma/100000000;
-				num2a = longnuma%100000000;
-				//if(num1a==num1&&num2a==num2)registered=1;
-				if(numchars>2)registered=1;
-				else registered=0;
-			}
-		}
-		fclose(tfile);
-	}
-	else registered=0;
 
 	accountactive=-1;
 
@@ -1910,7 +1863,6 @@ Game::Game()
 	loaddistrib = 0;
 	keyselect = 0;
 	indemo = 0;
-	registered = 0;
 
 	won = 0;
 

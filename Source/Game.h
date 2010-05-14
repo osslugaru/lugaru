@@ -103,7 +103,6 @@ public:
 	int loaddistrib;
 	int keyselect;
 	int indemo;
-	int registered;
 
 	bool won;
 

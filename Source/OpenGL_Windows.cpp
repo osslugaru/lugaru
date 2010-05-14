@@ -1347,7 +1347,7 @@ int main(int argc, char **argv)
 			if (!SetUp (game))
                 return 42;
 
-			while (!gDone&&!game.quit&&(!game.tryquit||!game.registered))
+			while (!gDone&&!game.quit&&(!game.tryquit))
 			{
 				if (IsFocused())
 				{

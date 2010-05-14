@@ -1743,7 +1743,7 @@ void	Game::Tick()
 			entername=0;
 			mainmenutogglekeydown=1;
 		}
-		if((IsKeyDown(theKeyMap, MAC_ESCAPE_KEY)||(mainmenu==0&&((IsKeyDown(theKeyMap, jumpkey)||IsKeyDown(theKeyMap, MAC_SPACE_KEY)||(campaign)))&&!oldjumpkeydown&&campaign&&winfreeze))&&!mainmenutogglekeydown&&(!mainmenu||gameon||mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||(mainmenu==7&&!entername)||mainmenu==9||mainmenu==11||(mainmenu==12&&!tryquit)||mainmenu==13||mainmenu==14||mainmenu==15||mainmenu==16||mainmenu==17||mainmenu==10)){
+		if((IsKeyDown(theKeyMap, MAC_ESCAPE_KEY)||(mainmenu==0&&((IsKeyDown(theKeyMap, jumpkey)||IsKeyDown(theKeyMap, MAC_SPACE_KEY)||(campaign)))&&!oldjumpkeydown&&campaign&&winfreeze))&&!mainmenutogglekeydown&&(!mainmenu||gameon||mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||(mainmenu==7&&!entername)||mainmenu==9||mainmenu==11||mainmenu==13||mainmenu==17||mainmenu==10)){
 			selected=-1;
 			if(mainmenu==1||mainmenu==2||mainmenu==0){
 				if(mainmenu==0&&!winfreeze)mainmenu=2;
@@ -1950,7 +1950,7 @@ void	Game::Tick()
 				opstream << KeyToChar(chatkey);
 				opstream.close();
 			}
-			if(mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==9||mainmenu==12||mainmenu==13||mainmenu==14||mainmenu==10||mainmenu==11||mainmenu==100){
+			if(mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==9||mainmenu==13||mainmenu==10||mainmenu==11||mainmenu==100){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
 				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
@@ -1975,9 +1975,7 @@ void	Game::Tick()
 			if(mainmenu==7)mainmenu=1;
 			if(mainmenu==9)mainmenu=5;
 			if(mainmenu==11)mainmenu=5;
-			if(mainmenu==12)mainmenu=5;
 			if(mainmenu==13)mainmenu=12;
-			if(mainmenu==14)mainmenu=13;
 			if(mainmenu==10)mainmenu=5;
 			if(mainmenu==100){
 				mainmenu=5;
@@ -2107,7 +2105,7 @@ void	Game::Tick()
 				if(!gameon){
 					//quit
 					tryquit=1;
-					if(registered)OPENAL_SetPaused(channels[stream_music3], true);
+					OPENAL_SetPaused(channels[stream_music3], true);
 				}
 				else{
 					//end game
@@ -2433,33 +2431,6 @@ void	Game::Tick()
 		}
 
 		if(mainmenu==5){
-			if(accountcampaignchoicesmade[accountactive]>8&&!registered){
-				OPENAL_SetFrequency(OPENAL_ALL, 0.001);
-				PlayStreamEx( stream_music3, strm[stream_music3], NULL, true);
-				OPENAL_SetPaused(channels[stream_music3], false);
-				OPENAL_SetVolume(channels[stream_music3], 256);
-
-				gameon=0;
-				mainmenu=12;
-				accountcampaignchoicesmade[accountactive]=0;
-				accountcampaignscore[accountactive]=0;
-				accountcampaigntime[accountactive]=0;
-
-				float gLoc[3]={0,0,0};
-				float vel[3]={0,0,0};
-				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
-				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				OPENAL_SetVolume(channels[fireendsound], 256);
-				OPENAL_SetPaused(channels[fireendsound], false);
-				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
-
-				flashr=1;
-				flashg=0;
-				flashb=0;
-				flashamount=1;
-				flashdelay=1;
-			}
 
 			if(endgame==2){
 				accountcampaignchoicesmade[accountactive]=0;
@@ -2757,94 +2728,6 @@ void	Game::Tick()
 			else oldbutton=0;
 		}
 
-		if(mainmenu==15||mainmenu==16){
-			if(Button()&&!oldbutton&&selected==1){
-				float gLoc[3]={0,0,0};
-				float vel[3]={0,0,0};
-				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
-				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				OPENAL_SetVolume(channels[fireendsound], 256);
-				OPENAL_SetPaused(channels[fireendsound], false);
-				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
-
-				flashr=1;
-				flashg=0;
-				flashb=0;
-				flashamount=1;
-				flashdelay=1;
-
-				if(mainmenu==15)mainmenu=5;
-				else mainmenu=12;
-			}
-			if(Button())oldbutton=1;
-			else oldbutton=0;
-		}
-
-		if(mainmenu==12){
-			endgame=2;
-			if(Button()&&!oldbutton&&selected==3){
-				if(tryquit)quit=1;
-				float gLoc[3]={0,0,0};
-				float vel[3]={0,0,0};
-				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
-				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				OPENAL_SetVolume(channels[fireendsound], 256);
-				OPENAL_SetPaused(channels[fireendsound], false);
-				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
-
-				flashr=1;
-				flashg=0;
-				flashb=0;
-				flashamount=1;
-				flashdelay=1;
-
-				mainmenu=5;
-			}
-
-			if(Button()&&!oldbutton&&selected==4){
-				registernow=1;
-				quit=1;
-				float gLoc[3]={0,0,0};
-				float vel[3]={0,0,0};
-				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
-				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				OPENAL_SetVolume(channels[fireendsound], 256);
-				OPENAL_SetPaused(channels[fireendsound], false);
-				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
-
-				flashr=1;
-				flashg=0;
-				flashb=0;
-				flashamount=1;
-				flashdelay=1;
-			}
-
-
-			if(Button()&&!oldbutton&&selected==5){
-				tryquit=0;
-				float gLoc[3]={0,0,0};
-				float vel[3]={0,0,0};
-				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
-				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				OPENAL_SetVolume(channels[fireendsound], 256);
-				OPENAL_SetPaused(channels[fireendsound], false);
-				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
-
-				flashr=1;
-				flashg=0;
-				flashb=0;
-				flashamount=1;
-				flashdelay=1;
-
-				mainmenu=13;
-			}
-			if(Button())oldbutton=1;
-			else oldbutton=0;
-		}
 		if(mainmenu==6){
 			if(Button()&&!oldbutton&&selected!=-1){
 				float gLoc[3]={0,0,0};
@@ -3103,7 +2986,7 @@ void	Game::Tick()
 		}
 		OPENAL_SetFrequency(channels[stream_music3], 22050);
 
-		if(entername||mainmenu==13||mainmenu==14){
+		if(entername){
 			for(i=0;i<140;i++){
 				if(IsKeyDown(theKeyMap, i)){
 					togglekeydelay[i]+=multiplier;
@@ -3189,114 +3072,13 @@ void	Game::Tick()
 								displayselected=0;
 							}}
 
-						if(i==MAC_RETURN_KEY&&mainmenu==14){
-							if(displaychars[0]){
-								char serialstring[256];
-								char tempstring[256];
-								#if defined(__APPLE__)
-								sprintf (tempstring, "%s", registrationname);
-								#elif defined(_WIN32) || defined(__linux__)
-								sprintf (tempstring, "%s-windows", registrationname);
-								#else
-								#error Please make sure you have the right registration key stuff here!
-								#endif
-								long num1;
-								long num2;
-								long num3;
-								long num4;
-								long long longnum;
-								longnum = MD5_string ( tempstring);
-								//longnum = 1111111111111111;
-								num1 = longnum/100000000;
-								num2 = longnum%100000000;
-								sprintf (tempstring, "%ld-%ld-%ld-%ld\0\0\0\0\0", num1/10000, num1%10000, num2/10000, num2%10000);
-
-								int goodcode=3;
-								int numchars=3;
-								if(num1/10000>999)numchars+=4;
-								else if(num1/10000>99)numchars+=3;
-								else if(num1/10000>9)numchars+=2;
-								else numchars+=1;
-								if(num1%10000>999)numchars+=4;
-								else if(num1%10000>99)numchars+=3;
-								else if(num1%10000>9)numchars+=2;
-								else numchars+=1;
-								if(num2/10000>999)numchars+=4;
-								else if(num2/10000>99)numchars+=3;
-								else if(num2/10000>9)numchars+=2;
-								else numchars+=1;
-								if(num2%10000>999)numchars+=4;
-								else if(num2%10000>99)numchars+=3;
-								else if(num2%10000>9)numchars+=2;
-								else numchars+=1;
-
-								//numchars=12;
-
-								for(j=0;j<numchars;j++){
-									if(displaytext[0][j]!=tempstring[j]&&tempstring[j]!=' '&&tempstring[j]!='\0')goodcode--;
-								}
-
-								if(longnum==LONGLONGCONST(5077041556214789))goodcode=-1;
-
-								if(goodcode<0)goodcode=0;
-
-								if(goodcode){
-									registered=1;
-									mainmenu=15;
-
-									FILE			*tfile;
-									tfile=fopen( ":Data:Sounds:flame.ogg", "wb" );
-									if (tfile)
-									{
-										int numchars;
-										numchars=strlen(registrationname);
-										fpackf(tfile, "Bb", registered);
-										fpackf(tfile, "Bi", numchars);
-										if(numchars>0)
-										{
-											for(j=0;j<numchars;j++)
-											{
-												fpackf(tfile, "Bb",  registrationname[j]);
-											}
-										}
-										fpackf(tfile, "Bi", num1);
-										fpackf(tfile, "Bi", num2);
-										fclose(tfile);
-									}
-								}
-								else
-								{
-									mainmenu=16;
-								}
-								flashr=1;
-								flashg=0;
-								flashb=0;
-								flashamount=1;
-								flashdelay=1;
-
-								float gLoc[3]={0,0,0};
-								float vel[3]={0,0,0};
-								OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
-								PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-								OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-								OPENAL_SetVolume(channels[firestartsound], 256);
-								OPENAL_SetPaused(channels[firestartsound], false);
-								OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
-
-								for(j=0;j<255;j++){
-									displaytext[0][j]=' ';
-								}
-								displaychars[0]=0;
-								displayselected=0;
-							}}
-
 						if(i==MAC_RETURN_KEY&&mainmenu==13){
 							if(displaychars[0]){
 								sprintf (registrationname, "%s", displaytext[0]);
 								if(displaychars[0]<254)registrationname[displaychars[0]]='\0';
 
-								mainmenu=14;
-
+								mainmenu=5;
+                        
 								flashr=1;
 								flashg=0;
 								flashb=0;
@@ -3316,21 +3098,7 @@ void	Game::Tick()
 									displaytext[0][j]=' ';
 								}
 								displaychars[0]=0;
-
-								/*char tempstring[50];
-								sprintf (tempstring, registrationname);
-								long num1;
-								long num2;
-								long num3;
-								long num4;
-								long long longnum;
-								longnum = MD5_string ( tempstring);
-								num1 = longnum/100000000;
-								num2 = longnum%100000000;
-								sprintf (displaytext[0], "%d-%d-%d-%d", num1/10000, num1%10000, num2/10000, num2%10000);
-
-								displaychars[0]=strlen(displaytext[0]);
-								*/
+                        
 								displayselected=0;
 							}}
 					}
@@ -10935,55 +10703,7 @@ void	Game::TickOnce(){
 			if(rotation2<-70)rotation2=-70;
 		}
 		if(mainmenu)rotation+=multiplier*5;
-		if(!mainmenu&&!indemo&&!registered){
-			OPENAL_SetFrequency(OPENAL_ALL, 0.001);
-			PlayStreamEx( stream_music3, strm[stream_music3], NULL, true);
-			OPENAL_SetPaused(channels[stream_music3], false);
-			OPENAL_SetVolume(channels[stream_music3], 256);
-
-			gameon=0;
-			mainmenu=12;
-
-			float gLoc[3]={0,0,0};
-			float vel[3]={0,0,0};
-			OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
-			PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-			OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-			OPENAL_SetVolume(channels[fireendsound], 256);
-			OPENAL_SetPaused(channels[fireendsound], false);
-			OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
-
-			flashr=1;
-			flashg=0;
-			flashb=0;
-			flashamount=1;
-			flashdelay=1;
-		}
-
-		if(tryquit==1&&!registered&&mainmenu!=12){
-			OPENAL_SetFrequency(OPENAL_ALL, 0.001);
-			PlayStreamEx( stream_music3, strm[stream_music3], NULL, true);
-			OPENAL_SetPaused(channels[stream_music3], false);
-			OPENAL_SetVolume(channels[stream_music3], 256);
-
-			gameon=0;
-			mainmenu=12;
-
-			float gLoc[3]={0,0,0};
-			float vel[3]={0,0,0};
-			OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
-			PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-			OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-			OPENAL_SetVolume(channels[fireendsound], 256);
-			OPENAL_SetPaused(channels[fireendsound], false);
-			OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
-
-			flashr=1;
-			flashg=0;
-			flashb=0;
-			flashamount=1;
-			flashdelay=1;
-		}
+      
 		//}
 }
 
@@ -11306,32 +11026,7 @@ void	Game::TickOnceAfter(){
 							}
 							if(changedelay<=-999&&whichlevel!=-2&&!loading&&(player[0].dead||(alldead&&maptype==mapkilleveryone)||(winhotspot)||(killhotspot))&&!winfreeze)loading=1;
 							if((player[0].dead||(alldead&&maptype==mapkilleveryone)||(winhotspot)||(windialogue)||(killhotspot))&&changedelay<=0){
-								if(accountprogress[accountactive]>3&&!registered){
-									OPENAL_SetFrequency(OPENAL_ALL, 0.001);
-									PlayStreamEx( stream_music3, strm[stream_music3], NULL, true);
-									OPENAL_SetPaused(channels[stream_music3], false);
-									OPENAL_SetVolume(channels[stream_music3], 256);
-
-									gameon=0;
-									mainmenu=12;
-									accountprogress[accountactive]=3;
-
-									float gLoc[3]={0,0,0};
-									float vel[3]={0,0,0};
-									OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
-									PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-									OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-									OPENAL_SetVolume(channels[fireendsound], 256);
-									OPENAL_SetPaused(channels[fireendsound], false);
-									OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
-
-									flashr=1;
-									flashg=0;
-									flashb=0;
-									flashamount=1;
-									flashdelay=1;
-								}
-								else{
+                        {
 									if(whichlevel!=-2&&!loading&&!player[0].dead){
 										winfreeze=1;
 										changedelay=-999;
