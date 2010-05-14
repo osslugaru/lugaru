@@ -277,7 +277,7 @@ static int locateCorrectFile(char *buf, const char *mode)
 } /* locateCorrectFile */
 #endif
 
-
+// Dummified the function
 static char g_filename[4096];
 char* ConvertFileName( const char* orgfilename, const char *mode)
 {
