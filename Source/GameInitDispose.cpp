@@ -58,7 +58,6 @@ extern int numplayers;
 extern int environment;
 extern bool ambientsound;
 extern float multiplier;
-extern int newnetmessages;
 extern int netdatanew;
 extern float mapinfo;
 extern bool stillloading;
@@ -1358,8 +1357,6 @@ void Game::LoadStuff()
 	stillloading=1;
 
 	//texture.data = ( GLubyte* )malloc( 1024*1024*4 );
-
-	newnetmessages=0;
 
 	for(i=0;i<maxplayers;i++)
 	{

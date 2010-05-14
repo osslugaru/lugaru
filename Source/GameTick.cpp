@@ -76,8 +76,6 @@ extern bool mousejump;
 extern float viewdistance;
 extern bool freeze;
 extern bool autoslomo;
-extern int newnetmessages;
-extern char netmessages[256];
 extern bool keyboardfrozen;
 extern int netdatanew;
 extern bool loadingstuff;
@@ -1690,36 +1688,6 @@ void	Game::Tick()
 	int templength;
 
 	float headprop,bodyprop,armprop,legprop;
-
-	if(newnetmessages){
-		newnetmessages=0;
-		PlaySoundEx( consolesuccesssound, samp[consolesuccesssound], NULL, true);
-		OPENAL_SetVolume(channels[consolesuccesssound], 256);
-		OPENAL_SetPaused(channels[consolesuccesssound], false);
-
-		for(k=14;k>=2;k--){
-			for(j=0;j<255;j++){
-				consoletext[k][j]=consoletext[k-1][j];
-			}
-			consolechars[k]=consolechars[k-1];
-		}
-		for(k=14;k>=2;k--){
-			for(j=0;j<255;j++){
-				displaytext[k][j]=displaytext[k-1][j];
-			}
-			displaychars[k]=displaychars[k-1];
-			displaytime[k]=displaytime[k-1];
-		}
-		for(j=0;j<255;j++){
-			consoletext[1][j]=' ';
-			displaytext[1][j]=' ';
-		}
-		sprintf (consoletext[1], netmessages);
-		sprintf (displaytext[1], netmessages);
-		consolechars[1]=255;
-		displaychars[1]=255;
-		displaytime[1]=0;
-	}
 
 	for(i=0;i<15;i++){
 		displaytime[i]+=multiplier;
