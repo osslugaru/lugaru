@@ -2253,29 +2253,29 @@ int Game::DrawGLScene(void)
 		if(texdetail>2)texdetail=2;
 		if(mainmenu!=oldmainmenu&&oldmainmenu!=0){
 			if(mainmenu==1){
-				LoadTexture(":Data:Textures:Newgame.png",&Mainmenuitems[1],0,0);
-				LoadTexture(":Data:Textures:Quit.png",&Mainmenuitems[3],0,0);
+				LoadTexture("/Data/Textures/Newgame.png",&Mainmenuitems[1],0,0);
+				LoadTexture("/Data/Textures/Quit.png",&Mainmenuitems[3],0,0);
 				/*if(oldmainmenu==1||oldmainmenu==0){
-				LoadTexture(":Data:Textures:World.png",&Mainmenuitems[7],0,0);
-				LoadTexture(":Data:Textures:Options.png",&Mainmenuitems[2],0,0);
-				LoadTexture(":Data:Textures:Lugaru.png",&Mainmenuitems[0],0,0);
+				LoadTexture("/Data/Textures/World.png",&Mainmenuitems[7],0,0);
+				LoadTexture("/Data/Textures/Options.png",&Mainmenuitems[2],0,0);
+				LoadTexture("/Data/Textures/Lugaru.png",&Mainmenuitems[0],0,0);
 				loaddistrib=0;
 				}*/
 			}
 			if(mainmenu==2){
-				LoadTexture(":Data:Textures:Resume.png",&Mainmenuitems[1],0,0);
-				LoadTexture(":Data:Textures:Endgame.png",&Mainmenuitems[3],0,0);
+				LoadTexture("/Data/Textures/Resume.png",&Mainmenuitems[1],0,0);
+				LoadTexture("/Data/Textures/Endgame.png",&Mainmenuitems[3],0,0);
 				/*if(oldmainmenu==2||oldmainmenu==0){
-				LoadTexture(":Data:Textures:World.png",&Mainmenuitems[7],0,0);
-				LoadTexture(":Data:Textures:Options.png",&Mainmenuitems[2],0,0);
-				LoadTexture(":Data:Textures:Lugaru.png",&Mainmenuitems[0],0,0);
+				LoadTexture("/Data/Textures/World.png",&Mainmenuitems[7],0,0);
+				LoadTexture("/Data/Textures/Options.png",&Mainmenuitems[2],0,0);
+				LoadTexture("/Data/Textures/Lugaru.png",&Mainmenuitems[0],0,0);
 				loaddistrib=0;
 				}*/
 			}
 		}
 		if(lastcheck>.5||oldmainmenu!=mainmenu){
 			if(mainmenu==5){
-				ifstream ipstream(ConvertFileName(":Data:Campaigns:main.txt"));
+				ifstream ipstream(ConvertFileName("/Data/Campaigns/main.txt"));
 				//campaignnumlevels=0;
 				//accountcampaignchoicesmade[accountactive]=0;
 				ipstream.ignore(256,':');

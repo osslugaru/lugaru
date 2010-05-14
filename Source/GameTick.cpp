@@ -647,43 +647,43 @@ void	Game::Setenvironment(int which)
 			OPENAL_SetVolume(channels[stream_wind], 256);
 		}
 
-		LoadTexture(":Data:Textures:snowtree.png",&objects.treetextureptr,0,1);
-		LoadTexture(":Data:Textures:bushsnow.png",&objects.bushtextureptr,0,1);
-		LoadTexture(":Data:Textures:bouldersnow.jpg",&objects.rocktextureptr,1,0);
-		LoadTexture(":Data:Textures:snowbox.jpg",&objects.boxtextureptr,1,0);
+		LoadTexture("/Data/Textures/snowtree.png",&objects.treetextureptr,0,1);
+		LoadTexture("/Data/Textures/bushsnow.png",&objects.bushtextureptr,0,1);
+		LoadTexture("/Data/Textures/bouldersnow.jpg",&objects.rocktextureptr,1,0);
+		LoadTexture("/Data/Textures/snowbox.jpg",&objects.boxtextureptr,1,0);
 
 		OPENAL_Sample_Free(samp[footstepsound]);
 		OPENAL_Sample_Free(samp[footstepsound2]);
 		OPENAL_Sample_Free(samp[footstepsound3]);
 		OPENAL_Sample_Free(samp[footstepsound4]);
-		samp[footstepsound] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepsnow1.ogg", OPENAL_HW3D, 0, 0);
-		samp[footstepsound2] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepsnow2.ogg", OPENAL_HW3D, 0, 0);
-		samp[footstepsound3] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepstone1.ogg", OPENAL_HW3D, 0, 0);
-		samp[footstepsound4] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepstone2.ogg", OPENAL_HW3D, 0, 0);
+		samp[footstepsound] = OPENAL_Sample_Load(OPENAL_FREE, "/Data/Sounds/footstepsnow1.ogg", OPENAL_HW3D, 0, 0);
+		samp[footstepsound2] = OPENAL_Sample_Load(OPENAL_FREE, "/Data/Sounds/footstepsnow2.ogg", OPENAL_HW3D, 0, 0);
+		samp[footstepsound3] = OPENAL_Sample_Load(OPENAL_FREE, "/Data/Sounds/footstepstone1.ogg", OPENAL_HW3D, 0, 0);
+		samp[footstepsound4] = OPENAL_Sample_Load(OPENAL_FREE, "/Data/Sounds/footstepstone2.ogg", OPENAL_HW3D, 0, 0);
 		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound], 4.0f, 1000.0f);
 		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound2], 4.0f, 1000.0f);
 		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound3], 4.0f, 1000.0f);
 		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound4], 4.0f, 1000.0f);
 
-		LoadTexture(":Data:Textures:snow.jpg",&terraintexture,1,0);
+		LoadTexture("/Data/Textures/snow.jpg",&terraintexture,1,0);
 
-		LoadTexture(":Data:Textures:rock.jpg",&terraintexture2,1,0);
+		LoadTexture("/Data/Textures/rock.jpg",&terraintexture2,1,0);
 
-		//LoadTexture(":Data:Textures:detailgrain.png",&terraintexture3,1);
+		//LoadTexture("/Data/Textures/detailgrain.png",&terraintexture3,1);
 
 
 
 
 		temptexdetail=texdetail;
 		if(texdetail>1)texdetail=4;
-		skybox.load(	":Data:Textures:Skybox(snow):Front.jpg",
-			":Data:Textures:Skybox(snow):Left.jpg",
-			":Data:Textures:Skybox(snow):Back.jpg",
-			":Data:Textures:Skybox(snow):Right.jpg",
-			":Data:Textures:Skybox(snow):Up.jpg",
-			":Data:Textures:Skybox(snow):Down.jpg",
-			":Data:Textures:Skybox(snow):Cloud.jpg",
-			":Data:Textures:Skybox(snow):Reflect.jpg");
+		skybox.load(	"/Data/Textures/Skybox(snow):Front.jpg",
+			"/Data/Textures/Skybox(snow):Left.jpg",
+			"/Data/Textures/Skybox(snow):Back.jpg",
+			"/Data/Textures/Skybox(snow):Right.jpg",
+			"/Data/Textures/Skybox(snow):Up.jpg",
+			"/Data/Textures/Skybox(snow):Down.jpg",
+			"/Data/Textures/Skybox(snow):Cloud.jpg",
+			"/Data/Textures/Skybox(snow):Reflect.jpg");
 
 
 
@@ -693,10 +693,10 @@ void	Game::Setenvironment(int which)
 	if(environment==desertenvironment){
 		windvector=0;
 		windvector.z=2;
-		LoadTexture(":Data:Textures:deserttree.png",&objects.treetextureptr,0,1);
-		LoadTexture(":Data:Textures:bushdesert.png",&objects.bushtextureptr,0,1);
-		LoadTexture(":Data:Textures:boulderdesert.jpg",&objects.rocktextureptr,1,0);
-		LoadTexture(":Data:Textures:desertbox.jpg",&objects.boxtextureptr,1,0);
+		LoadTexture("/Data/Textures/deserttree.png",&objects.treetextureptr,0,1);
+		LoadTexture("/Data/Textures/bushdesert.png",&objects.bushtextureptr,0,1);
+		LoadTexture("/Data/Textures/boulderdesert.jpg",&objects.rocktextureptr,1,0);
+		LoadTexture("/Data/Textures/desertbox.jpg",&objects.boxtextureptr,1,0);
 
 
 		if(ambientsound){
@@ -710,33 +710,33 @@ void	Game::Setenvironment(int which)
 		OPENAL_Sample_Free(samp[footstepsound2]);
 		OPENAL_Sample_Free(samp[footstepsound3]);
 		OPENAL_Sample_Free(samp[footstepsound4]);
-		samp[footstepsound] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepsnow1.ogg", OPENAL_HW3D, 0, 0);
-		samp[footstepsound2] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepsnow2.ogg", OPENAL_HW3D, 0, 0);
-		samp[footstepsound3] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepsnow1.ogg", OPENAL_HW3D, 0, 0);
-		samp[footstepsound4] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepsnow2.ogg", OPENAL_HW3D, 0, 0);
+		samp[footstepsound] = OPENAL_Sample_Load(OPENAL_FREE, "/Data/Sounds/footstepsnow1.ogg", OPENAL_HW3D, 0, 0);
+		samp[footstepsound2] = OPENAL_Sample_Load(OPENAL_FREE, "/Data/Sounds/footstepsnow2.ogg", OPENAL_HW3D, 0, 0);
+		samp[footstepsound3] = OPENAL_Sample_Load(OPENAL_FREE, "/Data/Sounds/footstepsnow1.ogg", OPENAL_HW3D, 0, 0);
+		samp[footstepsound4] = OPENAL_Sample_Load(OPENAL_FREE, "/Data/Sounds/footstepsnow2.ogg", OPENAL_HW3D, 0, 0);
 		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound], 4.0f, 1000.0f);
 		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound2], 4.0f, 1000.0f);
 		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound3], 4.0f, 1000.0f);
 		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound4], 4.0f, 1000.0f);
 
-		LoadTexture(":Data:Textures:sand.jpg",&terraintexture,1,0);
+		LoadTexture("/Data/Textures/sand.jpg",&terraintexture,1,0);
 
-		LoadTexture(":Data:Textures:sandslope.jpg",&terraintexture2,1,0);
+		LoadTexture("/Data/Textures/sandslope.jpg",&terraintexture2,1,0);
 
-		//LoadTexture(":Data:Textures:detailgrain.png",&terraintexture3,1);
+		//LoadTexture("/Data/Textures/detailgrain.png",&terraintexture3,1);
 
 
 
 		temptexdetail=texdetail;
 		if(texdetail>1)texdetail=4;
-		skybox.load(	":Data:Textures:Skybox(sand):Front.jpg",
-			":Data:Textures:Skybox(sand):Left.jpg",
-			":Data:Textures:Skybox(sand):Back.jpg",
-			":Data:Textures:Skybox(sand):Right.jpg",
-			":Data:Textures:Skybox(sand):Up.jpg",
-			":Data:Textures:Skybox(sand):Down.jpg",
-			":Data:Textures:Skybox(sand):Cloud.jpg",
-			":Data:Textures:Skybox(sand):Reflect.jpg");
+		skybox.load(	"/Data/Textures/Skybox(sand):Front.jpg",
+			"/Data/Textures/Skybox(sand):Left.jpg",
+			"/Data/Textures/Skybox(sand):Back.jpg",
+			"/Data/Textures/Skybox(sand):Right.jpg",
+			"/Data/Textures/Skybox(sand):Up.jpg",
+			"/Data/Textures/Skybox(sand):Down.jpg",
+			"/Data/Textures/Skybox(sand):Cloud.jpg",
+			"/Data/Textures/Skybox(sand):Reflect.jpg");
 
 
 
@@ -746,10 +746,10 @@ void	Game::Setenvironment(int which)
 	if(environment==grassyenvironment){
 		windvector=0;
 		windvector.z=2;
-		LoadTexture(":Data:Textures:tree.png",&objects.treetextureptr,0,1);
-		LoadTexture(":Data:Textures:bush.png",&objects.bushtextureptr,0,1);
-		LoadTexture(":Data:Textures:boulder.jpg",&objects.rocktextureptr,1,0);
-		LoadTexture(":Data:Textures:grassbox.jpg",&objects.boxtextureptr,1,0);
+		LoadTexture("/Data/Textures/tree.png",&objects.treetextureptr,0,1);
+		LoadTexture("/Data/Textures/bush.png",&objects.bushtextureptr,0,1);
+		LoadTexture("/Data/Textures/boulder.jpg",&objects.rocktextureptr,1,0);
+		LoadTexture("/Data/Textures/grassbox.jpg",&objects.boxtextureptr,1,0);
 
 		if(ambientsound){
 			PlayStreamEx( stream_wind, strm[stream_wind], NULL, true);
@@ -761,33 +761,33 @@ void	Game::Setenvironment(int which)
 		OPENAL_Sample_Free(samp[footstepsound2]);
 		OPENAL_Sample_Free(samp[footstepsound3]);
 		OPENAL_Sample_Free(samp[footstepsound4]);
-		samp[footstepsound] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepgrass1.ogg", OPENAL_HW3D, 0, 0);
-		samp[footstepsound2] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepgrass2.ogg", OPENAL_HW3D, 0, 0);
-		samp[footstepsound3] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepstone1.ogg", OPENAL_HW3D, 0, 0);
-		samp[footstepsound4] = OPENAL_Sample_Load(OPENAL_FREE, ":Data:Sounds:footstepstone2.ogg", OPENAL_HW3D, 0, 0);
+		samp[footstepsound] = OPENAL_Sample_Load(OPENAL_FREE, "/Data/Sounds/footstepgrass1.ogg", OPENAL_HW3D, 0, 0);
+		samp[footstepsound2] = OPENAL_Sample_Load(OPENAL_FREE, "/Data/Sounds/footstepgrass2.ogg", OPENAL_HW3D, 0, 0);
+		samp[footstepsound3] = OPENAL_Sample_Load(OPENAL_FREE, "/Data/Sounds/footstepstone1.ogg", OPENAL_HW3D, 0, 0);
+		samp[footstepsound4] = OPENAL_Sample_Load(OPENAL_FREE, "/Data/Sounds/footstepstone2.ogg", OPENAL_HW3D, 0, 0);
 		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound], 4.0f, 1000.0f);
 		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound2], 4.0f, 1000.0f);
 		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound3], 4.0f, 1000.0f);
 		OPENAL_Sample_SetMinMaxDistance(samp[footstepsound4], 4.0f, 1000.0f);
 
-		LoadTexture(":Data:Textures:grassdirt.jpg",&terraintexture,1,0);
+		LoadTexture("/Data/Textures/grassdirt.jpg",&terraintexture,1,0);
 
-		LoadTexture(":Data:Textures:mossrock.jpg",&terraintexture2,1,0);
+		LoadTexture("/Data/Textures/mossrock.jpg",&terraintexture2,1,0);
 
-		//LoadTexture(":Data:Textures:detail.png",&terraintexture3,1);
+		//LoadTexture("/Data/Textures/detail.png",&terraintexture3,1);
 
 
 
 		temptexdetail=texdetail;
 		if(texdetail>1)texdetail=4;
-		skybox.load(	":Data:Textures:Skybox(grass):Front.jpg",
-			":Data:Textures:Skybox(grass):Left.jpg",
-			":Data:Textures:Skybox(grass):Back.jpg",
-			":Data:Textures:Skybox(grass):Right.jpg",
-			":Data:Textures:Skybox(grass):Up.jpg",
-			":Data:Textures:Skybox(grass):Down.jpg",
-			":Data:Textures:Skybox(grass):Cloud.jpg",
-			":Data:Textures:Skybox(grass):Reflect.jpg");
+		skybox.load(	"/Data/Textures/Skybox(grass):Front.jpg",
+			"/Data/Textures/Skybox(grass):Left.jpg",
+			"/Data/Textures/Skybox(grass):Back.jpg",
+			"/Data/Textures/Skybox(grass):Right.jpg",
+			"/Data/Textures/Skybox(grass):Up.jpg",
+			"/Data/Textures/Skybox(grass):Down.jpg",
+			"/Data/Textures/Skybox(grass):Cloud.jpg",
+			"/Data/Textures/Skybox(grass):Reflect.jpg");
 
 
 
@@ -795,7 +795,7 @@ void	Game::Setenvironment(int which)
 	}
 	temptexdetail=texdetail;
 	texdetail=1;
-	terrain.load(":Data:Textures:heightmap.png");
+	terrain.load("/Data/Textures/heightmap.png");
 
 	texdetail=temptexdetail;
 }
@@ -804,24 +804,24 @@ void	Game::Setenvironment(int which)
 void	Game::Loadlevel(int which){
 	stealthloading=0;
 
-	if(which==0)Loadlevel((char *)":Data:Maps:map1");
-	else if(which==1)Loadlevel((char *)":Data:Maps:map2");
-	else if(which==2)Loadlevel((char *)":Data:Maps:map3");
-	else if(which==3)Loadlevel((char *)":Data:Maps:map4");
-	else if(which==4)Loadlevel((char *)":Data:Maps:map5");
-	else if(which==5)Loadlevel((char *)":Data:Maps:map6");
-	else if(which==6)Loadlevel((char *)":Data:Maps:map7");
-	else if(which==7)Loadlevel((char *)":Data:Maps:map8");
-	else if(which==8)Loadlevel((char *)":Data:Maps:map9");
-	else if(which==9)Loadlevel((char *)":Data:Maps:map10");
-	else if(which==10)Loadlevel((char *)":Data:Maps:map11");
-	else if(which==11)Loadlevel((char *)":Data:Maps:map12");
-	else if(which==12)Loadlevel((char *)":Data:Maps:map13");
-	else if(which==13)Loadlevel((char *)":Data:Maps:map14");
-	else if(which==14)Loadlevel((char *)":Data:Maps:map15");
-	else if(which==15)Loadlevel((char *)":Data:Maps:map16");
-	else if(which==-1){tutoriallevel=-1;Loadlevel((char *)":Data:Maps:tutorial");}
-	else Loadlevel((char *)":Data:Maps:mapsave");
+	if(which==0)Loadlevel((char *)"/Data/Maps/map1");
+	else if(which==1)Loadlevel((char *)"/Data/Maps/map2");
+	else if(which==2)Loadlevel((char *)"/Data/Maps/map3");
+	else if(which==3)Loadlevel((char *)"/Data/Maps/map4");
+	else if(which==4)Loadlevel((char *)"/Data/Maps/map5");
+	else if(which==5)Loadlevel((char *)"/Data/Maps/map6");
+	else if(which==6)Loadlevel((char *)"/Data/Maps/map7");
+	else if(which==7)Loadlevel((char *)"/Data/Maps/map8");
+	else if(which==8)Loadlevel((char *)"/Data/Maps/map9");
+	else if(which==9)Loadlevel((char *)"/Data/Maps/map10");
+	else if(which==10)Loadlevel((char *)"/Data/Maps/map11");
+	else if(which==11)Loadlevel((char *)"/Data/Maps/map12");
+	else if(which==12)Loadlevel((char *)"/Data/Maps/map13");
+	else if(which==13)Loadlevel((char *)"/Data/Maps/map14");
+	else if(which==14)Loadlevel((char *)"/Data/Maps/map15");
+	else if(which==15)Loadlevel((char *)"/Data/Maps/map16");
+	else if(which==-1){tutoriallevel=-1;Loadlevel((char *)"/Data/Maps/tutorial");}
+	else Loadlevel((char *)"/Data/Maps/mapsave");
 
 	whichlevel=which;
 }
@@ -899,7 +899,7 @@ void	Game::Loadlevel(char *name){
 		won=0;
 
 		//campaign=0;
-		animation[bounceidleanim].Load((char *)":Data:Animations:Idle",middleheight,neutral);
+		animation[bounceidleanim].Load((char *)"/Data/Animations/Idle",middleheight,neutral);
 
 		numdialogues=0;
 
@@ -1365,15 +1365,15 @@ void	Game::Loadlevel(char *name){
 			//if(Random()%2==0)player[i].creature=wolftype;
 			//else player[i].creature=rabbittype;
 			if(i==0&&mapvers<9)player[i].creature=rabbittype;
-			if(player[i].creature!=wolftype)player[i].skeleton.Load((char *)":Data:Skeleton:Basic Figure",(char *)":Data:Skeleton:Basic Figurelow",(char *)":Data:Skeleton:Rabbitbelt",(char *)":Data:Models:Body.solid",(char *)":Data:Models:Body2.solid",(char *)":Data:Models:Body3.solid",(char *)":Data:Models:Body4.solid",(char *)":Data:Models:Body5.solid",(char *)":Data:Models:Body6.solid",(char *)":Data:Models:Body7.solid",(char *)":Data:Models:Bodylow.solid",(char *)":Data:Models:Belt.solid",0);
+			if(player[i].creature!=wolftype)player[i].skeleton.Load((char *)"/Data/Skeleton/Basic Figure",(char *)"/Data/Skeleton/Basic Figurelow",(char *)"/Data/Skeleton/Rabbitbelt",(char *)"/Data/Models/Body.solid",(char *)"/Data/Models/Body2.solid",(char *)"/Data/Models/Body3.solid",(char *)"/Data/Models/Body4.solid",(char *)"/Data/Models/Body5.solid",(char *)"/Data/Models/Body6.solid",(char *)"/Data/Models/Body7.solid",(char *)"/Data/Models/Bodylow.solid",(char *)"/Data/Models/Belt.solid",0);
 			else
 			{
 				if(player[i].creature!=wolftype){
-					player[i].skeleton.Load((char *)":Data:Skeleton:Basic Figure",(char *)":Data:Skeleton:Basic Figurelow",(char *)":Data:Skeleton:Rabbitbelt",(char *)":Data:Models:Body.solid",(char *)":Data:Models:Body2.solid",(char *)":Data:Models:Body3.solid",(char *)":Data:Models:Body4.solid",(char *)":Data:Models:Body5.solid",(char *)":Data:Models:Body6.solid",(char *)":Data:Models:Body7.solid",(char *)":Data:Models:Bodylow.solid",(char *)":Data:Models:Belt.solid",1);
-					LoadTexture(":Data:Textures:Belt.png",&player[i].skeleton.drawmodelclothes.textureptr,1,1);
+					player[i].skeleton.Load((char *)"/Data/Skeleton/Basic Figure",(char *)"/Data/Skeleton/Basic Figurelow",(char *)"/Data/Skeleton/Rabbitbelt",(char *)"/Data/Models/Body.solid",(char *)"/Data/Models/Body2.solid",(char *)"/Data/Models/Body3.solid",(char *)"/Data/Models/Body4.solid",(char *)"/Data/Models/Body5.solid",(char *)"/Data/Models/Body6.solid",(char *)"/Data/Models/Body7.solid",(char *)"/Data/Models/Bodylow.solid",(char *)"/Data/Models/Belt.solid",1);
+					LoadTexture("/Data/Textures/Belt.png",&player[i].skeleton.drawmodelclothes.textureptr,1,1);
 				}
 				if(player[i].creature==wolftype){
-					player[i].skeleton.Load((char *)":Data:Skeleton:Basic Figure Wolf",(char *)":Data:Skeleton:Basic Figure Wolf Low",(char *)":Data:Skeleton:Rabbitbelt",(char *)":Data:Models:Wolf.solid",(char *)":Data:Models:Wolf2.solid",(char *)":Data:Models:Wolf3.solid",(char *)":Data:Models:Wolf4.solid",(char *)":Data:Models:Wolf5.solid",(char *)":Data:Models:Wolf6.solid",(char *)":Data:Models:Wolf7.solid",(char *)":Data:Models:Wolflow.solid",(char *)":Data:Models:Belt.solid",0);
+					player[i].skeleton.Load((char *)"/Data/Skeleton/Basic Figure Wolf",(char *)"/Data/Skeleton/Basic Figure Wolf Low",(char *)"/Data/Skeleton/Rabbitbelt",(char *)"/Data/Models/Wolf.solid",(char *)"/Data/Models/Wolf2.solid",(char *)"/Data/Models/Wolf3.solid",(char *)"/Data/Models/Wolf4.solid",(char *)"/Data/Models/Wolf5.solid",(char *)"/Data/Models/Wolf6.solid",(char *)"/Data/Models/Wolf7.solid",(char *)"/Data/Models/Wolflow.solid",(char *)"/Data/Models/Belt.solid",0);
 				}
 			}
 
@@ -1386,47 +1386,47 @@ void	Game::Loadlevel(char *name){
 			if(player[i].creature==rabbittype)
 			{
 				if(player[i].whichskin==0){
-					LoadTextureSave(":Data:Textures:Fur3.jpg",&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
+					LoadTextureSave("/Data/Textures/Fur3.jpg",&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
 				}
 				else if(player[i].whichskin==1){
-					LoadTextureSave(":Data:Textures:Fur.jpg",&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
+					LoadTextureSave("/Data/Textures/Fur.jpg",&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
 				}
 				else if(player[i].whichskin==2){
-					LoadTextureSave(":Data:Textures:Fur2.jpg",&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
+					LoadTextureSave("/Data/Textures/Fur2.jpg",&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
 				}
 				else if(player[i].whichskin==3){
-					LoadTextureSave(":Data:Textures:Lynx.jpg",&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
+					LoadTextureSave("/Data/Textures/Lynx.jpg",&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
 				}
 				else if(player[i].whichskin==4){
-					LoadTextureSave(":Data:Textures:Otter.jpg",&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
+					LoadTextureSave("/Data/Textures/Otter.jpg",&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
 				}
 				else if(player[i].whichskin==5){
-					LoadTextureSave(":Data:Textures:Opal.jpg",&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
+					LoadTextureSave("/Data/Textures/Opal.jpg",&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
 				}
 				else if(player[i].whichskin==6){
-					LoadTextureSave(":Data:Textures:Sable.jpg",&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
+					LoadTextureSave("/Data/Textures/Sable.jpg",&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
 				}
 				else if(player[i].whichskin==7){
-					LoadTextureSave(":Data:Textures:Chocolate.jpg",&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
+					LoadTextureSave("/Data/Textures/Chocolate.jpg",&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
 				}
 				else if(player[i].whichskin==8){
-					LoadTextureSave(":Data:Textures:BW2.jpg",&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
+					LoadTextureSave("/Data/Textures/BW2.jpg",&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
 				}
 				else if(player[i].whichskin==9){
-					LoadTextureSave(":Data:Textures:WB2.jpg",&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
+					LoadTextureSave("/Data/Textures/WB2.jpg",&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
 				}
 			}
 			if(player[i].creature==wolftype)
 			{
 				//k=abs(Random()%3);
 				if(player[i].whichskin==0){
-					LoadTextureSave(":Data:Textures:Wolf.jpg",&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
+					LoadTextureSave("/Data/Textures/Wolf.jpg",&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
 				}
 				else if(player[i].whichskin==1){
-					LoadTextureSave(":Data:Textures:Darkwolf.jpg",&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
+					LoadTextureSave("/Data/Textures/Darkwolf.jpg",&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
 				}
 				else if(player[i].whichskin==2){
-					LoadTextureSave(":Data:Textures:Snowwolf.jpg",&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
+					LoadTextureSave("/Data/Textures/Snowwolf.jpg",&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
 				}
 			}
 
@@ -1510,7 +1510,7 @@ void	Game::Loadlevel(char *name){
 				player[i].proportionlegs.z=0;
 			}
 
-			player[i].tempanimation.Load((char *)":Data:Animations:Tempanim",0,0);
+			player[i].tempanimation.Load((char *)"/Data/Animations/Tempanim",0,0);
 
 			player[i].headmorphness=0;
 			player[i].targetheadmorphness=1;
@@ -1649,14 +1649,14 @@ void	Game::Loadlevel(char *name){
 		oldmusicvolume[3]=0;
 
 
-		/*LoadTexture(":Data:Textures:cloud.png",&sprites.cloudtexture,1,1);
-		LoadTexture(":Data:Textures:cloudimpact.png",&sprites.cloudimpacttexture,1,1);
-		LoadTexture(":Data:Textures:bloodparticle.png",&sprites.bloodtexture,1,1);
-		LoadTexture(":Data:Textures:snowflake.png",&sprites.snowflaketexture,1,1);
-		LoadTexture(":Data:Textures:flame.png",&sprites.flametexture,1,1);
-		LoadTexture(":Data:Textures:bloodflame.png",&sprites.bloodflametexture,1,1);
-		LoadTexture(":Data:Textures:smoke.png",&sprites.smoketexture,1,1);
-		LoadTexture(":Data:Textures:shine.png",&sprites.shinetexture,1,0);
+		/*LoadTexture("/Data/Textures/cloud.png",&sprites.cloudtexture,1,1);
+		LoadTexture("/Data/Textures/cloudimpact.png",&sprites.cloudimpacttexture,1,1);
+		LoadTexture("/Data/Textures/bloodparticle.png",&sprites.bloodtexture,1,1);
+		LoadTexture("/Data/Textures/snowflake.png",&sprites.snowflaketexture,1,1);
+		LoadTexture("/Data/Textures/flame.png",&sprites.flametexture,1,1);
+		LoadTexture("/Data/Textures/bloodflame.png",&sprites.bloodflametexture,1,1);
+		LoadTexture("/Data/Textures/smoke.png",&sprites.smoketexture,1,1);
+		LoadTexture("/Data/Textures/shine.png",&sprites.shinetexture,1,0);
 		*/
 
 		if(!firstload)
@@ -1842,7 +1842,7 @@ void	Game::Tick()
 				if(newscreenwidth<0)newscreenwidth=screenwidth;
 				if(newscreenheight<0)newscreenheight=screenheight;
 
-				ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
+				ofstream opstream(ConvertFileName("/Data/config.txt", "w"));
 				opstream << "Screenwidth:\n";
 				opstream << newscreenwidth;
 				opstream << "\nScreenheight:\n";
@@ -2237,7 +2237,7 @@ void	Game::Tick()
 				if(newscreenheight<0)newscreenheight=screenheight;
 
 
-				ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
+				ofstream opstream(ConvertFileName("/Data/config.txt", "w"));
 				opstream << "Screenwidth:\n";
 				opstream << newscreenwidth;
 				opstream << "\nScreenheight:\n";
@@ -2865,7 +2865,7 @@ void	Game::Tick()
 				if(newscreenwidth<0)newscreenwidth=screenwidth;
 				if(newscreenheight<0)newscreenheight=screenheight;
 
-				ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
+				ofstream opstream(ConvertFileName("/Data/config.txt", "w"));
 				opstream << "Screenwidth:\n";
 				opstream << newscreenwidth;
 				opstream << "\nScreenheight:\n";
@@ -3831,11 +3831,11 @@ void	Game::Tick()
 							donesomething=1;
 							}*/
 							if(Compare(consoletext[0],"cellar door ",0,11)||Compare(consoletext[0],"cellardoor ",0,10)){
-								LoadTextureSave(":Data:Textures:Furdarko.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+								LoadTextureSave("/Data/Textures/Furdarko.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								donesomething=1;
 							}
 							/*if(Compare(consoletext[0],"Pants ",0,5)){
-							AddClothes(":Data:Textures:Pants.png",0,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
+							AddClothes("/Data/Textures/Pants.png",0,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
 							player[i].DoMipmaps(5,0,0,player[i].skeleton.skinsize,player[i].skeleton.skinsize);
 							donesomething=1;
 							}*/
@@ -4640,34 +4640,34 @@ void	Game::Tick()
 
 								player[0].numclothes=0;
 								if(player[0].whichskin==0){
-									LoadTextureSave(":Data:Textures:Fur3.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+									LoadTextureSave("/Data/Textures/Fur3.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								}
 								else if(player[0].whichskin==1){
-									LoadTextureSave(":Data:Textures:Fur.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+									LoadTextureSave("/Data/Textures/Fur.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								}
 								else if(player[0].whichskin==2){
-									LoadTextureSave(":Data:Textures:Fur2.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+									LoadTextureSave("/Data/Textures/Fur2.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								}
 								else if(player[0].whichskin==3){
-									LoadTextureSave(":Data:Textures:Lynx.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+									LoadTextureSave("/Data/Textures/Lynx.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								}
 								else if(player[0].whichskin==4){
-									LoadTextureSave(":Data:Textures:Otter.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+									LoadTextureSave("/Data/Textures/Otter.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								}
 								else if(player[0].whichskin==5){
-									LoadTextureSave(":Data:Textures:Opal.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+									LoadTextureSave("/Data/Textures/Opal.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								}
 								else if(player[0].whichskin==6){
-									LoadTextureSave(":Data:Textures:Sable.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+									LoadTextureSave("/Data/Textures/Sable.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								}
 								else if(player[0].whichskin==7){
-									LoadTextureSave(":Data:Textures:Chocolate.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+									LoadTextureSave("/Data/Textures/Chocolate.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								}
 								else if(player[0].whichskin==8){
-									LoadTextureSave(":Data:Textures:BW2.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+									LoadTextureSave("/Data/Textures/BW2.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								}
 								else if(player[0].whichskin==9){
-									LoadTextureSave(":Data:Textures:WB2.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+									LoadTextureSave("/Data/Textures/WB2.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								}
 
 								editoractive=typeactive;
@@ -5083,34 +5083,34 @@ void	Game::Tick()
 									}
 									player[closest].numclothes=0;
 									if(player[closest].whichskin==0){
-										LoadTextureSave(":Data:Textures:Fur3.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+										LoadTextureSave("/Data/Textures/Fur3.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 									}
 									else if(player[closest].whichskin==1){
-										LoadTextureSave(":Data:Textures:Fur.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+										LoadTextureSave("/Data/Textures/Fur.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 									}
 									else if(player[closest].whichskin==2){
-										LoadTextureSave(":Data:Textures:Fur2.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+										LoadTextureSave("/Data/Textures/Fur2.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 									}
 									else if(player[closest].whichskin==3){
-										LoadTextureSave(":Data:Textures:Lynx.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+										LoadTextureSave("/Data/Textures/Lynx.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 									}
 									else if(player[closest].whichskin==4){
-										LoadTextureSave(":Data:Textures:Otter.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+										LoadTextureSave("/Data/Textures/Otter.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 									}
 									else if(player[closest].whichskin==5){
-										LoadTextureSave(":Data:Textures:Opal.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+										LoadTextureSave("/Data/Textures/Opal.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 									}
 									else if(player[closest].whichskin==6){
-										LoadTextureSave(":Data:Textures:Sable.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+										LoadTextureSave("/Data/Textures/Sable.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 									}
 									else if(player[closest].whichskin==7){
-										LoadTextureSave(":Data:Textures:Chocolate.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+										LoadTextureSave("/Data/Textures/Chocolate.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 									}
 									else if(player[closest].whichskin==8){
-										LoadTextureSave(":Data:Textures:BW2.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+										LoadTextureSave("/Data/Textures/BW2.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 									}
 									else if(player[closest].whichskin==9){
-										LoadTextureSave(":Data:Textures:WB2.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+										LoadTextureSave("/Data/Textures/WB2.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 									}
 
 									donesomething=1;
@@ -5121,34 +5121,34 @@ void	Game::Tick()
 
 								player[closest].numclothes=0;
 								if(player[closest].whichskin==0){
-									LoadTextureSave(":Data:Textures:Fur3.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+									LoadTextureSave("/Data/Textures/Fur3.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 								}
 								else if(player[closest].whichskin==1){
-									LoadTextureSave(":Data:Textures:Fur.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+									LoadTextureSave("/Data/Textures/Fur.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 								}
 								else if(player[closest].whichskin==2){
-									LoadTextureSave(":Data:Textures:Fur2.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+									LoadTextureSave("/Data/Textures/Fur2.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 								}
 								else if(player[closest].whichskin==3){
-									LoadTextureSave(":Data:Textures:Lynx.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+									LoadTextureSave("/Data/Textures/Lynx.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 								}
 								else if(player[closest].whichskin==4){
-									LoadTextureSave(":Data:Textures:Otter.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+									LoadTextureSave("/Data/Textures/Otter.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 								}
 								else if(player[closest].whichskin==5){
-									LoadTextureSave(":Data:Textures:Opal.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+									LoadTextureSave("/Data/Textures/Opal.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 								}
 								else if(player[closest].whichskin==6){
-									LoadTextureSave(":Data:Textures:Sable.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+									LoadTextureSave("/Data/Textures/Sable.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 								}
 								else if(player[closest].whichskin==7){
-									LoadTextureSave(":Data:Textures:Chocolate.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+									LoadTextureSave("/Data/Textures/Chocolate.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 								}
 								else if(player[closest].whichskin==8){
-									LoadTextureSave(":Data:Textures:BW2.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+									LoadTextureSave("/Data/Textures/BW2.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 								}
 								else if(player[closest].whichskin==9){
-									LoadTextureSave(":Data:Textures:WB2.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+									LoadTextureSave("/Data/Textures/WB2.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 								}
 
 								donesomething=1;
@@ -5275,8 +5275,8 @@ void	Game::Tick()
 
 							if(Compare(consoletext[0],"funnybunny ",0,10)||Compare(consoletext[0],"funny bunny ",0,11)){
 								player[0].skeleton.id=0;
-								player[0].skeleton.Load((char *)":Data:Skeleton:Basic Figure",(char *)":Data:Skeleton:Basic Figurelow",(char *)":Data:Skeleton:Rabbitbelt",(char *)":Data:Models:Body.solid",(char *)":Data:Models:Body2.solid",(char *)":Data:Models:Body3.solid",(char *)":Data:Models:Body4.solid",(char *)":Data:Models:Body5.solid",(char *)":Data:Models:Body6.solid",(char *)":Data:Models:Body7.solid",(char *)":Data:Models:Bodylow.solid",(char *)":Data:Models:Belt.solid",1);
-								LoadTextureSave(":Data:Textures:fur3.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+								player[0].skeleton.Load((char *)"/Data/Skeleton/Basic Figure",(char *)"/Data/Skeleton/Basic Figurelow",(char *)"/Data/Skeleton/Rabbitbelt",(char *)"/Data/Models/Body.solid",(char *)"/Data/Models/Body2.solid",(char *)"/Data/Models/Body3.solid",(char *)"/Data/Models/Body4.solid",(char *)"/Data/Models/Body5.solid",(char *)"/Data/Models/Body6.solid",(char *)"/Data/Models/Body7.solid",(char *)"/Data/Models/Bodylow.solid",(char *)"/Data/Models/Belt.solid",1);
+								LoadTextureSave("/Data/Textures/fur3.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								player[0].creature=rabbittype;
 								player[0].scale=.2;
 
@@ -5293,8 +5293,8 @@ void	Game::Tick()
 							}
 							if(Compare(consoletext[0],"wolfieisgod ",0,11)||Compare(consoletext[0],"wolfie is god ",0,12)){
 								player[0].skeleton.id=0;
-								player[0].skeleton.Load((char *)":Data:Skeleton:Basic Figure Wolf",(char *)":Data:Skeleton:Basic Figure Wolf Low",(char *)":Data:Skeleton:Rabbitbelt",(char *)":Data:Models:Wolf.solid",(char *)":Data:Models:Wolf2.solid",(char *)":Data:Models:Wolf3.solid",(char *)":Data:Models:Wolf4.solid",(char *)":Data:Models:Wolf5.solid",(char *)":Data:Models:Wolf6.solid",(char *)":Data:Models:Wolf7.solid",(char *)":Data:Models:Wolflow.solid",(char *)":Data:Models:Belt.solid",0);
-								LoadTextureSave(":Data:Textures:Wolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+								player[0].skeleton.Load((char *)"/Data/Skeleton/Basic Figure Wolf",(char *)"/Data/Skeleton/Basic Figure Wolf Low",(char *)"/Data/Skeleton/Rabbitbelt",(char *)"/Data/Models/Wolf.solid",(char *)"/Data/Models/Wolf2.solid",(char *)"/Data/Models/Wolf3.solid",(char *)"/Data/Models/Wolf4.solid",(char *)"/Data/Models/Wolf5.solid",(char *)"/Data/Models/Wolf6.solid",(char *)"/Data/Models/Wolf7.solid",(char *)"/Data/Models/Wolflow.solid",(char *)"/Data/Models/Belt.solid",0);
+								LoadTextureSave("/Data/Textures/Wolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								player[0].creature=wolftype;
 
 								player[0].proportionhead=1.1;
@@ -5309,43 +5309,43 @@ void	Game::Tick()
 								donesomething=1;
 							}
 							/*if(Compare(consoletext[0],"kungfu ",0,6)||Compare(consoletext[0],"kung fu ",0,7)){
-							LoadTextureSave(":Data:Textures:Kungfu.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+							LoadTextureSave("/Data/Textures/Kungfu.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 							donesomething=1;
 							}
 							if(Compare(consoletext[0],"rambo ",0,5)){
-							LoadTextureSave(":Data:Textures:Leather.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+							LoadTextureSave("/Data/Textures/Leather.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 							donesomething=1;
 							}
 							if(Compare(consoletext[0],"david ",0,5)){
-							LoadTextureSave(":Data:Textures:David.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+							LoadTextureSave("/Data/Textures/David.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 							donesomething=1;
 							}*/
 							if(Compare(consoletext[0],"wolf ",0,4)){
-								LoadTextureSave(":Data:Textures:Wolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+								LoadTextureSave("/Data/Textures/Wolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								donesomething=1;
 							}
 							if(Compare(consoletext[0],"darkwolf ",0,8)){
-								LoadTextureSave(":Data:Textures:DarkWolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+								LoadTextureSave("/Data/Textures/DarkWolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								donesomething=1;
 							}
 							if(Compare(consoletext[0],"snowwolf ",0,8)){
-								LoadTextureSave(":Data:Textures:Snowwolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+								LoadTextureSave("/Data/Textures/Snowwolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								donesomething=1;
 							}/*
 							 if(Compare(consoletext[0],"lizardwolf ",0,10)){
-							 LoadTextureSave(":Data:Textures:Lizardwolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+							 LoadTextureSave("/Data/Textures/Lizardwolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 							 donesomething=1;
 							 }*/
 							if(Compare(consoletext[0],"white ",0,5)){
-								LoadTextureSave(":Data:Textures:fur.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+								LoadTextureSave("/Data/Textures/fur.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								donesomething=1;
 							}
 							if(Compare(consoletext[0],"brown ",0,5)){
-								LoadTextureSave(":Data:Textures:fur3.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+								LoadTextureSave("/Data/Textures/fur3.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								donesomething=1;
 							}
 							if(Compare(consoletext[0],"black ",0,5)){
-								LoadTextureSave(":Data:Textures:fur2.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+								LoadTextureSave("/Data/Textures/fur2.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								donesomething=1;
 							}
 							if(consolechars[0]>0){
@@ -5392,7 +5392,7 @@ void	Game::Tick()
 				if(newscreenwidth<0)newscreenwidth=screenwidth;
 				if(newscreenheight<0)newscreenheight=screenheight;
 
-				ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
+				ofstream opstream(ConvertFileName("/Data/config.txt", "w"));
 				opstream << "Screenwidth:\n";
 				opstream << newscreenwidth;
 				opstream << "\nScreenheight:\n";
@@ -7177,46 +7177,46 @@ void	Game::Tick()
 
 									if(player[closest].creature==rabbittype){
 										if(player[closest].whichskin==0){
-											LoadTextureSave(":Data:Textures:Fur3.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+											LoadTextureSave("/Data/Textures/Fur3.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 										}
 										else if(player[closest].whichskin==1){
-											LoadTextureSave(":Data:Textures:Fur.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+											LoadTextureSave("/Data/Textures/Fur.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 										}
 										else if(player[closest].whichskin==2){
-											LoadTextureSave(":Data:Textures:Fur2.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+											LoadTextureSave("/Data/Textures/Fur2.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 										}
 										else if(player[closest].whichskin==3){
-											LoadTextureSave(":Data:Textures:Lynx.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+											LoadTextureSave("/Data/Textures/Lynx.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 										}
 										else if(player[closest].whichskin==4){
-											LoadTextureSave(":Data:Textures:Otter.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+											LoadTextureSave("/Data/Textures/Otter.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 										}
 										else if(player[closest].whichskin==5){
-											LoadTextureSave(":Data:Textures:Opal.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+											LoadTextureSave("/Data/Textures/Opal.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 										}
 										else if(player[closest].whichskin==6){
-											LoadTextureSave(":Data:Textures:Sable.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+											LoadTextureSave("/Data/Textures/Sable.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 										}
 										else if(player[closest].whichskin==7){
-											LoadTextureSave(":Data:Textures:Chocolate.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+											LoadTextureSave("/Data/Textures/Chocolate.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 										}
 										else if(player[closest].whichskin==8){
-											LoadTextureSave(":Data:Textures:BW2.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+											LoadTextureSave("/Data/Textures/BW2.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 										}
 										else if(player[closest].whichskin==9){
-											LoadTextureSave(":Data:Textures:WB2.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+											LoadTextureSave("/Data/Textures/WB2.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 										}
 									}
 									if(player[closest].creature==wolftype){
 										k=abs(Random()%3);
 										if(player[closest].whichskin==0){
-											LoadTextureSave(":Data:Textures:Wolf.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+											LoadTextureSave("/Data/Textures/Wolf.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 										}
 										else if(player[closest].whichskin==1){
-											LoadTextureSave(":Data:Textures:Darkwolf.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+											LoadTextureSave("/Data/Textures/Darkwolf.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 										}
 										else if(player[closest].whichskin==2){
-											LoadTextureSave(":Data:Textures:Snowwolf.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+											LoadTextureSave("/Data/Textures/Snowwolf.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 										}
 									}
 								}
@@ -7264,8 +7264,8 @@ void	Game::Tick()
 
 									if(player[closest].creature==rabbittype){
 										player[closest].skeleton.id=closest;
-										player[closest].skeleton.Load((char *)":Data:Skeleton:Basic Figure Wolf",(char *)":Data:Skeleton:Basic Figure Wolf Low",(char *)":Data:Skeleton:Rabbitbelt",(char *)":Data:Models:Wolf.solid",(char *)":Data:Models:Wolf2.solid",(char *)":Data:Models:Wolf3.solid",(char *)":Data:Models:Wolf4.solid",(char *)":Data:Models:Wolf5.solid",(char *)":Data:Models:Wolf6.solid",(char *)":Data:Models:Wolf7.solid",(char *)":Data:Models:Wolflow.solid",(char *)":Data:Models:Belt.solid",0);
-										LoadTextureSave(":Data:Textures:Wolf.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[closest],&player[closest].skeleton.skinsize);
+										player[closest].skeleton.Load((char *)"/Data/Skeleton/Basic Figure Wolf",(char *)"/Data/Skeleton/Basic Figure Wolf Low",(char *)"/Data/Skeleton/Rabbitbelt",(char *)"/Data/Models/Wolf.solid",(char *)"/Data/Models/Wolf2.solid",(char *)"/Data/Models/Wolf3.solid",(char *)"/Data/Models/Wolf4.solid",(char *)"/Data/Models/Wolf5.solid",(char *)"/Data/Models/Wolf6.solid",(char *)"/Data/Models/Wolf7.solid",(char *)"/Data/Models/Wolflow.solid",(char *)"/Data/Models/Belt.solid",0);
+										LoadTextureSave("/Data/Textures/Wolf.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[closest],&player[closest].skeleton.skinsize);
 										player[closest].whichskin=0;
 										player[closest].creature=wolftype;
 
@@ -7281,8 +7281,8 @@ void	Game::Tick()
 									else
 									{
 										player[closest].skeleton.id=closest;
-										player[closest].skeleton.Load((char *)":Data:Skeleton:Basic Figure",(char *)":Data:Skeleton:Basic Figurelow",(char *)":Data:Skeleton:Rabbitbelt",(char *)":Data:Models:Body.solid",(char *)":Data:Models:Body2.solid",(char *)":Data:Models:Body3.solid",(char *)":Data:Models:Body4.solid",(char *)":Data:Models:Body5.solid",(char *)":Data:Models:Body6.solid",(char *)":Data:Models:Body7.solid",(char *)":Data:Models:Bodylow.solid",(char *)":Data:Models:Belt.solid",1);
-										LoadTextureSave(":Data:Textures:Fur3.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+										player[closest].skeleton.Load((char *)"/Data/Skeleton/Basic Figure",(char *)"/Data/Skeleton/Basic Figurelow",(char *)"/Data/Skeleton/Rabbitbelt",(char *)"/Data/Models/Body.solid",(char *)"/Data/Models/Body2.solid",(char *)"/Data/Models/Body3.solid",(char *)"/Data/Models/Body4.solid",(char *)"/Data/Models/Body5.solid",(char *)"/Data/Models/Body6.solid",(char *)"/Data/Models/Body7.solid",(char *)"/Data/Models/Bodylow.solid",(char *)"/Data/Models/Belt.solid",1);
+										LoadTextureSave("/Data/Textures/Fur3.jpg",&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 										player[closest].whichskin=0;
 										player[closest].creature=rabbittype;
 
@@ -7518,13 +7518,13 @@ void	Game::Tick()
 						/*
 						if(IsKeyDown(theKeyMap, MAC_S_KEY)&&IsKeyDown(theKeyMap, MAC_COMMAND_KEY)&&!slomotogglekeydown){
 						FILE			*tfile;
-						//tfile=fopen( ":Data:Maps:mapsave", "wb" );
-						if(whichlevel==0)tfile=fopen( ":Data:Maps:map1", "wb" );
-						else if(whichlevel==1)tfile=fopen( ":Data:Maps:map2", "wb" );
-						else if(whichlevel==2)tfile=fopen( ":Data:Maps:map3", "wb" );
-						else if(whichlevel==3)tfile=fopen( ":Data:Maps:map4", "wb" );
-						else if(whichlevel==4)tfile=fopen( ":Data:Maps:map5", "wb" );
-						else tfile=fopen( ":Data:Maps:mapsave", "wb" );
+						//tfile=fopen( "/Data/Maps/mapsave", "wb" );
+						if(whichlevel==0)tfile=fopen( "/Data/Maps/map1", "wb" );
+						else if(whichlevel==1)tfile=fopen( "/Data/Maps/map2", "wb" );
+						else if(whichlevel==2)tfile=fopen( "/Data/Maps/map3", "wb" );
+						else if(whichlevel==3)tfile=fopen( "/Data/Maps/map4", "wb" );
+						else if(whichlevel==4)tfile=fopen( "/Data/Maps/map5", "wb" );
+						else tfile=fopen( "/Data/Maps/mapsave", "wb" );
 
 						fwrite( &player[0].coords, 1, sizeof(XYZ), tfile );
 						fwrite( &player[0].rotation, 1, sizeof(float), tfile );
@@ -7672,7 +7672,7 @@ void	Game::Tick()
 								player[numplayers].creature=rabbittype;
 								player[numplayers].howactive=editoractive;
 								player[numplayers].skeleton.id=numplayers;
-								player[numplayers].skeleton.Load((char *)":Data:Skeleton:Basic Figure",(char *)":Data:Skeleton:Basic Figurelow",(char *)":Data:Skeleton:Rabbitbelt",(char *)":Data:Models:Body.solid",(char *)":Data:Models:Body2.solid",(char *)":Data:Models:Body3.solid",(char *)":Data:Models:Body4.solid",(char *)":Data:Models:Body5.solid",(char *)":Data:Models:Body6.solid",(char *)":Data:Models:Body7.solid",(char *)":Data:Models:Bodylow.solid",(char *)":Data:Models:Belt.solid",1);
+								player[numplayers].skeleton.Load((char *)"/Data/Skeleton/Basic Figure",(char *)"/Data/Skeleton/Basic Figurelow",(char *)"/Data/Skeleton/Rabbitbelt",(char *)"/Data/Models/Body.solid",(char *)"/Data/Models/Body2.solid",(char *)"/Data/Models/Body3.solid",(char *)"/Data/Models/Body4.solid",(char *)"/Data/Models/Body5.solid",(char *)"/Data/Models/Body6.solid",(char *)"/Data/Models/Body7.solid",(char *)"/Data/Models/Bodylow.solid",(char *)"/Data/Models/Belt.solid",1);
 
 								//texsize=512*512*3/texdetail/texdetail;
 								//if(!player[numplayers].loaded)player[numplayers].skeleton.skinText = new GLubyte[texsize];
@@ -7680,19 +7680,19 @@ void	Game::Tick()
 
 								k=abs(Random()%2)+1;
 								if(k==0){
-									LoadTextureSave(":Data:Textures:Fur3.jpg",&player[numplayers].skeleton.drawmodel.textureptr,1,&player[numplayers].skeleton.skinText[0],&player[numplayers].skeleton.skinsize);
+									LoadTextureSave("/Data/Textures/Fur3.jpg",&player[numplayers].skeleton.drawmodel.textureptr,1,&player[numplayers].skeleton.skinText[0],&player[numplayers].skeleton.skinsize);
 									player[numplayers].whichskin=0;
 								}
 								else if(k==1){
-									LoadTextureSave(":Data:Textures:Fur.jpg",&player[numplayers].skeleton.drawmodel.textureptr,1,&player[numplayers].skeleton.skinText[0],&player[numplayers].skeleton.skinsize);
+									LoadTextureSave("/Data/Textures/Fur.jpg",&player[numplayers].skeleton.drawmodel.textureptr,1,&player[numplayers].skeleton.skinText[0],&player[numplayers].skeleton.skinsize);
 									player[numplayers].whichskin=1;
 								}
 								else {
-									LoadTextureSave(":Data:Textures:Fur2.jpg",&player[numplayers].skeleton.drawmodel.textureptr,1,&player[numplayers].skeleton.skinText[0],&player[numplayers].skeleton.skinsize);
+									LoadTextureSave("/Data/Textures/Fur2.jpg",&player[numplayers].skeleton.drawmodel.textureptr,1,&player[numplayers].skeleton.skinText[0],&player[numplayers].skeleton.skinsize);
 									player[numplayers].whichskin=2;
 								}
 
-								LoadTexture(":Data:Textures:Belt.png",&player[numplayers].skeleton.drawmodelclothes.textureptr,1,1);
+								LoadTexture("/Data/Textures/Belt.png",&player[numplayers].skeleton.drawmodelclothes.textureptr,1,1);
 								player[numplayers].power=1;
 								player[numplayers].speedmult=1;
 								player[numplayers].currentanimation=bounceidleanim;
@@ -7758,7 +7758,7 @@ void	Game::Tick()
 									player[numplayers].proportionlegs.z=0;
 								}
 
-								player[numplayers].tempanimation.Load((char *)":Data:Animations:Tempanim",0,0);
+								player[numplayers].tempanimation.Load((char *)"/Data/Animations/Tempanim",0,0);
 
 								player[numplayers].damagetolerance=200;
 
@@ -11034,7 +11034,7 @@ void	Game::TickOnceAfter(){
 
 								startbonustotal=0;
 
-								ifstream ipstream(ConvertFileName(":Data:Campaigns:main.txt"));
+								ifstream ipstream(ConvertFileName("/Data/Campaigns:main.txt"));
 								//campaignnumlevels=0;
 								//accountcampaignchoicesmade[accountactive]=0;
 								ipstream.ignore(256,':');
