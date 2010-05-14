@@ -205,18 +205,14 @@ if (NOT SDL_FOUND)
     if (WIN32)
         set(LUGARU_HAS_INTERNAL_SDL True)
         if (MSVC)
-          set(SDLMAIN_LIBRARY
+          set(SDL_LIBRARY
               ${SDLDIR}/lib/win32/msvc/SDLmain.lib
-          )
-          set(SDL_LIBRARY_TEMP
               ${SDLDIR}/lib/win32/msvc/SDL.lib
           )
         endif (MSVC)
         if (MINGW)
-          set(SDLMAIN_LIBRARY
+          set(SDL_LIBRARY
               ${SDLDIR}/lib/win32/mingw/libSDLmain.a
-          )
-          set(SDL_LIBRARY_TEMP
               ${SDLDIR}/lib/win32/mingw/libSDL.dll.a
           )
         endif (MINGW)
