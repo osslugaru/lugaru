@@ -138,7 +138,7 @@ void Game::Dispose()
 	}
 
 
-	sprintf (mapname, ":Data:Users");
+	sprintf (ConvertFileName(mapname), ":Data:Users");
 
 	FILE			*tfile;
 	tfile=fopen( ConvertFileName(mapname), "wb" );
@@ -1014,7 +1014,7 @@ void Game::InitGame()
 
 	accountactive=-1;
 
-	sprintf (mapname, ":Data:Users");
+	sprintf (ConvertFileName(mapname), ":Data:Users");
 	tfile=fopen( ConvertFileName(mapname), "rb" );
 	if(tfile)
 	{
@@ -1253,7 +1253,7 @@ void Game::InitGame()
 	samp[firestartsound] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:firestart.ogg"), OPENAL_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
 	OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 
-	strm[stream_firesound] = OPENAL_Stream_Open(":Data:Sounds:fire.ogg", OPENAL_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
+	strm[stream_firesound] = OPENAL_Stream_Open(ConvertFileName(":Data:Sounds:fire.ogg"), OPENAL_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
 //	OPENAL_Sample_SetMinMaxDistance(strm[stream_firesound], 8.0f, 2000.0f);
 	OPENAL_Stream_SetMode(strm[stream_firesound], OPENAL_LOOP_NORMAL);
 
