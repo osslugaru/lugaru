@@ -119,7 +119,7 @@ extern float volume;
 using namespace std;
 
 
-#if USE_SDL
+
 SDL_Rect **resolutions = NULL;
 static SDL_Rect rect_1024_768 = { 0, 0, 1024, 768 };
 static SDL_Rect rect_800_600  = { 0, 0, 800,  600 };
@@ -130,7 +130,7 @@ static SDL_Rect *hardcoded_resolutions[] = {
     &rect_640_480,
     NULL
 };
-#endif
+
 
 
 unsigned int resolutionDepths[8][2] = {0};
@@ -163,7 +163,7 @@ typedef struct tagPOINT {
 } POINT, *PPOINT; 
 #endif
 
-#if USE_SDL
+
 
 #ifdef _MSC_VER
 #pragma warning(push)
@@ -225,7 +225,7 @@ void sdlGetCursorPos(POINT *pt)
 #undef MessageBox
 #endif
 #define MessageBox(hwnd,text,title,flags) STUBBED("msgbox")
-#endif
+
 
 Point delta;
 
@@ -339,9 +339,7 @@ Boolean Button()
     return g_button;
 }
 
-#if !USE_SDL
-static void initSDLKeyTable(void) {}
-#else
+
 #define MAX_SDLKEYS SDLK_LAST
 static unsigned short KeyTable[MAX_SDLKEYS];
 
@@ -555,7 +553,7 @@ static void sdlEventProc(const SDL_Event &e, Game &game)
             return;
     }
 }
-#endif
+
 
 // --------------------------------------------------------------------------
 
@@ -845,10 +843,7 @@ Boolean SetUp (Game & game)
 		if(detail<0)detail=0;
 		if(screenwidth<0)screenwidth=640;
 		if(screenheight<0)screenheight=480;
-#if !USE_SDL  // we'll take anything that works.
-		if(screenwidth>3000)screenwidth=640;
-		if(screenheight>3000)screenheight=480;
-#endif
+
 	}
 	if(kBitsPerPixel!=32&&kBitsPerPixel!=16){
 		kBitsPerPixel=16;
@@ -859,7 +854,7 @@ Boolean SetUp (Game & game)
 
 	SetupDSpFullScreen();
 
-#if USE_SDL
+
     if (!SDL_WasInit(SDL_INIT_VIDEO))
     {
         if (SDL_Init(SDL_INIT_VIDEO) == -1)
@@ -957,7 +952,7 @@ Boolean SetUp (Game & game)
 
     if (!cmdline("nomousegrab"))
         SDL_WM_GrabInput(SDL_GRAB_ON);
-#endif
+
 
 	glClear( GL_COLOR_BUFFER_BIT );
 	swap_gl_buffers();
@@ -1020,7 +1015,7 @@ Boolean SetUp (Game & game)
 
 static void DoMouse(Game & game)
 {
-#if USE_SDL
+
 	if(mainmenu||(abs(game.deltah)<10*realmultiplier*1000&&abs(game.deltav)<10*realmultiplier*1000))
 	{
 		game.deltah *= usermousesensitivity;
@@ -1036,7 +1031,7 @@ static void DoMouse(Game & game)
         else if (game.mousecoordv >= kContextHeight)
             game.mousecoordv = kContextHeight - 1;
 	}
-#endif
+
 }
 
 
@@ -1174,7 +1169,7 @@ void CleanUp (void)
 
 
 
-#if USE_SDL
+
     SDL_Quit();
     #define GL_FUNC(ret,fn,params,call,rt) p##fn = NULL;
     #include "glstubs.h"
@@ -1182,7 +1177,7 @@ void CleanUp (void)
     // cheat here...static destructors are calling glDeleteTexture() after
     //  the context is destroyed and libGL unloaded by SDL_Quit().
     pglDeleteTextures = glDeleteTextures_doNothing;
-#endif
+
 }
 
 // --------------------------------------------------------------------------
@@ -1359,7 +1354,7 @@ int main(int argc, char **argv)
 					gameFocused = true;
 
 					// check windows messages
-					#if USE_SDL
+			
 					game.deltah = 0;
 					game.deltav = 0;
 					SDL_Event e;
@@ -1373,7 +1368,7 @@ int main(int argc, char **argv)
 						}
 						sdlEventProc(e, game);
 					}
-					#endif
+				
 
 					// game
 					DoUpdate(game);
@@ -1435,41 +1430,7 @@ int main(int argc, char **argv)
 
 	// --------------------------------------------------------------------------
 
-#if !USE_SDL
-	int resolutionID(int width, int height)
-	{
-		int whichres;
-		whichres=-1;
-		if(width==640 && height==480)whichres=0;
-		if(width==800 && height==600)whichres=1;
-		if(width==1024 && height==768)whichres=2;
-		if(width==1280 && height==1024)whichres=3;
-		if(width==1600 && height==1200)whichres=4;
-		if(width==840 && height==524)whichres=5;
-		if(width==1024 && height==640)whichres=6;
-		if(width==1344 && height==840)whichres=7;
-		if(width==1920 && height==1200)whichres=8;
 
-		return whichres;
-	}
-
-	int closestResolution(int width, int height)
-	{
-		int whichres;
-		whichres=-1;
-		if(width>=640 && height>=480)whichres=0;
-		if(width>=800 && height>=600)whichres=1;
-		if(width>=1024 && height>=768)whichres=2;
-		if(width>=1280 && height>=1024)whichres=3;
-		if(width>=1600 && height>=1200)whichres=4;
-		if(width==840 && height==524)whichres=5;
-		if(width==1024 && height==640)whichres=6;
-		if(width==1344 && height==840)whichres=7;
-		if(width>=1920 && height>=1200)whichres=8;
-
-		return whichres;
-	}
-#endif
 
 	bool selectDetail(int & width, int & height, int & bpp, int & detail)
 	{
@@ -1477,75 +1438,7 @@ int main(int argc, char **argv)
 
 		// currently with SDL, we just use whatever is requested
 		//  and don't care.  --ryan.
-		#if !USE_SDL
-		int whichres = closestResolution(width, height);
-
-		while (true)
-		{
-			if(whichres<=0 || whichres>8){
-				whichres = 0;
-				width=640;
-				height=480;
-			}
-			if(whichres==1){
-				width=800;
-				height=600;
-			}
-			if(whichres==2){
-				width=1024;
-				height=768;
-			}
-			if(whichres==3){
-				width=1280;
-				height=1024;
-			}
-			if(whichres==4){
-				width=1600;
-				height=1200;
-			}
-			if(whichres==5){
-				width=840;
-				height=524;
-			}
-			if(whichres==6){
-				width=1024;
-				height=640;
-			}
-			if(whichres==7){
-				width=1344;
-				height=840;
-			}
-			if(whichres==8){
-				width=1920;
-				height=1200;
-			}
-
-			if ((detail != 0) && (resolutionDepths[whichres][1] != 0))
-			{
-				break;
-			}
-			else if ((detail == 0) && (resolutionDepths[whichres][0] != 0))
-			{
-				break;
-			}
-			else if ((detail != 0) && (resolutionDepths[whichres][0] != 0))
-			{
-				res = false;
-				detail = 0;
-				break;
-			}
-			else
-
-            if (0 == whichres)
-			{
-				break;
-			}
-
-			--whichres;
-		}
-
-		bpp = resolutionDepths[whichres][(detail != 0)];
-		#endif
+		
 
 		return res;
 	}

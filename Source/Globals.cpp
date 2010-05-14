@@ -19,9 +19,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#if USE_SDL
 #include "SDL.h"
-#endif
 
 #include "gamegl.h"
 #include "Quaternions.h"
@@ -79,15 +77,9 @@ int numsounds = 0;
 Terrain terrain;
 Sprites sprites;
 float sps = 0;
-#ifdef WIN32
-HDC hDC;
-#elif USE_SDL
+
 SDL_Surface *sdlscreen;
-#elif PLATFORM_MACOSX
-AGLContext gaglContext;
-#else
-#error Define your platform.
-#endif
+
 int kTextureSize = 0;
 int detail = 0;
 FRUSTUM frustum;

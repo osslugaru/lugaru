@@ -2240,10 +2240,10 @@ int Game::DrawGLScene(void)
 	}
 
 	if(mainmenu){
-#if USE_SDL
+
         // !!! FIXME: hack: clamp framerate in menu so text input works correctly on fast systems.
         SDL_Delay(15);
-#endif
+
 		glDrawBuffer(GL_BACK);
 		glReadBuffer(GL_BACK);
 		glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
@@ -3966,15 +3966,9 @@ int Game::DrawGLScene(void)
 
 	//glFlush();
 	if(drawmode!=motionblurmode||mainmenu){
-        #if !USE_SDL
-        // this prevents menus from rendering if you hit ESC during
-        //  motion blur sequences...maybe SDL is buffering differently?
-		if(drawmode!=motionblurmode)
-			swap_gl_buffers();
-        #else
+
 		swap_gl_buffers();
-        #endif
-	}
+  }
 
 	//myassert(glGetError() == GL_NO_ERROR);
 	glDrawBuffer(GL_BACK);

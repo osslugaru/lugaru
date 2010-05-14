@@ -22,9 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _GAME_H_
 #define _GAME_H_
 
-#if USE_SDL
 #include "SDL.h"
-#endif
 
 #if (defined(__APPLE__) && defined(__MACH__))
 #  ifdef PLATFORM_MACOSX
@@ -307,17 +305,9 @@ public:
 
 static __forceinline void swap_gl_buffers(void)
 {
-#ifdef WIN32
-    extern HDC hDC;
-    SwapBuffers( hDC);
-#elif USE_SDL
+
     SDL_GL_SwapBuffers();
-#elif PLATFORM_MACOSX
-    extern AGLContext gaglContext;
-    aglSwapBuffers(gaglContext);
-#else
-    #error define your platform.
-#endif
+
 }
 
 #ifdef __GNUC__

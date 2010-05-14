@@ -1871,10 +1871,6 @@ void	Game::Tick()
 
 				if(newdetail>2)newdetail=detail;
 				if(newdetail<0)newdetail=detail;
-#if !USE_SDL  // we'll take anything that works.
-				if(newscreenwidth>3000)newscreenwidth=screenwidth;
-				if(newscreenheight>3000)newscreenheight=screenheight;
-#endif
 				if(newscreenwidth<0)newscreenwidth=screenwidth;
 				if(newscreenheight<0)newscreenheight=screenheight;
 
@@ -2135,7 +2131,7 @@ void	Game::Tick()
 				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 			}
 			if(Button()&&!oldbutton&&selected==0){
-				#if USE_SDL
+			
 				extern SDL_Rect **resolutions;
 				bool isCustomResolution = true;
 				bool found = false;
@@ -2180,56 +2176,7 @@ void	Game::Tick()
 					newscreenheight = (int) resolutions[0]->h;
 				}
 
-				#else
-				int whichres;
-				whichres=-1;
-				if(newscreenwidth==640&&newscreenheight==480)whichres=0;
-				if(newscreenwidth==800&&newscreenheight==600)whichres=1;
-				if(newscreenwidth==1024&&newscreenheight==768)whichres=2;
-				if(newscreenwidth==1280&&newscreenheight==1024)whichres=3;
-				if(newscreenwidth==1600&&newscreenheight==1200)whichres=4;
-				if(newscreenwidth==840&&newscreenheight==524)whichres=5;
-				if(newscreenwidth==1024&&newscreenheight==640)whichres=6;
-				if(newscreenwidth==1344&&newscreenheight==840)whichres=7;
-				if(newscreenwidth==1920&&newscreenheight==1200)whichres=8;
-
-				if(whichres==-1||whichres==8){
-					newscreenwidth=640;
-					newscreenheight=480;
-				}
-				if(whichres==0){
-					newscreenwidth=800;
-					newscreenheight=600;
-				}
-				if(whichres==1){
-					newscreenwidth=1024;
-					newscreenheight=768;
-				}
-				if(whichres==2){
-					newscreenwidth=1280;
-					newscreenheight=1024;
-				}
-				if(whichres==3){
-					newscreenwidth=1600;
-					newscreenheight=1200;
-				}
-				if(whichres==4){
-					newscreenwidth=840;
-					newscreenheight=524;
-				}
-				if(whichres==5){
-					newscreenwidth=1024;
-					newscreenheight=640;
-				}
-				if(whichres==6){
-					newscreenwidth=1344;
-					newscreenheight=840;
-				}
-				if(whichres==7){
-					newscreenwidth=1920;
-					newscreenheight=1200;
-				}
-				#endif
+				
 			}
 			if(Button()&&!oldbutton&&selected==1){
 				newdetail++;
@@ -2320,10 +2267,6 @@ void	Game::Tick()
 
 				if(newdetail>2)newdetail=detail;
 				if(newdetail<0)newdetail=detail;
-#if !USE_SDL  // we'll take anything that works.
-				if(newscreenwidth>3000)newscreenwidth=screenwidth;
-				if(newscreenheight>3000)newscreenheight=screenheight;
-#endif
 				if(newscreenwidth<0)newscreenwidth=screenwidth;
 				if(newscreenheight<0)newscreenheight=screenheight;
 
@@ -3068,10 +3011,6 @@ void	Game::Tick()
 			if(mainmenu==3){
 				if(newdetail>2)newdetail=detail;
 				if(newdetail<0)newdetail=detail;
-#if !USE_SDL  // we'll take anything that works.
-				if(newscreenwidth>3000)newscreenwidth=screenwidth;
-				if(newscreenheight>3000)newscreenheight=screenheight;
-#endif
 				if(newscreenwidth<0)newscreenwidth=screenwidth;
 				if(newscreenheight<0)newscreenheight=screenheight;
 
@@ -5714,10 +5653,6 @@ void	Game::Tick()
 			if(mainmenu==3){
 				if(newdetail>2)newdetail=detail;
 				if(newdetail<0)newdetail=detail;
-#if !USE_SDL  // we'll take anything that works.
-				if(newscreenwidth>3000)newscreenwidth=screenwidth;
-				if(newscreenheight>3000)newscreenheight=screenheight;
-#endif
 				if(newscreenwidth<0)newscreenwidth=screenwidth;
 				if(newscreenheight<0)newscreenheight=screenheight;
 
