@@ -19,6 +19,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+
 #ifdef WIN32
 #define UINT8 WIN32API_UINT8
 #define UINT16 WIN32API_UINT16
@@ -35,7 +36,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern "C" {
 	#include "zlib.h"
 	#include "png.h"
-	#include "jpeglib.h"
+   #ifdef WIN32
+		#define INT32 INT32_jpeg
+		#include "jpeglib.h"
+		#undef INT32
+	#else
+		#include "jpeglib.h"
+	#endif
 }
 
 static bool load_image(const char * fname, TGAImageRec & tex);
@@ -109,6 +116,7 @@ extern float volume;
 #include <iostream>
 #include "gamegl.h"
 #include "MacCompatibility.h"
+
 
 #ifdef WIN32
 #include <shellapi.h>
@@ -1498,6 +1506,7 @@ int main(int argc, char **argv)
 			channels[chan] = OPENAL_Stream_PlayEx(OPENAL_FREE, sptr, dsp, startpaused);
 		}
 	}
+
 
 	bool LoadImage(const char * fname, TGAImageRec & tex)
 	{

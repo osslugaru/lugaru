@@ -380,8 +380,12 @@ bool Terrain::load(const char *fileName)
 	float temptexdetail=texdetail;
 	texdetail=terraindetail;
 	//LoadTGA( fileName );
+
+	// Fixing filename so that it works with its own os
+	char * FixedFN = ConvertFileName(fileName);
+
 	unsigned char fileNamep[256];
-	CopyCStringToPascal(fileName,fileNamep);
+	CopyCStringToPascal(FixedFN, fileNamep);
 	//Load Image
 	upload_image( fileNamep ,0); 
 

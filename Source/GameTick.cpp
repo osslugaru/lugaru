@@ -883,9 +883,12 @@ void	Game::Loadlevel(char *name){
 	OPENAL_SetPaused(channels[whooshsound], true);
 	OPENAL_SetPaused(channels[stream_firesound], true);
 
+	// Change the map filename into something that is os specific
+	char *FixedFN = ConvertFileName(name);
+
 	int mapvers;
 	FILE			*tfile;
-	tfile=fopen( name, "rb" );
+	tfile=fopen( FixedFN, "rb" );
 	if(tfile)
 	{
 		OPENAL_SetPaused(channels[stream_firesound], true);

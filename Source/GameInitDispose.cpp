@@ -427,8 +427,11 @@ void Game::LoadTexture(const char *fileName, GLuint *textureid,int mipmap, bool 
 
 	LOG(std::string("Loading texture...") + fileName);
 
+	// Fix filename so that is os appropreate
+	char * fixedFN = ConvertFileName(fileName);
+
 	unsigned char fileNamep[256];
-	CopyCStringToPascal(fileName,fileNamep);
+	CopyCStringToPascal(fixedFN, fileNamep);
 	//Load Image
 	upload_image( fileNamep ,hasalpha);
 
@@ -484,7 +487,7 @@ void Game::LoadTextureSave(const char *fileName, GLuint *textureid,int mipmap,GL
 
 	//Load Image
 	unsigned char fileNamep[256];
-	CopyCStringToPascal(fileName,fileNamep);
+	CopyCStringToPascal(ConvertFileName(fileName), fileNamep);
 	//Load Image
 	upload_image( fileNamep ,0);
 	//LoadTGA( fileName );
@@ -550,9 +553,13 @@ void Game::LoadSave(const char *fileName, GLuint *textureid,bool mipmap,GLubyte 
 	texdetail=1;
 	//upload_image( fileName );
 	//LoadTGA( fileName );
+
+	// Converting file to something os specific
+	char * fixedFN = ConvertFileName(fileName);
+
 	//Load Image
 	unsigned char fileNamep[256];
-	CopyCStringToPascal(fileName,fileNamep);
+	CopyCStringToPascal(fixedFN, fileNamep);
 	//Load Image
 	upload_image( fileNamep ,0);
 	texdetail=temptexdetail;

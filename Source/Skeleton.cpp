@@ -1017,7 +1017,10 @@ void Animation::Load(char *filename, int aheight, int aattack)
 
 	LOGFUNC;
 
-	LOG(std::string("Loading animation...") + filename);
+	// Changing the filename into something the OS can understand
+	char *fixedFN = ConvertFileName(filename);
+
+	LOG(std::string("Loading animation...") + fixedFN);
 
 	deallocate();
 
@@ -1026,7 +1029,7 @@ void Animation::Load(char *filename, int aheight, int aattack)
 
 	if(visibleloading)pgame->LoadingScreen();
 
-	tfile=fopen( filename, "rb" );
+	tfile=fopen( fixedFN, "rb" );
 	if(tfile){
 		funpackf(tfile, "Bi Bi", &numframes, &joints);
 		/*
@@ -1133,7 +1136,12 @@ void Animation::Move(XYZ how)
 	}
 }
 
-void Skeleton::Load(char *filename,char *lowfilename,char *clothesfilename, char *modelfilename, char *model2filename, char *model3filename, char *model4filename, char *model5filename, char *model6filename, char *model7filename, char *modellowfilename, char *modelclothesfilename, bool aclothes)
+void Skeleton::Load(char *filename,       char *lowfilename, char *clothesfilename, 
+                    char *modelfilename,  char *model2filename, 
+                    char *model3filename, char *model4filename, 
+                    char *model5filename, char *model6filename, 
+                    char *model7filename, char *modellowfilename, 
+                    char *modelclothesfilename, bool aclothes)
 {
 	static GLfloat M[16];
 	static int parentID;
@@ -1144,6 +1152,7 @@ void Skeleton::Load(char *filename,char *lowfilename,char *clothesfilename, char
 	int edit;
 
 	LOGFUNC;
+
 
 	newload=0;
 
@@ -1198,7 +1207,7 @@ void Skeleton::Load(char *filename,char *lowfilename,char *clothesfilename, char
 		drawmodelclothes.CalculateNormals(0);
 	}
 
-	tfile=fopen( filename, "rb" );
+	tfile=fopen( ConvertFileName(filename), "rb" );
 	if(1){
 		funpackf(tfile, "Bi", &num_joints);
 		//joints.resize(num_joints);
@@ -1285,7 +1294,7 @@ void Skeleton::Load(char *filename,char *lowfilename,char *clothesfilename, char
 	}
 	fclose(tfile);
 
-	tfile=fopen( lowfilename, "rb" );
+	tfile=fopen( ConvertFileName(lowfilename), "rb" );
 	if(1){
 		lSize=sizeof(num_joints);
 		fseek ( tfile, lSize, SEEK_CUR);
@@ -1391,7 +1400,7 @@ void Skeleton::Load(char *filename,char *lowfilename,char *clothesfilename, char
 	}
 
 	if(clothes){
-		tfile=fopen( clothesfilename, "rb" );
+		tfile=fopen( ConvertFileName(clothesfilename), "rb" );
 		lSize=sizeof(num_joints);
 		fseek ( tfile, lSize, SEEK_CUR);
 		//joints = new Joint[num_joints];
