@@ -65,6 +65,9 @@ enum OPENAL_OUTPUTTYPES
 extern "C" {
 #endif
 
+#undef AL_API
+#define AL_API
+
 AL_API void OPENAL_3D_Listener_SetAttributes(const float *pos, const float *vel, float fx, float fy, float fz, float tx, float ty, float tz);
 AL_API signed char OPENAL_3D_SetAttributes(int channel, const float *pos, const float *vel);
 AL_API void OPENAL_3D_SetDopplerFactor(float scale);
