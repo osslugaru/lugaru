@@ -30,7 +30,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 /**> HEADER FILES <**/
 #include "gamegl.h"
 #include "Quaternions.h"
-#include "fmod.h"
 #include "Objects.h"
 #include "Sprites.h"
 #include "binio.h"

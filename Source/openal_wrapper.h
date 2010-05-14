@@ -101,8 +101,8 @@ AL_API signed char OPENAL_SetOutput(int outputtype);
 #  define OPENAL_Sample_LoadEx(a, b, c, d, e) OPENAL_Sample_Load( a, ConvertFileName( b), c, d, e)
 #  define OPENAL_Stream_OpenEx(a, b, c, d) OPENAL_Stream_Open(ConvertFileName(a), b, c, d)
 #elif !PLATFORM_MACOSX
-#  define OPENAL_Sample_LoadEx(a, b, c, d, e) FSOUND_Sample_Load( a, ConvertFileName( b), c, d, e)
-#  define OPENAL_Stream_OpenEx(a, b, c, d) FSOUND_Stream_Open(ConvertFileName(a), b, c, d)
+#  define OPENAL_Sample_LoadEx(a, b, c, d, e) OPENAL_Sample_Load( a, ConvertFileName( b), c, d, e)
+#  define OPENAL_Stream_OpenEx(a, b, c, d) OPENAL_Stream_Open(ConvertFileName(a), b, c, d)
 #endif
 
 #endif
