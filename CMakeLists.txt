@@ -70,6 +70,14 @@ if(UNIX)
 	)
 endif(UNIX)
 
+if(MSVC) # MSVC non-C99 support biting us hard
+	set(LUGARU_H
+		${LUGARU_H}
+		${DEPDIR}/msinttypes/stdint.h
+		${DEPDIR}/msinttypes/inttypes.h
+	)
+endif(MSVC)
+
 set(LUGARU_H
 	${SRCDIR}/Constants.h
 	${SRCDIR}/Frustum.h
