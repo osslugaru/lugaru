@@ -109,6 +109,12 @@ extern "C" {
 	extern void vsunpackf(const void *buffer, const char *format, va_list args);
 	extern void vfunpackf(FILE       *file,   const char *format, va_list args);
 
+#ifdef _MSC_VER
+    #ifndef va_copy
+        #define va_copy(dest,src) do { dest = src; } while (0)
+    #endif
+#endif
+
 #if defined(__cplusplus)
 }
 #endif
