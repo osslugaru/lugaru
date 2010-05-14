@@ -830,7 +830,7 @@
 					"$(SRCROOT)/../Dependencies/zlib",
 					"$(SRCROOT)/../Dependencies/libpng",
 					"$(SRCROOT)/../Dependencies/libjpeg",
-					"$(SRCROOT)/../Dependencies/OpenAL/include",
+					"$(SRCROOT)/../Dependencies/OpenAL/include/AL",
 					"$(SRCROOT)/../Dependencies/libogg/include",
 					"$(SRCROOT)/../Dependencies/libvorbis/include",
 				);
@@ -867,7 +867,7 @@
 					"$(SRCROOT)/../Dependencies/zlib",
 					"$(SRCROOT)/../Dependencies/libpng",
 					"$(SRCROOT)/../Dependencies/libjpeg",
-					"$(SRCROOT)/../Dependencies/OpenAL/include",
+					"$(SRCROOT)/../Dependencies/OpenAL/include/AL",
 					"$(SRCROOT)/../Dependencies/libogg/include",
 					"$(SRCROOT)/../Dependencies/libvorbis/include",
 				);
