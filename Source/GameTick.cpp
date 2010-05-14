@@ -5278,8 +5278,8 @@ void	Game::Tick()
 
 							if(Compare(consoletext[0],"funnybunny ",0,10)||Compare(consoletext[0],"funny bunny ",0,11)){
 								player[0].skeleton.id=0;
-								player[0].skeleton.Load((char *)":Data:Skeleton:Basic Figure",(char *)":Data:Skeleton:Basic Figurelow",(char *)":Data:Skeleton:Rabbitbelt",(char *)":Data:Models:Body.solid",(char *)":Data:Models:Body2.solid",(char *)":Data:Models:Body3.solid",(char *)":Data:Models:Body4.solid",(char *)":Data:Models:Body5.solid",(char *)":Data:Models:Body6.solid",(char *)":Data:Models:Body7.solid",(char *)":Data:Models:Bodylow.solid",(char *)":Data:Models:Belt.solid",1);
-								LoadTextureSave(":Data:Textures:fur3.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+								player[0].skeleton.Load((char *)ConvertFileName(":Data:Skeleton:Basic Figure"),(char *)ConvertFileName(":Data:Skeleton:Basic Figurelow"),(char *)ConvertFileName(":Data:Skeleton:Rabbitbelt"),(char *)ConvertFileName(":Data:Models:Body.solid"),(char *)ConvertFileName(":Data:Models:Body2.solid"),(char *)ConvertFileName(":Data:Models:Body3.solid"),(char *)ConvertFileName(":Data:Models:Body4.solid"),(char *)ConvertFileName(":Data:Models:Body5.solid"),(char *)ConvertFileName(":Data:Models:Body6.solid"),(char *)ConvertFileName(":Data:Models:Body7.solid"),(char *)ConvertFileName(":Data:Models:Bodylow.solid"),(char *)ConvertFileName(":Data:Models:Belt.solid"),1);
+								LoadTextureSave(ConvertFileName(":Data:Textures:fur3.jpg"),&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								player[0].creature=rabbittype;
 								player[0].scale=.2;
 
@@ -5296,8 +5296,8 @@ void	Game::Tick()
 							}
 							if(Compare(consoletext[0],"wolfieisgod ",0,11)||Compare(consoletext[0],"wolfie is god ",0,12)){
 								player[0].skeleton.id=0;
-								player[0].skeleton.Load((char *)":Data:Skeleton:Basic Figure Wolf",(char *)":Data:Skeleton:Basic Figure Wolf Low",(char *)":Data:Skeleton:Rabbitbelt",(char *)":Data:Models:Wolf.solid",(char *)":Data:Models:Wolf2.solid",(char *)":Data:Models:Wolf3.solid",(char *)":Data:Models:Wolf4.solid",(char *)":Data:Models:Wolf5.solid",(char *)":Data:Models:Wolf6.solid",(char *)":Data:Models:Wolf7.solid",(char *)":Data:Models:Wolflow.solid",(char *)":Data:Models:Belt.solid",0);
-								LoadTextureSave(":Data:Textures:Wolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+								player[0].skeleton.Load((char *)ConvertFileName(":Data:Skeleton:Basic Figure Wolf"),(char *)ConvertFileName(":Data:Skeleton:Basic Figure Wolf Low"),(char *)ConvertFileName(":Data:Skeleton:Rabbitbelt"),(char *)ConvertFileName(":Data:Models:Wolf.solid"),(char *)ConvertFileName(":Data:Models:Wolf2.solid"),(char *)ConvertFileName(":Data:Models:Wolf3.solid"),(char *)ConvertFileName(":Data:Models:Wolf4.solid"),(char *)ConvertFileName(":Data:Models:Wolf5.solid"),(char *)ConvertFileName(":Data:Models:Wolf6.solid"),(char *)ConvertFileName(":Data:Models:Wolf7.solid"),(char *)ConvertFileName(":Data:Models:Wolflow.solid"),(char *)ConvertFileName(":Data:Models:Belt.solid"),0);
+								LoadTextureSave(ConvertFileName(":Data:Textures:Wolf.jpg"),&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								player[0].creature=wolftype;
 
 								player[0].proportionhead=1.1;
@@ -5312,43 +5312,43 @@ void	Game::Tick()
 								donesomething=1;
 							}
 							/*if(Compare(consoletext[0],"kungfu ",0,6)||Compare(consoletext[0],"kung fu ",0,7)){
-							LoadTextureSave(":Data:Textures:Kungfu.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+							LoadTextureSave(ConvertFileName(":Data:Textures:Kungfu.jpg"),&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 							donesomething=1;
 							}
 							if(Compare(consoletext[0],"rambo ",0,5)){
-							LoadTextureSave(":Data:Textures:Leather.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+							LoadTextureSave(ConvertFileName(":Data:Textures:Leather.jpg"),&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 							donesomething=1;
 							}
 							if(Compare(consoletext[0],"david ",0,5)){
-							LoadTextureSave(":Data:Textures:David.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+							LoadTextureSave(ConvertFileName(":Data:Textures:David.jpg"),&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 							donesomething=1;
 							}*/
 							if(Compare(consoletext[0],"wolf ",0,4)){
-								LoadTextureSave(":Data:Textures:Wolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+								LoadTextureSave(ConvertFileName(":Data:Textures:Wolf.jpg"),&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								donesomething=1;
 							}
 							if(Compare(consoletext[0],"darkwolf ",0,8)){
-								LoadTextureSave(":Data:Textures:DarkWolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+								LoadTextureSave(ConvertFileName(":Data:Textures:DarkWolf.jpg"),&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								donesomething=1;
 							}
 							if(Compare(consoletext[0],"snowwolf ",0,8)){
-								LoadTextureSave(":Data:Textures:Snowwolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+								LoadTextureSave(ConvertFileName(":Data:Textures:Snowwolf.jpg"),&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								donesomething=1;
 							}/*
 							 if(Compare(consoletext[0],"lizardwolf ",0,10)){
-							 LoadTextureSave(":Data:Textures:Lizardwolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+							 LoadTextureSave(ConvertFileName(":Data:Textures:Lizardwolf.jpg"),&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 							 donesomething=1;
 							 }*/
 							if(Compare(consoletext[0],"white ",0,5)){
-								LoadTextureSave(":Data:Textures:fur.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+								LoadTextureSave(ConvertFileName(":Data:Textures:fur.jpg"),&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								donesomething=1;
 							}
 							if(Compare(consoletext[0],"brown ",0,5)){
-								LoadTextureSave(":Data:Textures:fur3.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+								LoadTextureSave(ConvertFileName(":Data:Textures:fur3.jpg"),&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								donesomething=1;
 							}
 							if(Compare(consoletext[0],"black ",0,5)){
-								LoadTextureSave(":Data:Textures:fur2.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+								LoadTextureSave(ConvertFileName(":Data:Textures:fur2.jpg"),&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								donesomething=1;
 							}
 							if(consolechars[0]>0){
