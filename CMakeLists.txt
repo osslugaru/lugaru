@@ -115,6 +115,16 @@ if(WIN32)
 						  )
   endif(CMAKE_CROSSCOMPILING)
   if(NOT CMAKE_CROSSCOMPILING)
+   if(MSVC)
+    ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
+						  COMMAND rc
+							  -I${SRCDIR}/res
+							  -fo${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
+							  ${SRCDIR}/res/Lugaru.rc
+					      DEPENDS ${SRCDIR}/res/Lugaru.rc
+						  )
+   endif(MSVC)
+   if(MINGW)
     ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
 						  COMMAND windres
 							  -I${SRCDIR}/res
@@ -122,6 +132,7 @@ if(WIN32)
 							  -i${SRCDIR}/res/Lugaru.rc
 					      DEPENDS ${SRCDIR}/res/Lugaru.rc
 						  )
+   endif(MINGW)
   endif(NOT CMAKE_CROSSCOMPILING)
 
   # !!! FIXME: get rid of this.
