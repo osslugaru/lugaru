@@ -212,8 +212,10 @@ if (NOT SDL_FOUND)
         endif (MSVC)
         if (MINGW)
           set(SDL_LIBRARY
+              "mingw32"
               ${SDLDIR}/lib/win32/mingw/libSDLmain.a
               ${SDLDIR}/lib/win32/mingw/libSDL.dll.a
+              "-mwindows"
           )
         endif (MINGW)
     endif (WIN32)

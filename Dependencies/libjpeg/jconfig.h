@@ -1,7 +1,7 @@
 #define HAVE_PROTOTYPES
 #define HAVE_STDDEF_H
 #define HAVE_STDLIB_H
-#define NEED_BSD_STRINGS
+/* #define NEED_BSD_STRINGS -- causes fail on Win32 */
 #define NEED_SYS_TYPES_H
 
 #ifdef JPEG_INTERNALS
