@@ -25,10 +25,10 @@ endif(NOT LUGARU_INSTALL_PREFIX)
 
 set(CMAKE_INSTALL_PREFIX "${LUGARU_INSTALL_PREFIX}" CACHE INTERNAL "Prefix prepended to install directories" FORCE)
 
-if(WIN32)
+if(MINGW)
 	set(OPENGL_gl_LIBRARY "-lopengl32" CACHE STRING "OpenGL library for Win32" FORCE)
 	set(OPENGL_glu_LIBRARY "-lglu32" CACHE STRING "GLU library for Win32" FORCE)
-endif(WIN32)
+endif(MINGW)
 
 
 
