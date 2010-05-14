@@ -29,34 +29,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #undef boolean
 #endif
 
-#define USE_DEVIL 0
 
-#ifndef USE_DEVIL
-#  ifdef WIN32
-#    define USE_DEVIL
-#  endif
-#endif
 
-#if USE_DEVIL
-    #include "IL/il.h"
-    #include "IL/ilu.h"
-    #include "IL/ilut.h"
-	#include "Game.h"
-#else
+#include "Game.h"
+extern "C" {
+	#include "zlib.h"
+	#include "png.h"
+	#include "jpeglib.h"
+}
 
-	#include "Game.h"
-	extern "C" {
-		#include "zlib.h"
-		#include "png.h"
-		#include "jpeglib.h"
-	}
+static bool load_image(const char * fname, TGAImageRec & tex);
+static bool load_png(const char * fname, TGAImageRec & tex);
+static bool load_jpg(const char * fname, TGAImageRec & tex);
+static bool save_image(const char * fname);
+static bool save_png(const char * fname);
 
-    static bool load_image(const char * fname, TGAImageRec & tex);
-    static bool load_png(const char * fname, TGAImageRec & tex);
-    static bool load_jpg(const char * fname, TGAImageRec & tex);
-    static bool save_image(const char * fname);
-    static bool save_png(const char * fname);
-#endif
 
 #include "openal_wrapper.h"
 
@@ -1014,25 +1001,6 @@ Boolean SetUp (Game & game)
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glAlphaFunc( GL_GREATER, 0.5f);
 
-#if USE_DEVIL
-	if (ilGetInteger(IL_VERSION_NUM) < IL_VERSION ||
-		iluGetInteger(ILU_VERSION_NUM) < ILU_VERSION ||
-		ilutGetInteger(ILUT_VERSION_NUM) < ILUT_VERSION)
-	{
-		ReportError("DevIL version is different...exiting!\n");
-		return false;
-	}
-
-	ilInit();
-	iluInit();
-	ilutInit();
-
-	ilutRenderer(ILUT_OPENGL);
-
-	ilEnable(IL_ORIGIN_SET);
-	ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
-#endif
-
 	GLint width = kContextWidth;
 	GLint height = kContextHeight;
 	gMidPoint.h = width / 2;
@@ -1204,9 +1172,7 @@ void CleanUp (void)
 
 //	game.Dispose();
 
-#if USE_DEVIL
-	ilShutDown();
-#endif
+
 
 #if USE_SDL
     SDL_Quit();
@@ -1653,97 +1619,22 @@ int main(int argc, char **argv)
 			return false;
 		}
 
-        #if USE_DEVIL
-		ILstring f = strdup(ConvertFileName(fname));
-		if (!f)
-		{
-			return false;
-		}
-
-		ILuint iid=0;
-		ilGenImages(1, &iid);
-		ilBindImage(iid);
-		if (ilLoadImage(f))
-		{
-			//iluFlipImage();
-			tex.sizeX = ilGetInteger(IL_IMAGE_WIDTH);
-			tex.sizeY = ilGetInteger(IL_IMAGE_HEIGHT);
-			tex.bpp = ilGetInteger(IL_IMAGE_BITS_PER_PIXEL);
-			ILuint Bpp = ilGetInteger(IL_IMAGE_BYTES_PER_PIXEL),
-				imageSize = tex.sizeX * tex.sizeY * Bpp;
-			ILubyte *Data = ilGetData();
-			memcpy(tex.data, Data, imageSize);
-
-			// Truvision Targa files are stored as BGR colors
-			// We want RGB so Blue and Red bytes are switched
-			if (IL_TGA == ilGetInteger(IL_IMAGE_FORMAT))
-			{
-				// Loop Through The Image Data
-				for (GLuint i = 0; i < int(imageSize); i += Bpp)
-				{
-					// Swaps The 1st And 3rd Bytes ('R'ed and 'B'lue)
-					GLbyte temp;						// Temporary Variable
-					temp = tex.data[i];					// Temporarily Store The Value At Image Data 'i'
-					tex.data[i] = tex.data[i + 2];		// Set The 1st Byte To The Value Of The 3rd Byte
-					tex.data[i + 2] = temp;				// Set The 3rd Byte To The Value In 'temp' (1st Byte Value)
-				}
-			}
-		}
-		else
-		{
-			res = false;
-		}
-		ilDeleteImages(1, &iid);
-/*
-		if (tid)
-		{
-			GLuint texid = ilutGLLoadImage(f);
-			*tid = texid;
-		}
-		else if (mip)
-		{
-			ilutGLBuildMipmaps()
-		}
-		else
-		{
-			ilutGLTexImage(0);
-		}
-*/
-		free(f);
-        #else
+       
         res = load_image(fname, tex);
-        //if (!res) printf("failed to load %s\n", fname);
-        #endif
+    
 
 		return res;
 	}
 
 	void ScreenShot(const char * fname)
 	{
-        #if USE_DEVIL
-		ILstring f = strdup(fname);
-		if (!f)
-		{
-			return;
-		}
-
-		ILuint iid;
-		ilGenImages(1, &iid);
-		ilBindImage(iid);
-		if (ilutGLScreen())
-		{
-			ilSaveImage(f);
-		}
-		ilDeleteImages(1, &iid);
-
-		free(f);
-        #else
+  
         save_image(fname);
-        #endif
+  
 	}
 
 
-#if !USE_DEVIL
+
 static bool load_image(const char *file_name, TGAImageRec &tex)
 {
     const char *ptr = strrchr((char *)file_name, '.');
@@ -1991,5 +1882,5 @@ save_png_done:
     return retval;
 }
 
-#endif
+
 
