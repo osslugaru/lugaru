@@ -16,3 +16,9 @@
 #define TARGA_SUPPORTED		/* Targa image file format */
 #endif /* JPEG_CJPEG_DJPEG */
 
+#ifdef _MSC_VER
+#ifndef INLINE
+#define INLINE __inline__
+#endif
+#endif
+
