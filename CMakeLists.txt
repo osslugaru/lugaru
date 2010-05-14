@@ -97,7 +97,6 @@ set(LUGARU_H
 	${SRCDIR}/openal_wrapper.h
 	${SRCDIR}/gamegl.h
 	${SRCDIR}/glstubs.h
-	${SRCDIR}/md5.h
 	${SRCDIR}/mmgr.h
 	${SRCDIR}/nommgr.h
 	${SRCDIR}/pack_private.h
