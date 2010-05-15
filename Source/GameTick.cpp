@@ -100,6 +100,7 @@ extern bool foliage;
 extern bool trilinear;
 extern bool damageeffects;
 extern bool showpoints;
+extern bool showdamagebar; // (des)activate the damage bar
 extern bool texttoggle;
 extern bool alwaysblur;
 extern float gamespeed;
@@ -1899,6 +1900,8 @@ void	Game::Tick()
 				opstream << KeyToChar(attackkey);
 				opstream << "\nChat key:\n";
 				opstream << KeyToChar(chatkey);
+				opstream << "\nDamage bar:\n";
+				opstream << showdamagebar;
 				opstream.close();
 			}
 			if(mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==9||mainmenu==13||mainmenu==10||mainmenu==11||mainmenu==100){
@@ -2294,6 +2297,8 @@ void	Game::Tick()
 				opstream << KeyToChar(attackkey);
 				opstream << "\nChat key:\n";
 				opstream << KeyToChar(chatkey);
+				opstream << "\nDamage bar:\n";
+				opstream << showdamagebar;
 				opstream.close();
 
 				if(mainmenu==3&&gameon)mainmenu=2;
@@ -2922,6 +2927,8 @@ void	Game::Tick()
 				opstream << KeyToChar(attackkey);
 				opstream << "\nChat key:\n";
 				opstream << KeyToChar(chatkey);
+				opstream << "\nDamage bar:\n";
+				opstream << showdamagebar;
 				opstream.close();
 			}
 		}
@@ -5364,6 +5371,8 @@ void	Game::Tick()
 				opstream << KeyToChar(attackkey);
 				opstream << "\nChat key:\n";
 				opstream << KeyToChar(chatkey);
+				opstream << "\nDamage bar:\n";
+				opstream << showdamagebar;
 				opstream.close();
 			}
 		}

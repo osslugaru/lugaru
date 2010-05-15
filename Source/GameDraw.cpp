@@ -175,6 +175,8 @@ extern float accountcampaigntime[10];
 
 extern bool gamestarted;
 
+extern bool showdamagebar;
+
 extern OPENAL_SAMPLE	*samp[100];
 extern int channels[100];
 extern "C" 	void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
@@ -1226,6 +1228,90 @@ int Game::DrawGLScene(void)
 					text.glPrintOutline(1024/40-4,768/16-4+768*14/16,string,1,1.5*1.25,1024,768);
 					glColor4f(1,0,0,1);
 					text.glPrint(1024/40,768/16+768*14/16,string,1,1.5,1024,768);
+					if(showdamagebar) {
+						glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
+						glDisable(GL_CULL_FACE);
+						glDisable(GL_LIGHTING);
+						glDisable(GL_TEXTURE_2D);
+						glDepthMask(0);
+						glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+						glPushMatrix();										// Store The Projection Matrix
+						glLoadIdentity();									// Reset The Projection Matrix
+						glOrtho(0,screenwidth,0,screenheight,-100,100);		// Set Up An Ortho Screen
+						glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+						glPushMatrix();										// Store The Modelview Matrix
+						glLoadIdentity();									// Reset The Modelview Matrix
+						glTranslatef(15,screenheight*17.5/20,0);
+						glScalef(screenwidth/3+20,screenheight/20,1);
+						glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+						glEnable(GL_BLEND);
+						glColor4f(0.0,0.4,0.0,0.7);
+						float bar=((float)player[0].damage)/player[0].damagetolerance;
+						glBegin(GL_QUADS);
+						glVertex3f((bar<1?bar:1),0,0.0f);
+						glVertex3f(1,0,0.0f);
+						glVertex3f(1,1,0.0f);
+						glVertex3f((bar<1?bar:1),1,0.0f);
+						glEnd();
+						glColor4f(0.1,0.0,0.0,1);
+						bar = ((float)player[0].bloodloss)/player[0].damagetolerance;
+						glBegin(GL_QUADS);
+						glVertex3f(0,0,0.0f);
+						glVertex3f((bar<1?bar:1),0,0.0f);
+						glVertex3f((bar<1?bar:1),1,0.0f);
+						glVertex3f(0,1,0.0f);
+						glEnd();
+						glColor4f(0.4,0.0,0.0,0.7);
+						bar = ((float)player[0].damage)/player[0].damagetolerance;
+						glBegin(GL_QUADS);
+						glVertex3f(0,0,0.0f);
+						glVertex3f((bar<1?bar:1),0,0.0f);
+						glVertex3f((bar<1?bar:1),1,0.0f);
+						glVertex3f(0,1,0.0f);
+						glEnd();
+						glColor4f(0.4,0.0,0.0,0.7);
+						bar = ((float)player[0].permanentdamage)/player[0].damagetolerance;
+						glBegin(GL_QUADS);
+						glVertex3f(0,0,0.0f);
+						glVertex3f((bar<1?bar:1),0,0.0f);
+						glVertex3f((bar<1?bar:1),1,0.0f);
+						glVertex3f(0,1,0.0f);
+						glEnd();
+						glColor4f(0.4,0.0,0.0,0.7);
+						bar = ((float)player[0].superpermanentdamage)/player[0].damagetolerance;
+						glBegin(GL_QUADS);
+						glVertex3f(0,0,0.0f);
+						glVertex3f((bar<1?bar:1),0,0.0f);
+						glVertex3f((bar<1?bar:1),1,0.0f);
+						glVertex3f(0,1,0.0f);
+						glEnd();
+						glColor4f(0.0,0.0,0.0,0.7);
+						glLineWidth(2.0);
+						glBegin(GL_LINE_STRIP);
+						glVertex3f(0,0,0.0f);
+						glVertex3f(1,0,0.0f);
+						glVertex3f(1,1,0.0f);
+						glVertex3f(0,1,0.0f);
+						glVertex3f(0,0,0.0f);
+						glEnd();
+						
+						glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+						glPopMatrix();										// Restore The Old Projection Matrix
+						glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+						glPopMatrix();										// Restore The Old Projection Matrix
+						glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
+						glEnable(GL_CULL_FACE);
+						glDisable(GL_BLEND);
+						glDepthMask(1);
+						glEnable(GL_TEXTURE_2D);
+						
+						// writing the numbers : 
+						sprintf (string, "Damages : %d/%d (%d)",(int)(player[0].damage),(int)(player[0].damagetolerance),(int)(player[0].bloodloss));
+						glColor4f(0,0,0,1);
+						text.glPrintOutline(1024/40-4,768/16-4+768*14/16-40,string,1,1.5*1.25,1024,768);
+						glColor4f(1,0,0,1);
+						text.glPrint(1024/40,768/16+768*14/16-40,string,1,1.5,1024,768);
+					}
 				}
 
 				glColor4f(.5,.5,.5,1);

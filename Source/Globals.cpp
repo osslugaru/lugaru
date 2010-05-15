@@ -119,6 +119,7 @@ char mapname[256] = {0};
 bool loadingstuff = 0;
 bool stillloading = 0;
 bool showpoints = 0;
+bool showdamagebar = 0;
 bool alwaysblur = 0;
 bool immediate = 0;
 bool velocityblur = 0;

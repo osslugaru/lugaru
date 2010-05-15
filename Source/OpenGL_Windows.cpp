@@ -97,6 +97,7 @@ extern Person player[maxplayers];
 extern bool vblsync;
 extern bool stillloading;
 extern bool showpoints;
+extern bool showdamagebar;
 extern bool alwaysblur;
 extern bool immediate;
 extern bool velocityblur;
@@ -600,6 +601,7 @@ Boolean SetUp (Game & game)
 	texttoggle=1;
 	alwaysblur=0;
 	showpoints=0;
+	showdamagebar=0;
 	immediate=0;
 	velocityblur=0;
 
@@ -699,6 +701,8 @@ Boolean SetUp (Game & game)
 		opstream << KeyToChar(game.attackkey);
 		opstream << "\nChat key:\n";
 		opstream << KeyToChar(game.chatkey);
+		opstream << "\nDamage bar:\n";
+		opstream << showdamagebar;
 		opstream.close();
 	}
 	if(ipstream){
@@ -845,6 +849,10 @@ Boolean SetUp (Game & game)
 		ipstream.ignore(256,'\n');
 		ipstream >> string;
 		game.chatkey=CharToKey(string);
+		ipstream.ignore(256,'\n');
+		ipstream.ignore(256,'\n');
+		ipstream >> i;
+		showdamagebar = (i != 0);
 		ipstream.close();
 
 		if(detail>2)detail=2;
