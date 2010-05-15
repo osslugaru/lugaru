@@ -579,6 +579,7 @@
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
+				56F2189C119E7612000FCD52 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -620,6 +621,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		56F2189C119E7612000FCD52 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			comments = "Copy libSDL dylib and the Data folder to build path when building.";
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\nBUILDPATH=build/Debug/Lugaru.app/Contents/MacOS\nLIBPATH=../Dependencies\nDATAPATH=..\ncp -r ${LIBPATH}/SDL12/lib/macosx/libSDL-1.2.0.dylib $BUILDPATH/\ncp -r ${DATAPATH}/Data ${BUILDPATH}/../../\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8D11072C0486CEB800E47090 /* Sources */ = {
