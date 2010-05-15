@@ -30,8 +30,6 @@ if(MINGW)
 	set(OPENGL_glu_LIBRARY "-lglu32" CACHE STRING "GLU library for Win32" FORCE)
 endif(MINGW)
 
-
-
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 set(LUGARU_SRCS
@@ -62,28 +60,6 @@ set(LUGARU_SRCS
 	${SRCDIR}/openal_wrapper.cpp
 	${SRCDIR}/WinInput.cpp
 )
-
-if(UNIX)
-	set(LUGARU_SRCS
-		${LUGARU_SRCS}
-		${SRCDIR}/MacCompatibility.cpp
-	)
-endif(UNIX)
-
-if(MSVC) # MSVC non-C99 support biting us hard
-	set(LUGARU_H
-		${LUGARU_H}
-		${DEPDIR}/msinttypes/stdint.h
-		${DEPDIR}/msinttypes/inttypes.h
-	)
-endif(MSVC)
-
-if(UNIX)
-	set(LUGARU_H
-		${LUGARU_H}
-		${SRCDIR}/MacCompatibility.h
-	)
-endif(UNIX)
 
 set(LUGARU_H
 	${SRCDIR}/Constants.h
@@ -117,6 +93,25 @@ set(LUGARU_H
 	${SRCDIR}/private.h
 	${SRCDIR}/unpack_private.h
 )
+
+if(UNIX)
+	set(LUGARU_SRCS
+		${LUGARU_SRCS}
+		${SRCDIR}/MacCompatibility.cpp
+	)
+	set(LUGARU_H
+		${LUGARU_H}
+		${SRCDIR}/MacCompatibility.h
+	)
+endif(UNIX)
+
+if(MSVC) # MSVC non-C99 support biting us hard
+	set(LUGARU_H
+		${LUGARU_H}
+		${DEPDIR}/msinttypes/stdint.h
+		${DEPDIR}/msinttypes/inttypes.h
+	)
+endif(MSVC)
 
 if(WIN32)
   if(CMAKE_CROSSCOMPILING)
@@ -164,22 +159,22 @@ if (APPLE)
     set(PLATFORM_LIBS "-framework Carbon -framework Cocoa -framework OpenGL -framework OpenAL")
 endif (APPLE)
 
-
-
 # Deal with dependencies...
-
 find_package(OpenGL REQUIRED)
 # force this include dir no matter what, so we get sane headers.
-include_directories("${DEPDIR}/OpenGL")
+option (LUGARU_FORCE_INTERNAL_OPENGL "Force internal OpenGL headers, even if there's a system version" True)
+if (LUGARU_FORCE_INTERNAL_OPENGL)
+	include_directories("${DEPDIR}/OpenGL")
+endif (LUGARU_FORCE_INTERNAL_OPENGL)
 
 option (LUGARU_FORCE_INTERNAL_OPENAL "Force internal libOpenAL, even if there's a system version" False)
 if (NOT LUGARU_FORCE_INTERNAL_OPENAL)
-    find_package(OpenAL REQUIRED)
+	find_package(OpenAL REQUIRED)
 else(NOT LUGARU_FORCE_INTERNAL_OPENAL)
 	set(OPENAL_FOUND False)
 endif (NOT LUGARU_FORCE_INTERNAL_OPENAL)
 
-if (NOT OPENAL_FOUND)
+if (NOT OPENAL_FOUND OR LUGARU_FORCE_INTERNAL_OPENAL)
     message(STATUS "Using internal copy of OpenAL")
     set(LUGARU_MISSING_DEPS "${LUGARU_MISSING_DEPS} OpenAL")
     set(OPENALDIR "${DEPDIR}/OpenAL")
@@ -188,12 +183,12 @@ if (NOT OPENAL_FOUND)
 
     if (WIN32)
         set(LUGARU_HAS_INTERNAL_OPENAL True)
-        if (MSVC80)                     
+        if (MSVC80)
             set(OPENAL_LIBRARY
                 ${OPENALDIR}/lib/win32/msvc2005/OpenAL32.lib
             )
         endif (MSVC80)
-        if (MSVC90)                     
+        if (MSVC90)
             set(OPENAL_LIBRARY
                 ${OPENALDIR}/lib/win32/msvc2008/OpenAL32.lib
             )
@@ -208,7 +203,7 @@ if (NOT OPENAL_FOUND)
     if (NOT LUGARU_HAS_INTERNAL_OPENAL)
         message(ERROR "We don't have a prebuilt OpenAL for this platform.")
     endif (NOT LUGARU_HAS_INTERNAL_OPENAL)
-endif (NOT OPENAL_FOUND)
+endif (NOT OPENAL_FOUND OR LUGARU_FORCE_INTERNAL_OPENAL)
 
 option (LUGARU_FORCE_INTERNAL_SDL "Force internal libSDL, even if there's a system version" False)
 if (NOT LUGARU_FORCE_INTERNAL_SDL)
