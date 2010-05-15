@@ -3461,7 +3461,7 @@ void	Game::Tick()
 
 
 								FILE			*tfile;
-								tfile=fopen( mapname, "wb" );
+								tfile=fopen( ConvertFileName(mapname), "wb" );
 								fpackf(tfile, "Bi", mapvers);
 								//fpackf(tfile, "Bi", indemo);
 								fpackf(tfile, "Bi", maptype);
