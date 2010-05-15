@@ -167,9 +167,11 @@ if(NOT WIN32)
 	if (LUGARU_FORCE_INTERNAL_OPENGL)
 		include_directories("${DEPDIR}/OpenGL")
 	endif (LUGARU_FORCE_INTERNAL_OPENGL)
-elseif(NOT WIN32)
-	include_directories("${DEPDIR}/OpenGL")
 endif(NOT WIN32)
+
+if(WIN32)
+	include_directories("${DEPDIR}/OpenGL")
+endif(WIN32)
 
 option (LUGARU_FORCE_INTERNAL_OPENAL "Force internal libOpenAL, even if there's a system version" False)
 if (NOT LUGARU_FORCE_INTERNAL_OPENAL)
