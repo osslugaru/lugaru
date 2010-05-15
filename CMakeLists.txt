@@ -161,11 +161,15 @@ endif (APPLE)
 
 # Deal with dependencies...
 find_package(OpenGL REQUIRED)
-# force this include dir no matter what, so we get sane headers.
-option (LUGARU_FORCE_INTERNAL_OPENGL "Force internal OpenGL headers, even if there's a system version" True)
-if (LUGARU_FORCE_INTERNAL_OPENGL)
+# force this include dir no matter what on Windows, so we get sane headers.
+if(NOT WIN32)
+	option (LUGARU_FORCE_INTERNAL_OPENGL "Force internal OpenGL headers, even if there's a system version" True)
+	if (LUGARU_FORCE_INTERNAL_OPENGL)
+		include_directories("${DEPDIR}/OpenGL")
+	endif (LUGARU_FORCE_INTERNAL_OPENGL)
+elseif(NOT WIN32)
 	include_directories("${DEPDIR}/OpenGL")
-endif (LUGARU_FORCE_INTERNAL_OPENGL)
+endif(NOT WIN32)
 
 option (LUGARU_FORCE_INTERNAL_OPENAL "Force internal libOpenAL, even if there's a system version" False)
 if (NOT LUGARU_FORCE_INTERNAL_OPENAL)
