@@ -98,7 +98,8 @@ float LineFacetd(XYZ *p1,XYZ *p2,XYZ *pa,XYZ *pb,XYZ *pc,XYZ *n, XYZ *p);
 float LineFacetd(XYZ *p1,XYZ *p2,XYZ *pa,XYZ *pb,XYZ *pc, XYZ *p);
 bool PointInTriangle(Vector *p, Vector normal, float p11, float p12, float p13, float p21, float p22, float p23, float p31, float p32, float p33);
 bool LineFacet(Vector p1,Vector p2,Vector pa,Vector pb,Vector pc,Vector *p);
-inline void ReflectVector(XYZ *vel, XYZ *n);
+inline void ReflectVector(XYZ *vel, const XYZ *n);
+inline void ReflectVector(XYZ *vel, const XYZ &n);
 inline XYZ DoRotation(XYZ thePoint, float xang, float yang, float zang);
 inline XYZ DoRotationRadian(XYZ thePoint, float xang, float yang, float zang);
 inline float findDistance(XYZ *point1, XYZ *point2);
@@ -107,7 +108,7 @@ inline float findLengthfast(XYZ *point1);
 inline float findDistancefast(XYZ *point1, XYZ *point2);
 inline float findDistancefast(XYZ point1, XYZ point2);
 inline float findDistancefastflat(XYZ *point1, XYZ *point2);
-inline float dotproduct(XYZ *point1, XYZ *point2);
+inline float dotproduct(const XYZ *point1, const XYZ *point2);
 bool sphere_line_intersection (
 							   float x1, float y1 , float z1,
 							   float x2, float y2 , float z2,
@@ -257,16 +258,21 @@ inline float normaldotproduct(XYZ point1, XYZ point2){
 	return returnvalue;
 }
 
-inline void ReflectVector(XYZ *vel, XYZ *n)
+inline void ReflectVector(XYZ *vel, const XYZ *n)
+{
+    ReflectVector(vel, *n);
+}
+
+inline void ReflectVector(XYZ *vel, const XYZ &n)
 {
 	static XYZ vn;
 	static XYZ vt;
 	static float dotprod;
 
-	dotprod=dotproduct(n,vel);
-	vn.x=n->x*dotprod;
-	vn.y=n->y*dotprod;
-	vn.z=n->z*dotprod;
+	dotprod=dotproduct(&n,vel);
+	vn.x=n.x*dotprod;
+	vn.y=n.y*dotprod;
+	vn.z=n.z*dotprod;
 
 	vt.x=vel->x-vn.x;
 	vt.y=vel->y-vn.y;
@@ -277,7 +283,7 @@ inline void ReflectVector(XYZ *vel, XYZ *n)
 	vel->z = vt.z - vn.z;
 }
 
-inline float dotproduct(XYZ *point1, XYZ *point2){
+inline float dotproduct(const XYZ *point1, const XYZ *point2){
 	static GLfloat returnvalue;
 	returnvalue=(point1->x*point2->x+point1->y*point2->y+point1->z*point2->z);
 	return returnvalue;

@@ -6449,7 +6449,7 @@ void	Person::DoStuff(){
 
 					flatfacing=DoRotation(flatfacing,0,rotation,0);
 					facing=flatfacing;
-					ReflectVector(&facing,&terrainnormal);
+					ReflectVector(&facing,terrainnormal);
 					Normalise(&facing);
 
 					if(isRun()||targetanimation==sneakanim||targetanimation==rollanim||targetanimation==walkanim){
@@ -6502,7 +6502,7 @@ void	Person::DoStuff(){
 							velocity*=velspeed;
 						}
 						velocity.y+=gravity*multiplier*20;
-						ReflectVector(&velocity,&terrain.getNormal(coords.x,coords.z));
+						ReflectVector(&velocity,terrain.getNormal(coords.x,coords.z));
 						velspeed=findLength(&velocity);
 						velocity=flatfacing*velspeed;
 					}
@@ -6516,7 +6516,7 @@ void	Person::DoStuff(){
 								velocity*=velspeed;
 							}
 							velocity.y+=gravity*multiplier*20;
-							ReflectVector(&velocity,&terrain.getNormal(coords.x,coords.z));
+							ReflectVector(&velocity,terrain.getNormal(coords.x,coords.z));
 							velspeed=findLength(&velocity);
 							if(velspeed<speed*30*scale)velspeed=speed*30*scale;
 							velocity=flatfacing*velspeed;
@@ -6540,7 +6540,7 @@ void	Person::DoStuff(){
 							}
 						}
 						velocity.y+=gravity*multiplier*20;
-						ReflectVector(&velocity,&terrain.getNormal(coords.x,coords.z));
+						ReflectVector(&velocity,terrain.getNormal(coords.x,coords.z));
 						velspeed=findLength(&velocity);
 						velocity=flatfacing*velspeed;
 					}
@@ -6555,7 +6555,7 @@ void	Person::DoStuff(){
 					velocity*=velspeed;
 					}
 					velocity.y+=gravity*multiplier*20;
-					ReflectVector(&velocity,&terrain.getNormal(coords.x,coords.z));
+					ReflectVector(&velocity,terrain.getNormal(coords.x,coords.z));
 					velspeed=findLength(&velocity);
 					velocity=flatfacing*velspeed;
 					}*/
@@ -6569,7 +6569,7 @@ void	Person::DoStuff(){
 							velocity*=velspeed;
 						}
 						velocity.y+=gravity*multiplier*20;
-						ReflectVector(&velocity,&terrain.getNormal(coords.x,coords.z));
+						ReflectVector(&velocity,terrain.getNormal(coords.x,coords.z));
 						velspeed=findLength(&velocity);
 						velocity=flatfacing*velspeed;
 					}
@@ -6584,7 +6584,7 @@ void	Person::DoStuff(){
 					velocity*=velspeed;
 					}
 					velocity.y+=gravity*multiplier*20;
-					ReflectVector(&velocity,&terrain.getNormal(coords.x,coords.z));
+					ReflectVector(&velocity,terrain.getNormal(coords.x,coords.z));
 					velspeed=findLength(&velocity);
 					velocity=flatfacing*velspeed;
 					}*/
@@ -6598,7 +6598,7 @@ void	Person::DoStuff(){
 							velocity*=velspeed;
 						}
 						velocity.y+=gravity*multiplier*20;
-						ReflectVector(&velocity,&terrain.getNormal(coords.x,coords.z));
+						ReflectVector(&velocity,terrain.getNormal(coords.x,coords.z));
 						velspeed=findLength(&velocity);
 						velocity=flatfacing*velspeed;
 					}
@@ -6612,7 +6612,7 @@ void	Person::DoStuff(){
 							velocity*=velspeed;
 						}
 						velocity.y+=gravity*multiplier*20;
-						ReflectVector(&velocity,&terrain.getNormal(coords.x,coords.z));
+						ReflectVector(&velocity,terrain.getNormal(coords.x,coords.z));
 						velspeed=findLength(&velocity);
 						velocity=flatfacing*velspeed;
 					}
@@ -6627,7 +6627,7 @@ void	Person::DoStuff(){
 							velocity*=velspeed;
 						}
 						velocity.y+=gravity*multiplier*20;
-						ReflectVector(&velocity,&terrain.getNormal(coords.x,coords.z));
+						ReflectVector(&velocity,terrain.getNormal(coords.x,coords.z));
 						velspeed=findLength(&velocity);
 						velocity=flatfacing*velspeed*-1;
 					}
@@ -6641,7 +6641,7 @@ void	Person::DoStuff(){
 							velocity*=velspeed;
 						}
 						velocity.y+=gravity*multiplier*20;
-						ReflectVector(&velocity,&terrain.getNormal(coords.x,coords.z));
+						ReflectVector(&velocity,terrain.getNormal(coords.x,coords.z));
 						velspeed=findLength(&velocity);
 						velocity=DoRotation(flatfacing*velspeed,0,-90,0);
 					}
@@ -6665,7 +6665,7 @@ void	Person::DoStuff(){
 							velocity*=velspeed;
 						}
 						velocity.y+=gravity*multiplier*20;
-						ReflectVector(&velocity,&terrain.getNormal(coords.x,coords.z));
+						ReflectVector(&velocity,terrain.getNormal(coords.x,coords.z));
 						velspeed=findLength(&velocity);
 						velocity=flatfacing*velspeed*-1;
 					}
@@ -6679,7 +6679,7 @@ void	Person::DoStuff(){
 							velocity*=velspeed;
 						}
 						velocity.y+=gravity*multiplier*20;
-						ReflectVector(&velocity,&terrain.getNormal(coords.x,coords.z));
+						ReflectVector(&velocity,terrain.getNormal(coords.x,coords.z));
 						velspeed=findLength(&velocity);
 						velocity=flatfacing*velspeed*-1;
 					}
