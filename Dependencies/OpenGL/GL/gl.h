@@ -62,7 +62,7 @@ typedef long GLsizeiptr;
 #endif
 
 #ifndef GL_GLEXT_LEGACY
-#include <OpenGL/glext.h>
+#include <GL/glext.h>
 #endif
 
 /* For compatibility with OpenGL v1.0 */
