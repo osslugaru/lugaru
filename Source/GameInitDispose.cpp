@@ -138,7 +138,7 @@ void Game::Dispose()
 	}
 
 
-	sprintf (ConvertFileName(mapname), ":Data:Users");
+	sprintf (mapname, ":Data:Users");
 
 	FILE			*tfile;
 	tfile=fopen( ConvertFileName(mapname), "wb" );
@@ -1014,7 +1014,7 @@ void Game::InitGame()
 
 	accountactive=-1;
 
-	sprintf (ConvertFileName(mapname), ":Data:Users");
+	sprintf (mapname, ":Data:Users");
 	tfile=fopen( ConvertFileName(mapname), "rb" );
 	if(tfile)
 	{
