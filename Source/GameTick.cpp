@@ -247,6 +247,12 @@ STATIC_ASSERT (rabbittype == 0 && wolftype == 1)
 
 static const char **creatureskin[] = {rabbitskin, wolfskin};
 
+/* Return true if PFX is a prefix of STR (case-insensitive).  */
+static bool stripfx(const char *str, const char *pfx)
+{
+  return !strncasecmp(str, pfx, strlen(pfx));
+}
+
 /********************> Tick() <*****/
 extern OPENAL_STREAM * strm[20];
 extern "C"	void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
@@ -3244,14 +3250,14 @@ void	Game::Tick()
 						if(i==MAC_RETURN_KEY){
 							archiveselected=0;
 							donesomething=0;
-							if(Compare(consoletext[0],"quit ",0,4)||Compare(consoletext[0],"exit ",0,4)){
+							if(stripfx(consoletext[0], "quit ")||stripfx(consoletext[0], "exit ")){
 								PlaySoundEx( consolesuccesssound, samp[consolesuccesssound], NULL, true);
 								OPENAL_SetVolume(channels[consolesuccesssound], 256);
 								OPENAL_SetPaused(channels[consolesuccesssound], false);
 								donesomething=1;
 								tryquit=1;
 							}
-							/*if(Compare(consoletext[0],"send ",0,4)){
+							/*if(stripfx(consoletext[0], "send ")){
 							for(j=5;j<consolechars[0];j++){
 							talkname[j-5]=consoletext[0][j];
 							}
@@ -3260,7 +3266,7 @@ void	Game::Tick()
 							//NetworkSendInformation(chatname);
 							donesomething=1;
 							}
-							if(Compare(consoletext[0],"name ",0,4)){
+							if(stripfx(consoletext[0], "name ")){
 							int numchars;
 							numchars=consolechars[0]-5;
 							if(numchars>32)numchars=32;
@@ -3274,7 +3280,7 @@ void	Game::Tick()
 							//NetworkSendName(playerName);
 							donesomething=1;
 							}*/
-							if(Compare(consoletext[0],"map ",0,3)){
+							if(stripfx(consoletext[0], "map ")){
 								mapname[0]=':';
 								mapname[1]='D';
 								mapname[2]='a';
@@ -3295,7 +3301,7 @@ void	Game::Tick()
 								campaign=0;
 								donesomething=1;
 							}
-							/*if(Compare(consoletext[0],"connect ",0,7)&&!ishost){
+							/*if(stripfx(consoletext[0], "connect ")&&!ishost){
 							int v;
 							unsigned char playerNameStr[32];
 							char theIPAddress[256];
@@ -3356,7 +3362,7 @@ void	Game::Tick()
 							}
 							}
 
-							if(Compare(consoletext[0],"host ",0,4)){
+							if(stripfx(consoletext[0], "host ")){
 							unsigned char gameNameStr[32], playerNameStr[32];
 							char gameName[32];//, playerName[32];
 							NMUInt32 port;
@@ -3415,7 +3421,7 @@ void	Game::Tick()
 							}
 							}
 							*/
-							if(Compare(consoletext[0],"save ",0,4)){
+							if(stripfx(consoletext[0], "save ")){
 								mapname[0]=':';
 								mapname[1]='D';
 								mapname[2]='a';
@@ -3739,7 +3745,7 @@ void	Game::Tick()
 															donesomething=1;*/
 							}
 							/*
-							if(Compare(consoletext[0],"save ",0,4)){
+							if(stripfx(consoletext[0], "save ")){
 							mapname[0]=':';
 							mapname[1]='D';
 							mapname[2]='a';
@@ -3813,17 +3819,17 @@ void	Game::Tick()
 							fclose(tfile);
 							donesomething=1;
 							}*/
-							if(Compare(consoletext[0],"cellar door ",0,11)||Compare(consoletext[0],"cellardoor ",0,10)){
+							if(stripfx(consoletext[0], "cellar door ")||stripfx(consoletext[0], "cellardoor ")){
 								LoadTextureSave(":Data:Textures:Furdarko.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								donesomething=1;
 							}
-							/*if(Compare(consoletext[0],"Pants ",0,5)){
+							/*if(stripfx(consoletext[0], "Pants ")){
 							AddClothes(":Data:Textures:Pants.png",0,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
 							player[i].DoMipmaps(5,0,0,player[i].skeleton.skinsize,player[i].skeleton.skinsize);
 							donesomething=1;
 							}*/
 
-							if(Compare(consoletext[0],"tintr ",0,5)||Compare(consoletext[0],"Tintr ",0,5)){
+							if(stripfx(consoletext[0], "tintr ")||stripfx(consoletext[0], "Tintr ")){
 								for(j=6;j<consolechars[0];j++){
 									mapname[j-6]=consoletext[0][j];
 								}
@@ -3833,7 +3839,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"speed ",0,5)||Compare(consoletext[0],"Speed ",0,5)){
+							if(stripfx(consoletext[0], "speed ")||stripfx(consoletext[0], "Speed ")){
 								for(j=6;j<consolechars[0];j++){
 									mapname[j-6]=consoletext[0][j];
 								}
@@ -3843,7 +3849,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"strength ",0,8)||Compare(consoletext[0],"Strength ",0,8)){
+							if(stripfx(consoletext[0], "strength ")||stripfx(consoletext[0], "Strength ")){
 								for(j=9;j<consolechars[0];j++){
 									mapname[j-9]=consoletext[0][j];
 								}
@@ -3853,7 +3859,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"viewdistance ",0,12)||Compare(consoletext[0],"Viewdistance ",0,12)){
+							if(stripfx(consoletext[0], "viewdistance ")||stripfx(consoletext[0], "Viewdistance ")){
 								for(j=13;j<consolechars[0];j++){
 									mapname[j-13]=consoletext[0][j];
 								}
@@ -3863,7 +3869,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"fadestart ",0,9)||Compare(consoletext[0],"Fadestart ",0,9)){
+							if(stripfx(consoletext[0], "fadestart ")||stripfx(consoletext[0], "Fadestart ")){
 								for(j=10;j<consolechars[0];j++){
 									mapname[j-10]=consoletext[0][j];
 								}
@@ -3873,7 +3879,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"power ",0,5)||Compare(consoletext[0],"Power ",0,5)){
+							if(stripfx(consoletext[0], "power ")||stripfx(consoletext[0], "Power ")){
 								for(j=6;j<consolechars[0];j++){
 									mapname[j-6]=consoletext[0][j];
 								}
@@ -3883,7 +3889,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"slomo ",0,5)||Compare(consoletext[0],"Slomo ",0,5)){
+							if(stripfx(consoletext[0], "slomo ")||stripfx(consoletext[0], "Slomo ")){
 								for(j=6;j<consolechars[0];j++){
 									mapname[j-6]=consoletext[0][j];
 								}
@@ -3895,7 +3901,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"slofreq ",0,7)||Compare(consoletext[0],"Slofreq ",0,7)){
+							if(stripfx(consoletext[0], "slofreq ")||stripfx(consoletext[0], "Slofreq ")){
 								for(j=8;j<consolechars[0];j++){
 									mapname[j-8]=consoletext[0][j];
 								}
@@ -3905,7 +3911,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"size ",0,4)||Compare(consoletext[0],"Size ",0,4)){
+							if(stripfx(consoletext[0], "size ")||stripfx(consoletext[0], "Size ")){
 								for(j=5;j<consolechars[0];j++){
 									mapname[j-5]=consoletext[0][j];
 								}
@@ -3915,7 +3921,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"sizenear ",0,8)||Compare(consoletext[0],"Sizenear ",0,8)){
+							if(stripfx(consoletext[0], "sizenear ")||stripfx(consoletext[0], "Sizenear ")){
 								int closest=-1;
 								float closestdist=-1;
 								float distance;
@@ -3937,7 +3943,7 @@ void	Game::Tick()
 									donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"proportionnear ",0,14)||Compare(consoletext[0],"Proportionnear ",0,14)){
+							if(stripfx(consoletext[0], "proportionnear ")||stripfx(consoletext[0], "Proportionnear ")){
 								int startpoint;
 								int alldone;
 
@@ -4017,7 +4023,7 @@ void	Game::Tick()
 							}
 
 
-							if(Compare(consoletext[0],"sizemin ",0,7)||Compare(consoletext[0],"Sizemin ",0,7)){
+							if(stripfx(consoletext[0], "sizemin ")||stripfx(consoletext[0], "Sizemin ")){
 								for(i=1;i<numplayers;i++){
 									if(player[i].scale<0.8*0.2)player[i].scale=0.8*0.2;
 								}
@@ -4025,7 +4031,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"tutorial ",0,8)||Compare(consoletext[0],"Tutorial ",0,8)){
+							if(stripfx(consoletext[0], "tutorial ")||stripfx(consoletext[0], "Tutorial ")){
 								for(j=9;j<consolechars[0];j++){
 									mapname[j-9]=consoletext[0][j];
 								}
@@ -4036,7 +4042,7 @@ void	Game::Tick()
 							}
 
 
-							if(Compare(consoletext[0],"tintg ",0,5)||Compare(consoletext[0],"Tintg ",0,5)){
+							if(stripfx(consoletext[0], "tintg ")||stripfx(consoletext[0], "Tintg ")){
 								for(j=6;j<consolechars[0];j++){
 									mapname[j-6]=consoletext[0][j];
 								}
@@ -4046,7 +4052,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"tintb ",0,5)||Compare(consoletext[0],"Tintb ",0,5)){
+							if(stripfx(consoletext[0], "tintb ")||stripfx(consoletext[0], "Tintb ")){
 								for(j=6;j<consolechars[0];j++){
 									mapname[j-6]=consoletext[0][j];
 								}
@@ -4056,7 +4062,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"hostile ",0,7)){
+							if(stripfx(consoletext[0], "hostile ")){
 								for(j=8;j<consolechars[0];j++){
 									mapname[j-8]=consoletext[0][j];
 								}
@@ -4067,13 +4073,13 @@ void	Game::Tick()
 							}
 
 
-							if(Compare(consoletext[0],"type active ",0,11)){
+							if(stripfx(consoletext[0], "type active ")){
 								editoractive=typeactive;
 
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"indemo ",0,6)){
+							if(stripfx(consoletext[0], "indemo ")){
 								indemo=1;
 								hotspot[numhotspots]=player[0].coords;
 								hotspotsize[numhotspots]=0;
@@ -4085,89 +4091,89 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"notindemo ",0,9)){
+							if(stripfx(consoletext[0], "notindemo ")){
 								indemo=0;
 								numhotspots--;
 
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"type sitting ",0,12)){
+							if(stripfx(consoletext[0], "type sitting ")){
 								editoractive=typesitting;
 
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"type sitting wall ",0,17)){
+							if(stripfx(consoletext[0], "type sitting wall ")){
 								editoractive=typesittingwall;
 
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"type sleeping ",0,13)){
+							if(stripfx(consoletext[0], "type sleeping ")){
 								editoractive=typesleeping;
 
 								donesomething=1;
 							}
-							if(Compare(consoletext[0],"type dead1 ",0,10)){
+							if(stripfx(consoletext[0], "type dead1 ")){
 								editoractive=typedead1;
 
 								donesomething=1;
 							}
-							if(Compare(consoletext[0],"type dead2 ",0,10)){
+							if(stripfx(consoletext[0], "type dead2 ")){
 								editoractive=typedead2;
 
 								donesomething=1;
 							}
-							if(Compare(consoletext[0],"type dead3 ",0,10)){
+							if(stripfx(consoletext[0], "type dead3 ")){
 								editoractive=typedead3;
 								donesomething=1;
 							}
-							if(Compare(consoletext[0],"type dead4 ",0,10)){
+							if(stripfx(consoletext[0], "type dead4 ")){
 								editoractive=typedead4;
 
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"path keepwalking ",0,16)){
+							if(stripfx(consoletext[0], "path keepwalking ")){
 								editorpathtype=wpkeepwalking;
 
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"path pause ",0,10)){
+							if(stripfx(consoletext[0], "path pause ")){
 								editorpathtype=wppause;
 
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"mapkilleveryone ",0,15)){
+							if(stripfx(consoletext[0], "mapkilleveryone ")){
 								maptype=mapkilleveryone;
 
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"mapgosomewhere ",0,14)){
+							if(stripfx(consoletext[0], "mapgosomewhere ")){
 								maptype=mapgosomewhere;
 
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"mapkillsomeone ",0,14)){
+							if(stripfx(consoletext[0], "mapkillsomeone ")){
 								maptype=mapkillsomeone;
 
 								donesomething=1;
 
 							}
 
-							if(Compare(consoletext[0],"mapkillmost ",0,11)){
+							if(stripfx(consoletext[0], "mapkillmost ")){
 								maptype=mapkillmost;
 
 								donesomething=1;
 
 							}
 
-							if(Compare(consoletext[0],"hs ",0,2)){
+							if(stripfx(consoletext[0], "hs ")){
 								int startpoint;
 								int alldone;
 
@@ -4213,7 +4219,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"dialogue ",0,8)){
+							if(stripfx(consoletext[0], "dialogue ")){
 								int startpoint;
 								int alldone;
 
@@ -4305,7 +4311,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"fixdialogue ",0,11)){
+							if(stripfx(consoletext[0], "fixdialogue ")){
 								int startpoint;
 								int alldone;
 								int whichdi;
@@ -4386,7 +4392,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"fixtype ",0,7)){
+							if(stripfx(consoletext[0], "fixtype ")){
 								int startpoint;
 								int alldone;
 								int whichdi;
@@ -4408,30 +4414,30 @@ void	Game::Tick()
 							}
 
 
-							if(Compare(consoletext[0],"fixrotation ",0,11)){
+							if(stripfx(consoletext[0], "fixrotation ")){
 								participantrotation[whichdialogue][participantfocus[whichdialogue][indialogue]]=player[participantfocus[whichdialogue][indialogue]].rotation;
 
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"ddialogue ",0,9)){
+							if(stripfx(consoletext[0], "ddialogue ")){
 								numdialogues--;
 								if(numdialogues<0)numdialogues=0;
 
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"immobile ",0,8)){
+							if(stripfx(consoletext[0], "immobile ")){
 								player[0].immobile=1;
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"mobile ",0,6)){
+							if(stripfx(consoletext[0], "mobile ")){
 								player[0].immobile=0;
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"play ",0,4)){
+							if(stripfx(consoletext[0], "play ")){
 								int startpoint;
 								int alldone;
 
@@ -4510,14 +4516,14 @@ void	Game::Tick()
 
 
 
-							if(Compare(consoletext[0],"dhs ",0,3)){
+							if(stripfx(consoletext[0], "dhs ")){
 								numhotspots--;
 								if(numhotspots<0)numhotspots=0;
 								donesomething=1;
 							}
 
 
-							if(Compare(consoletext[0],"proportion ",0,10)||Compare(consoletext[0],"Proportion ",0,4)){
+							if(stripfx(consoletext[0], "proportion ")||stripfx(consoletext[0], "Proportion ")){
 								int startpoint;
 								int alldone;
 
@@ -4584,7 +4590,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"allimmobile ",0,11)||Compare(consoletext[0],"Allimmobile ",0,11)){
+							if(stripfx(consoletext[0], "allimmobile ")||stripfx(consoletext[0], "Allimmobile ")){
 								for(i=0;i<numplayers;i++){
 									if(i>0)player[i].immobile=1;
 								}
@@ -4592,7 +4598,7 @@ void	Game::Tick()
 							}
 
 
-							if(Compare(consoletext[0],"default ",0,7)||Compare(consoletext[0],"Default ",0,7)){
+							if(stripfx(consoletext[0], "default ")||stripfx(consoletext[0], "Default ")){
 								player[0].armorhead=1;
 								player[0].armorhigh=1;
 								player[0].armorlow=1;
@@ -4633,7 +4639,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"tint ",0,4)||Compare(consoletext[0],"Tint ",0,4)){
+							if(stripfx(consoletext[0], "tint ")||stripfx(consoletext[0], "Tint ")){
 								int startpoint;
 								int alldone;
 								alldone=0;
@@ -4673,7 +4679,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"sky tint ",0,8)||Compare(consoletext[0],"Sky Tint ",0,8)){
+							if(stripfx(consoletext[0], "sky tint ")||stripfx(consoletext[0], "Sky Tint ")){
 								int startpoint;
 								int alldone;
 								alldone=0;
@@ -4725,7 +4731,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"sky light ",0,9)||Compare(consoletext[0],"Sky Light ",0,9)){
+							if(stripfx(consoletext[0], "sky light ")||stripfx(consoletext[0], "Sky Light ")){
 								int startpoint;
 								int alldone;
 								alldone=0;
@@ -4773,7 +4779,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"skybox ",0,6)||Compare(consoletext[0],"Skybox ",0,6)){
+							if(stripfx(consoletext[0], "skybox ")||stripfx(consoletext[0], "Skybox ")){
 								skyboxtexture=1-skyboxtexture;
 
 								SetUpLighting();
@@ -4786,7 +4792,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"protection ",0,10)||Compare(consoletext[0],"Protection ",0,10)){
+							if(stripfx(consoletext[0], "protection ")||stripfx(consoletext[0], "Protection ")){
 								int startpoint;
 								int alldone;
 								alldone=0;
@@ -4826,7 +4832,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"armor ",0,5)||Compare(consoletext[0],"Armor ",0,5)){
+							if(stripfx(consoletext[0], "armor ")||stripfx(consoletext[0], "Armor ")){
 								int startpoint;
 								int alldone;
 								alldone=0;
@@ -4866,7 +4872,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"protectionreset ",0,15)||Compare(consoletext[0],"Protectionreset ",0,15)){
+							if(stripfx(consoletext[0], "protectionreset ")||stripfx(consoletext[0], "Protectionreset ")){
 								for(i=0;i<numplayers;i++){
 									player[i].protectionhead=1.0;
 									player[i].protectionhigh=1.0;
@@ -4879,7 +4885,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"protectionnear ",0,14)||Compare(consoletext[0],"Protectionnear ",0,14)){
+							if(stripfx(consoletext[0], "protectionnear ")||stripfx(consoletext[0], "Protectionnear ")){
 								int closest=-1;
 								float closestdist=-1;
 								float distance;
@@ -4931,7 +4937,7 @@ void	Game::Tick()
 									donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"armornear ",0,9)||Compare(consoletext[0],"Armornear ",0,9)){
+							if(stripfx(consoletext[0], "armornear ")||stripfx(consoletext[0], "Armornear ")){
 								int closest=-1;
 								float closestdist=-1;
 								float distance;
@@ -4983,7 +4989,7 @@ void	Game::Tick()
 							}
 
 
-							if(Compare(consoletext[0],"metal ",0,5)||Compare(consoletext[0],"Metal ",0,5)){
+							if(stripfx(consoletext[0], "metal ")||stripfx(consoletext[0], "Metal ")){
 								int startpoint;
 								int alldone;
 								alldone=0;
@@ -5024,7 +5030,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"noclothesnear ",0,13)||Compare(consoletext[0],"Noclothesnear ",0,13)){
+							if(stripfx(consoletext[0], "noclothesnear ")||stripfx(consoletext[0], "Noclothesnear ")){
 								int closest=-1;
 								float closestdist=-1;
 								float distance;
@@ -5043,7 +5049,7 @@ void	Game::Tick()
 									donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"noclothes ",0,9)||Compare(consoletext[0],"Noclothes ",0,9)){
+							if(stripfx(consoletext[0], "noclothes ")||stripfx(consoletext[0], "Noclothes ")){
 								int closest=0;
 
 								player[closest].numclothes=0;
@@ -5052,7 +5058,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if((Compare(consoletext[0],"Clothes ",0,7)||Compare(consoletext[0],"clothes ",0,7))){
+							if((stripfx(consoletext[0], "Clothes ")||stripfx(consoletext[0], "clothes "))){
 								mapname[0]=':';
 								mapname[1]='D';
 								mapname[2]='a';
@@ -5091,13 +5097,13 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"belt ",0,4)||Compare(consoletext[0],"belt ",0,4)){
+							if(stripfx(consoletext[0], "belt ")||stripfx(consoletext[0], "belt ")){
 								player[0].skeleton.clothes = 1-player[0].skeleton.clothes;
 
 								donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"Cellophane ",0,10)||Compare(consoletext[0],"cellophane ",0,10)){
+							if(stripfx(consoletext[0], "Cellophane ")||stripfx(consoletext[0], "cellophane ")){
 								cellophane=1-cellophane;
 
 								if(cellophane){
@@ -5121,7 +5127,7 @@ void	Game::Tick()
 								donesomething=1;
 							}
 
-							if((Compare(consoletext[0],"Clothesnear ",0,11)||Compare(consoletext[0],"clothesnear ",0,11))){
+							if((stripfx(consoletext[0], "Clothesnear ")||stripfx(consoletext[0], "clothesnear "))){
 								mapname[0]=':';
 								mapname[1]='D';
 								mapname[2]='a';
@@ -5171,7 +5177,7 @@ void	Game::Tick()
 									donesomething=1;
 							}
 
-							if(Compare(consoletext[0],"funnybunny ",0,10)||Compare(consoletext[0],"funny bunny ",0,11)){
+							if(stripfx(consoletext[0], "funnybunny ")||stripfx(consoletext[0], "funny bunny ")){
 								player[0].skeleton.id=0;
 								player[0].skeleton.Load((char *)":Data:Skeleton:Basic Figure",(char *)":Data:Skeleton:Basic Figurelow",(char *)":Data:Skeleton:Rabbitbelt",(char *)":Data:Models:Body.solid",(char *)":Data:Models:Body2.solid",(char *)":Data:Models:Body3.solid",(char *)":Data:Models:Body4.solid",(char *)":Data:Models:Body5.solid",(char *)":Data:Models:Body6.solid",(char *)":Data:Models:Body7.solid",(char *)":Data:Models:Bodylow.solid",(char *)":Data:Models:Belt.solid",1);
 								LoadTextureSave(":Data:Textures:fur3.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
@@ -5189,7 +5195,7 @@ void	Game::Tick()
 
 								donesomething=1;
 							}
-							if(Compare(consoletext[0],"wolfieisgod ",0,11)||Compare(consoletext[0],"wolfie is god ",0,12)){
+							if(stripfx(consoletext[0], "wolfieisgod ")||stripfx(consoletext[0], "wolfie is god ")){
 								player[0].skeleton.id=0;
 								player[0].skeleton.Load((char *)":Data:Skeleton:Basic Figure Wolf",(char *)":Data:Skeleton:Basic Figure Wolf Low",(char *)":Data:Skeleton:Rabbitbelt",(char *)":Data:Models:Wolf.solid",(char *)":Data:Models:Wolf2.solid",(char *)":Data:Models:Wolf3.solid",(char *)":Data:Models:Wolf4.solid",(char *)":Data:Models:Wolf5.solid",(char *)":Data:Models:Wolf6.solid",(char *)":Data:Models:Wolf7.solid",(char *)":Data:Models:Wolflow.solid",(char *)":Data:Models:Belt.solid",0);
 								LoadTextureSave(":Data:Textures:Wolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
@@ -5206,43 +5212,43 @@ void	Game::Tick()
 
 								donesomething=1;
 							}
-							/*if(Compare(consoletext[0],"kungfu ",0,6)||Compare(consoletext[0],"kung fu ",0,7)){
+							/*if(stripfx(consoletext[0], "kungfu ")||stripfx(consoletext[0], "kung fu ")){
 							LoadTextureSave(":Data:Textures:Kungfu.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 							donesomething=1;
 							}
-							if(Compare(consoletext[0],"rambo ",0,5)){
+							if(stripfx(consoletext[0], "rambo ")){
 							LoadTextureSave(":Data:Textures:Leather.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 							donesomething=1;
 							}
-							if(Compare(consoletext[0],"david ",0,5)){
+							if(stripfx(consoletext[0], "david ")){
 							LoadTextureSave(":Data:Textures:David.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 							donesomething=1;
 							}*/
-							if(Compare(consoletext[0],"wolf ",0,4)){
+							if(stripfx(consoletext[0], "wolf ")){
 								LoadTextureSave(":Data:Textures:Wolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								donesomething=1;
 							}
-							if(Compare(consoletext[0],"darkwolf ",0,8)){
+							if(stripfx(consoletext[0], "darkwolf ")){
 								LoadTextureSave(":Data:Textures:DarkWolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								donesomething=1;
 							}
-							if(Compare(consoletext[0],"snowwolf ",0,8)){
+							if(stripfx(consoletext[0], "snowwolf ")){
 								LoadTextureSave(":Data:Textures:Snowwolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								donesomething=1;
 							}/*
-							 if(Compare(consoletext[0],"lizardwolf ",0,10)){
+							 if(stripfx(consoletext[0], "lizardwolf ")){
 							 LoadTextureSave(":Data:Textures:Lizardwolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 							 donesomething=1;
 							 }*/
-							if(Compare(consoletext[0],"white ",0,5)){
+							if(stripfx(consoletext[0], "white ")){
 								LoadTextureSave(":Data:Textures:fur.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								donesomething=1;
 							}
-							if(Compare(consoletext[0],"brown ",0,5)){
+							if(stripfx(consoletext[0], "brown ")){
 								LoadTextureSave(":Data:Textures:fur3.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								donesomething=1;
 							}
-							if(Compare(consoletext[0],"black ",0,5)){
+							if(stripfx(consoletext[0], "black ")){
 								LoadTextureSave(":Data:Textures:fur2.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 								donesomething=1;
 							}

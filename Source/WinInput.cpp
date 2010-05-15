@@ -1006,12 +1006,3 @@ char 	Shift(char which)
 	}
 	return which;
 }
-
-bool 	Compare(const char *thestring, const char *tocompare, int start, int end)
-{
-	static int i;
-	for(i=start;i<=end;i++){
-		if(thestring[i]!=tocompare[i-start]&&thestring[i]!=tocompare[i-start]+'A'-'a')return 0;
-	}
-	return 1;
-}
