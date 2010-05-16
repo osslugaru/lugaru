@@ -1027,47 +1027,49 @@ Boolean SetUp (Game & game)
 		return false; 
 	}
 	
-	fprintf(stderr, "Stencil buffer has %i bits, good.\n", stencilbits);
-	fprintf(stderr, "Screen width is %i, height is %i\n", kContextWidth, kContextHeight);
-	
-	glEnable( GL_STENCIL_TEST);
-	glClearStencil(0);
-	glClear(  GL_STENCIL_BUFFER_BIT );
-	glStencilFunc(GL_ALWAYS, 0x1, 0x1);
-	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
-	
-	
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glPixelStorei(GL_UNPACK_ROW_LENGTH, 3);
-	glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
-	glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
-	glColorMask( 1.0, 1.0, 1.0, 1.0 );
-	char stencil[] = {64,127,255};
-	
-	glViewport(0,0, kContextWidth, kContextHeight);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho((GLdouble)0, (GLdouble)kContextWidth, (GLdouble)kContextHeight, 0, -1, 1);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	
-	for(int y=0;y<kContextHeight;y+=2) {
+	if ( stereomode == stereoHorizontalInterlaced || stereomode == stereoVerticalInterlaced ) {
+		fprintf(stderr, "Stencil buffer has %i bits, good.\n", stencilbits);
+		fprintf(stderr, "Screen width is %i, height is %i\n", kContextWidth, kContextHeight);
 		
-		for(int x=0;x<kContextWidth;x++) {
-			glRasterPos2i(x, y);
-			glDrawPixels(1, 1, GL_RGB, GL_UNSIGNED_BYTE, &stencil);
+		glEnable( GL_STENCIL_TEST);
+		glClearStencil(0);
+		glClear(  GL_STENCIL_BUFFER_BIT );
+		glStencilFunc(GL_ALWAYS, 0x1, 0x1);
+		glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+		
+		
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glPixelStorei(GL_UNPACK_ROW_LENGTH, 3);
+		glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
+		glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+		glColorMask( 1.0, 1.0, 1.0, 1.0 );
+		char stencil[] = {64,127,255};
+		
+		glViewport(0,0, kContextWidth, kContextHeight);
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glOrtho((GLdouble)0, (GLdouble)kContextWidth, (GLdouble)kContextHeight, 0, -1, 1);
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		
+		for(int y=0;y<kContextHeight;y+=2) {
+			
+			for(int x=0;x<kContextWidth;x++) {
+				glRasterPos2i(x, y);
+				glDrawPixels(1, 1, GL_RGB, GL_UNSIGNED_BYTE, &stencil);
+			}
 		}
-	}
-	
-	glStencilFunc(GL_NOTEQUAL, 0x01, 0x01);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+		
+		glStencilFunc(GL_NOTEQUAL, 0x01, 0x01);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
-	// Something gets screwed up due to the changes above
-	// revert to default.
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-	glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-	glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
-	glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+		// Something gets screwed up due to the changes above
+		// revert to default.
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+		glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+		glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
+		glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+	}
 
 	game.InitGame();
 
