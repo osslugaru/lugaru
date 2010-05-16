@@ -127,10 +127,10 @@ public:
 	void UpdateVertexArray();
 	void UpdateVertexArrayNoTex();
 	void UpdateVertexArrayNoTexNoNorm();
-	bool loadnotex(char *filename);
+	bool loadnotex(const char *filename);
 	bool loadraw(char *filename);
-	bool load(char *filename,bool texture);
-	bool loaddecal(char *filename,bool texture);
+	bool load(const char *filename,bool texture);
+	bool loaddecal(const char *filename,bool texture);
 	void Scale(float xscale,float yscale,float zscale);
 	void FlipTexCoords();
 	void UniformTexCoords();
