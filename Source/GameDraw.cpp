@@ -232,18 +232,14 @@ int Game::DrawGLScene(StereoSide side)
 
 	if ( stereomode == stereoAnaglyph ) {
 		switch(side) {
-			case stereoLeft: glColorMask( 1.0, 0.0, 0.0, 1.0 ); break;
-			case stereoRight: glColorMask( 0.0, 1.0, 1.0, 1.0 ); break;
+			case stereoLeft: glColorMask( 0.0, 1.0, 1.0, 1.0 ); break;
+			case stereoRight: glColorMask( 1.0, 0.0, 0.0, 1.0 ); break;
 		}
 	} else {
 		glColorMask( 1.0, 1.0, 1.0, 1.0 );
 		
 		if ( stereomode == stereoHorizontalInterlaced || stereomode == stereoVerticalInterlaced ) {
-			if (!stereoreverse) {
-				glStencilFunc(side == stereoLeft ? GL_NOTEQUAL : GL_EQUAL, 0x01, 0x01);
-			} else {
-				glStencilFunc(side == stereoLeft ? GL_EQUAL : GL_NOTEQUAL, 0x01, 0x01);
-			}
+			glStencilFunc(side == stereoLeft ? GL_NOTEQUAL : GL_EQUAL, 0x01, 0x01);
 		}
 	}
 
@@ -362,7 +358,9 @@ int Game::DrawGLScene(StereoSide side)
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 		glLoadIdentity ();
 		
-		glTranslatef((stereoseparation/2) * side, 0, 0);
+		// Move the camera for the current eye's point of view.
+		// Reverse the movement if we're reversing stereo
+		glTranslatef((stereoseparation/2) * side * (stereoreverse  ? -1 : 1), 0, 0);
 		
 		if(!cameramode&&!freeze&&!winfreeze){
 			glRotatef(float(Random()%100)/10*camerashake/*+(woozy*woozy)/10*/,0,0,1);
