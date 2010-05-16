@@ -120,9 +120,8 @@ extern float volume;
 
 #ifdef WIN32
 #include <shellapi.h>
-#endif
-
 #include "win-res/resource.h"
+#endif
 
 using namespace std;
 
