@@ -703,6 +703,12 @@ Boolean SetUp (Game & game)
 		opstream << KeyToChar(game.attackkey);
 		opstream << "\nChat key:\n";
 		opstream << KeyToChar(game.chatkey);
+		opstream << "\nStereoMode:\n";
+		opstream << stereomode;
+		opstream << "\nStereoSeparation:\n";
+		opstream << stereoseparation;
+		opstream << "\nStereoReverse:\n";
+		opstream << stereoreverse;
 		opstream.close();
 	}
 	if(ipstream){
@@ -849,6 +855,17 @@ Boolean SetUp (Game & game)
 		ipstream.ignore(256,'\n');
 		ipstream >> string;
 		game.chatkey=CharToKey(string);
+		ipstream.ignore(256,'\n');
+		ipstream.ignore(256,'\n');
+		ipstream >> i;
+		stereomode = (StereoMode)i;
+		ipstream.ignore(256,'\n');
+		ipstream.ignore(256,'\n');
+		ipstream >> stereoseparation;
+		ipstream.ignore(256,'\n');
+		ipstream.ignore(256,'\n');
+		ipstream >> stereoreverse;
+
 		ipstream.close();
 
 		if(detail>2)detail=2;

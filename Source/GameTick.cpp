@@ -2861,6 +2861,12 @@ void	Game::Tick()
 				opstream << KeyToChar(attackkey);
 				opstream << "\nChat key:\n";
 				opstream << KeyToChar(chatkey);
+				opstream << "\nStereoMode:\n";
+				opstream << stereomode;
+				opstream << "\nStereoSeparation:\n";
+				opstream << stereoseparation;
+				opstream << "\nStereoReverse:\n";
+				opstream << stereoreverse;
 				opstream.close();
 			}
 			if(mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==9||mainmenu==13||mainmenu==10||mainmenu==11||mainmenu==100){
@@ -3256,6 +3262,12 @@ void	Game::Tick()
 				opstream << KeyToChar(attackkey);
 				opstream << "\nChat key:\n";
 				opstream << KeyToChar(chatkey);
+				opstream << "\nStereoMode:\n";
+				opstream << stereomode;
+				opstream << "\nStereoSeparation:\n";
+				opstream << stereoseparation;
+				opstream << "\nStereoReverse:\n";
+				opstream << stereoreverse;
 				opstream.close();
 
 				if(mainmenu==3&&gameon)mainmenu=2;
@@ -3884,6 +3896,12 @@ void	Game::Tick()
 				opstream << KeyToChar(attackkey);
 				opstream << "\nChat key:\n";
 				opstream << KeyToChar(chatkey);
+				opstream << "\nStereoMode:\n";
+				opstream << stereomode;
+				opstream << "\nStereoSeparation:\n";
+				opstream << stereoseparation;
+				opstream << "\nStereoReverse:\n";
+				opstream << stereoreverse;
 				opstream.close();
 			}
 		}
@@ -4319,6 +4337,12 @@ void	Game::Tick()
 				opstream << KeyToChar(attackkey);
 				opstream << "\nChat key:\n";
 				opstream << KeyToChar(chatkey);
+				opstream << "\nStereoMode:\n";
+				opstream << stereomode;
+				opstream << "\nStereoSeparation:\n";
+				opstream << stereoseparation;
+				opstream << "\nStereoReverse:\n";
+				opstream << stereoreverse;
 				opstream.close();
 			}
 		}
