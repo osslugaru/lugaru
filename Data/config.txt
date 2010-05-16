@@ -70,3 +70,9 @@ Attack key:
 mouse1
 Chat key:
 unknown
+StereoMode:
+0
+StereoSeparation:
+0.05
+StereoReverse:
+0
