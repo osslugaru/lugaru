@@ -31,11 +31,21 @@ if(MINGW)
 endif(MINGW)
 
 if(APPLE)
-	set(CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "Build architectures for OSX" FORCE)
+	set(CMAKE_OSX_ARCHITECTURES "i386;ppc" CACHE STRING "Build architectures for OSX")
 	set(CMAKE_OSX_DEPLOYMENT_TARGET "10.5" CACHE STRING 
-		"Minimum OS X version to target for deployment (at runtime); newer APIs weak linked. Set to empty string for default value" FORCE)
+		"Minimum OS X version to target for deployment (at runtime); newer APIs weak linked. Set to empty string for default value")
 	set(CMAKE_OSX_SYSROOT "/Developer/SDKs/MacOSX10.5.sdk" CACHE PATH 
-		"The product will be built against the headers and libraries located inside the indicated SDK." FORCE)
+		"The product will be built against the headers and libraries located inside the indicated SDK.")
+endif(APPLE)
+
+if(APPLE)
+	# Save our sanity; Set all available libraries to internal by default
+	set(LUGARU_FORCE_INTERNAL_SDL True)
+	set(LUGARU_FORCE_INTERNAL_GLU True)
+	set(LUGARU_FORCE_INTERNAL_JPEG True)
+	set(LUGARU_FORCE_INTERNAL_PNG True)
+	set(LUGARU_FORCE_INTERNAL_VORBIS True)
+	set(LUGARU_FORCE_INTERNAL_ZLIB True)
 endif(APPLE)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
@@ -464,16 +474,6 @@ if (NOT OGGVORBIS_FOUND)
         ${VORBISDIR}/lib/window.c
     )
 endif (NOT OGGVORBIS_FOUND)
-
-if(APPLE)
-	# Save our sanity; Set all available libraries to internal by default
-	set(LUGARU_FORCE_INTERNAL_SDL True)
-	set(LUGARU_FORCE_INTERNAL_GLU True)
-	set(LUGARU_FORCE_INTERNAL_JPEG True)
-	set(LUGARU_FORCE_INTERNAL_PNG True)
-	set(LUGARU_FORCE_INTERNAL_VORBIS True)
-	set(LUGARU_FORCE_INTERNAL_ZLIB True)
-endif(APPLE)
 
 include_directories(
     ${OPENAL_INCLUDE_DIR}
