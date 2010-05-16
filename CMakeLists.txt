@@ -191,6 +191,10 @@ if(WIN32)
 	include_directories("${DEPDIR}/OpenGL")
 endif(WIN32)
 
+if(MSVC) # More Visual Studio annoyances
+	include_directories("${DEPDIR}/msinttypes")
+endif(MSVC)
+
 option (LUGARU_FORCE_INTERNAL_OPENAL "Force internal libOpenAL, even if there's a system version" False)
 if (NOT LUGARU_FORCE_INTERNAL_OPENAL)
 	find_package(OpenAL REQUIRED)
