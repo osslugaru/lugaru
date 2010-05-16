@@ -247,11 +247,937 @@ STATIC_ASSERT (rabbittype == 0 && wolftype == 1)
 
 static const char **creatureskin[] = {rabbitskin, wolfskin};
 
-/********************> Tick() <*****/
+/* Return true if PFX is a prefix of STR (case-insensitive).  */
+static bool stripfx(const char *str, const char *pfx)
+{
+  return !strncasecmp(str, pfx, strlen(pfx));
+}
+
 extern OPENAL_STREAM * strm[20];
 extern "C"	void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 extern "C" void PlayStreamEx(int chan, OPENAL_STREAM *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 
+
+static const char *cmd_names[] = {
+#define DECLARE_COMMAND(cmd) #cmd " ",
+#include "ConsoleCmds.h"
+#undef  DECLARE_COMMAND
+};
+
+typedef void (*console_handler)(Game *game, const char *args);
+
+#define DECLARE_COMMAND(cmd) static void ch_##cmd(Game *game, const char *args);
+#include "ConsoleCmds.h"
+#undef  DECLARE_COMMAND
+
+static console_handler cmd_handlers[] = {
+#define DECLARE_COMMAND(cmd) ch_##cmd,
+#include "ConsoleCmds.h"
+#undef  DECLARE_COMMAND
+};
+
+static void ch_quit(Game *game, const char *args)
+{
+  game->tryquit = 1;
+}
+
+static void ch_map(Game *game, const char *args)
+{
+  char buf[64];
+  snprintf(buf, 63, ":Data:Maps:%s", args);
+  game->Loadlevel(buf);
+  game->whichlevel = -2;
+  campaign = 0;
+}
+
+static void ch_save(Game *game, const char *args)
+{
+  char buf[64];
+  int i, j, k, l, m, templength;
+  float headprop, bodyprop, armprop, legprop;
+  snprintf(buf, 63, ":Data:Maps:%s", args);
+
+
+  int mapvers = 12;;
+
+  FILE			*tfile;
+  tfile=fopen( ConvertFileName(buf), "wb" );
+  fpackf(tfile, "Bi", mapvers);
+  fpackf(tfile, "Bi", maptype);
+  fpackf(tfile, "Bi", hostile);
+  fpackf(tfile, "Bf Bf", viewdistance, fadestart);
+  fpackf(tfile, "Bb Bf Bf Bf", skyboxtexture, skyboxr, skyboxg, skyboxb);
+  fpackf(tfile, "Bf Bf Bf", skyboxlightr, skyboxlightg, skyboxlightb);
+  fpackf(tfile, "Bf Bf Bf Bf Bf Bi", player[0].coords.x, player[0].coords.y, player[0].coords.z, player[0].rotation, player[0].targetrotation, player[0].num_weapons);
+  if(player[0].num_weapons>0&&player[0].num_weapons<5)
+    for(j=0;j<player[0].num_weapons;j++){
+      fpackf(tfile, "Bi", weapons.type[player[0].weaponids[j]]);
+    }
+
+  fpackf(tfile, "Bf Bf Bf", player[0].armorhead, player[0].armorhigh, player[0].armorlow);
+  fpackf(tfile, "Bf Bf Bf", player[0].protectionhead, player[0].protectionhigh, player[0].protectionlow);
+  fpackf(tfile, "Bf Bf Bf", player[0].metalhead, player[0].metalhigh, player[0].metallow);
+  fpackf(tfile, "Bf Bf", player[0].power, player[0].speedmult);
+
+  fpackf(tfile, "Bi", player[0].numclothes);
+
+  fpackf(tfile, "Bi Bi", player[0].whichskin, player[0].creature);
+
+  fpackf(tfile, "Bi", numdialogues);
+  if(numdialogues)
+    for(k=0;k<numdialogues;k++){
+      fpackf(tfile, "Bi", numdialogueboxes[k]);
+      fpackf(tfile, "Bi", dialoguetype[k]);
+      for(l=0;l<10;l++){
+	fpackf(tfile, "Bf Bf Bf", participantlocation[k][l].x, participantlocation[k][l].y, participantlocation[k][l].z);
+	fpackf(tfile, "Bf", participantrotation[k][l]);
+      }
+      if(numdialogueboxes)
+	for(l=0;l<numdialogueboxes[k];l++){
+	  fpackf(tfile, "Bi", dialogueboxlocation[k][l]);
+	  fpackf(tfile, "Bf", dialogueboxcolor[k][l][0]);
+	  fpackf(tfile, "Bf", dialogueboxcolor[k][l][1]);
+	  fpackf(tfile, "Bf", dialogueboxcolor[k][l][2]);
+	  fpackf(tfile, "Bi", dialogueboxsound[k][l]);
+
+	  templength=strlen(dialoguetext[k][l]);
+	  fpackf(tfile, "Bi",(templength));
+	  for(m=0;m<templength;m++){
+	    fpackf(tfile, "Bb", dialoguetext[k][l][m]);
+	    if(dialoguetext[k][l][m]=='\0')break;
+	  }
+
+	  templength=strlen(dialoguename[k][l]);
+	  fpackf(tfile, "Bi",templength);
+	  for(m=0;m<templength;m++){
+	    fpackf(tfile, "Bb", dialoguename[k][l][m]);
+	    if(dialoguename[k][l][m]=='\0')break;
+	  }
+
+	  fpackf(tfile, "Bf Bf Bf", dialoguecamera[k][l].x, dialoguecamera[k][l].y, dialoguecamera[k][l].z);
+	  fpackf(tfile, "Bi", participantfocus[k][l]);
+	  fpackf(tfile, "Bi", participantaction[k][l]);
+
+	  for(m=0;m<10;m++)
+	    fpackf(tfile, "Bf Bf Bf", participantfacing[k][l][m].x, participantfacing[k][l][m].y, participantfacing[k][l][m].z);
+
+	  fpackf(tfile, "Bf Bf",dialoguecamerarotation[k][l],dialoguecamerarotation2[k][l]);
+	}
+    }
+
+  if(player[0].numclothes)
+    for(k=0;k<player[0].numclothes;k++){
+      templength=strlen(player[0].clothes[k]);
+      fpackf(tfile, "Bi", templength);
+      for(l=0;l<templength;l++)
+	fpackf(tfile, "Bb", player[0].clothes[k][l]);
+      fpackf(tfile, "Bf Bf Bf", player[0].clothestintr[k], player[0].clothestintg[k], player[0].clothestintb[k]);
+    }
+
+  fpackf(tfile, "Bi", environment);
+
+  fpackf(tfile, "Bi", objects.numobjects);
+
+  if(objects.numobjects)
+    for(k=0;k<objects.numobjects;k++){
+      fpackf(tfile, "Bi Bf Bf Bf Bf Bf Bf", objects.type[k], objects.rotation[k], objects.rotation2[k], objects.position[k].x, objects.position[k].y, objects.position[k].z, objects.scale[k]);
+    }
+
+  fpackf(tfile, "Bi", numhotspots);
+  if(numhotspots)
+    for(i=0;i<numhotspots;i++){
+      fpackf(tfile, "Bi Bf Bf Bf Bf", hotspottype[i],hotspotsize[i],hotspot[i].x,hotspot[i].y,hotspot[i].z);
+      templength=strlen(hotspottext[i]);
+      fpackf(tfile, "Bi",templength);
+      for(l=0;l<templength;l++)
+	fpackf(tfile, "Bb", hotspottext[i][l]);
+    }
+
+  fpackf(tfile, "Bi", numplayers);
+  if(numplayers>1&&numplayers<maxplayers)
+    for(j=1;j<numplayers;j++){
+      fpackf(tfile, "Bi Bi Bf Bf Bf Bi Bi Bf Bb Bf", player[j].whichskin, player[j].creature, player[j].coords.x, player[j].coords.y, player[j].coords.z, player[j].num_weapons, player[j].howactive, player[j].scale, player[j].immobile, player[j].rotation);
+      if(player[j].num_weapons>0&&player[j].num_weapons<5)
+	for(k=0;k<player[j].num_weapons;k++){
+	  fpackf(tfile, "Bi", weapons.type[player[j].weaponids[k]]);
+	}
+      if(player[j].numwaypoints<30){
+	fpackf(tfile, "Bi", player[j].numwaypoints);
+	for(k=0;k<player[j].numwaypoints;k++){
+	  fpackf(tfile, "Bf", player[j].waypoints[k].x);
+	  fpackf(tfile, "Bf", player[j].waypoints[k].y);
+	  fpackf(tfile, "Bf", player[j].waypoints[k].z);
+	  fpackf(tfile, "Bi", player[j].waypointtype[k]);
+	}
+	fpackf(tfile, "Bi", player[j].waypoint);
+      }
+      else{
+	player[j].numwaypoints=0;
+	player[j].waypoint=0;
+	fpackf(tfile, "Bi Bi Bi", player[j].numwaypoints, player[j].waypoint, player[j].waypoint);
+      }
+
+      fpackf(tfile, "Bf Bf Bf", player[j].armorhead, player[j].armorhigh, player[j].armorlow);
+      fpackf(tfile, "Bf Bf Bf", player[j].protectionhead, player[j].protectionhigh, player[j].protectionlow);
+      fpackf(tfile, "Bf Bf Bf", player[j].metalhead, player[j].metalhigh, player[j].metallow);
+      fpackf(tfile, "Bf Bf", player[j].power, player[j].speedmult);
+
+      if(player[j].creature==wolftype){
+	headprop=player[j].proportionhead.x/1.1;
+	bodyprop=player[j].proportionbody.x/1.1;
+	armprop=player[j].proportionarms.x/1.1;
+	legprop=player[j].proportionlegs.x/1.1;
+      }
+
+      if(player[j].creature==rabbittype){
+	headprop=player[j].proportionhead.x/1.2;
+	bodyprop=player[j].proportionbody.x/1.05;
+	armprop=player[j].proportionarms.x/1.00;
+	legprop=player[j].proportionlegs.x/1.1;
+      }
+
+      fpackf(tfile, "Bf Bf Bf Bf", headprop, bodyprop, armprop, legprop);
+
+
+
+      fpackf(tfile, "Bi", player[j].numclothes);
+      if(player[j].numclothes)
+	for(k=0;k<player[j].numclothes;k++){
+	  int templength;
+	  templength=strlen(player[j].clothes[k]);
+	  fpackf(tfile, "Bi", templength);
+	  for(l=0;l<templength;l++)
+	    fpackf(tfile, "Bb", player[j].clothes[k][l]);
+	  fpackf(tfile, "Bf Bf Bf", player[j].clothestintr[k], player[j].clothestintg[k], player[j].clothestintb[k]);
+	}
+    }
+
+  fpackf(tfile, "Bi", game->numpathpoints);
+  if(game->numpathpoints)
+    for(j=0;j<game->numpathpoints;j++){
+      fpackf(tfile, "Bf Bf Bf Bi", game->pathpoint[j].x, game->pathpoint[j].y, game->pathpoint[j].z, game->numpathpointconnect[j]);
+      for(k=0;k<game->numpathpointconnect[j];k++){
+	fpackf(tfile, "Bi", game->pathpointconnect[j][k]);
+      }
+    }
+
+  fpackf(tfile, "Bf Bf Bf Bf", game->mapcenter.x, game->mapcenter.y, game->mapcenter.z, game->mapradius);
+
+  fclose(tfile);
+}
+
+static void ch_cellar(Game *game, const char *args)
+{
+  game->LoadTextureSave(":Data:Textures:Furdarko.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+}
+
+static void ch_tint(Game *game, const char *args)
+{
+  sscanf(args, "%f%f%f", &tintr, &tintg, &tintb);
+}
+
+static void ch_tintr(Game *game, const char *args)
+{
+  tintr = atof(args);
+}
+
+static void ch_tintg(Game *game, const char *args)
+{
+  tintg = atof(args);
+}
+
+static void ch_tintb(Game *game, const char *args)
+{
+  tintb = atof(args);
+}
+
+static void ch_speed(Game *game, const char *args)
+{
+  player[0].speedmult = atof(args);
+}
+
+static void ch_strength(Game *game, const char *args)
+{
+  player[0].power = atof(args);
+}
+
+static void ch_power(Game *game, const char *args)
+{
+  player[0].power = atof(args);
+}
+
+static void ch_size(Game *game, const char *args)
+{
+  player[0].scale = atof(args) * .2;
+}
+
+static int find_closest()
+{
+  int closest = 0;
+  float closestdist = 1.0/0.0;
+
+  for (int i = 1; i < numplayers; i++) {
+    float distance;
+    distance = findDistancefast(&player[i].coords,&player[0].coords);
+    if (distance < closestdist) {
+      closestdist = distance;
+      closest = i;
+    }
+  }
+  return closest;
+}
+
+static void ch_sizenear(Game *game, const char *args)
+{
+  int closest = find_closest();
+
+  if (closest)
+    player[closest].scale = atof(args) * .2;
+}
+
+static void set_proportion(int pnum, const char *args)
+{
+  float headprop,bodyprop,armprop,legprop;
+
+  sscanf(args, "%f%f%f%f", &headprop, &bodyprop, &armprop, &legprop);
+
+  if(player[pnum].creature==wolftype){
+    player[pnum].proportionhead=1.1*headprop;
+    player[pnum].proportionbody=1.1*bodyprop;
+    player[pnum].proportionarms=1.1*armprop;
+    player[pnum].proportionlegs=1.1*legprop;
+  }
+
+  if(player[pnum].creature==rabbittype){
+    player[pnum].proportionhead=1.2*headprop;
+    player[pnum].proportionbody=1.05*bodyprop;
+    player[pnum].proportionarms=1.00*armprop;
+    player[pnum].proportionlegs=1.1*legprop;
+    player[pnum].proportionlegs.y=1.05*legprop;
+  }
+}
+
+static void ch_proportion(Game *game, const char *args)
+{
+  set_proportion(0, args);
+}
+
+static void ch_proportionnear(Game *game, const char *args)
+{
+  int closest = find_closest();
+  if (closest)
+    set_proportion(closest, args);
+}
+
+static void set_protection(int pnum, const char *args)
+{
+  float head, high, low;
+  sscanf(args, "%f%f%f", &head, &high, &low);
+
+  player[pnum].protectionhead = head;
+  player[pnum].protectionhigh = high;
+  player[pnum].protectionlow  = low;
+}
+
+static void ch_protection(Game *game, const char *args)
+{
+  set_protection(0, args);
+}
+
+static void ch_protectionnear(Game *game, const char *args)
+{
+  int closest = find_closest();
+  if (closest)
+    set_protection(closest, args);
+}
+
+static void set_armor(int pnum, const char *args)
+{
+  float head, high, low;
+  sscanf(args, "%f%f%f", &head, &high, &low);
+
+  player[pnum].armorhead = head;
+  player[pnum].armorhigh = high;
+  player[pnum].armorlow  = low;
+}
+
+static void ch_armor(Game *game, const char *args)
+{
+  set_armor(0, args);
+}
+
+static void ch_armornear(Game *game, const char *args)
+{
+  int closest = find_closest();
+  if (closest)
+    set_armor(closest, args);
+}
+
+static void ch_protectionreset(Game *game, const char *args)
+{
+  set_protection(0, "1 1 1");
+  set_armor(0, "1 1 1");
+}
+
+static void set_metal(int pnum, const char *args)
+{
+  float head, high, low;
+  sscanf(args, "%f%f%f", &head, &high, &low);
+
+  player[pnum].metalhead = head;
+  player[pnum].metalhigh = high;
+  player[pnum].metallow  = low;
+}
+
+static void ch_metal(Game *game, const char *args)
+{
+  set_metal(0, args);
+}
+
+static void set_noclothes(int pnum, Game *game, const char *args)
+{
+  player[pnum].numclothes = 0;
+  game->LoadTextureSave(creatureskin[player[pnum].creature][player[pnum].whichskin],
+			&player[pnum].skeleton.drawmodel.textureptr,1,
+			&player[pnum].skeleton.skinText[0],&player[pnum].skeleton.skinsize);
+}
+
+static void ch_noclothes(Game *game, const char *args)
+{
+  set_noclothes(0, game, args);
+}
+
+static void ch_noclothesnear(Game *game, const char *args)
+{
+  int closest = find_closest();
+  if (closest)
+    set_noclothes(closest, game, args);
+}
+
+
+static void set_clothes(int pnum, Game *game, const char *args)
+{
+  char buf[64];
+  snprintf(buf, 63, ":Data:Textures:%s.png", args);
+
+  if (!game->AddClothes(buf,0,1,&player[pnum].skeleton.skinText[pnum],&player[pnum].skeleton.skinsize))
+    return;
+
+  player[pnum].DoMipmaps(5,0,0,player[pnum].skeleton.skinsize,player[pnum].skeleton.skinsize);
+  strcpy(player[pnum].clothes[player[pnum].numclothes],buf);
+  player[pnum].clothestintr[player[pnum].numclothes]=tintr;
+  player[pnum].clothestintg[player[pnum].numclothes]=tintg;
+  player[pnum].clothestintb[player[pnum].numclothes]=tintb;
+  player[pnum].numclothes++;
+}
+
+static void ch_clothes(Game *game, const char *args)
+{
+  set_clothes(0, game, args);
+}
+
+static void ch_clothesnear(Game *game, const char *args)
+{
+  int closest = find_closest();
+  if (closest)
+    set_clothes(closest, game, args);
+}
+
+static void ch_belt(Game *game, const char *args)
+{
+  player[0].skeleton.clothes = !player[0].skeleton.clothes;
+}
+
+
+static void ch_cellophane(Game *game, const char *args)
+{
+  cellophane = !cellophane;
+  float mul = cellophane ? 0 : 1;
+
+  for (int i = 0; i < numplayers; i++) {
+    player[i].proportionhead.z = player[i].proportionhead.x * mul;
+    player[i].proportionbody.z = player[i].proportionbody.x * mul;
+    player[i].proportionarms.z = player[i].proportionarms.x * mul;
+    player[i].proportionlegs.z = player[i].proportionlegs.x * mul;
+  }
+}
+
+static void ch_funnybunny(Game *game, const char *args)
+{
+  player[0].skeleton.id=0;
+  player[0].skeleton.Load(":Data:Skeleton:Basic Figure",":Data:Skeleton:Basic Figurelow",
+			  ":Data:Skeleton:Rabbitbelt",":Data:Models:Body.solid",
+			  ":Data:Models:Body2.solid",":Data:Models:Body3.solid",
+			  ":Data:Models:Body4.solid",":Data:Models:Body5.solid",
+			  ":Data:Models:Body6.solid",":Data:Models:Body7.solid",
+			  ":Data:Models:Bodylow.solid",":Data:Models:Belt.solid",1);
+  game->LoadTextureSave(":Data:Textures:fur3.jpg",&player[0].skeleton.drawmodel.textureptr,1,
+			&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+  player[0].creature=rabbittype;
+  player[0].scale=.2;
+  player[0].headless=0;
+  player[0].damagetolerance=200;
+  set_proportion(0, "1 1 1 1");
+}
+
+static void ch_wolfie(Game *game, const char *args)
+{
+  player[0].skeleton.id=0;
+  player[0].skeleton.Load(":Data:Skeleton:Basic Figure Wolf",":Data:Skeleton:Basic Figure Wolf Low",
+			  ":Data:Skeleton:Rabbitbelt",":Data:Models:Wolf.solid",
+			  ":Data:Models:Wolf2.solid",":Data:Models:Wolf3.solid",
+			  ":Data:Models:Wolf4.solid",":Data:Models:Wolf5.solid",
+			  ":Data:Models:Wolf6.solid",":Data:Models:Wolf7.solid",
+			  ":Data:Models:Wolflow.solid",":Data:Models:Belt.solid",0);
+  game->LoadTextureSave(":Data:Textures:Wolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,
+			&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+  player[0].creature=wolftype;
+  player[0].damagetolerance=300;
+  set_proportion(0, "1 1 1 1");
+}
+
+static void ch_wolf(Game *game, const char *args)
+{
+  game->LoadTextureSave(":Data:Textures:Wolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,
+			&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+}
+
+static void ch_snowwolf(Game *game, const char *args)
+{
+  game->LoadTextureSave(":Data:Textures:SnowWolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,
+			&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+}
+
+static void ch_darkwolf(Game *game, const char *args)
+{
+  game->LoadTextureSave(":Data:Textures:DarkWolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,
+			&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+}
+
+static void ch_white(Game *game, const char *args)
+{
+  game->LoadTextureSave(":Data:Textures:fur.jpg",&player[0].skeleton.drawmodel.textureptr,1,
+			&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+}
+
+static void ch_brown(Game *game, const char *args)
+{
+  game->LoadTextureSave(":Data:Textures:fur3.jpg",&player[0].skeleton.drawmodel.textureptr,1,
+			&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+}
+
+static void ch_black(Game *game, const char *args)
+{
+  game->LoadTextureSave(":Data:Textures:fur2.jpg",&player[0].skeleton.drawmodel.textureptr,1,
+			&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+}
+
+static void ch_sizemin(Game *game, const char *args)
+{
+  int i;
+  for (i = 1; i < numplayers; i++)
+    if (player[i].scale < 0.8 * 0.2)
+      player[i].scale = 0.8 * 0.2;
+}
+
+static void ch_tutorial(Game *game, const char *args)
+{
+  tutoriallevel = atoi(args);
+}
+
+static void ch_hostile(Game *game, const char *args)
+{
+  hostile = atoi(args);
+}
+
+static void ch_indemo(Game *game, const char *args)
+{
+  game->indemo=1;
+  hotspot[numhotspots]=player[0].coords;
+  hotspotsize[numhotspots]=0;
+  hotspottype[numhotspots]=-111;
+  strcpy(hotspottext[numhotspots],"mapname");
+  numhotspots++;
+}
+
+static void ch_notindemo(Game *game, const char *args)
+{
+  game->indemo=0;
+  numhotspots--;
+}
+
+static void ch_type(Game *game, const char *args)
+{
+  int i, n = sizeof(editortypenames) / sizeof(editortypenames[0]);
+  for (i = 0; i < n; i++)
+    if (stripfx(args, editortypenames[i]))
+      {
+	editoractive = i;
+	break;
+      }
+}
+
+static void ch_path(Game *game, const char *args)
+{
+  int i, n = sizeof(pathtypenames) / sizeof(pathtypenames[0]);
+  for (i = 0; i < n; i++)
+    if (stripfx(args, pathtypenames[i]))
+      {
+	editorpathtype = i;
+	break;
+      }
+}
+
+static void ch_hs(Game *game, const char *args)
+{
+  hotspot[numhotspots]=player[0].coords;
+
+  float size;
+  int type, shift;
+  sscanf(args, "%f%d %n", &size, &type, &shift);
+
+  hotspotsize[numhotspots] = size;
+  hotspottype[numhotspots] = type;
+
+  strcpy(hotspottext[numhotspots], args + shift);
+  strcat(hotspottext[numhotspots], "\n");
+
+  numhotspots++;
+}
+
+static void ch_dialogue(Game *game, const char *args)
+{
+  int dlg, i, j;
+  char buf1[32], buf2[64];
+
+  sscanf(args, "%d %31s", &dlg, buf1);
+  snprintf(buf2, 63, ":Data:Dialogues:%s.txt", buf1);
+
+  dialoguetype[numdialogues] = dlg;
+
+  memset(dialoguetext[numdialogues], 0, sizeof(dialoguetext[numdialogues]));
+  memset(dialoguename[numdialogues], 0, sizeof(dialoguename[numdialogues]));
+
+  ifstream ipstream(ConvertFileName(buf2));
+  ipstream.ignore(256,':');
+  ipstream >> numdialogueboxes[numdialogues];
+  for(i=0;i<numdialogueboxes[numdialogues];i++){
+    ipstream.ignore(256,':');
+    ipstream.ignore(256,':');
+    ipstream.ignore(256,' ');
+    ipstream >> dialogueboxlocation[numdialogues][i];
+    ipstream.ignore(256,':');
+    ipstream >> dialogueboxcolor[numdialogues][i][0];
+    ipstream >> dialogueboxcolor[numdialogues][i][1];
+    ipstream >> dialogueboxcolor[numdialogues][i][2];
+    ipstream.ignore(256,':');
+    ipstream.getline(dialoguename[numdialogues][i],64);
+    ipstream.ignore(256,':');
+    ipstream.ignore(256,' ');
+    ipstream.getline(dialoguetext[numdialogues][i],128);
+    for(j=0;j<128;j++){
+      if(dialoguetext[numdialogues][i][j]=='\\')dialoguetext[numdialogues][i][j]='\n';
+    }
+    ipstream.ignore(256,':');
+    ipstream >> dialogueboxsound[numdialogues][i];
+  }
+
+  for(i=0;i<numdialogueboxes[numdialogues];i++){
+    for(j=0;j<numplayers;j++){
+      participantfacing[numdialogues][i][j]=player[j].facing;
+    }
+  }
+  ipstream.close();
+
+  directing=1;
+  indialogue=0;
+  whichdialogue=numdialogues;
+
+  numdialogues++;
+}
+
+static void ch_fixdialogue(Game *game, const char *args)
+{
+  char buf1[32], buf2[64];
+  int whichdi, i, j;
+
+  sscanf(args, "%d %31s", &whichdi, buf1);
+  snprintf(buf2, 63, ":Data:Dialogues:%s.txt", buf1);
+
+  memset(dialoguetext[whichdi], 0, sizeof(dialoguetext[whichdi]));
+  memset(dialoguename[whichdi], 0, sizeof(dialoguename[whichdi]));
+
+  ifstream ipstream(ConvertFileName(buf2));
+  ipstream.ignore(256,':');
+  ipstream >> numdialogueboxes[whichdi];
+  for(i=0;i<numdialogueboxes[whichdi];i++){
+    ipstream.ignore(256,':');
+    ipstream.ignore(256,':');
+    ipstream.ignore(256,' ');
+    ipstream >> dialogueboxlocation[whichdi][i];
+    ipstream.ignore(256,':');
+    ipstream >> dialogueboxcolor[whichdi][i][0];
+    ipstream >> dialogueboxcolor[whichdi][i][1];
+    ipstream >> dialogueboxcolor[whichdi][i][2];
+    ipstream.ignore(256,':');
+    ipstream.getline(dialoguename[whichdi][i],64);
+    ipstream.ignore(256,':');
+    ipstream.ignore(256,' ');
+    ipstream.getline(dialoguetext[whichdi][i],128);
+    for(j=0;j<128;j++){
+      if(dialoguetext[whichdi][i][j]=='\\')dialoguetext[whichdi][i][j]='\n';
+    }
+    ipstream.ignore(256,':');
+    ipstream >> dialogueboxsound[whichdi][i];
+  }
+
+  ipstream.close();
+}
+
+static void ch_fixtype(Game *game, const char *args)
+{
+  int dlg;
+  sscanf(args, "%d", &dlg);
+  dialoguetype[0] = dlg;
+}
+
+static void ch_fixrotation(Game *game, const char *args)
+{
+  participantrotation[whichdialogue][participantfocus[whichdialogue][indialogue]]=player[participantfocus[whichdialogue][indialogue]].rotation;
+}
+
+static void ch_ddialogue(Game *game, const char *args)
+{
+  if (numdialogues)
+    numdialogues--;
+}
+
+static void ch_dhs(Game *game, const char *args)
+{
+  if (numhotspots)
+    numhotspots--;
+}
+
+static void ch_immobile(Game *game, const char *args)
+{
+  player[0].immobile = 1;
+}
+
+static void ch_allimmobile(Game *game, const char *args)
+{
+  for (int i = 1; i < numplayers; i++)
+    player[i].immobile = 1;
+}
+
+static void ch_mobile(Game *game, const char *args)
+{
+  player[0].immobile = 0;
+}
+
+static void ch_default(Game *game, const char *args)
+{
+  player[0].armorhead=1;
+  player[0].armorhigh=1;
+  player[0].armorlow=1;
+  player[0].protectionhead=1;
+  player[0].protectionhigh=1;
+  player[0].protectionlow=1;
+  player[0].metalhead=1;
+  player[0].metalhigh=1;
+  player[0].metallow=1;
+  player[0].power=1;
+  player[0].speedmult=1;
+  player[0].scale=1;
+
+  if(player[0].creature==wolftype){
+    player[0].proportionhead=1.1;
+    player[0].proportionbody=1.1;
+    player[0].proportionarms=1.1;
+    player[0].proportionlegs=1.1;
+  }
+
+  if(player[0].creature==rabbittype){
+    player[0].proportionhead=1.2;
+    player[0].proportionbody=1.05;
+    player[0].proportionarms=1.00;
+    player[0].proportionlegs=1.1;
+    player[0].proportionlegs.y=1.05;
+  }
+
+  player[0].numclothes=0;
+  game->LoadTextureSave(creatureskin[player[0].creature][player[0].whichskin],
+			&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],
+			&player[0].skeleton.skinsize);
+
+  editoractive=typeactive;
+  player[0].immobile=0;
+}
+
+static void ch_play(Game *game, const char *args)
+{
+  int dlg, i;
+  sscanf(args, "%d", &dlg);
+  whichdialogue = dlg;
+
+  if (whichdialogue >= numdialogues)
+    return;
+
+  for(i=0;i<numdialogueboxes[whichdialogue];i++){
+    player[participantfocus[whichdialogue][i]].coords=participantlocation[whichdialogue][participantfocus[whichdialogue][i]];
+    player[participantfocus[whichdialogue][i]].rotation=participantrotation[whichdialogue][participantfocus[whichdialogue][i]];
+    player[participantfocus[whichdialogue][i]].targetrotation=participantrotation[whichdialogue][participantfocus[whichdialogue][i]];
+    player[participantfocus[whichdialogue][i]].velocity=0;
+    player[participantfocus[whichdialogue][i]].targetanimation=player[participantfocus[whichdialogue][i]].getIdle();
+    player[participantfocus[whichdialogue][i]].targetframe=0;
+  }
+
+  directing=0;
+  indialogue=0;
+
+  float gLoc[3];
+  float vel[3];
+  XYZ temppos;
+  temppos=player[participantfocus[whichdialogue][indialogue]].coords;
+  temppos=temppos-viewer;
+  Normalise(&temppos);
+  temppos+=viewer;
+
+  gLoc[0]=temppos.x;
+  gLoc[1]=temppos.y;
+  gLoc[2]=temppos.z;
+  vel[0]=0;
+  vel[1]=0;
+  vel[2]=0;
+  int whichsoundplay;
+  whichsoundplay=rabbitchitter;
+  if(dialogueboxsound[whichdialogue][indialogue]==2)whichsoundplay=rabbitchitter2;
+  if(dialogueboxsound[whichdialogue][indialogue]==3)whichsoundplay=rabbitpainsound;
+  if(dialogueboxsound[whichdialogue][indialogue]==4)whichsoundplay=rabbitpain1sound;
+  if(dialogueboxsound[whichdialogue][indialogue]==5)whichsoundplay=rabbitattacksound;
+  if(dialogueboxsound[whichdialogue][indialogue]==6)whichsoundplay=rabbitattack2sound;
+  if(dialogueboxsound[whichdialogue][indialogue]==7)whichsoundplay=rabbitattack3sound;
+  if(dialogueboxsound[whichdialogue][indialogue]==8)whichsoundplay=rabbitattack4sound;
+  if(dialogueboxsound[whichdialogue][indialogue]==9)whichsoundplay=growlsound;
+  if(dialogueboxsound[whichdialogue][indialogue]==10)whichsoundplay=growl2sound;
+  if(dialogueboxsound[whichdialogue][indialogue]==11)whichsoundplay=snarlsound;
+  if(dialogueboxsound[whichdialogue][indialogue]==12)whichsoundplay=snarl2sound;
+  if(dialogueboxsound[whichdialogue][indialogue]==13)whichsoundplay=barksound;
+  if(dialogueboxsound[whichdialogue][indialogue]==14)whichsoundplay=bark2sound;
+  if(dialogueboxsound[whichdialogue][indialogue]==15)whichsoundplay=bark3sound;
+  if(dialogueboxsound[whichdialogue][indialogue]==16)whichsoundplay=barkgrowlsound;
+  if(dialogueboxsound[whichdialogue][indialogue]==-1)whichsoundplay=fireendsound;
+  if(dialogueboxsound[whichdialogue][indialogue]==-2)whichsoundplay=firestartsound;
+  if(dialogueboxsound[whichdialogue][indialogue]==-3)whichsoundplay=consolesuccesssound;
+  if(dialogueboxsound[whichdialogue][indialogue]==-4)whichsoundplay=consolefailsound;
+  PlaySoundEx( whichsoundplay, samp[whichsoundplay], NULL, true);
+  OPENAL_3D_SetAttributes(channels[whichsoundplay], gLoc, vel);
+  OPENAL_SetVolume(channels[whichsoundplay], 256);
+  OPENAL_SetPaused(channels[whichsoundplay], false);
+}
+
+static void ch_mapkilleveryone(Game *game, const char *args)
+{
+  maptype = mapkilleveryone;
+}
+
+static void ch_mapkillmost(Game *game, const char *args)
+{
+  maptype = mapkillmost;
+}
+
+static void ch_mapkillsomeone(Game *game, const char *args)
+{
+  maptype = mapkillsomeone;
+}
+
+static void ch_mapgosomewhere(Game *game, const char *args)
+{
+  maptype = mapgosomewhere;
+}
+
+static void ch_viewdistance(Game *game, const char *args)
+{
+  viewdistance = atof(args)*100;
+}
+
+static void ch_fadestart(Game *game, const char *args)
+{
+  fadestart = atof(args);
+}
+
+static void ch_slomo(Game *game, const char *args)
+{
+  slomospeed = atof(args);
+  slomo = !slomo;
+  slomodelay = 1000;
+}
+
+static void ch_slofreq(Game *game, const char *args)
+{
+  slomofreq = atof(args);
+}
+
+static void ch_skytint(Game *game, const char *args)
+{
+  sscanf(args, "%f%f%f", &skyboxr, &skyboxg, &skyboxb);
+
+  skyboxlightr=skyboxr;
+  skyboxlightg=skyboxg;
+  skyboxlightb=skyboxb;
+
+  game->SetUpLighting();
+
+  terrain.DoShadows();
+  objects.DoShadows();
+}
+
+static void ch_skylight(Game *game, const char *args)
+{
+  sscanf(args, "%f%f%f", &skyboxlightr, &skyboxlightg, &skyboxlightb);
+
+  game->SetUpLighting();
+
+  terrain.DoShadows();
+  objects.DoShadows();
+}
+
+static void ch_skybox(Game *game, const char *args)
+{
+  skyboxtexture = !skyboxtexture;
+
+  game->SetUpLighting();
+
+  terrain.DoShadows();
+  objects.DoShadows();
+}
+
+static void cmd_dispatch(Game *game, const char *cmd)
+{
+  int i, n_cmds = sizeof(cmd_names) / sizeof(cmd_names[0]);
+
+  for (i = 0; i < n_cmds; i++)
+    if (stripfx(cmd, cmd_names[i]))
+      {
+	cmd_handlers[i](game, cmd + strlen(cmd_names[i]));
+	break;
+      }
+  if (i < n_cmds)
+    {
+      PlaySoundEx(consolesuccesssound, samp[consolesuccesssound], NULL, true);
+      OPENAL_SetVolume(channels[consolesuccesssound], 256);
+      OPENAL_SetPaused(channels[consolesuccesssound], false);
+    }
+  else
+    {
+      PlaySoundEx(consolefailsound, samp[consolefailsound], NULL, true);
+      OPENAL_SetVolume(channels[consolefailsound], 256);
+      OPENAL_SetPaused(channels[consolefailsound], false);
+    }
+}
+
+
+
+/********************> Tick() <*****/
 extern void ScreenShot(const char * fname);
 void Screenshot	(void)
 {
@@ -1665,7 +2591,6 @@ void	Game::Tick()
 	static XYZ test2;
 	static XYZ lowpoint,lowpointtarget,lowpoint2,lowpointtarget2,lowpoint3,lowpointtarget3,lowpoint4,lowpointtarget4,lowpoint5,lowpointtarget5,lowpoint6,lowpointtarget6,lowpoint7,lowpointtarget7,colpoint,colpoint2;
 	static int whichhit;
-	static bool donesomething;
 	static bool oldjumpkeydown;
 
 	int templength;
@@ -3280,2009 +4205,8 @@ void	Game::Tick()
 						}
 						if(i==MAC_RETURN_KEY){
 							archiveselected=0;
-							donesomething=0;
-							if(Compare(consoletext[0],"quit ",0,4)||Compare(consoletext[0],"exit ",0,4)){
-								PlaySoundEx( consolesuccesssound, samp[consolesuccesssound], NULL, true);
-								OPENAL_SetVolume(channels[consolesuccesssound], 256);
-								OPENAL_SetPaused(channels[consolesuccesssound], false);
-								donesomething=1;
-								tryquit=1;
-							}
-							/*if(Compare(consoletext[0],"send ",0,4)){
-							for(j=5;j<consolechars[0];j++){
-							talkname[j-5]=consoletext[0][j];
-							}
-							talkname[consolechars[0]-5]='\0';
-							sprintf (chatname, "%s: %s",playerName,talkname);
-							//NetworkSendInformation(chatname);
-							donesomething=1;
-							}
-							if(Compare(consoletext[0],"name ",0,4)){
-							int numchars;
-							numchars=consolechars[0]-5;
-							if(numchars>32)numchars=32;
-							for(j=5;j<numchars+5;j++){
-							talkname[j-5]=consoletext[0][j];
-							}
-							talkname[numchars]='\0';
-							sprintf (chatname, "Player %s is now known as %s.",playerName,talkname);
-							//NetworkSendInformation(chatname);
-							sprintf (playerName, "%s",talkname);
-							//NetworkSendName(playerName);
-							donesomething=1;
-							}*/
-							if(Compare(consoletext[0],"map ",0,3)){
-								mapname[0]=':';
-								mapname[1]='D';
-								mapname[2]='a';
-								mapname[3]='t';
-								mapname[4]='a';
-								mapname[5]=':';
-								mapname[6]='M';
-								mapname[7]='a';
-								mapname[8]='p';
-								mapname[9]='s';
-								mapname[10]=':';
-								for(j=4;j<consolechars[0];j++){
-									mapname[j-4+11]=consoletext[0][j];
-								}
-								mapname[consolechars[0]-4+11]='\0';
-								Loadlevel(mapname);
-								whichlevel=-2;
-								campaign=0;
-								donesomething=1;
-							}
-							/*if(Compare(consoletext[0],"connect ",0,7)&&!ishost){
-							int v;
-							unsigned char playerNameStr[32];
-							char theIPAddress[256];
-							char thePort[32];
-							NMUInt32 port = 25710;
+							cmd_dispatch(this, consoletext[0]);
 
-							strcpy(playerName, "Client");
-							GameC2PStr( playerName, playerNameStr );
-
-							for(j=0;j<consolechars[0]-8;j++){
-							theIPAddress[j]=consoletext[0][j+8];
-							}
-							theIPAddress[consolechars[0]-8]='\0';
-
-							sprintf( thePort, "%li", port );
-							v=NetworkStartClient( theIPAddress, thePort, playerNameStr );
-							if(v)
-							{
-							if(consolechars[0]>0){
-							for(k=14;k>=1;k--){
-							for(j=0;j<255;j++){
-							consoletext[k][j]=consoletext[k-1][j];
-							}
-							consolechars[k]=consolechars[k-1];
-							}
-							for(j=0;j<255;j++){
-							consoletext[0][j]=' ';
-							}
-							if(v!=-4994)sprintf (consoletext[0], "Error #%d!!!",v);
-							else sprintf (consoletext[0], "Could not open connection");
-
-							consolechars[0]=255;
-							consoleselected=0;
-							}
-							}
-							else
-							{
-							donesomething=1;
-							PlaySoundEx( consolesuccesssound, samp[consolesuccesssound], NULL, true);
-							OPENAL_SetVolume(channels[consolesuccesssound], 256);
-							OPENAL_SetPaused(channels[consolesuccesssound], false);
-
-							if(consolechars[0]>0){
-							for(k=14;k>=1;k--){
-							for(j=0;j<255;j++){
-							consoletext[k][j]=consoletext[k-1][j];
-							}
-							consolechars[k]=consolechars[k-1];
-							}
-							for(j=0;j<255;j++){
-							consoletext[0][j]=' ';
-							}
-							sprintf (consoletext[0], "Connected to %s",theIPAddress);
-
-							consolechars[0]=255;
-							consoleselected=0;
-							}
-							}
-							}
-
-							if(Compare(consoletext[0],"host ",0,4)){
-							unsigned char gameNameStr[32], playerNameStr[32];
-							char gameName[32];//, playerName[32];
-							NMUInt32 port;
-							int players;
-							int v;
-
-							port = 25710;
-							players =4;
-
-							strcpy(gameName, "Host's game");
-							strcpy(playerName, "Host");
-							GameC2PStr( gameName, gameNameStr );
-							GameC2PStr( playerName, playerNameStr );
-
-							v=NetworkStartServer( (NMUInt16)port, players, gameNameStr, playerNameStr );
-							if(v)
-							{
-							if(consolechars[0]>0){
-							for(k=14;k>=1;k--){
-							for(j=0;j<255;j++){
-							consoletext[k][j]=consoletext[k-1][j];
-							}
-							consolechars[k]=consolechars[k-1];
-							}
-							for(j=0;j<255;j++){
-							consoletext[0][j]=' ';
-							}
-							sprintf (consoletext[0], "Error #%d!!!",v);
-
-							consolechars[0]=255;
-							consoleselected=0;
-							}
-							}
-							else
-							{
-							donesomething=1;
-							PlaySoundEx( consolesuccesssound, samp[consolesuccesssound], NULL, true);
-							OPENAL_SetVolume(channels[consolesuccesssound], 256);
-							OPENAL_SetPaused(channels[consolesuccesssound], false);
-
-							if(consolechars[0]>0){
-							for(k=14;k>=1;k--){
-							for(j=0;j<255;j++){
-							consoletext[k][j]=consoletext[k-1][j];
-							}
-							consolechars[k]=consolechars[k-1];
-							}
-							for(j=0;j<255;j++){
-							consoletext[0][j]=' ';
-							}
-							sprintf (consoletext[0], "Game hosted");
-
-							consolechars[0]=255;
-							consoleselected=0;
-							}
-							}
-							}
-							*/
-							if(Compare(consoletext[0],"save ",0,4)){
-								mapname[0]=':';
-								mapname[1]='D';
-								mapname[2]='a';
-								mapname[3]='t';
-								mapname[4]='a';
-								mapname[5]=':';
-								mapname[6]='M';
-								mapname[7]='a';
-								mapname[8]='p';
-								mapname[9]='s';
-								mapname[10]=':';
-								for(j=5;j<consolechars[0];j++){
-									mapname[j-5+11]=consoletext[0][j];
-								}
-								mapname[consolechars[0]-5+11]='\0';
-
-								PlaySoundEx( consolesuccesssound, samp[consolesuccesssound], NULL, true);
-								OPENAL_SetVolume(channels[consolesuccesssound], 256);
-								OPENAL_SetPaused(channels[consolesuccesssound], false);
-
-								int mapvers;
-								mapvers=12;
-
-
-								FILE			*tfile;
-								tfile=fopen( ConvertFileName(mapname), "wb" );
-								fpackf(tfile, "Bi", mapvers);
-								//fpackf(tfile, "Bi", indemo);
-								fpackf(tfile, "Bi", maptype);
-								fpackf(tfile, "Bi", hostile);
-								fpackf(tfile, "Bf Bf", viewdistance, fadestart);
-								fpackf(tfile, "Bb Bf Bf Bf", skyboxtexture, skyboxr, skyboxg, skyboxb);
-								fpackf(tfile, "Bf Bf Bf", skyboxlightr, skyboxlightg, skyboxlightb);
-								fpackf(tfile, "Bf Bf Bf Bf Bf Bi", player[0].coords.x, player[0].coords.y, player[0].coords.z, player[0].rotation, player[0].targetrotation, player[0].num_weapons);
-								if(player[0].num_weapons>0&&player[0].num_weapons<5)
-									for(j=0;j<player[0].num_weapons;j++){
-										fpackf(tfile, "Bi", weapons.type[player[0].weaponids[j]]);
-									}
-
-									fpackf(tfile, "Bf Bf Bf", player[0].armorhead, player[0].armorhigh, player[0].armorlow);
-									fpackf(tfile, "Bf Bf Bf", player[0].protectionhead, player[0].protectionhigh, player[0].protectionlow);
-									fpackf(tfile, "Bf Bf Bf", player[0].metalhead, player[0].metalhigh, player[0].metallow);
-									fpackf(tfile, "Bf Bf", player[0].power, player[0].speedmult);
-
-									fpackf(tfile, "Bi", player[0].numclothes);
-
-									fpackf(tfile, "Bi Bi", player[0].whichskin, player[0].creature);
-
-									fpackf(tfile, "Bi", numdialogues);
-									if(numdialogues)
-										for(k=0;k<numdialogues;k++){
-											fpackf(tfile, "Bi", numdialogueboxes[k]);
-											fpackf(tfile, "Bi", dialoguetype[k]);
-											for(l=0;l<10;l++){
-												fpackf(tfile, "Bf Bf Bf", participantlocation[k][l].x, participantlocation[k][l].y, participantlocation[k][l].z);
-												fpackf(tfile, "Bf", participantrotation[k][l]);
-											}
-											if(numdialogueboxes)
-												for(l=0;l<numdialogueboxes[k];l++){
-													fpackf(tfile, "Bi", dialogueboxlocation[k][l]);
-													fpackf(tfile, "Bf", dialogueboxcolor[k][l][0]);
-													fpackf(tfile, "Bf", dialogueboxcolor[k][l][1]);
-													fpackf(tfile, "Bf", dialogueboxcolor[k][l][2]);
-													fpackf(tfile, "Bi", dialogueboxsound[k][l]);
-
-													templength=strlen(dialoguetext[k][l]);
-													fpackf(tfile, "Bi",(templength));
-													for(m=0;m<templength;m++){
-														fpackf(tfile, "Bb", dialoguetext[k][l][m]);
-														if(dialoguetext[k][l][m]=='\0')break;
-													}
-
-													templength=strlen(dialoguename[k][l]);
-													fpackf(tfile, "Bi",templength);
-													for(m=0;m<templength;m++){
-														fpackf(tfile, "Bb", dialoguename[k][l][m]);
-														if(dialoguename[k][l][m]=='\0')break;
-													}
-
-													fpackf(tfile, "Bf Bf Bf", dialoguecamera[k][l].x, dialoguecamera[k][l].y, dialoguecamera[k][l].z);
-													fpackf(tfile, "Bi", participantfocus[k][l]);
-													fpackf(tfile, "Bi", participantaction[k][l]);
-
-													for(m=0;m<10;m++)
-														fpackf(tfile, "Bf Bf Bf", participantfacing[k][l][m].x, participantfacing[k][l][m].y, participantfacing[k][l][m].z);
-
-													fpackf(tfile, "Bf Bf",dialoguecamerarotation[k][l],dialoguecamerarotation2[k][l]);
-												}
-										}
-
-										if(player[0].numclothes)
-											for(k=0;k<player[0].numclothes;k++){
-												templength=strlen(player[0].clothes[k]);
-												fpackf(tfile, "Bi", templength);
-												for(l=0;l<templength;l++)
-													fpackf(tfile, "Bb", player[0].clothes[k][l]);
-												fpackf(tfile, "Bf Bf Bf", player[0].clothestintr[k], player[0].clothestintg[k], player[0].clothestintb[k]);
-											}
-
-											fpackf(tfile, "Bi", environment);
-
-											fpackf(tfile, "Bi", objects.numobjects);
-
-											if(objects.numobjects)
-												for(k=0;k<objects.numobjects;k++){
-													fpackf(tfile, "Bi Bf Bf Bf Bf Bf Bf", objects.type[k], objects.rotation[k], objects.rotation2[k], objects.position[k].x, objects.position[k].y, objects.position[k].z, objects.scale[k]);
-												}
-
-												fpackf(tfile, "Bi", numhotspots);
-												if(numhotspots)
-													for(i=0;i<numhotspots;i++){
-														fpackf(tfile, "Bi Bf Bf Bf Bf", hotspottype[i],hotspotsize[i],hotspot[i].x,hotspot[i].y,hotspot[i].z);
-														templength=strlen(hotspottext[i]);
-														fpackf(tfile, "Bi",templength);
-														for(l=0;l<templength;l++)
-															fpackf(tfile, "Bb", hotspottext[i][l]);
-													}
-
-													fpackf(tfile, "Bi", numplayers);
-													if(numplayers>1&&numplayers<maxplayers)
-														for(j=1;j<numplayers;j++){
-															fpackf(tfile, "Bi Bi Bf Bf Bf Bi Bi Bf Bb Bf", player[j].whichskin, player[j].creature, player[j].coords.x, player[j].coords.y, player[j].coords.z, player[j].num_weapons, player[j].howactive, player[j].scale, player[j].immobile, player[j].rotation);
-															if(player[j].num_weapons>0&&player[j].num_weapons<5)
-																for(k=0;k<player[j].num_weapons;k++){
-																	fpackf(tfile, "Bi", weapons.type[player[j].weaponids[k]]);
-																}
-																if(player[j].numwaypoints<30){
-																	fpackf(tfile, "Bi", player[j].numwaypoints);
-																	for(k=0;k<player[j].numwaypoints;k++){
-																		fpackf(tfile, "Bf", player[j].waypoints[k].x);
-																		fpackf(tfile, "Bf", player[j].waypoints[k].y);
-																		fpackf(tfile, "Bf", player[j].waypoints[k].z);
-																		fpackf(tfile, "Bi", player[j].waypointtype[k]);
-																	}
-																	fpackf(tfile, "Bi", player[j].waypoint);
-																}
-																else{
-																	player[j].numwaypoints=0;
-																	player[j].waypoint=0;
-																	fpackf(tfile, "Bi Bi Bi", player[j].numwaypoints, player[j].waypoint, player[j].waypoint);
-																}
-
-																fpackf(tfile, "Bf Bf Bf", player[j].armorhead, player[j].armorhigh, player[j].armorlow);
-																fpackf(tfile, "Bf Bf Bf", player[j].protectionhead, player[j].protectionhigh, player[j].protectionlow);
-																fpackf(tfile, "Bf Bf Bf", player[j].metalhead, player[j].metalhigh, player[j].metallow);
-																fpackf(tfile, "Bf Bf", player[j].power, player[j].speedmult);
-
-																if(player[j].creature==wolftype){
-																	headprop=player[j].proportionhead.x/1.1;
-																	bodyprop=player[j].proportionbody.x/1.1;
-																	armprop=player[j].proportionarms.x/1.1;
-																	legprop=player[j].proportionlegs.x/1.1;
-																}
-
-																if(player[j].creature==rabbittype){
-																	headprop=player[j].proportionhead.x/1.2;
-																	bodyprop=player[j].proportionbody.x/1.05;
-																	armprop=player[j].proportionarms.x/1.00;
-																	legprop=player[j].proportionlegs.x/1.1;
-																}
-
-																fpackf(tfile, "Bf Bf Bf Bf", headprop, bodyprop, armprop, legprop);
-
-
-
-																fpackf(tfile, "Bi", player[j].numclothes);
-																if(player[j].numclothes)
-																	for(k=0;k<player[j].numclothes;k++){
-																		int templength;
-																		templength=strlen(player[j].clothes[k]);
-																		fpackf(tfile, "Bi", templength);
-																		for(l=0;l<templength;l++)
-																			fpackf(tfile, "Bb", player[j].clothes[k][l]);
-																		fpackf(tfile, "Bf Bf Bf", player[j].clothestintr[k], player[j].clothestintg[k], player[j].clothestintb[k]);
-																	}
-														}
-
-														fpackf(tfile, "Bi", numpathpoints);
-														if(numpathpoints)
-															for(j=0;j<numpathpoints;j++){
-																fpackf(tfile, "Bf Bf Bf Bi", pathpoint[j].x, pathpoint[j].y, pathpoint[j].z, numpathpointconnect[j]);
-																for(k=0;k<numpathpointconnect[j];k++){
-																	fpackf(tfile, "Bi", pathpointconnect[j][k]);
-																}
-															}
-
-															fpackf(tfile, "Bf Bf Bf Bf", mapcenter.x, mapcenter.y, mapcenter.z, mapradius);
-
-
-															fclose(tfile);
-															donesomething=1;
-
-															/*
-															FILE			*tfile;
-															tfile=fopen( mapname, "wb" );
-															fwrite( &mapvers, 1, sizeof(int), tfile );
-															fwrite( &player[0].coords.x, 1, sizeof(float), tfile );
-															fwrite( &player[0].coords.y, 1, sizeof(float), tfile );
-															fwrite( &player[0].coords.z, 1, sizeof(float), tfile );
-															fwrite( &player[0].rotation, 1, sizeof(float), tfile );
-															fwrite( &player[0].targetrotation, 1, sizeof(float), tfile );
-															fwrite( &player[0].num_weapons, 1, sizeof(int), tfile );
-															if(player[0].num_weapons>0&&player[0].num_weapons<5)
-															for(j=0;j<player[0].num_weapons;j++){
-															fwrite( &weapons.type[player[0].weaponids[j]], 1, sizeof(int), tfile );
-															}
-
-															fwrite( &player[0].armorhead, 1, sizeof(int), tfile );
-															fwrite( &player[0].armorhigh, 1, sizeof(int), tfile );
-															fwrite( &player[0].armorlow, 1, sizeof(int), tfile );
-															fwrite( &player[0].protectionhead, 1, sizeof(int), tfile );
-															fwrite( &player[0].protectionhigh, 1, sizeof(int), tfile );
-															fwrite( &player[0].protectionlow, 1, sizeof(int), tfile );
-															fwrite( &player[0].metalhead, 1, sizeof(int), tfile );
-															fwrite( &player[0].metalhigh, 1, sizeof(int), tfile );
-															fwrite( &player[0].metallow, 1, sizeof(int), tfile );
-															fwrite( &player[0].power, 1, sizeof(int), tfile );
-															fwrite( &player[0].speedmult, 1, sizeof(int), tfile );
-
-															fwrite( &player[0].numclothes, 1, sizeof(int), tfile );
-															if(player[0].numclothes)
-															for(k=0;k<player[0].numclothes;k++){
-															int templength;
-															templength=strlen(player[0].clothes[k]);
-															fwrite( &templength,1,sizeof(int),tfile);
-															for(l=0;l<templength;l++)
-															fwrite( &player[0].clothes[k][l],1,sizeof(char),tfile);
-															fwrite( &player[0].clothestintr[k],1,sizeof(float),tfile);
-															fwrite( &player[0].clothestintg[k],1,sizeof(float),tfile);
-															fwrite( &player[0].clothestintb[k],1,sizeof(float),tfile);
-															}
-
-															fwrite( &environment, 1, sizeof(int), tfile );
-
-															fwrite( &objects.numobjects, 1, sizeof(int), tfile );
-
-															for(k=0;k<objects.numobjects;k++){
-															fwrite( &objects.type[k], 1, sizeof(int), tfile );
-															fwrite( &objects.rotation[k], 1, sizeof(float), tfile );
-															fwrite( &objects.rotation2[k], 1, sizeof(float), tfile );
-															fwrite( &objects.position[k].x, 1, sizeof(float), tfile );
-															fwrite( &objects.position[k].y, 1, sizeof(float), tfile );
-															fwrite( &objects.position[k].z, 1, sizeof(float), tfile );
-															fwrite( &objects.scale[k], 1, sizeof(float), tfile );
-															}
-
-															fwrite( &numplayers, 1, sizeof(int), tfile );
-															if(numplayers>1&&numplayers<maxplayers)
-															for(j=1;j<numplayers;j++){
-															fwrite( &player[j].whichskin, 1, sizeof(int), tfile );
-															fwrite( &player[j].creature, 1, sizeof(int), tfile );
-															fwrite( &player[j].coords.x, 1, sizeof(float), tfile );
-															fwrite( &player[j].coords.y, 1, sizeof(float), tfile );
-															fwrite( &player[j].coords.z, 1, sizeof(float), tfile );
-															fwrite( &player[j].num_weapons, 1, sizeof(int), tfile );
-															if(player[j].num_weapons>0&&player[j].num_weapons<5)
-															for(k=0;k<player[j].num_weapons;k++){
-															fwrite( &weapons.type[player[j].weaponids[k]], 1, sizeof(int), tfile );
-															}
-															if(player[j].numwaypoints<30){
-															fwrite( &player[j].numwaypoints, 1, sizeof(int), tfile );
-															for(k=0;k<player[j].numwaypoints;k++){
-															fwrite( &player[j].waypoints[k].x, 1, sizeof(float), tfile );
-															fwrite( &player[j].waypoints[k].y, 1, sizeof(float), tfile );
-															fwrite( &player[j].waypoints[k].z, 1, sizeof(float), tfile );
-															}
-															fwrite( &player[j].waypoint, 1, sizeof(int), tfile );
-															//fwrite( &player[j].jumppath, 1, sizeof(bool), tfile );
-															}
-															else{
-															player[j].numwaypoints=0;
-															player[j].waypoint=0;
-															fwrite( &player[j].numwaypoints, 1, sizeof(int), tfile );
-															fwrite( &player[j].waypoint, 1, sizeof(int), tfile );
-															fwrite( &player[j].waypoint, 1, sizeof(int), tfile );
-															}
-															fwrite( &player[j].armorhead, 1, sizeof(int), tfile );
-															fwrite( &player[j].armorhigh, 1, sizeof(int), tfile );
-															fwrite( &player[j].armorlow, 1, sizeof(int), tfile );
-															fwrite( &player[j].protectionhead, 1, sizeof(int), tfile );
-															fwrite( &player[j].protectionhigh, 1, sizeof(int), tfile );
-															fwrite( &player[j].protectionlow, 1, sizeof(int), tfile );
-															fwrite( &player[j].metalhead, 1, sizeof(int), tfile );
-															fwrite( &player[j].metalhigh, 1, sizeof(int), tfile );
-															fwrite( &player[j].metallow, 1, sizeof(int), tfile );
-															fwrite( &player[j].power, 1, sizeof(int), tfile );
-															fwrite( &player[j].speedmult, 1, sizeof(int), tfile );
-
-															fwrite( &player[j].numclothes, 1, sizeof(int), tfile );
-															if(player[j].numclothes)
-															for(k=0;k<player[j].numclothes;k++){
-															int templength;
-															templength=strlen(player[j].clothes[k]);
-															fwrite( &templength,1,sizeof(int),tfile);
-															for(l=0;l<templength;l++)
-															fwrite( &player[j].clothes[k][l],1,sizeof(char),tfile);
-															fwrite( &player[j].clothestintr[k],1,sizeof(float),tfile);
-															fwrite( &player[j].clothestintg[k],1,sizeof(float),tfile);
-															fwrite( &player[j].clothestintb[k],1,sizeof(float),tfile);
-															}
-															}
-															fwrite( &numpathpoints, 1, sizeof(int), tfile );
-															if(numpathpoints)
-															for(j=0;j<numpathpoints;j++){
-															fwrite( &pathpoint[j].x, 1, sizeof(float), tfile );
-															fwrite( &pathpoint[j].y, 1, sizeof(float), tfile );
-															fwrite( &pathpoint[j].z, 1, sizeof(float), tfile );
-															fwrite( &numpathpointconnect[j], 1, sizeof(int), tfile );
-															for(k=0;k<numpathpointconnect[j];k++){
-															fwrite( &pathpointconnect[j][k], 1, sizeof(int), tfile );
-															}
-															}
-
-															fwrite( &mapcenter.x, 1, sizeof(float), tfile );
-															fwrite( &mapcenter.y, 1, sizeof(float), tfile );
-															fwrite( &mapcenter.z, 1, sizeof(float), tfile );
-
-															fwrite( &mapradius, 1, sizeof(float), tfile );
-
-															fclose(tfile);
-															donesomething=1;*/
-							}
-							/*
-							if(Compare(consoletext[0],"save ",0,4)){
-							mapname[0]=':';
-							mapname[1]='D';
-							mapname[2]='a';
-							mapname[3]='t';
-							mapname[4]='a';
-							mapname[5]=':';
-							mapname[6]='M';
-							mapname[7]='a';
-							mapname[8]='p';
-							mapname[9]='s';
-							mapname[10]=':';
-							for(j=5;j<consolechars[0];j++){
-							mapname[j-5+11]=consoletext[0][j];
-							}
-							mapname[consolechars[0]-5+11]='\0';
-
-							PlaySoundEx( consolesuccesssound, samp[consolesuccesssound], NULL, true);
-							OPENAL_SetVolume(channels[consolesuccesssound], 256);
-							OPENAL_SetPaused(channels[consolesuccesssound], false);
-
-							FILE			*tfile;
-							tfile=fopen( mapname, "wb" );
-							fwrite( &player[0].coords, 1, sizeof(XYZ), tfile );
-							fwrite( &player[0].rotation, 1, sizeof(float), tfile );
-							fwrite( &player[0].targetrotation, 1, sizeof(float), tfile );
-							fwrite( &player[0].num_weapons, 1, sizeof(int), tfile );
-							if(player[0].num_weapons>0&&player[0].num_weapons<5)
-							for(j=0;j<player[0].num_weapons;j++){
-							fwrite( &weapons.type[player[0].weaponids[j]], 1, sizeof(int), tfile );
-							}
-							fwrite( &environment, 1, sizeof(int), tfile );
-
-							fwrite( &objects.numobjects, 1, sizeof(int), tfile );
-							fwrite( &objects.type, 1, sizeof(int)*objects.numobjects, tfile );
-							fwrite( &objects.rotation, 1, sizeof(float)*objects.numobjects, tfile );
-							fwrite( &objects.position, 1, sizeof(XYZ)*objects.numobjects, tfile );
-							fwrite( &objects.scale, 1, sizeof(float)*objects.numobjects, tfile );
-
-							fwrite( &numplayers, 1, sizeof(int), tfile );
-							if(numplayers>1&&numplayers<maxplayers)
-							for(j=1;j<numplayers;j++){
-							fwrite( &player[j].coords, 1, sizeof(XYZ), tfile );
-							fwrite( &player[j].num_weapons, 1, sizeof(int), tfile );
-							if(player[j].num_weapons>0&&player[j].num_weapons<5)
-							for(k=0;k<player[j].num_weapons;k++){
-							fwrite( &weapons.type[player[j].weaponids[k]], 1, sizeof(int), tfile );
-							}
-							if(player[j].numwaypoints<30){
-							fwrite( &player[j].numwaypoints, 1, sizeof(int), tfile );
-							fwrite( &player[j].waypoints, 1, sizeof(XYZ)*player[j].numwaypoints, tfile );
-							fwrite( &player[j].waypoint, 1, sizeof(int), tfile );
-							//fwrite( &player[j].jumppath, 1, sizeof(bool), tfile );
-							}
-							else{
-							player[j].numwaypoints=0;
-							player[j].waypoint=0;
-							fwrite( &player[j].numwaypoints, 1, sizeof(int), tfile );
-							fwrite( &player[j].waypoint, 1, sizeof(int), tfile );
-							fwrite( &player[j].waypoint, 1, sizeof(int), tfile );
-							}
-							}
-							fwrite( &numpathpoints, 1, sizeof(int), tfile );
-							if(numpathpoints)
-							for(j=0;j<numpathpoints;j++){
-							fwrite( &pathpoint[j], 1, sizeof(XYZ), tfile );
-							fwrite( &numpathpointconnect[j], 1, sizeof(int), tfile );
-							for(k=0;k<numpathpointconnect[j];k++){
-							fwrite( &pathpointconnect[j][k], 1, sizeof(int), tfile );
-							}
-							}
-							fclose(tfile);
-							donesomething=1;
-							}*/
-							if(Compare(consoletext[0],"cellar door ",0,11)||Compare(consoletext[0],"cellardoor ",0,10)){
-								LoadTextureSave(":Data:Textures:Furdarko.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
-								donesomething=1;
-							}
-							/*if(Compare(consoletext[0],"Pants ",0,5)){
-							AddClothes(":Data:Textures:Pants.png",0,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
-							player[i].DoMipmaps(5,0,0,player[i].skeleton.skinsize,player[i].skeleton.skinsize);
-							donesomething=1;
-							}*/
-
-							if(Compare(consoletext[0],"tintr ",0,5)||Compare(consoletext[0],"Tintr ",0,5)){
-								for(j=6;j<consolechars[0];j++){
-									mapname[j-6]=consoletext[0][j];
-								}
-
-								tintr=atof(mapname);
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"speed ",0,5)||Compare(consoletext[0],"Speed ",0,5)){
-								for(j=6;j<consolechars[0];j++){
-									mapname[j-6]=consoletext[0][j];
-								}
-
-								player[0].speedmult=atof(mapname);
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"strength ",0,8)||Compare(consoletext[0],"Strength ",0,8)){
-								for(j=9;j<consolechars[0];j++){
-									mapname[j-9]=consoletext[0][j];
-								}
-
-								player[0].power=atof(mapname);
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"viewdistance ",0,12)||Compare(consoletext[0],"Viewdistance ",0,12)){
-								for(j=13;j<consolechars[0];j++){
-									mapname[j-13]=consoletext[0][j];
-								}
-
-								viewdistance=atof(mapname)*100;
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"fadestart ",0,9)||Compare(consoletext[0],"Fadestart ",0,9)){
-								for(j=10;j<consolechars[0];j++){
-									mapname[j-10]=consoletext[0][j];
-								}
-
-								fadestart=atof(mapname);
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"power ",0,5)||Compare(consoletext[0],"Power ",0,5)){
-								for(j=6;j<consolechars[0];j++){
-									mapname[j-6]=consoletext[0][j];
-								}
-
-								player[0].power=atof(mapname);
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"slomo ",0,5)||Compare(consoletext[0],"Slomo ",0,5)){
-								for(j=6;j<consolechars[0];j++){
-									mapname[j-6]=consoletext[0][j];
-								}
-
-								slomospeed=atof(mapname);
-								slomo=1-slomo;
-								slomodelay=1000;
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"slofreq ",0,7)||Compare(consoletext[0],"Slofreq ",0,7)){
-								for(j=8;j<consolechars[0];j++){
-									mapname[j-8]=consoletext[0][j];
-								}
-
-								slomofreq=atoi(mapname);
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"size ",0,4)||Compare(consoletext[0],"Size ",0,4)){
-								for(j=5;j<consolechars[0];j++){
-									mapname[j-5]=consoletext[0][j];
-								}
-
-								player[0].scale=atof(mapname)*.2;
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"sizenear ",0,8)||Compare(consoletext[0],"Sizenear ",0,8)){
-								int closest=-1;
-								float closestdist=-1;
-								float distance;
-								if(numplayers>1)
-									for(i=1;i<numplayers;i++){
-										distance=findDistancefast(&player[i].coords,&player[0].coords);
-										if(closestdist==-1||distance<closestdist){
-											closestdist=distance;
-											closest=i;
-										}
-									}
-
-									for(j=9;j<consolechars[0];j++){
-										mapname[j-9]=consoletext[0][j];
-									}
-
-									player[closest].scale=atof(mapname)*.2;
-
-									donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"proportionnear ",0,14)||Compare(consoletext[0],"Proportionnear ",0,14)){
-								int startpoint;
-								int alldone;
-
-								int closest=-1;
-								float closestdist=-1;
-								float distance;
-								if(numplayers>1)
-									for(i=1;i<numplayers;i++){
-										distance=findDistancefast(&player[i].coords,&player[0].coords);
-										if(closestdist==-1||distance<closestdist){
-											closestdist=distance;
-											closest=i;
-										}
-									}
-
-									alldone=0;
-									startpoint=15;
-									j=startpoint;
-									while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-										mapname[j-startpoint]=consoletext[0][j];
-										j++;
-										if(consoletext[0][j]=='\0')alldone=1;
-									}
-									mapname[j-startpoint]='\0';
-
-									headprop=atof(mapname);
-
-									j++;
-									startpoint=j;
-									while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-										mapname[j-startpoint]=consoletext[0][j];
-										j++;
-										if(consoletext[0][j]=='\0')alldone=1;
-									}
-									mapname[j-startpoint]='\0';
-
-									bodyprop=atof(mapname);
-
-									j++;
-									startpoint=j;
-									while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-										mapname[j-startpoint]=consoletext[0][j];
-										j++;
-										if(consoletext[0][j]=='\0')alldone=1;
-									}
-									mapname[j-startpoint]='\0';
-
-									armprop=atof(mapname);
-
-									j++;
-									startpoint=j;
-									while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-										mapname[j-startpoint]=consoletext[0][j];
-										j++;
-										if(consoletext[0][j]=='\0')alldone=1;
-									}
-									mapname[j-startpoint]='\0';
-
-									legprop=atof(mapname);
-
-									if(player[closest].creature==wolftype){
-										player[closest].proportionhead=1.1*headprop;
-										player[closest].proportionbody=1.1*bodyprop;
-										player[closest].proportionarms=1.1*armprop;
-										player[closest].proportionlegs=1.1*legprop;
-									}
-
-									if(player[closest].creature==rabbittype){
-										player[closest].proportionhead=1.2*headprop;
-										player[closest].proportionbody=1.05*bodyprop;
-										player[closest].proportionarms=1.00*armprop;
-										player[closest].proportionlegs=1.1*legprop;
-										player[closest].proportionlegs.y=1.05*legprop;
-									}
-
-									donesomething=1;
-							}
-
-
-							if(Compare(consoletext[0],"sizemin ",0,7)||Compare(consoletext[0],"Sizemin ",0,7)){
-								for(i=1;i<numplayers;i++){
-									if(player[i].scale<0.8*0.2)player[i].scale=0.8*0.2;
-								}
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"tutorial ",0,8)||Compare(consoletext[0],"Tutorial ",0,8)){
-								for(j=9;j<consolechars[0];j++){
-									mapname[j-9]=consoletext[0][j];
-								}
-
-								tutoriallevel=atoi(mapname);
-
-								donesomething=1;
-							}
-
-
-							if(Compare(consoletext[0],"tintg ",0,5)||Compare(consoletext[0],"Tintg ",0,5)){
-								for(j=6;j<consolechars[0];j++){
-									mapname[j-6]=consoletext[0][j];
-								}
-
-								tintg=atof(mapname);
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"tintb ",0,5)||Compare(consoletext[0],"Tintb ",0,5)){
-								for(j=6;j<consolechars[0];j++){
-									mapname[j-6]=consoletext[0][j];
-								}
-
-								tintb=atof(mapname);
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"hostile ",0,7)){
-								for(j=8;j<consolechars[0];j++){
-									mapname[j-8]=consoletext[0][j];
-								}
-
-								hostile=atoi(mapname);
-
-								donesomething=1;
-							}
-
-
-							if(Compare(consoletext[0],"type active ",0,11)){
-								editoractive=typeactive;
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"indemo ",0,6)){
-								indemo=1;
-								hotspot[numhotspots]=player[0].coords;
-								hotspotsize[numhotspots]=0;
-								hotspottype[numhotspots]=-111;
-								mapname[0]='\0';
-								strcpy(hotspottext[numhotspots],"mapname");
-								numhotspots++;
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"notindemo ",0,9)){
-								indemo=0;
-								numhotspots--;
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"type sitting ",0,12)){
-								editoractive=typesitting;
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"type sitting wall ",0,17)){
-								editoractive=typesittingwall;
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"type sleeping ",0,13)){
-								editoractive=typesleeping;
-
-								donesomething=1;
-							}
-							if(Compare(consoletext[0],"type dead1 ",0,10)){
-								editoractive=typedead1;
-
-								donesomething=1;
-							}
-							if(Compare(consoletext[0],"type dead2 ",0,10)){
-								editoractive=typedead2;
-
-								donesomething=1;
-							}
-							if(Compare(consoletext[0],"type dead3 ",0,10)){
-								editoractive=typedead3;
-								donesomething=1;
-							}
-							if(Compare(consoletext[0],"type dead4 ",0,10)){
-								editoractive=typedead4;
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"path keepwalking ",0,16)){
-								editorpathtype=wpkeepwalking;
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"path pause ",0,10)){
-								editorpathtype=wppause;
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"mapkilleveryone ",0,15)){
-								maptype=mapkilleveryone;
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"mapgosomewhere ",0,14)){
-								maptype=mapgosomewhere;
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"mapkillsomeone ",0,14)){
-								maptype=mapkillsomeone;
-
-								donesomething=1;
-
-							}
-
-							if(Compare(consoletext[0],"mapkillmost ",0,11)){
-								maptype=mapkillmost;
-
-								donesomething=1;
-
-							}
-
-							if(Compare(consoletext[0],"hs ",0,2)){
-								int startpoint;
-								int alldone;
-
-								hotspot[numhotspots]=player[0].coords;
-
-								alldone=0;
-								startpoint=3;
-								j=startpoint;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-
-								hotspotsize[numhotspots]=atof(mapname);
-
-								j++;
-								startpoint=j;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-
-								hotspottype[numhotspots]=atoi(mapname);
-
-								j++;
-								startpoint=j;
-								while(consoletext[0][j]!='\0'&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\n';
-								mapname[j-startpoint+1]='\0';
-
-								strcpy(hotspottext[numhotspots],mapname);
-
-								numhotspots++;
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"dialogue ",0,8)){
-								int startpoint;
-								int alldone;
-
-								alldone=0;
-								startpoint=9;
-								j=startpoint;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-								startpoint=j+1;
-
-								dialoguetype[numdialogues]=atoi(mapname);
-
-								mapname[0]=':';
-								mapname[1]='D';
-								mapname[2]='a';
-								mapname[3]='t';
-								mapname[4]='a';
-								mapname[5]=':';
-								mapname[6]='D';
-								mapname[7]='i';
-								mapname[8]='a';
-								mapname[9]='l';
-								mapname[10]='o';
-								mapname[11]='g';
-								mapname[12]='u';
-								mapname[13]='e';
-								mapname[14]='s';
-								mapname[15]=':';
-								for(j=startpoint;j<consolechars[0];j++){
-									mapname[j-startpoint+16]=consoletext[0][j];
-								}
-								mapname[consolechars[0]-startpoint+16]='.';
-								mapname[consolechars[0]-startpoint+17]='t';
-								mapname[consolechars[0]-startpoint+18]='x';
-								mapname[consolechars[0]-startpoint+19]='t';
-								mapname[consolechars[0]-startpoint+20]='\0';
-
-								for(j=0;j<max_dialoguelength;j++){
-									for(k=0;k<128;k++){
-										dialoguetext[numdialogues][j][k]='\0';
-									}
-									for(k=0;k<64;k++){
-										dialoguename[numdialogues][j][k]='\0';
-									}
-								}
-
-								ifstream ipstream(ConvertFileName(mapname));
-								ipstream.ignore(256,':');
-								ipstream >> numdialogueboxes[numdialogues];
-								for(i=0;i<numdialogueboxes[numdialogues];i++){
-									ipstream.ignore(256,':');
-									ipstream.ignore(256,':');
-									ipstream.ignore(256,' ');
-									ipstream >> dialogueboxlocation[numdialogues][i];
-									ipstream.ignore(256,':');
-									ipstream >> dialogueboxcolor[numdialogues][i][0];
-									ipstream >> dialogueboxcolor[numdialogues][i][1];
-									ipstream >> dialogueboxcolor[numdialogues][i][2];
-									ipstream.ignore(256,':');
-									ipstream.getline(dialoguename[numdialogues][i],64);
-									ipstream.ignore(256,':');
-									ipstream.ignore(256,' ');
-									ipstream.getline(dialoguetext[numdialogues][i],128);
-									for(j=0;j<128;j++){
-										if(dialoguetext[numdialogues][i][j]=='\\')dialoguetext[numdialogues][i][j]='\n';
-									}
-									ipstream.ignore(256,':');
-									ipstream >> dialogueboxsound[numdialogues][i];
-								}
-
-								for(i=0;i<numdialogueboxes[numdialogues];i++){
-									for(j=0;j<numplayers;j++){
-										participantfacing[numdialogues][i][j]=player[j].facing;
-									}
-								}
-								ipstream.close();
-
-								directing=1;
-								indialogue=0;
-								whichdialogue=numdialogues;
-
-
-								numdialogues++;
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"fixdialogue ",0,11)){
-								int startpoint;
-								int alldone;
-								int whichdi;
-
-								alldone=0;
-								startpoint=12;
-								j=startpoint;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-								startpoint=j+1;
-
-								whichdi=atoi(mapname);
-
-								mapname[0]=':';
-								mapname[1]='D';
-								mapname[2]='a';
-								mapname[3]='t';
-								mapname[4]='a';
-								mapname[5]=':';
-								mapname[6]='D';
-								mapname[7]='i';
-								mapname[8]='a';
-								mapname[9]='l';
-								mapname[10]='o';
-								mapname[11]='g';
-								mapname[12]='u';
-								mapname[13]='e';
-								mapname[14]='s';
-								mapname[15]=':';
-								for(j=startpoint;j<consolechars[0];j++){
-									mapname[j-startpoint+16]=consoletext[0][j];
-								}
-								mapname[consolechars[0]-startpoint+16]='.';
-								mapname[consolechars[0]-startpoint+17]='t';
-								mapname[consolechars[0]-startpoint+18]='x';
-								mapname[consolechars[0]-startpoint+19]='t';
-								mapname[consolechars[0]-startpoint+20]='\0';
-
-								for(j=0;j<max_dialoguelength;j++){
-									for(k=0;k<128;k++){
-										dialoguetext[whichdi][j][k]='\0';
-									}
-									for(k=0;k<64;k++){
-										dialoguename[whichdi][j][k]='\0';
-									}
-								}
-
-								ifstream ipstream(ConvertFileName(mapname));
-								ipstream.ignore(256,':');
-								ipstream >> numdialogueboxes[whichdi];
-								for(i=0;i<numdialogueboxes[whichdi];i++){
-									ipstream.ignore(256,':');
-									ipstream.ignore(256,':');
-									ipstream.ignore(256,' ');
-									ipstream >> dialogueboxlocation[whichdi][i];
-									ipstream.ignore(256,':');
-									ipstream >> dialogueboxcolor[whichdi][i][0];
-									ipstream >> dialogueboxcolor[whichdi][i][1];
-									ipstream >> dialogueboxcolor[whichdi][i][2];
-									ipstream.ignore(256,':');
-									ipstream.getline(dialoguename[whichdi][i],64);
-									ipstream.ignore(256,':');
-									ipstream.ignore(256,' ');
-									ipstream.getline(dialoguetext[whichdi][i],128);
-									for(j=0;j<128;j++){
-										if(dialoguetext[whichdi][i][j]=='\\')dialoguetext[whichdi][i][j]='\n';
-									}
-									ipstream.ignore(256,':');
-									ipstream >> dialogueboxsound[whichdi][i];
-								}
-
-								ipstream.close();
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"fixtype ",0,7)){
-								int startpoint;
-								int alldone;
-								int whichdi;
-
-								alldone=0;
-								startpoint=8;
-								j=startpoint;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-								dialoguetype[0]=atoi(mapname);
-
-								startpoint=j+1;
-
-								donesomething=1;
-							}
-
-
-							if(Compare(consoletext[0],"fixrotation ",0,11)){
-								participantrotation[whichdialogue][participantfocus[whichdialogue][indialogue]]=player[participantfocus[whichdialogue][indialogue]].rotation;
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"ddialogue ",0,9)){
-								numdialogues--;
-								if(numdialogues<0)numdialogues=0;
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"immobile ",0,8)){
-								player[0].immobile=1;
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"mobile ",0,6)){
-								player[0].immobile=0;
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"play ",0,4)){
-								int startpoint;
-								int alldone;
-
-								alldone=0;
-								startpoint=5;
-								j=startpoint;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-								startpoint=j+1;
-
-								whichdialogue=atoi(mapname);
-
-								if(numdialogues>whichdialogue){
-									for(i=0;i<numdialogueboxes[whichdialogue];i++){
-										player[participantfocus[whichdialogue][i]].coords=participantlocation[whichdialogue][participantfocus[whichdialogue][i]];
-										player[participantfocus[whichdialogue][i]].rotation=participantrotation[whichdialogue][participantfocus[whichdialogue][i]];
-										player[participantfocus[whichdialogue][i]].targetrotation=participantrotation[whichdialogue][participantfocus[whichdialogue][i]];
-										player[participantfocus[whichdialogue][i]].velocity=0;
-										player[participantfocus[whichdialogue][i]].targetanimation=player[participantfocus[whichdialogue][i]].getIdle();
-										player[participantfocus[whichdialogue][i]].targetframe=0;
-									}
-
-									directing=0;
-									indialogue=0;
-
-									donesomething=1;
-
-									//if(dialogueboxsound[whichdialogue][indialogue]!=0){
-									float gLoc[3];
-									float vel[3];
-									XYZ temppos;
-									temppos=player[participantfocus[whichdialogue][indialogue]].coords;
-									temppos=temppos-viewer;
-									Normalise(&temppos);
-									temppos+=viewer;
-
-									gLoc[0]=temppos.x;
-									gLoc[1]=temppos.y;
-									gLoc[2]=temppos.z;
-									vel[0]=0;
-									vel[1]=0;
-									vel[2]=0;
-									int whichsoundplay;
-									whichsoundplay=rabbitchitter;
-									if(dialogueboxsound[whichdialogue][indialogue]==2)whichsoundplay=rabbitchitter2;
-									if(dialogueboxsound[whichdialogue][indialogue]==3)whichsoundplay=rabbitpainsound;
-									if(dialogueboxsound[whichdialogue][indialogue]==4)whichsoundplay=rabbitpain1sound;
-									if(dialogueboxsound[whichdialogue][indialogue]==5)whichsoundplay=rabbitattacksound;
-									if(dialogueboxsound[whichdialogue][indialogue]==6)whichsoundplay=rabbitattack2sound;
-									if(dialogueboxsound[whichdialogue][indialogue]==7)whichsoundplay=rabbitattack3sound;
-									if(dialogueboxsound[whichdialogue][indialogue]==8)whichsoundplay=rabbitattack4sound;
-									if(dialogueboxsound[whichdialogue][indialogue]==9)whichsoundplay=growlsound;
-									if(dialogueboxsound[whichdialogue][indialogue]==10)whichsoundplay=growl2sound;
-									if(dialogueboxsound[whichdialogue][indialogue]==11)whichsoundplay=snarlsound;
-									if(dialogueboxsound[whichdialogue][indialogue]==12)whichsoundplay=snarl2sound;
-									if(dialogueboxsound[whichdialogue][indialogue]==13)whichsoundplay=barksound;
-									if(dialogueboxsound[whichdialogue][indialogue]==14)whichsoundplay=bark2sound;
-									if(dialogueboxsound[whichdialogue][indialogue]==15)whichsoundplay=bark3sound;
-									if(dialogueboxsound[whichdialogue][indialogue]==16)whichsoundplay=barkgrowlsound;
-									if(dialogueboxsound[whichdialogue][indialogue]==-1)whichsoundplay=fireendsound;
-									if(dialogueboxsound[whichdialogue][indialogue]==-2)whichsoundplay=firestartsound;
-									if(dialogueboxsound[whichdialogue][indialogue]==-3)whichsoundplay=consolesuccesssound;
-									if(dialogueboxsound[whichdialogue][indialogue]==-4)whichsoundplay=consolefailsound;
-									PlaySoundEx( whichsoundplay, samp[whichsoundplay], NULL, true);
-									OPENAL_3D_SetAttributes(channels[whichsoundplay], gLoc, vel);
-									OPENAL_SetVolume(channels[whichsoundplay], 256);
-									OPENAL_SetPaused(channels[whichsoundplay], false);
-									//}
-								}
-							}
-
-
-
-
-							if(Compare(consoletext[0],"dhs ",0,3)){
-								numhotspots--;
-								if(numhotspots<0)numhotspots=0;
-								donesomething=1;
-							}
-
-
-							if(Compare(consoletext[0],"proportion ",0,10)||Compare(consoletext[0],"Proportion ",0,4)){
-								int startpoint;
-								int alldone;
-
-								alldone=0;
-								startpoint=11;
-								j=startpoint;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-
-								headprop=atof(mapname);
-
-								j++;
-								startpoint=j;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-
-								bodyprop=atof(mapname);
-
-								j++;
-								startpoint=j;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-
-								armprop=atof(mapname);
-
-								j++;
-								startpoint=j;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-
-								legprop=atof(mapname);
-
-								if(player[0].creature==wolftype){
-									player[0].proportionhead=1.1*headprop;
-									player[0].proportionbody=1.1*bodyprop;
-									player[0].proportionarms=1.1*armprop;
-									player[0].proportionlegs=1.1*legprop;
-								}
-
-								if(player[0].creature==rabbittype){
-									player[0].proportionhead=1.2*headprop;
-									player[0].proportionbody=1.05*bodyprop;
-									player[0].proportionarms=1.00*armprop;
-									player[0].proportionlegs=1.1*legprop;
-									player[0].proportionlegs.y=1.05*legprop;
-								}
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"allimmobile ",0,11)||Compare(consoletext[0],"Allimmobile ",0,11)){
-								for(i=0;i<numplayers;i++){
-									if(i>0)player[i].immobile=1;
-								}
-								donesomething=1;
-							}
-
-
-							if(Compare(consoletext[0],"default ",0,7)||Compare(consoletext[0],"Default ",0,7)){
-								player[0].armorhead=1;
-								player[0].armorhigh=1;
-								player[0].armorlow=1;
-								player[0].protectionhead=1;
-								player[0].protectionhigh=1;
-								player[0].protectionlow=1;
-								player[0].metalhead=1;
-								player[0].metalhigh=1;
-								player[0].metallow=1;
-								player[0].power=1;
-								player[0].speedmult=1;
-								player[0].scale=1;
-
-								if(player[0].creature==wolftype){
-									player[0].proportionhead=1.1;
-									player[0].proportionbody=1.1;
-									player[0].proportionarms=1.1;
-									player[0].proportionlegs=1.1;
-								}
-
-								if(player[0].creature==rabbittype){
-									player[0].proportionhead=1.2;
-									player[0].proportionbody=1.05;
-									player[0].proportionarms=1.00;
-									player[0].proportionlegs=1.1;
-									player[0].proportionlegs.y=1.05;
-								}
-
-								player[0].numclothes=0;
-								LoadTextureSave(creatureskin[player[0].creature][player[0].whichskin],
-										&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
-
-								editoractive=typeactive;
-								player[0].immobile=0;
-
-
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"tint ",0,4)||Compare(consoletext[0],"Tint ",0,4)){
-								int startpoint;
-								int alldone;
-								alldone=0;
-								startpoint=5;
-								j=startpoint;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-
-								tintr=atof(mapname);
-
-								j++;
-								startpoint=j;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-
-								tintg=atof(mapname);
-
-								j++;
-								startpoint=j;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-
-								tintb=atof(mapname);
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"sky tint ",0,8)||Compare(consoletext[0],"Sky Tint ",0,8)){
-								int startpoint;
-								int alldone;
-								alldone=0;
-								startpoint=9;
-								j=startpoint;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-
-								skyboxr=atof(mapname);
-
-								j++;
-								startpoint=j;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-
-								skyboxg=atof(mapname);
-
-								j++;
-								startpoint=j;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-
-								skyboxb=atof(mapname);
-
-								skyboxlightr=skyboxr;
-								skyboxlightg=skyboxg;
-								skyboxlightb=skyboxb;
-
-								SetUpLighting();
-
-								//if(skyboxtexture){
-								terrain.DoShadows();
-								objects.DoShadows();
-								/*}
-								else terrain.DoLighting();
-								*/
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"sky light ",0,9)||Compare(consoletext[0],"Sky Light ",0,9)){
-								int startpoint;
-								int alldone;
-								alldone=0;
-								startpoint=10;
-								j=startpoint;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-
-								skyboxlightr=atof(mapname);
-
-								j++;
-								startpoint=j;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-
-								skyboxlightg=atof(mapname);
-
-								j++;
-								startpoint=j;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-
-								skyboxlightb=atof(mapname);
-
-								SetUpLighting();
-
-								//if(skyboxtexture){
-								terrain.DoShadows();
-								objects.DoShadows();
-								/*}
-								else terrain.DoLighting();
-								*/
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"skybox ",0,6)||Compare(consoletext[0],"Skybox ",0,6)){
-								skyboxtexture=1-skyboxtexture;
-
-								SetUpLighting();
-								//if(skyboxtexture){
-								terrain.DoShadows();
-								objects.DoShadows();
-								/*}
-								else terrain.DoLighting();
-								*/
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"protection ",0,10)||Compare(consoletext[0],"Protection ",0,10)){
-								int startpoint;
-								int alldone;
-								alldone=0;
-								startpoint=11;
-								j=startpoint;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-
-								player[0].protectionhead=atof(mapname);
-
-								j++;
-								startpoint=j;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-
-								player[0].protectionhigh=atof(mapname);
-
-								j++;
-								startpoint=j;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-
-								player[0].protectionlow=atof(mapname);
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"armor ",0,5)||Compare(consoletext[0],"Armor ",0,5)){
-								int startpoint;
-								int alldone;
-								alldone=0;
-								startpoint=6;
-								j=startpoint;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-
-								player[0].armorhead=atof(mapname);
-
-								j++;
-								startpoint=j;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-
-								player[0].armorhigh=atof(mapname);
-
-								j++;
-								startpoint=j;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-
-								player[0].armorlow=atof(mapname);
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"protectionreset ",0,15)||Compare(consoletext[0],"Protectionreset ",0,15)){
-								for(i=0;i<numplayers;i++){
-									player[i].protectionhead=1.0;
-									player[i].protectionhigh=1.0;
-									player[i].protectionlow=1.0;
-									player[i].armorhead=1.0;
-									player[i].armorhigh=1.0;
-									player[i].armorlow=1.0;
-								}
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"protectionnear ",0,14)||Compare(consoletext[0],"Protectionnear ",0,14)){
-								int closest=-1;
-								float closestdist=-1;
-								float distance;
-								if(numplayers>1)
-									for(i=1;i<numplayers;i++){
-										distance=findDistancefast(&player[i].coords,&player[0].coords);
-										if(closestdist==-1||distance<closestdist){
-											closestdist=distance;
-											closest=i;
-										}
-									}
-
-									int startpoint;
-									int alldone;
-									alldone=0;
-									startpoint=15;
-									j=startpoint;
-									while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-										mapname[j-startpoint]=consoletext[0][j];
-										j++;
-										if(consoletext[0][j]=='\0')alldone=1;
-									}
-									mapname[j-startpoint]='\0';
-
-									player[closest].protectionhead=atof(mapname);
-
-									j++;
-									startpoint=j;
-									while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-										mapname[j-startpoint]=consoletext[0][j];
-										j++;
-										if(consoletext[0][j]=='\0')alldone=1;
-									}
-									mapname[j-startpoint]='\0';
-
-									player[closest].protectionhigh=atof(mapname);
-
-									j++;
-									startpoint=j;
-									while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-										mapname[j-startpoint]=consoletext[0][j];
-										j++;
-										if(consoletext[0][j]=='\0')alldone=1;
-									}
-									mapname[j-startpoint]='\0';
-
-									player[closest].protectionlow=atof(mapname);
-
-									donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"armornear ",0,9)||Compare(consoletext[0],"Armornear ",0,9)){
-								int closest=-1;
-								float closestdist=-1;
-								float distance;
-								if(numplayers>1)
-									for(i=1;i<numplayers;i++){
-										distance=findDistancefast(&player[i].coords,&player[0].coords);
-										if(closestdist==-1||distance<closestdist){
-											closestdist=distance;
-											closest=i;
-										}
-									}
-									int startpoint;
-									int alldone;
-									alldone=0;
-									startpoint=10;
-									j=startpoint;
-									while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-										mapname[j-startpoint]=consoletext[0][j];
-										j++;
-										if(consoletext[0][j]=='\0')alldone=1;
-									}
-									mapname[j-startpoint]='\0';
-
-									player[closest].armorhead=atof(mapname);
-
-									j++;
-									startpoint=j;
-									while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-										mapname[j-startpoint]=consoletext[0][j];
-										j++;
-										if(consoletext[0][j]=='\0')alldone=1;
-									}
-									mapname[j-startpoint]='\0';
-
-									player[closest].armorhigh=atof(mapname);
-
-									j++;
-									startpoint=j;
-									while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-										mapname[j-startpoint]=consoletext[0][j];
-										j++;
-										if(consoletext[0][j]=='\0')alldone=1;
-									}
-									mapname[j-startpoint]='\0';
-
-									player[closest].armorlow=atof(mapname);
-
-									donesomething=1;
-							}
-
-
-							if(Compare(consoletext[0],"metal ",0,5)||Compare(consoletext[0],"Metal ",0,5)){
-								int startpoint;
-								int alldone;
-								alldone=0;
-								startpoint=6;
-								j=startpoint;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-
-								player[0].metalhead=atof(mapname);
-
-								j++;
-								startpoint=j;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-								mapname[j-startpoint]='\0';
-
-								player[0].metalhigh=atof(mapname);
-
-								j++;
-								startpoint=j;
-								while(consoletext[0][j]!='\0'&&consoletext[0][j]!=' '&&!alldone&&j<255){
-									mapname[j-startpoint]=consoletext[0][j];
-									j++;
-									if(consoletext[0][j]=='\0')alldone=1;
-								}
-
-								mapname[j-startpoint]='\0';
-
-								player[0].metallow=atof(mapname);
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"noclothesnear ",0,13)||Compare(consoletext[0],"Noclothesnear ",0,13)){
-								int closest=-1;
-								float closestdist=-1;
-								float distance;
-								if(numplayers>1)
-									for(i=1;i<numplayers;i++){
-										distance=findDistancefast(&player[i].coords,&player[0].coords);
-										if(closestdist==-1||distance<closestdist){
-											closestdist=distance;
-											closest=i;
-										}
-									}
-									player[closest].numclothes=0;
-									LoadTextureSave(creatureskin[player[closest].creature][player[closest].whichskin],
-											&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
-
-									donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"noclothes ",0,9)||Compare(consoletext[0],"Noclothes ",0,9)){
-								int closest=0;
-
-								player[closest].numclothes=0;
-								LoadTextureSave(creatureskin[player[closest].creature][player[closest].whichskin],
-										&player[closest].skeleton.drawmodel.textureptr,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
-								donesomething=1;
-							}
-
-							if((Compare(consoletext[0],"Clothes ",0,7)||Compare(consoletext[0],"clothes ",0,7))){
-								mapname[0]=':';
-								mapname[1]='D';
-								mapname[2]='a';
-								mapname[3]='t';
-								mapname[4]='a';
-								mapname[5]=':';
-								mapname[6]='T';
-								mapname[7]='e';
-								mapname[8]='x';
-								mapname[9]='t';
-								mapname[10]='u';
-								mapname[11]='r';
-								mapname[12]='e';
-								mapname[13]='s';
-								mapname[14]=':';
-								for(j=8;j<consolechars[0];j++){
-									mapname[j-8+15]=consoletext[0][j];
-								}
-								mapname[consolechars[0]-8+15]='.';
-								mapname[consolechars[0]-8+16]='p';
-								mapname[consolechars[0]-8+17]='n';
-								mapname[consolechars[0]-8+18]='g';
-								mapname[consolechars[0]-8+19]='\0';
-
-								//:Data:Textures:Pants.png
-
-								if(AddClothes((char *)mapname,0,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize)){
-									player[0].DoMipmaps(5,0,0,player[0].skeleton.skinsize,player[0].skeleton.skinsize);
-									strcpy(player[0].clothes[player[0].numclothes],mapname);
-									player[0].clothestintr[player[0].numclothes]=tintr;
-									player[0].clothestintg[player[0].numclothes]=tintg;
-									player[0].clothestintb[player[0].numclothes]=tintb;
-									player[0].numclothes++;
-								}
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"belt ",0,4)||Compare(consoletext[0],"belt ",0,4)){
-								player[0].skeleton.clothes = 1-player[0].skeleton.clothes;
-
-								donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"Cellophane ",0,10)||Compare(consoletext[0],"cellophane ",0,10)){
-								cellophane=1-cellophane;
-
-								if(cellophane){
-									for(i=0;i<numplayers;i++){
-										player[i].proportionhead.z=0;
-										player[i].proportionbody.z=0;
-										player[i].proportionarms.z=0;
-										player[i].proportionlegs.z=0;
-									}
-								}
-
-								if(!cellophane){
-									for(i=0;i<numplayers;i++){
-										player[i].proportionhead.z=player[i].proportionhead.x;
-										player[i].proportionbody.z=player[i].proportionbody.x;
-										player[i].proportionarms.z=player[i].proportionarms.x;
-										player[i].proportionlegs.z=player[i].proportionlegs.x;
-									}
-								}
-
-								donesomething=1;
-							}
-
-							if((Compare(consoletext[0],"Clothesnear ",0,11)||Compare(consoletext[0],"clothesnear ",0,11))){
-								mapname[0]=':';
-								mapname[1]='D';
-								mapname[2]='a';
-								mapname[3]='t';
-								mapname[4]='a';
-								mapname[5]=':';
-								mapname[6]='T';
-								mapname[7]='e';
-								mapname[8]='x';
-								mapname[9]='t';
-								mapname[10]='u';
-								mapname[11]='r';
-								mapname[12]='e';
-								mapname[13]='s';
-								mapname[14]=':';
-								for(j=12;j<consolechars[0];j++){
-									mapname[j-12+15]=consoletext[0][j];
-								}
-								mapname[consolechars[0]-12+15]='.';
-								mapname[consolechars[0]-12+16]='p';
-								mapname[consolechars[0]-12+17]='n';
-								mapname[consolechars[0]-12+18]='g';
-								mapname[consolechars[0]-12+19]='\0';
-
-								//:Data:Textures:Pants.png
-								int closest=-1;
-								float closestdist=-1;
-								float distance;
-								if(numplayers>1)
-									for(i=1;i<numplayers;i++){
-										distance=findDistancefast(&player[i].coords,&player[0].coords);
-										if(closestdist==-1||distance<closestdist){
-											closestdist=distance;
-											closest=i;
-										}
-									}
-
-									if(AddClothes((char *)mapname,0,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize)){
-										player[closest].DoMipmaps(5,0,0,player[closest].skeleton.skinsize,player[closest].skeleton.skinsize);
-										strcpy(player[closest].clothes[player[closest].numclothes],mapname);
-										player[closest].clothestintr[player[closest].numclothes]=tintr;
-										player[closest].clothestintg[player[closest].numclothes]=tintg;
-										player[closest].clothestintb[player[closest].numclothes]=tintb;
-										player[closest].numclothes++;
-									}
-
-									donesomething=1;
-							}
-
-							if(Compare(consoletext[0],"funnybunny ",0,10)||Compare(consoletext[0],"funny bunny ",0,11)){
-								player[0].skeleton.id=0;
-								player[0].skeleton.Load((char *)":Data:Skeleton:Basic Figure",(char *)":Data:Skeleton:Basic Figurelow",(char *)":Data:Skeleton:Rabbitbelt",(char *)":Data:Models:Body.solid",(char *)":Data:Models:Body2.solid",(char *)":Data:Models:Body3.solid",(char *)":Data:Models:Body4.solid",(char *)":Data:Models:Body5.solid",(char *)":Data:Models:Body6.solid",(char *)":Data:Models:Body7.solid",(char *)":Data:Models:Bodylow.solid",(char *)":Data:Models:Belt.solid",1);
-								LoadTextureSave(":Data:Textures:fur3.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
-								player[0].creature=rabbittype;
-								player[0].scale=.2;
-
-								player[0].proportionhead=1.2;
-								player[0].proportionbody=1.05;
-								player[0].proportionarms=1.00;
-								player[0].proportionlegs=1.1;
-								player[0].proportionlegs.y=1.05;
-								player[0].headless=0;
-
-								player[0].damagetolerance=200;
-
-								donesomething=1;
-							}
-							if(Compare(consoletext[0],"wolfieisgod ",0,11)||Compare(consoletext[0],"wolfie is god ",0,12)){
-								player[0].skeleton.id=0;
-								player[0].skeleton.Load((char *)":Data:Skeleton:Basic Figure Wolf",(char *)":Data:Skeleton:Basic Figure Wolf Low",(char *)":Data:Skeleton:Rabbitbelt",(char *)":Data:Models:Wolf.solid",(char *)":Data:Models:Wolf2.solid",(char *)":Data:Models:Wolf3.solid",(char *)":Data:Models:Wolf4.solid",(char *)":Data:Models:Wolf5.solid",(char *)":Data:Models:Wolf6.solid",(char *)":Data:Models:Wolf7.solid",(char *)":Data:Models:Wolflow.solid",(char *)":Data:Models:Belt.solid",0);
-								LoadTextureSave(":Data:Textures:Wolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
-								player[0].creature=wolftype;
-
-								player[0].proportionhead=1.1;
-								player[0].proportionbody=1.1;
-								player[0].proportionarms=1.1;
-								player[0].proportionlegs=1.1;
-								player[0].proportionlegs.y=1.1;
-								player[0].scale=.23;
-
-								player[0].damagetolerance=300;
-
-								donesomething=1;
-							}
-							/*if(Compare(consoletext[0],"kungfu ",0,6)||Compare(consoletext[0],"kung fu ",0,7)){
-							LoadTextureSave(":Data:Textures:Kungfu.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
-							donesomething=1;
-							}
-							if(Compare(consoletext[0],"rambo ",0,5)){
-							LoadTextureSave(":Data:Textures:Leather.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
-							donesomething=1;
-							}
-							if(Compare(consoletext[0],"david ",0,5)){
-							LoadTextureSave(":Data:Textures:David.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
-							donesomething=1;
-							}*/
-							if(Compare(consoletext[0],"wolf ",0,4)){
-								LoadTextureSave(":Data:Textures:Wolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
-								donesomething=1;
-							}
-							if(Compare(consoletext[0],"darkwolf ",0,8)){
-								LoadTextureSave(":Data:Textures:DarkWolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
-								donesomething=1;
-							}
-							if(Compare(consoletext[0],"snowwolf ",0,8)){
-								LoadTextureSave(":Data:Textures:Snowwolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
-								donesomething=1;
-							}/*
-							 if(Compare(consoletext[0],"lizardwolf ",0,10)){
-							 LoadTextureSave(":Data:Textures:Lizardwolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
-							 donesomething=1;
-							 }*/
-							if(Compare(consoletext[0],"white ",0,5)){
-								LoadTextureSave(":Data:Textures:fur.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
-								donesomething=1;
-							}
-							if(Compare(consoletext[0],"brown ",0,5)){
-								LoadTextureSave(":Data:Textures:fur3.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
-								donesomething=1;
-							}
-							if(Compare(consoletext[0],"black ",0,5)){
-								LoadTextureSave(":Data:Textures:fur2.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
-								donesomething=1;
-							}
 							if(consolechars[0]>0){
 								for(k=14;k>=1;k--){
 									for(j=0;j<255;j++){
@@ -5295,12 +4219,6 @@ void	Game::Tick()
 								}
 								consolechars[0]=0;
 								consoleselected=0;
-
-								if(!donesomething){
-									PlaySoundEx( consolefailsound, samp[consolefailsound], NULL, true);
-									OPENAL_SetVolume(channels[consolefailsound], 256);
-									OPENAL_SetPaused(channels[consolefailsound], false);
-								}
 							}
 						}
 					}

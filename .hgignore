@@ -7,5 +7,11 @@ Xcode/*.xcodeproj/*.pbxuser
 build
 *~
 .*.swp
-lugaru-*
+lugaru*
+cmake_install.cmake
 cmake-build
+CMakeFiles
+CMakeCache.txt
+Makefile
+cscope.*
+tags

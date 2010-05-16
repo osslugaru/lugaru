@@ -145,7 +145,6 @@ unsigned short 	CharToKey(const char* which);
 const char* 	KeyToChar(unsigned short which);
 char 	KeyToSingleChar(unsigned short which);
 char 	Shift(char which);
-bool 	Compare(const char *thestring, const char *tocompare, int start, int end);
 
 
 typedef unsigned char KeyMap[16];

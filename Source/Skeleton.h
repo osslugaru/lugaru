@@ -216,7 +216,7 @@ public:
 	void FindRotationJoint(int which);
 	void FindRotationJointSameTwist(int which);
 	void FindRotationMuscle(int which, int animation);
-	void Load(char *fileName,char *lowfileName,char *clothesfileName,char *modelfileName,char *model2fileName,char *model3fileName,char *model4fileName,char *model5fileNamee,char *model6fileName,char *model7fileName,char *modellowfileName,char *modelclothesfileName, bool aclothes);
+	void Load(const char *fileName,const char *lowfileName,const char *clothesfileName,const char *modelfileName,const char *model2fileName,const char *model3fileName,const char *model4fileName,const char *model5fileNamee,const char *model6fileName,const char *model7fileName,const char *modellowfileName,const char *modelclothesfileName, bool aclothes);
 
 	Skeleton();
 
