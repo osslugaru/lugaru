@@ -122,7 +122,7 @@ extern float volume;
 #include <shellapi.h>
 #endif
 
-#include "res/resource.h"
+#include "win-res/resource.h"
 
 using namespace std;
 
