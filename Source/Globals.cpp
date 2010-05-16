@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Person.h"
 #include "TGALoader.h"
 #include "openal_wrapper.h"
+#include "Stereo.h"
 
 #include "Constants.h"
 
@@ -267,3 +268,6 @@ bool gamestarted = 0;
 
 //TextureList textures;
 
+StereoMode stereomode =  stereoHorizontalInterlaced;
+float stereoseparation = 0.05;
+bool  stereoreverse = false;

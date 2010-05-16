@@ -62,6 +62,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "binio.h"
 #include <fstream>
 #include "gamegl.h"
+#include "Stereo.h"
 
 extern GLuint rabbittexture;
 
@@ -246,7 +247,7 @@ public:
 	void LoadingScreen();
 	void FadeLoadingScreen(float howmuch);
 	void Dispose();
-	int DrawGLScene(void);
+	int DrawGLScene(StereoSide side);
 	void Tick();
 	void TickOnce();
 	void TickOnceAfter();

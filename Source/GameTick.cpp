@@ -1683,6 +1683,43 @@ void	Game::Tick()
 
 
 	static bool mainmenutogglekeydown;
+
+	if (IsKeyDown(theKeyMap, MAC_F6_KEY) && !freezetogglekeydown) {
+		if (IsKeyDown(theKeyMap, MAC_SHIFT_KEY)) {
+			stereoreverse=true;
+		} else {
+			stereoreverse=false;
+		}
+
+		if (stereoreverse) {
+			printf("Stereo reversed\n");
+		} else {
+			printf("Stereo unreversed\n");
+		}
+		freezetogglekeydown=1;
+	}
+
+	if (IsKeyDown(theKeyMap, MAC_F7_KEY)) {
+		if (IsKeyDown(theKeyMap, MAC_SHIFT_KEY)) {
+			stereoseparation -= 0.001;
+		} else {
+			stereoseparation -= 0.010;
+		}
+
+		printf("Stereo decreased increased to %f\n", stereoseparation);
+	}
+
+	if (IsKeyDown(theKeyMap, MAC_F8_KEY)) {
+		if (IsKeyDown(theKeyMap, MAC_SHIFT_KEY)) {
+			stereoseparation += 0.001;
+		} else {
+			stereoseparation += 0.010;
+		}
+
+		printf("Stereo separation increased to %f\n", stereoseparation);
+	}
+
+
 	if(!console){
 		if(mainmenu&&endgame==1)mainmenu=10;
 		if(IsKeyDown(theKeyMap, MAC_ESCAPE_KEY)&&!mainmenutogglekeydown&&(mainmenu==7&&entername)){

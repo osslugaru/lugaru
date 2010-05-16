@@ -211,7 +211,7 @@ long long Game::MD5_string (char *string){
 	//return 1111111111111111;
 }
 
-int Game::DrawGLScene(void)
+int Game::DrawGLScene(StereoSide side)
 {	
 	static float texcoordwidth,texcoordheight;
 	static float texviewwidth, texviewheight;
@@ -230,8 +230,22 @@ int Game::DrawGLScene(void)
 
 	lastcheck+=multiplier;
 
-	glColorMask( 1.0, 1.0, 1.0, 1.0 );
-
+	if ( stereomode == stereoAnaglyph ) {
+		switch(side) {
+			case stereoLeft: glColorMask( 1.0, 0.0, 0.0, 1.0 ); break;
+			case stereoRight: glColorMask( 0.0, 1.0, 1.0, 1.0 ); break;
+		}
+	} else {
+		glColorMask( 1.0, 1.0, 1.0, 1.0 );
+		
+		if ( stereomode == stereoHorizontalInterlaced || stereomode == stereoVerticalInterlaced ) {
+			if (!stereoreverse) {
+				glStencilFunc(side == stereoLeft ? GL_NOTEQUAL : GL_EQUAL, 0x01, 0x01);
+			} else {
+				glStencilFunc(side == stereoLeft ? GL_EQUAL : GL_NOTEQUAL, 0x01, 0x01);
+			}
+		}
+	}
 
 	if(freeze||winfreeze||(mainmenu&&gameon)||(!gameon&&gamestarted)){
 		tempmult=multiplier;
@@ -347,6 +361,9 @@ int Game::DrawGLScene(void)
 		glMatrixMode (GL_MODELVIEW);
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 		glLoadIdentity ();
+		
+		glTranslatef((stereoseparation/2) * side, 0, 0);
+		
 		if(!cameramode&&!freeze&&!winfreeze){
 			glRotatef(float(Random()%100)/10*camerashake/*+(woozy*woozy)/10*/,0,0,1);
 			glRotatef(rotation2+sin(woozy/2)*(player[0].damage/player[0].damagetolerance)*5,1,0,0);
@@ -3793,10 +3810,11 @@ int Game::DrawGLScene(void)
 
 
 	//glFlush();
-	if(drawmode!=motionblurmode||mainmenu){
-
-		swap_gl_buffers();
-  }
+	if ( side == stereoRight || side == stereoCenter ) {
+		if(drawmode!=motionblurmode||mainmenu){
+			swap_gl_buffers();
+		}
+	}
 
 	//myassert(glGetError() == GL_NO_ERROR);
 	glDrawBuffer(GL_BACK);
