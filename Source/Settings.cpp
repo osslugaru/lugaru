@@ -45,15 +45,15 @@ void DefaultSettings(Game &game) {
 void SaveSettings(Game &game) {
 	ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
 	opstream << "Screenwidth:\n";
-	opstream << kContextWidth;
+	opstream << game.newscreenwidth;
 	opstream << "\nScreenheight:\n";
-	opstream << kContextHeight;
+	opstream << game.newscreenheight;
 	opstream << "\nMouse sensitivity:\n";
 	opstream << usermousesensitivity;
 	opstream << "\nBlur(0,1):\n";
 	opstream << ismotionblur;
 	opstream << "\nOverall Detail(0,1,2) higher=better:\n";
-	opstream << detail;
+	opstream << game.newdetail;
 	opstream << "\nFloating jump:\n";
 	opstream << floatjump;
 	opstream << "\nMouse jump:\n";
