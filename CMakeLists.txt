@@ -77,6 +77,7 @@ set(LUGARU_SRCS
 	${SRCDIR}/OpenGL_Windows.cpp
 	${SRCDIR}/openal_wrapper.cpp
 	${SRCDIR}/WinInput.cpp
+	${SRCDIR}/Settings.cpp
 )
 
 set(LUGARU_H
@@ -110,6 +111,7 @@ set(LUGARU_H
 	${SRCDIR}/pack_private.h
 	${SRCDIR}/private.h
 	${SRCDIR}/unpack_private.h
+	${SRCDIR}/Settings.h
 )
 
 if(UNIX)

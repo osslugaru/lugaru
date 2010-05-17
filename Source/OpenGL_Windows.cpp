@@ -63,51 +63,28 @@ static bool save_png(const char * fname);
 
 extern bool buttons[3];
 extern float multiplier;
-extern float screenwidth,screenheight;
 extern float sps;
 extern float realmultiplier;
 extern int slomo;
-extern bool ismotionblur;
-extern float usermousesensitivity;
-extern int detail;
-extern bool floatjump;
 extern bool cellophane;
 // MODIFIED GWC
 //extern int terraindetail;
 //extern int texdetail;
 extern float terraindetail;
 extern float texdetail;
-extern int bloodtoggle;
+
 extern bool osx;
-extern bool autoslomo;
-extern bool foliage;
-extern bool musictoggle;
-extern bool trilinear;
-extern float gamespeed;
-extern int difficulty;
-extern bool damageeffects;
 extern int numplayers;
-extern bool decals;
-extern bool invertmouse;
-extern bool texttoggle;
-extern bool ambientsound;
-extern bool mousejump;
 extern bool freeze;
 extern Person player[maxplayers];
-extern bool vblsync;
 extern bool stillloading;
-extern bool showpoints;
-extern bool alwaysblur;
-extern bool immediate;
-extern bool velocityblur;
-extern bool debugmode;
 extern int mainmenu;
 /*extern*/ bool gameFocused;
-extern int kBitsPerPixel;
+
 extern float slomospeed;
 extern float slomofreq;
-extern float oldgamespeed;
-extern float volume;
+
+
 
 #include <math.h>
 #include <stdio.h>
@@ -116,7 +93,7 @@ extern float volume;
 #include <iostream>
 #include "gamegl.h"
 #include "MacCompatibility.h"
-
+#include "Settings.h"
 
 #ifdef WIN32
 #include <shellapi.h>
@@ -575,283 +552,22 @@ Boolean SetUp (Game & game)
 	randSeed = UpTime().lo;
 
 	osx = 0;
-	ifstream ipstream(ConvertFileName(":Data:config.txt"), std::ios::in /*| std::ios::nocreate*/);
-	detail=1;
-	ismotionblur=0;
-	usermousesensitivity=1;
-	kContextWidth=640;
-	kContextHeight=480;
-	kBitsPerPixel = 32;
-	floatjump=0;
 	cellophane=0;
 	texdetail=4;
-	autoslomo=1;
-	decals=1;
-	invertmouse=0;
-	bloodtoggle=0;
 	terraindetail=2;
-	foliage=1;
-	musictoggle=1;
-	trilinear=1;
-	gamespeed=1;
-	difficulty=1;
-	damageeffects=0;
-	texttoggle=1;
-	alwaysblur=0;
-	showpoints=0;
-	immediate=0;
-	velocityblur=0;
-
 	slomospeed=0.25;
 	slomofreq=8012;
-
-	volume = 0.8f;
-
-	game.crouchkey=MAC_SHIFT_KEY;
-	game.jumpkey=MAC_SPACE_KEY;
-	game.leftkey=MAC_A_KEY;
-	game.forwardkey=MAC_W_KEY;
-	game.backkey=MAC_S_KEY;
-	game.rightkey=MAC_D_KEY;
-	game.drawkey=MAC_E_KEY;
-	game.throwkey=MAC_Q_KEY;
-	game.attackkey=MAC_MOUSEBUTTON1;
-	game.chatkey=MAC_T_KEY;
 	numplayers=1;
-	ambientsound=1;
-	vblsync=0;
-	debugmode=0;
+	
+	DefaultSettings(game);
 
 	selectDetail(kContextWidth, kContextHeight, kBitsPerPixel, detail);
 
-	if(!ipstream) {
-		ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
-		opstream << "Screenwidth:\n";
-		opstream << kContextWidth;
-		opstream << "\nScreenheight:\n";
-		opstream << kContextHeight;
-		opstream << "\nMouse sensitivity:\n";
-		opstream << usermousesensitivity;
-		opstream << "\nBlur(0,1):\n";
-		opstream << ismotionblur;
-		opstream << "\nOverall Detail(0,1,2) higher=better:\n";
-		opstream << detail;
-		opstream << "\nFloating jump:\n";
-		opstream << floatjump;
-		opstream << "\nMouse jump:\n";
-		opstream << mousejump;
-		opstream << "\nAmbient sound:\n";
-		opstream << ambientsound;
-		opstream << "\nBlood (0,1,2):\n";
-		opstream << bloodtoggle;
-		opstream << "\nAuto slomo:\n";
-		opstream << autoslomo;
-		opstream << "\nFoliage:\n";
-		opstream << foliage;
-		opstream << "\nMusic:\n";
-		opstream << musictoggle;
-		opstream << "\nTrilinear:\n";
-		opstream << trilinear;
-		opstream << "\nDecals(shadows,blood puddles,etc):\n";
-		opstream << decals;
-		opstream << "\nInvert mouse:\n";
-		opstream << invertmouse;
-		opstream << "\nGamespeed:\n";
-		opstream << gamespeed;
-		opstream << "\nDifficulty(0,1,2) higher=harder:\n";
-		opstream << difficulty;
-		opstream << "\nDamage effects(blackout, doublevision):\n";
-		opstream << damageeffects;
-		opstream << "\nText:\n";
-		opstream << texttoggle;
-		opstream << "\nDebug:\n";
-		opstream << debugmode;
-		opstream << "\nVBL Sync:\n";
-		opstream << vblsync;
-		opstream << "\nShow Points:\n";
-		opstream << showpoints;
-		opstream << "\nAlways Blur:\n";
-		opstream << alwaysblur;
-		opstream << "\nImmediate mode (turn on on G5):\n";
-		opstream << immediate;
-		opstream << "\nVelocity blur:\n";
-		opstream << velocityblur;
-		opstream << "\nVolume:\n";
-		opstream << volume;
-		opstream << "\nForward key:\n";
-		opstream << KeyToChar(game.forwardkey);
-		opstream << "\nBack key:\n";
-		opstream << KeyToChar(game.backkey);
-		opstream << "\nLeft key:\n";
-		opstream << KeyToChar(game.leftkey);
-		opstream << "\nRight key:\n";
-		opstream << KeyToChar(game.rightkey);
-		opstream << "\nJump key:\n";
-		opstream << KeyToChar(game.jumpkey);
-		opstream << "\nCrouch key:\n";
-		opstream << KeyToChar(game.crouchkey);
-		opstream << "\nDraw key:\n";
-		opstream << KeyToChar(game.drawkey);
-		opstream << "\nThrow key:\n";
-		opstream << KeyToChar(game.throwkey);
-		opstream << "\nAttack key:\n";
-		opstream << KeyToChar(game.attackkey);
-		opstream << "\nChat key:\n";
-		opstream << KeyToChar(game.chatkey);
-		opstream.close();
+	if(!LoadSettings(game)) {
+		fprintf(stderr, "Failed to load config, creating default\n");
+		SaveSettings(game);
 	}
-	if(ipstream){
-		int i;
-		ipstream.ignore(256,'\n');
-		ipstream >> kContextWidth;
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> kContextHeight;
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> usermousesensitivity;
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> i;
-		ismotionblur = (i != 0);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> detail;
-		if(detail!=0)kBitsPerPixel=32;
-		else kBitsPerPixel=16;
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> i;
-		floatjump = (i != 0);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> i;
-		mousejump = (i != 0);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> i;
-		ambientsound = (i != 0);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> bloodtoggle;
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> i;
-		autoslomo = (i != 0);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> i;
-		foliage = (i != 0);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> i;
-		musictoggle = (i != 0);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> i;
-		trilinear = (i != 0);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> i;
-		decals = (i != 0);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> i;
-		invertmouse = (i != 0);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> gamespeed;
-		oldgamespeed=gamespeed;
-		if(oldgamespeed==0){
-			gamespeed=1;
-			oldgamespeed=1;
-		}
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> difficulty;
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> i;
-		damageeffects = (i != 0);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> i;
-		texttoggle = (i != 0);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> i;
-		debugmode = (i != 0);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> i;
-		vblsync = (i != 0);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> i;
-		showpoints = (i != 0);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> i;
-		alwaysblur = (i != 0);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> i;
-		immediate = (i != 0);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> i;
-		velocityblur = (i != 0);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n'); 
-		ipstream >> volume;
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n'); 
-		ipstream >> string;
-		game.forwardkey=CharToKey(string);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> string;
-		game.backkey=CharToKey(string);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> string;
-		game.leftkey=CharToKey(string);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> string;
-		game.rightkey=CharToKey(string);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> string;
-		game.jumpkey=CharToKey(string);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> string;
-		game.crouchkey=CharToKey(string);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> string;
-		game.drawkey=CharToKey(string);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> string;
-		game.throwkey=CharToKey(string);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> string;
-		game.attackkey=CharToKey(string);
-		ipstream.ignore(256,'\n');
-		ipstream.ignore(256,'\n');
-		ipstream >> string;
-		game.chatkey=CharToKey(string);
-		ipstream.close();
-
-		if(detail>2)detail=2;
-		if(detail<0)detail=0;
-		if(screenwidth<0)screenwidth=640;
-		if(screenheight<0)screenheight=480;
-
-	}
+	
 	if(kBitsPerPixel!=32&&kBitsPerPixel!=16){
 		kBitsPerPixel=16;
 	}
