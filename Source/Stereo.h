@@ -25,4 +25,7 @@ extern StereoMode stereomode;
 extern float stereoseparation;
 extern bool  stereoreverse;
 
+bool CanInitStereo(StereoMode mode);
+void InitStereo(StereoMode mode);
+
 #endif
