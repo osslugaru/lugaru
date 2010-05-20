@@ -77,6 +77,7 @@ set(LUGARU_SRCS
 	${SRCDIR}/OpenGL_Windows.cpp
 	${SRCDIR}/openal_wrapper.cpp
 	${SRCDIR}/WinInput.cpp
+	${SRCDIR}/Settings.cpp
 	${SRCDIR}/Stereo.cpp
 )
 
@@ -111,6 +112,7 @@ set(LUGARU_H
 	${SRCDIR}/pack_private.h
 	${SRCDIR}/private.h
 	${SRCDIR}/unpack_private.h
+	${SRCDIR}/Settings.h
 	${SRCDIR}/Stereo.h
 )
 
