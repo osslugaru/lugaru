@@ -70,3 +70,5 @@ Attack key:
 mouse1
 Chat key:
 unknown
+Damage bar:
+1
