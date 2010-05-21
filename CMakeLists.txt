@@ -30,6 +30,24 @@ if(MINGW)
 	set(OPENGL_glu_LIBRARY "-lglu32" CACHE STRING "GLU library for Win32" FORCE)
 endif(MINGW)
 
+if(APPLE)
+	set(CMAKE_OSX_ARCHITECTURES "i386;x86_64;ppc" CACHE STRING "Build architectures for OSX")
+	set(CMAKE_OSX_DEPLOYMENT_TARGET "10.5" CACHE STRING 
+		"Minimum OS X version to target for deployment (at runtime); newer APIs weak linked. Set to empty string for default value")
+	set(CMAKE_OSX_SYSROOT "/Developer/SDKs/MacOSX10.5.sdk" CACHE PATH 
+		"The product will be built against the headers and libraries located inside the indicated SDK.")
+endif(APPLE)
+
+if(APPLE)
+	# Save our sanity; Set all available libraries to internal by default
+	set(LUGARU_FORCE_INTERNAL_SDL True)
+	set(LUGARU_FORCE_INTERNAL_GLU True)
+	set(LUGARU_FORCE_INTERNAL_JPEG True)
+	set(LUGARU_FORCE_INTERNAL_PNG True)
+	set(LUGARU_FORCE_INTERNAL_VORBIS True)
+	set(LUGARU_FORCE_INTERNAL_ZLIB True)
+endif(APPLE)
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 set(LUGARU_SRCS
@@ -59,6 +77,7 @@ set(LUGARU_SRCS
 	${SRCDIR}/OpenGL_Windows.cpp
 	${SRCDIR}/openal_wrapper.cpp
 	${SRCDIR}/WinInput.cpp
+	${SRCDIR}/Settings.cpp
 )
 
 set(LUGARU_H
@@ -92,6 +111,7 @@ set(LUGARU_H
 	${SRCDIR}/pack_private.h
 	${SRCDIR}/private.h
 	${SRCDIR}/unpack_private.h
+	${SRCDIR}/Settings.h
 )
 
 if(UNIX)
@@ -117,29 +137,29 @@ if(WIN32)
   if(CMAKE_CROSSCOMPILING)
     ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
 						  COMMAND i686-pc-mingw32-windres
-							  -I${SRCDIR}/res
+							  -I${SRCDIR}/win-res
 							  -o ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
-							  -i${SRCDIR}/res/Lugaru.rc
-					      DEPENDS ${SRCDIR}/res/Lugaru.rc
+							  -i${SRCDIR}/win-res/Lugaru.rc
+					      DEPENDS ${SRCDIR}/win-res/Lugaru.rc
 						  )
   endif(CMAKE_CROSSCOMPILING)
   if(NOT CMAKE_CROSSCOMPILING)
    if(MSVC)
     ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
 						  COMMAND rc
-							  -I${SRCDIR}/res
+							  -I${SRCDIR}/win-res
 							  -fo${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
-							  ${SRCDIR}/res/Lugaru.rc
-					      DEPENDS ${SRCDIR}/res/Lugaru.rc
+							  ${SRCDIR}/win-res/Lugaru.rc
+					      DEPENDS ${SRCDIR}/win-res/Lugaru.rc
 						  )
    endif(MSVC)
    if(MINGW)
     ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
 						  COMMAND windres
-							  -I${SRCDIR}/res
+							  -I${SRCDIR}/win-res
 							  -o ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
-							  -i${SRCDIR}/res/Lugaru.rc
-					      DEPENDS ${SRCDIR}/res/Lugaru.rc
+							  -i${SRCDIR}/win-res/Lugaru.rc
+					      DEPENDS ${SRCDIR}/win-res/Lugaru.rc
 						  )
    endif(MINGW)
   endif(NOT CMAKE_CROSSCOMPILING)
@@ -152,7 +172,7 @@ if(WIN32)
   set(LUGARU_H
 	${LUGARU_H}
 	${SRCDIR}/WinDefs.h
-	${SRCDIR}/res/resource.h)
+	${SRCDIR}/win-res/resource.h)
 endif(WIN32)
 
 if (APPLE)
@@ -172,6 +192,10 @@ endif(NOT WIN32)
 if(WIN32)
 	include_directories("${DEPDIR}/OpenGL")
 endif(WIN32)
+
+if(MSVC) # More Visual Studio annoyances
+	include_directories("${DEPDIR}/msinttypes")
+endif(MSVC)
 
 option (LUGARU_FORCE_INTERNAL_OPENAL "Force internal libOpenAL, even if there's a system version" False)
 if (NOT LUGARU_FORCE_INTERNAL_OPENAL)
@@ -488,6 +512,12 @@ else(WIN32)
 endif(WIN32)
 
 # Install target
+if(APPLE)
+	set(APPS_ROOT "${CMAKE_INSTALL_PREFIX}/Lugaru.app")
+	set(APPS_BIN "${APPS_ROOT}/Contents/MacOS")
+	set(APPS_DATA "${APPS_ROOT}/Contents/Resources")
+endif(APPLE)
+
 if(WIN32)
 	install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru.exe DESTINATION ${CMAKE_INSTALL_PREFIX})
 	if(MSVC80)
@@ -503,10 +533,24 @@ if(WIN32)
 		install(FILES ${OPENALDIR}/lib/win32/mingw/OpenAL32.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
 	endif(MINGW)
 else(WIN32)
+	if(APPLE)
+		set(CMAKE_INSTALL_PREFIX "${APPS_BIN}")
+		install(FILES ${SRCDIR}/mac-res/lugaru.icns DESTINATION ${APPS_DATA})
+		install(FILES ${SRCDIR}/mac-res/Info.plist DESTINATION ${APPS_ROOT}/Contents)
+	endif(APPLE)
 	install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru DESTINATION ${CMAKE_INSTALL_PREFIX})
+	if(APPLE AND LUGARU_HAS_INTERNAL_SDL)
+		install(FILES ${SDLDIR}/lib/macosx/libSDL-1.2.0.dylib DESTINATION ${CMAKE_INSTALL_PREFIX})
+	endif(APPLE AND LUGARU_HAS_INTERNAL_SDL)
 endif(WIN32)
 
+if(NOT APPLE)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/Data DESTINATION ${CMAKE_INSTALL_PREFIX})
+endif(NOT APPLE)
+
+if(APPLE)
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/Data DESTINATION ${APPS_ROOT})
+endif(APPLE)
 
 if (LUGARU_MISSING_DEPS)
     message(STATUS "Using our copy of these libs: ${LUGARU_MISSING_DEPS}")

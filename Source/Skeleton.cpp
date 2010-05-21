@@ -1136,12 +1136,12 @@ void Animation::Move(XYZ how)
 	}
 }
 
-void Skeleton::Load(char *filename,       char *lowfilename, char *clothesfilename, 
-                    char *modelfilename,  char *model2filename, 
-                    char *model3filename, char *model4filename, 
-                    char *model5filename, char *model6filename, 
-                    char *model7filename, char *modellowfilename, 
-                    char *modelclothesfilename, bool aclothes)
+void Skeleton::Load(const char *filename,       const char *lowfilename, const char *clothesfilename, 
+                    const char *modelfilename,  const char *model2filename, 
+                    const char *model3filename, const char *model4filename, 
+                    const char *model5filename, const char *model6filename, 
+                    const char *model7filename, const char *modellowfilename, 
+                    const char *modelclothesfilename, bool aclothes)
 {
 	static GLfloat M[16];
 	static int parentID;
