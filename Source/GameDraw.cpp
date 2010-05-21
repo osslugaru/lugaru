@@ -2372,7 +2372,7 @@ int Game::DrawGLScene(StereoSide side)
 
 		/*if(mainmenu!=0)*/oldmainmenu=mainmenu;
 
-		if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==119||mainmenu==13||mainmenu==17){
+		if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==119||mainmenu==13||mainmenu==17||mainmenu==18){
 			glClear(GL_DEPTH_BUFFER_BIT);
 			glEnable(GL_ALPHA_TEST);
 			glAlphaFunc(GL_GREATER, 0.001f);
@@ -2436,7 +2436,7 @@ int Game::DrawGLScene(StereoSide side)
 			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 
 			if(mainmenu==3){			
-				nummenuitems=12;
+				nummenuitems=13;
 				if((float)newscreenwidth>(float)newscreenheight*1.61||(float)newscreenwidth<(float)newscreenheight*1.59)sprintf (menustring[0], "Resolution: %d*%d",(int)newscreenwidth,(int)newscreenheight);
 				else sprintf (menustring[0], "Resolution: %d*%d (widescreen)",(int)newscreenwidth,(int)newscreenheight);
 				startx[0]=10+20;
@@ -2536,6 +2536,14 @@ int Game::DrawGLScene(StereoSide side)
 				movex[7]=0;
 				movey[7]=0;
 
+				sprintf (menustring[12], "-Configure Stereo -");
+				startx[12]=10+15;
+				starty[12]=60;
+				endx[12]=startx[12]+strlen(menustring[7])*10;
+				endy[12]=starty[12]+20;
+				movex[12]=0;
+				movey[12]=0;
+				
 				if(newdetail==detail&&newscreenheight==(int)screenheight&&newscreenwidth==(int)screenwidth)sprintf (menustring[8], "Back");
 				else sprintf (menustring[8], "Back (some changes take effect next time Lugaru is opened)");
 				startx[8]=10;
@@ -3070,6 +3078,40 @@ int Game::DrawGLScene(StereoSide side)
 				movex[7]=0;
 				movey[7]=0;*/
 			}
+			if (mainmenu==18) {
+				nummenuitems=4;
+				sprintf (menustring[0], "Stereo mode: %s", StereoModeName(newstereomode));
+				startx[0]=70;
+				starty[0]=400;
+				endx[0]=startx[0]+strlen(menustring[0])*10;
+				endy[0]=starty[0]+20;
+				movex[0]=0;
+				movey[0]=0;
+				
+				sprintf (menustring[1], "Stereo separation: %.3f", stereoseparation);
+				startx[1]=10;
+				starty[1]=360;
+				endx[1]=startx[1]+strlen(menustring[1])*10;
+				endy[1]=starty[1]+20;
+				movex[1]=0;
+				movey[1]=0;
+
+				sprintf (menustring[2], "Reverse stereo: %s", stereoreverse ? "Yes" : "No");
+				startx[2]=40;
+				starty[2]=320;
+				endx[2]=startx[2]+strlen(menustring[2])*10;
+				endy[2]=starty[2]+20;
+				movex[2]=0;
+				movey[2]=0;
+				
+				sprintf (menustring[3], "Back");
+				startx[3]=10;
+				endx[3]=startx[3]+strlen(menustring[3])*10;
+				starty[3]=10;
+				endy[3]=starty[3]+20;
+				movex[3]=0;
+				movey[3]=0;				
+			}
 		}
 
 		if(mainmenu==13){	
@@ -3259,7 +3301,7 @@ int Game::DrawGLScene(StereoSide side)
 				}
 			}
 
-			if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==11||mainmenu==13||mainmenu==17)
+			if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==11||mainmenu==13||mainmenu==17||mainmenu==18)
 				for(i=0;i<nummenuitems;i++){
 					if((mousecoordh/screenwidth*640)>startx[i]&&(mousecoordh/screenwidth*640)<endx[i]&&480-(mousecoordv/screenheight*480)>starty[i]&&480-(mousecoordv/screenheight*480)<endy[i]){
 						if(mainmenu!=5)selected=i;
@@ -3452,7 +3494,7 @@ int Game::DrawGLScene(StereoSide side)
 											}
 										}
 									}
-									if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==11||mainmenu==13||mainmenu==17)
+									if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==11||mainmenu==13||mainmenu==17||mainmenu==18)
 									{
 										if(mainmenu!=5||j<6)
 										{
@@ -3505,6 +3547,7 @@ int Game::DrawGLScene(StereoSide side)
 													if(mainmenu==10)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
 													if(mainmenu==17)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
 													if(mainmenu==13&&j!=1)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
+													if(mainmenu==18)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
 													/*else{
 													if(displayblink){
 													sprintf (string, "_");
@@ -3764,6 +3807,7 @@ int Game::DrawGLScene(StereoSide side)
 
 								if(flashamount>0)
 								{
+									//printf("Flash amount: %f, delay %i\n", flashamount, flashdelay);
 									if(flashamount>1)flashamount=1;
 									if(flashdelay<=0)flashamount-=multiplier;
 									flashdelay--;

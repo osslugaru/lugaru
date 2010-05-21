@@ -25,7 +25,8 @@ bool CanInitStereo(StereoMode mode) {
 			} else {
 				fprintf(stderr, "Stencil buffer has %i bits, good.\n", stencilbits);
 			}
-			
+			return true;
+			break;
 		default:
 			return false;
 	}
@@ -35,8 +36,10 @@ bool CanInitStereo(StereoMode mode) {
 void InitStereo(StereoMode mode) {
 	switch(mode) {
 		case stereoNone:
+			glDisable( GL_STENCIL_TEST);
 			return;
 		case stereoAnaglyph:
+			glDisable( GL_STENCIL_TEST);
 			return;
 		case stereoHorizontalInterlaced:
 		case stereoVerticalInterlaced:
@@ -83,4 +86,17 @@ void InitStereo(StereoMode mode) {
 			glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
 	}
 	
+}
+
+const char* StereoModeName(StereoMode mode) {
+	switch(mode) {
+		case stereoNone:                 return "None"; break;
+		case stereoAnaglyph:             return "Anaglyph"; break;
+		case stereoHorizontalInterlaced: return "Horizontal interlacing"; break;
+		case stereoVerticalInterlaced:   return "Vertical interlacing"; break;
+		case stereoHorizontalSplit:      return "Horizontal split"; break;
+		case stereoVerticalSplit:        return "Vertical split"; break;
+		case stereoOpenGL:               return "OpenGL"; break;
+		default:                         return "(error)"; break; 
+	}
 }

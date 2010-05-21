@@ -269,5 +269,6 @@ bool gamestarted = 0;
 //TextureList textures;
 
 StereoMode stereomode =  stereoNone;
+StereoMode newstereomode = stereoNone;
 float stereoseparation = 0.05;
 bool  stereoreverse = false;

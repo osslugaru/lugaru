@@ -22,10 +22,12 @@ enum StereoSide {
 };
 
 extern StereoMode stereomode;
+extern StereoMode newstereomode;
 extern float stereoseparation;
 extern bool  stereoreverse;
 
 bool CanInitStereo(StereoMode mode);
 void InitStereo(StereoMode mode);
+const char* StereoModeName(StereoMode mode);
 
 #endif

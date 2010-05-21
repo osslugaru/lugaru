@@ -3087,6 +3087,17 @@ void	Game::Tick()
 				mainmenu=4;
 				keyselect=-1;
 			}
+			if(Button() && !oldbutton && selected == 12) {
+				flashr=1;
+				flashg=0;
+				flashb=0;
+				flashamount=1;
+				flashdelay=1;
+				
+				newstereomode = stereomode;
+				mainmenu=18;
+				keyselect = -1;
+			}
 			if(Button()&&!oldbutton&&selected==8){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
@@ -3649,9 +3660,54 @@ void	Game::Tick()
 			if(Button())oldbutton=1;
 			else oldbutton=0;
 		}
+		if (mainmenu==18) {
+			if(Button()&&!oldbutton) {
+				printf("Button %i pressed\n", selected);
+			}
+			
+			if(Button()&&!oldbutton&&selected==0) {
+				newstereomode = (StereoMode)(newstereomode + 1);
+				while(!CanInitStereo(newstereomode)) {
+					printf("Failed to initialize mode %s (%i)\n", StereoModeName(newstereomode), newstereomode);
+					newstereomode = (StereoMode)(newstereomode + 1);
+					if ( newstereomode >= stereoCount ) {
+						newstereomode = stereoNone;
+					}
+				}
+			}
+			
+			if(buttons[0]&&!oldbutton&&selected==1) {
+				stereoseparation+=0.001;
+			}
+			if(buttons[1]&&!oldbutton&&selected==1) {
+				stereoseparation-=0.001;
+			}
+
+			if(Button()&&!oldbutton&&selected==2) {
+				stereoreverse =! stereoreverse;
+			}
+			
+			if(Button()&&!oldbutton&&selected==3) {
+				flashr=1;
+				flashg=0;
+				flashb=0;
+				flashamount=1;
+				flashdelay=1;
+
+				if ( stereomode != newstereomode ) {
+					stereomode = newstereomode;
+					InitStereo(stereomode);
+				}
+				
+				mainmenu=3;
+			}
+			
+			if(Button() || buttons[1])oldbutton=1;
+			else oldbutton=0;
+		}
 
 
-		if(Button())oldbutton=1;
+		if(Button()||buttons[1])oldbutton=1;
 		else oldbutton=0;
 
 		if(IsKeyDown(theKeyMap, MAC_Q_KEY)&&IsKeyDown(theKeyMap, MAC_COMMAND_KEY)){
