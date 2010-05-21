@@ -46,44 +46,49 @@ void InitStereo(StereoMode mode) {
 			
 			fprintf(stderr, "Screen width is %i, height is %i\n", kContextWidth, kContextHeight);
 			
+			// Setup stencil buffer
 			glEnable( GL_STENCIL_TEST);
 			glClearStencil(0);
 			glClear(  GL_STENCIL_BUFFER_BIT );
 			glStencilFunc(GL_ALWAYS, 0x1, 0x1);
 			glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
 			
-			
-			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-			glPixelStorei(GL_UNPACK_ROW_LENGTH, 3);
-			glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
-			glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
-			glColorMask( 1.0, 1.0, 1.0, 1.0 );
-			char stencil[] = {64,127,255};
-			
+			// Setup viewport
 			glViewport(0,0, kContextWidth, kContextHeight);
 			glMatrixMode(GL_PROJECTION);
-			glLoadIdentity();
-			glOrtho((GLdouble)0, (GLdouble)kContextWidth, (GLdouble)kContextHeight, 0, -1, 1);
-			glMatrixMode(GL_MODELVIEW);
-			glLoadIdentity();
-			
-			for(int y=0;y<kContextHeight;y+=2) {
-				
-				for(int x=0;x<kContextWidth;x++) {
-					glRasterPos2i(x, y);
-					glDrawPixels(1, 1, GL_RGB, GL_UNSIGNED_BYTE, &stencil);
-				}
-			}
+			glPushMatrix();
+				glLoadIdentity();
+				glOrtho((GLdouble)0, (GLdouble)kContextWidth, (GLdouble)kContextHeight, 0, -1, 1);
+				glMatrixMode(GL_MODELVIEW);
+				glPushMatrix();
+					glLoadIdentity();
+					
+					glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE );
+					
+					if ( mode == stereoHorizontalInterlaced ) {
+						for(int y=0;y<kContextHeight;y+=2) {
+							glBegin(GL_LINES);
+								glVertex3f(0, y, 0);
+								glVertex3f(kContextWidth, y, 0);
+							glEnd();
+						}
+					} else {
+						for(int x=0;x<kContextWidth;x+=2) {
+							glBegin(GL_LINES);
+								glVertex3f(x, 0, 0);
+								glVertex3f(x, kContextHeight, 0);
+							glEnd();
+						}
+					}
+					
+					glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
+					
+				glPopMatrix();
+				glMatrixMode(GL_PROJECTION);
+			glPopMatrix();
 			
 			glStencilFunc(GL_NOTEQUAL, 0x01, 0x01);
 			glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-
-			// Something gets screwed up due to the changes above
-			// revert to default.
-			glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-			glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-			glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
-			glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
 	}
 	
 }
