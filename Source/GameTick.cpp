@@ -3694,10 +3694,8 @@ void	Game::Tick()
 				flashamount=1;
 				flashdelay=1;
 
-				if ( stereomode != newstereomode ) {
-					stereomode = newstereomode;
-					InitStereo(stereomode);
-				}
+				stereomode = newstereomode;
+				InitStereo(stereomode);
 				
 				mainmenu=3;
 			}
