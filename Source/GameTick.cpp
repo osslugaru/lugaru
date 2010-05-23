@@ -737,6 +737,11 @@ static void ch_wolfie(Game *game, const char *args)
   set_proportion(0, "1 1 1 1");
 }
 
+static void ch_wolfieisgod(Game *game, const char *args)
+{
+  ch_wolfie(game, args);
+}
+
 static void ch_wolf(Game *game, const char *args)
 {
   game->LoadTextureSave(":Data:Textures:Wolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,
@@ -752,6 +757,12 @@ static void ch_snowwolf(Game *game, const char *args)
 static void ch_darkwolf(Game *game, const char *args)
 {
   game->LoadTextureSave(":Data:Textures:DarkWolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,
+			&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+}
+
+static void ch_lizardwolf(Game *game, const char *args)
+{
+  game->LoadTextureSave(":Data:Textures:Lizardwolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,
 			&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 }
 
