@@ -47,6 +47,11 @@ void InitStereo(StereoMode mode) {
 			fprintf(stderr, "Screen width is %i, height is %i\n", kContextWidth, kContextHeight);
 			
 			// Setup stencil buffer
+			glDisable( GL_DEPTH_TEST);
+			glDisable(GL_CULL_FACE);
+			glDisable(GL_LIGHTING);
+			glDisable(GL_TEXTURE_2D);
+
 			glEnable( GL_STENCIL_TEST);
 			glClearStencil(0);
 			glClear(  GL_STENCIL_BUFFER_BIT );
@@ -62,25 +67,27 @@ void InitStereo(StereoMode mode) {
 				glMatrixMode(GL_MODELVIEW);
 				glPushMatrix();
 					glLoadIdentity();
-					
 					glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE );
-					
+					glDisable(GL_LINE_SMOOTH);
+
+					// Add 0.5 to the coordinates, because OpenGL considers a pixel should be
+					// turned on when a line passes through the center of it.
 					if ( mode == stereoHorizontalInterlaced ) {
 						for(int y=0;y<kContextHeight;y+=2) {
 							glBegin(GL_LINES);
-								glVertex3f(0, y, 0);
-								glVertex3f(kContextWidth, y, 0);
+								glVertex3f(0.5, y+0.5, 0);
+								glVertex3f(kContextWidth+0.5, y+0.5, 0);
 							glEnd();
 						}
 					} else {
 						for(int x=0;x<kContextWidth;x+=2) {
 							glBegin(GL_LINES);
-								glVertex3f(x, 0, 0);
-								glVertex3f(x, kContextHeight, 0);
+								glVertex3f(x+0.5, 0.5, 0);
+								glVertex3f(x+0.5, kContextHeight+0.5, 0);
 							glEnd();
 						}
 					}
-					
+
 					glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
 					
 				glPopMatrix();
@@ -89,6 +96,11 @@ void InitStereo(StereoMode mode) {
 			
 			glStencilFunc(GL_NOTEQUAL, 0x01, 0x01);
 			glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+			glEnable( GL_DEPTH_TEST);
+			glEnable(GL_CULL_FACE);
+			glEnable(GL_LIGHTING);
+			glEnable(GL_TEXTURE_2D);
+
 	}
 	
 }
