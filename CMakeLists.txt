@@ -78,6 +78,7 @@ set(LUGARU_SRCS
 	${SRCDIR}/openal_wrapper.cpp
 	${SRCDIR}/WinInput.cpp
 	${SRCDIR}/Settings.cpp
+	${SRCDIR}/Stereo.cpp
 )
 
 set(LUGARU_H
@@ -112,6 +113,7 @@ set(LUGARU_H
 	${SRCDIR}/private.h
 	${SRCDIR}/unpack_private.h
 	${SRCDIR}/Settings.h
+	${SRCDIR}/Stereo.h
 )
 
 if(UNIX)

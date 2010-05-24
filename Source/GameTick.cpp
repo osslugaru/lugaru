@@ -738,6 +738,11 @@ static void ch_wolfie(Game *game, const char *args)
   set_proportion(0, "1 1 1 1");
 }
 
+static void ch_wolfieisgod(Game *game, const char *args)
+{
+  ch_wolfie(game, args);
+}
+
 static void ch_wolf(Game *game, const char *args)
 {
   game->LoadTextureSave(":Data:Textures:Wolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,
@@ -753,6 +758,12 @@ static void ch_snowwolf(Game *game, const char *args)
 static void ch_darkwolf(Game *game, const char *args)
 {
   game->LoadTextureSave(":Data:Textures:DarkWolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,
+			&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+}
+
+static void ch_lizardwolf(Game *game, const char *args)
+{
+  game->LoadTextureSave(":Data:Textures:Lizardwolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,
 			&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 }
 
@@ -2610,6 +2621,43 @@ void	Game::Tick()
 
 
 	static bool mainmenutogglekeydown;
+
+	if (IsKeyDown(theKeyMap, MAC_F6_KEY) && !freezetogglekeydown) {
+		if (IsKeyDown(theKeyMap, MAC_SHIFT_KEY)) {
+			stereoreverse=true;
+		} else {
+			stereoreverse=false;
+		}
+
+		if (stereoreverse) {
+			printf("Stereo reversed\n");
+		} else {
+			printf("Stereo unreversed\n");
+		}
+		freezetogglekeydown=1;
+	}
+
+	if (IsKeyDown(theKeyMap, MAC_F7_KEY)) {
+		if (IsKeyDown(theKeyMap, MAC_SHIFT_KEY)) {
+			stereoseparation -= 0.001;
+		} else {
+			stereoseparation -= 0.010;
+		}
+
+		printf("Stereo decreased increased to %f\n", stereoseparation);
+	}
+
+	if (IsKeyDown(theKeyMap, MAC_F8_KEY)) {
+		if (IsKeyDown(theKeyMap, MAC_SHIFT_KEY)) {
+			stereoseparation += 0.001;
+		} else {
+			stereoseparation += 0.010;
+		}
+
+		printf("Stereo separation increased to %f\n", stereoseparation);
+	}
+
+
 	if(!console){
 		if(mainmenu&&endgame==1)mainmenu=10;
 		if(IsKeyDown(theKeyMap, MAC_ESCAPE_KEY)&&!mainmenutogglekeydown&&(mainmenu==7&&entername)){
@@ -3050,6 +3098,17 @@ void	Game::Tick()
 
 				mainmenu=4;
 				keyselect=-1;
+			}
+			if(Button() && !oldbutton && selected == 12) {
+				flashr=1;
+				flashg=0;
+				flashb=0;
+				flashamount=1;
+				flashdelay=1;
+				
+				newstereomode = stereomode;
+				mainmenu=18;
+				keyselect = -1;
 			}
 			if(Button()&&!oldbutton&&selected==8){
 				float gLoc[3]={0,0,0};
@@ -3613,9 +3672,52 @@ void	Game::Tick()
 			if(Button())oldbutton=1;
 			else oldbutton=0;
 		}
+		if (mainmenu==18) {
+			if(Button()&&!oldbutton) {
+				printf("Button %i pressed\n", selected);
+			}
+			
+			if(Button()&&!oldbutton&&selected==0) {
+				newstereomode = (StereoMode)(newstereomode + 1);
+				while(!CanInitStereo(newstereomode)) {
+					printf("Failed to initialize mode %s (%i)\n", StereoModeName(newstereomode), newstereomode);
+					newstereomode = (StereoMode)(newstereomode + 1);
+					if ( newstereomode >= stereoCount ) {
+						newstereomode = stereoNone;
+					}
+				}
+			}
+			
+			if(buttons[0]&&!oldbutton&&selected==1) {
+				stereoseparation+=0.001;
+			}
+			if(buttons[1]&&!oldbutton&&selected==1) {
+				stereoseparation-=0.001;
+			}
+
+			if(Button()&&!oldbutton&&selected==2) {
+				stereoreverse =! stereoreverse;
+			}
+			
+			if(Button()&&!oldbutton&&selected==3) {
+				flashr=1;
+				flashg=0;
+				flashb=0;
+				flashamount=1;
+				flashdelay=1;
+
+				stereomode = newstereomode;
+				InitStereo(stereomode);
+				
+				mainmenu=3;
+			}
+			
+			if(Button() || buttons[1])oldbutton=1;
+			else oldbutton=0;
+		}
 
 
-		if(Button())oldbutton=1;
+		if(Button()||buttons[1])oldbutton=1;
 		else oldbutton=0;
 
 		if(IsKeyDown(theKeyMap, MAC_Q_KEY)&&IsKeyDown(theKeyMap, MAC_COMMAND_KEY)){

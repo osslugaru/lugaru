@@ -120,6 +120,12 @@ void SaveSettings(Game &game) {
 	opstream << KeyToChar(game.chatkey);
 	opstream << "\nDamage bar:\n";
 	opstream << showdamagebar;
+	opstream << "\nStereoMode:\n";
+	opstream << stereomode;
+	opstream << "\nStereoSeparation:\n";
+	opstream << stereoseparation;
+	opstream << "\nStereoReverse:\n";
+	opstream << stereoreverse;
 	opstream.close();
 }
 
@@ -238,6 +244,14 @@ bool LoadSettings(Game &game) {
 			game.chatkey = CharToKey(string);
 		} else if ( !strncmp(setting, "Damage bar", 10) ) {
 			ipstream >> showdamagebar;
+		} else if ( !strncmp(setting, "StereoMode", 10) ) {
+			int i;
+			ipstream >> i;
+			stereomode = (StereoMode)i;
+		} else if ( !strncmp(setting, "StereoSeparation", 16) ) {
+			ipstream >> stereoseparation;
+		} else if ( !strncmp(setting, "StereoReverse", 13) ) {
+			ipstream >> stereoreverse;
 		} else {
 			ipstream >> string;
 			fprintf(stderr, "Unknown config option '%s' with value '%s'. Ignoring.\n", setting, string);

@@ -297,7 +297,12 @@ void ShutdownDSp ()
 
 void DrawGL (Game & game)
 {
-	game.DrawGLScene();
+	if ( stereomode == stereoNone ) {
+		game.DrawGLScene(stereoCenter);
+	} else {
+		game.DrawGLScene(stereoLeft);
+		game.DrawGLScene(stereoRight);
+	}
 }
 
 
@@ -638,7 +643,8 @@ Boolean SetUp (Game & game)
     SDL_ShowCursor(0);
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 1);
+    
     if (SDL_SetVideoMode(kContextWidth, kContextHeight, 0, sdlflags) == NULL)
     {
         fprintf(stderr, "SDL_SetVideoMode() failed: %s\n", SDL_GetError());
@@ -687,7 +693,6 @@ Boolean SetUp (Game & game)
 	glDisable( GL_FOG);
 	glDisable( GL_LIGHTING);
 	glDisable( GL_LOGIC_OP);
-	glDisable( GL_STENCIL_TEST);
 	glDisable( GL_TEXTURE_1D);
 	glDisable( GL_TEXTURE_2D);
 	glPixelTransferi( GL_MAP_COLOR, GL_FALSE);
@@ -728,6 +733,13 @@ Boolean SetUp (Game & game)
 	game.newdetail=detail;
 	game.newscreenwidth=screenwidth;
 	game.newscreenheight=screenheight;
+
+	if ( CanInitStereo(stereomode) ) {
+		InitStereo(stereomode);
+	} else {
+		fprintf(stderr, "Failed to initialize stereo, disabling.\n");
+		stereomode = stereoNone;
+	}
 
 	game.InitGame();
 

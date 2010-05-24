@@ -72,3 +72,9 @@ Chat key:
 unknown
 Damage bar:
 1
+StereoMode:
+0
+StereoSeparation:
+0.05
+StereoReverse:
+0
