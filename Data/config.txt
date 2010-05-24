@@ -71,7 +71,7 @@ mouse1
 Chat key:
 unknown
 Damage bar:
-1
+0
 StereoMode:
 0
 StereoSeparation:
