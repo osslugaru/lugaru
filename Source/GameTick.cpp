@@ -3110,6 +3110,9 @@ void	Game::Tick()
 				mainmenu=18;
 				keyselect = -1;
 			}
+			if(Button() && !oldbutton && selected == 13) {
+				showdamagebar=!showdamagebar;
+			}
 			if(Button()&&!oldbutton&&selected==8){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};

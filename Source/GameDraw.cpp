@@ -2522,7 +2522,7 @@ int Game::DrawGLScene(StereoSide side)
 			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 
 			if(mainmenu==3){			
-				nummenuitems=13;
+				nummenuitems=14;
 				if((float)newscreenwidth>(float)newscreenheight*1.61||(float)newscreenwidth<(float)newscreenheight*1.59)sprintf (menustring[0], "Resolution: %d*%d",(int)newscreenwidth,(int)newscreenheight);
 				else sprintf (menustring[0], "Resolution: %d*%d (widescreen)",(int)newscreenwidth,(int)newscreenheight);
 				startx[0]=10+20;
@@ -2608,15 +2608,23 @@ int Game::DrawGLScene(StereoSide side)
 				
 				sprintf (menustring[11], "Volume: %d%%", (int)(volume*100));
 				startx[11]=10+60;
-				starty[11]=155;
+				starty[11]=160;
 				endx[11]=startx[11]+strlen(menustring[11])*10;
 				endy[11]=starty[11]+20;
 				movex[11]=0;
 				movey[11]=0;
 				
+				sprintf (menustring[13], "Damage Bar: %s",(showdamagebar?"on":"off"));
+				startx[13]=30;
+				starty[13]=125;
+				endx[13]=startx[13]+strlen(menustring[13])*10;
+				endy[13]=starty[13]+20;
+				movex[13]=0;
+				movey[13]=0;
+				
 				sprintf (menustring[7], "-Configure Controls-");
 				startx[7]=10+15;
-				starty[7]=100;
+				starty[7]=90;
 				endx[7]=startx[7]+strlen(menustring[7])*10;
 				endy[7]=starty[7]+20;
 				movex[7]=0;
@@ -2624,7 +2632,7 @@ int Game::DrawGLScene(StereoSide side)
 
 				sprintf (menustring[12], "-Configure Stereo -");
 				startx[12]=10+15;
-				starty[12]=60;
+				starty[12]=55;
 				endx[12]=startx[12]+strlen(menustring[7])*10;
 				endy[12]=starty[12]+20;
 				movex[12]=0;
