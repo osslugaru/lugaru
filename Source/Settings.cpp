@@ -141,7 +141,6 @@ bool LoadSettings(Game &game) {
 	printf("Loading config\n");
 	while(!ipstream.eof()) {
 		ipstream.getline( setting, sizeof(setting) );
-		printf("setting : %s\n",setting);
 		
 		// skip blank lines
 		// assume lines starting with spaces are all blank

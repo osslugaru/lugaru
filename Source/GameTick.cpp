@@ -35,6 +35,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 using namespace std;
 
+// Added more evilness needed for MSVC
+#ifdef _MSC_VER
+	#define strncasecmp(s1, s2, n) _strnicmp(s1, s2, n)
+	#define snprintf(buf, size, format, ...) _sprintf_p(buf, size, format)
+#endif
+
+
 extern float multiplier;
 extern XYZ viewer;
 extern int environment;

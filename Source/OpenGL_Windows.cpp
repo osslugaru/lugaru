@@ -899,7 +899,12 @@ int main(int argc, char **argv)
 					}
 
 					// game is not in focus, give CPU time to other apps by waiting for messages instead of 'peeking'
-                    STUBBED("give up CPU but sniff the event queue");
+					SDL_ActiveEvent evt;
+					SDL_WaitEvent((SDL_Event*)&evt);
+					if (evt.type == SDL_ACTIVEEVENT && evt.gain == 1)
+						gameFocused = true;
+					else if (evt.type == SDL_QUIT)
+						gDone = true;
 				}
 			}
 
