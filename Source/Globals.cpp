@@ -42,8 +42,7 @@ OPENAL_SAMPLE	*samp[100] = {0};
 OPENAL_STREAM * strm[20] = {0};
 int channels[100] = {0};
 
-float volume = 0;bool buttons[3] = {0};
-bool oldbuttons[3] = {0};
+float volume = 0;
 bool ismotionblur = 0;
 float usermousesensitivity = 0;
 bool floatjump = 0;
@@ -229,20 +228,6 @@ float bonustotal = 0;
 float startbonustotal = 0;
 float bonustime = 0;
 
-int numaccounts = 0;
-int accountactive = 0;
-int accountdifficulty[10] = {0};
-int accountprogress[10] = {0};
-float accountpoints[10] = {0};
-float accounthighscore[10][50] = {0};
-float accountfasttime[10][50] = {0};
-bool accountunlocked[10][60] = {0};
-char accountname[10][256] = {0};
-float accountcampaignhighscore[10] = {0};
-float accountcampaignfasttime[10] = {0};
-float accountcampaignscore[10] = {0};
-float accountcampaigntime[10] = {0};
-int accountcampaignchoicesmade[10] = {0};int accountcampaignchoices[10][5000] = {0};
 bool won = 0;
 
 

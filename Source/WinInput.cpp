@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /**> HEADER FILES <**/
 #include "WinInput.h"
+#include "SDL.h"
 
 #ifdef WIN32
 #include "String.h"
@@ -31,821 +32,152 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 extern bool keyboardfrozen;
-extern bool buttons[3];
 /********************> IsKeyDown() <*****/
-Boolean	IsKeyDown( unsigned char *keyMap, unsigned short theKey )
-{
-	if(keyboardfrozen)return 0;
-	if(theKey< 0x80 /*1000*/){
-		static long	keyMapIndex;
-		static Boolean	isKeyDown;
-		static short	bitToCheck;
-
-		// Calculate the key map index
-		keyMapIndex = keyMap[theKey/8];
-
-		// Calculate the individual bit to check
-		bitToCheck = theKey%8;
-
-		// Check the status of the key
-		isKeyDown = ( keyMapIndex >> bitToCheck ) & 0x01;
-
-		// Return the status of the key
-		return isKeyDown;
-	}
-	else if(theKey==MAC_MOUSEBUTTON1)
-		return buttons[0];
-	else if(theKey==MAC_MOUSEBUTTON2)
-		return buttons[1];
-
-	return 0;
-}
 
 unsigned short 	CharToKey(const char* which)
 {
-	// alphabetic keys
-	if(!strcasecmp(which,"a")){
-		return MAC_A_KEY;
-	}
-	if(!strcasecmp(which,"b")){
-		return MAC_B_KEY;
-	}
-	if(!strcasecmp(which,"c")){
-		return MAC_C_KEY;
-	}
-	if(!strcasecmp(which,"d")){
-		return MAC_D_KEY;
-	}
-	if(!strcasecmp(which,"e")){
-		return MAC_E_KEY;
-	}
-	if(!strcasecmp(which,"f")){
-		return MAC_F_KEY;
-	}
-	if(!strcasecmp(which,"g")){
-		return MAC_G_KEY;
-	}
-	if(!strcasecmp(which,"h")){
-		return MAC_H_KEY;
-	}
-	if(!strcasecmp(which,"i")){
-		return MAC_I_KEY;
-	}
-	if(!strcasecmp(which,"j")){
-		return MAC_J_KEY;
-	}
-	if(!strcasecmp(which,"k")){
-		return MAC_K_KEY;
-	}
-	if(!strcasecmp(which,"l")){
-		return MAC_L_KEY;
-	}
-	if(!strcasecmp(which,"m")){
-		return MAC_M_KEY;
-	}
-	if(!strcasecmp(which,"n")){
-		return MAC_N_KEY;
-	}
-	if(!strcasecmp(which,"o")){
-		return MAC_O_KEY;
-	}
-	if(!strcasecmp(which,"p")){
-		return MAC_P_KEY;
-	}
-	if(!strcasecmp(which,"q")){
-		return MAC_Q_KEY;
-	}
-	if(!strcasecmp(which,"r")){
-		return MAC_R_KEY;
-	}
-	if(!strcasecmp(which,"s")){
-		return MAC_S_KEY;
-	}
-	if(!strcasecmp(which,"t")){
-		return MAC_T_KEY;
-	}
-	if(!strcasecmp(which,"u")){
-		return MAC_U_KEY;
-	}
-	if(!strcasecmp(which,"v")){
-		return MAC_V_KEY;
-	}
-	if(!strcasecmp(which,"w")){
-		return MAC_W_KEY;
-	}
-	if(!strcasecmp(which,"x")){
-		return MAC_X_KEY;
-	}
-	if(!strcasecmp(which,"y")){
-		return MAC_Y_KEY;
-	}
-	if(!strcasecmp(which,"z")){
-		return MAC_Z_KEY;
-	}
-
-	// keypad keys
-	if(!strcasecmp(which,"KP0")){
-		return MAC_NUMPAD_0_KEY;
-	}
-	if(!strcasecmp(which,"KP1")){
-		return MAC_NUMPAD_1_KEY;
-	}
-	if(!strcasecmp(which,"KP2")){
-		return MAC_NUMPAD_2_KEY;
-	}
-	if(!strcasecmp(which,"KP3")){
-		return MAC_NUMPAD_3_KEY;
-	}
-	if(!strcasecmp(which,"KP4")){
-		return MAC_NUMPAD_4_KEY;
-	}
-	if(!strcasecmp(which,"KP5")){
-		return MAC_NUMPAD_5_KEY;
-	}
-	if(!strcasecmp(which,"KP6")){
-		return MAC_NUMPAD_6_KEY;
-	}
-	if(!strcasecmp(which,"KP7")){
-		return MAC_NUMPAD_7_KEY;
-	}
-	if(!strcasecmp(which,"KP8")){
-		return MAC_NUMPAD_8_KEY;
-	}
-	if(!strcasecmp(which,"KP9")){
-		return MAC_NUMPAD_9_KEY;
-	}
-
-	// enter
-	if(!strcasecmp(which,"enter")){
-		return MAC_ENTER_KEY;
-	}
-
-	// number keys
-	if(!strcasecmp(which,"0")){
-		return MAC_0_KEY;
-	}
-	if(!strcasecmp(which,"1")){
-		return MAC_1_KEY;
-	}
-	if(!strcasecmp(which,"2")){
-		return MAC_2_KEY;
-	}
-	if(!strcasecmp(which,"3")){
-		return MAC_3_KEY;
-	}
-	if(!strcasecmp(which,"4")){
-		return MAC_4_KEY;
-	}
-	if(!strcasecmp(which,"5")){
-		return MAC_5_KEY;
-	}
-	if(!strcasecmp(which,"6")){
-		return MAC_6_KEY;
-	}
-	if(!strcasecmp(which,"7")){
-		return MAC_7_KEY;
-	}
-	if(!strcasecmp(which,"8")){
-		return MAC_8_KEY;
-	}
-	if(!strcasecmp(which,"9")){
-		return MAC_9_KEY;
-	}
-
-	// function keys
-	if(!strcasecmp(which,"F1")){
-		return MAC_F1_KEY;
-	}
-	if(!strcasecmp(which,"F2")){
-		return MAC_F2_KEY;
-	}
-	if(!strcasecmp(which,"F3")){
-		return MAC_F3_KEY;
-	}
-	if(!strcasecmp(which,"F4")){
-		return MAC_F4_KEY;
-	}
-	if(!strcasecmp(which,"F5")){
-		return MAC_F5_KEY;
-	}
-	if(!strcasecmp(which,"F6")){
-		return MAC_F6_KEY;
-	}
-	if(!strcasecmp(which,"F7")){
-		return MAC_F7_KEY;
-	}
-	if(!strcasecmp(which,"F8")){
-		return MAC_F8_KEY;
-	}
-	if(!strcasecmp(which,"F9")){
-		return MAC_F9_KEY;
-	}
-	if(!strcasecmp(which,"F10")){
-		return MAC_F10_KEY;
-	}
-	if(!strcasecmp(which,"F11")){
-		return MAC_F11_KEY;
-	}
-	if(!strcasecmp(which,"F12")){
-		return MAC_F12_KEY;
-	}
-
-	// escape
-	if(!strcasecmp(which,"escape")){
-		return MAC_ESCAPE_KEY;
-	}
-	if(!strcasecmp(which,"backspace")){
-		return MAC_DELETE_KEY;
-	}
-	if(!strcasecmp(which,"tab")){
-		return MAC_TAB_KEY;
-	}
-	if(!strcasecmp(which,"`")){
-		return MAC_TILDE_KEY;
-	}
-	if(!strcasecmp(which,"caps_lock")){
-		return MAC_CAPS_LOCK_KEY;
-	}
-//	if(which==){
-//		return "";
-//	}
-	if(!strcasecmp(which,"command")){
-		return MAC_COMMAND_KEY;
-	}
-	if(!strcasecmp(which,"option")){
-		return MAC_OPTION_KEY;
-	}
-	if(!strcasecmp(which,"delete")){
-		return MAC_DEL_KEY;
-	}
-	if(!strcasecmp(which,"insert")){
-		return MAC_INSERT_KEY;
-	}
-	if(!strcasecmp(which,"home")){
-		return MAC_HOME_KEY;
-	}
-	if(!strcasecmp(which,"end")){
-		return MAC_END_KEY;
-	}
-	if(!strcasecmp(which,"page_up")){
-		return MAC_PAGE_UP_KEY;
-	}
-	if(!strcasecmp(which,"page_down")){
-		return MAC_PAGE_DOWN_KEY;
-	}
-	if(!strcasecmp(which,"clear")){
-		return MAC_NUMPAD_CLEAR_KEY;
-	}
-
-	if(!strcasecmp(which,"control")){
-		return MAC_CONTROL_KEY;
-	}
-	if(!strcasecmp(which,"return")){
-		return MAC_RETURN_KEY;
-	}
-	if(!strcasecmp(which,"space")){
-		return MAC_SPACE_KEY;
-	}
-	if(!strcasecmp(which,"shift")){
-		return MAC_SHIFT_KEY;
-	}
-	if(!strcasecmp(which,"uparrow")){
-		return MAC_ARROW_UP_KEY;
-	}
-	if(!strcasecmp(which,"downarrow")){
-		return MAC_ARROW_DOWN_KEY;
-	}
-	if(!strcasecmp(which,"leftarrow")){
-		return MAC_ARROW_LEFT_KEY;
-	}
-	if(!strcasecmp(which,"rightarrow")){
-		return MAC_ARROW_RIGHT_KEY;
+	for(unsigned short i=0;i<SDLK_LAST;i++) {
+		if(!strcasecmp(which,SDL_GetKeyName(SDLKey(i))))
+			return i;
 	}
 	if(!strcasecmp(which,"mouse1")){
-		return MAC_MOUSEBUTTON1;
+		return MOUSEBUTTON1;
 	}
 	if(!strcasecmp(which,"mouse2")){
-		return MAC_MOUSEBUTTON2;
+		return MOUSEBUTTON2;
 	}
-	if(!strcasecmp(which,"+")){
-		return MAC_NUMPAD_PLUS_KEY;
-	}
-	if(!strcasecmp(which,"*")){
-		return MAC_NUMPAD_ASTERISK_KEY;
-	}
-	if(!strcasecmp(which,"/")){
-		return MAC_SLASH_KEY;
-	}
-	if(!strcasecmp(which,"\\")){
-		return MAC_BACKSLASH_KEY;
-	}
-	if(!strcasecmp(which,"[")){
-		return MAC_LEFTBRACKET_KEY;
-	}
-	if(!strcasecmp(which,"]")){
-		return MAC_RIGHTBRACKET_KEY;
-	}
-	if(!strcasecmp(which,".")){
-		return MAC_PERIOD_KEY;
-	}
-	if(!strcasecmp(which,",")){
-		return MAC_COMMA_KEY;
-	}
-	if(!strcasecmp(which,"\"")){
-		return MAC_APOSTROPHE_KEY;
-	}
-	if(!strcasecmp(which,";")){
-		return MAC_SEMICOLON_KEY;
-	}
-	return UNKNOWN_KEY;
-}
-
-const char* 	KeyToChar(unsigned short which)
-{
-	static int i;
-
-	// alphabetic keys
-	if(which==MAC_A_KEY){
-		return "a";
-	}
-	if(which==MAC_B_KEY){
-		return "b";
-	}
-	if(which==MAC_C_KEY){
-		return "c";
-	}
-	if(which==MAC_D_KEY){
-		return "d";
-	}
-	if(which==MAC_E_KEY){
-		return "e";
-	}
-	if(which==MAC_F_KEY){
-		return "f";
-	}
-	if(which==MAC_G_KEY){
-		return "g";
-	}
-	if(which==MAC_H_KEY){
-		return "h";
-	}
-	if(which==MAC_I_KEY){
-		return "i";
-	}
-	if(which==MAC_J_KEY){
-		return "j";
-	}
-	if(which==MAC_K_KEY){
-		return "k";
-	}
-	if(which==MAC_L_KEY){
-		return "l";
-	}
-	if(which==MAC_M_KEY){
-		return "m";
-	}
-	if(which==MAC_N_KEY){
-		return "n";
-	}
-	if(which==MAC_O_KEY){
-		return "o";
-	}
-	if(which==MAC_P_KEY){
-		return "p";
-	}
-	if(which==MAC_Q_KEY){
-		return "q";
-	}
-	if(which==MAC_R_KEY){
-		return "r";
-	}
-	if(which==MAC_S_KEY){
-		return "s";
-	}
-	if(which==MAC_T_KEY){
-		return "t";
-	}
-	if(which==MAC_U_KEY){
-		return "u";
-	}
-	if(which==MAC_V_KEY){
-		return "v";
-	}
-	if(which==MAC_W_KEY){
-		return "w";
-	}
-	if(which==MAC_X_KEY){
-		return "x";
-	}
-	if(which==MAC_Y_KEY){
-		return "y";
-	}
-	if(which==MAC_Z_KEY){
-		return "z";
-	}
-
-	// keypad keys
-	if(which==MAC_NUMPAD_1_KEY){
-		return "KP1";
-	}
-	if(which==MAC_NUMPAD_2_KEY){
-		return "KP2";
-	}
-	if(which==MAC_NUMPAD_3_KEY){
-		return "KP3";
-	}
-	if(which==MAC_NUMPAD_4_KEY){
-		return "KP4";
-	}
-	if(which==MAC_NUMPAD_5_KEY){
-		return "KP5";
-	}
-	if(which==MAC_NUMPAD_6_KEY){
-		return "KP6";
-	}
-	if(which==MAC_NUMPAD_7_KEY){
-		return "KP7";
-	}
-	if(which==MAC_NUMPAD_8_KEY){
-		return "KP8";
-	}
-	if(which==MAC_NUMPAD_9_KEY){
-		return "KP9";
-	}
-	if(which==MAC_NUMPAD_0_KEY){
-		return "KP0";
-	}
-
-	// enter
-	if(which==MAC_ENTER_KEY){
-		return "enter";
-	}
-
-	// number keys
-	if(which==MAC_1_KEY){
-		return "1";
-	}
-	if(which==MAC_2_KEY){
-		return "2";
-	}
-	if(which==MAC_3_KEY){
-		return "3";
-	}
-	if(which==MAC_4_KEY){
-		return "4";
-	}
-	if(which==MAC_5_KEY){
-		return "5";
-	}
-	if(which==MAC_6_KEY){
-		return "6";
-	}
-	if(which==MAC_7_KEY){
-		return "7";
-	}
-	if(which==MAC_8_KEY){
-		return "8";
-	}
-	if(which==MAC_9_KEY){
-		return "9";
-	}
-	if(which==MAC_0_KEY){
-		return "0";
-	}
-
-	// function keys
-	if(which==MAC_F1_KEY){
-		return "F1";
-	}
-	if(which==MAC_F2_KEY){
-		return "F2";
-	}
-	if(which==MAC_F3_KEY){
-		return "F3";
-	}
-	if(which==MAC_F4_KEY){
-		return "F4";
-	}
-	if(which==MAC_F5_KEY){
-		return "F5";
-	}
-	if(which==MAC_F6_KEY){
-		return "F6";
-	}
-	if(which==MAC_F7_KEY){
-		return "F7";
-	}
-	if(which==MAC_F8_KEY){
-		return "F8";
-	}
-	if(which==MAC_F9_KEY){
-		return "F9";
-	}
-	if(which==MAC_F10_KEY){
-		return "F10";
-	}
-	if(which==MAC_F11_KEY){
-		return "F11";
-	}
-	if(which==MAC_F12_KEY){
-		return "F12";
-	}
-
-	// escape
-	if(which==MAC_ESCAPE_KEY){
-		return "escape";
-	}
-	if(which==MAC_DELETE_KEY){
-		return "backspace";
-	}
-	if(which==MAC_TAB_KEY){
-		return "tab";
-	}
-	if(which==MAC_TILDE_KEY){
-		return "`";
-	}
-	if(which==MAC_CAPS_LOCK_KEY){
-		return "caps_lock";
-	}
-	if(which==MAC_COMMAND_KEY){
-		return "command";
-	}
-	if(which==MAC_OPTION_KEY){
-		return "option";
-	}
-	if(which==MAC_DEL_KEY){
-		return "delete";
-	}
-	if(which==MAC_INSERT_KEY){
-		return "insert";
-	}
-	if(which==MAC_HOME_KEY){
-		return "home";
-	}
-	if(which==MAC_END_KEY){
-		return "end";
-	}
-	if(which==MAC_PAGE_UP_KEY){
-		return "page_up";
-	}
-	if(which==MAC_PAGE_DOWN_KEY){
-		return "page_down";
-	}
-	if(which==MAC_NUMPAD_CLEAR_KEY){
-		return "clear";
-	}
-	if(which==MAC_CONTROL_KEY){
-		return "control";
-	}
-	if(which==MAC_SPACE_KEY){
-		return "space";
-	}
-	if(which==MAC_RETURN_KEY){
-		return "return";
-	}
-	if(which==MAC_SHIFT_KEY){
-		return "shift";
-	}
-	if(which==MAC_ARROW_UP_KEY){
-		return "uparrow";
-	}
-	if(which==MAC_ARROW_DOWN_KEY){
-		return "downarrow";
-	}
-	if(which==MAC_ARROW_LEFT_KEY){
-		return "leftarrow";
-	}
-	if(which==MAC_ARROW_RIGHT_KEY){
-		return "rightarrow";
-	}
-	if(which==MAC_MOUSEBUTTON1){
-		return "mouse1";
-	}
-	if(which==MAC_MOUSEBUTTON2){
-		return "mouse2";
-	}
-	if(which==MAC_ARROW_RIGHT_KEY){
-		return "rightarrow";
-	}
-	if(which==MAC_MINUS_KEY||which==MAC_NUMPAD_MINUS_KEY){
-		return "-";
-	}
-	if(which==MAC_PLUS_KEY||which==MAC_NUMPAD_EQUALS_KEY){
-		return "=";
-	}
-	if(which==MAC_NUMPAD_PLUS_KEY){
-		return "+";
-	}
-	if(which==MAC_NUMPAD_ASTERISK_KEY){
-		return "*";
-	}
-	if(which==MAC_SLASH_KEY||which==MAC_NUMPAD_SLASH_KEY){
-		return "/";
-	}
-	if(which==MAC_BACKSLASH_KEY){
-		return "\\";
-	}
-	if(which==MAC_LEFTBRACKET_KEY){
-		return "[";
-	}
-	if(which==MAC_RIGHTBRACKET_KEY){
-		return "]";
-	}
-	if(which==MAC_PERIOD_KEY||which==MAC_NUMPAD_PERIOD_KEY){
-		return ".";
-	}
-	if(which==MAC_COMMA_KEY){
-		return ",";
-	}
-	if(which==MAC_APOSTROPHE_KEY){
-		return "\"";
-	}
-	if(which==MAC_SEMICOLON_KEY){
-		return ";";
-	}
-	return "unknown";
+	return SDLK_LAST;
 }
 
 char 	KeyToSingleChar(unsigned short which)
 {
 	static int i;
 
-	if(which==MAC_A_KEY){
+	if(which==SDLK_a){
 		return 'a';
 	}
-	if(which==MAC_B_KEY){
+	if(which==SDLK_b){
 		return 'b';
 	}
-	if(which==MAC_C_KEY){
+	if(which==SDLK_c){
 		return 'c';
 	}
-	if(which==MAC_D_KEY){
+	if(which==SDLK_d){
 		return 'd';
 	}
-	if(which==MAC_E_KEY){
+	if(which==SDLK_e){
 		return 'e';
 	}
-	if(which==MAC_F_KEY){
+	if(which==SDLK_f){
 		return 'f';
 	}
-	if(which==MAC_G_KEY){
+	if(which==SDLK_g){
 		return 'g';
 	}
-	if(which==MAC_H_KEY){
+	if(which==SDLK_h){
 		return 'h';
 	}
-	if(which==MAC_I_KEY){
+	if(which==SDLK_i){
 		return 'i';
 	}
-	if(which==MAC_J_KEY){
+	if(which==SDLK_j){
 		return 'j';
 	}
-	if(which==MAC_K_KEY){
+	if(which==SDLK_k){
 		return 'k';
 	}
-	if(which==MAC_L_KEY){
-		return 'l';
-	}
-	if(which==MAC_M_KEY){
+	if(which==SDLK_m){
 		return 'm';
 	}
-	if(which==MAC_N_KEY){
+	if(which==SDLK_n){
 		return 'n';
 	}
-	if(which==MAC_O_KEY){
+	if(which==SDLK_o){
 		return 'o';
 	}
-	if(which==MAC_P_KEY){
+	if(which==SDLK_p){
 		return 'p';
 	}
-	if(which==MAC_Q_KEY){
+	if(which==SDLK_q){
 		return 'q';
 	}
-	if(which==MAC_R_KEY){
-		return 'r';
-	}
-	if(which==MAC_S_KEY){
+	if(which==SDLK_s){
 		return 's';
 	}
-	if(which==MAC_T_KEY){
-		return 't';
-	}
-	if(which==MAC_U_KEY){
+	if(which==SDLK_u){
 		return 'u';
 	}
-	if(which==MAC_V_KEY){
+	if(which==SDLK_v){
 		return 'v';
 	}
-	if(which==MAC_W_KEY){
-		return 'w';
-	}
-	if(which==MAC_X_KEY){
+	if(which==SDLK_x){
 		return 'x';
 	}
-	if(which==MAC_Y_KEY){
-		return 'y';
-	}
-	if(which==MAC_Z_KEY){
+	if(which==SDLK_z){
 		return 'z';
 	}
-	if(which==MAC_NUMPAD_1_KEY){
+	if(which==SDLK_KP1){
 		return '1';
 	}
-	if(which==MAC_NUMPAD_2_KEY){
+	if(which==SDLK_KP2){
 		return '2';
 	}
-	if(which==MAC_NUMPAD_3_KEY){
+	if(which==SDLK_KP3){
 		return '3';
 	}
-	if(which==MAC_NUMPAD_4_KEY){
+	if(which==SDLK_KP4){
 		return '4';
 	}
-	if(which==MAC_NUMPAD_5_KEY){
+	if(which==SDLK_KP5){
 		return '5';
 	}
-	if(which==MAC_NUMPAD_6_KEY){
+	if(which==SDLK_KP6){
 		return '6';
 	}
-	if(which==MAC_NUMPAD_7_KEY){
+	if(which==SDLK_KP7){
 		return '7';
 	}
-	if(which==MAC_NUMPAD_8_KEY){
+	if(which==SDLK_KP8){
 		return '8';
 	}
-	if(which==MAC_NUMPAD_9_KEY){
+	if(which==SDLK_KP9){
 		return '9';
 	}
-	if(which==MAC_NUMPAD_0_KEY){
+	if(which==SDLK_KP0){
 		return '0';
 	}
-	if(which==MAC_1_KEY){
+	if(which==SDLK_1){
 		return '1';
 	}
-	if(which==MAC_2_KEY){
+	if(which==SDLK_2){
 		return '2';
 	}
-	if(which==MAC_3_KEY){
+	if(which==SDLK_3){
 		return '3';
 	}
-	if(which==MAC_4_KEY){
+	if(which==SDLK_4){
 		return '4';
 	}
-	if(which==MAC_5_KEY){
+	if(which==SDLK_5){
 		return '5';
 	}
-	if(which==MAC_6_KEY){
+	if(which==SDLK_6){
 		return '6';
 	}
-	if(which==MAC_7_KEY){
+	if(which==SDLK_7){
 		return '7';
 	}
-	if(which==MAC_8_KEY){
+	if(which==SDLK_8){
 		return '8';
 	}
-	if(which==MAC_9_KEY){
+	if(which==SDLK_9){
 		return '9';
 	}
-	if(which==MAC_0_KEY){
+	if(which==SDLK_0){
 		return '0';
 	}
-	if(which==MAC_SPACE_KEY){
+	if(which==SDLK_SPACE){
 		return ' ';
-	}
-	if(which==MAC_MINUS_KEY||which==MAC_NUMPAD_MINUS_KEY){
-		return '-';
-	}
-	if(which==MAC_PLUS_KEY||which==MAC_NUMPAD_EQUALS_KEY){
-		return '=';
-	}
-	if(which==MAC_NUMPAD_PLUS_KEY){
-		return '+';
-	}
-	if(which==MAC_NUMPAD_ASTERISK_KEY){
-		return '*';
-	}
-	if(which==MAC_SLASH_KEY||which==MAC_NUMPAD_SLASH_KEY){
-		return '/';
-	}
-	if(which==MAC_BACKSLASH_KEY){
-		return '\\';
-	}
-	if(which==MAC_LEFTBRACKET_KEY){
-		return '[';
-	}
-	if(which==MAC_RIGHTBRACKET_KEY){
-		return ']';
-	}
-	if(which==MAC_PERIOD_KEY||which==MAC_NUMPAD_PERIOD_KEY){
-		return '.';
-	}
-	if(which==MAC_COMMA_KEY){
-		return ',';
-	}
-	if(which==MAC_APOSTROPHE_KEY){
-		return '\'';
-	}
-	if(which==MAC_SEMICOLON_KEY){
-		return ';';
 	}
 	return '\0';
 }

@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Game.h"
 #include "openal_wrapper.h"
+#include "Input.h"
 
 using namespace std;
 
@@ -72,7 +73,6 @@ extern bool midweird;
 extern bool proportionweird;
 extern bool vertexweird[6];
 extern bool velocityblur;
-extern bool buttons[3];
 extern bool debugmode;
 extern int mainmenu;
 extern int oldmainmenu;
@@ -107,17 +107,7 @@ extern XYZ hotspot[40];
 extern int hotspottype[40];
 extern float hotspotsize[40];
 extern char hotspottext[40][256];
-extern int currenthotspot;
-
-extern int numaccounts;
-extern int accountactive;
-extern int accountdifficulty[10];
-extern int accountprogress[10];
-extern float accountpoints[10];
-extern float accounthighscore[10][50];
-extern float accountfasttime[10][50];
-extern bool accountunlocked[10][60];
-extern char accountname[10][256];
+extern int currenthotspot;;
 
 extern int numfalls;
 extern int numflipfail;
@@ -165,14 +155,6 @@ extern int directing;
 extern float dialoguetime;
 extern int dialoguegonethrough[20];
 
-extern int accountcampaignchoicesmade[10];
-extern int accountcampaignchoices[10][5000];
-
-extern float accountcampaignhighscore[10];
-extern float accountcampaignfasttime[10];
-extern float accountcampaignscore[10];
-extern float accountcampaigntime[10];
-
 extern bool gamestarted;
 
 extern bool showdamagebar;
@@ -181,6 +163,13 @@ extern OPENAL_SAMPLE	*samp[100];
 extern int channels[100];
 extern "C" 	void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 
+void Game::flash() { // shouldn't be that way, these should be attributes and Person class should not change rendering.
+	flashr=1;
+	flashg=0;
+	flashb=0;
+	flashamount=1;
+	flashdelay=1;
+}
 /*********************> DrawGLScene() <*****/
 long long Game::MD5_string (char *string){
 	char temp[256]="";
@@ -567,29 +556,6 @@ int Game::DrawGLScene(StereoSide side)
 		}
 		glPopMatrix();
 
-		//if(cellophane){
-		/*glEnable(GL_CULL_FACE);
-		glCullFace(GL_FRONT);
-		glDepthMask(1);
-		for(k=0;k<numplayers;k++){
-		glEnable(GL_BLEND);
-		glEnable(GL_LIGHTING);
-		terrainlight=terrain.getLighting(player[k].coords.x,player[k].coords.z);
-		distance=findDistancefast(&viewer,&player[k].coords);
-		distance=(viewdistance*viewdistance-(distance-(viewdistance*viewdistance*fadestart))*(1/(1-fadestart)))/viewdistance/viewdistance;
-		glColor4f(terrainlight.x,terrainlight.y,terrainlight.z,distance);
-		if(distance>=1)glDisable(GL_BLEND);
-		if(distance>0){
-		checkpoint=DoRotation(player[k].skeleton.joints[abs(Random()%player[k].skeleton.num_joints)].position,0,player[k].rotation,0)*player[k].scale+player[k].coords;
-		checkpoint.y+=1;
-		if(checkcollide(viewer,checkpoint)){
-		player[k].occluded+=1;
-		}
-		else player[k].occluded=0;
-		if(player[k].occluded<25)player[k].DrawSkeleton();
-		}
-		}*/
-
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
@@ -752,22 +718,22 @@ int Game::DrawGLScene(StereoSide side)
 						sprintf (string3, " ");
 					}
 					if(tutorialstage==4){
-						sprintf (string, "Try using the %s, %s, %s and %s keys to move around.",KeyToChar(forwardkey),KeyToChar(leftkey),KeyToChar(backkey),KeyToChar(rightkey));
+						sprintf (string, "Try using the %s, %s, %s and %s keys to move around.",Input::keyToChar(forwardkey),Input::keyToChar(leftkey),Input::keyToChar(backkey),Input::keyToChar(rightkey));
 						sprintf (string2, "All movement is relative to the camera.");
 						sprintf (string3, " ");
 					}
 					if(tutorialstage==5){
-						sprintf (string, "Please press %s to jump.",KeyToChar(jumpkey));
+						sprintf (string, "Please press %s to jump.",Input::keyToChar(jumpkey));
 						sprintf (string2, "You can hold it longer to jump higher.");
 						sprintf (string3, " ");
 					}
 					if(tutorialstage==6){
-						sprintf (string, "You can press %s to crouch.",KeyToChar(crouchkey));
+						sprintf (string, "You can press %s to crouch.",Input::keyToChar(crouchkey));
 						sprintf (string2, "You can jump higher from a crouching position.");
 						sprintf (string3, " ");
 					}
 					if(tutorialstage==7){
-						sprintf (string, "While running, you can press %s to roll.",KeyToChar(crouchkey));
+						sprintf (string, "While running, you can press %s to roll.",Input::keyToChar(crouchkey));
 						sprintf (string2, " ");
 						sprintf (string3, " ");
 					}
@@ -787,12 +753,12 @@ int Game::DrawGLScene(StereoSide side)
 						sprintf (string3, " ");
 					}
 					if(tutorialstage==11){
-						sprintf (string, "When you jump at a wall, you can hold %s again",KeyToChar(jumpkey));
+						sprintf (string, "When you jump at a wall, you can hold %s again",Input::keyToChar(jumpkey));
 						sprintf (string2, "during impact to perform a walljump.");
 						sprintf (string3, "Be sure to use the movement keys to press against the wall");
 					}
 					if(tutorialstage==12){
-						sprintf (string, "While in the air, you can press crouch to flip.",KeyToChar(jumpkey));
+						sprintf (string, "While in the air, you can press crouch to flip.",Input::keyToChar(jumpkey));
 						sprintf (string2, "Walljumps and flips confuse enemies and give you more control.");
 						sprintf (string3, " ");
 					}
@@ -807,8 +773,8 @@ int Game::DrawGLScene(StereoSide side)
 						sprintf (string3, " ");
 					}
 					if(tutorialstage==15){
-						if(attackkey==MAC_MOUSEBUTTON1)sprintf (string, "Click to attack when you are near an enemy.");
-						else sprintf (string, "Press %s to attack when you are near an enemy.",KeyToChar(attackkey));
+						if(attackkey==MOUSEBUTTON1)sprintf (string, "Click to attack when you are near an enemy.");
+						else sprintf (string, "Press %s to attack when you are near an enemy.",Input::keyToChar(attackkey));
 						sprintf (string2, "You can punch by standing still near an enemy and attacking.");
 						sprintf (string3, " ");
 					}
@@ -834,9 +800,9 @@ int Game::DrawGLScene(StereoSide side)
 					}
 					if(tutorialstage==20){
 						sprintf (string, "Your most powerful individual attack is the rabbit kick.");
-						if(attackkey==MAC_MOUSEBUTTON1)sprintf (string2, "Run at the enemy while holding the mouse button, and press");
-						else sprintf (string2, "Run at the enemy while holding %s, and press", KeyToChar(attackkey));
-						sprintf (string3, "the jump key (%s) to attack.",KeyToChar(jumpkey));
+						if(attackkey==MOUSEBUTTON1)sprintf (string2, "Run at the enemy while holding the mouse button, and press");
+						else sprintf (string2, "Run at the enemy while holding %s, and press", Input::keyToChar(attackkey));
+						sprintf (string3, "the jump key (%s) to attack.",Input::keyToChar(jumpkey));
 					}
 					if(tutorialstage==21){
 						sprintf (string, "This attack is devastating if timed correctly.");
@@ -856,8 +822,8 @@ int Game::DrawGLScene(StereoSide side)
 					}
 					if(tutorialstage==24){
 						sprintf (string, "You can tackle enemies by running at them animal-style");
-						if(attackkey==MAC_MOUSEBUTTON1)sprintf (string2, "and pressing jump (%s) or attack(mouse button).",KeyToChar(jumpkey));
-						else sprintf (string2, "and pressing jump (%s) or attack(%s).",KeyToChar(jumpkey),KeyToChar(attackkey));
+						if(attackkey==MOUSEBUTTON1)sprintf (string2, "and pressing jump (%s) or attack(mouse button).",Input::keyToChar(jumpkey));
+						else sprintf (string2, "and pressing jump (%s) or attack(%s).",Input::keyToChar(jumpkey),Input::keyToChar(attackkey));
 						sprintf (string3, "This is especially useful when they are running away.");
 					}
 					if(tutorialstage==25){
@@ -878,7 +844,7 @@ int Game::DrawGLScene(StereoSide side)
 					if(tutorialstage==28){
 						sprintf (string, "If you attack, you will notice that the enemy now sometimes");
 						sprintf (string2, "catches your attack and uses it against you. Hold");
-						sprintf (string3, "crouch (%s) after attacking to escape from reversals.",KeyToChar(crouchkey));
+						sprintf (string3, "crouch (%s) after attacking to escape from reversals.",Input::keyToChar(crouchkey));
 					}
 					if(tutorialstage==29){
 						sprintf (string, "Try escaping from two more reversals in a row.");
@@ -891,7 +857,7 @@ int Game::DrawGLScene(StereoSide side)
 						sprintf (string3, " ");
 					}
 					if(tutorialstage==31){
-						sprintf (string, "To reverse an attack, you must tap crouch (%s) during the",KeyToChar(crouchkey));
+						sprintf (string, "To reverse an attack, you must tap crouch (%s) during the",Input::keyToChar(crouchkey));
 						sprintf (string2, "enemy's attack. You must also be close to the enemy;");
 						sprintf (string3, "this is especially important against armed opponents.");
 					}
@@ -937,11 +903,11 @@ int Game::DrawGLScene(StereoSide side)
 					}
 					if(tutorialstage==40){
 						sprintf (string, "Stand, roll or handspring over the knife");
-						sprintf (string2, "while pressing %s to pick it up.",KeyToChar(throwkey));
+						sprintf (string2, "while pressing %s to pick it up.",Input::keyToChar(throwkey));
 						sprintf (string3, "You can crouch and press the same key to drop it again.");
 					}
 					if(tutorialstage==41){
-						sprintf (string, "You can equip and unequip weapons using the %s key.",KeyToChar(drawkey));
+						sprintf (string, "You can equip and unequip weapons using the %s key.",Input::keyToChar(drawkey));
 						sprintf (string2, "Sometimes it is best to keep them unequipped to");
 						sprintf (string3, "prevent enemies from taking them. ");
 					}
@@ -981,7 +947,7 @@ int Game::DrawGLScene(StereoSide side)
 						sprintf (string3, "spin smash is slower and more powerful.");
 					}
 					if(tutorialstage==49){
-						sprintf (string, "When facing an enemy, you can throw the knife with %s.",KeyToChar(throwkey));
+						sprintf (string, "When facing an enemy, you can throw the knife with %s.",Input::keyToChar(throwkey));
 						sprintf (string2, "It is possible to throw the knife while flipping,");
 						sprintf (string3, "but it is very inaccurate.");
 					}
@@ -1005,7 +971,7 @@ int Game::DrawGLScene(StereoSide side)
 					text.glPrint(screenwidth/2-7.6*strlen(string2)*screenwidth/1024,screenheight/16+screenheight*4/5-20*screenwidth/1024,string2,1,1.5*screenwidth/1024,screenwidth,screenheight);
 					text.glPrint(screenwidth/2-7.6*strlen(string3)*screenwidth/1024,screenheight/16+screenheight*4/5-40*screenwidth/1024,string3,1,1.5*screenwidth/1024,screenwidth,screenheight);
 
-					sprintf (string, "Press 'tab' to skip to the next item.",KeyToChar(jumpkey));
+					sprintf (string, "Press 'tab' to skip to the next item.",Input::keyToChar(jumpkey));
 					sprintf (string2, "Press escape at any time to");
 					sprintf (string3, "pause or exit the tutorial.");
 
@@ -1235,8 +1201,8 @@ int Game::DrawGLScene(StereoSide side)
 
 				if(!tutoriallevel&&!winfreeze&&indialogue==-1&&!mainmenu){
 					if(campaign){
-						if(!scoreadded)sprintf (string, "Score: %d", (int)accountcampaignscore[accountactive]+(int)bonustotal);//(int)bonustotal);
-						if(scoreadded)sprintf (string, "Score: %d", (int)accountcampaignscore[accountactive]);//(int)bonustotal);
+						if(!scoreadded)sprintf (string, "Score: %d", (int)accountactive->getCampaignScore()+(int)bonustotal);//(int)bonustotal);
+						if(scoreadded)sprintf (string, "Score: %d", (int)accountactive->getCampaignScore());//(int)bonustotal);
 					}
 					if(!campaign)sprintf (string, "Score: %d", (int)bonustotal);
 					glColor4f(0,0,0,1);
@@ -2378,7 +2344,7 @@ int Game::DrawGLScene(StereoSide side)
 			if(mainmenu==5){
 				ifstream ipstream(ConvertFileName(":Data:Campaigns:main.txt"));
 				//campaignnumlevels=0;
-				//accountcampaignchoicesmade[accountactive]=0;
+				//accountactive->getCampaignChoicesMade()=0;
 				ipstream.ignore(256,':');
 				ipstream >> campaignnumlevels;
 				for(i=0;i<campaignnumlevels;i++){
@@ -2417,16 +2383,16 @@ int Game::DrawGLScene(StereoSide side)
 
 				levelorder[0]=0;
 				levelvisible[0]=1;
-				if(accountcampaignchoicesmade[accountactive])
-					for(i=0;i<accountcampaignchoicesmade[accountactive];i++){
-						levelorder[i+1]=campaignnextlevel[levelorder[i]][accountcampaignchoices[accountactive][i]];
+				if(accountactive->getCampaignChoicesMade())
+					for(i=0;i<accountactive->getCampaignChoicesMade();i++){
+						levelorder[i+1]=campaignnextlevel[levelorder[i]][accountactive->getCampaignChoice(i)];
 						levelvisible[levelorder[i+1]]=1;
 					}
 					int whichlevelstart;
-					whichlevelstart=accountcampaignchoicesmade[accountactive]-1;
+					whichlevelstart=accountactive->getCampaignChoicesMade()-1;
 					if(whichlevelstart<0){
-						accountcampaignscore[accountactive]=0;
-						accountcampaignfasttime[accountactive]=0;
+						accountactive->setCampaignScore(0);
+						accountactive->resetFasttime();
 						campaignchoicenum=1;
 						campaignchoicewhich[0]=0;
 					}
@@ -2434,8 +2400,7 @@ int Game::DrawGLScene(StereoSide side)
 					{
 						campaignchoicenum=campaignnumnext[levelorder[whichlevelstart]];
 						if(campaignchoicenum==0){
-							if(accountcampaignscore[accountactive]>accountcampaignhighscore[accountactive])accountcampaignhighscore[accountactive]=accountcampaignscore[accountactive];
-							if(accountcampaignfasttime[accountactive]==0||accountcampaigntime[accountactive]<accountcampaignfasttime[accountactive])accountcampaignfasttime[accountactive]=accountcampaigntime[accountactive];		
+							//if(accountactive->getCampaignFasttime()==0||accountcampaigntime[accountactive]<accountactive->getCampaignFasttime())accountactive->getCampaignFasttime()=accountcampaigntime[accountactive];		
 						}
 						if(campaignchoicenum)
 							for(i=0;i<campaignchoicenum;i++){
@@ -2650,7 +2615,7 @@ int Game::DrawGLScene(StereoSide side)
 
 			if(mainmenu==4){			
 				nummenuitems=10;
-				if(keyselect!=0)sprintf (menustring[0], "Forwards: %s",KeyToChar(forwardkey));
+				if(keyselect!=0)sprintf (menustring[0], "Forwards: %s",Input::keyToChar(forwardkey));
 				else sprintf (menustring[0], "Forwards: _");
 				startx[0]=10;
 				starty[0]=400;
@@ -2659,7 +2624,7 @@ int Game::DrawGLScene(StereoSide side)
 				movex[0]=0;
 				movey[0]=0;
 
-				if(keyselect!=1)sprintf (menustring[1], "Back: %s",KeyToChar(backkey));
+				if(keyselect!=1)sprintf (menustring[1], "Back: %s",Input::keyToChar(backkey));
 				else sprintf (menustring[1], "Back: _");
 				startx[1]=10+40;
 				starty[1]=360;
@@ -2668,7 +2633,7 @@ int Game::DrawGLScene(StereoSide side)
 				movex[1]=0;
 				movey[1]=0;
 
-				if(keyselect!=2)sprintf (menustring[2], "Left: %s",KeyToChar(leftkey));
+				if(keyselect!=2)sprintf (menustring[2], "Left: %s",Input::keyToChar(leftkey));
 				else sprintf (menustring[2], "Left: _");
 				startx[2]=10+40;
 				starty[2]=320;
@@ -2677,7 +2642,7 @@ int Game::DrawGLScene(StereoSide side)
 				movex[2]=0;
 				movey[2]=0;
 
-				if(keyselect!=3)sprintf (menustring[3], "Right: %s",KeyToChar(rightkey));
+				if(keyselect!=3)sprintf (menustring[3], "Right: %s",Input::keyToChar(rightkey));
 				else sprintf (menustring[3], "Right: _");
 				startx[3]=10+30;
 				starty[3]=280;
@@ -2686,7 +2651,7 @@ int Game::DrawGLScene(StereoSide side)
 				movex[3]=0;
 				movey[3]=0;
 
-				if(keyselect!=4)sprintf (menustring[4], "Crouch: %s",KeyToChar(crouchkey));
+				if(keyselect!=4)sprintf (menustring[4], "Crouch: %s",Input::keyToChar(crouchkey));
 				else sprintf (menustring[4], "Crouch: _");
 				startx[4]=10+20;
 				starty[4]=240;
@@ -2695,7 +2660,7 @@ int Game::DrawGLScene(StereoSide side)
 				movex[4]=0;
 				movey[4]=0;
 
-				if(keyselect!=5)sprintf (menustring[5], "Jump: %s",KeyToChar(jumpkey));
+				if(keyselect!=5)sprintf (menustring[5], "Jump: %s",Input::keyToChar(jumpkey));
 				else sprintf (menustring[5], "Jump: _");
 				startx[5]=10+40;
 				starty[5]=200;
@@ -2704,7 +2669,7 @@ int Game::DrawGLScene(StereoSide side)
 				movex[5]=0;
 				movey[5]=0;
 
-				if(keyselect!=6)sprintf (menustring[6], "Draw: %s",KeyToChar(drawkey));
+				if(keyselect!=6)sprintf (menustring[6], "Draw: %s",Input::keyToChar(drawkey));
 				else sprintf (menustring[6], "Draw: _");
 				startx[6]=10+40;
 				starty[6]=160;
@@ -2713,7 +2678,7 @@ int Game::DrawGLScene(StereoSide side)
 				movex[6]=0;
 				movey[6]=0;
 
-				if(keyselect!=7)sprintf (menustring[7], "Throw: %s",KeyToChar(throwkey));
+				if(keyselect!=7)sprintf (menustring[7], "Throw: %s",Input::keyToChar(throwkey));
 				else sprintf (menustring[7], "Throw: _");
 				startx[7]=10+30;
 				starty[7]=120;
@@ -2722,7 +2687,7 @@ int Game::DrawGLScene(StereoSide side)
 				movex[7]=0;
 				movey[7]=0;
 
-				if(keyselect!=8)sprintf (menustring[8], "Attack: %s",KeyToChar(attackkey));
+				if(keyselect!=8)sprintf (menustring[8], "Attack: %s",Input::keyToChar(attackkey));
 				else sprintf (menustring[8], "Attack: _");
 				startx[8]=10+20;
 				starty[8]=80;
@@ -2742,9 +2707,9 @@ int Game::DrawGLScene(StereoSide side)
 				movey[9]=0;
 			}
 			if(mainmenu==5){			
-				nummenuitems=7+accountcampaignchoicesmade[accountactive]+campaignchoicenum;
+				nummenuitems=7+accountactive->getCampaignChoicesMade()+campaignchoicenum;
 
-				sprintf (menustring[0], "%s",accountname[accountactive]);
+				sprintf (menustring[0], "%s",accountactive->getName());
 				startx[0]=5;
 				starty[0]=400;
 				endx[0]=startx[0]+strlen(menustring[0])*10;
@@ -2802,8 +2767,8 @@ int Game::DrawGLScene(StereoSide side)
 				movex[6]=0;
 				movey[6]=0;
 
-				if(accountcampaignchoicesmade[accountactive])
-					for(i=0;i<accountcampaignchoicesmade[accountactive];i++){
+				if(accountactive->getCampaignChoicesMade())
+					for(i=0;i<accountactive->getCampaignChoicesMade();i++){
 						sprintf (menustring[7+i], "%s", campaigndescription[levelorder[i]]);
 						startx[7+i]=30+120+campaignlocationx[levelorder[i]]*400/512;
 						starty[7+i]=30+30+(512-campaignlocationy[levelorder[i]])*400/512;
@@ -2814,10 +2779,10 @@ int Game::DrawGLScene(StereoSide side)
 					}
 
 					if(campaignchoicenum>0)
-						for(i=accountcampaignchoicesmade[accountactive];i<accountcampaignchoicesmade[accountactive]+campaignchoicenum;i++){
+						for(i=accountactive->getCampaignChoicesMade();i<accountactive->getCampaignChoicesMade()+campaignchoicenum;i++){
 							sprintf (menustring[7+i], "%s", campaigndescription[levelorder[i]]);
-							startx[7+i]=30+120+campaignlocationx[campaignchoicewhich[i-(accountcampaignchoicesmade[accountactive])]]*400/512;
-							starty[7+i]=30+30+(512-campaignlocationy[campaignchoicewhich[i-(accountcampaignchoicesmade[accountactive])]])*400/512;
+							startx[7+i]=30+120+campaignlocationx[campaignchoicewhich[i-(accountactive->getCampaignChoicesMade())]]*400/512;
+							starty[7+i]=30+30+(512-campaignlocationy[campaignchoicewhich[i-(accountactive->getCampaignChoicesMade())]])*400/512;
 							endx[7+i]=startx[7+i]+10;
 							endy[7+i]=starty[7+i]+10;
 							movex[7+i]=0;
@@ -2917,12 +2882,12 @@ int Game::DrawGLScene(StereoSide side)
 				movey[5]=0;
 			}
 
-			if(mainmenu==7){			
-				nummenuitems=numaccounts+2;
+			if(mainmenu==7){	
+				nummenuitems=Account::getNbAccounts()+2;
 
 				int num;
 
-				if(numaccounts<8)
+				if(Account::getNbAccounts()<8)
 					sprintf (menustring[0], "New User");
 				else
 					sprintf (menustring[0], "No More Users");
@@ -2933,30 +2898,30 @@ int Game::DrawGLScene(StereoSide side)
 				movex[0]=0;
 				movey[0]=0;
 
-				if(entername)startx[0]+=10;
+				if(entername)
+					startx[0]+=10;
 
 
 				num=1;
-				if(numaccounts)
-					for(i=0;i<numaccounts;i++){
-						sprintf (menustring[num], "%s",accountname[i]);
-						startx[num]=10;
-						starty[num]=360-20-20*num;
-						endx[num]=startx[num]+strlen(menustring[num])*10;
-						endy[num]=starty[num]+20;
-						movex[num]=0;
-						movey[num]=0;
-
-						num++;
-					}
-
-					sprintf (menustring[num], "Back");
+				for(i=0;i<Account::getNbAccounts();i++){
+					sprintf (menustring[num], "%s",Account::get(i)->getName());
 					startx[num]=10;
+					starty[num]=360-20-20*num;
 					endx[num]=startx[num]+strlen(menustring[num])*10;
-					starty[num]=10;
 					endy[num]=starty[num]+20;
 					movex[num]=0;
 					movey[num]=0;
+
+					num++;
+				}
+
+				sprintf (menustring[num], "Back");
+				startx[num]=10;
+				endx[num]=startx[num]+strlen(menustring[num])*10;
+				starty[num]=10;
+				endy[num]=starty[num]+20;
+				movex[num]=0;
+				movey[num]=0;
 			}
 			if(mainmenu==8){			
 				nummenuitems=3;
@@ -2998,14 +2963,14 @@ int Game::DrawGLScene(StereoSide side)
 					strcpy(menustring[j],temp);
 					for(i=0;i<17;i++)if(menustring[j][i]=='\0')menustring[j][i]=' ';
 					menustring[j][17]='\0';
-					sprintf (temp, "%d",(int)accounthighscore[accountactive][j]);
+					sprintf (temp, "%d",(int)accountactive->getHighScore(j));
 					strcat(menustring[j],temp);
 					for(i=18;i<32;i++)if(menustring[j][i]=='\0')menustring[j][i]=' ';
 					menustring[j][32]='\0';
-					sprintf (temp, "%d:",(int)(((int)accountfasttime[accountactive][j]-(int)(accountfasttime[accountactive][j])%60)/60));
+					sprintf (temp, "%d:",(int)(((int)accountactive->getFastTime(j)-(int)(accountactive->getFastTime(j))%60)/60));
 					strcat(menustring[j],temp);
-					if((int)(accountfasttime[accountactive][j])%60<10)strcat(menustring[j],"0");
-					sprintf (temp, "%d",(int)(accountfasttime[accountactive][j])%60);
+					if((int)(accountactive->getFastTime(j))%60<10)strcat(menustring[j],"0");
+					sprintf (temp, "%d",(int)(accountactive->getFastTime(j))%60);
 					strcat(menustring[j],temp);
 
 					startx[j]=10;
@@ -3045,14 +3010,14 @@ int Game::DrawGLScene(StereoSide side)
 					strcpy(menustring[j],temp);
 					for(i=0;i<17;i++)if(menustring[j][i]=='\0')menustring[j][i]=' ';
 					menustring[j][17]='\0';
-					sprintf (temp, "%d",(int)accounthighscore[accountactive][j]);
+					sprintf (temp, "%d",(int)accountactive->getHighScore(j));
 					strcat(menustring[j],temp);
 					for(i=18;i<32;i++)if(menustring[j][i]=='\0')menustring[j][i]=' ';
 					menustring[j][32]='\0';
-					sprintf (temp, "%d:",(int)(((int)accountfasttime[accountactive][j]-(int)(accountfasttime[accountactive][j])%60)/60));
+					sprintf (temp, "%d:",(int)(((int)accountactive->getFastTime(j)-(int)(accountactive->getFastTime(j))%60)/60));
 					strcat(menustring[j],temp);
-					if((int)(accountfasttime[accountactive][j])%60<10)strcat(menustring[j],"0");
-					sprintf (temp, "%d",(int)(accountfasttime[accountactive][j])%60);
+					if((int)(accountactive->getFastTime(j))%60<10)strcat(menustring[j],"0");
+					sprintf (temp, "%d",(int)(accountactive->getFastTime(j))%60);
 					strcat(menustring[j],temp);
 
 					startx[j]=10;
@@ -3121,7 +3086,7 @@ int Game::DrawGLScene(StereoSide side)
 				strcpy(menustring[4],temp);
 				for(i=0;i<20;i++)if(menustring[4][i]=='\0')menustring[4][i]=' ';
 				menustring[4][20]='\0';
-				sprintf (temp, "%d",(int)accountcampaignscore[accountactive]);
+				sprintf (temp, "%d",(int)accountactive->getCampaignScore());
 				strcat(menustring[4],temp);
 				startx[4]=190;
 				endx[4]=startx[4]+strlen(menustring[4])*10;
@@ -3149,7 +3114,7 @@ int Game::DrawGLScene(StereoSide side)
 				strcpy(menustring[5],temp);
 				for(i=0;i<20;i++)if(menustring[5][i]=='\0')menustring[5][i]=' ';
 				menustring[5][20]='\0';
-				sprintf (temp, "%d",(int)accountcampaignhighscore[accountactive]);
+				sprintf (temp, "%d",(int)accountactive->getCampaignHighScore());
 				strcat(menustring[5],temp);
 				startx[5]=190;
 				endx[5]=startx[5]+strlen(menustring[5])*10;
@@ -3163,7 +3128,7 @@ int Game::DrawGLScene(StereoSide side)
 				strcpy(menustring[7],temp);
 				for(i=0;i<20;i++)if(menustring[7][i]=='\0')menustring[7][i]=' ';
 				menustring[7][20]='\0';
-				sprintf (temp, "%d",(int)accountcampaignfasttime[accountactive]);
+				sprintf (temp, "%d",(int)accountactive->getCampaignFasttime());
 				strcat(menustring[7],temp);
 				startx[7]=200;
 				endx[7]=startx[7]+strlen(menustring[7])*10;
@@ -3593,34 +3558,25 @@ int Game::DrawGLScene(StereoSide side)
 										if(mainmenu!=5||j<6)
 										{
 											glColor4f(1,0,0,1);
-											if(mainmenu==9&&j>accountprogress[accountactive]&&j<numchallengelevels)glColor4f(0.5,0,0,1);
-											if(mainmenu==11&&j>accountprogress[accountactive]&&j<numchallengelevels)glColor4f(0.5,0,0,1);
+											if(mainmenu==9&&j>accountactive->getProgress()&&j<numchallengelevels)glColor4f(0.5,0,0,1);
+											if(mainmenu==11&&j>accountactive->getProgress()&&j<numchallengelevels)glColor4f(0.5,0,0,1);
 											//if(1-((float)i)/10-(1-selectedlong[j])>0){
 											glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 											glPushMatrix();
-												if(mainmenu!=7||j!=0||!entername)text.glPrint(startx[j],starty[j],menustring[j],0,1,640,480);
+												if(mainmenu!=7||j!=0||!entername)
+													text.glPrint(startx[j],starty[j],menustring[j],0,1,640,480);
 												else
 												{
 													if(displayblink){
 														sprintf (string, "_");
 														text.glPrint(startx[j]+(float)(displayselected)*10,starty[j],string,0,1,640,480);
 													}
-													k=0;
-													for(l=0;l<displaychars[k];l++){
-														if(l<displaychars[k]){
-															sprintf (string, "%c",displaytext[k][l]);
-															text.glPrint(startx[j]+l*10,starty[j],string,0,1,640,480);
-														}
+													for(l=0;l<displaychars[0];l++){
+														sprintf (string, "%c",displaytext[0][l]);
+														text.glPrint(startx[j]+l*10,starty[j],string,0,1,640,480);
 													}
 												}
 											glPopMatrix();
-											/*}
-											else{
-											glPushMatrix();
-											sprintf (string, "Hooo!");
-											text.glPrint(startx[0],starty[0],string,0,1,640,480);
-											glPopMatrix();
-											}*/
 											glEnable(GL_BLEND);
 											glBlendFunc(GL_SRC_ALPHA,GL_ONE);
 											for(i=0;i<15;i++)
@@ -3628,13 +3584,13 @@ int Game::DrawGLScene(StereoSide side)
 												if(1-((float)i)/15-(1-selectedlong[j])>0)
 												{
 													glColor4f(1,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
-													if(mainmenu==9&&j>accountprogress[accountactive]&&j<numchallengelevels)glColor4f(0.5,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
-													if(mainmenu==11&&j>accountprogress[accountactive]&&j<numchallengelevels)glColor4f(0.5,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
+													if(mainmenu==9&&j>accountactive->getProgress()&&j<numchallengelevels)glColor4f(0.5,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
+													if(mainmenu==11&&j>accountactive->getProgress()&&j<numchallengelevels)glColor4f(0.5,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
 													if(mainmenu==3)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4-((/*1*/+((float)i)/70)*strlen(menustring[j]))*3,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
 													if(mainmenu==4)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
 													if(mainmenu==5)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
 													if(mainmenu==6)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
-													if(mainmenu==7&&(j!=0||!entername))text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
+													if(mainmenu==7&&(j!=0||!entername)) text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
 													if(mainmenu==8)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
 													if(mainmenu==9)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
 													if(mainmenu==11)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
@@ -3694,9 +3650,9 @@ int Game::DrawGLScene(StereoSide side)
 															//float linestartx,lineendx,linestarty,lineendy,offsetx,offsety;
 															linestart.x=(startx[j]+endx[j])/2;
 															linestart.y=(starty[j]+endy[j])/2;
-															if(j>=6+accountcampaignchoicesmade[accountactive]){
-																linestart.x=(startx[6+accountcampaignchoicesmade[accountactive]]+endx[6+accountcampaignchoicesmade[accountactive]])/2;
-																linestart.y=(starty[6+accountcampaignchoicesmade[accountactive]]+endy[6+accountcampaignchoicesmade[accountactive]])/2;
+															if(j>=6+accountactive->getCampaignChoicesMade()){
+																linestart.x=(startx[6+accountactive->getCampaignChoicesMade()]+endx[6+accountactive->getCampaignChoicesMade()])/2;
+																linestart.y=(starty[6+accountactive->getCampaignChoicesMade()]+endy[6+accountactive->getCampaignChoicesMade()])/2;
 															}
 															lineend.x=(startx[j+1]+endx[j+1])/2;
 															lineend.y=(starty[j+1]+endy[j+1])/2;
@@ -3707,12 +3663,12 @@ int Game::DrawGLScene(StereoSide side)
 															Normalise(&offset);
 															glDisable(GL_TEXTURE_2D);							
 
-															if(j<6+accountcampaignchoicesmade[accountactive]){
+															if(j<6+accountactive->getCampaignChoicesMade()){
 																glColor4f(0.5,0,0,1);
 																startsize=.5;
 																endsize=.5;
 															}
-															if(j>=6+accountcampaignchoicesmade[accountactive]){
+															if(j>=6+accountactive->getCampaignChoicesMade()){
 																glColor4f(1,0,0,1);
 																endsize=1;
 																startsize=.5;
@@ -3721,7 +3677,7 @@ int Game::DrawGLScene(StereoSide side)
 															linestart+=fac*4*startsize;
 															lineend-=fac*4*endsize;
 
-															if(!(j>7+accountcampaignchoicesmade[accountactive]+campaignchoicenum)){
+															if(!(j>7+accountactive->getCampaignChoicesMade()+campaignchoicenum)){
 																glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 																glPushMatrix();
 																	glBegin(GL_QUADS);
@@ -3744,8 +3700,8 @@ int Game::DrawGLScene(StereoSide side)
 														else glBindTexture( GL_TEXTURE_2D, Mapcircletexture);
 														glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 														glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-														if(j-7<accountcampaignchoicesmade[accountactive])glColor4f(0.5,0,0,1);
-														if(j-7>=accountcampaignchoicesmade[accountactive])glColor4f(1,0,0,1);
+														if(j-7<accountactive->getCampaignChoicesMade())glColor4f(0.5,0,0,1);
+														if(j-7>=accountactive->getCampaignChoicesMade())glColor4f(1,0,0,1);
 														if(j==6)glColor4f(1,1,1,1);
 														XYZ midpoint;
 														float itemsize;
@@ -3753,8 +3709,8 @@ int Game::DrawGLScene(StereoSide side)
 														midpoint=0;
 														midpoint.x=(startx[j]+endx[j])/2;
 														midpoint.y=(starty[j]+endy[j])/2;
-														if(j>6&&(j-7<accountcampaignchoicesmade[accountactive]))itemsize*=.5;
-														if(!(j-7>accountcampaignchoicesmade[accountactive]+campaignchoicenum))
+														if(j>6&&(j-7<accountactive->getCampaignChoicesMade()))itemsize*=.5;
+														if(!(j-7>accountactive->getCampaignChoicesMade()+campaignchoicenum))
 														{
 															glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 															glPushMatrix();
@@ -3799,7 +3755,7 @@ int Game::DrawGLScene(StereoSide side)
 											glPopMatrix();
 											glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 
-											if(j-7>=accountcampaignchoicesmade[accountactive]){
+											if(j-7>=accountactive->getCampaignChoicesMade()){
 												//glColor4f(0,0,0,1);
 												//text.glPrintOutline(startx[j]+10-1.5,starty[j]-4-1.5,menustring[j],0,0.6*1.25,640,480);
 												//glColor4f(1,0,0,1);
@@ -3873,27 +3829,29 @@ int Game::DrawGLScene(StereoSide side)
 											glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
 											glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
 										glPopMatrix();
-										glPushMatrix();
-											glTranslatef(mousecoordh-screenwidth/2,mousecoordv*-1+screenheight/2,0);
-											glScalef((float)screenwidth/64,(float)screenwidth/64,1);
-											glTranslatef(1,-1,0);
-											glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-											glColor4f(1,1,1,1);
-											glBindTexture( GL_TEXTURE_2D, cursortexture);
+										if(!waiting) { // hide the cursor while waiting for a key
 											glPushMatrix();
-												//glScalef(.25,.25,.25);
-												glBegin(GL_QUADS);
-												glTexCoord2f(0,0);
-												glVertex3f(-1,		-1, 	 0.0f);
-												glTexCoord2f(1,0);
-												glVertex3f(1,	-1, 	 0.0f);
-												glTexCoord2f(1,1);
-												glVertex3f(1,	1, 0.0f);
-												glTexCoord2f(0,1);
-												glVertex3f(-1, 	1, 0.0f);
-												glEnd();
+												glTranslatef(mousecoordh-screenwidth/2,mousecoordv*-1+screenheight/2,0);
+												glScalef((float)screenwidth/64,(float)screenwidth/64,1);
+												glTranslatef(1,-1,0);
+												glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+												glColor4f(1,1,1,1);
+												glBindTexture( GL_TEXTURE_2D, cursortexture);
+												glPushMatrix();
+													//glScalef(.25,.25,.25);
+													glBegin(GL_QUADS);
+													glTexCoord2f(0,0);
+													glVertex3f(-1,		-1, 	 0.0f);
+													glTexCoord2f(1,0);
+													glVertex3f(1,	-1, 	 0.0f);
+													glTexCoord2f(1,1);
+													glVertex3f(1,	1, 0.0f);
+													glTexCoord2f(0,1);
+													glVertex3f(-1, 	1, 0.0f);
+													glEnd();
+												glPopMatrix();
 											glPopMatrix();
-										glPopMatrix();
+										}
 									glPopMatrix();
 									glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
 								glPopMatrix();
@@ -3943,7 +3901,6 @@ int Game::DrawGLScene(StereoSide side)
 		tempmult=multiplier;
 		multiplier=0;
 	}
-
 
 	//glFlush();
 	if ( side == stereoRight || side == stereoCenter ) {

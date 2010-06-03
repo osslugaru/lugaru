@@ -78,16 +78,6 @@ extern float slomospeed;
 extern char mapname[256];
 extern bool gamestarted;
 
-extern int numaccounts;
-extern int accountactive;
-extern int accountdifficulty[10];
-extern int accountprogress[10];
-extern float accountpoints[10];
-extern float accounthighscore[10][50];
-extern float accountfasttime[10][50];
-extern bool accountunlocked[10][60];
-extern char accountname[10][256];
-
 extern int numdialogues;
 extern int numdialogueboxes[20];
 extern int dialoguetype[20];
@@ -131,59 +121,11 @@ void Game::Dispose()
 	LOGFUNC;
 
 	if(endgame==2){
-		accountcampaignchoicesmade[accountactive]=0;
-		accountcampaignscore[accountactive]=0;
-		accountcampaigntime[accountactive]=0;
+		accountactive->endGame();
 		endgame=0;
 	}
 
-
-	sprintf (mapname, ":Data:Users");
-
-	FILE			*tfile;
-	tfile=fopen( ConvertFileName(mapname), "wb" );
-	if (tfile)
-	{
-		fpackf(tfile, "Bi", numaccounts);
-		fpackf(tfile, "Bi", accountactive);
-		if(numaccounts>0)
-		{
-			for(i=0;i<numaccounts;i++)
-			{
-				fpackf(tfile, "Bf", accountcampaigntime[i]);
-				fpackf(tfile, "Bf", accountcampaignscore[i]);
-				fpackf(tfile, "Bf", accountcampaignfasttime[i]);
-				fpackf(tfile, "Bf", accountcampaignhighscore[i]);
-				fpackf(tfile, "Bi", accountdifficulty[i]);
-				fpackf(tfile, "Bi", accountprogress[i]);
-				fpackf(tfile, "Bi", accountcampaignchoicesmade[i]);
-				for(j=0;j<accountcampaignchoicesmade[i];j++)
-				{
-					fpackf(tfile, "Bi", accountcampaignchoices[i][j]);
-				}
-				fpackf(tfile, "Bf", accountpoints[i]);
-				for(j=0;j<50;j++)
-				{
-					fpackf(tfile, "Bf", accounthighscore[i][j]);
-					fpackf(tfile, "Bf", accountfasttime[i][j]);
-				}
-				for(j=0;j<60;j++)
-				{
-					fpackf(tfile, "Bb",  accountunlocked[i][j]);
-				}
-				fpackf(tfile, "Bi",  strlen(accountname[i]));
-				if(strlen(accountname[i])>0)
-				{
-					for(j=0;j<(int)strlen(accountname[i]);j++)
-					{
-						fpackf(tfile, "Bb",  accountname[i][j]);
-					}
-				}
-			}
-		}
-
-		fclose(tfile);
-	}
+	Account::saveFile(":Data:Users", accountactive);
 
 	TexIter it = textures.begin();
 	for (; it != textures.end(); ++it)
@@ -996,73 +938,7 @@ void Game::InitGame()
 
 	numchallengelevels=14;
 
-	/*char tempstring[256];
-	sprintf (tempstring, "%s", registrationname);
-	long num1;
-	long num2;
-	long num3;
-	long num4;
-	long long longnum;
-	longnum = MD5_string ( tempstring);
-	//longnum = 1111111111111111;
-	num1 = longnum/100000000;
-	num2 = longnum%100000000;
-	sprintf (tempstring, "%d-%d-%d-%d", num1/10000, num1%10000, num2/10000, num2%10000);
-	*/
-
-	FILE			*tfile;
-
-	accountactive=-1;
-
-	sprintf (mapname, ":Data:Users");
-	tfile=fopen( ConvertFileName(mapname), "rb" );
-	if(tfile)
-	{
-		funpackf(tfile, "Bi", &numaccounts);
-		funpackf(tfile, "Bi", &accountactive);
-		if(numaccounts>0)
-		{
-			for(i=0;i<numaccounts;i++)
-			{
-				funpackf(tfile, "Bf", &accountcampaigntime[i]);
-				funpackf(tfile, "Bf", &accountcampaignscore[i]);
-				funpackf(tfile, "Bf", &accountcampaignfasttime[i]);
-				funpackf(tfile, "Bf", &accountcampaignhighscore[i]);
-				funpackf(tfile, "Bi", &accountdifficulty[i]);
-				funpackf(tfile, "Bi", &accountprogress[i]);
-				funpackf(tfile, "Bi", &accountcampaignchoicesmade[i]);
-				for(j=0;j<accountcampaignchoicesmade[i];j++)
-				{
-					funpackf(tfile, "Bi", &accountcampaignchoices[i][j]);
-					if (accountcampaignchoices[i][j] >= 10)
-					{
-						accountcampaignchoices[i][j] = 0;
-					}
-				}
-				funpackf(tfile, "Bf", &accountpoints[i]);
-				for(j=0;j<50;j++)
-				{
-					funpackf(tfile, "Bf", &accounthighscore[i][j]);
-					funpackf(tfile, "Bf", &accountfasttime[i][j]);
-				}
-				for(j=0;j<60;j++)
-				{
-					funpackf(tfile, "Bb",  &accountunlocked[i][j]);
-				}
-				int temp;
-				funpackf(tfile, "Bi",  &temp);
-				if(temp>0)
-				{
-					for(j=0;j<temp;j++)
-					{
-						funpackf(tfile, "Bb",  &accountname[i][j]);
-					}
-				}
-			}
-		}
-
-		fclose(tfile);
-	}
+	accountactive=Account::loadFile(":Data:Users");
 
 	tintr=1;
 	tintg=1;
@@ -1321,25 +1197,6 @@ void Game::InitGame()
 	newdetail=detail;
 	newscreenwidth=screenwidth;
 	newscreenheight=screenheight;
-
-
-
-	/*
-	float gLoc[3]={0,0,0};
-	float vel[3]={0,0,0};
-	OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
-	PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-	OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-	OPENAL_SetVolume(channels[firestartsound], 256);
-	OPENAL_SetPaused(channels[firestartsound], false);
-	OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
-
-	flashr=1;
-	flashg=0;
-	flashb=0;
-	flashamount=1;
-	flashdelay=1;
-	*/
 }
 
 
@@ -1829,202 +1686,5 @@ void Game::LoadStuff()
 	changedelay=1;
 
 	visibleloading=0;
-}
-
-Game::Game()
-{
-	terraintexture = 0;
-	terraintexture2 = 0;
-	terraintexture3 = 0;
-	screentexture = 0;
-	screentexture2 = 0;
-	logotexture = 0;
-	loadscreentexture = 0;
-	Maparrowtexture = 0;
-	Mapboxtexture = 0;
-	Mapcircletexture = 0;
-	cursortexture = 0;
-
-	memset(Mainmenuitems, 0, sizeof(Mainmenuitems));
-
-	nummenuitems = 0;
-
-	memset(startx, 0, sizeof(startx));
-	memset(starty, 0, sizeof(starty));
-	memset(endx, 0, sizeof(endx));
-	memset(endy, 0, sizeof(endy));
-
-	memset(selectedlong, 0, sizeof(selectedlong));
-	memset(offsetx, 0, sizeof(offsetx));
-	memset(offsety, 0, sizeof(offsety));
-	memset(movex, 0, sizeof(movex));
-	memset(movey, 0, sizeof(movey));
-	memset(endy, 0, sizeof(endy));
-
-	transition = 0;
-	anim = 0;
-	selected = 0;
-	loaddistrib = 0;
-	keyselect = 0;
-	indemo = 0;
-
-	won = 0;
-
-	entername = 0;
-
-	memset(menustring, 0, sizeof(menustring));
-	memset(registrationname, 0, sizeof(registrationname));
-	registrationnumber = 0;
-
-	newdetail = 0;
-	newscreenwidth = 0;
-	newscreenheight = 0;
-
-	gameon = 0;
-	deltah = 0,deltav = 0;
-	mousecoordh = 0,mousecoordv = 0;
-	oldmousecoordh = 0,oldmousecoordv = 0;
-	rotation = 0,rotation2 = 0;
-
-//	SkyBox skybox;
-
-	cameramode = 0;
-	cameratogglekeydown = 0;
-	chattogglekeydown = 0;
-	olddrawmode = 0;
-	drawmode = 0;
-	drawmodetogglekeydown = 0;
-	explodetogglekeydown = 0;
-	detailtogglekeydown = 0;
-	firstload = 0;
-	oldbutton = 0;
-
-	leveltime = 0;
-	loadtime = 0;
-
-//	Model hawk;
-
-//	XYZ hawkcoords;
-//	XYZ realhawkcoords;
-
-	hawktexture = 0;
-	hawkrotation = 0;
-	hawkcalldelay = 0;
-/*
-	Model eye;
-	Model iris;
-	Model cornea;
-*/
-	stealthloading = 0;
-
-	campaignnumlevels = 0;
-
-	memset(campaignmapname, 0, sizeof(campaignmapname));
-	memset(campaigndescription, 0, sizeof(campaigndescription));
-	memset(campaignchoosenext, 0, sizeof(campaignchoosenext));
-	memset(campaignnumnext, 0, sizeof(campaignnumnext));
-	memset(campaignnextlevel, 0, sizeof(campaignnextlevel));
-	int campaignchoicesmade;
-	memset(campaignchoices, 0, sizeof(campaignchoices));
-	memset(campaignlocationx, 0, sizeof(campaignlocationx));
-	memset(campaignlocationy, 0, sizeof(campaignlocationy));
-	memset(campaignlocationy, 0, sizeof(campaignlocationy));
-
-	campaignchoicenum = 0;
-
-	memset(campaignchoicewhich, 0, sizeof(campaignchoicewhich));
-
-	whichchoice = 0;
-
-	numlevelspassed = 0;
-
-	memset(levelorder, 0, sizeof(levelorder));
-	memset(levelvisible, 0, sizeof(levelvisible));
-	memset(levelhighlight, 0, sizeof(levelhighlight));
-
-	minimap = 0;
-
-	musictype = 0,oldmusictype = 0,oldoldmusictype = 0;
-	realthreat = 0;
-
-//	Model rabbit;
-//	XYZ rabbitcoords;
-
-//	XYZ mapcenter;
-	mapradius = 0;
-
-//	Text text;
-	fps = 0;
-
-//	XYZ cameraloc;
-	cameradist = 0;
-
-	envtogglekeydown = 0;
-	slomotogglekeydown = 0;
-	texturesizetogglekeydown = 0;
-	freezetogglekeydown = 0;
-	drawtoggle = 0;
-
-	editorenabled = 0;
-	editortype = 0;
-	editorsize = 0;
-	editorrotation = 0;
-	editorrotation2 = 0;
-
-	brightness = 0;
-
-	quit = 0;
-	tryquit = 0;
-
-//	XYZ pathpoint[30];
-	numpathpoints = 0;
-	memset(numpathpointconnect, 0, sizeof(numpathpointconnect));
-	memset(pathpointconnect, 0, sizeof(pathpointconnect));
-	pathpointselected = 0;
-
-	endgame = 0;
-	scoreadded = 0;
-	numchallengelevels = 0;
-
-	console = 0;
-	archiveselected = 0;
-
-	memset(consoletext, 0, sizeof(consoletext));
-	memset(consolechars, 0, sizeof(consolechars));
-	chatting = 0;
-	memset(displaytext, 0, sizeof(displaytext));
-	memset(displaychars, 0, sizeof(displaychars));
-	memset(displaytime, 0, sizeof(displaytime));
-	displayblinkdelay = 0;
-	displayblink = 0;
-	displayselected = 0;
-	consolekeydown = 0;
-	consoletogglekeydown = 0;
-	consoleblinkdelay = 0;
-	consoleblink = 0;
-	consoleselected = 0;
-	memset(togglekey, 0, sizeof(togglekey));
-	memset(togglekeydelay, 0, sizeof(togglekeydelay));
-	registernow = 0;
-	autocam = 0;
-
-	crouchkey = 0,jumpkey = 0,forwardkey = 0,chatkey = 0,backkey = 0,leftkey = 0,rightkey = 0,drawkey = 0,throwkey = 0,attackkey = 0;
-	oldattackkey = 0;
-
-	loading = 0;
-	talkdelay = 0;
-
-	numboundaries = 0;
-//	XYZ boundary[360];
-
-	whichlevel = 0;
-	oldenvironment = 0;
-	targetlevel = 0;
-	changedelay = 0;
-
-	memset(musicvolume, 0, sizeof(musicvolume));
-	memset(oldmusicvolume, 0, sizeof(oldmusicvolume));
-	musicselected = 0;
-	change = 0;
 }
 
