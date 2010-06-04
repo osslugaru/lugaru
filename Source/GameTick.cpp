@@ -3036,7 +3036,28 @@ void	Game::Tick()
 		OPENAL_SetFrequency(channels[stream_music3], 22050);
 
 		if(entername) {
-			if(!waiting) inputText();
+			inputText(displaytext[0],&displayselected,&displaychars[0]);
+			if(!waiting) { // the input as finished
+				if(displaychars[0]){ // with enter
+					accountactive = Account::add(string(displaytext[0]));
+
+					mainmenu=8;
+
+					flash();
+
+					fireSound(firestartsound);
+
+					for(i=0;i<255;i++){
+						displaytext[0][i]=' ';
+					}
+					displaychars[0]=0;
+
+					displayselected=0;
+				} else { // with escape or empty
+					mainmenutogglekeydown=1;
+				}
+				entername=0;
+			}
 			
 			displayblinkdelay-=multiplier;
 			if(displayblinkdelay<=0){
@@ -3060,8 +3081,6 @@ void	Game::Tick()
 		if(Input::isKeyDown(chatkey)&&!chattogglekeydown&&!console&&!chatting&&debugmode){
 			chatting=1;
 			chattogglekeydown=1;
-			togglekey[chatkey]=1;
-			togglekeydelay[chatkey]=-20;
 		}
 
 		if(!Input::isKeyDown(chatkey)){
@@ -3069,61 +3088,16 @@ void	Game::Tick()
 		}
 
 		if(chatting){
-			for(i=0;i<140;i++){
-				if(Input::isKeyDown(i)){
-					togglekeydelay[i]+=multiplier;
-					if(togglekeydelay[i]>.4){
-						togglekey[i]=0;
-						togglekeydelay[i]=.36;
+			inputText(displaytext[0],&displayselected,&displaychars[0]);
+			if(!waiting) {
+				if(displaychars[0]){
+					for(int j=0;j<255;j++){
+						displaytext[0][j]=' ';
 					}
-					if(!togglekey[i]){
-						if(KeyToSingleChar(i)!='\0'&&displaychars[0]<60){
-							for(j=255;j>=displayselected+1;j--){
-								displaytext[0][j]=displaytext[0][j-1];
-							}
-							displaytext[0][displayselected]=KeyToSingleChar(i);
-							if(Input::isKeyDown(SDLK_LSHIFT))displaytext[0][displayselected]=Shift(displaytext[0][displayselected]);
-							displayselected++;
-							displaychars[0]++;
-						}
-						if(i==SDLK_DELETE&&displayselected!=0){
-							for(j=displayselected-1;j<255;j++){
-								displaytext[0][j]=displaytext[0][j+1];
-							}
-							displaytext[0][255]=' ';
-							displayselected--;
-							displaychars[0]--;
-						}
-						if(i==SDLK_LEFT&&displayselected!=0){
-							displayselected--;
-						}
-						if(i==SDLK_RIGHT&&displayselected<displaychars[0]){
-							displayselected++;
-						}
-						if(i==SDLK_RETURN){
-							if(displaychars[0]){
-								/*for(j=0;j<displaychars[0];j++){
-								talkname[j]=displaytext[0][j];
-								}
-								talkname[displaychars[0]]='\0';
-								sprintf (chatname, "%s: %s",playerName,talkname);
-								//NetworkSendInformation(chatname);
-								*/
-								for(j=0;j<255;j++){
-									displaytext[0][j]=' ';
-								}
-								displaychars[0]=0;
-								displayselected=0;
-								chatting=0;
-							}
-						}
-					}
-					togglekey[i]=1;
-				}
-				else {
-					togglekey[i]=0;
-					togglekeydelay[i]=0;
-				}
+					displaychars[0]=0;
+					displayselected=0;
+				}	
+				chatting=0;		
 			}
 
 			displayblinkdelay-=multiplier;
@@ -3149,9 +3123,11 @@ void	Game::Tick()
 
 		if(Input::isKeyDown(SDLK_BACKQUOTE)&&!consoletogglekeydown&&debugmode){
 			console=1-console;
-			if(!console)freeze=0;
 			if(console){
 				OPENAL_SetFrequency(OPENAL_ALL, 0.001);
+			} else {
+				freeze=0;
+				waiting=false;
 			}
 			consoletogglekeydown=1;
 		}
@@ -3163,85 +3139,23 @@ void	Game::Tick()
 		if(console)freeze=1;
 
 		if(console&&!Input::isKeyDown(SDLK_LMETA)){
-			for(i=0;i<140;i++){
-				if(Input::isKeyDown(i)){
-					togglekeydelay[i]+=multiplier;
-					if(togglekeydelay[i]>.4){
-						togglekey[i]=0;
-						togglekeydelay[i]=.36;
-					}
-					if(!togglekey[i]){
-						if(KeyToSingleChar(i)!='\0'&&consolechars[0]<255){
-							for(j=255;j>=consoleselected+1;j--){
-								consoletext[0][j]=consoletext[0][j-1];
-							}
-							consoletext[0][consoleselected]=KeyToSingleChar(i);
-							if(Input::isKeyDown(SDLK_LSHIFT))consoletext[0][consoleselected]=Shift(consoletext[0][consoleselected]);
-							consoleselected++;
-							consolechars[0]++;
-						}
-						else if(i==SDLK_RETURN){
-							for(j=255;j>=consoleselected+1;j--){
-								consoletext[0][j]=consoletext[0][j-1];
-							}
-							consoletext[0][consoleselected]='\n';
-							consoleselected++;
-							consolechars[0]++;
-						}
-						if(i==SDLK_DELETE&&consoleselected!=0){
-							for(j=consoleselected-1;j<255;j++){
-								consoletext[0][j]=consoletext[0][j+1];
-							}
-							consoletext[0][255]=' ';
-							consoleselected--;
-							consolechars[0]--;
-						}
-						if(i==SDLK_UP){
-							if(archiveselected<14)archiveselected++;
-							for(j=0;j<255;j++){
-								consolechars[0]=consolechars[archiveselected];
-								consoletext[0][j]=consoletext[archiveselected][j];
-								consoleselected=consolechars[0];
-							}
-						}
-						if(i==SDLK_DOWN){
-							if(archiveselected>0)archiveselected--;
-							for(j=0;j<255;j++){
-								consolechars[0]=consolechars[archiveselected];
-								consoletext[0][j]=consoletext[archiveselected][j];
-								consoleselected=consolechars[0];
-							}
-						}
-						if(i==SDLK_LEFT&&consoleselected!=0){
-							consoleselected--;
-						}
-						if(i==SDLK_RIGHT&&consoleselected<consolechars[0]){
-							consoleselected++;
-						}
-						if(i==SDLK_RETURN){
-							archiveselected=0;
-							cmd_dispatch(this, consoletext[0]);
+			inputText(consoletext[0],&consoleselected,&consolechars[0]);
+			if(!waiting) {
+				archiveselected=0;
+				cmd_dispatch(this, consoletext[0]);
+				if(consolechars[0]>0){
 
-							if(consolechars[0]>0){
-								for(k=14;k>=1;k--){
-									for(j=0;j<255;j++){
-										consoletext[k][j]=consoletext[k-1][j];
-									}
-									consolechars[k]=consolechars[k-1];
-								}
-								for(j=0;j<255;j++){
-									consoletext[0][j]=' ';
-								}
-								consolechars[0]=0;
-								consoleselected=0;
-							}
+					for(k=14;k>=1;k--){
+						for(j=0;j<255;j++){
+							consoletext[k][j]=consoletext[k-1][j];
 						}
+						consolechars[k]=consolechars[k-1];
 					}
-					togglekey[i]=1;
-				}
-				else {
-					togglekey[i]=0;
-					togglekeydelay[i]=0;
+					for(j=0;j<255;j++){
+						consoletext[0][j]=' ';
+					}
+					consolechars[0]=0;
+					consoleselected=0;
 				}
 			}
 

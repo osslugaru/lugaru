@@ -181,8 +181,8 @@ Game::Game()
 	consoleblinkdelay = 0;
 	consoleblink = 0;
 	consoleselected = 0;
-	memset(togglekey, 0, sizeof(togglekey));
-	memset(togglekeydelay, 0, sizeof(togglekeydelay));
+//	memset(togglekey, 0, sizeof(togglekey));
+//	memset(togglekeydelay, 0, sizeof(togglekeydelay));
 	registernow = 0;
 	autocam = 0;
 
@@ -229,88 +229,65 @@ void Game::fireSound(int sound) {
 	OPENAL_Sample_SetMinMaxDistance(samp[sound], 8.0f, 2000.0f);
 }
 
-void Game::inputText() {
-	waiting=true;
-	params_thread* data = new params_thread;
-    data->game = this;
-    data->method = &Game::inputText_thread;
-	SDL_Thread* thread = SDL_CreateThread(Game::thread, data);
-    if ( thread == NULL ) {
-        fprintf(stderr, "Unable to create thread: %s\n", SDL_GetError());
-		waiting=false;
-        return;
-    }
-}
-
-void Game::inputText_thread() {
+void Game::inputText(char* str, int* charselected, int* nb_chars) {
 	SDL_Event evenement;
-	SDL_EnableKeyRepeat(400, 40);
-	SDL_EnableUNICODE(true);
-
-	while(waiting) {
-		int i;
-		SDL_WaitEvent(&evenement);
-		
-		switch(evenement.type) {
-			case SDL_KEYDOWN:
-				if(evenement.key.keysym.sym == SDLK_ESCAPE) {
-					for(i=0;i<255;i++){
-						displaytext[0][i]=' ';
-					}
-					displaychars[0]=0;
-					displayselected=0;
-					mainmenutogglekeydown=1;
-					waiting=false;
-				} else if(evenement.key.keysym.sym==SDLK_BACKSPACE&&displayselected!=0){
-					for(i=displayselected-1;i<255;i++){
-						displaytext[0][i]=displaytext[0][i+1];
-					}
-					displaytext[0][255]=' ';
-					displayselected--;
-					displaychars[0]--;
-				} else if(evenement.key.keysym.sym==SDLK_DELETE&&displayselected!=0){
-					for(i=displayselected;i<255;i++){
-						displaytext[0][i]=displaytext[0][i+1];
-					}
-					displaytext[0][255]=' ';
-					displaychars[0]--;
-				} else if(evenement.key.keysym.sym==SDLK_LEFT&&displayselected!=0){
-					displayselected--;
-				} else if(evenement.key.keysym.sym==SDLK_RIGHT&&displayselected<displaychars[0]){
-					displayselected++;
-				} else if(evenement.key.keysym.sym==SDLK_RETURN) {
-					if(displaychars[0]){
-						accountactive = Account::add(string(displaytext[0]));
-
-						mainmenu=8;
-
-						flash();
-
-						fireSound(firestartsound);
-
-						for(i=0;i<255;i++){
-							displaytext[0][i]=' ';
-						}
-						displaychars[0]=0;
-
-						displayselected=0;
-					}
-					waiting=false;
-				} else if(evenement.key.keysym.unicode&&displaychars[0]<60) {
-					for(i=255;i>=displayselected+1;i--){
-						displaytext[0][i]=displaytext[0][i-1];
-					}
-					displaytext[0][displayselected]=evenement.key.keysym.unicode;
-					displayselected++;
-					displaychars[0]++;
-					printf("%c\n",evenement.key.keysym.unicode);
-				}
-			break;
-		}
+	int i;
+	
+	if(!waiting) {
+		waiting=true;
+		SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
+		SDL_EnableUNICODE(true);
 	}
-	entername=0;
-	SDL_EnableKeyRepeat(0,0); // disable key repeat
-	SDL_EnableUNICODE(false);
+
+	SDL_PollEvent(&evenement);
+	
+	switch(evenement.type) {
+		case SDL_KEYDOWN:
+			if(evenement.key.keysym.sym == SDLK_ESCAPE) {
+				for(i=0;i<255;i++){
+					str[i]=' ';
+				}
+				*nb_chars=0;
+				*charselected=0;
+				waiting=false;
+			} else if(evenement.key.keysym.sym==SDLK_BACKSPACE){
+				if((*charselected)!=0) {
+					for(i=(*charselected)-1;i<255;i++){
+						str[i]=str[i+1];
+					}
+					str[255]=' ';
+					(*charselected)--;
+					(*nb_chars)--;
+				}
+			} else if(evenement.key.keysym.sym==SDLK_DELETE){
+				for(i=(*charselected);i<255;i++){
+					str[i]=str[i+1];
+				}
+				str[255]=' ';
+				(*nb_chars)--;
+			} else if(evenement.key.keysym.sym==SDLK_LEFT){
+				if((*charselected)!=0)
+					(*charselected)--;
+			} else if(evenement.key.keysym.sym==SDLK_RIGHT){
+				if((*charselected)<(*nb_chars))
+					(*charselected)++;
+			} else if(evenement.key.keysym.sym==SDLK_RETURN) {
+				waiting=false;
+			} else if((evenement.key.keysym.unicode<127)&&((*nb_chars)<60)&&(evenement.key.keysym.sym!=SDLK_LSHIFT)&&(evenement.key.keysym.sym!=SDLK_RSHIFT)) {
+				for(i=255;i>=(*charselected)+1;i--){
+					str[i]=str[i-1];
+				}
+				str[*charselected]=evenement.key.keysym.unicode;
+				(*charselected)++;
+				(*nb_chars)++;
+			}
+		break;
+	}
+	
+	if(!waiting) {
+		SDL_EnableKeyRepeat(0,0); // disable key repeat
+		SDL_EnableUNICODE(false);
+	}
 }
 
 void Game::setKeySelected() {
@@ -346,23 +323,23 @@ void Game::setKeySelected_thread() {
 	if(keycode != SDLK_ESCAPE) {
 		fireSound();
 		switch(keyselect) {
-			case 0:forwardkey=keycode;
+			case 0: forwardkey=keycode;
 			break;
-			case 1:backkey=keycode;
+			case 1: backkey=keycode;
 			break;
-			case 2:leftkey=keycode;
+			case 2: leftkey=keycode;
 			break;
-			case 3:rightkey=keycode;
+			case 3: rightkey=keycode;
 			break;
-			case 4:crouchkey=keycode;
+			case 4: crouchkey=keycode;
 			break;
-			case 5:jumpkey=keycode;
+			case 5: jumpkey=keycode;
 			break;
-			case 6:drawkey=keycode;
+			case 6: drawkey=keycode;
 			break;
-			case 7:throwkey=keycode;
+			case 7: throwkey=keycode;
 			break;
-			case 8:attackkey=keycode;
+			case 8: attackkey=keycode;
 			break;
 			default:
 			break;

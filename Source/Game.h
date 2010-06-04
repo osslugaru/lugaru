@@ -229,8 +229,8 @@ class Game
 		float consoleblinkdelay;
 		bool consoleblink;
 		int consoleselected;
-		int togglekey[140];
-		float togglekeydelay[140];
+		//int togglekey[140];
+		//float togglekeydelay[140];
 		bool registernow;
 		bool autocam;
 
@@ -301,8 +301,7 @@ class Game
 	private:
 		void setKeySelected_thread();
 		static int thread(void *data);
-		void inputText();
-		void inputText_thread();
+		void inputText(char* str, int* charselected, int* nb_chars);
 		void flash();
 		bool waiting;
 		bool mainmenutogglekeydown;

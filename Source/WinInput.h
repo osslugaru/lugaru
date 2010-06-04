@@ -38,8 +38,6 @@ void 	MoveMouse(int xcoord, int ycoord, Point *mouseloc);
 void 	RefreshMouse(Point *mouseloc);
 void 	DisposeMouse();
 unsigned short 	CharToKey(const char* which);
-char 	KeyToSingleChar(unsigned short which);
-char 	Shift(char which);
 
 Boolean Button();
 
