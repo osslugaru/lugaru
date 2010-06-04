@@ -37,15 +37,15 @@ Account::Account(string n) {
 	difficulty = 0;
 	progress = 0;
 	points = 0;
-	for(int i=0;i<50;highscore[i++] = 0);
-	for(int i=0;i<50;fasttime[i++] = 0);
-	for(int i=0;i<60;unlocked[i++] = 0);
+	memset(highscore, 0, sizeof(highscore));
+	memset(fasttime, 0, sizeof(fasttime));
+	memset(unlocked, 0, sizeof(unlocked));
 	campaignhighscore = 0;
 	campaignfasttime = 0;
 	campaignscore = 0;
 	campaigntime = 0;
 	campaignchoicesmade = 0;
-	for(int i=0;i<5000;campaignchoices[i++] = 0);
+	memset(campaignchoices, 0, sizeof(campaignchoices));
 }
 
 Account* Account::add(string name) {

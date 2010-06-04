@@ -213,14 +213,6 @@ extern bool campaign;
 
 extern float oldgamespeed;
 
-extern float accountcampaignhighscore[10];
-extern float accountcampaignfasttime[10];
-extern float accountcampaignscore[10];
-extern float accountcampaigntime[10];
-
-extern int accountcampaignchoicesmade[10];
-extern int accountcampaignchoices[10][5000];
-
 static const char *rabbitskin[] = {
 ":Data:Textures:Fur3.jpg",
 ":Data:Textures:Fur.jpg",
@@ -322,142 +314,131 @@ static void ch_save(Game *game, const char *args)
   fpackf(tfile, "Bi Bi", player[0].whichskin, player[0].creature);
 
   fpackf(tfile, "Bi", numdialogues);
-  if(numdialogues)
-    for(k=0;k<numdialogues;k++){
-      fpackf(tfile, "Bi", numdialogueboxes[k]);
-      fpackf(tfile, "Bi", dialoguetype[k]);
-      for(l=0;l<10;l++){
-	fpackf(tfile, "Bf Bf Bf", participantlocation[k][l].x, participantlocation[k][l].y, participantlocation[k][l].z);
-	fpackf(tfile, "Bf", participantrotation[k][l]);
-      }
-      if(numdialogueboxes)
-	for(l=0;l<numdialogueboxes[k];l++){
-	  fpackf(tfile, "Bi", dialogueboxlocation[k][l]);
-	  fpackf(tfile, "Bf", dialogueboxcolor[k][l][0]);
-	  fpackf(tfile, "Bf", dialogueboxcolor[k][l][1]);
-	  fpackf(tfile, "Bf", dialogueboxcolor[k][l][2]);
-	  fpackf(tfile, "Bi", dialogueboxsound[k][l]);
+	for(k=0;k<numdialogues;k++){
+		fpackf(tfile, "Bi", numdialogueboxes[k]);
+		fpackf(tfile, "Bi", dialoguetype[k]);
+		for(l=0;l<10;l++){
+			fpackf(tfile, "Bf Bf Bf", participantlocation[k][l].x, participantlocation[k][l].y, participantlocation[k][l].z);
+			fpackf(tfile, "Bf", participantrotation[k][l]);
+		}
+		for(l=0;l<numdialogueboxes[k];l++){
+			fpackf(tfile, "Bi", dialogueboxlocation[k][l]);
+			fpackf(tfile, "Bf", dialogueboxcolor[k][l][0]);
+			fpackf(tfile, "Bf", dialogueboxcolor[k][l][1]);
+			fpackf(tfile, "Bf", dialogueboxcolor[k][l][2]);
+			fpackf(tfile, "Bi", dialogueboxsound[k][l]);
 
-	  templength=strlen(dialoguetext[k][l]);
-	  fpackf(tfile, "Bi",(templength));
-	  for(m=0;m<templength;m++){
-	    fpackf(tfile, "Bb", dialoguetext[k][l][m]);
-	    if(dialoguetext[k][l][m]=='\0')break;
-	  }
+			templength=strlen(dialoguetext[k][l]);
+			fpackf(tfile, "Bi",(templength));
+			for(m=0;m<templength;m++){
+				fpackf(tfile, "Bb", dialoguetext[k][l][m]);
+				if(dialoguetext[k][l][m]=='\0')break;
+			}
 
-	  templength=strlen(dialoguename[k][l]);
-	  fpackf(tfile, "Bi",templength);
-	  for(m=0;m<templength;m++){
-	    fpackf(tfile, "Bb", dialoguename[k][l][m]);
-	    if(dialoguename[k][l][m]=='\0')break;
-	  }
+			templength=strlen(dialoguename[k][l]);
+			fpackf(tfile, "Bi",templength);
+			for(m=0;m<templength;m++){
+				fpackf(tfile, "Bb", dialoguename[k][l][m]);
+				if(dialoguename[k][l][m]=='\0')break;
+			}
 
-	  fpackf(tfile, "Bf Bf Bf", dialoguecamera[k][l].x, dialoguecamera[k][l].y, dialoguecamera[k][l].z);
-	  fpackf(tfile, "Bi", participantfocus[k][l]);
-	  fpackf(tfile, "Bi", participantaction[k][l]);
+			fpackf(tfile, "Bf Bf Bf", dialoguecamera[k][l].x, dialoguecamera[k][l].y, dialoguecamera[k][l].z);
+			fpackf(tfile, "Bi", participantfocus[k][l]);
+			fpackf(tfile, "Bi", participantaction[k][l]);
 
-	  for(m=0;m<10;m++)
-	    fpackf(tfile, "Bf Bf Bf", participantfacing[k][l][m].x, participantfacing[k][l][m].y, participantfacing[k][l][m].z);
+			for(m=0;m<10;m++)
+				fpackf(tfile, "Bf Bf Bf", participantfacing[k][l][m].x, participantfacing[k][l][m].y, participantfacing[k][l][m].z);
 
-	  fpackf(tfile, "Bf Bf",dialoguecamerarotation[k][l],dialoguecamerarotation2[k][l]);
+			fpackf(tfile, "Bf Bf",dialoguecamerarotation[k][l],dialoguecamerarotation2[k][l]);
+		}
 	}
-    }
 
-  if(player[0].numclothes)
-    for(k=0;k<player[0].numclothes;k++){
-      templength=strlen(player[0].clothes[k]);
-      fpackf(tfile, "Bi", templength);
-      for(l=0;l<templength;l++)
-	fpackf(tfile, "Bb", player[0].clothes[k][l]);
-      fpackf(tfile, "Bf Bf Bf", player[0].clothestintr[k], player[0].clothestintg[k], player[0].clothestintb[k]);
-    }
+	for(k=0;k<player[0].numclothes;k++){
+		templength=strlen(player[0].clothes[k]);
+		fpackf(tfile, "Bi", templength);
+		for(l=0;l<templength;l++)
+			fpackf(tfile, "Bb", player[0].clothes[k][l]);
+		fpackf(tfile, "Bf Bf Bf", player[0].clothestintr[k], player[0].clothestintg[k], player[0].clothestintb[k]);
+	}
 
   fpackf(tfile, "Bi", environment);
 
   fpackf(tfile, "Bi", objects.numobjects);
 
-  if(objects.numobjects)
     for(k=0;k<objects.numobjects;k++){
       fpackf(tfile, "Bi Bf Bf Bf Bf Bf Bf", objects.type[k], objects.rotation[k], objects.rotation2[k], objects.position[k].x, objects.position[k].y, objects.position[k].z, objects.scale[k]);
     }
 
   fpackf(tfile, "Bi", numhotspots);
-  if(numhotspots)
-    for(i=0;i<numhotspots;i++){
-      fpackf(tfile, "Bi Bf Bf Bf Bf", hotspottype[i],hotspotsize[i],hotspot[i].x,hotspot[i].y,hotspot[i].z);
-      templength=strlen(hotspottext[i]);
-      fpackf(tfile, "Bi",templength);
-      for(l=0;l<templength;l++)
-	fpackf(tfile, "Bb", hotspottext[i][l]);
-    }
+	for(i=0;i<numhotspots;i++){
+		fpackf(tfile, "Bi Bf Bf Bf Bf", hotspottype[i],hotspotsize[i],hotspot[i].x,hotspot[i].y,hotspot[i].z);
+		templength=strlen(hotspottext[i]);
+		fpackf(tfile, "Bi",templength);
+		for(l=0;l<templength;l++)
+			fpackf(tfile, "Bb", hotspottext[i][l]);
+	}
 
   fpackf(tfile, "Bi", numplayers);
-  if(numplayers>1&&numplayers<maxplayers)
+  if(numplayers<maxplayers)
     for(j=1;j<numplayers;j++){
-      fpackf(tfile, "Bi Bi Bf Bf Bf Bi Bi Bf Bb Bf", player[j].whichskin, player[j].creature, player[j].coords.x, player[j].coords.y, player[j].coords.z, player[j].num_weapons, player[j].howactive, player[j].scale, player[j].immobile, player[j].rotation);
-      if(player[j].num_weapons>0&&player[j].num_weapons<5)
-	for(k=0;k<player[j].num_weapons;k++){
-	  fpackf(tfile, "Bi", weapons.type[player[j].weaponids[k]]);
-	}
-      if(player[j].numwaypoints<30){
-	fpackf(tfile, "Bi", player[j].numwaypoints);
-	for(k=0;k<player[j].numwaypoints;k++){
-	  fpackf(tfile, "Bf", player[j].waypoints[k].x);
-	  fpackf(tfile, "Bf", player[j].waypoints[k].y);
-	  fpackf(tfile, "Bf", player[j].waypoints[k].z);
-	  fpackf(tfile, "Bi", player[j].waypointtype[k]);
-	}
-	fpackf(tfile, "Bi", player[j].waypoint);
-      }
-      else{
-	player[j].numwaypoints=0;
-	player[j].waypoint=0;
-	fpackf(tfile, "Bi Bi Bi", player[j].numwaypoints, player[j].waypoint, player[j].waypoint);
-      }
+		fpackf(tfile, "Bi Bi Bf Bf Bf Bi Bi Bf Bb Bf", player[j].whichskin, player[j].creature, player[j].coords.x, player[j].coords.y, player[j].coords.z, player[j].num_weapons, player[j].howactive, player[j].scale, player[j].immobile, player[j].rotation);
+		if(player[j].num_weapons<5)
+			for(k=0;k<player[j].num_weapons;k++){
+				fpackf(tfile, "Bi", weapons.type[player[j].weaponids[k]]);
+			}
+		if(player[j].numwaypoints<30){
+			fpackf(tfile, "Bi", player[j].numwaypoints);
+			for(k=0;k<player[j].numwaypoints;k++){
+				fpackf(tfile, "Bf", player[j].waypoints[k].x);
+				fpackf(tfile, "Bf", player[j].waypoints[k].y);
+				fpackf(tfile, "Bf", player[j].waypoints[k].z);
+				fpackf(tfile, "Bi", player[j].waypointtype[k]);
+			}
+			fpackf(tfile, "Bi", player[j].waypoint);
+		} else {
+			player[j].numwaypoints=0;
+			player[j].waypoint=0;
+			fpackf(tfile, "Bi Bi Bi", player[j].numwaypoints, player[j].waypoint, player[j].waypoint);
+		}
 
-      fpackf(tfile, "Bf Bf Bf", player[j].armorhead, player[j].armorhigh, player[j].armorlow);
-      fpackf(tfile, "Bf Bf Bf", player[j].protectionhead, player[j].protectionhigh, player[j].protectionlow);
-      fpackf(tfile, "Bf Bf Bf", player[j].metalhead, player[j].metalhigh, player[j].metallow);
-      fpackf(tfile, "Bf Bf", player[j].power, player[j].speedmult);
+		fpackf(tfile, "Bf Bf Bf", player[j].armorhead, player[j].armorhigh, player[j].armorlow);
+		fpackf(tfile, "Bf Bf Bf", player[j].protectionhead, player[j].protectionhigh, player[j].protectionlow);
+		fpackf(tfile, "Bf Bf Bf", player[j].metalhead, player[j].metalhigh, player[j].metallow);
+		fpackf(tfile, "Bf Bf", player[j].power, player[j].speedmult);
 
-      if(player[j].creature==wolftype){
-	headprop=player[j].proportionhead.x/1.1;
-	bodyprop=player[j].proportionbody.x/1.1;
-	armprop=player[j].proportionarms.x/1.1;
-	legprop=player[j].proportionlegs.x/1.1;
-      }
+		if(player[j].creature==wolftype) {
+			headprop=player[j].proportionhead.x/1.1;
+			bodyprop=player[j].proportionbody.x/1.1;
+			armprop=player[j].proportionarms.x/1.1;
+			legprop=player[j].proportionlegs.x/1.1;
+		} else if(player[j].creature==rabbittype){
+			headprop=player[j].proportionhead.x/1.2;
+			bodyprop=player[j].proportionbody.x/1.05;
+			armprop=player[j].proportionarms.x/1.00;
+			legprop=player[j].proportionlegs.x/1.1;
+		}
 
-      if(player[j].creature==rabbittype){
-	headprop=player[j].proportionhead.x/1.2;
-	bodyprop=player[j].proportionbody.x/1.05;
-	armprop=player[j].proportionarms.x/1.00;
-	legprop=player[j].proportionlegs.x/1.1;
-      }
+		fpackf(tfile, "Bf Bf Bf Bf", headprop, bodyprop, armprop, legprop);
 
-      fpackf(tfile, "Bf Bf Bf Bf", headprop, bodyprop, armprop, legprop);
-
-
-
-      fpackf(tfile, "Bi", player[j].numclothes);
-      if(player[j].numclothes)
-	for(k=0;k<player[j].numclothes;k++){
-	  int templength;
-	  templength=strlen(player[j].clothes[k]);
-	  fpackf(tfile, "Bi", templength);
-	  for(l=0;l<templength;l++)
-	    fpackf(tfile, "Bb", player[j].clothes[k][l]);
-	  fpackf(tfile, "Bf Bf Bf", player[j].clothestintr[k], player[j].clothestintg[k], player[j].clothestintb[k]);
-	}
+		fpackf(tfile, "Bi", player[j].numclothes);
+		if(player[j].numclothes)
+			for(k=0;k<player[j].numclothes;k++){
+				int templength;
+				templength=strlen(player[j].clothes[k]);
+				fpackf(tfile, "Bi", templength);
+				for(l=0;l<templength;l++)
+					fpackf(tfile, "Bb", player[j].clothes[k][l]);
+				fpackf(tfile, "Bf Bf Bf", player[j].clothestintr[k], player[j].clothestintg[k], player[j].clothestintb[k]);
+			}
     }
 
   fpackf(tfile, "Bi", game->numpathpoints);
-  if(game->numpathpoints)
-    for(j=0;j<game->numpathpoints;j++){
-      fpackf(tfile, "Bf Bf Bf Bi", game->pathpoint[j].x, game->pathpoint[j].y, game->pathpoint[j].z, game->numpathpointconnect[j]);
-      for(k=0;k<game->numpathpointconnect[j];k++){
-	fpackf(tfile, "Bi", game->pathpointconnect[j][k]);
-      }
-    }
+	for(j=0;j<game->numpathpoints;j++){
+		fpackf(tfile, "Bf Bf Bf Bi", game->pathpoint[j].x, game->pathpoint[j].y, game->pathpoint[j].z, game->numpathpointconnect[j]);
+		for(k=0;k<game->numpathpointconnect[j];k++){
+			fpackf(tfile, "Bi", game->pathpointconnect[j][k]);
+		}
+	}
 
   fpackf(tfile, "Bf Bf Bf Bf", game->mapcenter.x, game->mapcenter.y, game->mapcenter.z, game->mapradius);
 
@@ -544,9 +525,7 @@ static void set_proportion(int pnum, const char *args)
     player[pnum].proportionbody=1.1*bodyprop;
     player[pnum].proportionarms=1.1*armprop;
     player[pnum].proportionlegs=1.1*legprop;
-  }
-
-  if(player[pnum].creature==rabbittype){
+  } else if(player[pnum].creature==rabbittype){
     player[pnum].proportionhead=1.2*headprop;
     player[pnum].proportionbody=1.05*bodyprop;
     player[pnum].proportionarms=1.00*armprop;
@@ -818,23 +797,21 @@ static void ch_notindemo(Game *game, const char *args)
 static void ch_type(Game *game, const char *args)
 {
   int i, n = sizeof(editortypenames) / sizeof(editortypenames[0]);
-  for (i = 0; i < n; i++)
-    if (stripfx(args, editortypenames[i]))
-      {
-	editoractive = i;
-	break;
-      }
+	for (i = 0; i < n; i++)
+		if (stripfx(args, editortypenames[i])) {
+			editoractive = i;
+			break;
+		}
 }
 
 static void ch_path(Game *game, const char *args)
 {
   int i, n = sizeof(pathtypenames) / sizeof(pathtypenames[0]);
   for (i = 0; i < n; i++)
-    if (stripfx(args, pathtypenames[i]))
-      {
-	editorpathtype = i;
-	break;
-      }
+    if (stripfx(args, pathtypenames[i])) {
+		editorpathtype = i;
+		break;
+    }
 }
 
 static void ch_hs(Game *game, const char *args)
@@ -1003,9 +980,7 @@ static void ch_default(Game *game, const char *args)
     player[0].proportionbody=1.1;
     player[0].proportionarms=1.1;
     player[0].proportionlegs=1.1;
-  }
-
-  if(player[0].creature==rabbittype){
+  } else if(player[0].creature==rabbittype){
     player[0].proportionhead=1.2;
     player[0].proportionbody=1.05;
     player[0].proportionarms=1.00;
@@ -2539,7 +2514,7 @@ void	Game::Tick()
 	if(mainmenu){
 		//menu buttons
 		if(mainmenu==1||mainmenu==2){
-			if(Button()&&!oldbutton&&selected==1){
+			if(Input::Button()&&!oldbutton&&selected==1){
 				if(!gameon){
 					fireSound(firestartsound);
 
@@ -2562,7 +2537,7 @@ void	Game::Tick()
 				}
 			}
 
-			if(Button()&&!oldbutton&&selected==2){
+			if(Input::Button()&&!oldbutton&&selected==2){
 				fireSound();
 
 				flash();
@@ -2579,7 +2554,7 @@ void	Game::Tick()
 				if(newscreenheight<0)newscreenheight=screenheight;
 			}
 
-			if(Button()&&!oldbutton&&selected==3){
+			if(Input::Button()&&!oldbutton&&selected==3){
 				fireSound();
 
 				flash();
@@ -2597,10 +2572,10 @@ void	Game::Tick()
 			}
 		}
 		if(mainmenu==3){
-			if(Button()&&!oldbutton&&selected!=-1){
+			if(Input::Button()&&!oldbutton&&selected!=-1){
 				fireSound();
 			}
-			if(Button()&&!oldbutton&&selected==0){
+			if(Input::Button()&&!oldbutton&&selected==0){
 			
 				extern SDL_Rect **resolutions;
 				bool isCustomResolution = true;
@@ -2648,25 +2623,25 @@ void	Game::Tick()
 
 				
 			}
-			if(Button()&&!oldbutton&&selected==1){
+			if(Input::Button()&&!oldbutton&&selected==1){
 				newdetail++;
 				if(newdetail>2)newdetail=0;
 			}
-			if(Button()&&!oldbutton&&selected==2){
+			if(Input::Button()&&!oldbutton&&selected==2){
 				bloodtoggle++;
 				if(bloodtoggle>2)bloodtoggle=0;
 			}
-			if(Button()&&!oldbutton&&selected==3){
+			if(Input::Button()&&!oldbutton&&selected==3){
 				difficulty++;
 				if(difficulty>2)difficulty=0;
 			}
-			if(Button()&&!oldbutton&&selected==4){
+			if(Input::Button()&&!oldbutton&&selected==4){
 				ismotionblur=1-ismotionblur;
 			}
-			if(Button()&&!oldbutton&&selected==5){
+			if(Input::Button()&&!oldbutton&&selected==5){
 				decals=1-decals;
 			}
-			if(Button()&&!oldbutton&&selected==6){
+			if(Input::Button()&&!oldbutton&&selected==6){
 				musictoggle=1-musictoggle;
 
 				if(!musictoggle){
@@ -2686,19 +2661,19 @@ void	Game::Tick()
 					OPENAL_SetVolume(channels[stream_music3], 256);
 				}
 			}
-			if(Button()&&!oldbutton&&selected==9){
+			if(Input::Button()&&!oldbutton&&selected==9){
 				invertmouse=1-invertmouse;
 			}
-			if(Button()&&!oldbutton&&selected==10){
+			if(Input::Button()&&!oldbutton&&selected==10){
 				usermousesensitivity+=.2;
 				if(usermousesensitivity>2)usermousesensitivity=.2;
 			}
-			if(Button()&&!oldbutton&&selected==11){
+			if(Input::Button()&&!oldbutton&&selected==11){
 				volume+=.1f;
 				if(volume>1.0001f)volume=0;
 				OPENAL_SetSFXMasterVolume((int)(volume*255));
 			}
-			if(Button()&&!oldbutton&&selected==7){
+			if(Input::Button()&&!oldbutton&&selected==7){
 				/*fireSound();
 				*/
 				flash();
@@ -2709,17 +2684,17 @@ void	Game::Tick()
 				selected=-1;
 				keyselect=-1;
 			}
-			if(Button() && !oldbutton && selected == 12) {
+			if(Input::Button() && !oldbutton && selected == 12) {
 				flash();
 				
 				newstereomode = stereomode;
 				mainmenu=18;
 				keyselect=-1;
 			}
-			if(Button() && !oldbutton && selected == 13) {
+			if(Input::Button() && !oldbutton && selected == 13) {
 				showdamagebar=!showdamagebar;
 			}
-			if(Button()&&!oldbutton&&selected==8){
+			if(Input::Button()&&!oldbutton&&selected==8){
 				fireSound();
 
 				flash();
@@ -2736,7 +2711,7 @@ void	Game::Tick()
 			}
 		}
 		if(mainmenu==4){
-			if(Button()&&!oldbutton&&selected!=-1&&!waiting){
+			if(Input::Button()&&!oldbutton&&selected!=-1&&!waiting){
 				fireSound();
 				if(selected<9&&keyselect==-1)
 					keyselect=selected;
@@ -2764,7 +2739,7 @@ void	Game::Tick()
 				endgame=0;
 			}
 
-			if(Button()&&!oldbutton&&selected==1){
+			if(Input::Button()&&!oldbutton&&selected==1){
 				fireSound();
 
 				flash();
@@ -2784,7 +2759,7 @@ void	Game::Tick()
 				gameon=1;
 				OPENAL_SetPaused(channels[stream_music3], true);
 			}
-			if(Button()&&!oldbutton&&(selected-7>=accountactive->getCampaignChoicesMade())){//selected>=7&&(selected-7<=campaignnumchoices)){
+			if(Input::Button()&&!oldbutton&&(selected-7>=accountactive->getCampaignChoicesMade())){//selected>=7&&(selected-7<=campaignnumchoices)){
 				fireSound();
 
 				flash();
@@ -2821,7 +2796,7 @@ void	Game::Tick()
 				gameon=1;
 				OPENAL_SetPaused(channels[stream_music3], true);
 			}
-			if(Button()&&!oldbutton&&selected==4){
+			if(Input::Button()&&!oldbutton&&selected==4){
 				fireSound();
 
 				flash();
@@ -2829,21 +2804,21 @@ void	Game::Tick()
 				if(mainmenu==5&&gameon)mainmenu=2;
 				if(mainmenu==5&&!gameon)mainmenu=1;
 			}
-			if(Button()&&!oldbutton&&selected==5){
+			if(Input::Button()&&!oldbutton&&selected==5){
 				fireSound();
 
 				flash();
 
 				mainmenu=7;
 			}
-			if(Button()&&!oldbutton&&selected==3){
+			if(Input::Button()&&!oldbutton&&selected==3){
 				fireSound();
 
 				flash();
 
 				mainmenu=6;
 			}
-			if(Button()&&!oldbutton&&selected==2){
+			if(Input::Button()&&!oldbutton&&selected==2){
 				fireSound();
 
 				flash();
@@ -2852,7 +2827,7 @@ void	Game::Tick()
 			}
 		}
 		if(mainmenu==9){
-			if(Button()&&!oldbutton&&selected<numchallengelevels&&selected>=0&&selected<=accountactive->getProgress()){
+			if(Input::Button()&&!oldbutton&&selected<numchallengelevels&&selected>=0&&selected<=accountactive->getProgress()){
 				fireSound();
 
 				flash();
@@ -2873,7 +2848,7 @@ void	Game::Tick()
 				gameon=1;
 				OPENAL_SetPaused(channels[stream_music3], true);
 			}
-			if(Button()&&!oldbutton&&selected==numchallengelevels){
+			if(Input::Button()&&!oldbutton&&selected==numchallengelevels){
 				fireSound();
 
 				flash();
@@ -2882,7 +2857,7 @@ void	Game::Tick()
 			}
 		}
 		if(mainmenu==11){
-			if(Button()&&!oldbutton&&selected<numchallengelevels&&selected>=0&&selected<=accountactive->getProgress()){
+			if(Input::Button()&&!oldbutton&&selected<numchallengelevels&&selected>=0&&selected<=accountactive->getProgress()){
 				fireSound();
 
 				flash();
@@ -2903,7 +2878,7 @@ void	Game::Tick()
 				gameon=1;
 				OPENAL_SetPaused(channels[stream_music3], true);
 			}
-			if(Button()&&!oldbutton&&selected==numchallengelevels){
+			if(Input::Button()&&!oldbutton&&selected==numchallengelevels){
 				fireSound();
 
 				flash();
@@ -2913,7 +2888,7 @@ void	Game::Tick()
 		}
 		if(mainmenu==10){
 			endgame=2;
-			if(Button()&&!oldbutton&&selected==3){
+			if(Input::Button()&&!oldbutton&&selected==3){
 				fireSound();
 
 				flash();
@@ -2923,7 +2898,7 @@ void	Game::Tick()
 		}
 
 		if(mainmenu==6){
-			if(Button()&&!oldbutton) {
+			if(Input::Button()&&!oldbutton) {
 				if(selected>-1){
 					fireSound();
 					if(selected==1) {
@@ -2938,7 +2913,7 @@ void	Game::Tick()
 			}
 		}
 		if(mainmenu==7){
-			if(Button()&&!oldbutton) {
+			if(Input::Button()&&!oldbutton) {
 				if(selected!=-1){
 					fireSound();
 					if(selected==0&&Account::getNbAccounts()<8){
@@ -2963,7 +2938,7 @@ void	Game::Tick()
 			}
 		}
 		if(mainmenu==8){
-			if(Button()&&!oldbutton&&selected>-1){
+			if(Input::Button()&&!oldbutton&&selected>-1){
 				fireSound();
 
 				if(selected<=2)
@@ -2976,7 +2951,7 @@ void	Game::Tick()
 			}
 		}
 		if (mainmenu==18) {			
-			if(Button()&&!oldbutton&&selected==0) {
+			if(Input::Button()&&!oldbutton&&selected==0) {
 				newstereomode = (StereoMode)(newstereomode + 1);
 				while(!CanInitStereo(newstereomode)) {
 					printf("Failed to initialize mode %s (%i)\n", StereoModeName(newstereomode), newstereomode);
@@ -2994,11 +2969,11 @@ void	Game::Tick()
 				stereoseparation-=0.001;
 			}
 
-			if(Button()&&!oldbutton&&selected==2) {
+			if(Input::Button()&&!oldbutton&&selected==2) {
 				stereoreverse =! stereoreverse;
 			}
 			
-			if(Button()&&!oldbutton&&selected==3) {
+			if(Input::Button()&&!oldbutton&&selected==3) {
 				flash();
 
 				stereomode = newstereomode;
@@ -3009,7 +2984,7 @@ void	Game::Tick()
 		}
 
 
-		if(Button()||Input::isKeyDown(MOUSEBUTTON2))oldbutton=1;
+		if(Input::Button()||Input::isKeyDown(MOUSEBUTTON2))oldbutton=1;
 		else oldbutton=0;
 
 		if(Input::isKeyDown(SDLK_q)&&Input::isKeyDown(SDLK_LMETA)){

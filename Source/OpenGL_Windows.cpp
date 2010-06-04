@@ -286,29 +286,6 @@ void DrawGL (Game & game)
 	}
 }
 
-
-/*static KeyMap g_theKeys;
-
-void SetKey( int key)
-{
-    g_theKeys[ key >> 3] |= (1 << (key & 7));
-}
-
-void ClearKey( int key)
-{
-    g_theKeys[ key >> 3] &= (0xff ^ (1 << (key & 7)));
-}
-
-void GetKeys(  unsigned char theKeys[16])
-{
-    memcpy( theKeys, &g_theKeys, 16);
-}*/
-
-Boolean Button()
-{
-    return SDL_GetMouseState(NULL,NULL)&SDL_BUTTON(SDL_BUTTON_LEFT);
-}
-
 static inline int clamp_sdl_mouse_button(Uint8 button)
 {
     if (button == 2)   // right mouse button is button 3 in SDL.

@@ -47,3 +47,22 @@ const char* Input::keyToChar(unsigned short i) {
 		return "unknown";
 }
 
+unsigned short 	Input::CharToKey(const char* which)
+{
+	for(unsigned short i=0;i<SDLK_LAST;i++) {
+		if(!strcasecmp(which,SDL_GetKeyName(SDLKey(i))))
+			return i;
+	}
+	if(!strcasecmp(which,"mouse1")){
+		return MOUSEBUTTON1;
+	}
+	if(!strcasecmp(which,"mouse2")){
+		return MOUSEBUTTON2;
+	}
+	return SDLK_LAST;
+}
+
+Boolean Input::Button()
+{
+    return SDL_GetMouseState(NULL,NULL)&SDL_BUTTON(SDL_BUTTON_LEFT);
+}

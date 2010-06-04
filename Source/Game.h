@@ -40,9 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "TGALoader.h"
 
-#if !PLATFORM_MACOSX
-#include "WinInput.h"
-#else
+#if PLATFORM_MACOSX
 #include "Macinput.h"
 #endif
 

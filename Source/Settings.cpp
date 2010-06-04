@@ -214,34 +214,34 @@ bool LoadSettings(Game &game) {
 			ipstream >> volume;
 		} else if ( !strncmp(setting, "Forward key", 11) ) {
 			ipstream.getline( string, sizeof(string) );
-			game.forwardkey = CharToKey(string);
+			game.forwardkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Back key", 8) ) {
 			ipstream.getline( string, sizeof(string) );
-			game.backkey = CharToKey(string);
+			game.backkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Left key", 8) ) {
 			ipstream.getline( string, sizeof(string) );
-			game.leftkey = CharToKey(string);
+			game.leftkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Right key", 9) ) {
 			ipstream.getline( string, sizeof(string) );
-			game.rightkey = CharToKey(string);
+			game.rightkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Jump key", 8) ) {
 			ipstream.getline( string, sizeof(string) );
-			game.jumpkey = CharToKey(string);
+			game.jumpkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Crouch key", 10) ) {
 			ipstream.getline( string, sizeof(string) );
-			game.crouchkey = CharToKey(string);
+			game.crouchkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Draw key", 8) ) {
 			ipstream.getline( string, sizeof(string) );
-			game.drawkey = CharToKey(string);
+			game.drawkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Throw key", 9) ) {
 			ipstream.getline( string, sizeof(string) );
-			game.throwkey = CharToKey(string);
+			game.throwkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Attack key", 10) ) {
 			ipstream.getline( string, sizeof(string) );
-			game.attackkey = CharToKey(string);
+			game.attackkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Chat key", 8) ) {
 			ipstream.getline( string, sizeof(string) );
-			game.chatkey = CharToKey(string);
+			game.chatkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Damage bar", 10) ) {
 			ipstream >> showdamagebar;
 		} else if ( !strncmp(setting, "StereoMode", 10) ) {
