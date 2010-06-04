@@ -286,18 +286,6 @@ void DrawGL (Game & game)
 	}
 }
 
-static inline int clamp_sdl_mouse_button(Uint8 button)
-{
-    if (button == 2)   // right mouse button is button 3 in SDL.
-        button = 3;
-    else if (button == 3)
-        button = 2;
-
-    if ((button >= 1) && (button <= 3))
-        return button - 1;
-    return -1;
-}
-
 static void sdlEventProc(const SDL_Event &e, Game &game)
 {
     int val;
@@ -318,9 +306,6 @@ static void sdlEventProc(const SDL_Event &e, Game &game)
 			} else if ( (e.key.keysym.sym == SDLK_RETURN) && (e.key.keysym.mod & KMOD_ALT) ) {
 				SDL_WM_ToggleFullScreen(SDL_GetVideoSurface());
             }
-            return;
-
-        case SDL_KEYUP:
             return;
     }
 }
