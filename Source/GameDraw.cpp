@@ -1574,17 +1574,6 @@ int Game::DrawGLScene(StereoSide side)
 			glScalef(.25/radius*256*terrain.scale*.4,.25/radius*256*terrain.scale*.4,1);
 			glPushMatrix();
 			glScalef(1/(1/radius*256*terrain.scale*.4),1/(1/radius*256*terrain.scale*.4),1);
-			/*float startx,starty,endx,endy;
-			glBegin(GL_QUADS);
-			glTexCoord2f(1-(center.x-radius)/terrain.scale/256,(center.z-radius)/terrain.scale/256);
-			glVertex3f(-1,		-1, 	 0.0f);
-			glTexCoord2f(1-(center.x+radius)/terrain.scale/256,(center.z-radius)/terrain.scale/256);
-			glVertex3f(1,	-1, 	 0.0f);
-			glTexCoord2f(1-(center.x+radius)/terrain.scale/256,(center.z+radius)/terrain.scale/256);
-			glVertex3f(1,	1, 0.0f);
-			glTexCoord2f(1-(center.x-radius)/terrain.scale/256,(center.z+radius)/terrain.scale/256);
-			glVertex3f(-1, 	1, 0.0f);
-			glEnd();*/
 			glPopMatrix();
 			glRotatef(player[0].lookrotation*-1+180,0,0,1);
 			glTranslatef(-(center.x/terrain.scale/256*-2+1),(center.z/terrain.scale/256*-2+1),0);
@@ -1754,47 +1743,6 @@ int Game::DrawGLScene(StereoSide side)
 			glColor3f (1.0, 1.0, 1.0); // no coloring
 
 			glEnable(GL_TEXTURE_2D);
-			/*glBindTexture( GL_TEXTURE_2D, logotexture);
-			glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-			glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-			glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
-			glDisable(GL_CULL_FACE);
-			glDisable(GL_LIGHTING);
-			glDepthMask(0);
-			glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-			glPushMatrix();										// Store The Projection Matrix
-			glLoadIdentity();									// Reset The Projection Matrix
-			glOrtho(0,screenwidth,0,screenheight,-100,100);						// Set Up An Ortho Screen
-			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-			glPushMatrix();										// Store The Modelview Matrix
-			glLoadIdentity();								// Reset The Modelview Matrix
-			glScalef((float)screenwidth/2,(float)screenwidth/2,1);
-			glTranslatef(1.8,1.25,0);
-			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-			glEnable(GL_BLEND);
-			glColor4f(1,1,1,1);
-			glPushMatrix();
-			glScalef(.25,.25,.25);
-			glBegin(GL_QUADS);
-			glTexCoord2f(0,0);
-			glVertex3f(-1,		-1, 	 0.0f);
-			glTexCoord2f(1,0);
-			glVertex3f(1,	-1, 	 0.0f);
-			glTexCoord2f(1,1);
-			glVertex3f(1,	1, 0.0f);
-			glTexCoord2f(0,1);
-			glVertex3f(-1, 	1, 0.0f);
-			glEnd();
-			glPopMatrix();
-			glDisable(GL_TEXTURE_2D);
-			glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-			glPopMatrix();										// Restore The Old Projection Matrix
-			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-			glPopMatrix();										// Restore The Old Projection Matrix
-			glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
-			glEnable(GL_CULL_FACE);
-			glDisable(GL_BLEND);
-			glDepthMask(1);*/
 
 			//Minimap
 
