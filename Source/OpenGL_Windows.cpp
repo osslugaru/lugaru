@@ -1103,17 +1103,6 @@ int main(int argc, char **argv)
 		pgame = 0;
 
 		CleanUp ();
-//		if(game.registernow){
-		if(regnow)
-		{
-            #if (defined(__APPLE__) && defined(__MACH__))
-            launch_web_browser("http://www.wolfire.com/purchase/lugaru/mac");
-            #elif PLATFORM_LINUX
-            launch_web_browser("http://www.wolfire.com/purchase/lugaru/linux");
-            #else
-            launch_web_browser("http://www.wolfire.com/purchase/lugaru/pc");
-            #endif
-		}
 
 		return 0;
 	}
