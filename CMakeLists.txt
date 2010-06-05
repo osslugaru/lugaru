@@ -52,6 +52,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 set(LUGARU_SRCS
 	${SRCDIR}/Frustum.cpp
+	${SRCDIR}/Account.cpp
 	${SRCDIR}/GameDraw.cpp
 	${SRCDIR}/GameInitDispose.cpp
 	${SRCDIR}/GameTick.cpp
@@ -84,6 +85,7 @@ set(LUGARU_SRCS
 set(LUGARU_H
 	${SRCDIR}/Constants.h
 	${SRCDIR}/Frustum.h
+	${SRCDIR}/Account.h
 	${SRCDIR}/Game.h
 	${SRCDIR}/Lights.h
 	${SRCDIR}/LinkedList.h

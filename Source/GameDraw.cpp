@@ -107,17 +107,7 @@ extern XYZ hotspot[40];
 extern int hotspottype[40];
 extern float hotspotsize[40];
 extern char hotspottext[40][256];
-extern int currenthotspot;
-
-extern int numaccounts;
-extern int accountactive;
-extern int accountdifficulty[10];
-extern int accountprogress[10];
-extern float accountpoints[10];
-extern float accounthighscore[10][50];
-extern float accountfasttime[10][50];
-extern bool accountunlocked[10][60];
-extern char accountname[10][256];
+extern int currenthotspot;;
 
 extern int numfalls;
 extern int numflipfail;
@@ -164,14 +154,6 @@ extern int whichdialogue;
 extern int directing;
 extern float dialoguetime;
 extern int dialoguegonethrough[20];
-
-extern int accountcampaignchoicesmade[10];
-extern int accountcampaignchoices[10][5000];
-
-extern float accountcampaignhighscore[10];
-extern float accountcampaignfasttime[10];
-extern float accountcampaignscore[10];
-extern float accountcampaigntime[10];
 
 extern bool gamestarted;
 
@@ -1212,8 +1194,8 @@ int Game::DrawGLScene(StereoSide side)
 
 				if(!tutoriallevel&&!winfreeze&&indialogue==-1&&!mainmenu){
 					if(campaign){
-						if(!scoreadded)sprintf (string, "Score: %d", (int)accountcampaignscore[accountactive]+(int)bonustotal);//(int)bonustotal);
-						if(scoreadded)sprintf (string, "Score: %d", (int)accountcampaignscore[accountactive]);//(int)bonustotal);
+						if(!scoreadded)sprintf (string, "Score: %d", (int)accountactive->getCampaignScore()+(int)bonustotal);//(int)bonustotal);
+						if(scoreadded)sprintf (string, "Score: %d", (int)accountactive->getCampaignScore());//(int)bonustotal);
 					}
 					if(!campaign)sprintf (string, "Score: %d", (int)bonustotal);
 					glColor4f(0,0,0,1);
@@ -2355,7 +2337,7 @@ int Game::DrawGLScene(StereoSide side)
 			if(mainmenu==5){
 				ifstream ipstream(ConvertFileName(":Data:Campaigns:main.txt"));
 				//campaignnumlevels=0;
-				//accountcampaignchoicesmade[accountactive]=0;
+				//accountactive->getCampaignChoicesMade()=0;
 				ipstream.ignore(256,':');
 				ipstream >> campaignnumlevels;
 				for(i=0;i<campaignnumlevels;i++){
@@ -2394,16 +2376,16 @@ int Game::DrawGLScene(StereoSide side)
 
 				levelorder[0]=0;
 				levelvisible[0]=1;
-				if(accountcampaignchoicesmade[accountactive])
-					for(i=0;i<accountcampaignchoicesmade[accountactive];i++){
-						levelorder[i+1]=campaignnextlevel[levelorder[i]][accountcampaignchoices[accountactive][i]];
+				if(accountactive->getCampaignChoicesMade())
+					for(i=0;i<accountactive->getCampaignChoicesMade();i++){
+						levelorder[i+1]=campaignnextlevel[levelorder[i]][accountactive->getCampaignChoice(i)];
 						levelvisible[levelorder[i+1]]=1;
 					}
 					int whichlevelstart;
-					whichlevelstart=accountcampaignchoicesmade[accountactive]-1;
+					whichlevelstart=accountactive->getCampaignChoicesMade()-1;
 					if(whichlevelstart<0){
-						accountcampaignscore[accountactive]=0;
-						accountcampaignfasttime[accountactive]=0;
+						accountactive->setCampaignScore(0);
+						accountactive->resetFasttime();
 						campaignchoicenum=1;
 						campaignchoicewhich[0]=0;
 					}
@@ -2411,8 +2393,7 @@ int Game::DrawGLScene(StereoSide side)
 					{
 						campaignchoicenum=campaignnumnext[levelorder[whichlevelstart]];
 						if(campaignchoicenum==0){
-							if(accountcampaignscore[accountactive]>accountcampaignhighscore[accountactive])accountcampaignhighscore[accountactive]=accountcampaignscore[accountactive];
-							if(accountcampaignfasttime[accountactive]==0||accountcampaigntime[accountactive]<accountcampaignfasttime[accountactive])accountcampaignfasttime[accountactive]=accountcampaigntime[accountactive];		
+							//if(accountactive->getCampaignFasttime()==0||accountcampaigntime[accountactive]<accountactive->getCampaignFasttime())accountactive->getCampaignFasttime()=accountcampaigntime[accountactive];		
 						}
 						if(campaignchoicenum)
 							for(i=0;i<campaignchoicenum;i++){
@@ -2719,9 +2700,9 @@ int Game::DrawGLScene(StereoSide side)
 				movey[9]=0;
 			}
 			if(mainmenu==5){			
-				nummenuitems=7+accountcampaignchoicesmade[accountactive]+campaignchoicenum;
+				nummenuitems=7+accountactive->getCampaignChoicesMade()+campaignchoicenum;
 
-				sprintf (menustring[0], "%s",accountname[accountactive]);
+				sprintf (menustring[0], "%s",accountactive->getName());
 				startx[0]=5;
 				starty[0]=400;
 				endx[0]=startx[0]+strlen(menustring[0])*10;
@@ -2779,8 +2760,8 @@ int Game::DrawGLScene(StereoSide side)
 				movex[6]=0;
 				movey[6]=0;
 
-				if(accountcampaignchoicesmade[accountactive])
-					for(i=0;i<accountcampaignchoicesmade[accountactive];i++){
+				if(accountactive->getCampaignChoicesMade())
+					for(i=0;i<accountactive->getCampaignChoicesMade();i++){
 						sprintf (menustring[7+i], "%s", campaigndescription[levelorder[i]]);
 						startx[7+i]=30+120+campaignlocationx[levelorder[i]]*400/512;
 						starty[7+i]=30+30+(512-campaignlocationy[levelorder[i]])*400/512;
@@ -2791,10 +2772,10 @@ int Game::DrawGLScene(StereoSide side)
 					}
 
 					if(campaignchoicenum>0)
-						for(i=accountcampaignchoicesmade[accountactive];i<accountcampaignchoicesmade[accountactive]+campaignchoicenum;i++){
+						for(i=accountactive->getCampaignChoicesMade();i<accountactive->getCampaignChoicesMade()+campaignchoicenum;i++){
 							sprintf (menustring[7+i], "%s", campaigndescription[levelorder[i]]);
-							startx[7+i]=30+120+campaignlocationx[campaignchoicewhich[i-(accountcampaignchoicesmade[accountactive])]]*400/512;
-							starty[7+i]=30+30+(512-campaignlocationy[campaignchoicewhich[i-(accountcampaignchoicesmade[accountactive])]])*400/512;
+							startx[7+i]=30+120+campaignlocationx[campaignchoicewhich[i-(accountactive->getCampaignChoicesMade())]]*400/512;
+							starty[7+i]=30+30+(512-campaignlocationy[campaignchoicewhich[i-(accountactive->getCampaignChoicesMade())]])*400/512;
 							endx[7+i]=startx[7+i]+10;
 							endy[7+i]=starty[7+i]+10;
 							movex[7+i]=0;
@@ -2894,12 +2875,12 @@ int Game::DrawGLScene(StereoSide side)
 				movey[5]=0;
 			}
 
-			if(mainmenu==7){			
-				nummenuitems=numaccounts+2;
+			if(mainmenu==7){	
+				nummenuitems=Account::getNbAccounts()+2;
 
 				int num;
 
-				if(numaccounts<8)
+				if(Account::getNbAccounts()<8)
 					sprintf (menustring[0], "New User");
 				else
 					sprintf (menustring[0], "No More Users");
@@ -2915,26 +2896,25 @@ int Game::DrawGLScene(StereoSide side)
 
 
 				num=1;
-				if(numaccounts)
-					for(i=0;i<numaccounts;i++){
-						sprintf (menustring[num], "%s",accountname[i]);
-						startx[num]=10;
-						starty[num]=360-20-20*num;
-						endx[num]=startx[num]+strlen(menustring[num])*10;
-						endy[num]=starty[num]+20;
-						movex[num]=0;
-						movey[num]=0;
-
-						num++;
-					}
-
-					sprintf (menustring[num], "Back");
+				for(i=0;i<Account::getNbAccounts();i++){
+					sprintf (menustring[num], "%s",Account::get(i)->getName());
 					startx[num]=10;
+					starty[num]=360-20-20*num;
 					endx[num]=startx[num]+strlen(menustring[num])*10;
-					starty[num]=10;
 					endy[num]=starty[num]+20;
 					movex[num]=0;
 					movey[num]=0;
+
+					num++;
+				}
+
+				sprintf (menustring[num], "Back");
+				startx[num]=10;
+				endx[num]=startx[num]+strlen(menustring[num])*10;
+				starty[num]=10;
+				endy[num]=starty[num]+20;
+				movex[num]=0;
+				movey[num]=0;
 			}
 			if(mainmenu==8){			
 				nummenuitems=3;
@@ -2976,14 +2956,14 @@ int Game::DrawGLScene(StereoSide side)
 					strcpy(menustring[j],temp);
 					for(i=0;i<17;i++)if(menustring[j][i]=='\0')menustring[j][i]=' ';
 					menustring[j][17]='\0';
-					sprintf (temp, "%d",(int)accounthighscore[accountactive][j]);
+					sprintf (temp, "%d",(int)accountactive->getHighScore(j));
 					strcat(menustring[j],temp);
 					for(i=18;i<32;i++)if(menustring[j][i]=='\0')menustring[j][i]=' ';
 					menustring[j][32]='\0';
-					sprintf (temp, "%d:",(int)(((int)accountfasttime[accountactive][j]-(int)(accountfasttime[accountactive][j])%60)/60));
+					sprintf (temp, "%d:",(int)(((int)accountactive->getFastTime(j)-(int)(accountactive->getFastTime(j))%60)/60));
 					strcat(menustring[j],temp);
-					if((int)(accountfasttime[accountactive][j])%60<10)strcat(menustring[j],"0");
-					sprintf (temp, "%d",(int)(accountfasttime[accountactive][j])%60);
+					if((int)(accountactive->getFastTime(j))%60<10)strcat(menustring[j],"0");
+					sprintf (temp, "%d",(int)(accountactive->getFastTime(j))%60);
 					strcat(menustring[j],temp);
 
 					startx[j]=10;
@@ -3023,14 +3003,14 @@ int Game::DrawGLScene(StereoSide side)
 					strcpy(menustring[j],temp);
 					for(i=0;i<17;i++)if(menustring[j][i]=='\0')menustring[j][i]=' ';
 					menustring[j][17]='\0';
-					sprintf (temp, "%d",(int)accounthighscore[accountactive][j]);
+					sprintf (temp, "%d",(int)accountactive->getHighScore(j));
 					strcat(menustring[j],temp);
 					for(i=18;i<32;i++)if(menustring[j][i]=='\0')menustring[j][i]=' ';
 					menustring[j][32]='\0';
-					sprintf (temp, "%d:",(int)(((int)accountfasttime[accountactive][j]-(int)(accountfasttime[accountactive][j])%60)/60));
+					sprintf (temp, "%d:",(int)(((int)accountactive->getFastTime(j)-(int)(accountactive->getFastTime(j))%60)/60));
 					strcat(menustring[j],temp);
-					if((int)(accountfasttime[accountactive][j])%60<10)strcat(menustring[j],"0");
-					sprintf (temp, "%d",(int)(accountfasttime[accountactive][j])%60);
+					if((int)(accountactive->getFastTime(j))%60<10)strcat(menustring[j],"0");
+					sprintf (temp, "%d",(int)(accountactive->getFastTime(j))%60);
 					strcat(menustring[j],temp);
 
 					startx[j]=10;
@@ -3099,7 +3079,7 @@ int Game::DrawGLScene(StereoSide side)
 				strcpy(menustring[4],temp);
 				for(i=0;i<20;i++)if(menustring[4][i]=='\0')menustring[4][i]=' ';
 				menustring[4][20]='\0';
-				sprintf (temp, "%d",(int)accountcampaignscore[accountactive]);
+				sprintf (temp, "%d",(int)accountactive->getCampaignScore());
 				strcat(menustring[4],temp);
 				startx[4]=190;
 				endx[4]=startx[4]+strlen(menustring[4])*10;
@@ -3127,7 +3107,7 @@ int Game::DrawGLScene(StereoSide side)
 				strcpy(menustring[5],temp);
 				for(i=0;i<20;i++)if(menustring[5][i]=='\0')menustring[5][i]=' ';
 				menustring[5][20]='\0';
-				sprintf (temp, "%d",(int)accountcampaignhighscore[accountactive]);
+				sprintf (temp, "%d",(int)accountactive->getCampaignHighScore());
 				strcat(menustring[5],temp);
 				startx[5]=190;
 				endx[5]=startx[5]+strlen(menustring[5])*10;
@@ -3141,7 +3121,7 @@ int Game::DrawGLScene(StereoSide side)
 				strcpy(menustring[7],temp);
 				for(i=0;i<20;i++)if(menustring[7][i]=='\0')menustring[7][i]=' ';
 				menustring[7][20]='\0';
-				sprintf (temp, "%d",(int)accountcampaignfasttime[accountactive]);
+				sprintf (temp, "%d",(int)accountactive->getCampaignFasttime());
 				strcat(menustring[7],temp);
 				startx[7]=200;
 				endx[7]=startx[7]+strlen(menustring[7])*10;
@@ -3571,8 +3551,8 @@ int Game::DrawGLScene(StereoSide side)
 										if(mainmenu!=5||j<6)
 										{
 											glColor4f(1,0,0,1);
-											if(mainmenu==9&&j>accountprogress[accountactive]&&j<numchallengelevels)glColor4f(0.5,0,0,1);
-											if(mainmenu==11&&j>accountprogress[accountactive]&&j<numchallengelevels)glColor4f(0.5,0,0,1);
+											if(mainmenu==9&&j>accountactive->getProgress()&&j<numchallengelevels)glColor4f(0.5,0,0,1);
+											if(mainmenu==11&&j>accountactive->getProgress()&&j<numchallengelevels)glColor4f(0.5,0,0,1);
 											//if(1-((float)i)/10-(1-selectedlong[j])>0){
 											glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 											glPushMatrix();
@@ -3597,8 +3577,8 @@ int Game::DrawGLScene(StereoSide side)
 												if(1-((float)i)/15-(1-selectedlong[j])>0)
 												{
 													glColor4f(1,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
-													if(mainmenu==9&&j>accountprogress[accountactive]&&j<numchallengelevels)glColor4f(0.5,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
-													if(mainmenu==11&&j>accountprogress[accountactive]&&j<numchallengelevels)glColor4f(0.5,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
+													if(mainmenu==9&&j>accountactive->getProgress()&&j<numchallengelevels)glColor4f(0.5,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
+													if(mainmenu==11&&j>accountactive->getProgress()&&j<numchallengelevels)glColor4f(0.5,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
 													if(mainmenu==3)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4-((/*1*/+((float)i)/70)*strlen(menustring[j]))*3,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
 													if(mainmenu==4)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
 													if(mainmenu==5)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
@@ -3663,9 +3643,9 @@ int Game::DrawGLScene(StereoSide side)
 															//float linestartx,lineendx,linestarty,lineendy,offsetx,offsety;
 															linestart.x=(startx[j]+endx[j])/2;
 															linestart.y=(starty[j]+endy[j])/2;
-															if(j>=6+accountcampaignchoicesmade[accountactive]){
-																linestart.x=(startx[6+accountcampaignchoicesmade[accountactive]]+endx[6+accountcampaignchoicesmade[accountactive]])/2;
-																linestart.y=(starty[6+accountcampaignchoicesmade[accountactive]]+endy[6+accountcampaignchoicesmade[accountactive]])/2;
+															if(j>=6+accountactive->getCampaignChoicesMade()){
+																linestart.x=(startx[6+accountactive->getCampaignChoicesMade()]+endx[6+accountactive->getCampaignChoicesMade()])/2;
+																linestart.y=(starty[6+accountactive->getCampaignChoicesMade()]+endy[6+accountactive->getCampaignChoicesMade()])/2;
 															}
 															lineend.x=(startx[j+1]+endx[j+1])/2;
 															lineend.y=(starty[j+1]+endy[j+1])/2;
@@ -3676,12 +3656,12 @@ int Game::DrawGLScene(StereoSide side)
 															Normalise(&offset);
 															glDisable(GL_TEXTURE_2D);							
 
-															if(j<6+accountcampaignchoicesmade[accountactive]){
+															if(j<6+accountactive->getCampaignChoicesMade()){
 																glColor4f(0.5,0,0,1);
 																startsize=.5;
 																endsize=.5;
 															}
-															if(j>=6+accountcampaignchoicesmade[accountactive]){
+															if(j>=6+accountactive->getCampaignChoicesMade()){
 																glColor4f(1,0,0,1);
 																endsize=1;
 																startsize=.5;
@@ -3690,7 +3670,7 @@ int Game::DrawGLScene(StereoSide side)
 															linestart+=fac*4*startsize;
 															lineend-=fac*4*endsize;
 
-															if(!(j>7+accountcampaignchoicesmade[accountactive]+campaignchoicenum)){
+															if(!(j>7+accountactive->getCampaignChoicesMade()+campaignchoicenum)){
 																glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 																glPushMatrix();
 																	glBegin(GL_QUADS);
@@ -3713,8 +3693,8 @@ int Game::DrawGLScene(StereoSide side)
 														else glBindTexture( GL_TEXTURE_2D, Mapcircletexture);
 														glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 														glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-														if(j-7<accountcampaignchoicesmade[accountactive])glColor4f(0.5,0,0,1);
-														if(j-7>=accountcampaignchoicesmade[accountactive])glColor4f(1,0,0,1);
+														if(j-7<accountactive->getCampaignChoicesMade())glColor4f(0.5,0,0,1);
+														if(j-7>=accountactive->getCampaignChoicesMade())glColor4f(1,0,0,1);
 														if(j==6)glColor4f(1,1,1,1);
 														XYZ midpoint;
 														float itemsize;
@@ -3722,8 +3702,8 @@ int Game::DrawGLScene(StereoSide side)
 														midpoint=0;
 														midpoint.x=(startx[j]+endx[j])/2;
 														midpoint.y=(starty[j]+endy[j])/2;
-														if(j>6&&(j-7<accountcampaignchoicesmade[accountactive]))itemsize*=.5;
-														if(!(j-7>accountcampaignchoicesmade[accountactive]+campaignchoicenum))
+														if(j>6&&(j-7<accountactive->getCampaignChoicesMade()))itemsize*=.5;
+														if(!(j-7>accountactive->getCampaignChoicesMade()+campaignchoicenum))
 														{
 															glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 															glPushMatrix();
@@ -3768,7 +3748,7 @@ int Game::DrawGLScene(StereoSide side)
 											glPopMatrix();
 											glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 
-											if(j-7>=accountcampaignchoicesmade[accountactive]){
+											if(j-7>=accountactive->getCampaignChoicesMade()){
 												//glColor4f(0,0,0,1);
 												//text.glPrintOutline(startx[j]+10-1.5,starty[j]-4-1.5,menustring[j],0,0.6*1.25,640,480);
 												//glColor4f(1,0,0,1);

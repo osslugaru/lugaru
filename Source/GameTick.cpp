@@ -168,16 +168,6 @@ extern int currenthotspot;
 extern int kBitsPerPixel;
 extern int hostile;
 
-extern int numaccounts;
-extern int accountactive;
-extern int accountdifficulty[10];
-extern int accountprogress[10];
-extern float accountpoints[10];
-extern float accounthighscore[10][50];
-extern float accountfasttime[10][50];
-extern bool accountunlocked[10][60];
-extern char accountname[10][256];
-
 extern bool stillloading;
 extern bool winfreeze;
 
@@ -223,14 +213,6 @@ extern int dialoguegonethrough[20];
 extern bool campaign;
 
 extern float oldgamespeed;
-
-extern float accountcampaignhighscore[10];
-extern float accountcampaignfasttime[10];
-extern float accountcampaignscore[10];
-extern float accountcampaigntime[10];
-
-extern int accountcampaignchoicesmade[10];
-extern int accountcampaignchoices[10][5000];
 
 static const char *rabbitskin[] = {
 ":Data:Textures:Fur3.jpg",
@@ -1684,7 +1666,7 @@ void	Game::Loadlevel(char *name){
 		damagedealt=0;
 		damagetaken=0;
 
-		if(accountactive!=-1)difficulty=accountdifficulty[accountactive];
+		if(accountactive)difficulty=accountactive->getDifficulty();
 
 		if(difficulty!=2)minimap=1;
 		else minimap=0;
@@ -2536,23 +2518,23 @@ void	Game::Tick()
 			}
 			mainmenutogglekeydown=1;
 		}
-		if(!IsKeyDown(theKeyMap, MAC_ESCAPE_KEY)){
+		if(!Input::isKeyDown(SDLK_ESCAPE)){
 			mainmenutogglekeydown=0;
 		}
 	}
 
 	/*static bool minimaptogglekeydown;
-	if(IsKeyDown(theKeyMap, MAC_TAB_KEY)&&!minimaptogglekeydown){
+	if(Input::isKeyDown(SDLK_TAB)&&!minimaptogglekeydown){
 	minimap=1-minimap;
 	minimaptogglekeydown=1;
 	}
-	if(!IsKeyDown(theKeyMap, MAC_TAB_KEY)){
+	if(!Input::isKeyDown(SDLK_TAB)){
 	minimaptogglekeydown=0;
 	}
 	*/
 
 	static bool minimaptogglekeydown;
-	if(IsKeyDown(theKeyMap, MAC_TAB_KEY)&&!minimaptogglekeydown&&tutoriallevel){
+	if(Input::isKeyDown(SDLK_TAB)&&!minimaptogglekeydown&&tutoriallevel){
 		if(tutorialstage!=51)
 			tutorialstagetime=tutorialmaxtime;
 		PlaySoundEx( consolefailsound, samp[consolefailsound], NULL, true);
@@ -2560,46 +2542,26 @@ void	Game::Tick()
 		OPENAL_SetPaused(channels[consolefailsound], false);
 		minimaptogglekeydown=1;
 	}
-	if(!IsKeyDown(theKeyMap, MAC_TAB_KEY)){
+	if(!Input::isKeyDown(SDLK_TAB)){
 		minimaptogglekeydown=0;
 	}
 
 	if(mainmenu){
 		//menu buttons
 		if(mainmenu==1||mainmenu==2){
-			if(Button()&&!oldbutton&&selected==1){
+			if(Input::Button()&&!oldbutton&&selected==1){
 				if(!gameon){
-					float gLoc[3]={0,0,0};
-					float vel[3]={0,0,0};
-					OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
-					PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-					OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-					OPENAL_SetVolume(channels[firestartsound], 256);
-					OPENAL_SetPaused(channels[firestartsound], false);
-					OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
+					fireSound(firestartsound);
 
-					flashr=1;
-					flashg=0;
-					flashb=0;
-					flashamount=1;
-					flashdelay=1;
+					flash();
 
 					//new game
-					if(accountactive!=-1)mainmenu=5;
-					else mainmenu=7;
-					/*
-					startbonustotal=0;
-
-					loading=2;
-					loadtime=0;
-					if(firstload)TickOnceAfter();
-					if(!firstload)LoadStuff();
-					else {
-					Loadlevel(0);
+					if(accountactive) {
+						mainmenu=5;
+					} else {
+						mainmenu=7;
 					}
-					mainmenu=0;
-					gameon=1;
-					OPENAL_SetPaused(channels[music3], true);	*/
+					selected=-1;
 				}
 				else
 				{
@@ -2610,21 +2572,10 @@ void	Game::Tick()
 				}
 			}
 
-			if(Button()&&!oldbutton&&selected==2){
-				float gLoc[3]={0,0,0};
-				float vel[3]={0,0,0};
-				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
-				PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-				OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-				OPENAL_SetVolume(channels[firestartsound], 256);
-				OPENAL_SetPaused(channels[firestartsound], false);
-				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
+			if(Input::Button()&&!oldbutton&&selected==2){
+				fireSound();
 
-				flashr=1;
-				flashg=0;
-				flashb=0;
-				flashamount=1;
-				flashdelay=1;
+				flash();
 
 				//options
 
@@ -2638,21 +2589,10 @@ void	Game::Tick()
 				if(newscreenheight<0)newscreenheight=screenheight;
 			}
 
-			if(Button()&&!oldbutton&&selected==3){
-				float gLoc[3]={0,0,0};
-				float vel[3]={0,0,0};
-				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
-				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				OPENAL_SetVolume(channels[fireendsound], 256);
-				OPENAL_SetPaused(channels[fireendsound], false);
-				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+			if(Input::Button()&&!oldbutton&&selected==3){
+				fireSound();
 
-				flashr=1;
-				flashg=0;
-				flashb=0;
-				flashamount=1;
-				flashdelay=1;
+				flash();
 
 				if(!gameon){
 					//quit
@@ -2665,22 +2605,12 @@ void	Game::Tick()
 					mainmenu=1;
 				}
 			}
-			if(Button())oldbutton=1;
-			else oldbutton=0;
 		}
-
 		if(mainmenu==3){
-			if(Button()&&!oldbutton&&selected!=-1){
-				float gLoc[3]={0,0,0};
-				float vel[3]={0,0,0};
-				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
-				PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-				OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-				OPENAL_SetVolume(channels[firestartsound], 256);
-				OPENAL_SetPaused(channels[firestartsound], false);
-				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
+			if(Input::Button()&&!oldbutton&&selected!=-1){
+				fireSound();
 			}
-			if(Button()&&!oldbutton&&selected==0){
+			if(Input::Button()&&!oldbutton&&selected==0){
 			
 				extern SDL_Rect **resolutions;
 				bool isCustomResolution = true;
@@ -2924,9 +2854,7 @@ void	Game::Tick()
 		if(mainmenu==5){
 
 			if(endgame==2){
-				accountcampaignchoicesmade[accountactive]=0;
-				accountcampaignscore[accountactive]=0;
-				accountcampaigntime[accountactive]=0;
+				accountactive->endGame();
 				endgame=0;
 			}
 
@@ -2998,8 +2926,8 @@ void	Game::Tick()
 				mapname[8]='p';
 				mapname[9]='s';
 				mapname[10]=':';
-				strcat(mapname,campaignmapname[campaignchoicewhich[selected-7-accountcampaignchoicesmade[accountactive]]]);
-				whichchoice=selected-7-accountcampaignchoicesmade[accountactive];
+				strcat(mapname,campaignmapname[campaignchoicewhich[selected-7-accountactive->getCampaignChoicesMade()]]);
+				whichchoice=selected-7-accountactive->getCampaignChoicesMade();
 				visibleloading=1;
 				stillloading=1;
 				Loadlevel(mapname);
@@ -3218,156 +3146,59 @@ void	Game::Tick()
 		}
 
 		if(mainmenu==6){
-			if(Button()&&!oldbutton&&selected!=-1){
-				float gLoc[3]={0,0,0};
-				float vel[3]={0,0,0};
-				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
-				PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-				OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-				OPENAL_SetVolume(channels[firestartsound], 256);
-				OPENAL_SetPaused(channels[firestartsound], false);
-				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
-			}
-			if(Button()&&!oldbutton&&selected==1){
-				float gLoc[3]={0,0,0};
-				float vel[3]={0,0,0};
-				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
-				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				OPENAL_SetVolume(channels[fireendsound], 256);
-				OPENAL_SetPaused(channels[fireendsound], false);
-				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
-
-				flashr=1;
-				flashg=0;
-				flashb=0;
-				flashamount=1;
-				flashdelay=1;
-
-				for(i=accountactive;i<numaccounts-1;i++){
-					accountdifficulty[i]=accountdifficulty[i+1];
-					accountcampaignchoicesmade[i]=accountcampaignchoicesmade[i+1];
-					for(j=0;j<accountcampaignchoicesmade[i+1];j++){
-						accountcampaignchoices[i][j]=accountcampaignchoices[i+1][j];
+			if(Input::Button()&&!oldbutton) {
+				if(selected>-1){
+					fireSound();
+					if(selected==1) {
+						flash();
+						accountactive = Account::destroy(accountactive);
+						mainmenu=7;
+					} else if(selected==2) {
+						flash();
+						mainmenu=5;
 					}
-					accountpoints[i]=accountpoints[i+1];
-					for(j=0;j<50;j++){
-						accounthighscore[i][j]=accounthighscore[i+1][j];
-						accountfasttime[i][j]=accountfasttime[i+1][j];
-					}
-					for(j=0;j<60;j++){
-						accountunlocked[i][j]=accountunlocked[i+1][j];
-					}
-					for(j=0;j<256;j++){
-						accountname[i][j]=accountname[i+1][j];
-					}
-					accountcampaignhighscore[i]=accountcampaignhighscore[i+1];
-					accountprogress[i]=accountprogress[i+1];
-					accountcampaignfasttime[i]=accountcampaignfasttime[i+1];
-					accountcampaignscore[i]=accountcampaignscore[i+1];
-					accountcampaigntime[i]=accountcampaigntime[i+1];
 				}
-
-				numaccounts--;
-				accountactive=-1;
-
-
-				mainmenu=7;
-			}
-			if(Button()&&!oldbutton&&selected==2){
-				float gLoc[3]={0,0,0};
-				float vel[3]={0,0,0};
-				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
-				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				OPENAL_SetVolume(channels[fireendsound], 256);
-				OPENAL_SetPaused(channels[fireendsound], false);
-				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
-
-				flashr=1;
-				flashg=0;
-				flashb=0;
-				flashamount=1;
-				flashdelay=1;
-
-				mainmenu=5;
 			}
 			if(Button())oldbutton=1;
 			else oldbutton=0;
 		}
 		if(mainmenu==7){
-			if(Button()&&!oldbutton&&selected!=-1){
-				float gLoc[3]={0,0,0};
-				float vel[3]={0,0,0};
-				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
-				PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-				OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-				OPENAL_SetVolume(channels[firestartsound], 256);
-				OPENAL_SetPaused(channels[firestartsound], false);
-				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
-			}
-			if(Button()&&!oldbutton&&selected==0&&numaccounts<8){
-				entername=1;
-			}
-			if(Button()&&!oldbutton&&selected>0&&selected<numaccounts+1){
-				accountactive=selected-1;
-				mainmenu=5;
-				flashr=1;
-				flashg=0;
-				flashb=0;
-				flashamount=1;
-				flashdelay=1;
-			}
-			if(Button()&&!oldbutton&&selected==numaccounts+1){
-				float gLoc[3]={0,0,0};
-				float vel[3]={0,0,0};
-				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
-				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				OPENAL_SetVolume(channels[fireendsound], 256);
-				OPENAL_SetPaused(channels[fireendsound], false);
-				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+			if(Input::Button()&&!oldbutton) {
+				if(selected!=-1){
+					fireSound();
+					if(selected==0&&Account::getNbAccounts()<8){
+						entername=1;
+					} else if (selected<Account::getNbAccounts()+1) {
+						accountactive=Account::get(selected-1);
+						mainmenu=5;
+						flash();
+					} else if (selected==Account::getNbAccounts()+1) {
+						flash();
 
-				flashr=1;
-				flashg=0;
-				flashb=0;
-				flashamount=1;
-				flashdelay=1;
+						mainmenu=1;
 
-				mainmenu=1;
-
-				for(j=0;j<255;j++){
-					displaytext[0][j]=' ';
+						for(j=0;j<255;j++){
+							displaytext[0][j]=' ';
+						}
+						displaychars[0]=0;
+						displayselected=0;
+						entername=0;
+					}
 				}
-				displaychars[0]=0;
-				displayselected=0;
-				entername=0;
 			}
 			if(Button())oldbutton=1;
 			else oldbutton=0;
 		}
 		if(mainmenu==8){
-			if(Button()&&!oldbutton&&selected!=-1){
-				float gLoc[3]={0,0,0};
-				float vel[3]={0,0,0};
-				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
-				PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-				OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-				OPENAL_SetVolume(channels[firestartsound], 256);
-				OPENAL_SetPaused(channels[firestartsound], false);
-				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
+			if(Input::Button()&&!oldbutton&&selected>-1){
+				fireSound();
 
-				if(selected==0)accountdifficulty[accountactive]=0;
-				if(selected==1)accountdifficulty[accountactive]=1;
-				if(selected==2)accountdifficulty[accountactive]=2;
+				if(selected<=2)
+					accountactive->setDifficulty(selected);
 
 				mainmenu=5;
 
-				flashr=1;
-				flashg=0;
-				flashb=0;
-				flashamount=1;
-				flashdelay=1;
+				flash();
 
 			}
 			if(Button())oldbutton=1;
@@ -8762,24 +8593,19 @@ void	Game::TickOnceAfter(){
 								//high scores, awards, win
 								if(campaign){
 									won=1;
-									accountcampaignchoices[accountactive][accountcampaignchoicesmade[accountactive]]=whichchoice;
-									accountcampaignchoicesmade[accountactive]++;
+									accountactive->winCampaignLevel(whichchoice, bonustotal, leveltime);
+									/*accountcampaignchoices[accountactive][accountactive->getCampaignChoicesMade()]=whichchoice;
+									accountactive->getCampaignChoicesMade()++;
 									accountcampaignscore[accountactive]+=bonustotal;
-									scoreadded=1;
 									accountcampaigntime[accountactive]+=leveltime;
-									if(accountcampaignscore[accountactive]>accountcampaignhighscore[accountactive])accountcampaignhighscore[accountactive]=accountcampaignscore[accountactive];
-
-									//if(accountprogress[accountactive]<whichlevel+1)accountprogress[accountactive]=whichlevel+1;
+									if(accountcampaignscore[accountactive]>accountcampaignhighscore[accountactive])
+										accountcampaignhighscore[accountactive]=accountcampaignscore[accountactive];*/
+									scoreadded=1;
 								}
 								else
 								{
 									won=1;
-									if(!debugmode){
-										if(bonustotal-startbonustotal>accounthighscore[accountactive][whichlevel])accounthighscore[accountactive][whichlevel]=bonustotal-startbonustotal;
-										if(accountfasttime[accountactive][whichlevel]==0||leveltime<accountfasttime[accountactive][whichlevel])accountfasttime[accountactive][whichlevel]=leveltime;
-									}
-									if(accountprogress[accountactive]<whichlevel+1)accountprogress[accountactive]=whichlevel+1;
-
+									accountactive->winLevel(whichlevel,bonustotal-startbonustotal,leveltime);
 								}
 							}
 					}
@@ -8860,7 +8686,7 @@ void	Game::TickOnceAfter(){
 								mapname[8]='p';
 								mapname[9]='s';
 								mapname[10]=':';
-								strcat(mapname,campaignmapname[levelorder[accountcampaignchoicesmade[accountactive]]]);//[campaignchoicewhich[whichchoice]]);
+								strcat(mapname,campaignmapname[levelorder[accountactive->getCampaignChoicesMade()]]);//[campaignchoicewhich[whichchoice]]);
 								Loadlevel(mapname);
 
 								OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
@@ -8957,13 +8783,13 @@ void	Game::TickOnceAfter(){
 
 								levelorder[0]=0;
 								levelvisible[0]=1;
-								if(accountcampaignchoicesmade[accountactive])
-									for(i=0;i<accountcampaignchoicesmade[accountactive];i++){
-										levelorder[i+1]=campaignnextlevel[levelorder[i]][accountcampaignchoices[accountactive][i]];
+								if(accountactive->getCampaignChoicesMade())
+									for(i=0;i<accountactive->getCampaignChoicesMade();i++){
+										levelorder[i+1]=campaignnextlevel[levelorder[i]][accountactive->getCampaignChoice(i)];
 										levelvisible[levelorder[i+1]]=1;
 									}
 									int whichlevelstart;
-									whichlevelstart=accountcampaignchoicesmade[accountactive]-1;
+									whichlevelstart=accountactive->getCampaignChoicesMade()-1;
 									if(whichlevelstart<0){
 										campaignchoicenum=1;
 										campaignchoicewhich[0]=0;

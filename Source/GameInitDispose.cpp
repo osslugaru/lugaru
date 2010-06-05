@@ -78,16 +78,6 @@ extern float slomospeed;
 extern char mapname[256];
 extern bool gamestarted;
 
-extern int numaccounts;
-extern int accountactive;
-extern int accountdifficulty[10];
-extern int accountprogress[10];
-extern float accountpoints[10];
-extern float accounthighscore[10][50];
-extern float accountfasttime[10][50];
-extern bool accountunlocked[10][60];
-extern char accountname[10][256];
-
 extern int numdialogues;
 extern int numdialogueboxes[20];
 extern int dialoguetype[20];
@@ -131,59 +121,11 @@ void Game::Dispose()
 	LOGFUNC;
 
 	if(endgame==2){
-		accountcampaignchoicesmade[accountactive]=0;
-		accountcampaignscore[accountactive]=0;
-		accountcampaigntime[accountactive]=0;
+		accountactive->endGame();
 		endgame=0;
 	}
 
-
-	sprintf (mapname, ":Data:Users");
-
-	FILE			*tfile;
-	tfile=fopen( ConvertFileName(mapname), "wb" );
-	if (tfile)
-	{
-		fpackf(tfile, "Bi", numaccounts);
-		fpackf(tfile, "Bi", accountactive);
-		if(numaccounts>0)
-		{
-			for(i=0;i<numaccounts;i++)
-			{
-				fpackf(tfile, "Bf", accountcampaigntime[i]);
-				fpackf(tfile, "Bf", accountcampaignscore[i]);
-				fpackf(tfile, "Bf", accountcampaignfasttime[i]);
-				fpackf(tfile, "Bf", accountcampaignhighscore[i]);
-				fpackf(tfile, "Bi", accountdifficulty[i]);
-				fpackf(tfile, "Bi", accountprogress[i]);
-				fpackf(tfile, "Bi", accountcampaignchoicesmade[i]);
-				for(j=0;j<accountcampaignchoicesmade[i];j++)
-				{
-					fpackf(tfile, "Bi", accountcampaignchoices[i][j]);
-				}
-				fpackf(tfile, "Bf", accountpoints[i]);
-				for(j=0;j<50;j++)
-				{
-					fpackf(tfile, "Bf", accounthighscore[i][j]);
-					fpackf(tfile, "Bf", accountfasttime[i][j]);
-				}
-				for(j=0;j<60;j++)
-				{
-					fpackf(tfile, "Bb",  accountunlocked[i][j]);
-				}
-				fpackf(tfile, "Bi",  strlen(accountname[i]));
-				if(strlen(accountname[i])>0)
-				{
-					for(j=0;j<(int)strlen(accountname[i]);j++)
-					{
-						fpackf(tfile, "Bb",  accountname[i][j]);
-					}
-				}
-			}
-		}
-
-		fclose(tfile);
-	}
+	Account::saveFile(":Data:Users", accountactive);
 
 	TexIter it = textures.begin();
 	for (; it != textures.end(); ++it)
@@ -996,60 +938,7 @@ void Game::InitGame()
 
 	numchallengelevels=14;
 
-
-	FILE			*tfile;
-
-	accountactive=-1;
-
-	sprintf (mapname, ":Data:Users");
-	tfile=fopen( ConvertFileName(mapname), "rb" );
-	if(tfile)
-	{
-		funpackf(tfile, "Bi", &numaccounts);
-		funpackf(tfile, "Bi", &accountactive);
-		if(numaccounts>0)
-		{
-			for(i=0;i<numaccounts;i++)
-			{
-				funpackf(tfile, "Bf", &accountcampaigntime[i]);
-				funpackf(tfile, "Bf", &accountcampaignscore[i]);
-				funpackf(tfile, "Bf", &accountcampaignfasttime[i]);
-				funpackf(tfile, "Bf", &accountcampaignhighscore[i]);
-				funpackf(tfile, "Bi", &accountdifficulty[i]);
-				funpackf(tfile, "Bi", &accountprogress[i]);
-				funpackf(tfile, "Bi", &accountcampaignchoicesmade[i]);
-				for(j=0;j<accountcampaignchoicesmade[i];j++)
-				{
-					funpackf(tfile, "Bi", &accountcampaignchoices[i][j]);
-					if (accountcampaignchoices[i][j] >= 10)
-					{
-						accountcampaignchoices[i][j] = 0;
-					}
-				}
-				funpackf(tfile, "Bf", &accountpoints[i]);
-				for(j=0;j<50;j++)
-				{
-					funpackf(tfile, "Bf", &accounthighscore[i][j]);
-					funpackf(tfile, "Bf", &accountfasttime[i][j]);
-				}
-				for(j=0;j<60;j++)
-				{
-					funpackf(tfile, "Bb",  &accountunlocked[i][j]);
-				}
-				int temp;
-				funpackf(tfile, "Bi",  &temp);
-				if(temp>0)
-				{
-					for(j=0;j<temp;j++)
-					{
-						funpackf(tfile, "Bb",  &accountname[i][j]);
-					}
-				}
-			}
-		}
-
-		fclose(tfile);
-	}
+	accountactive=Account::loadFile(":Data:Users");
 
 	tintr=1;
 	tintg=1;
