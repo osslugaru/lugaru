@@ -42,7 +42,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 typedef bool Boolean;
 
-
 struct Point
 {
 	short v;
@@ -99,16 +98,16 @@ char* ConvertFileName( const char* orgfilename);
 char* ConvertFileName( const char* orgfilename, const char* junk);
 
 
-#define fopen( a, b) fopen( ConvertFileName( a), b);
+#define fopen(a, b) fopen(ConvertFileName(a), b);
 
-inline float abs( float f)
+inline float abs(float f)
 {
 	if (f < 0)
 		return -f;
 	return f;
 }
 
-inline double abs( double f)
+inline double abs(double f)
 {
 	if (f < 0)
 		return -f;

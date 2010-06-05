@@ -38,7 +38,6 @@ extern float blurness;
 extern float windvar;
 extern float playerdist;
 extern bool skyboxtexture;
-extern Sprites sprites;
 
 //Functions
 
@@ -664,7 +663,7 @@ void Objects::DoStuff()
 	XYZ spawnpoint;
 	for(int i=0;i<numobjects;i++){
 		/*if(type[i]==firetype){
-		sprites.MakeSprite(weaponshinesprite, position[i],position[i]*0, 1,1,1, 5, 1);
+		Sprite::MakeSprite(weaponshinesprite, position[i],position[i]*0, 1,1,1, 5, 1);
 		}*/
 
 		if(type[i]==firetype)onfire[i]=1;
@@ -680,7 +679,7 @@ void Objects::DoStuff()
 					spawnpoint.z=0;
 					spawnpoint=DoRotation(spawnpoint,0,Random()%360,0);
 					spawnpoint+=position[i];
-					sprites.MakeSprite(flamesprite, spawnpoint,spawnpoint*0, 1,1,1, (.6+(float)abs(Random()%100)/200-.25)*5*scale[i], 1);
+					Sprite::MakeSprite(flamesprite, spawnpoint,spawnpoint*0, 1,1,1, (.6+(float)abs(Random()%100)/200-.25)*5*scale[i], 1);
 				}
 				if(type[i]==treeleavestype){
 					spawnpoint.x=((float)(Random()%100))/80*scale[i];
@@ -688,7 +687,7 @@ void Objects::DoStuff()
 					spawnpoint.z=0;
 					spawnpoint=DoRotation(spawnpoint,0,Random()%360,0);
 					spawnpoint+=position[i];
-					sprites.MakeSprite(flamesprite, spawnpoint,spawnpoint*0, 1,1,1, (.6+(float)abs(Random()%100)/200-.25)*6, 1);
+					Sprite::MakeSprite(flamesprite, spawnpoint,spawnpoint*0, 1,1,1, (.6+(float)abs(Random()%100)/200-.25)*6, 1);
 				}
 			}
 

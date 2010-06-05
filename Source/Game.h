@@ -47,7 +47,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Lights.h"
 #include "Person.h"
 #include "Constants.h"
-#include "Sprites.h"
+#include "Sprite.h"
 //#include <agl.h>
 #include "Text.h"
 #include "Objects.h"

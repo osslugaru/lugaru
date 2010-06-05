@@ -47,16 +47,16 @@ static AppTime g_appTime;
 void CopyCStringToPascal( const char* src, unsigned char dst[256])
 {
 	int len = strlen( src);
-	dst[ 0] = len;
+	dst[0] = len;
 	memcpy( dst + 1, src, len);
 }
 
 
 void CopyPascalStringToC( const unsigned char* src, char* dst)
 {
-	int len = src[ 0];
+	int len = src[0];
 	memcpy( dst, src + 1, len);
-	dst[ len] = 0;
+	dst[len] = 0;
 }
 
 

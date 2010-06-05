@@ -37,7 +37,7 @@ extern int numsounds;
 extern OPENAL_SAMPLE	*samp[100];
 extern int channels[100];
 extern Terrain terrain;
-extern Sprites sprites;
+//extern Sprites sprites;
 extern int kTextureSize;
 extern float texdetail;
 extern float realtexdetail;
@@ -393,7 +393,8 @@ void Game::LoadTexture(const char *fileName, GLuint *textureid,int mipmap, bool 
 
 		glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 
-		if(!*textureid)glGenTextures( 1, textureid );
+		if(!*textureid)
+			glGenTextures( 1, textureid );
 		glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 
 		glBindTexture( GL_TEXTURE_2D, *textureid);
@@ -401,20 +402,9 @@ void Game::LoadTexture(const char *fileName, GLuint *textureid,int mipmap, bool 
 		if(trilinear)if(mipmap)glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
 		if(!trilinear)if(mipmap)glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST );
 		if(!mipmap)glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-
-		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture.sizeX, texture.sizeY, 0,
-		//          GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, texture.data);
-
-		//gluBuild2DMipmaps( GL_TEXTURE_2D, type, texture.sizeX, texture.sizeY, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, texture.data );
-
+		
 		gluBuild2DMipmaps( GL_TEXTURE_2D, type, texture.sizeX, texture.sizeY, type, GL_UNSIGNED_BYTE, texture.data );
-
-//		textures.insert(std::make_pair(fname, *textureid));
 	}
-//	else
-//	{
-//		*textureid = it->second;
-//	}
 }
 
 void Game::LoadTextureSave(const char *fileName, GLuint *textureid,int mipmap,GLubyte *array, int *skinsize)
@@ -1338,19 +1328,19 @@ void Game::LoadStuff()
 
 	LoadTexture(":Data:Textures:bodyprint.png",&terrain.bodyprinttexture,0,1);
 
-	/*LoadTexture(":Data:Textures:cloud.png",&sprites.cloudtexture,1);
+	/*LoadTexture(":Data:Textures:cloud.png",&Sprite::cloudtexture,1);
 
-	LoadTexture(":Data:Textures:cloudimpact.png",&sprites.cloudimpacttexture,1);
+	LoadTexture(":Data:Textures:cloudimpact.png",&Sprite::cloudimpacttexture,1);
 
-	LoadTexture(":Data:Textures:bloodparticle.png",&sprites.bloodtexture,1);
+	LoadTexture(":Data:Textures:bloodparticle.png",&Sprite::bloodtexture,1);
 
-	LoadTexture(":Data:Textures:snowflake.png",&sprites.snowflaketexture,1);
+	LoadTexture(":Data:Textures:snowflake.png",&Sprite::snowflaketexture,1);
 
-	LoadTexture(":Data:Textures:flame.png",&sprites.flametexture,1);
+	LoadTexture(":Data:Textures:flame.png",&Sprite::flametexture,1);
 
-	LoadTexture(":Data:Textures:smoke.png",&sprites.smoketexture,1);
+	LoadTexture(":Data:Textures:smoke.png",&Sprite::smoketexture,1);
 	//texdetail=temptexdetail;
-	LoadTexture(":Data:Textures:shine.png",&sprites.shinetexture,1);*/
+	LoadTexture(":Data:Textures:shine.png",&Sprite::shinetexture,1);*/
 
 
 
@@ -1362,17 +1352,17 @@ void Game::LoadStuff()
 	//LoadTexture(":Data:Textures:box.jpg",&objects.boxtextureptr,1,0);
 
 
-	LoadTexture(":Data:Textures:cloud.png",&sprites.cloudtexture,1,1);
-	LoadTexture(":Data:Textures:cloudimpact.png",&sprites.cloudimpacttexture,1,1);
-	LoadTexture(":Data:Textures:bloodparticle.png",&sprites.bloodtexture,1,1);
-	LoadTexture(":Data:Textures:snowflake.png",&sprites.snowflaketexture,1,1);
-	LoadTexture(":Data:Textures:flame.png",&sprites.flametexture,1,1);
-	LoadTexture(":Data:Textures:bloodflame.png",&sprites.bloodflametexture,1,1);
-	LoadTexture(":Data:Textures:smoke.png",&sprites.smoketexture,1,1);
-	LoadTexture(":Data:Textures:shine.png",&sprites.shinetexture,1,0);
-	LoadTexture(":Data:Textures:splinter.png",&sprites.splintertexture,1,1);
-	LoadTexture(":Data:Textures:leaf.png",&sprites.leaftexture,1,1);
-	LoadTexture(":Data:Textures:tooth.png",&sprites.toothtexture,1,1);
+	LoadTexture(":Data:Textures:cloud.png",&Sprite::cloudtexture,1,1);
+	LoadTexture(":Data:Textures:cloudimpact.png",&Sprite::cloudimpacttexture,1,1);
+	LoadTexture(":Data:Textures:bloodparticle.png",&Sprite::bloodtexture,1,1);
+	LoadTexture(":Data:Textures:snowflake.png",&Sprite::snowflaketexture,1,1);
+	LoadTexture(":Data:Textures:flame.png",&Sprite::flametexture,1,1);
+	LoadTexture(":Data:Textures:bloodflame.png",&Sprite::bloodflametexture,1,1);
+	LoadTexture(":Data:Textures:smoke.png",&Sprite::smoketexture,1,1);
+	LoadTexture(":Data:Textures:shine.png",&Sprite::shinetexture,1,0);
+	LoadTexture(":Data:Textures:splinter.png",&Sprite::splintertexture,1,1);
+	LoadTexture(":Data:Textures:leaf.png",&Sprite::leaftexture,1,1);
+	LoadTexture(":Data:Textures:tooth.png",&Sprite::toothtexture,1,1);
 
 	rotation=0;
 	rotation2=0;

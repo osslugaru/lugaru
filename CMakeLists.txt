@@ -69,7 +69,7 @@ set(LUGARU_SRCS
 	${SRCDIR}/Random.c
 	${SRCDIR}/Skeleton.cpp
 	${SRCDIR}/Skybox.cpp
-	${SRCDIR}/Sprites.cpp
+	${SRCDIR}/Sprite.cpp
 	${SRCDIR}/Terrain.cpp
 	${SRCDIR}/Text.cpp
 	${SRCDIR}/TGALoader.cpp
@@ -99,7 +99,7 @@ set(LUGARU_H
 	${SRCDIR}/Random.h
 	${SRCDIR}/Skeleton.h
 	${SRCDIR}/Skybox.h
-	${SRCDIR}/Sprites.h
+	${SRCDIR}/Sprite.h
 	${SRCDIR}/TGALoader.h
 	${SRCDIR}/Terrain.h
 	${SRCDIR}/Text.h

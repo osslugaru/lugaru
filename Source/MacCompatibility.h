@@ -111,21 +111,7 @@ inline bool isnormal( double x)
 char* ConvertFileName( const char* orgfilename, const char *mode = "rb" );
 
 #define fopen( a, b) fopen(ConvertFileName(a, b), b)
-/*
-inline float abs( float f)
-{
-if (f < 0)
-return -f;
-return f;
-}
 
-inline double abs( double f)
-{
-if (f < 0)
-return -f;
-return f;
-}
-*/
 __forceinline long long longlongabs( long long f)
 {
 	if (f < 0)

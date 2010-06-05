@@ -30,7 +30,6 @@ extern int channels[100];
 extern Terrain terrain;
 extern float gravity;
 extern int environment;
-extern Sprites sprites;
 extern int detail;
 extern FRUSTUM frustum;
 extern XYZ viewer;
@@ -111,7 +110,7 @@ void	Weapons::DoStuff(){
 				tempvel.y=float(abs(Random()%100)-50)/20;
 				tempvel.z=float(abs(Random()%100)-50)/20;
 				tempvel+=speed;
-				sprites.MakeSprite(splintersprite, position[i]+(tippoint[i]-position[i])*((float)j-8)/32,tempvel*.5, 115/255,73/255,12/255, .1, 1);
+				Sprite::MakeSprite(splintersprite, position[i]+(tippoint[i]-position[i])*((float)j-8)/32,tempvel*.5, 115/255,73/255,12/255, .1, 1);
 			}
 			int tempowner;
 			tempowner=owner[i];
@@ -189,7 +188,7 @@ void	Weapons::DoStuff(){
 
 								bloody[i]=0;
 
-								sprites.MakeSprite(cloudimpactsprite, position[i],velocity[i], 1,1,1, .8, .3);
+								Sprite::MakeSprite(cloudimpactsprite, position[i],velocity[i], 1,1,1, .8, .3);
 							}
 							else {
 								physics[i]=1;
@@ -250,11 +249,11 @@ void	Weapons::DoStuff(){
 									player[j].skeleton.joints[player[j].skeleton.jointlabels[rightshoulder]].velocity+=velocity[i]*2;
 									player[j].skeleton.joints[player[j].skeleton.jointlabels[leftshoulder]].velocity+=velocity[i]*2;
 									//player[j].Puff(abdomen);
-									if(bloodtoggle&&tutoriallevel!=1)sprites.MakeSprite(cloudimpactsprite, footpoint,footvel, 1,0,0, .8, .3);
-									if(tutoriallevel==1)sprites.MakeSprite(cloudimpactsprite, footpoint,footvel, 1,1,1, .8, .3);
+									if(bloodtoggle&&tutoriallevel!=1)Sprite::MakeSprite(cloudimpactsprite, footpoint,footvel, 1,0,0, .8, .3);
+									if(tutoriallevel==1)Sprite::MakeSprite(cloudimpactsprite, footpoint,footvel, 1,1,1, .8, .3);
 									footvel=tippoint[i]-position[i];
 									Normalise(&footvel);
-									if(bloodtoggle&&tutoriallevel!=1)sprites.MakeSprite(bloodflamesprite, footpoint,footvel*-1, 1,0,0, .6, 1);
+									if(bloodtoggle&&tutoriallevel!=1)Sprite::MakeSprite(bloodflamesprite, footpoint,footvel*-1, 1,0,0, .6, 1);
 
 									if(tutoriallevel!=1){
 										if(player[j].weaponstuckwhere==0)player[j].DoBloodBig(2,205);
@@ -352,13 +351,13 @@ void	Weapons::DoStuff(){
 							XYZ terrainlight;
 							terrainlight=terrain.getLighting(position[i].x,position[i].z);
 							if(environment==snowyenvironment){
-								if(findDistancefast(&position[i],&viewer)<viewdistance*viewdistance/4)sprites.MakeSprite(cloudsprite, position[i],velocity[i], terrainlight.x,terrainlight.y,terrainlight.z, .5, .7);
+								if(findDistancefast(&position[i],&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, position[i],velocity[i], terrainlight.x,terrainlight.y,terrainlight.z, .5, .7);
 							}
 							else if(environment==grassyenvironment){
-								if(findDistancefast(&position[i],&viewer)<viewdistance*viewdistance/4)sprites.MakeSprite(cloudsprite, position[i],velocity[i], terrainlight.x*90/255,terrainlight.y*70/255,terrainlight.z*8/255, .5, .5);
+								if(findDistancefast(&position[i],&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, position[i],velocity[i], terrainlight.x*90/255,terrainlight.y*70/255,terrainlight.z*8/255, .5, .5);
 							}
 							else if(environment==desertenvironment){
-								if(findDistancefast(&position[i],&viewer)<viewdistance*viewdistance/4)sprites.MakeSprite(cloudsprite, position[i],velocity[i], terrainlight.x*190/255,terrainlight.y*170/255,terrainlight.z*108/255, .5, .7);
+								if(findDistancefast(&position[i],&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, position[i],velocity[i], terrainlight.x*190/255,terrainlight.y*170/255,terrainlight.z*108/255, .5, .7);
 							}
 
 							bloody[i]=0;
@@ -711,13 +710,13 @@ void	Weapons::DoStuff(){
 								XYZ terrainlight;
 								terrainlight=terrain.getLighting(position[i].x,position[i].z);
 								if(environment==snowyenvironment){
-									if(findDistancefast(&position[i],&viewer)<viewdistance*viewdistance/4)sprites.MakeSprite(cloudsprite, position[i],velocity[i], terrainlight.x,terrainlight.y,terrainlight.z, .5, .7);
+									if(findDistancefast(&position[i],&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, position[i],velocity[i], terrainlight.x,terrainlight.y,terrainlight.z, .5, .7);
 								}
 								else if(environment==grassyenvironment){
-									if(findDistancefast(&position[i],&viewer)<viewdistance*viewdistance/4)sprites.MakeSprite(cloudsprite, position[i],velocity[i], terrainlight.x*90/255,terrainlight.y*70/255,terrainlight.z*8/255, .5, .5);
+									if(findDistancefast(&position[i],&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, position[i],velocity[i], terrainlight.x*90/255,terrainlight.y*70/255,terrainlight.z*8/255, .5, .5);
 								}
 								else if(environment==desertenvironment){
-									if(findDistancefast(&position[i],&viewer)<viewdistance*viewdistance/4)sprites.MakeSprite(cloudsprite, position[i],velocity[i], terrainlight.x*190/255,terrainlight.y*170/255,terrainlight.z*108/255, .5, .7);
+									if(findDistancefast(&position[i],&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, position[i],velocity[i], terrainlight.x*190/255,terrainlight.y*170/255,terrainlight.z*108/255, .5, .7);
 								}
 							}
 						}
@@ -765,13 +764,13 @@ void	Weapons::DoStuff(){
 								XYZ terrainlight;
 								terrainlight=terrain.getLighting(tippoint[i].x,tippoint[i].z);
 								if(environment==snowyenvironment){
-									if(findDistancefast(&tippoint[i],&viewer)<viewdistance*viewdistance/4)sprites.MakeSprite(cloudsprite, tippoint[i],tipvelocity[i], terrainlight.x,terrainlight.y,terrainlight.z, .5, .7);
+									if(findDistancefast(&tippoint[i],&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, tippoint[i],tipvelocity[i], terrainlight.x,terrainlight.y,terrainlight.z, .5, .7);
 								}
 								else if(environment==grassyenvironment){
-									if(findDistancefast(&tippoint[i],&viewer)<viewdistance*viewdistance/4)sprites.MakeSprite(cloudsprite, tippoint[i],tipvelocity[i], terrainlight.x*90/255,terrainlight.y*70/255,terrainlight.z*8/255, .5, .5);
+									if(findDistancefast(&tippoint[i],&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, tippoint[i],tipvelocity[i], terrainlight.x*90/255,terrainlight.y*70/255,terrainlight.z*8/255, .5, .5);
 								}
 								else if(environment==desertenvironment){
-									if(findDistancefast(&tippoint[i],&viewer)<viewdistance*viewdistance/4)sprites.MakeSprite(cloudsprite, tippoint[i],tipvelocity[i], terrainlight.x*190/255,terrainlight.y*170/255,terrainlight.z*108/255, .5, .7);
+									if(findDistancefast(&tippoint[i],&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, tippoint[i],tipvelocity[i], terrainlight.x*190/255,terrainlight.y*170/255,terrainlight.z*108/255, .5, .7);
 								}
 							}
 						}
@@ -1076,7 +1075,7 @@ void	Weapons::DoStuff(){
 				bloodloc.y-=.05;
 				if(bloodtoggle){
 					bloodvel=0;
-					sprites.MakeSprite(bloodsprite, bloodloc,bloodvel, 1,1,1, .03, 1);
+					Sprite::MakeSprite(bloodsprite, bloodloc,bloodvel, 1,1,1, .03, 1);
 				}
 			}
 		}
@@ -1095,9 +1094,9 @@ void	Weapons::DoStuff(){
 						normalrot.y=1;
 					}
 				}
-				sprites.MakeSprite(weaponflamesprite, position[i]+tippoint[i]*(((float)abs(Random()%100))/600+.05),normalrot, 1,1,1, (.6+(float)abs(Random()%100)/200-.25)*1/3, 1);
-				sprites.speed[sprites.numsprites-1]=4;
-				sprites.alivetime[sprites.numsprites-1]=.3;
+				Sprite::MakeSprite(weaponflamesprite, position[i]+tippoint[i]*(((float)abs(Random()%100))/600+.05),normalrot, 1,1,1, (.6+(float)abs(Random()%100)/200-.25)*1/3, 1);
+				Sprite::setLastSpriteSpeed(4);
+				Sprite::setLastSpriteAlivetime(.3);
 			}
 		}
 
@@ -1110,9 +1109,9 @@ void	Weapons::DoStuff(){
 				if(Random()%50==0&&findDistancefast(&position[i],&viewer)>80){
 					XYZ shinepoint;
 					shinepoint=position[i]+(tippoint[i]-position[i])*(((float)abs(Random()%100))/100);
-					sprites.MakeSprite(weaponshinesprite, shinepoint,normalrot, 1,1,1, (.1+(float)abs(Random()%100)/200-.25)*1/3*fast_sqrt(findDistance(&shinepoint,&viewer)), 1);
-					sprites.speed[sprites.numsprites-1]=4;
-					sprites.alivetime[sprites.numsprites-1]=.3;
+					Sprite::MakeSprite(weaponshinesprite, shinepoint,normalrot, 1,1,1, (.1+(float)abs(Random()%100)/200-.25)*1/3*fast_sqrt(findDistance(&shinepoint,&viewer)), 1);
+					Sprite::setLastSpriteSpeed(4);
+					Sprite::setLastSpriteAlivetime(.3);
 				}
 			}
 		}
@@ -1271,13 +1270,13 @@ int Weapons::Draw()
 			XYZ nothingpoint;
 			nothingpoint=0;
 			shinepoint=position[i];
-			sprites.MakeSprite(weaponshinesprite, shinepoint,nothingpoint, 1,1,1,multiplier*2, 1);
-			sprites.speed[sprites.numsprites-1]=4;
-			sprites.alivetime[sprites.numsprites-1]=.3;
+			Sprite::MakeSprite(weaponshinesprite, shinepoint,nothingpoint, 1,1,1,multiplier*2, 1);
+			Sprite::speed[Sprite::numsprites-1]=4;
+			Sprite::alivetime[Sprite::numsprites-1]=.3;
 			shinepoint=tippoint[i];
-			sprites.MakeSprite(weaponshinesprite, shinepoint,nothingpoint, 1,1,1,multiplier*2, 1);
-			sprites.speed[sprites.numsprites-1]=4;
-			sprites.alivetime[sprites.numsprites-1]=.3;*/
+			Sprite::MakeSprite(weaponshinesprite, shinepoint,nothingpoint, 1,1,1,multiplier*2, 1);
+			Sprite::speed[Sprite::numsprites-1]=4;
+			Sprite::alivetime[Sprite::numsprites-1]=.3;*/
 		}
 	}
 	return 0;

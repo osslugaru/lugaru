@@ -49,7 +49,7 @@ extern float texscale;
 extern Terrain terrain;
 extern OPENAL_SAMPLE *samp[100];
 extern int channels[100];
-extern Sprites sprites;
+//extern Sprites sprites;
 extern int kTextureSize;
 extern float screenwidth,screenheight;
 extern float gravity;
@@ -1720,7 +1720,7 @@ void	Game::Loadlevel(char *name){
 		if(!stealthloading)
 		{
 			terrain.numdecals=0;
-			sprites.numsprites=0;
+			Sprite::deleteSprites();
 			for(i=0;i<objects.numobjects;i++)
 			{
 				objects.model[i].numdecals=0;
@@ -3293,7 +3293,7 @@ void	Game::Tick()
 								hotspotsprite=DoRotation(hotspotsprite,0,0,Random()%360);
 								hotspotsprite=DoRotation(hotspotsprite,0,Random()%360,0);
 								hotspotsprite+=hotspot[i];
-								sprites.MakeSprite(breathsprite, hotspotsprite, hotspotsprite*0, 1,0.5,0, 7, 0.4);
+								Sprite::MakeSprite(breathsprite, hotspotsprite, hotspotsprite*0, 1,0.5,0, 7, 0.4);
 								hotspotvisual[i]+=0.1/hotspotsize[i]/hotspotsize[i]/hotspotsize[i];
 							}
 						}
@@ -3373,7 +3373,7 @@ void	Game::Tick()
 									if(player[1].skeleton.free)temp2=player[1].skeleton.joints[i].velocity*player[1].scale/2;
 									if(!player[1].skeleton.free)temp=DoRotation(DoRotation(DoRotation(player[1].skeleton.joints[i].position,0,0,player[1].tilt),player[1].tilt2,0,0),0,player[1].rotation,0)*player[1].scale+player[1].coords;
 									if(player[1].skeleton.free)temp=player[1].skeleton.joints[i].position*player[1].scale+player[1].coords;
-									sprites.MakeSprite(breathsprite, temp,temp2, 1,1,1, .6+(float)abs(Random()%100)/200-.25, 1);
+									Sprite::MakeSprite(breathsprite, temp,temp2, 1,1,1, .6+(float)abs(Random()%100)/200-.25, 1);
 								}
 							}
 
@@ -3625,7 +3625,7 @@ void	Game::Tick()
 									if(player[1].skeleton.free)temp2=player[1].skeleton.joints[i].velocity*player[1].scale/2;
 									if(!player[1].skeleton.free)temp=DoRotation(DoRotation(DoRotation(player[1].skeleton.joints[i].position,0,0,player[1].tilt),player[1].tilt2,0,0),0,player[1].rotation,0)*player[1].scale+player[1].coords;
 									if(player[1].skeleton.free)temp=player[1].skeleton.joints[i].position*player[1].scale+player[1].coords;
-									sprites.MakeSprite(breathsprite, temp,temp2, 1,1,1, .6+(float)abs(Random()%100)/200-.25, 1);
+									Sprite::MakeSprite(breathsprite, temp,temp2, 1,1,1, .6+(float)abs(Random()%100)/200-.25, 1);
 								}
 							}
 
@@ -3813,7 +3813,7 @@ void	Game::Tick()
 								footpoint.y+=((float)abs(Random()%1200))/100-6;
 								footpoint.x+=((float)abs(Random()%1200))/100-6;
 								footpoint.z+=((float)abs(Random()%1200))/100-6;
-								sprites.MakeSprite(snowsprite, footpoint,footvel, 1,1,1, .1, 1);
+								Sprite::MakeSprite(snowsprite, footpoint,footvel, 1,1,1, .1, 1);
 							}
 						}
 						for(k=0;k<numplayers;k++){
@@ -4822,11 +4822,11 @@ void	Game::Tick()
 										flatvelocity2.z+=(float)(abs(Random()%100)-50)/10;
 										headspurtdirection=player[closest].skeleton.joints[player[closest].skeleton.jointlabels[head]].position-player[closest].skeleton.joints[player[closest].skeleton.jointlabels[neck]].position;
 										Normalise(&headspurtdirection);
-										sprites.MakeSprite(bloodflamesprite, flatfacing2,flatvelocity2, 1,1,1, .6, 1);
+										Sprite::MakeSprite(bloodflamesprite, flatfacing2,flatvelocity2, 1,1,1, .6, 1);
 										flatvelocity2+=headspurtdirection*8;
-										sprites.MakeSprite(bloodsprite, flatfacing2,flatvelocity2/2, 1,1,1, .16, 1);
+										Sprite::MakeSprite(bloodsprite, flatfacing2,flatvelocity2/2, 1,1,1, .16, 1);
 									}
-									sprites.MakeSprite(cloudsprite, flatfacing2,flatvelocity2*0, .6,0,0, 1, .5);
+									Sprite::MakeSprite(cloudsprite, flatfacing2,flatvelocity2*0, .6,0,0, 1, .5);
 
 									float gLoc[3];
 									float vel[3];
@@ -4903,9 +4903,9 @@ void	Game::Tick()
 										flatvelocity2.x+=(float)(abs(Random()%100)-50)/10;
 										flatvelocity2.y+=(float)(abs(Random()%100)-50)/10;
 										flatvelocity2.z+=(float)(abs(Random()%100)-50)/10;
-										sprites.MakeSprite(bloodflamesprite, flatfacing2,flatvelocity2, 1,1,1, 3, 1);
-										sprites.MakeSprite(bloodsprite, flatfacing2,flatvelocity2, 1,1,1, .3, 1);
-										sprites.MakeSprite(cloudsprite, flatfacing2,flatvelocity2*0, .6,0,0, 1, .5);
+										Sprite::MakeSprite(bloodflamesprite, flatfacing2,flatvelocity2, 1,1,1, 3, 1);
+										Sprite::MakeSprite(bloodsprite, flatfacing2,flatvelocity2, 1,1,1, .3, 1);
+										Sprite::MakeSprite(cloudsprite, flatfacing2,flatvelocity2*0, .6,0,0, 1, .5);
 									}
 
 									for(i=0;i<player[closest].skeleton.num_joints; i++){
@@ -4916,8 +4916,8 @@ void	Game::Tick()
 										flatvelocity2.x+=(float)(abs(Random()%100)-50)/10;
 										flatvelocity2.y+=(float)(abs(Random()%100)-50)/10;
 										flatvelocity2.z+=(float)(abs(Random()%100)-50)/10;
-										sprites.MakeSprite(bloodflamesprite, flatfacing2,flatvelocity2, 1,1,1, 3, 1);
-										sprites.MakeSprite(bloodsprite, flatfacing2,flatvelocity2, 1,1,1, .4, 1);
+										Sprite::MakeSprite(bloodflamesprite, flatfacing2,flatvelocity2, 1,1,1, 3, 1);
+										Sprite::MakeSprite(bloodsprite, flatfacing2,flatvelocity2, 1,1,1, .4, 1);
 									}
 
 									for(i=0;i<player[closest].skeleton.num_joints; i++){
@@ -4928,8 +4928,8 @@ void	Game::Tick()
 										flatvelocity2.x+=(float)(abs(Random()%100)-50)/10;
 										flatvelocity2.y+=(float)(abs(Random()%100)-50)/10;
 										flatvelocity2.z+=(float)(abs(Random()%100)-50)/10;
-										sprites.MakeSprite(bloodflamesprite, flatfacing2,flatvelocity2*2, 1,1,1, 3, 1);
-										sprites.MakeSprite(bloodsprite, flatfacing2,flatvelocity2*2, 1,1,1, .4, 1);
+										Sprite::MakeSprite(bloodflamesprite, flatfacing2,flatvelocity2*2, 1,1,1, 3, 1);
+										Sprite::MakeSprite(bloodsprite, flatfacing2,flatvelocity2*2, 1,1,1, .4, 1);
 									}
 
 									for(i=0;i<player[closest].skeleton.num_joints; i++){
@@ -4940,8 +4940,8 @@ void	Game::Tick()
 										flatvelocity2.x+=(float)(abs(Random()%100)-50)/10;
 										flatvelocity2.y+=(float)(abs(Random()%100)-50)/10;
 										flatvelocity2.z+=(float)(abs(Random()%100)-50)/10;
-										sprites.MakeSprite(bloodflamesprite, flatfacing2,flatvelocity2*2, 1,1,1, 3, 1);
-										sprites.MakeSprite(bloodsprite, flatfacing2,flatvelocity2*2, 1,1,1, .4, 1);
+										Sprite::MakeSprite(bloodflamesprite, flatfacing2,flatvelocity2*2, 1,1,1, 3, 1);
+										Sprite::MakeSprite(bloodsprite, flatfacing2,flatvelocity2*2, 1,1,1, .4, 1);
 									}
 
 									XYZ temppos;
@@ -7231,7 +7231,7 @@ void	Game::Tick()
 																				footpoint=weapons.position[k];
 																				if(player[i].victim->weaponstuck!=-1){
 																					if(player[i].victim->weaponids[player[i].victim->weaponstuck]==k){
-																						if(bloodtoggle)sprites.MakeSprite(cloudimpactsprite, footpoint,footvel, 1,0,0, .8, .3);
+																						if(bloodtoggle)Sprite::MakeSprite(cloudimpactsprite, footpoint,footvel, 1,0,0, .8, .3);
 																						weapons.bloody[k]=2;
 																						weapons.blooddrip[k]=5;
 																						player[i].victim->weaponstuck=-1;
@@ -7829,7 +7829,7 @@ void	Game::Tick()
 															if(player[1].skeleton.free)temp2=player[1].skeleton.joints[i].velocity*player[1].scale/2;
 															if(!player[1].skeleton.free)temp=DoRotation(DoRotation(DoRotation(player[1].skeleton.joints[i].position,0,0,player[1].tilt),player[1].tilt2,0,0),0,player[1].rotation,0)*player[1].scale+player[1].coords;
 															if(player[1].skeleton.free)temp=player[1].skeleton.joints[i].position*player[1].scale+player[1].coords;
-															sprites.MakeSprite(breathsprite, temp,temp2, 1,1,1, .6+(float)abs(Random()%100)/200-.25, 1);
+															Sprite::MakeSprite(breathsprite, temp,temp2, 1,1,1, .6+(float)abs(Random()%100)/200-.25, 1);
 														}
 													}
 
@@ -7841,7 +7841,7 @@ void	Game::Tick()
 															if(player[1].skeleton.free)temp2=player[1].skeleton.joints[i].velocity*player[1].scale/2;
 															if(!player[1].skeleton.free)temp=DoRotation(DoRotation(DoRotation(player[1].skeleton.joints[i].position,0,0,player[1].tilt),player[1].tilt2,0,0),0,player[1].rotation,0)*player[1].scale+player[1].coords;
 															if(player[1].skeleton.free)temp=player[1].skeleton.joints[i].position*player[1].scale+player[1].coords;
-															sprites.MakeSprite(breathsprite, temp,temp2, 1,1,1, .6+(float)abs(Random()%100)/200-.25, 1);
+															Sprite::MakeSprite(breathsprite, temp,temp2, 1,1,1, .6+(float)abs(Random()%100)/200-.25, 1);
 														}
 													}
 												}

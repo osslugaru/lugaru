@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Lights.h"
 #include "Skeleton.h"
 #include "Terrain.h"
-#include "Sprites.h"
+#include "Sprite.h"
 #include "Frustum.h"
 #include "Objects.h"
 #include "Weapons.h"
@@ -75,7 +75,6 @@ Animation animation[animation_count];
 Skeleton testskeleton;
 int numsounds = 0;
 Terrain terrain;
-Sprites sprites;
 float sps = 0;
 
 SDL_Surface *sdlscreen;

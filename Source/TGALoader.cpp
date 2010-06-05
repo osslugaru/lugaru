@@ -35,7 +35,7 @@ extern bool LoadImage(const char * fname, TGAImageRec & tex);
 /********************> LoadTGA() <*****/
 bool upload_image(const unsigned char* filePath, bool hasalpha)
 {
-	if(visibleloading){
+	if(visibleloading) {
 		loadscreencolor=1;
 		pgame->LoadingScreen();
 	}

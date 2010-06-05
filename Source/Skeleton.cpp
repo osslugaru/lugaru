@@ -31,7 +31,6 @@ extern Terrain terrain;
 extern OPENAL_SAMPLE	*samp[100];
 extern int channels[100];
 extern Objects objects;
-extern Sprites sprites;
 extern int environment;
 extern float terraindetail;
 extern float camerashake;
@@ -329,7 +328,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 			}
 			if(findLengthfast(&bounceness)>4000&&breaking){
 			objects.model[k].MakeDecal(breakdecal,DoRotation(temp-objects.position[k],0,-objects.rotation[k],0),.4,.5,Random()%360);
-			sprites.MakeSprite(cloudsprite, headpos*(*scale)+*coords,joints[jointlabels[head]].velocity*.06, 1,1,1, 4, .2);
+			Sprite::MakeSprite(cloudsprite, headpos*(*scale)+*coords,joints[jointlabels[head]].velocity*.06, 1,1,1, 4, .2);
 			breaking=0;
 			camerashake+=.6;
 
@@ -375,7 +374,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 			joints[jointlabels[head]].locked=1;
 			//joints[jointlabels[head]].velocity*=3;
 			}
-			if(findLengthfast(&bounceness)>500)sprites.MakeSprite(cloudsprite, headpos*(*scale)+*coords,joints[jointlabels[head]].velocity*.06, 1,1,1, .5, .2);
+			if(findLengthfast(&bounceness)>500)Sprite::MakeSprite(cloudsprite, headpos*(*scale)+*coords,joints[jointlabels[head]].velocity*.06, 1,1,1, .5, .2);
 			joints[jointlabels[head]].position=(temp-*coords)/(*scale)+(startheadpos-headpos)+terrainnormal*.005;
 			if(longdead>100)broken=1;
 			}
@@ -466,8 +465,8 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 						if(tutoriallevel!=1||id==0)
 							if(findLengthfast(&bounceness)>8000&&breaking){
 								objects.model[k].MakeDecal(breakdecal,DoRotation(temp-objects.position[k],0,-objects.rotation[k],0),.4,.5,Random()%360);
-								sprites.MakeSprite(cloudsprite, joints[i].position*(*scale)+*coords,joints[i].velocity*.06, 1,1,1, 4, .2);
-								//sprites.MakeSprite(cloudsprite, joints[i].position*(*scale)+*coords,joints[i].velocity*.06, 1,1,1, 1, .2);
+								Sprite::MakeSprite(cloudsprite, joints[i].position*(*scale)+*coords,joints[i].velocity*.06, 1,1,1, 4, .2);
+								//Sprite::MakeSprite(cloudsprite, joints[i].position*(*scale)+*coords,joints[i].velocity*.06, 1,1,1, 1, .2);
 								breaking=0;
 								camerashake+=.6;
 
@@ -508,19 +507,19 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 
 							if(environment==snowyenvironment&&findLengthfast(&bounceness)>500&&terrain.getOpacity(joints[i].position.x*(*scale)+coords->x,joints[i].position.z*(*scale)+coords->z)<.2){
 								terrainlight=terrain.getLighting(joints[i].position.x*(*scale)+coords->x,joints[i].position.z*(*scale)+coords->z);
-								sprites.MakeSprite(cloudsprite, joints[i].position*(*scale)+*coords,joints[i].velocity*.06, terrainlight.x,terrainlight.y,terrainlight.z, .5, .7);
+								Sprite::MakeSprite(cloudsprite, joints[i].position*(*scale)+*coords,joints[i].velocity*.06, terrainlight.x,terrainlight.y,terrainlight.z, .5, .7);
 								if(detail==2)terrain.MakeDecal(bodyprintdecal, joints[i].position*(*scale)+*coords,.4,.4,0);
 							}
 							else if(environment==desertenvironment&&findLengthfast(&bounceness)>500&&terrain.getOpacity(joints[i].position.x*(*scale)+coords->x,joints[i].position.z*(*scale)+coords->z)<.2){
 								terrainlight=terrain.getLighting(joints[i].position.x*(*scale)+coords->x,joints[i].position.z*(*scale)+coords->z);
-								sprites.MakeSprite(cloudsprite, joints[i].position*(*scale)+*coords,joints[i].velocity*.06, terrainlight.x*190/255,terrainlight.y*170/255,terrainlight.z*108/255, .5, .7);
+								Sprite::MakeSprite(cloudsprite, joints[i].position*(*scale)+*coords,joints[i].velocity*.06, terrainlight.x*190/255,terrainlight.y*170/255,terrainlight.z*108/255, .5, .7);
 							}
 
 							else if(environment==grassyenvironment&&findLengthfast(&bounceness)>500&&terrain.getOpacity(joints[i].position.x*(*scale)+coords->x,joints[i].position.z*(*scale)+coords->z)<.2){
 								terrainlight=terrain.getLighting(joints[i].position.x*(*scale)+coords->x,joints[i].position.z*(*scale)+coords->z);
-								sprites.MakeSprite(cloudsprite, joints[i].position*(*scale)+*coords,joints[i].velocity*.06, terrainlight.x*90/255,terrainlight.y*70/255,terrainlight.z*8/255, .5, .5);
+								Sprite::MakeSprite(cloudsprite, joints[i].position*(*scale)+*coords,joints[i].velocity*.06, terrainlight.x*90/255,terrainlight.y*70/255,terrainlight.z*8/255, .5, .5);
 							}
-							else if(findLengthfast(&bounceness)>500)sprites.MakeSprite(cloudsprite, joints[i].position*(*scale)+*coords,joints[i].velocity*.06, terrainlight.x,terrainlight.y,terrainlight.z, .5, .2);
+							else if(findLengthfast(&bounceness)>500)Sprite::MakeSprite(cloudsprite, joints[i].position*(*scale)+*coords,joints[i].velocity*.06, terrainlight.x,terrainlight.y,terrainlight.z, .5, .2);
 
 
 							joints[i].position.y=(terrain.getHeight(joints[i].position.x*(*scale)+coords->x,joints[i].position.z*(*scale)+coords->z)+groundlevel-coords->y)/(*scale);
@@ -585,7 +584,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 										if(tutoriallevel!=1||id==0)
 											if(findLengthfast(&bounceness)>4000&&breaking){
 												objects.model[k].MakeDecal(breakdecal,DoRotation(temp-objects.position[k],0,-objects.rotation[k],0),.4,.5,Random()%360);
-												sprites.MakeSprite(cloudsprite, joints[i].position*(*scale)+*coords,joints[i].velocity*.06, 1,1,1, 4, .2);
+												Sprite::MakeSprite(cloudsprite, joints[i].position*(*scale)+*coords,joints[i].velocity*.06, 1,1,1, 4, .2);
 												breaking=0;
 												camerashake+=.6;
 
@@ -624,8 +623,8 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 												pos.x+=float(abs(Random()%100)-50)/100*objects.scale[k]*5;
 												pos.y+=float(abs(Random()%100)-50)/100*objects.scale[k]*15;
 												pos.z+=float(abs(Random()%100)-50)/100*objects.scale[k]*5;
-												sprites.MakeSprite(splintersprite, pos,tempvel*.5, 165/255+float(abs(Random()%100)-50)/400,0,0, .2+float(abs(Random()%100)-50)/1300, 1);
-												sprites.special[sprites.numsprites-1]=1;
+												Sprite::MakeSprite(splintersprite, pos,tempvel*.5, 165/255+float(abs(Random()%100)-50)/400,0,0, .2+float(abs(Random()%100)-50)/1300, 1);
+												Sprite::special[Sprite::numsprites-1]=1;
 												}*/
 												objects.rotx[k]+=joints[i].velocity.x*multiplier*.4;
 												objects.roty[k]+=joints[i].velocity.z*multiplier*.4;
@@ -650,7 +649,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 													joints[i].locked=1;
 													//joints[i].velocity*=3;
 												}
-												if(findLengthfast(&bounceness)>500)sprites.MakeSprite(cloudsprite, joints[i].position*(*scale)+*coords,joints[i].velocity*.06, 1,1,1, .5, .2);
+												if(findLengthfast(&bounceness)>500)Sprite::MakeSprite(cloudsprite, joints[i].position*(*scale)+*coords,joints[i].velocity*.06, 1,1,1, .5, .2);
 												joints[i].position=(temp-*coords)/(*scale)+terrainnormal*.005;
 												if(longdead>100)broken=1;
 									}

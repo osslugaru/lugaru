@@ -30,7 +30,7 @@ extern int environment;
 extern float texscale;
 extern Light light;
 extern Terrain terrain;
-extern Sprites sprites;
+//extern Sprites sprites;
 extern float multiplier;
 extern float sps;
 extern float viewdistance;
@@ -171,7 +171,7 @@ void Game::flash() { // shouldn't be that way, these should be attributes and Pe
 	flashdelay=1;
 }
 /*********************> DrawGLScene() <*****/
-long long Game::MD5_string (char *string){
+long long Game::MD5_string (char* string){
 	char temp[256]="";
 	char temp2[256]="";
 	long long num=90814;
@@ -598,7 +598,7 @@ int Game::DrawGLScene(StereoSide side)
 
 		glDepthMask(0);
 
-		sprites.Draw();
+		Sprite::Draw();
 
 		if(editorenabled){
 			glEnable(GL_BLEND);
@@ -1667,27 +1667,9 @@ int Game::DrawGLScene(StereoSide side)
 					glTexCoord2f(0,1);
 					glVertex3f(-1, 	1, 0.0f);
 					glEnd();
-					/*glBegin(GL_TRIANGLES);
-					glTexCoord2f(0,0);
-					glVertex3f(-1,		-1, 	 0.0f);
-					glTexCoord2f(1,0);
-					glVertex3f(1,	-1, 	 0.0f);
-					glTexCoord2f(1,1);
-					glVertex3f(0,	1, 0.0f);
-					glEnd();*/
 					glPopMatrix();
 				}
 			}
-			/*glBegin(GL_QUADS);
-			glTexCoord2f(0,0);
-			glVertex3f(-1,		-1, 	 0.0f);
-			glTexCoord2f(1,0);
-			glVertex3f(1,	-1, 	 0.0f);
-			glTexCoord2f(1,1);
-			glVertex3f(1,	1, 0.0f);
-			glTexCoord2f(0,1);
-			glVertex3f(-1, 	1, 0.0f);
-			glEnd();*/
 			glPopMatrix();
 			glDisable(GL_TEXTURE_2D);
 			glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
@@ -1699,12 +1681,6 @@ int Game::DrawGLScene(StereoSide side)
 			glDisable(GL_BLEND);
 			glDepthMask(1);
 		}
-
-		/*if(loading){
-		loading=2;
-		drawmode=normalmode;
-		}*/
-
 
 		if(loading&&!stealthloading&&(!campaign||player[0].dead)){
 			glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
@@ -1794,47 +1770,6 @@ int Game::DrawGLScene(StereoSide side)
 			glColor3f (1.0, 1.0, 1.0); // no coloring
 
 			glEnable(GL_TEXTURE_2D);
-			/*glBindTexture( GL_TEXTURE_2D, logotexture);
-			glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-			glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-			glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
-			glDisable(GL_CULL_FACE);
-			glDisable(GL_LIGHTING);
-			glDepthMask(0);
-			glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-			glPushMatrix();										// Store The Projection Matrix
-			glLoadIdentity();									// Reset The Projection Matrix
-			glOrtho(0,screenwidth,0,screenheight,-100,100);						// Set Up An Ortho Screen
-			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-			glPushMatrix();										// Store The Modelview Matrix
-			glLoadIdentity();								// Reset The Modelview Matrix
-			glScalef((float)screenwidth/2,(float)screenwidth/2,1);
-			glTranslatef(1.8,1.25,0);
-			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-			glEnable(GL_BLEND);
-			glColor4f(1,1,1,1);
-			glPushMatrix();
-			glScalef(.25,.25,.25);
-			glBegin(GL_QUADS);
-			glTexCoord2f(0,0);
-			glVertex3f(-1,		-1, 	 0.0f);
-			glTexCoord2f(1,0);
-			glVertex3f(1,	-1, 	 0.0f);
-			glTexCoord2f(1,1);
-			glVertex3f(1,	1, 0.0f);
-			glTexCoord2f(0,1);
-			glVertex3f(-1, 	1, 0.0f);
-			glEnd();
-			glPopMatrix();
-			glDisable(GL_TEXTURE_2D);
-			glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-			glPopMatrix();										// Restore The Old Projection Matrix
-			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-			glPopMatrix();										// Restore The Old Projection Matrix
-			glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
-			glEnable(GL_CULL_FACE);
-			glDisable(GL_BLEND);
-			glDepthMask(1);*/
 
 			//Awards
 			int numawards;
@@ -1847,76 +1782,73 @@ int Game::DrawGLScene(StereoSide side)
 			}
 			bool alldead;
 			alldead=1;
-			if(numplayers>1)
-				for(i=1;i<numplayers;i++){		
-					if(player[i].dead!=2)alldead=0;
-				}
-				if(alldead){
-					awards[numawards]=awardalldead;
-					numawards++;
-				}
-				alldead=1;
-				if(numplayers>1)
-					for(i=1;i<numplayers;i++){		
-						if(player[i].dead!=1)alldead=0;
-					}
-					if(alldead){
-						awards[numawards]=awardnodead;
-						numawards++;
-					}
-					if(numresponded==0&&!numthrowkill){
-						awards[numawards]=awardstealth;
-						numawards++;
-					}
-					if(numattacks==numstaffattack&&numattacks>0){
-						awards[numawards]=awardbojutsu;
-						numawards++;
-					}
-					if(numattacks==numswordattack&&numattacks>0){
-						awards[numawards]=awardswordsman;
-						numawards++;
-					}
-					if(numattacks==numknifeattack&&numattacks>0){
-						awards[numawards]=awardknifefighter;
-						numawards++;
-					}
-					if(numattacks==numunarmedattack&&numthrowkill==0&&weapons.numweapons>0){
-						awards[numawards]=awardkungfu;
-						numawards++;
-					}
-					if(numescaped>0){
-						awards[numawards]=awardevasion;
-						numawards++;
-					}
-					if(numflipfail==0&&numflipped+numwallflipped*2>20){
-						awards[numawards]=awardacrobat;
-						numawards++;
-					}
-					if(numthrowkill==numplayers-1){
-						awards[numawards]=awardlongrange;
-						numawards++;
-					}
-					alldead=1;
-					if(numplayers>1)
-						for(i=1;i<numplayers;i++){		
-							if(player[i].dead!=2)alldead=0;
-						}
-						if(numafterkill>0&&alldead){
-							awards[numawards]=awardbrutal;
-							numawards++;
-						}
-						if(numreversals>((float)numattacks)*.8&&numreversals>3){
-							awards[numawards]=awardaikido;
-							numawards++;
-						}
-						if(maxalarmed==1&&numplayers>2){
-							awards[numawards]=awardstrategy;
-							numawards++;
-						}
-						if(numflipfail>3){
-							awards[numawards]=awardklutz;
-							numawards++;
-						}
+			for(i=1;i<numplayers;i++){		
+				if(player[i].dead!=2)alldead=0;
+			}
+			if(alldead){
+				awards[numawards]=awardalldead;
+				numawards++;
+			}
+			alldead=1;
+			for(i=1;i<numplayers;i++){		
+				if(player[i].dead!=1)alldead=0;
+			}
+			if(alldead){
+				awards[numawards]=awardnodead;
+				numawards++;
+			}
+			if(numresponded==0&&!numthrowkill){
+				awards[numawards]=awardstealth;
+				numawards++;
+			}
+			if(numattacks==numstaffattack&&numattacks>0){
+				awards[numawards]=awardbojutsu;
+				numawards++;
+			}
+			if(numattacks==numswordattack&&numattacks>0){
+				awards[numawards]=awardswordsman;
+				numawards++;
+			}
+			if(numattacks==numknifeattack&&numattacks>0){
+				awards[numawards]=awardknifefighter;
+				numawards++;
+			}
+			if(numattacks==numunarmedattack&&numthrowkill==0&&weapons.numweapons>0){
+				awards[numawards]=awardkungfu;
+				numawards++;
+			}
+			if(numescaped>0){
+				awards[numawards]=awardevasion;
+				numawards++;
+			}
+			if(numflipfail==0&&numflipped+numwallflipped*2>20){
+				awards[numawards]=awardacrobat;
+				numawards++;
+			}
+			if(numthrowkill==numplayers-1){
+				awards[numawards]=awardlongrange;
+				numawards++;
+			}
+			alldead=1;
+			for(i=1;i<numplayers;i++){		
+				if(player[i].dead!=2)alldead=0;
+			}
+			if(numafterkill>0&&alldead){
+				awards[numawards]=awardbrutal;
+				numawards++;
+			}
+			if(numreversals>((float)numattacks)*.8&&numreversals>3){
+				awards[numawards]=awardaikido;
+				numawards++;
+			}
+			if(maxalarmed==1&&numplayers>2){
+				awards[numawards]=awardstrategy;
+				numawards++;
+			}
+			if(numflipfail>3){
+				awards[numawards]=awardklutz;
+				numawards++;
+			}
 
 
 						//Win Screen Won Victory
@@ -2270,22 +2202,10 @@ int Game::DrawGLScene(StereoSide side)
 			if(mainmenu==1){
 				LoadTexture(":Data:Textures:Newgame.png",&Mainmenuitems[1],0,0);
 				LoadTexture(":Data:Textures:Quit.png",&Mainmenuitems[3],0,0);
-				/*if(oldmainmenu==1||oldmainmenu==0){
-				LoadTexture(":Data:Textures:World.png",&Mainmenuitems[7],0,0);
-				LoadTexture(":Data:Textures:Options.png",&Mainmenuitems[2],0,0);
-				LoadTexture(":Data:Textures:Lugaru.png",&Mainmenuitems[0],0,0);
-				loaddistrib=0;
-				}*/
 			}
 			if(mainmenu==2){
 				LoadTexture(":Data:Textures:Resume.png",&Mainmenuitems[1],0,0);
 				LoadTexture(":Data:Textures:Endgame.png",&Mainmenuitems[3],0,0);
-				/*if(oldmainmenu==2||oldmainmenu==0){
-				LoadTexture(":Data:Textures:World.png",&Mainmenuitems[7],0,0);
-				LoadTexture(":Data:Textures:Options.png",&Mainmenuitems[2],0,0);
-				LoadTexture(":Data:Textures:Lugaru.png",&Mainmenuitems[0],0,0);
-				loaddistrib=0;
-				}*/
 			}
 		}
 		if(lastcheck>.5||oldmainmenu!=mainmenu){
