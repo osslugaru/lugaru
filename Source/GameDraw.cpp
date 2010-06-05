@@ -3575,7 +3575,8 @@ int Game::DrawGLScene(StereoSide side)
 											//if(1-((float)i)/10-(1-selectedlong[j])>0){
 											glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 											glPushMatrix();
-												if(mainmenu!=7||j!=0||!entername)text.glPrint(startx[j],starty[j],menustring[j],0,1,640,480);
+												if(mainmenu!=7||j!=0||!entername)
+													text.glPrint(startx[j],starty[j],menustring[j],0,1,640,480);
 												else
 												{
 													if(displayblink){
@@ -3913,7 +3914,6 @@ int Game::DrawGLScene(StereoSide side)
 		tempmult=multiplier;
 		multiplier=0;
 	}
-
 
 	//glFlush();
 	if ( side == stereoRight || side == stereoCenter ) {

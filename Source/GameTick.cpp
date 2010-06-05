@@ -46,7 +46,7 @@ extern XYZ viewer;
 extern int environment;
 extern float texscale;
 extern Terrain terrain;
-extern OPENAL_SAMPLE	*samp[100];
+extern OPENAL_SAMPLE *samp[100];
 extern int channels[100];
 extern Sprites sprites;
 extern int kTextureSize;
@@ -829,23 +829,21 @@ static void ch_notindemo(Game *game, const char *args)
 static void ch_type(Game *game, const char *args)
 {
   int i, n = sizeof(editortypenames) / sizeof(editortypenames[0]);
-  for (i = 0; i < n; i++)
-    if (stripfx(args, editortypenames[i]))
-      {
-	editoractive = i;
-	break;
-      }
+	for (i = 0; i < n; i++)
+		if (stripfx(args, editortypenames[i])) {
+			editoractive = i;
+			break;
+		}
 }
 
 static void ch_path(Game *game, const char *args)
 {
   int i, n = sizeof(pathtypenames) / sizeof(pathtypenames[0]);
   for (i = 0; i < n; i++)
-    if (stripfx(args, pathtypenames[i]))
-      {
-	editorpathtype = i;
-	break;
-      }
+    if (stripfx(args, pathtypenames[i])) {
+		editorpathtype = i;
+		break;
+    }
 }
 
 static void ch_hs(Game *game, const char *args)
@@ -1194,8 +1192,6 @@ static void cmd_dispatch(Game *game, const char *cmd)
       OPENAL_SetPaused(channels[consolefailsound], false);
     }
 }
-
-
 
 /********************> Tick() <*****/
 extern void ScreenShot(const char * fname);

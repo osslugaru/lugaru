@@ -796,9 +796,9 @@ void DoFrameRate (int update)
 		deltaTime /= 1000.0;
 
 	multiplier=deltaTime;
-	if(multiplier<.001)multiplier=.001;
-	if(multiplier>10)multiplier=10;
-	if(update)frametime = currTime;	// reset for next time interval
+	if(multiplier<.001) multiplier=.001;
+	if(multiplier>10) multiplier=10;
+	if(update) frametime = currTime;	// reset for next time interval
 
 	deltaTime = (float) AbsoluteDeltaToDuration (currTime, time);
 
