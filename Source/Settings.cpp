@@ -1,6 +1,6 @@
 #include "Settings.h"
 #include "Game.h"
-
+#include "Input.h"
 
 void DefaultSettings(Game &game) {
 	detail=1;
@@ -31,16 +31,16 @@ void DefaultSettings(Game &game) {
 	vblsync=0;
 	debugmode=0;
 	
-	game.crouchkey=MAC_SHIFT_KEY;
-	game.jumpkey=MAC_SPACE_KEY;
-	game.leftkey=MAC_A_KEY;
-	game.forwardkey=MAC_W_KEY;
-	game.backkey=MAC_S_KEY;
-	game.rightkey=MAC_D_KEY;
-	game.drawkey=MAC_E_KEY;
-	game.throwkey=MAC_Q_KEY;
-	game.attackkey=MAC_MOUSEBUTTON1;
-	game.chatkey=MAC_T_KEY;
+	game.crouchkey=SDLK_LSHIFT;
+	game.jumpkey=SDLK_SPACE;
+	game.leftkey=SDLK_a;
+	game.forwardkey=SDLK_w;
+	game.backkey=SDLK_s;
+	game.rightkey=SDLK_d;
+	game.drawkey=SDLK_e;
+	game.throwkey=SDLK_q;
+	game.attackkey=MOUSEBUTTON1;
+	game.chatkey=SDLK_t;
 }
 
 void SaveSettings(Game &game) {
@@ -99,25 +99,25 @@ void SaveSettings(Game &game) {
 	opstream << "\nVolume:\n";
 	opstream << volume;
 	opstream << "\nForward key:\n";
-	opstream << KeyToChar(game.forwardkey);
+	opstream << Input::keyToChar(game.forwardkey);
 	opstream << "\nBack key:\n";
-	opstream << KeyToChar(game.backkey);
+	opstream << Input::keyToChar(game.backkey);
 	opstream << "\nLeft key:\n";
-	opstream << KeyToChar(game.leftkey);
+	opstream << Input::keyToChar(game.leftkey);
 	opstream << "\nRight key:\n";
-	opstream << KeyToChar(game.rightkey);
+	opstream << Input::keyToChar(game.rightkey);
 	opstream << "\nJump key:\n";
-	opstream << KeyToChar(game.jumpkey);
+	opstream << Input::keyToChar(game.jumpkey);
 	opstream << "\nCrouch key:\n";
-	opstream << KeyToChar(game.crouchkey);
+	opstream << Input::keyToChar(game.crouchkey);
 	opstream << "\nDraw key:\n";
-	opstream << KeyToChar(game.drawkey);
+	opstream << Input::keyToChar(game.drawkey);
 	opstream << "\nThrow key:\n";
-	opstream << KeyToChar(game.throwkey);
+	opstream << Input::keyToChar(game.throwkey);
 	opstream << "\nAttack key:\n";
-	opstream << KeyToChar(game.attackkey);
+	opstream << Input::keyToChar(game.attackkey);
 	opstream << "\nChat key:\n";
-	opstream << KeyToChar(game.chatkey);
+	opstream << Input::keyToChar(game.chatkey);
 	opstream << "\nDamage bar:\n";
 	opstream << showdamagebar;
 	opstream << "\nStereoMode:\n";
@@ -213,35 +213,35 @@ bool LoadSettings(Game &game) {
 		} else if ( !strncmp(setting, "Volume", 6) ) {
 			ipstream >> volume;
 		} else if ( !strncmp(setting, "Forward key", 11) ) {
-			ipstream >> string;
-			game.forwardkey = CharToKey(string);
+			ipstream.getline( string, sizeof(string) );
+			game.forwardkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Back key", 8) ) {
-			ipstream >> string;
-			game.backkey = CharToKey(string);
+			ipstream.getline( string, sizeof(string) );
+			game.backkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Left key", 8) ) {
-			ipstream >> string;
-			game.leftkey = CharToKey(string);
+			ipstream.getline( string, sizeof(string) );
+			game.leftkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Right key", 9) ) {
-			ipstream >> string;
-			game.rightkey = CharToKey(string);
+			ipstream.getline( string, sizeof(string) );
+			game.rightkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Jump key", 8) ) {
-			ipstream >> string;
-			game.jumpkey = CharToKey(string);
+			ipstream.getline( string, sizeof(string) );
+			game.jumpkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Crouch key", 10) ) {
-			ipstream >> string;
-			game.crouchkey = CharToKey(string);
+			ipstream.getline( string, sizeof(string) );
+			game.crouchkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Draw key", 8) ) {
-			ipstream >> string;
-			game.drawkey = CharToKey(string);
+			ipstream.getline( string, sizeof(string) );
+			game.drawkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Throw key", 9) ) {
-			ipstream >> string;
-			game.throwkey = CharToKey(string);
+			ipstream.getline( string, sizeof(string) );
+			game.throwkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Attack key", 10) ) {
-			ipstream >> string;
-			game.attackkey = CharToKey(string);
+			ipstream.getline( string, sizeof(string) );
+			game.attackkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Chat key", 8) ) {
-			ipstream >> string;
-			game.chatkey = CharToKey(string);
+			ipstream.getline( string, sizeof(string) );
+			game.chatkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Damage bar", 10) ) {
 			ipstream >> showdamagebar;
 		} else if ( !strncmp(setting, "StereoMode", 10) ) {

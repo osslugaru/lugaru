@@ -53,6 +53,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 set(LUGARU_SRCS
 	${SRCDIR}/Frustum.cpp
 	${SRCDIR}/Account.cpp
+	${SRCDIR}/Game.cpp
 	${SRCDIR}/GameDraw.cpp
 	${SRCDIR}/GameInitDispose.cpp
 	${SRCDIR}/GameTick.cpp
@@ -77,7 +78,7 @@ set(LUGARU_SRCS
 	${SRCDIR}/Weapons.cpp
 	${SRCDIR}/OpenGL_Windows.cpp
 	${SRCDIR}/openal_wrapper.cpp
-	${SRCDIR}/WinInput.cpp
+	${SRCDIR}/Input.cpp
 	${SRCDIR}/Settings.cpp
 	${SRCDIR}/Stereo.cpp
 )
@@ -103,7 +104,7 @@ set(LUGARU_H
 	${SRCDIR}/Terrain.h
 	${SRCDIR}/Text.h
 	${SRCDIR}/Weapons.h
-	${SRCDIR}/WinInput.h
+	${SRCDIR}/Input.h
 	${SRCDIR}/alstubs.h
 	${SRCDIR}/binio.h
 	${SRCDIR}/openal_wrapper.h

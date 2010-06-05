@@ -42,8 +42,7 @@ OPENAL_SAMPLE	*samp[100] = {0};
 OPENAL_STREAM * strm[20] = {0};
 int channels[100] = {0};
 
-float volume = 0;bool buttons[3] = {0};
-bool oldbuttons[3] = {0};
+float volume = 0;
 bool ismotionblur = 0;
 float usermousesensitivity = 0;
 bool floatjump = 0;

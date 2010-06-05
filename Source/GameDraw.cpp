@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Game.h"
 #include "openal_wrapper.h"
+#include "Input.h"
 
 using namespace std;
 
@@ -72,7 +73,6 @@ extern bool midweird;
 extern bool proportionweird;
 extern bool vertexweird[6];
 extern bool velocityblur;
-extern bool buttons[3];
 extern bool debugmode;
 extern int mainmenu;
 extern int oldmainmenu;
@@ -163,6 +163,13 @@ extern OPENAL_SAMPLE	*samp[100];
 extern int channels[100];
 extern "C" 	void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 
+void Game::flash() { // shouldn't be that way, these should be attributes and Person class should not change rendering.
+	flashr=1;
+	flashg=0;
+	flashb=0;
+	flashamount=1;
+	flashdelay=1;
+}
 /*********************> DrawGLScene() <*****/
 long long Game::MD5_string (char *string){
 	char temp[256]="";
@@ -711,22 +718,22 @@ int Game::DrawGLScene(StereoSide side)
 						sprintf (string3, " ");
 					}
 					if(tutorialstage==4){
-						sprintf (string, "Try using the %s, %s, %s and %s keys to move around.",KeyToChar(forwardkey),KeyToChar(leftkey),KeyToChar(backkey),KeyToChar(rightkey));
+						sprintf (string, "Try using the %s, %s, %s and %s keys to move around.",Input::keyToChar(forwardkey),Input::keyToChar(leftkey),Input::keyToChar(backkey),Input::keyToChar(rightkey));
 						sprintf (string2, "All movement is relative to the camera.");
 						sprintf (string3, " ");
 					}
 					if(tutorialstage==5){
-						sprintf (string, "Please press %s to jump.",KeyToChar(jumpkey));
+						sprintf (string, "Please press %s to jump.",Input::keyToChar(jumpkey));
 						sprintf (string2, "You can hold it longer to jump higher.");
 						sprintf (string3, " ");
 					}
 					if(tutorialstage==6){
-						sprintf (string, "You can press %s to crouch.",KeyToChar(crouchkey));
+						sprintf (string, "You can press %s to crouch.",Input::keyToChar(crouchkey));
 						sprintf (string2, "You can jump higher from a crouching position.");
 						sprintf (string3, " ");
 					}
 					if(tutorialstage==7){
-						sprintf (string, "While running, you can press %s to roll.",KeyToChar(crouchkey));
+						sprintf (string, "While running, you can press %s to roll.",Input::keyToChar(crouchkey));
 						sprintf (string2, " ");
 						sprintf (string3, " ");
 					}
@@ -746,12 +753,12 @@ int Game::DrawGLScene(StereoSide side)
 						sprintf (string3, " ");
 					}
 					if(tutorialstage==11){
-						sprintf (string, "When you jump at a wall, you can hold %s again",KeyToChar(jumpkey));
+						sprintf (string, "When you jump at a wall, you can hold %s again",Input::keyToChar(jumpkey));
 						sprintf (string2, "during impact to perform a walljump.");
 						sprintf (string3, "Be sure to use the movement keys to press against the wall");
 					}
 					if(tutorialstage==12){
-						sprintf (string, "While in the air, you can press crouch to flip.",KeyToChar(jumpkey));
+						sprintf (string, "While in the air, you can press crouch to flip.",Input::keyToChar(jumpkey));
 						sprintf (string2, "Walljumps and flips confuse enemies and give you more control.");
 						sprintf (string3, " ");
 					}
@@ -766,8 +773,8 @@ int Game::DrawGLScene(StereoSide side)
 						sprintf (string3, " ");
 					}
 					if(tutorialstage==15){
-						if(attackkey==MAC_MOUSEBUTTON1)sprintf (string, "Click to attack when you are near an enemy.");
-						else sprintf (string, "Press %s to attack when you are near an enemy.",KeyToChar(attackkey));
+						if(attackkey==MOUSEBUTTON1)sprintf (string, "Click to attack when you are near an enemy.");
+						else sprintf (string, "Press %s to attack when you are near an enemy.",Input::keyToChar(attackkey));
 						sprintf (string2, "You can punch by standing still near an enemy and attacking.");
 						sprintf (string3, " ");
 					}
@@ -793,9 +800,9 @@ int Game::DrawGLScene(StereoSide side)
 					}
 					if(tutorialstage==20){
 						sprintf (string, "Your most powerful individual attack is the rabbit kick.");
-						if(attackkey==MAC_MOUSEBUTTON1)sprintf (string2, "Run at the enemy while holding the mouse button, and press");
-						else sprintf (string2, "Run at the enemy while holding %s, and press", KeyToChar(attackkey));
-						sprintf (string3, "the jump key (%s) to attack.",KeyToChar(jumpkey));
+						if(attackkey==MOUSEBUTTON1)sprintf (string2, "Run at the enemy while holding the mouse button, and press");
+						else sprintf (string2, "Run at the enemy while holding %s, and press", Input::keyToChar(attackkey));
+						sprintf (string3, "the jump key (%s) to attack.",Input::keyToChar(jumpkey));
 					}
 					if(tutorialstage==21){
 						sprintf (string, "This attack is devastating if timed correctly.");
@@ -815,8 +822,8 @@ int Game::DrawGLScene(StereoSide side)
 					}
 					if(tutorialstage==24){
 						sprintf (string, "You can tackle enemies by running at them animal-style");
-						if(attackkey==MAC_MOUSEBUTTON1)sprintf (string2, "and pressing jump (%s) or attack(mouse button).",KeyToChar(jumpkey));
-						else sprintf (string2, "and pressing jump (%s) or attack(%s).",KeyToChar(jumpkey),KeyToChar(attackkey));
+						if(attackkey==MOUSEBUTTON1)sprintf (string2, "and pressing jump (%s) or attack(mouse button).",Input::keyToChar(jumpkey));
+						else sprintf (string2, "and pressing jump (%s) or attack(%s).",Input::keyToChar(jumpkey),Input::keyToChar(attackkey));
 						sprintf (string3, "This is especially useful when they are running away.");
 					}
 					if(tutorialstage==25){
@@ -837,7 +844,7 @@ int Game::DrawGLScene(StereoSide side)
 					if(tutorialstage==28){
 						sprintf (string, "If you attack, you will notice that the enemy now sometimes");
 						sprintf (string2, "catches your attack and uses it against you. Hold");
-						sprintf (string3, "crouch (%s) after attacking to escape from reversals.",KeyToChar(crouchkey));
+						sprintf (string3, "crouch (%s) after attacking to escape from reversals.",Input::keyToChar(crouchkey));
 					}
 					if(tutorialstage==29){
 						sprintf (string, "Try escaping from two more reversals in a row.");
@@ -850,7 +857,7 @@ int Game::DrawGLScene(StereoSide side)
 						sprintf (string3, " ");
 					}
 					if(tutorialstage==31){
-						sprintf (string, "To reverse an attack, you must tap crouch (%s) during the",KeyToChar(crouchkey));
+						sprintf (string, "To reverse an attack, you must tap crouch (%s) during the",Input::keyToChar(crouchkey));
 						sprintf (string2, "enemy's attack. You must also be close to the enemy;");
 						sprintf (string3, "this is especially important against armed opponents.");
 					}
@@ -896,11 +903,11 @@ int Game::DrawGLScene(StereoSide side)
 					}
 					if(tutorialstage==40){
 						sprintf (string, "Stand, roll or handspring over the knife");
-						sprintf (string2, "while pressing %s to pick it up.",KeyToChar(throwkey));
+						sprintf (string2, "while pressing %s to pick it up.",Input::keyToChar(throwkey));
 						sprintf (string3, "You can crouch and press the same key to drop it again.");
 					}
 					if(tutorialstage==41){
-						sprintf (string, "You can equip and unequip weapons using the %s key.",KeyToChar(drawkey));
+						sprintf (string, "You can equip and unequip weapons using the %s key.",Input::keyToChar(drawkey));
 						sprintf (string2, "Sometimes it is best to keep them unequipped to");
 						sprintf (string3, "prevent enemies from taking them. ");
 					}
@@ -940,7 +947,7 @@ int Game::DrawGLScene(StereoSide side)
 						sprintf (string3, "spin smash is slower and more powerful.");
 					}
 					if(tutorialstage==49){
-						sprintf (string, "When facing an enemy, you can throw the knife with %s.",KeyToChar(throwkey));
+						sprintf (string, "When facing an enemy, you can throw the knife with %s.",Input::keyToChar(throwkey));
 						sprintf (string2, "It is possible to throw the knife while flipping,");
 						sprintf (string3, "but it is very inaccurate.");
 					}
@@ -964,7 +971,7 @@ int Game::DrawGLScene(StereoSide side)
 					text.glPrint(screenwidth/2-7.6*strlen(string2)*screenwidth/1024,screenheight/16+screenheight*4/5-20*screenwidth/1024,string2,1,1.5*screenwidth/1024,screenwidth,screenheight);
 					text.glPrint(screenwidth/2-7.6*strlen(string3)*screenwidth/1024,screenheight/16+screenheight*4/5-40*screenwidth/1024,string3,1,1.5*screenwidth/1024,screenwidth,screenheight);
 
-					sprintf (string, "Press 'tab' to skip to the next item.",KeyToChar(jumpkey));
+					sprintf (string, "Press 'tab' to skip to the next item.",Input::keyToChar(jumpkey));
 					sprintf (string2, "Press escape at any time to");
 					sprintf (string3, "pause or exit the tutorial.");
 
@@ -2608,7 +2615,7 @@ int Game::DrawGLScene(StereoSide side)
 
 			if(mainmenu==4){			
 				nummenuitems=10;
-				if(keyselect!=0)sprintf (menustring[0], "Forwards: %s",KeyToChar(forwardkey));
+				if(keyselect!=0)sprintf (menustring[0], "Forwards: %s",Input::keyToChar(forwardkey));
 				else sprintf (menustring[0], "Forwards: _");
 				startx[0]=10;
 				starty[0]=400;
@@ -2617,7 +2624,7 @@ int Game::DrawGLScene(StereoSide side)
 				movex[0]=0;
 				movey[0]=0;
 
-				if(keyselect!=1)sprintf (menustring[1], "Back: %s",KeyToChar(backkey));
+				if(keyselect!=1)sprintf (menustring[1], "Back: %s",Input::keyToChar(backkey));
 				else sprintf (menustring[1], "Back: _");
 				startx[1]=10+40;
 				starty[1]=360;
@@ -2626,7 +2633,7 @@ int Game::DrawGLScene(StereoSide side)
 				movex[1]=0;
 				movey[1]=0;
 
-				if(keyselect!=2)sprintf (menustring[2], "Left: %s",KeyToChar(leftkey));
+				if(keyselect!=2)sprintf (menustring[2], "Left: %s",Input::keyToChar(leftkey));
 				else sprintf (menustring[2], "Left: _");
 				startx[2]=10+40;
 				starty[2]=320;
@@ -2635,7 +2642,7 @@ int Game::DrawGLScene(StereoSide side)
 				movex[2]=0;
 				movey[2]=0;
 
-				if(keyselect!=3)sprintf (menustring[3], "Right: %s",KeyToChar(rightkey));
+				if(keyselect!=3)sprintf (menustring[3], "Right: %s",Input::keyToChar(rightkey));
 				else sprintf (menustring[3], "Right: _");
 				startx[3]=10+30;
 				starty[3]=280;
@@ -2644,7 +2651,7 @@ int Game::DrawGLScene(StereoSide side)
 				movex[3]=0;
 				movey[3]=0;
 
-				if(keyselect!=4)sprintf (menustring[4], "Crouch: %s",KeyToChar(crouchkey));
+				if(keyselect!=4)sprintf (menustring[4], "Crouch: %s",Input::keyToChar(crouchkey));
 				else sprintf (menustring[4], "Crouch: _");
 				startx[4]=10+20;
 				starty[4]=240;
@@ -2653,7 +2660,7 @@ int Game::DrawGLScene(StereoSide side)
 				movex[4]=0;
 				movey[4]=0;
 
-				if(keyselect!=5)sprintf (menustring[5], "Jump: %s",KeyToChar(jumpkey));
+				if(keyselect!=5)sprintf (menustring[5], "Jump: %s",Input::keyToChar(jumpkey));
 				else sprintf (menustring[5], "Jump: _");
 				startx[5]=10+40;
 				starty[5]=200;
@@ -2662,7 +2669,7 @@ int Game::DrawGLScene(StereoSide side)
 				movex[5]=0;
 				movey[5]=0;
 
-				if(keyselect!=6)sprintf (menustring[6], "Draw: %s",KeyToChar(drawkey));
+				if(keyselect!=6)sprintf (menustring[6], "Draw: %s",Input::keyToChar(drawkey));
 				else sprintf (menustring[6], "Draw: _");
 				startx[6]=10+40;
 				starty[6]=160;
@@ -2671,7 +2678,7 @@ int Game::DrawGLScene(StereoSide side)
 				movex[6]=0;
 				movey[6]=0;
 
-				if(keyselect!=7)sprintf (menustring[7], "Throw: %s",KeyToChar(throwkey));
+				if(keyselect!=7)sprintf (menustring[7], "Throw: %s",Input::keyToChar(throwkey));
 				else sprintf (menustring[7], "Throw: _");
 				startx[7]=10+30;
 				starty[7]=120;
@@ -2680,7 +2687,7 @@ int Game::DrawGLScene(StereoSide side)
 				movex[7]=0;
 				movey[7]=0;
 
-				if(keyselect!=8)sprintf (menustring[8], "Attack: %s",KeyToChar(attackkey));
+				if(keyselect!=8)sprintf (menustring[8], "Attack: %s",Input::keyToChar(attackkey));
 				else sprintf (menustring[8], "Attack: _");
 				startx[8]=10+20;
 				starty[8]=80;
@@ -3822,27 +3829,29 @@ int Game::DrawGLScene(StereoSide side)
 											glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
 											glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
 										glPopMatrix();
-										glPushMatrix();
-											glTranslatef(mousecoordh-screenwidth/2,mousecoordv*-1+screenheight/2,0);
-											glScalef((float)screenwidth/64,(float)screenwidth/64,1);
-											glTranslatef(1,-1,0);
-											glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-											glColor4f(1,1,1,1);
-											glBindTexture( GL_TEXTURE_2D, cursortexture);
+										if(!waiting) { // hide the cursor while waiting for a key
 											glPushMatrix();
-												//glScalef(.25,.25,.25);
-												glBegin(GL_QUADS);
-												glTexCoord2f(0,0);
-												glVertex3f(-1,		-1, 	 0.0f);
-												glTexCoord2f(1,0);
-												glVertex3f(1,	-1, 	 0.0f);
-												glTexCoord2f(1,1);
-												glVertex3f(1,	1, 0.0f);
-												glTexCoord2f(0,1);
-												glVertex3f(-1, 	1, 0.0f);
-												glEnd();
+												glTranslatef(mousecoordh-screenwidth/2,mousecoordv*-1+screenheight/2,0);
+												glScalef((float)screenwidth/64,(float)screenwidth/64,1);
+												glTranslatef(1,-1,0);
+												glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+												glColor4f(1,1,1,1);
+												glBindTexture( GL_TEXTURE_2D, cursortexture);
+												glPushMatrix();
+													//glScalef(.25,.25,.25);
+													glBegin(GL_QUADS);
+													glTexCoord2f(0,0);
+													glVertex3f(-1,		-1, 	 0.0f);
+													glTexCoord2f(1,0);
+													glVertex3f(1,	-1, 	 0.0f);
+													glTexCoord2f(1,1);
+													glVertex3f(1,	1, 0.0f);
+													glTexCoord2f(0,1);
+													glVertex3f(-1, 	1, 0.0f);
+													glEnd();
+												glPopMatrix();
 											glPopMatrix();
-										glPopMatrix();
+										}
 									glPopMatrix();
 									glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
 								glPopMatrix();

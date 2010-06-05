@@ -61,7 +61,6 @@ static bool save_png(const char * fname);
 #pragma comment(lib, "glaux.lib")
 #endif
 
-extern bool buttons[3];
 extern float multiplier;
 extern float sps;
 extern float realmultiplier;
@@ -128,7 +127,6 @@ void DrawGL(Game & game);
 
 void CreateGLWindow (void);
 Boolean SetUp (Game & game);
-void DoKey (SInt8 theKey, SInt8 theCode);
 void DoUpdate (Game & game);
 
 void DoEvent (void);
@@ -288,128 +286,6 @@ void DrawGL (Game & game)
 	}
 }
 
-
-static KeyMap g_theKeys;
-
-void SetKey( int key)
-{
-    g_theKeys[ key >> 3] |= (1 << (key & 7));
-}
-
-void ClearKey( int key)
-{
-    g_theKeys[ key >> 3] &= (0xff ^ (1 << (key & 7)));
-}
-
-void GetKeys(  unsigned char theKeys[16])
-{
-    memcpy( theKeys, &g_theKeys, 16);
-}
-
-Boolean Button()
-{
-    return g_button;
-}
-
-
-#define MAX_SDLKEYS SDLK_LAST
-static unsigned short KeyTable[MAX_SDLKEYS];
-
-static void initSDLKeyTable(void)
-{
-    memset(KeyTable, 0xFF, sizeof (KeyTable));
-    KeyTable[SDLK_BACKSPACE] = MAC_DELETE_KEY;
-    KeyTable[SDLK_TAB] = MAC_TAB_KEY;
-    KeyTable[SDLK_RETURN] = MAC_RETURN_KEY;
-    KeyTable[SDLK_ESCAPE] = MAC_ESCAPE_KEY;
-    KeyTable[SDLK_SPACE] = MAC_SPACE_KEY;
-    KeyTable[SDLK_PAGEUP] = MAC_PAGE_UP_KEY;
-    KeyTable[SDLK_PAGEDOWN] = MAC_PAGE_DOWN_KEY;
-    KeyTable[SDLK_END] = MAC_END_KEY;
-    KeyTable[SDLK_HOME] = MAC_HOME_KEY;
-    KeyTable[SDLK_LEFT] = MAC_ARROW_LEFT_KEY;
-    KeyTable[SDLK_UP] = MAC_ARROW_UP_KEY;
-    KeyTable[SDLK_RIGHT] = MAC_ARROW_RIGHT_KEY;
-    KeyTable[SDLK_DOWN] = MAC_ARROW_DOWN_KEY;
-    KeyTable[SDLK_INSERT] = MAC_INSERT_KEY;
-    KeyTable[SDLK_DELETE] = MAC_DEL_KEY;
-    KeyTable[SDLK_0] = MAC_0_KEY;
-    KeyTable[SDLK_1] = MAC_1_KEY;
-    KeyTable[SDLK_2] = MAC_2_KEY;
-    KeyTable[SDLK_3] = MAC_3_KEY;
-    KeyTable[SDLK_4] = MAC_4_KEY;
-    KeyTable[SDLK_5] = MAC_5_KEY;
-    KeyTable[SDLK_6] = MAC_6_KEY;
-    KeyTable[SDLK_7] = MAC_7_KEY;
-    KeyTable[SDLK_8] = MAC_8_KEY;
-    KeyTable[SDLK_9] = MAC_9_KEY;
-    KeyTable[SDLK_a] = MAC_A_KEY;
-    KeyTable[SDLK_b] = MAC_B_KEY;
-    KeyTable[SDLK_c] = MAC_C_KEY;
-    KeyTable[SDLK_d] = MAC_D_KEY;
-    KeyTable[SDLK_e] = MAC_E_KEY;
-    KeyTable[SDLK_f] = MAC_F_KEY;
-    KeyTable[SDLK_g] = MAC_G_KEY;
-    KeyTable[SDLK_h] = MAC_H_KEY;
-    KeyTable[SDLK_i] = MAC_I_KEY;
-    KeyTable[SDLK_j] = MAC_J_KEY;
-    KeyTable[SDLK_k] = MAC_K_KEY;
-    KeyTable[SDLK_l] = MAC_L_KEY;
-    KeyTable[SDLK_m] = MAC_M_KEY;
-    KeyTable[SDLK_n] = MAC_N_KEY;
-    KeyTable[SDLK_o] = MAC_O_KEY;
-    KeyTable[SDLK_p] = MAC_P_KEY;
-    KeyTable[SDLK_q] = MAC_Q_KEY;
-    KeyTable[SDLK_r] = MAC_R_KEY;
-    KeyTable[SDLK_s] = MAC_S_KEY;
-    KeyTable[SDLK_t] = MAC_T_KEY;
-    KeyTable[SDLK_u] = MAC_U_KEY;
-    KeyTable[SDLK_v] = MAC_V_KEY;
-    KeyTable[SDLK_w] = MAC_W_KEY;
-    KeyTable[SDLK_x] = MAC_X_KEY;
-    KeyTable[SDLK_y] = MAC_Y_KEY;
-    KeyTable[SDLK_z] = MAC_Z_KEY;
-    KeyTable[SDLK_KP0] = MAC_NUMPAD_0_KEY;
-    KeyTable[SDLK_KP1] = MAC_NUMPAD_1_KEY;
-    KeyTable[SDLK_KP2] = MAC_NUMPAD_2_KEY;
-    KeyTable[SDLK_KP3] = MAC_NUMPAD_3_KEY;
-    KeyTable[SDLK_KP4] = MAC_NUMPAD_4_KEY;
-    KeyTable[SDLK_KP5] = MAC_NUMPAD_5_KEY;
-    KeyTable[SDLK_KP6] = MAC_NUMPAD_6_KEY;
-    KeyTable[SDLK_KP7] = MAC_NUMPAD_7_KEY;
-    KeyTable[SDLK_KP8] = MAC_NUMPAD_8_KEY;
-    KeyTable[SDLK_KP9] = MAC_NUMPAD_9_KEY;
-    KeyTable[SDLK_KP_MULTIPLY] = MAC_NUMPAD_ASTERISK_KEY;
-    KeyTable[SDLK_KP_PLUS] = MAC_NUMPAD_PLUS_KEY;
-    KeyTable[SDLK_KP_ENTER] = MAC_NUMPAD_ENTER_KEY;
-    KeyTable[SDLK_KP_MINUS] = MAC_NUMPAD_MINUS_KEY;
-    KeyTable[SDLK_KP_PERIOD] = MAC_NUMPAD_PERIOD_KEY;
-    KeyTable[SDLK_KP_DIVIDE] = MAC_NUMPAD_SLASH_KEY;
-    KeyTable[SDLK_F1] = MAC_F1_KEY;
-    KeyTable[SDLK_F2] = MAC_F2_KEY;
-    KeyTable[SDLK_F3] = MAC_F3_KEY;
-    KeyTable[SDLK_F4] = MAC_F4_KEY;
-    KeyTable[SDLK_F5] = MAC_F5_KEY;
-    KeyTable[SDLK_F6] = MAC_F6_KEY;
-    KeyTable[SDLK_F7] = MAC_F7_KEY;
-    KeyTable[SDLK_F8] = MAC_F8_KEY;
-    KeyTable[SDLK_F9] = MAC_F9_KEY;
-    KeyTable[SDLK_F10] = MAC_F10_KEY;
-    KeyTable[SDLK_F11] = MAC_F11_KEY;
-    KeyTable[SDLK_F12] = MAC_F12_KEY;
-    KeyTable[SDLK_SEMICOLON] = MAC_SEMICOLON_KEY;
-    KeyTable[SDLK_PLUS] = MAC_PLUS_KEY;
-    KeyTable[SDLK_COMMA] = MAC_COMMA_KEY;
-    KeyTable[SDLK_MINUS] = MAC_MINUS_KEY;
-    KeyTable[SDLK_PERIOD] = MAC_PERIOD_KEY;
-    KeyTable[SDLK_SLASH] = MAC_SLASH_KEY;
-    KeyTable[SDLK_BACKQUOTE] = MAC_TILDE_KEY;
-    KeyTable[SDLK_LEFTBRACKET] = MAC_LEFTBRACKET_KEY;
-    KeyTable[SDLK_BACKSLASH] = MAC_BACKSLASH_KEY;
-    KeyTable[SDLK_RIGHTBRACKET] = MAC_RIGHTBRACKET_KEY;
-    KeyTable[SDLK_QUOTE] = MAC_APOSTROPHE_KEY;
-}
-
 static inline int clamp_sdl_mouse_button(Uint8 button)
 {
     if (button == 2)   // right mouse button is button 3 in SDL.
@@ -425,7 +301,6 @@ static inline int clamp_sdl_mouse_button(Uint8 button)
 static void sdlEventProc(const SDL_Event &e, Game &game)
 {
     int val;
-    bool skipkey = false;
     SDLMod mod;
 
     switch(e.type)
@@ -435,93 +310,17 @@ static void sdlEventProc(const SDL_Event &e, Game &game)
             game.deltav += e.motion.yrel;
             return;
 
-		case SDL_MOUSEBUTTONDOWN:
-			{
-                val = clamp_sdl_mouse_button(e.button.button);
-                if ((val >= 0) && (val <= 2))
-                {
-                    if (val == 0)
-    				    g_button = true;
-    				buttons[val] = true;
-                }
-			}
-			return;
-
-		case SDL_MOUSEBUTTONUP:
-			{
-                val = clamp_sdl_mouse_button(e.button.button);
-                if ((val >= 0) && (val <= 2))
-                {
-                    if (val == 0)
-    				    g_button = false;
-    				buttons[val] = false;
-                }
-			}
-            return;
-
         case SDL_KEYDOWN:
-            if (e.key.keysym.sym == SDLK_g)
-            {
-                if (e.key.keysym.mod & KMOD_CTRL)
-                {
-                    skipkey = true;
-                    SDL_GrabMode mode = SDL_GRAB_ON;
-                    if ((SDL_GetVideoSurface()->flags & SDL_FULLSCREEN) == 0)
-                    {
-                        mode = SDL_WM_GrabInput(SDL_GRAB_QUERY);
-                        mode = (mode==SDL_GRAB_ON) ? SDL_GRAB_OFF:SDL_GRAB_ON;
-                    }
-                    SDL_WM_GrabInput(mode);
-                }
+            if ((e.key.keysym.sym == SDLK_g) &&
+				(e.key.keysym.mod & KMOD_CTRL) &&
+				!(SDL_GetVideoSurface()->flags & SDL_FULLSCREEN) ) {
+				SDL_WM_GrabInput( ((SDL_WM_GrabInput(SDL_GRAB_QUERY)==SDL_GRAB_ON) ? SDL_GRAB_OFF:SDL_GRAB_ON) );
+			} else if ( (e.key.keysym.sym == SDLK_RETURN) && (e.key.keysym.mod & KMOD_ALT) ) {
+				SDL_WM_ToggleFullScreen(SDL_GetVideoSurface());
             }
-
-            else if (e.key.keysym.sym == SDLK_RETURN)
-            {
-                if (e.key.keysym.mod & KMOD_ALT)
-                {
-                    skipkey = true;
-                    SDL_WM_ToggleFullScreen(SDL_GetVideoSurface());
-                }
-            }
-
-            if ((!skipkey) && (e.key.keysym.sym < SDLK_LAST))
-            {
-                if (KeyTable[e.key.keysym.sym] != 0xffff)
-                    SetKey(KeyTable[e.key.keysym.sym]);
-            }
-
-            mod = SDL_GetModState();
-            if (mod & KMOD_CTRL)
-                SetKey(MAC_CONTROL_KEY);
-            if (mod & KMOD_ALT)
-                SetKey(MAC_OPTION_KEY);
-            if (mod & KMOD_META)
-                SetKey(MAC_COMMAND_KEY);
-            if (mod & KMOD_SHIFT)
-                SetKey(MAC_SHIFT_KEY);
-            if (mod & KMOD_CAPS)
-                SetKey(MAC_CAPS_LOCK_KEY);
-
             return;
 
         case SDL_KEYUP:
-            if (e.key.keysym.sym < SDLK_LAST)
-            {
-                if (KeyTable[e.key.keysym.sym] != 0xffff)
-                    ClearKey(KeyTable[e.key.keysym.sym]);
-            }
-
-            mod = SDL_GetModState();
-            if ((mod & KMOD_CTRL) == 0)
-                ClearKey(MAC_CONTROL_KEY);
-            if ((mod & KMOD_ALT) == 0)
-                ClearKey(MAC_OPTION_KEY);
-            if ((mod & KMOD_META) == 0)
-                ClearKey(MAC_COMMAND_KEY);
-            if ((mod & KMOD_SHIFT) == 0)
-                ClearKey(MAC_SHIFT_KEY);
-            if ((mod & KMOD_CAPS) == 0)
-                ClearKey(MAC_CAPS_LOCK_KEY);
             return;
     }
 }
@@ -739,19 +538,6 @@ static void DoMouse(Game & game)
 	}
 
 }
-
-
-
-// --------------------------------------------------------------------------
-
-void DoKey (SInt8 theKey, SInt8 theCode)
-{
-	// do nothing
-}
-
-// --------------------------------------------------------------------------
-
-
 
 void DoFrameRate (int update)
 {	
@@ -1034,9 +820,9 @@ int main(int argc, char **argv)
 
 	LOGFUNC;
 
-	memset( &g_theKeys, 0, sizeof( KeyMap));
+	//memset( &g_theKeys, 0, sizeof( KeyMap));
 
-    initSDLKeyTable();
+    //initSDLKeyTable();
 
 	try
 	{
@@ -1064,17 +850,18 @@ int main(int argc, char **argv)
 					game.deltah = 0;
 					game.deltav = 0;
 					SDL_Event e;
-					// message pump
-					while( SDL_PollEvent( &e ) )
-					{
-						if( e.type == SDL_QUIT )
+					if(!game.isWaiting()) {
+						// message pump
+						while( SDL_PollEvent( &e ) )
 						{
-							gDone=true;
-							break;
+							if( e.type == SDL_QUIT )
+							{
+								gDone=true;
+								break;
+							}
+							sdlEventProc(e, game);
 						}
-						sdlEventProc(e, game);
 					}
-				
 
 					// game
 					DoUpdate(game);
