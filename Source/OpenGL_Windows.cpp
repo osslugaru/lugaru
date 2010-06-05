@@ -875,7 +875,7 @@ int main(int argc, char **argv)
 		pgame = 0;
 
 		CleanUp ();
-		
+
 		return 0;
 	}
 	catch (const std::exception& error)
