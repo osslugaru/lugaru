@@ -40,10 +40,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "TGALoader.h"
 
-#if PLATFORM_MACOSX
-#include "Macinput.h"
-#endif
-
 #include "Terrain.h"
 #include "Skybox.h"
 #include "Skeleton.h"
