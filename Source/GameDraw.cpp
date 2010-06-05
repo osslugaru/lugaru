@@ -2910,7 +2910,8 @@ int Game::DrawGLScene(StereoSide side)
 				movex[0]=0;
 				movey[0]=0;
 
-				if(entername)startx[0]+=10;
+				if(entername)
+					startx[0]+=10;
 
 
 				num=1;
@@ -3583,12 +3584,9 @@ int Game::DrawGLScene(StereoSide side)
 														sprintf (string, "_");
 														text.glPrint(startx[j]+(float)(displayselected)*10,starty[j],string,0,1,640,480);
 													}
-													k=0;
-													for(l=0;l<displaychars[k];l++){
-														if(l<displaychars[k]){
-															sprintf (string, "%c",displaytext[k][l]);
-															text.glPrint(startx[j]+l*10,starty[j],string,0,1,640,480);
-														}
+													for(l=0;l<displaychars[0];l++){
+														sprintf (string, "%c",displaytext[0][l]);
+														text.glPrint(startx[j]+l*10,starty[j],string,0,1,640,480);
 													}
 												}
 											glPopMatrix();

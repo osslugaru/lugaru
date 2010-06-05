@@ -196,10 +196,7 @@ static void GLAPIENTRY glDeleteTextures_doNothing(GLsizei n, const GLuint *textu
 
 void sdlGetCursorPos(POINT *pt)
 {
-    int x, y;
-    SDL_GetMouseState(&x, &y);
-    pt->x = x;
-    pt->y = y;
+    SDL_GetMouseState(&(pt->x), &(pt->y));
 }
 #define GetCursorPos(x) sdlGetCursorPos(x)
 #define SetCursorPos(x, y) SDL_WarpMouse(x, y)
@@ -1241,25 +1238,15 @@ int main(int argc, char **argv)
 
 	bool LoadImage(const char * fname, TGAImageRec & tex)
 	{
-		bool res = true;
-
 		if ( tex.data == NULL )
-		{
 			return false;
-		}
-
-       
-        res = load_image(fname, tex);
-    
-
-		return res;
+		else
+			return load_image(fname, tex);
 	}
 
 	void ScreenShot(const char * fname)
 	{
-  
         save_image(fname);
-  
 	}
 
 
