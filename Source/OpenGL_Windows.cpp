@@ -1115,9 +1115,6 @@ int main(int argc, char **argv)
             #endif
 		}
 
-        #if PLATFORM_LINUX  // (this may not be necessary any more.)
-        _exit(0);  // !!! FIXME: hack...crashes on exit!
-        #endif
 		return 0;
 	}
 	catch (const std::exception& error)
