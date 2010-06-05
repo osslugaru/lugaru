@@ -119,14 +119,10 @@ static SDL_Rect *hardcoded_resolutions[] = {
 
 unsigned int resolutionDepths[8][2] = {0};
 
-bool selectDetail(int & width, int & height, int & bpp, int & detail);
 int closestResolution(int width, int height);
 int resolutionID(int width, int height);
 
 void ReportError (char * strError);
-
-void SetupDSpFullScreen();
-void ShutdownDSp();
 
 void DrawGL(Game & game);
 
@@ -277,16 +273,6 @@ void ReportError (char * strError)
 	DebugStr (strErr);
 	*/
 }
-
-void SetupDSpFullScreen ()
-{
-}
-
-
-void ShutdownDSp ()
-{
-}
-
 
 //-----------------------------------------------------------------------------------------------------------------------
 
@@ -563,8 +549,12 @@ Boolean SetUp (Game & game)
 	
 	DefaultSettings(game);
 
-	selectDetail(kContextWidth, kContextHeight, kBitsPerPixel, detail);
-
+    if (!SDL_WasInit(SDL_INIT_VIDEO))
+        if (SDL_Init(SDL_INIT_VIDEO) == -1)
+        {
+            fprintf(stderr, "SDL_Init() failed: %s\n", SDL_GetError());
+            return false;
+        }
 	if(!LoadSettings(game)) {
 		fprintf(stderr, "Failed to load config, creating default\n");
 		SaveSettings(game);
@@ -573,63 +563,48 @@ Boolean SetUp (Game & game)
 		kBitsPerPixel=16;
 	}
 
+	if (SDL_GL_LoadLibrary(NULL) == -1)
+	{
+		fprintf(stderr, "SDL_GL_LoadLibrary() failed: %s\n", SDL_GetError());
+		SDL_Quit();
+		return false;
+	}
 
-	selectDetail(kContextWidth, kContextHeight, kBitsPerPixel, detail);
+	SDL_Rect **res = SDL_ListModes(NULL, SDL_FULLSCREEN|SDL_OPENGL);
+	if ( (res == NULL) || (res == ((SDL_Rect **)-1)) || (res[0] == NULL) || (res[0]->w < 640) || (res[0]->h < 480) )
+		res = hardcoded_resolutions;
 
-	SetupDSpFullScreen();
+	// reverse list (it was sorted biggest to smallest by SDL)...
+	int count;
+	for (count = 0; res[count]; count++)
+	{
+		if ((res[count]->w < 640) || (res[count]->h < 480))
+			break;   // sane lower limit.
+	}
 
+	static SDL_Rect *resolutions_block = NULL;
+	resolutions_block = (SDL_Rect*) realloc(resolutions_block, sizeof (SDL_Rect) * count);
+	resolutions = (SDL_Rect**) realloc(resolutions, sizeof (SDL_Rect *) * (count + 1));
+	if ((resolutions_block == NULL) || (resolutions == NULL))
+	{
+		SDL_Quit();
+		fprintf(stderr, "Out of memory!\n");
+		return false;
+	}
 
-    if (!SDL_WasInit(SDL_INIT_VIDEO))
-    {
-        if (SDL_Init(SDL_INIT_VIDEO) == -1)
-        {
-            fprintf(stderr, "SDL_Init() failed: %s\n", SDL_GetError());
-            return false;
-        }
+	resolutions[count--] = NULL;
+	for (int i = 0; count >= 0; i++, count--)
+	{
+		memcpy(&resolutions_block[count], res[i], sizeof (SDL_Rect));
+		resolutions[count] = &resolutions_block[count];
+	}
 
-        if (SDL_GL_LoadLibrary(NULL) == -1)
-        {
-            fprintf(stderr, "SDL_GL_LoadLibrary() failed: %s\n", SDL_GetError());
-            SDL_Quit();
-            return false;
-        }
-
-        SDL_Rect **res = SDL_ListModes(NULL, SDL_FULLSCREEN|SDL_OPENGL);
-        if ( (res == NULL) || (res == ((SDL_Rect **)-1)) || (res[0] == NULL) || (res[0]->w < 640) || (res[0]->h < 480) )
-            res = hardcoded_resolutions;
-
-        // reverse list (it was sorted biggest to smallest by SDL)...
-        int count;
-        for (count = 0; res[count]; count++)
-        {
-            if ((res[count]->w < 640) || (res[count]->h < 480))
-                break;   // sane lower limit.
-        }
-
-        static SDL_Rect *resolutions_block = NULL;
-        resolutions_block = (SDL_Rect*) realloc(resolutions_block, sizeof (SDL_Rect) * count);
-        resolutions = (SDL_Rect**) realloc(resolutions, sizeof (SDL_Rect *) * (count + 1));
-        if ((resolutions_block == NULL) || (resolutions == NULL))
-        {
-            SDL_Quit();
-            fprintf(stderr, "Out of memory!\n");
-            return false;
-        }
-
-        resolutions[count--] = NULL;
-        for (int i = 0; count >= 0; i++, count--)
-        {
-            memcpy(&resolutions_block[count], res[i], sizeof (SDL_Rect));
-            resolutions[count] = &resolutions_block[count];
-        }
-
-        if (cmdline("showresolutions"))
-        {
-            printf("Resolutions we think are okay:\n");
-            for (int i = 0; resolutions[i]; i++)
-                printf("  %d x %d\n", (int) resolutions[i]->w, (int) resolutions[i]->h);
-        }
-    }
+	if (cmdline("showresolutions"))
+	{
+		printf("Resolutions we think are okay:\n");
+		for (int i = 0; resolutions[i]; i++)
+			printf("  %d x %d\n", (int) resolutions[i]->w, (int) resolutions[i]->h);
+	}
 
     Uint32 sdlflags = SDL_OPENGL;
     if (!cmdline("windowed"))
@@ -1165,19 +1140,6 @@ int main(int argc, char **argv)
 
 
 	// --------------------------------------------------------------------------
-
-
-
-	bool selectDetail(int & width, int & height, int & bpp, int & detail)
-	{
-		bool res = true;
-
-		// currently with SDL, we just use whatever is requested
-		//  and don't care.  --ryan.
-		
-
-		return res;
-	}
 
 	extern int channels[100];
 	extern OPENAL_SAMPLE * samp[100];
