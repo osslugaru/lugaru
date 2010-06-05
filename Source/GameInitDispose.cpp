@@ -996,19 +996,6 @@ void Game::InitGame()
 
 	numchallengelevels=14;
 
-	/*char tempstring[256];
-	sprintf (tempstring, "%s", registrationname);
-	long num1;
-	long num2;
-	long num3;
-	long num4;
-	long long longnum;
-	longnum = MD5_string ( tempstring);
-	//longnum = 1111111111111111;
-	num1 = longnum/100000000;
-	num2 = longnum%100000000;
-	sprintf (tempstring, "%d-%d-%d-%d", num1/10000, num1%10000, num2/10000, num2%10000);
-	*/
 
 	FILE			*tfile;
 
@@ -1321,25 +1308,6 @@ void Game::InitGame()
 	newdetail=detail;
 	newscreenwidth=screenwidth;
 	newscreenheight=screenheight;
-
-
-
-	/*
-	float gLoc[3]={0,0,0};
-	float vel[3]={0,0,0};
-	OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
-	PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-	OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-	OPENAL_SetVolume(channels[firestartsound], 256);
-	OPENAL_SetPaused(channels[firestartsound], false);
-	OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
-
-	flashr=1;
-	flashg=0;
-	flashb=0;
-	flashamount=1;
-	flashdelay=1;
-	*/
 }
 
 

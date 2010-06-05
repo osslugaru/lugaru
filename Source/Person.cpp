@@ -6166,23 +6166,6 @@ void	Person::DoStuff(){
 								tempcoord+=objects.position[i];
 							}
 							if(findDistancefastflat(&tempcoord,&objects.position[i])<objects.scale[i]*objects.scale[i]*8&&findDistancefast(&tempcoord,&objects.position[i])<objects.scale[i]*objects.scale[i]*300&&tempcoord.y>objects.position[i].y+3*objects.scale[i]){
-								/*if(onfire){
-								if(!objects.onfire[i]){
-								float gLoc[3];
-								float vel[3];
-								gLoc[0]=objects.position[i].x;
-								gLoc[1]=objects.position[i].y;
-								gLoc[2]=objects.position[i].z;
-								vel[0]=0;
-								vel[1]=0;
-								vel[2]=0;
-								PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-								OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-								OPENAL_SetVolume(channels[firestartsound], 256);
-								OPENAL_SetPaused(channels[firestartsound], false);
-								objects.onfire[i]=1;
-								}
-								}*/
 								if(objects.messedwith[i]<=0){
 									XYZ tempvel;
 									XYZ pos;
@@ -6276,8 +6259,6 @@ void	Person::DoStuff(){
 						}
 					}
 					speechdelay=.3;
-					//else if(animation[targetanimation].label[targetframe]==4)whichsound=knifeswishsound;
-					//if(animation[targetanimation].label[targetframe]==8)whichsound=landsound2;
 
 					if(whichsound!=-1){
 						PlaySoundEx( whichsound, samp[whichsound], NULL, true);

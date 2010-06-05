@@ -106,13 +106,6 @@ void	Weapons::DoStuff(){
 			XYZ speed;
 			//speed=(tippoint[i]-oldtippoint[i])/multiplier/6;
 			speed=0;
-			/*for(j=0;j<10;j++){
-			tempvel.x=float(abs(Random()%100)-50)/20;
-			tempvel.y=float(abs(Random()%100)-50)/20;
-			tempvel.z=float(abs(Random()%100)-50)/20;
-			tempvel+=speed;
-			sprites.MakeSprite(cloudimpactsprite, position[i]+(tippoint[i]-position[i])*((float)j-2)/8,tempvel*.5, 115/255,73/255,12/255, .15+float(abs(Random()%100)-50)/1000, .7);
-			}*/
 			for(j=0;j<40;j++){
 				tempvel.x=float(abs(Random()%100)-50)/20;
 				tempvel.y=float(abs(Random()%100)-50)/20;

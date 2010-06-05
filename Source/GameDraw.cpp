@@ -567,29 +567,6 @@ int Game::DrawGLScene(StereoSide side)
 		}
 		glPopMatrix();
 
-		//if(cellophane){
-		/*glEnable(GL_CULL_FACE);
-		glCullFace(GL_FRONT);
-		glDepthMask(1);
-		for(k=0;k<numplayers;k++){
-		glEnable(GL_BLEND);
-		glEnable(GL_LIGHTING);
-		terrainlight=terrain.getLighting(player[k].coords.x,player[k].coords.z);
-		distance=findDistancefast(&viewer,&player[k].coords);
-		distance=(viewdistance*viewdistance-(distance-(viewdistance*viewdistance*fadestart))*(1/(1-fadestart)))/viewdistance/viewdistance;
-		glColor4f(terrainlight.x,terrainlight.y,terrainlight.z,distance);
-		if(distance>=1)glDisable(GL_BLEND);
-		if(distance>0){
-		checkpoint=DoRotation(player[k].skeleton.joints[abs(Random()%player[k].skeleton.num_joints)].position,0,player[k].rotation,0)*player[k].scale+player[k].coords;
-		checkpoint.y+=1;
-		if(checkcollide(viewer,checkpoint)){
-		player[k].occluded+=1;
-		}
-		else player[k].occluded=0;
-		if(player[k].occluded<25)player[k].DrawSkeleton();
-		}
-		}*/
-
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
@@ -3614,13 +3591,6 @@ int Game::DrawGLScene(StereoSide side)
 													}
 												}
 											glPopMatrix();
-											/*}
-											else{
-											glPushMatrix();
-											sprintf (string, "Hooo!");
-											text.glPrint(startx[0],starty[0],string,0,1,640,480);
-											glPopMatrix();
-											}*/
 											glEnable(GL_BLEND);
 											glBlendFunc(GL_SRC_ALPHA,GL_ONE);
 											for(i=0;i<15;i++)
@@ -3634,7 +3604,7 @@ int Game::DrawGLScene(StereoSide side)
 													if(mainmenu==4)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
 													if(mainmenu==5)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
 													if(mainmenu==6)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
-													if(mainmenu==7&&(j!=0||!entername))text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
+													if(mainmenu==7&&(j!=0||!entername)) text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
 													if(mainmenu==8)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
 													if(mainmenu==9)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
 													if(mainmenu==11)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);

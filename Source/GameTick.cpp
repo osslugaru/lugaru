@@ -1212,192 +1212,7 @@ void Screenshot	(void)
 	mkdir("Screenshots", S_IRWXU);
 	#endif
 
-	ScreenShot(temp/*"Screenshots\\Screenshot.png"*/);
-
-	/*FSSpec				MAC_file;
-	GraphicsExportComponent	QT_exporter;
-	OSErr				MAC_error_code;
-	CGrafPtr			MAC_currentPort;
-	GDHandle			MAC_currentDevice;
-	unsigned char*		MAC_pixels;
-	Rect				MAC_picture_rectangle;
-	GWorldPtr			MAC_offscreen_graphics_port;
-
-	static int numscreenshots=0;
-
-	// Make an FSSpec
-	static char buf[256];
-	if(numscreenshots==0){
-	buf[0]=26;
-	buf[1]=':';
-	buf[2]='S';
-	buf[3]='c';
-	buf[4]='r';
-	buf[5]='e';
-	buf[6]='e';
-	buf[7]='n';
-	buf[8]='s';
-	buf[9]='h';
-	buf[10]='o';
-	buf[11]='t';
-	buf[12]='s';
-	buf[13]=':';
-	buf[14]='S';
-	buf[15]='c';
-	buf[16]='r';
-	buf[17]='e';
-	buf[18]='e';
-	buf[19]='n';
-	buf[20]='s';
-	buf[21]='h';
-	buf[22]='o';
-	buf[23]='t';
-	buf[24]='0';
-	buf[25]='0';
-	buf[26]='0';
-	}
-
-	FInfo *fndrInfo;
-	FSMakeFSSpec(0, 0, (unsigned char*)buf, &MAC_file);
-	while(!FSpGetFInfo (&MAC_file, fndrInfo)){
-	FSMakeFSSpec(0, 0, (unsigned char*)buf, &MAC_file);
-	if(!FSpGetFInfo (&MAC_file, fndrInfo)){
-	numscreenshots++;
-	buf[26]++;
-	if(buf[26]==':'){
-	buf[26]='0';
-	buf[25]++;
-	if(buf[25]==':'){
-	buf[25]='0';
-	buf[24]++;
-	if(buf[24]==':'){
-	buf[24]='9';
-	buf[25]='9';
-	buf[26]='9';
-	}
-	}
-	}
-	}
-	}
-
-
-	// Get the GWorld
-	GWorldPtr			MAC_gWorld = (CGrafPtr) FrontWindow();
-	//assert(MAC_gWorld != NULL);
-
-	// Allocate memory for loading image
-	MAC_pixels = new unsigned char[(int)(screenheight * screenwidth * 4)];
-	if (MAC_pixels == NULL) {
-	//UTIL_Error("Could not create Texture data.");
-	return;
-	}
-
-	// Get GWorld
-	::GetGWorld(&MAC_currentPort, &MAC_currentDevice);
-
-	// Make a picture Rectangle
-	MAC_picture_rectangle.left = 0;
-	MAC_picture_rectangle.right = screenwidth;
-	MAC_picture_rectangle.top = 0;
-	MAC_picture_rectangle.bottom = screenheight;
-
-	// Create new offscreen GWorld
-	MAC_error_code = ::QTNewGWorldFromPtr (&MAC_offscreen_graphics_port, k32ARGBPixelFormat, &MAC_picture_rectangle, NULL, NULL, 0, (char *) MAC_pixels, screenwidth * 4);
-	if (MAC_error_code)	{
-	::SetGWorld(MAC_currentPort, MAC_currentDevice);
-	delete MAC_pixels;
-	//UTIL_Error("Could not create offscreen GWorld. ");
-	return;
-
-	}
-
-	// Copy OpenGL Context to new GWorld
-	glReadBuffer(GL_FRONT);
-	glReadPixels(0,0,screenwidth,screenheight,GL_RGBA,GL_UNSIGNED_BYTE,MAC_pixels);
-
-	// Swizzle texture
-	for (unsigned long byte = 0; byte < screenheight * screenwidth * 4; byte+=4) {
-	unsigned char temp = MAC_pixels[byte+0];
-	MAC_pixels[byte+0] = MAC_pixels[byte+3];
-	MAC_pixels[byte+3] = MAC_pixels[byte+2];
-	MAC_pixels[byte+2] = MAC_pixels[byte+1];
-	MAC_pixels[byte+1] = temp;
-	}
-
-	// Flip the image  :(   This could probably be optimized
-	int vert;
-	int src_index;
-	int dst_index;
-	unsigned char temp;
-	for (int horz = 0; horz < screenwidth; ++horz)
-	for (vert = 0; vert < screenheight / 2; ++vert) {
-	src_index = (screenwidth * vert + horz) * 4;
-	dst_index = (screenwidth * (screenheight - vert - 1) + horz) * 4;
-
-	temp=MAC_pixels[src_index+0];
-	MAC_pixels[src_index+0]=MAC_pixels[dst_index+0];
-	MAC_pixels[dst_index+0]=temp;
-
-	temp=MAC_pixels[src_index+1];
-	MAC_pixels[src_index+1]=MAC_pixels[dst_index+1];
-	MAC_pixels[dst_index+1]=temp;
-
-	temp=MAC_pixels[src_index+2];
-	MAC_pixels[src_index+2]=MAC_pixels[dst_index+2];
-	MAC_pixels[dst_index+2]=temp;
-
-	temp=MAC_pixels[src_index+3];
-	MAC_pixels[src_index+3]=MAC_pixels[dst_index+3];
-	MAC_pixels[dst_index+3]=temp;
-	}
-
-
-
-	// Export the Gworld
-	MAC_error_code =  OpenADefaultComponent(GraphicsExporterComponentType, kQTFileTypeBMP, &QT_exporter);
-	if (MAC_error_code) {
-	//UTIL_Warning("Unable to export screenshot.");
-	::SetGWorld(MAC_currentPort, MAC_currentDevice);
-	::DisposeGWorld(MAC_offscreen_graphics_port);
-	delete MAC_pixels;
-	return;
-	}
-
-	MAC_error_code =  GraphicsExportSetInputGWorld(QT_exporter,MAC_offscreen_graphics_port);
-	if (MAC_error_code) {
-	::CloseComponent(QT_exporter);
-	::SetGWorld(MAC_currentPort, MAC_currentDevice);
-	::DisposeGWorld(MAC_offscreen_graphics_port);
-	delete MAC_pixels;
-	//UTIL_Warning("Unable to export screenshot.");
-	return;
-	}
-
-	MAC_error_code = GraphicsExportSetOutputFile(QT_exporter,&MAC_file);
-	if (MAC_error_code) {
-	::CloseComponent(QT_exporter);
-	::SetGWorld(MAC_currentPort, MAC_currentDevice);
-	::DisposeGWorld(MAC_offscreen_graphics_port);
-	delete MAC_pixels;
-	//UTIL_Warning("Unable to export screenshot.");
-	return;
-	}
-
-	MAC_error_code = GraphicsExportDoExport(QT_exporter,NULL);
-	if (MAC_error_code) {
-	::CloseComponent(QT_exporter);
-	::SetGWorld(MAC_currentPort, MAC_currentDevice);
-	::DisposeGWorld(MAC_offscreen_graphics_port);
-	delete MAC_pixels;
-	//UTIL_Warning("Unable to export screenshot.");
-	return;
-	}
-
-	::CloseComponent(QT_exporter);
-	::SetGWorld(MAC_currentPort, MAC_currentDevice);
-	::DisposeGWorld(MAC_offscreen_graphics_port);
-
-	delete MAC_pixels;*/
+	ScreenShot(temp);
 }
 
 
@@ -2532,12 +2347,7 @@ void	Game::Loadlevel(char *name){
 			weapons.position[i]=-1000;
 			weapons.tippoint[i]=-1000;
 		}
-
-/*		for(i=0;i<32;i++){
-			//if(i<16||i>20)
-			OPENAL_StopSound(i);
-		}
-*/
+		
 		LOG("Starting background music...");
 
 		OPENAL_StopSound(OPENAL_ALL);
@@ -2576,17 +2386,6 @@ void	Game::Loadlevel(char *name){
 		oldmusicvolume[1]=0;
 		oldmusicvolume[2]=0;
 		oldmusicvolume[3]=0;
-
-
-		/*LoadTexture(":Data:Textures:cloud.png",&sprites.cloudtexture,1,1);
-		LoadTexture(":Data:Textures:cloudimpact.png",&sprites.cloudimpacttexture,1,1);
-		LoadTexture(":Data:Textures:bloodparticle.png",&sprites.bloodtexture,1,1);
-		LoadTexture(":Data:Textures:snowflake.png",&sprites.snowflaketexture,1,1);
-		LoadTexture(":Data:Textures:flame.png",&sprites.flametexture,1,1);
-		LoadTexture(":Data:Textures:bloodflame.png",&sprites.bloodflametexture,1,1);
-		LoadTexture(":Data:Textures:smoke.png",&sprites.smoketexture,1,1);
-		LoadTexture(":Data:Textures:shine.png",&sprites.shinetexture,1,0);
-		*/
 
 		if(!firstload)
 		{
@@ -2682,94 +2481,7 @@ void	Game::Tick()
 				if(mainmenu==0&&!winfreeze)mainmenu=2;
 				else if(mainmenu==0&&winfreeze&&(campaignchoosenext[campaignchoicewhich[whichchoice]])==1)mainmenu=100;
 				else if(mainmenu==0&&winfreeze){
-					/*	if(campaignchoosenext[campaignchoicewhich[whichchoice]]==2)
-					stealthloading=1;
-					else stealthloading=0;
-
-					if(!stealthloading){
-					float gLoc[3]={0,0,0};
-					float vel[3]={0,0,0};
-					OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
-					PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-					OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-					OPENAL_SetVolume(channels[firestartsound], 256);
-					OPENAL_SetPaused(channels[firestartsound], false);
-					OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
-
-					flashr=1;
-					flashg=0;
-					flashb=0;
-					flashamount=1;
-					flashdelay=1;
-					}
-
-					startbonustotal=0;
-
-					for(i=0;i<campaignnumlevels;i++){
-					levelvisible[i]=0;
-					levelhighlight[i]=0;
-					}
-
-					levelorder[0]=0;
-					levelvisible[0]=1;
-					if(accountcampaignchoicesmade[accountactive])
-					for(i=0;i<accountcampaignchoicesmade[accountactive];i++){
-					levelorder[i+1]=campaignnextlevel[levelorder[i]][accountcampaignchoices[accountactive][i]];
-					levelvisible[levelorder[i+1]]=1;
-					}
-					int whichlevelstart;
-					whichlevelstart=accountcampaignchoicesmade[accountactive]-1;
-					if(whichlevelstart<0){
-					campaignchoicenum=1;
-					campaignchoicewhich[0]=0;
-					}
-					else
-					{
-					campaignchoicenum=campaignnumnext[levelorder[whichlevelstart]];
-					if(campaignchoicenum)
-					for(i=0;i<campaignchoicenum;i++){
-					campaignchoicewhich[i]=campaignnextlevel[levelorder[whichlevelstart]][i];
-					levelvisible[campaignnextlevel[levelorder[whichlevelstart]][i]]=1;
-					levelhighlight[campaignnextlevel[levelorder[whichlevelstart]][i]]=1;
-					}
-					}
-
-					loading=2;
-					loadtime=0;
-					targetlevel=7;
-					if(firstload)TickOnceAfter();
-					if(!firstload)LoadStuff();
-					//else {
-					for(i=0;i<255;i++){
-					mapname[i]='\0';
-					}
-					mapname[0]=':';
-					mapname[1]='D';
-					mapname[2]='a';
-					mapname[3]='t';
-					mapname[4]='a';
-					mapname[5]=':';
-					mapname[6]='M';
-					mapname[7]='a';
-					mapname[8]='p';
-					mapname[9]='s';
-					mapname[10]=':';
-
-					//accountcampaignchoices[accountactive][accountcampaignchoicesmade[accountactive]]=whichchoice;
-					//accountcampaignchoicesmade[accountactive]++;
-
-
-					strcat(mapname,campaignmapname[campaignchoicewhich[0]]);
-					whichchoice=0;
-					visibleloading=1;
-					stillloading=1;
-					Loadlevel(mapname);
-					campaign=1;
-					mainmenu=0;
-					gameon=1;
-					OPENAL_SetPaused(channels[music3], true);
-
-					stealthloading=0;*/
+					
 				}
 				else if(mainmenu==1||mainmenu==2)mainmenu=0;
 				if(mainmenu&&musictoggle){
@@ -3312,7 +3024,6 @@ void	Game::Tick()
 				stillloading=1;
 				Loadlevel(mapname);
 				//Loadlevel(campaignmapname[levelorder[selected-7]]);
-				//}
 				campaign=1;
 				mainmenu=0;
 				gameon=1;
@@ -5501,115 +5212,6 @@ void	Game::Tick()
 
 						static float keyrefreshdelay=0,bigrefreshdelay=0;
 
-						//Net updates
-
-						/*keyrefreshdelay-=multiplier;
-						bigrefreshdelay-=multiplier;
-
-						if(keyrefreshdelay<=0){
-						static int concat[4];
-
-						concat[0]=player[0].forwardkeydown;
-						concat[0]=concat[0]*2+player[0].forwardstogglekeydown;
-						concat[0]=concat[0]*2+player[0].rightkeydown;
-						concat[0]=concat[0]*2+player[0].leftkeydown;
-						concat[0]=concat[0]*2+player[0].backkeydown;
-						concat[0]=concat[0]*2+player[0].jumpkeydown;
-						concat[0]=concat[0]*2+player[0].jumptogglekeydown;
-						concat[0]=concat[0]*2+player[0].crouchkeydown;
-
-						concat[1]=player[0].crouchtogglekeydown;
-						concat[1]=concat[1]*2+player[0].drawkeydown;
-						concat[1]=concat[1]*2+player[0].drawtogglekeydown;
-						concat[1]=concat[1]*2+player[0].throwkeydown;
-						concat[1]=concat[1]*2+player[0].throwtogglekeydown;
-						concat[1]=concat[1]*2+player[0].attackkeydown;
-
-						//concat[2]=(char)((int)(rotation/2)%180);
-
-						//concat[3]=(char)((int)(rotation2/2)%180);
-
-						chatname[0]=concat[0]-128;
-						chatname[1]=concat[1]-128;
-						//chatname[2]=concat[2]-128;
-						//chatname[3]=concat[3]-128;
-						int temppoint=2;
-						memcpy(chatname+temppoint,&rotation,sizeof(float));
-						temppoint+=sizeof(float);
-						memcpy(chatname+temppoint,&rotation2,sizeof(float));
-						temppoint+=sizeof(float);
-
-						chatname[temppoint]='\0';
-
-						//if(!ishost)NetworkSendPlayerMessage( chatname, kMessageType_Keys );
-						//if(ishost)NetworkSendPlayerRelayMessage( chatname, kMessageType_Keys );
-						//keyrefreshdelay=.01;
-						keyrefreshdelay=.03;
-						}
-
-						if(bigrefreshdelay<=0){
-						for(i=0;i<1;i++){
-						/*int temppoint=0;
-						memcpy(chatname+temppoint,&i,sizeof(int));
-						temppoint+=sizeof(int);
-						memcpy(chatname+temppoint,&player[i].coords.x,sizeof(float));
-						temppoint+=sizeof(float);
-						memcpy(chatname+temppoint,&player[i].coords.y,sizeof(float));
-						temppoint+=sizeof(float);
-						memcpy(chatname+temppoint,&player[i].coords.z,sizeof(float));
-						temppoint+=sizeof(float);
-						memcpy(chatname+temppoint,&player[i].damage,sizeof(float));
-						temppoint+=sizeof(float);
-						memcpy(chatname+temppoint,&player[i].target,sizeof(float));
-						temppoint+=sizeof(float);
-						memcpy(chatname+temppoint,&player[i].targetanimation,sizeof(int));
-						temppoint+=sizeof(int);
-						memcpy(chatname+temppoint,&player[i].currentanimation,sizeof(int));
-						temppoint+=sizeof(int);
-						memcpy(chatname+temppoint,&player[i].velocity.x,sizeof(float));
-						temppoint+=sizeof(float);
-						memcpy(chatname+temppoint,&player[i].velocity.y,sizeof(float));
-						temppoint+=sizeof(float);
-						memcpy(chatname+temppoint,&player[i].velocity.z,sizeof(float));
-						temppoint+=sizeof(float);
-						memcpy(chatname+temppoint,&player[i].targetframe,sizeof(int));
-						temppoint+=sizeof(int);
-						memcpy(chatname+temppoint,&player[i].currentframe,sizeof(int));
-						temppoint+=sizeof(int);
-						memcpy(chatname+temppoint,&player[i].rotation,sizeof(float));
-						temppoint+=sizeof(float);
-						memcpy(chatname+temppoint,&player[i].targetrotation,sizeof(float));
-						temppoint+=sizeof(float);
-						memcpy(chatname+temppoint,&player[i].bloodloss,sizeof(float));
-						temppoint+=sizeof(float);
-						memcpy(chatname+temppoint,&player[i].weaponactive,sizeof(int));
-						temppoint+=sizeof(int);
-						memcpy(chatname+temppoint,&player[i].num_weapons,sizeof(int));
-						temppoint+=sizeof(int);
-						memcpy(chatname+temppoint,&player[i].weaponids[0],sizeof(int));
-						temppoint+=sizeof(int);
-						memcpy(chatname+temppoint,&player[i].weaponids[1],sizeof(int));
-						temppoint+=sizeof(int);
-						memcpy(chatname+temppoint,&player[i].weaponids[2],sizeof(int));
-						temppoint+=sizeof(int);
-						memcpy(chatname+temppoint,&player[i].weaponids[3],sizeof(int));
-						temppoint+=sizeof(int);
-						chatname[temppoint]='\0';
-
-						sprintf (chatname, "%d %f %f %f %f %f %d %d %f %f %f %d %d %f %f %f",i,player[i].coords.x,player[i].coords.y,player[i].coords.z,player[i].damage,player[i].target, player[i].targetanimation, player[i].currentanimation, player[i].velocity.x, player[i].velocity.y, player[i].velocity.z, player[i].targetframe, player[i].currentframe, player[i].rotation, player[i].targetrotation);
-						//if(ishost)NetworkSendPlayerRelayMessage( chatname, kMessageType_PlayerState );
-						//else NetworkSendPlayerMessage( chatname, kMessageType_PlayerState );
-
-						sprintf (chatname, "%d %f %d %d %d %d %d %d %d %d %f",i,player[i].bloodloss, player[i].weaponactive, player[i].num_weapons, player[i].weaponids[0], player[i].weaponids[1], player[i].weaponids[2], player[i].weaponids[3],player[i].dead,player[i].skeleton.free,player[i].permanentdamage);
-
-						//if(ishost)NetworkSendPlayerRelayMessage( chatname, kMessageType_PlayerStateMisc );
-						//else NetworkSendPlayerMessage( chatname, kMessageType_PlayerStateMisc );
-						}
-						//bigrefreshdelay=.02;
-						bigrefreshdelay=.1;
-						}
-						}*/
-
 						if(!player[0].jumpkeydown){
 							player[0].jumptogglekeydown=0;
 						}
@@ -5701,16 +5303,6 @@ void	Game::Tick()
 									weapons.length[player[0].weaponids[0]]=.25;
 								}
 							}
-
-							/*for(i=0;i<objects.numobjects;i++){
-							if(objects.type[i]==treeleavestype){
-							for(j=0;j<objects.numobjects;j++){
-							if(objects.type[j]==treetrunktype)
-							if(findDistancefast(&objects.position[i],&objects.position[j])<.5)
-							objects.scale[i]=objects.scale[j];
-							}
-							}
-							}*/
 							detailtogglekeydown=1;
 						}
 
@@ -6106,59 +5698,6 @@ void	Game::Tick()
 							explodetogglekeydown=0;
 						}
 
-						/*
-						if(IsKeyDown(theKeyMap, MAC_S_KEY)&&IsKeyDown(theKeyMap, MAC_COMMAND_KEY)&&!slomotogglekeydown){
-						FILE			*tfile;
-						//tfile=fopen( ":Data:Maps:mapsave", "wb" );
-						if(whichlevel==0)tfile=fopen( ":Data:Maps:map1", "wb" );
-						else if(whichlevel==1)tfile=fopen( ":Data:Maps:map2", "wb" );
-						else if(whichlevel==2)tfile=fopen( ":Data:Maps:map3", "wb" );
-						else if(whichlevel==3)tfile=fopen( ":Data:Maps:map4", "wb" );
-						else if(whichlevel==4)tfile=fopen( ":Data:Maps:map5", "wb" );
-						else tfile=fopen( ":Data:Maps:mapsave", "wb" );
-
-						fwrite( &player[0].coords, 1, sizeof(XYZ), tfile );
-						fwrite( &player[0].rotation, 1, sizeof(float), tfile );
-						fwrite( &player[0].targetrotation, 1, sizeof(float), tfile );
-						fwrite( &player[0].num_weapons, 1, sizeof(int), tfile );
-						for(j=0;j<player[0].num_weapons;j++){
-						fwrite( &weapons.type[player[0].weaponids[j]], 1, sizeof(int), tfile );
-						}
-						fwrite( &environment, 1, sizeof(int), tfile );
-
-						fwrite( &objects.numobjects, 1, sizeof(int), tfile );
-						fwrite( &objects.type, 1, sizeof(int)*objects.numobjects, tfile );
-						fwrite( &objects.rotation, 1, sizeof(float)*objects.numobjects, tfile );
-						fwrite( &objects.position, 1, sizeof(XYZ)*objects.numobjects, tfile );
-						fwrite( &objects.scale, 1, sizeof(float)*objects.numobjects, tfile );
-
-						fwrite( &numplayers, 1, sizeof(int), tfile );
-						if(numplayers>1&&numplayers<maxplayers)
-						for(i=1;i<numplayers;i++){
-						fwrite( &player[i].coords, 1, sizeof(XYZ), tfile );
-						fwrite( &player[i].num_weapons, 1, sizeof(int), tfile );
-						for(j=0;j<player[i].num_weapons;j++){
-						fwrite( &weapons.type[player[i].weaponids[j]], 1, sizeof(int), tfile );
-						}
-						if(player[i].numwaypoints<30){
-						fwrite( &player[i].numwaypoints, 1, sizeof(int), tfile );
-						fwrite( &player[i].waypoints, 1, sizeof(XYZ)*player[i].numwaypoints, tfile );
-						fwrite( &player[i].waypoint, 1, sizeof(int), tfile );
-						//fwrite( &player[i].jumppath, 1, sizeof(bool), tfile );
-						}
-						else{
-						player[i].numwaypoints=0;
-						player[i].waypoint=0;
-						fwrite( &player[i].numwaypoints, 1, sizeof(int), tfile );
-						fwrite( &player[i].waypoint, 1, sizeof(int), tfile );
-						fwrite( &player[i].waypoint, 1, sizeof(int), tfile );
-						}
-						}
-
-						fclose(tfile);
-
-						slomotogglekeydown=1;
-						}*/
 
 						if(!IsKeyDown(theKeyMap, MAC_B_KEY)&&!IsKeyDown(theKeyMap, MAC_F_KEY)&&!IsKeyDown(theKeyMap, MAC_K_KEY)&&!IsKeyDown(theKeyMap, MAC_S_KEY)){
 							slomotogglekeydown=0;
@@ -6187,11 +5726,6 @@ void	Game::Tick()
 							}
 							slomotogglekeydown=1;
 						}
-						/*
-						if(IsKeyDown(theKeyMap, MAC_L_KEY)){
-						if(player[0].bleeding<=0)
-						player[0].DoBlood(1,255);
-						}*/
 
 
 						if(IsKeyDown(theKeyMap, MAC_DELETE_KEY)&&editorenabled&&!drawmodetogglekeydown&&IsKeyDown(theKeyMap, MAC_SHIFT_KEY)){
@@ -6544,23 +6078,6 @@ void	Game::Tick()
 						if(IsKeyDown(theKeyMap, MAC_ARROW_RIGHT_KEY)&&!drawmodetogglekeydown&&editorenabled&&IsKeyDown(theKeyMap, MAC_SHIFT_KEY)&&IsKeyDown(theKeyMap, MAC_CONTROL_KEY)){
 							mapradius+=multiplier*10;
 						}
-						/*
-						if(IsKeyDown(theKeyMap, MAC_ARROW_LEFT_KEY)&&editorenabled&&!IsKeyDown(theKeyMap, MAC_SHIFT_KEY)&&IsKeyDown(theKeyMap, MAC_CONTROL_KEY)){
-						mapcenter.x+=multiplier*20;
-						}
-
-						if(IsKeyDown(theKeyMap, MAC_ARROW_RIGHT_KEY)&&editorenabled&&!IsKeyDown(theKeyMap, MAC_SHIFT_KEY)&&IsKeyDown(theKeyMap, MAC_CONTROL_KEY)){
-						mapcenter.x-=multiplier*20;
-						}
-
-						if(IsKeyDown(theKeyMap, MAC_ARROW_UP_KEY)&&editorenabled&&IsKeyDown(theKeyMap, MAC_CONTROL_KEY)){
-						mapcenter.z+=multiplier*20;
-						}
-
-						if(IsKeyDown(theKeyMap, MAC_ARROW_DOWN_KEY)&&editorenabled&&IsKeyDown(theKeyMap, MAC_CONTROL_KEY)){
-						mapcenter.z-=multiplier*20;
-						}
-						*/
 						if(IsKeyDown(theKeyMap, MAC_ARROW_UP_KEY)&&editorenabled&&IsKeyDown(theKeyMap, MAC_CONTROL_KEY)){
 							editorrotation2+=multiplier*100;
 						}
@@ -7222,76 +6739,6 @@ void	Game::Tick()
 
 
 							//pile
-							/*
-							XYZ tempdiff;
-							XYZ tempoldpos;
-							XYZ temp1,temp2;
-							bool isgood;
-							static float checkdelay;
-							checkdelay-=multiplier;
-							int m;
-							static bool checkedcoll[maxplayers][maxplayers];
-							static bool above[maxplayers];
-
-							for(i=0;i<maxplayers;i++){
-							for(j=0;j<maxplayers;j++){
-							checkedcoll[i][j]=0;
-							}
-							}
-
-							if(numplayers>1&&checkdelay<=0){
-							checkdelay=.015;
-							for(k=0;k<numplayers;k++){
-							if(player[k].skeleton.free!=2)above[k]=-1;
-
-							for(i=k;i<numplayers;i++){
-							if(i==k)i++;
-							if(i<numplayers)
-							if(!checkedcoll[i][k]){
-							checkedcoll[i][k]=1;
-							checkedcoll[k][i]=1;
-							if(player[i].skeleton.free&&player[k].skeleton.free)
-							if(player[i].skeleton.free!=2||player[k].skeleton.free!=2)
-							if(i!=k&&player[i].whichpatchx==player[k].whichpatchx&&player[i].whichpatchz==player[k].whichpatchz)
-							if(player[i].coords.y>player[k].coords.y-3)
-							if(player[i].coords.y<player[k].coords.y+3)
-							if(player[i].coords.x>player[k].coords.x-3)
-							if(player[i].coords.x<player[k].coords.x+3)
-							if(player[i].coords.z>player[k].coords.z-3)
-							if(player[i].coords.z<player[k].coords.z+3)
-							if(findDistancefast(&player[i].coords,&player[k].coords)<3*((player[i].scale+player[k].scale)*2.5)*((player[i].scale+player[k].scale)*2.5)){
-							int stuck,moving;
-							if((player[i].skeleton.longdead>player[k].skeleton.longdead&&player[k].skeleton.free!=2)||player[i].skeleton.free==2){
-							stuck=i;
-							moving=k;
-							}
-							else
-							{
-							moving=i;
-							stuck=k;
-							}
-							isgood=1;
-
-							if(isgood){
-							above[moving]=stuck;
-							for(l=0;l<player[moving].skeleton.num_joints;l++){
-							for(m=0;m<player[stuck].skeleton.num_joints;m++){
-							while(findDistancefast(player[moving].skeleton.joints[l].position+player[moving].coords,player[stuck].skeleton.joints[m].position+player[stuck].coords)<.25)
-							{
-							player[moving].skeleton.joints[l].position.y+=.003;
-							if(player[moving].skeleton.joints[l].velocity.y<-.05)player[moving].skeleton.joints[l].velocity.y+=.003/.015/2;
-
-							}
-							}
-							}
-							}
-							}
-							}
-							}
-							}
-							}
-
-							*/
 
 							if(!IsKeyDown(theKeyMap, MAC_N_KEY)){
 								texturesizetogglekeydown=0;
@@ -7324,34 +6771,9 @@ void	Game::Tick()
 								leveltime=5;
 								slomotogglekeydown=1;
 							}
-
-							/*
-							if(IsKeyDown(theKeyMap, MAC_Z_KEY)){
-							//Respawn
-							OPENAL_SetPaused(channels[whooshsound], true);
-							changedelay=0;
-							for(k=0;k<numplayers;k++){
-							player[k].dead=0;
-							player[k].damage=0;
-							player[k].permanentdamage=0;
-							if(player[k].skeleton.free==2)player[k].skeleton.free=1;
-							player[k].aitype=passivetype;
-							}
-							player[0].aitype=playercontrolled;
-							}
-							*/
-
 							static bool movekey;
 							static bool connected;
-							/*player[0].forwardkeydown=IsKeyDown(theKeyMap, MAC_W_KEY);
-							player[0].leftkeydown=IsKeyDown(theKeyMap, MAC_A_KEY);
-							player[0].backkeydown=IsKeyDown(theKeyMap, MAC_S_KEY);
-							player[0].rightkeydown=IsKeyDown(theKeyMap, MAC_D_KEY);
-							player[0].jumpkeydown=IsKeyDown(theKeyMap, MAC_SPACE_KEY);
-							player[0].crouchkeydown=IsKeyDown(theKeyMap, MAC_SHIFT_KEY);*/
-
-							//if(!player[0].crouchkeydown)player[0].crouchkeydown=IsKeyDown(theKeyMap, MAC_CONTROL_KEY);
-
+							
 		for(int i=0;i<numplayers;i++){
 								if(!player[i].skeleton.free){
 									oldtargetrotation=player[i].targetrotation;
@@ -8198,21 +7620,9 @@ void	Game::Tick()
 																player[i].throwkeydown=0;
 
 																if(player[i].avoidcollided>.8&&!player[i].jumpkeydown&&player[i].collided<.8)player[i].targetrotation+=90*(player[i].whichdirection*2-1);
-																/*for(j=0;j<numplayers;j++){
-																if(player[j].victim->id==i&&(player[j].targetanimation==spinkickanim&&player[j].targetframe<3)){
-																player[i].crouchkeydown=1;
-																}
-																}*/
 																if(Random()%2==0/*||player[0].weaponactive!=-1*/||player[i].weaponactive!=-1||player[i].creature==wolftype)player[i].attackkeydown=1;
 																else player[i].attackkeydown=0;
 																if((player[i].isRun())&&Random()%6&&findDistancefast(&player[i].coords,&player[0].coords)>7)player[i].attackkeydown=0;
-																//if(player[i].attackkeydown&&findDistancefast(&player[i].coords,&player[0].coords)<3&&player[i].targetanimation!=runanim&&!player[0].skeleton.free)player[i].crouchkeydown=1;
-																/*if(player[0].targetanimation==rabbitkickanim&&!player[0].skeleton.free){
-																player[i].attackkeydown=0;
-																if(player[i].isIdle())player[i].crouchkeydown=1;
-																player[i].forwardkeydown=0;
-																player[i].aiupdatedelay=.02;
-																}*/
 
 																if(player[i].aitype!=playercontrolled&&(player[i].isIdle()||player[i].isCrouch()||player[i].isRun())){
 																	target=-2;
@@ -9050,42 +8460,7 @@ void	Game::Tick()
 							}
 
 							objects.DoStuff();
-							/*
-							player[0].righthandmorphstart=0;
-							player[0].righthandmorphend=1;
-							player[0].lefthandmorphstart=0;
-							player[0].lefthandmorphend=1;
-							player[0].headmorphstart=0;
-							player[0].headmorphend=2;*/
-
-							/*
-							if(IsKeyDown( theKeyMap, MAC_P_KEY )){
-							if(player[0].righthandmorphend!=1)player[0].righthandmorphness=0;
-							player[0].righthandmorphend=1;
-							player[0].targetrighthandmorphness=1;
-
-							if(player[0].lefthandmorphend!=0)player[0].lefthandmorphness=0;
-							player[0].lefthandmorphend=0;
-							player[0].targetlefthandmorphness=1;
-
-							if(player[0].headmorphend!=2)player[0].headmorphness=0;
-							player[0].headmorphend=2;
-							player[0].targetheadmorphness=1;
-							}
-							if(IsKeyDown( theKeyMap, MAC_L_KEY )){
-							if(player[0].righthandmorphend!=0)player[0].righthandmorphness=0;
-							player[0].righthandmorphend=0;
-							player[0].targetrighthandmorphness=1;
-
-							if(player[0].lefthandmorphend!=1)player[0].lefthandmorphness=0;
-							player[0].lefthandmorphend=1;
-							player[0].targetlefthandmorphness=1;
-
-							if(player[0].headmorphend!=0)player[0].headmorphness=0;
-							player[0].headmorphend=0;
-							player[0].targetheadmorphness=1;
-							}
-							*/
+							
 							if(numenvsounds!=0)
 								for(j=numenvsounds-1;j>=0;j--){
 									envsoundlife[j]-=multiplier;
@@ -9252,7 +8627,6 @@ void	Game::Tick()
 }
 
 void	Game::TickOnce(){
-	//if(!console){
 	if(!mainmenu)
 		if(directing||indialogue==-1){
 			rotation+=deltah*.7;
@@ -9262,8 +8636,6 @@ void	Game::TickOnce(){
 			if(rotation2<-70)rotation2=-70;
 		}
 		if(mainmenu)rotation+=multiplier*5;
-      
-		//}
 }
 
 void	Game::TickOnceAfter(){
@@ -9341,14 +8713,6 @@ void	Game::TickOnceAfter(){
 		else musicvolume[1]-=multiplier*450;
 		if(musicselected==stream_music3)musicvolume[2]+=multiplier*450;
 		else musicvolume[2]-=multiplier*450;
-		/*
-		if(musicselected==music1)musicvolume[0]+=multiplier*100;
-		else musicvolume[0]-=multiplier*450;
-		if(musicselected==music2)musicvolume[1]+=multiplier*150;
-		else if(player[0].dead)musicvolume[1]-=multiplier*450;
-		else musicvolume[1]-=multiplier*100;
-		if(musicselected==music3)musicvolume[2]+=multiplier*450;
-		else musicvolume[2]-=multiplier*450;*/
 
 		for(i=0;i<3;i++){
 			if(musicvolume[i]<0)musicvolume[i]=0;
@@ -9626,8 +8990,6 @@ void	Game::TickOnceAfter(){
 								startbonustotal=0;
 
 								ifstream ipstream(ConvertFileName(":Data:Campaigns:main.txt"));
-								//campaignnumlevels=0;
-								//accountcampaignchoicesmade[accountactive]=0;
 								ipstream.ignore(256,':');
 								ipstream >> campaignnumlevels;
 								for(i=0;i<campaignnumlevels;i++){
@@ -9712,10 +9074,6 @@ void	Game::TickOnceAfter(){
 									mapname[8]='p';
 									mapname[9]='s';
 									mapname[10]=':';
-
-									//accountcampaignchoices[accountactive][accountcampaignchoicesmade[accountactive]]=whichchoice;
-									//accountcampaignchoicesmade[accountactive]++;
-
 
 									strcat(mapname,campaignmapname[campaignchoicewhich[0]]);
 									whichchoice=0;
