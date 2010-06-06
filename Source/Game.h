@@ -231,7 +231,6 @@ class Game
 		unsigned short crouchkey,jumpkey,forwardkey,chatkey,backkey,leftkey,rightkey,drawkey,throwkey,attackkey;
 		bool oldattackkey;
 
-		long long MD5_string (char *string);
 		static void LoadTexture(const char *fileName, GLuint *textureid,int mipmap, bool hasalpha);
 		static void LoadTextureSave(const char *fileName, GLuint *textureid,int mipmap,GLubyte *array, int *skinsize);
 		void LoadSave(const char *fileName, GLuint *textureid,bool mipmap,GLubyte *array, int *skinsize);
@@ -311,16 +310,8 @@ class Game
 
 static __forceinline void swap_gl_buffers(void)
 {
-
     SDL_GL_SwapBuffers();
-
 }
-
-#ifdef __GNUC__
-#define LONGLONGCONST(x) (x##ll)
-#else
-#define LONGLONGCONST(x) (x)
-#endif
 
 extern "C" { void UndefinedSymbolToExposeStubbedCode(void); }
 //#define STUBBED(x) UndefinedSymbolToExposeStubbedCode();

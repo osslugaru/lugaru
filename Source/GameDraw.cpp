@@ -171,37 +171,6 @@ void Game::flash() { // shouldn't be that way, these should be attributes and Pe
 	flashdelay=1;
 }
 /*********************> DrawGLScene() <*****/
-long long Game::MD5_string (char* string){
-	char temp[256]="";
-	char temp2[256]="";
-	long long num=90814;
-
-	sprintf (temp, "%s",string);
-
-	int i=0;
-	while (i<256&&temp[i]!='\0'){
-		if(temp[i]%3==0)num+=temp[i]*124;
-		else if(temp[i]%3==1)num-=temp[i]*temp[i];
-		else num*=temp[i];
-		i++;
-	}
-
-	num=longlongabs(num);
-	if(num==0)num+=1452;
-
-	while(num<LONGLONGCONST(5000000000000000)){
-		num*=1.85421521;
-	}
-
-	while(num>LONGLONGCONST(9900000000000000)){
-		num/=1.235421521;
-	}
-
-	return num;
-
-	//return 1111111111111111;
-}
-
 int Game::DrawGLScene(StereoSide side)
 {	
 	static float texcoordwidth,texcoordheight;
@@ -322,20 +291,18 @@ int Game::DrawGLScene(StereoSide side)
 		glDrawBuffer(GL_BACK);
 		glReadBuffer(GL_BACK);
 
-		/*if(environment==desertenvironment)glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, (float)(abs(Random()%100))/50 );
-		else glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, 0);
-		*/
 		if(abs(blurness-targetblurness)<multiplier*10||abs(blurness-targetblurness)>2){
 			blurness=targetblurness;
 			targetblurness=(float)(abs(Random()%100))/40;
 		}
-		if(blurness<targetblurness)blurness+=multiplier*5;
-		if(blurness>targetblurness)blurness-=multiplier*5;
+		if(blurness<targetblurness) 
+			blurness+=multiplier*5;
+		else
+			blurness-=multiplier*5;
 
 		//glFinish();
 		static XYZ terrainlight;
 		static float distance;
-		//if(drawmode==normalmode)ReSizeGLScene(90,.1);
 		if(drawmode==normalmode)ReSizeGLScene(90,.1f);
 		if(drawmode!=normalmode)glViewport(0,0,texviewwidth,texviewheight);	
 		glDepthFunc(GL_LEQUAL);
@@ -359,7 +326,6 @@ int Game::DrawGLScene(StereoSide side)
 			glRotatef(rotation+sin(woozy)*(player[0].damage/player[0].damagetolerance)*5,0,1,0);
 		}
 		if(cameramode||freeze||winfreeze){
-			//glRotatef(float(Random()%100)/10*camerashake/*+(woozy*woozy)/10*/,0,0,1);
 			glRotatef(rotation2,1,0,0);
 			glRotatef(rotation,0,1,0);
 		}
@@ -367,8 +333,6 @@ int Game::DrawGLScene(StereoSide side)
 		if(environment==desertenvironment){
 			glRotatef((float)(abs(Random()%100))/3000-1,1,0,0);
 			glRotatef((float)(abs(Random()%100))/3000-1,0,1,0);
-			//glRotatef(blurness/40-1,1,0,0);
-			//glRotatef(blurness/40-1,0,1,0);
 		}
 		SetUpLight(&light,0);
 		glPushMatrix();
@@ -399,19 +363,18 @@ int Game::DrawGLScene(StereoSide side)
 								opacity=.2+.2*sin(smoketex*6+i)-player[k].skeleton.joints[i].position.y*player[k].scale/5-(player[k].coords.y-terrain.getHeight(player[k].coords.x,player[k].coords.z))/10;
 							}
 							terrain.MakeDecal(shadowdecal,point,size,opacity,rotation);
-							if(terrain.patchobjectnum[player[k].whichpatchx][player[k].whichpatchz])
-								for(l=0;l<terrain.patchobjectnum[player[k].whichpatchx][player[k].whichpatchz];l++){
-									j=terrain.patchobjects[player[k].whichpatchx][player[k].whichpatchz][l];
-									if(objects.position[j].y<player[k].coords.y||objects.type[j]==tunneltype||objects.type[j]==weirdtype){
-										point=DoRotation(DoRotation(player[k].skeleton.joints[i].position,0,player[k].rotation,0)*player[k].scale+player[k].coords-objects.position[j],0,-objects.rotation[j],0);
-										size=.4f;
-										opacity=.4f;
-										if(k!=0&&tutoriallevel==1){
-											opacity=.2+.2*sin(smoketex*6+i);
-										}
-										objects.model[j].MakeDecal(shadowdecal,&point,&size,&opacity,&rotation);
+							for(l=0;l<terrain.patchobjectnum[player[k].whichpatchx][player[k].whichpatchz];l++){
+								j=terrain.patchobjects[player[k].whichpatchx][player[k].whichpatchz][l];
+								if(objects.position[j].y<player[k].coords.y||objects.type[j]==tunneltype||objects.type[j]==weirdtype){
+									point=DoRotation(DoRotation(player[k].skeleton.joints[i].position,0,player[k].rotation,0)*player[k].scale+player[k].coords-objects.position[j],0,-objects.rotation[j],0);
+									size=.4f;
+									opacity=.4f;
+									if(k!=0&&tutoriallevel==1){
+										opacity=.2+.2*sin(smoketex*6+i);
 									}
+									objects.model[j].MakeDecal(shadowdecal,&point,&size,&opacity,&rotation);
 								}
+							}
 						}
 					}
 					if((player[k].skeleton.free||player[k].howactive>=typesleeping)&&player[k].playerdetail)
@@ -426,20 +389,19 @@ int Game::DrawGLScene(StereoSide side)
 										opacity=.2+.2*sin(smoketex*6+i)-player[k].skeleton.joints[i].position.y*player[k].scale/5-(player[k].coords.y-terrain.getHeight(player[k].coords.x,player[k].coords.z))/10;
 									}
 									terrain.MakeDecal(shadowdecal,point,size,opacity*.7,rotation);
-									if(terrain.patchobjectnum[player[k].whichpatchx][player[k].whichpatchz])
-										for(l=0;l<terrain.patchobjectnum[player[k].whichpatchx][player[k].whichpatchz];l++){
-											j=terrain.patchobjects[player[k].whichpatchx][player[k].whichpatchz][l];
-											if(objects.position[j].y<player[k].coords.y||objects.type[j]==tunneltype||objects.type[j]==weirdtype){
-												if(player[k].skeleton.free)point=DoRotation(player[k].skeleton.joints[i].position*player[k].scale+player[k].coords-objects.position[j],0,-objects.rotation[j],0);
-												else point=DoRotation(DoRotation(player[k].skeleton.joints[i].position,0,player[k].rotation,0)*player[k].scale+player[k].coords-objects.position[j],0,-objects.rotation[j],0);
-												size=.4f;
-												opacity=.4f;
-												if(k!=0&&tutoriallevel==1){
-													opacity=.2+.2*sin(smoketex*6+i);
-												}
-												objects.model[j].MakeDecal(shadowdecal,&point,&size,&opacity,&rotation);
+									for(l=0;l<terrain.patchobjectnum[player[k].whichpatchx][player[k].whichpatchz];l++){
+										j=terrain.patchobjects[player[k].whichpatchx][player[k].whichpatchz][l];
+										if(objects.position[j].y<player[k].coords.y||objects.type[j]==tunneltype||objects.type[j]==weirdtype){
+											if(player[k].skeleton.free)point=DoRotation(player[k].skeleton.joints[i].position*player[k].scale+player[k].coords-objects.position[j],0,-objects.rotation[j],0);
+											else point=DoRotation(DoRotation(player[k].skeleton.joints[i].position,0,player[k].rotation,0)*player[k].scale+player[k].coords-objects.position[j],0,-objects.rotation[j],0);
+											size=.4f;
+											opacity=.4f;
+											if(k!=0&&tutoriallevel==1){
+												opacity=.2+.2*sin(smoketex*6+i);
 											}
+											objects.model[j].MakeDecal(shadowdecal,&point,&size,&opacity,&rotation);
 										}
+									}
 								}
 							}
 
@@ -450,14 +412,13 @@ int Game::DrawGLScene(StereoSide side)
 									size=.7;
 									opacity=.4-(player[k].coords.y-terrain.getHeight(player[k].coords.x,player[k].coords.z))/5;
 									terrain.MakeDecal(shadowdecal,point,size,opacity*.7,rotation);
-									if(terrain.patchobjectnum[player[k].whichpatchx][player[k].whichpatchz])
-										for(l=0;l<terrain.patchobjectnum[player[k].whichpatchx][player[k].whichpatchz];l++){
-											j=terrain.patchobjects[player[k].whichpatchx][player[k].whichpatchz][l];
-											point=DoRotation(player[k].coords-objects.position[j],0,-objects.rotation[j],0);
-											size=.7;
-											opacity=.4f;
-											objects.model[j].MakeDecal(shadowdecal,&point,&size,&opacity,&rotation);
-										}
+									for(l=0;l<terrain.patchobjectnum[player[k].whichpatchx][player[k].whichpatchz];l++){
+										j=terrain.patchobjects[player[k].whichpatchx][player[k].whichpatchz][l];
+										point=DoRotation(player[k].coords-objects.position[j],0,-objects.rotation[j],0);
+										size=.7;
+										opacity=.4f;
+										objects.model[j].MakeDecal(shadowdecal,&point,&size,&opacity,&rotation);
+									}
 								}
 		}
 
@@ -583,7 +544,6 @@ int Game::DrawGLScene(StereoSide side)
 				}
 			}
 		}
-		//}
 
 		glPushMatrix();
 		glEnable(GL_TEXTURE_2D);
@@ -1013,10 +973,9 @@ int Game::DrawGLScene(StereoSide side)
 
 							sprintf (string, "%s", hotspottext[closest]);
 
-							int lastline;
-							int line=0;
-							bool done=0;
-							lastline=0;
+							int lastline = 0;
+							int line = 0;
+							bool done = false;
 							i=0;
 							while(!done){
 								if(string[i]=='\n'||string[i]>'z'||string[i]<' '||string[i]=='\0'){
@@ -1128,11 +1087,9 @@ int Game::DrawGLScene(StereoSide side)
 					if(dialogueboxlocation[whichdialogue][indialogue]==1)starty=screenheight/16+screenheight*4/5;
 					if(dialogueboxlocation[whichdialogue][indialogue]==2)starty=screenheight*1/5-screenheight/16;
 
-//					char tempname[64];
 					char tempname[264];
 					bool goodchar;
 					int tempnum=0;
-//					for(i=0;i<64;i++){
 					for(i=0;i<264;i++){
 						tempname[i]='\0';
 					}
@@ -1141,10 +1098,10 @@ int Game::DrawGLScene(StereoSide side)
 						tempname[tempnum]=dialoguename[whichdialogue][indialogue][i];
 						goodchar=1;
 						if(dialoguename[whichdialogue][indialogue][i]=='#'||dialoguename[whichdialogue][indialogue][i]=='\0')goodchar=0;
-						//if(tempnum>2)if(tempname[tempnum-2]=='e'&&tempname[tempnum-1]=='r')goodchar=0;
-						//if(tempnum>2)if(tempname[tempnum]=='r'&&tempname[0]=='a')goodchar=0;
-						if(goodchar)tempnum++;
-						else tempname[tempnum]='\0';
+						if(goodchar)
+							tempnum++;
+						else
+							tempname[tempnum]='\0';
 					}
 
 					sprintf (string, "%s: ", tempname);
@@ -1159,7 +1116,6 @@ int Game::DrawGLScene(StereoSide side)
 					{
 						glColor4f(0,0,0,tutorialopac);
 						text.glPrintOutline(startx-2*7.6*strlen(string)*screenwidth/1024-4,starty-4,string,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight);
-
 					}
 
 					tempnum=0;
@@ -1168,14 +1124,11 @@ int Game::DrawGLScene(StereoSide side)
 						if(dialoguetext[whichdialogue][indialogue][i]!='#')tempnum++;
 					}
 
-
 					sprintf (string, "%s", tempname);
 
-
-					int lastline;
-					int line=0;
-					bool done=0;
-					lastline=0;
+					int lastline = 0;
+					int line = 0;
+					bool done = false;
 					i=0;
 					while(!done){
 						if(string[i]=='\n'||string[i]>'z'||string[i]<' '||string[i]=='\0'){
@@ -1201,8 +1154,10 @@ int Game::DrawGLScene(StereoSide side)
 
 				if(!tutoriallevel&&!winfreeze&&indialogue==-1&&!mainmenu){
 					if(campaign){
-						if(!scoreadded)sprintf (string, "Score: %d", (int)accountactive->getCampaignScore()+(int)bonustotal);//(int)bonustotal);
-						if(scoreadded)sprintf (string, "Score: %d", (int)accountactive->getCampaignScore());//(int)bonustotal);
+						if(scoreadded)
+							sprintf (string, "Score: %d", (int)accountactive->getCampaignScore());
+						else
+							sprintf (string, "Score: %d", (int)accountactive->getCampaignScore()+(int)bonustotal);
 					}
 					if(!campaign)sprintf (string, "Score: %d", (int)bonustotal);
 					glColor4f(0,0,0,1);
@@ -1306,8 +1261,10 @@ int Game::DrawGLScene(StereoSide side)
 					text.glPrint(10,260,string,0,.8,1024,768);
 
 
-					if(editorenabled)sprintf (string, "Map editor enabled.");
-					if(!editorenabled)sprintf (string, "Map editor Disabled.");
+					if(editorenabled)
+						sprintf (string, "Map editor enabled.");
+					else
+						sprintf (string, "Map editor disabled.");
 					text.glPrint(10,60,string,0,.8,1024,768);
 					if(editorenabled){
 						sprintf (string, "Object size: %f",editorsize);
@@ -1320,18 +1277,44 @@ int Game::DrawGLScene(StereoSide side)
 						text.glPrint(10,105,string,0,.8,1024,768);
 						sprintf (string, "Object type: %d",editortype);
 						text.glPrint(10,120,string,0,.8,1024,768);
-						if(editortype==boxtype)sprintf (string, "(box)");
-						if(editortype==treetrunktype)sprintf (string, "(tree)");
-						if(editortype==walltype)sprintf (string, "(wall)");
-						if(editortype==weirdtype)sprintf (string, "(weird)");
-						if(editortype==spiketype)sprintf (string, "(spike)");
-						if(editortype==rocktype)sprintf (string, "(rock)");
-						if(editortype==bushtype)sprintf (string, "(bush)");
-						if(editortype==tunneltype)sprintf (string, "(tunnel)");
-						if(editortype==chimneytype)sprintf (string, "(chimney)");
-						if(editortype==platformtype)sprintf (string, "(platform)");
-						if(editortype==cooltype)sprintf (string, "(cool)");
-						if(editortype==firetype)sprintf (string, "(fire)");
+						switch(editortype) {
+							case boxtype: 
+								sprintf (string, "(box)");
+								break;
+							case treetrunktype: 
+								sprintf (string, "(tree)");
+								break;
+							case walltype: 
+								sprintf (string, "(wall)");
+								break;
+							case weirdtype: 
+								sprintf (string, "(weird)");
+								break;
+							case spiketype: 
+								sprintf (string, "(spike)");
+								break;
+							case rocktype: 
+								sprintf (string, "(rock)");
+								break;
+							case bushtype: 
+								sprintf (string, "(bush)");
+								break;
+							case tunneltype: 
+								sprintf (string, "(tunnel)");
+								break;
+							case chimneytype: 
+								sprintf (string, "(chimney)");
+								break;
+							case platformtype: 
+								sprintf (string, "(platform)");
+								break;
+							case cooltype: 
+								sprintf (string, "(cool)");
+								break;
+							case firetype: 
+								sprintf (string, "(fire)");
+								break;
+						}
 						text.glPrint(130,120,string,0,.8,1024,768);
 
 						sprintf (string, "Numplayers: %d",numplayers);
@@ -1339,17 +1322,8 @@ int Game::DrawGLScene(StereoSide side)
 						sprintf (string, "Player %d: numwaypoints: %d",numplayers,player[numplayers-1].numwaypoints);
 						text.glPrint(10,140,string,0,.8,1024,768);
 					}
-					/*sprintf (string, "Coords are: %f %f %f",player[0].coords.x,player[0].coords.y,player[0].coords.z);
-					text.glPrint(10,200,string,0,.8,1024,768);*/
 					sprintf (string, "Difficulty: %d",difficulty);
 					text.glPrint(10,240,string,0,.8,1024,768);
-					/*
-					sprintf (string, "lasthotspot: %d",hotspottype[numhotspots-1]);
-					text.glPrint(10,240,string,0,.8,1024,768);
-					sprintf (string, "killhotspot: %d",killhotspot);
-					text.glPrint(10,220,string,0,.8,1024,768);
-					sprintf (string, "winhotspot: %d",winhotspot);
-					text.glPrint(10,200,string,0,.8,1024,768);*/
 
 				}
 		}
@@ -1495,8 +1469,7 @@ int Game::DrawGLScene(StereoSide side)
 		}
 
 		if(minimap&&indialogue==-1){
-			float mapviewdist;
-			mapviewdist=20000;
+			float mapviewdist = 20000;
 
 			glDisable(GL_DEPTH_TEST);
 			glColor3f (1.0, 1.0, 1.0); // no coloring
@@ -1521,19 +1494,17 @@ int Game::DrawGLScene(StereoSide side)
 			glEnable(GL_BLEND);
 			glColor4f(1,1,1,1);
 			glPushMatrix();
-			float opac;
-			opac=.7;
+			float opac = .7;
 			XYZ center;
 			float radius;
 			float distcheck;
-			center=0;
 			int numliveplayers=0;
+			center = 0;
 			for(i=0;i<numplayers;i++){
-				if(!player[i].dead)numliveplayers++;
+				if(!player[i].dead) numliveplayers++;
 			}
 
-			int numadd;
-			numadd=0;
+			int numadd = 0;
 
 			for(i=0;i<objects.numobjects;i++){
 				if(objects.type[i]==treetrunktype||objects.type[i]==boxtype){
@@ -1772,16 +1743,14 @@ int Game::DrawGLScene(StereoSide side)
 			glEnable(GL_TEXTURE_2D);
 
 			//Awards
-			int numawards;
+			int numawards = 0;
 			int awards[30];
-			numawards=0;
 
 			if(damagetaken==0&&player[0].bloodloss==0){
 				awards[numawards]=awardflawless;
 				numawards++;
 			}
-			bool alldead;
-			alldead=1;
+			bool alldead = true;
 			for(i=1;i<numplayers;i++){		
 				if(player[i].dead!=2)alldead=0;
 			}
@@ -1850,59 +1819,58 @@ int Game::DrawGLScene(StereoSide side)
 				numawards++;
 			}
 
+			//Win Screen Won Victory
 
-						//Win Screen Won Victory
+			glEnable(GL_TEXTURE_2D);
+			glColor4f(1,1,1,1);
+			sprintf (string, "Level Cleared!");
+			text.glPrintOutlined(1024/2-strlen(string)*10,768*7/8,string,1,2,1024,768);
 
-						glEnable(GL_TEXTURE_2D);
-						glColor4f(1,1,1,1);
-						sprintf (string, "Level Cleared!");
-						text.glPrintOutlined(1024/2-strlen(string)*10,768*7/8,string,1,2,1024,768);
+			sprintf (string, "Score:     %d",(int)(bonustotal-startbonustotal));
+			text.glPrintOutlined(1024/30,768*6/8,string,1,2,1024,768);
 
-						sprintf (string, "Score:     %d",(int)(bonustotal-startbonustotal));
-						text.glPrintOutlined(1024/30,768*6/8,string,1,2,1024,768);
+			if(campaign)
+				sprintf (string, "Press Escape or Space to continue");
+			else
+				sprintf (string, "Press Escape to return to menu or Space to continue");
+			text.glPrintOutlined(640/2-strlen(string)*5,480*1/16,string,1,1,640,480);
 
-						if(!campaign)sprintf (string, "Press Escape to return to menu or Space to continue");
-						if(campaign)sprintf (string, "Press Escape or Space to continue");
-						text.glPrintOutlined(640/2-strlen(string)*5,480*1/16,string,1,1,640,480);
+			char temp[255];
 
-						char temp[255];
+			for(i=0;i<255;i++)string[i]='\0';
+			sprintf (temp, "Time:      %d:",(int)(((int)leveltime-(int)(leveltime)%60)/60));
+			strcat(string,temp);
+			if((int)(leveltime)%60<10)strcat(string,"0");
+			sprintf (temp, "%d",(int)(leveltime)%60);
+			strcat(string,temp);
+			text.glPrintOutlined(1024/30,768*6/8-40,string,1,2,1024,768);
 
-						for(i=0;i<255;i++)string[i]='\0';
-						sprintf (temp, "Time:      %d:",(int)(((int)leveltime-(int)(leveltime)%60)/60));
-						strcat(string,temp);
-						if((int)(leveltime)%60<10)strcat(string,"0");
-						sprintf (temp, "%d",(int)(leveltime)%60);
-						strcat(string,temp);
-						text.glPrintOutlined(1024/30,768*6/8-40,string,1,2,1024,768);
-
-						for(i=0;i<numawards;i++){
-							if(i<6){
-								if(awards[i]==awardklutz)sprintf (string, "Suicidal");
-								if(awards[i]==awardflawless)sprintf (string, "Flawless!");
-								if(awards[i]==awardalldead)sprintf (string, "Take no prisoners");
-								if(awards[i]==awardnodead)sprintf (string, "Merciful");
-								if(awards[i]==awardstealth)sprintf (string, "One with the shadows!");
-								if(awards[i]==awardswordsman)sprintf (string, "Swordsman");
-								if(awards[i]==awardkungfu)sprintf (string, "Unarmed!");
-								if(awards[i]==awardknifefighter)sprintf (string, "Knife fighter");
-								if(awards[i]==awardcoward)sprintf (string, "Coward");
-								if(awards[i]==awardevasion)sprintf (string, "Escape artist");
-								if(awards[i]==awardacrobat)sprintf (string, "Gymnast");
-								if(awards[i]==awardlongrange)sprintf (string, "Blade slinger");
-								if(awards[i]==awardbrutal)sprintf (string, "Brutal");
-								if(awards[i]==awardhyper)sprintf (string, "Hyper");
-								if(awards[i]==awardaikido)sprintf (string, "Aikido master!");
-								if(awards[i]==awardrambo)sprintf (string, "Rambo");
-								if(awards[i]==awardfast)sprintf (string, "Fast");
-								if(awards[i]==awardrealfast)sprintf (string, "Real fast");
-								if(awards[i]==awarddamnfast)sprintf (string, "Damn fast");
-								if(awards[i]==awardstrategy)sprintf (string, "Divide and conquer");
-								if(awards[i]==awardbojutsu)sprintf (string, "Bojutsu");
-								text.glPrintOutlined(1024/30,768*6/8-90-40*i,string,1,2,1024,768);
-							}
-						}
-
-						//drawmode=normalmode;
+			for(i=0;i<numawards;i++){
+				if(i<6){
+					if(awards[i]==awardklutz)sprintf (string, "Suicidal");
+					if(awards[i]==awardflawless)sprintf (string, "Flawless!");
+					if(awards[i]==awardalldead)sprintf (string, "Take no prisoners");
+					if(awards[i]==awardnodead)sprintf (string, "Merciful");
+					if(awards[i]==awardstealth)sprintf (string, "One with the shadows!");
+					if(awards[i]==awardswordsman)sprintf (string, "Swordsman");
+					if(awards[i]==awardkungfu)sprintf (string, "Unarmed!");
+					if(awards[i]==awardknifefighter)sprintf (string, "Knife fighter");
+					if(awards[i]==awardcoward)sprintf (string, "Coward");
+					if(awards[i]==awardevasion)sprintf (string, "Escape artist");
+					if(awards[i]==awardacrobat)sprintf (string, "Gymnast");
+					if(awards[i]==awardlongrange)sprintf (string, "Blade slinger");
+					if(awards[i]==awardbrutal)sprintf (string, "Brutal");
+					if(awards[i]==awardhyper)sprintf (string, "Hyper");
+					if(awards[i]==awardaikido)sprintf (string, "Aikido master!");
+					if(awards[i]==awardrambo)sprintf (string, "Rambo");
+					if(awards[i]==awardfast)sprintf (string, "Fast");
+					if(awards[i]==awardrealfast)sprintf (string, "Real fast");
+					if(awards[i]==awarddamnfast)sprintf (string, "Damn fast");
+					if(awards[i]==awardstrategy)sprintf (string, "Divide and conquer");
+					if(awards[i]==awardbojutsu)sprintf (string, "Bojutsu");
+					text.glPrintOutlined(1024/30,768*6/8-90-40*i,string,1,2,1024,768);
+				}
+			}
 		}
 
 		if(drawmode!=normalmode){
@@ -1954,8 +1922,6 @@ int Game::DrawGLScene(StereoSide side)
 			if(drawmode==motionblurmode){
 				glDrawBuffer(GL_FRONT);
 				glReadBuffer(GL_BACK);
-				//myassert(glGetError() == GL_NO_ERROR);
-				//glFlush();
 			}
 			glColor3f (1.0, 1.0, 1.0); // no coloring
 
@@ -2158,23 +2124,21 @@ int Game::DrawGLScene(StereoSide side)
 		if(console){
 			glEnable(GL_TEXTURE_2D);
 			glColor4f(1,1,1,1);
-			if(console){
-				int offset;
-				offset=0;
-				if(consoleselected>=60)offset=consoleselected-60;
-				sprintf (string, " ]");
-				text.glPrint(10,30,string,0,1,1024,768);
-				if(consoleblink){
-					sprintf (string, "_");
-					text.glPrint(30+(float)(consoleselected)*10-offset*10,30,string,0,1,1024,768);
-				}
-				for(i=0;i<15;i++){
-					for(j=0;j<consolechars[i];j++){
-						glColor4f(1,1,1,1-(float)(i)/16);
-						if(j<consolechars[i]){
-							sprintf (string, "%c",consoletext[i][j]);
-							text.glPrint(30+j*10-offset*10,30+i*20,string,0,1,1024,768);
-						}
+			int offset = 0;
+			if(consoleselected>=60)
+				offset=consoleselected-60;
+			sprintf (string, " ]");
+			text.glPrint(10,30,string,0,1,1024,768);
+			if(consoleblink){
+				sprintf (string, "_");
+				text.glPrint(30+(float)(consoleselected)*10-offset*10,30,string,0,1,1024,768);
+			}
+			for(i=0;i<15;i++){
+				for(j=0;j<consolechars[i];j++){
+					glColor4f(1,1,1,1-(float)(i)/16);
+					if(j<consolechars[i]){
+						sprintf (string, "%c",consoletext[i][j]);
+						text.glPrint(30+j*10-offset*10,30+i*20,string,0,1,1024,768);
 					}
 				}
 			}

@@ -49,7 +49,6 @@ extern float texscale;
 extern Terrain terrain;
 extern OPENAL_SAMPLE *samp[100];
 extern int channels[100];
-//extern Sprites sprites;
 extern int kTextureSize;
 extern float screenwidth,screenheight;
 extern float gravity;
@@ -1573,26 +1572,6 @@ void	Game::Loadlevel(int which){
 
 	whichlevel=which;
 }
-
-/*char * Game::MD5_string (unsigned char *string){
-char temp[50];
-char temp2[100];
-
-strcpy(temp2,(const char *)string);
-strcat((char *)temp2,(const char *)"Lugaru");
-sprintf (temp, "%d",strlen((char *)temp2));
-strcat((char *)temp2,temp);
-
-MD5 context;
-unsigned int len = strlen ( (char *)temp2);
-
-context.update   ((unsigned char *)temp2, len);
-context.finalize ();
-
-return context.hex_digest();
-}*/
-
-
 
 void	Game::Loadlevel(char *name){
 	int i,j,k,l,m;

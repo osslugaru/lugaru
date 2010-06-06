@@ -112,12 +112,6 @@ char* ConvertFileName( const char* orgfilename, const char *mode = "rb" );
 
 #define fopen( a, b) fopen(ConvertFileName(a, b), b)
 
-__forceinline long long longlongabs( long long f)
-{
-	if (f < 0)
-		return -f;
-	return f;
-}
 #endif
 #endif
 
