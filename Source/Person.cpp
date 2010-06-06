@@ -6331,21 +6331,6 @@ void	Person::DoStuff(){
 						velocity=flatfacing*velspeed;
 					}
 
-					/*if(creature==wolftype)
-					if(isRun()){
-					velocity+=facing*multiplier*speed*700*scale;
-					velspeed=findLength(&velocity);
-					if(velspeed>speed*55*scale){
-					velocity/=velspeed;
-					velspeed=speed*55*scale;
-					velocity*=velspeed;
-					}
-					velocity.y+=gravity*multiplier*20;
-					ReflectVector(&velocity,terrain.getNormal(coords.x,coords.z));
-					velspeed=findLength(&velocity);
-					velocity=flatfacing*velspeed;
-					}*/
-
 					if(targetanimation==rollanim&&animation[targetanimation].label[targetframe]!=6){
 						velocity+=facing*multiplier*speed*700*scale;
 						velspeed=findLength(&velocity);
