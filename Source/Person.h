@@ -47,15 +47,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define rabbittype 0
 #define wolftype 1
 
-class HitStruct
-{
-	public:
-		Joint *joint1;
-		Joint *joint2;
-		XYZ hitlocation;
-		bool collision;
-};
-
 class Person
 {
 	public:
@@ -380,7 +371,6 @@ class Person
 		void DoStuff();
 		void DoAnimations();
 		void RagDoll(bool checkcollision);
-		HitStruct BulletCollideWithPlayer(XYZ start, XYZ end);
 };
 
 #endif
