@@ -88,8 +88,6 @@ extern float damagetaken;
 extern int hostile;
 extern float hostiletime;
 
-extern int mainmenu;
-
 extern int numfalls;
 extern int numflipfail;
 extern int numseen;
@@ -1465,7 +1463,7 @@ void Person::DoHead(){
 	static XYZ facing;
 	static float lookspeed=500;
 
-	if(!freeze&&!winfreeze&&(!mainmenu||!gamestarted)){
+	if(!freeze&&!winfreeze){
 
 		//head facing
 		targetheadrotation=(float)((int)((0-rotation-targetheadrotation+180)*100)%36000)/100;
@@ -5050,12 +5048,6 @@ void	Person::DoStuff(){
 			targetanimation=getRun();
 			targetframe=0;
 		}
-		/*static float toggledelay;
-		toggledelay-=multiplier;
-		if(toggledelay<0){
-		toggledelay=1;
-		if(Random()%3==0)superruntoggle=1-superruntoggle;
-		}*/
 	}
 	if(weaponactive==-1&&num_weapons>0){
 		if(weapons.type[weaponids[0]]==staff){
@@ -5154,10 +5146,6 @@ void	Person::DoStuff(){
 				if(!skeleton.free)Sprite::MakeSprite(bloodsprite, DoRotation((skeleton.joints[skeleton.jointlabels[abdomen]].position+skeleton.joints[skeleton.jointlabels[abdomen]].position)/2,0,rotation,0)*scale+coords,bloodvel, 1,1,1, .05, 1);
 			}
 		}
-		/*if(id==0){
-		bloodloss+=deathbleeding*40;
-		deathbleeding=0;
-		}*/
 		bloodloss+=deathbleeding*multiplier*80;
 		deathbleeding-=multiplier*1.6;
 		//if(id==0)deathbleeding-=multiplier*.2;
@@ -5231,10 +5219,6 @@ void	Person::DoStuff(){
 		if(endy>skeleton.skinsize-1){endy=skeleton.skinsize-1;bleeding=0;}
 		if(endx<startx)endx=startx;
 		if(endy<starty)endy=starty;
-		/*int startx=0;
-		int starty=0;
-		int endx=256;
-		int endy=256;*/
 
 		for(i=startx;i<endx;i++){
 			for(j=starty;j<endy;j++){
@@ -5610,12 +5594,6 @@ void	Person::DoStuff(){
 		}
 
 		damage+=20;
-
-		/*
-		if(bloodloss<damagetolerance)
-		for(i=0;i<skeleton.num_joints;i++){
-		skeleton.joints[i].velocity*=1.5;
-		}*/
 	}
 
 	//if(dead)damage-=multiplier/4;
@@ -6841,9 +6819,12 @@ int Person::DrawSkeleton(){
 		if(findDistancefast(&viewer,&coords)<viewdistance*viewdistance/256&&(detail!=1&&detail!=2)){
 			playerdetail=1;
 		}
-		if(id==0)playerdetail=1;
-		if(playerdetail!=oldplayerdetail)updatedelay=0;
-		if(playerdetail!=oldplayerdetail)normalsupdatedelay=0;
+		if(id==0)
+			playerdetail=1;
+		if(playerdetail!=oldplayerdetail) {
+			updatedelay=0;
+			normalsupdatedelay=0;
+		}
 		static float updatedelaychange;
 		static float morphness;
 		static float framemult;
@@ -6991,7 +6972,8 @@ int Person::DrawSkeleton(){
 					}
 				}
 			}
-			if(!skeleton.free&&(!animation[targetanimation].attack&&targetanimation!=getupfrombackanim&&targetanimation!=getupfrombackanim&&((targetanimation!=rollanim&&!isFlip())||animation[targetanimation].label[targetframe]==6)&&targetanimation!=getupfromfrontanim&&targetanimation!=wolfrunninganim&&targetanimation!=rabbitrunninganim&&targetanimation!=backhandspringanim&&targetanimation!=walljumpfrontanim&&targetanimation!=hurtidleanim&&!isLandhard()&&!isSleeping()))DoHead();
+			if(!skeleton.free&&(!animation[targetanimation].attack&&targetanimation!=getupfrombackanim&&((targetanimation!=rollanim&&!isFlip())||animation[targetanimation].label[targetframe]==6)&&targetanimation!=getupfromfrontanim&&targetanimation!=wolfrunninganim&&targetanimation!=rabbitrunninganim&&targetanimation!=backhandspringanim&&targetanimation!=walljumpfrontanim&&targetanimation!=hurtidleanim&&!isLandhard()&&!isSleeping()))
+				DoHead();
 			else {
 				targetheadrotation=-targetrotation;
 				targetheadrotation2=0;
