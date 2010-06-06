@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 /**> HEADER FILES <**/
 #include "Weapons.h"
 #include "openal_wrapper.h"
+#include "Animation.h"
 
 extern float multiplier;
 extern Animation animation[animation_count];

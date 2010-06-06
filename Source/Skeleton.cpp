@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Game.h"
 #include "Skeleton.h"
 #include "openal_wrapper.h"
+#include "Animation.h"
 
 extern float multiplier;
 extern float gravity;

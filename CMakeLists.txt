@@ -114,6 +114,8 @@ set(LUGARU_H
 	${SRCDIR}/unpack_private.h
 	${SRCDIR}/Settings.h
 	${SRCDIR}/Stereo.h
+	${SRCDIR}/Animation.h
+	${SRCDIR}/Animation.def
 )
 
 if(UNIX)
