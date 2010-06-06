@@ -3026,26 +3026,6 @@ int Game::DrawGLScene(StereoSide side)
 			}
 		}
 
-		if(mainmenu==13){	
-			nummenuitems=2;
-			char temp[255];
-
-			sprintf (menustring[0], "Please enter your name:");
-			startx[0]=50;
-			starty[0]=250;
-			endx[0]=startx[0]+strlen(menustring[0])*10;
-			endy[0]=starty[0]+20;
-			movex[0]=0;
-			movey[0]=0;
-
-			sprintf (menustring[1], "Please enter your name:");
-			startx[1]=290;
-			starty[1]=250;
-			endx[1]=startx[1]+strlen(menustring[1])*10;
-			endy[1]=starty[1]+20;
-			movex[1]=0;
-			movey[1]=0;
-		}
 		if(mainmenu==1||mainmenu==2){
 			nummenuitems=7;
 			startx[0]=150;
@@ -3213,173 +3193,335 @@ int Game::DrawGLScene(StereoSide side)
 				}
 			}
 
-			if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==11||mainmenu==13||mainmenu==17||mainmenu==18)
-				for(i=0;i<nummenuitems;i++){
-					if((mousecoordh/screenwidth*640)>startx[i]&&(mousecoordh/screenwidth*640)<endx[i]&&480-(mousecoordv/screenheight*480)>starty[i]&&480-(mousecoordv/screenheight*480)<endy[i]){
-						if(mainmenu!=5)selected=i;
-						if(mainmenu==5&&(i!=0&&i!=6))selected=i;
-						if(mainmenu==9&&(i!=numchallengelevels+1))selected=i;
-						if(mainmenu==11&&(i!=numchallengelevels+1))selected=i;
+		if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==11||mainmenu==13||mainmenu==17||mainmenu==18)
+			for(i=0;i<nummenuitems;i++){
+				if((mousecoordh/screenwidth*640)>startx[i]&&(mousecoordh/screenwidth*640)<endx[i]&&480-(mousecoordv/screenheight*480)>starty[i]&&480-(mousecoordv/screenheight*480)<endy[i]){
+					if(mainmenu!=5)selected=i;
+					if(mainmenu==5&&(i!=0&&i!=6))selected=i;
+					if(mainmenu==9&&(i!=numchallengelevels+1))selected=i;
+					if(mainmenu==11&&(i!=numchallengelevels+1))selected=i;
+				}
+			}
+
+		for(i=0;i<nummenuitems;i++){
+			if(selected==i) {
+				selectedlong[i]+=multiplier*5;
+				if(selectedlong[i]>1) selectedlong[i]=1;
+			} else {
+				selectedlong[i]-=multiplier*5;
+				if(selectedlong[i]<0) selectedlong[i]=0;	
+			}
+			offsetx[i]=(startx[i]+endx[i])/2-(mousecoordh/screenwidth*640);
+			offsety[i]=(starty[i]+endy[i])/2-(480-(mousecoordv/screenheight*480));
+			offsetx[i]*=.06f;
+			offsety[i]*=.06f;
+			offsetx[i]=0;
+			offsety[i]=0;
+			if(i>=4&&(mainmenu==1||mainmenu==2)){
+				selectedlong[i]=0;
+				offsetx[i]=(startx[i]+endx[i]+movex[i]*transition)/2-(640+190)/2;
+				offsety[i]=(starty[i]+endy[i]+movey[i]*transition)/2-(336+150)/2;
+				offsetx[i]*=.06f;
+				offsety[i]*=.06f;
+			}
+		}
+
+		if(mainmenu==1||mainmenu==2){
+			glClear(GL_DEPTH_BUFFER_BIT);
+			glEnable(GL_ALPHA_TEST);
+			glAlphaFunc(GL_GREATER, 0.001f);
+			glEnable(GL_TEXTURE_2D);
+			glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
+			glDisable(GL_CULL_FACE);
+			glDisable(GL_LIGHTING);
+			glDepthMask(0);
+			glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+			glPushMatrix();										// Store The Projection Matrix
+				glLoadIdentity();									// Reset The Projection Matrix
+				glOrtho(0,screenwidth,0,screenheight,-100,100);						// Set Up An Ortho Screen
+				glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+				glPushMatrix();										// Store The Modelview Matrix
+					glLoadIdentity();								// Reset The Modelview Matrix
+					glTranslatef(screenwidth/2,screenheight/2,0);
+					glPushMatrix();
+						glScalef((float)screenwidth/2,(float)screenheight/2,1);
+						glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+						glDisable(GL_BLEND);
+						glColor4f(0,0,0,1.0);
+						glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
+						glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
+						glDisable(GL_TEXTURE_2D);
+						glPushMatrix();
+							//glScalef(.25,.25,.25);
+							glBegin(GL_QUADS);
+							glTexCoord2f(0,0);
+							glVertex3f(-1,		-1, 	 0.0f);
+							glTexCoord2f(1,0);
+							glVertex3f(1,	-1, 	 0.0f);
+							glTexCoord2f(1,1);
+							glVertex3f(1,	1, 0.0f);
+							glTexCoord2f(0,1);
+							glVertex3f(-1, 	1, 0.0f);
+							glEnd();
+						glPopMatrix();
+						glEnable(GL_BLEND);
+						glColor4f(0.4,0.4,0.4,1.0);
+						glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
+						glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
+						glEnable(GL_TEXTURE_2D);
+						glBindTexture( GL_TEXTURE_2D, Mainmenuitems[4]);
+						glPushMatrix();
+							//glScalef(.25,.25,.25);
+							glBegin(GL_QUADS);
+							glTexCoord2f(0,0);
+							glVertex3f(-1,		-1, 	 0.0f);
+							glTexCoord2f(1,0);
+							glVertex3f(1,	-1, 	 0.0f);
+							glTexCoord2f(1,1);
+							glVertex3f(1,	1, 0.0f);
+							glTexCoord2f(0,1);
+							glVertex3f(-1, 	1, 0.0f);
+							glEnd();
+						glPopMatrix();
+					glPopMatrix();
+				glPopMatrix();
+				glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+			glPopMatrix();
+
+			glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+			glPushMatrix();										// Store The Projection Matrix
+				glLoadIdentity();									// Reset The Projection Matrix
+				glOrtho(0,640,0,480,-100,100);						// Set Up An Ortho Screen
+				glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+				glPushMatrix();										// Store The Modelview Matrix
+					glLoadIdentity();								// Reset The Modelview Matrix
+					glPushMatrix();
+						glDisable(GL_TEXTURE_2D);
+						glColor4f(1,0,0,1);
+					glPopMatrix();
+				glPopMatrix();
+				glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+			glPopMatrix();
+			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+
+		}
+
+		glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+		glPushMatrix();										// Store The Projection Matrix
+		glLoadIdentity();									// Reset The Projection Matrix
+		glOrtho(0,640,0,480,-100,100);						// Set Up An Ortho Screen
+		glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+		glPushMatrix();										// Store The Modelview Matrix
+		glLoadIdentity();								// Reset The Modelview Matrix
+		glEnable(GL_TEXTURE_2D);
+		for(j=0;j<nummenuitems;j++)
+		{
+			if(j<=3||(mainmenu!=1&&mainmenu!=2))
+			{
+				//glDisable(GL_BLEND);
+				glEnable(GL_ALPHA_TEST);
+				glEnable(GL_BLEND);
+				//glDisable(GL_ALPHA_TEST);
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+				if(mainmenu==1||mainmenu==2)
+				{
+					glColor4f(1,1,1,1);
+					glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+					glBindTexture( GL_TEXTURE_2D, Mainmenuitems[j]);
+					glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+					glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+					glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+					glPushMatrix();
+						glBegin(GL_QUADS);
+						glTexCoord2f(0,0);
+						glVertex3f(startx[j]+movex[j]*transition,	starty[j]+movey[j]*transition, 	 0.0f);
+						glTexCoord2f(1,0);
+						glVertex3f(endx[j]+movex[j]*transition,		starty[j]+movey[j]*transition, 	 0.0f);
+						glTexCoord2f(1,1);
+						glVertex3f(endx[j]+movex[j]*transition,		endy[j]+movey[j]*transition, 0.0f);
+						glTexCoord2f(0,1);
+						glVertex3f(startx[j]+movex[j]*transition, 	endy[j]+movey[j]*transition, 0.0f);
+						glEnd();
+					glPopMatrix();
+					glEnable(GL_BLEND);
+					//glDisable(GL_ALPHA_TEST);
+					if(j<4)glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+					for(i=0;i<10;i++)
+					{
+						if(1-((float)i)/10-(1-selectedlong[j])>0)
+						{
+							glColor4f(1,1,1,(1-((float)i)/10-(1-selectedlong[j]))*.25);
+							glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+							glPushMatrix();
+								glBegin(GL_QUADS);
+								glTexCoord2f(0,0);
+								glVertex3f(startx[j]-((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	starty[j]-((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 	 0.0f);
+								glTexCoord2f(1,0);
+								glVertex3f(endx[j]+((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	starty[j]-((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 	 0.0f);
+								glTexCoord2f(1,1);
+								glVertex3f(endx[j]+((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	endy[j]+((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 0.0f);
+								glTexCoord2f(0,1);
+								glVertex3f(startx[j]-((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition, endy[j]+((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 0.0f);
+								glEnd();
+							glPopMatrix();
+						}
 					}
 				}
-
-				if(nummenuitems>0)
-					for(i=0;i<nummenuitems;i++){
-						if(selected==i)selectedlong[i]+=multiplier*5;
-						if(selectedlong[i]>1)selectedlong[i]=1;
-						if(selected!=i)selectedlong[i]-=multiplier*5;
-						if(selectedlong[i]<0)selectedlong[i]=0;	
-						//if(i>=4)selectedlong[i]=.3;		
-						if(i>=4&&(mainmenu==1||mainmenu==2))selectedlong[i]=0;	
-					}
-
-					if(nummenuitems>0)
-						for(i=0;i<nummenuitems;i++){
-							offsetx[i]=(startx[i]+endx[i])/2-(mousecoordh/screenwidth*640);
-							offsety[i]=(starty[i]+endy[i])/2-(480-(mousecoordv/screenheight*480));
-							offsetx[i]*=.06f;
-							offsety[i]*=.06f;
-							offsetx[i]=0;
-							offsety[i]=0;
-							if(i>=4&&(mainmenu==1||mainmenu==2)){
-								offsetx[i]=(startx[i]+endx[i]+movex[i]*transition)/2-(640+190)/2;
-								offsety[i]=(starty[i]+endy[i]+movey[i]*transition)/2-(336+150)/2;
-								offsetx[i]*=.06f;
-								offsety[i]*=.06f;
+				if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==11||mainmenu==13||mainmenu==17||mainmenu==18)
+				{
+					if(mainmenu!=5||j<6)
+					{
+						glColor4f(1,0,0,1);
+						if(mainmenu==9&&j>accountactive->getProgress()&&j<numchallengelevels)glColor4f(0.5,0,0,1);
+						if(mainmenu==11&&j>accountactive->getProgress()&&j<numchallengelevels)glColor4f(0.5,0,0,1);
+						//if(1-((float)i)/10-(1-selectedlong[j])>0){
+						glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+						glPushMatrix();
+							if(mainmenu!=7||j!=0||!entername)
+								text.glPrint(startx[j],starty[j],menustring[j],0,1,640,480);
+							else
+							{
+								if(displayblink){
+									sprintf (string, "_");
+									text.glPrint(startx[j]+(float)(displayselected)*10,starty[j],string,0,1,640,480);
+								}
+								for(l=0;l<displaychars[0];l++){
+									sprintf (string, "%c",displaytext[0][l]);
+									text.glPrint(startx[j]+l*10,starty[j],string,0,1,640,480);
+								}
+							}
+						glPopMatrix();
+						glEnable(GL_BLEND);
+						glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+						for(i=0;i<15;i++)
+						{
+							if(1-((float)i)/15-(1-selectedlong[j])>0)
+							{
+								glColor4f(1,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
+								if(mainmenu==9&&j>accountactive->getProgress()&&j<numchallengelevels)glColor4f(0.5,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
+								if(mainmenu==11&&j>accountactive->getProgress()&&j<numchallengelevels)glColor4f(0.5,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
+								if(mainmenu==3)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4-((/*1*/+((float)i)/70)*strlen(menustring[j]))*3,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
+								if(mainmenu==4)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
+								if(mainmenu==5)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
+								if(mainmenu==6)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
+								if(mainmenu==7&&(j!=0||!entername)) text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
+								if(mainmenu==8)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
+								if(mainmenu==9)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
+								if(mainmenu==11)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
+								if(mainmenu==10)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
+								if(mainmenu==17)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
+								if(mainmenu==13&&j!=1)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
+								if(mainmenu==18)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
 							}
 						}
-
-						if(mainmenu==1||mainmenu==2){
-							glClear(GL_DEPTH_BUFFER_BIT);
-							glEnable(GL_ALPHA_TEST);
-							glAlphaFunc(GL_GREATER, 0.001f);
-							glEnable(GL_TEXTURE_2D);
-							glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
-							glDisable(GL_CULL_FACE);
-							glDisable(GL_LIGHTING);
-							glDepthMask(0);
-							glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-							glPushMatrix();										// Store The Projection Matrix
-								glLoadIdentity();									// Reset The Projection Matrix
-								glOrtho(0,screenwidth,0,screenheight,-100,100);						// Set Up An Ortho Screen
-								glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-								glPushMatrix();										// Store The Modelview Matrix
-									glLoadIdentity();								// Reset The Modelview Matrix
-									glTranslatef(screenwidth/2,screenheight/2,0);
-									glPushMatrix();
-										glScalef((float)screenwidth/2,(float)screenheight/2,1);
-										glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-										glDisable(GL_BLEND);
-										glColor4f(0,0,0,1.0);
-										glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
-										glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
-										glDisable(GL_TEXTURE_2D);
-										glPushMatrix();
-											//glScalef(.25,.25,.25);
-											glBegin(GL_QUADS);
-											glTexCoord2f(0,0);
-											glVertex3f(-1,		-1, 	 0.0f);
-											glTexCoord2f(1,0);
-											glVertex3f(1,	-1, 	 0.0f);
-											glTexCoord2f(1,1);
-											glVertex3f(1,	1, 0.0f);
-											glTexCoord2f(0,1);
-											glVertex3f(-1, 	1, 0.0f);
-											glEnd();
-										glPopMatrix();
-										glEnable(GL_BLEND);
-										glColor4f(0.4,0.4,0.4,1.0);
-										glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
-										glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
-										glEnable(GL_TEXTURE_2D);
-										glBindTexture( GL_TEXTURE_2D, Mainmenuitems[4]);
-										glPushMatrix();
-											//glScalef(.25,.25,.25);
-											glBegin(GL_QUADS);
-											glTexCoord2f(0,0);
-											glVertex3f(-1,		-1, 	 0.0f);
-											glTexCoord2f(1,0);
-											glVertex3f(1,	-1, 	 0.0f);
-											glTexCoord2f(1,1);
-											glVertex3f(1,	1, 0.0f);
-											glTexCoord2f(0,1);
-											glVertex3f(-1, 	1, 0.0f);
-											glEnd();
-										glPopMatrix();
-									glPopMatrix();
-								glPopMatrix();
-								glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-							glPopMatrix();
-
-							glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-							glPushMatrix();										// Store The Projection Matrix
-								glLoadIdentity();									// Reset The Projection Matrix
-								glOrtho(0,640,0,480,-100,100);						// Set Up An Ortho Screen
-								glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-								glPushMatrix();										// Store The Modelview Matrix
-									glLoadIdentity();								// Reset The Modelview Matrix
-									glPushMatrix();
-										glDisable(GL_TEXTURE_2D);
-										glColor4f(1,0,0,1);
-										/*glPushMatrix();
-										glBegin(GL_QUADS);
-										glTexCoord2f(0,0);
-										if(anim!=1)glVertex3f(190,	150, 	 0.0f);
-										if(anim==1)glVertex3f(190+movex[4]*transition,	150, 	 0.0f);
-										glTexCoord2f(1,0);
-										glVertex3f(640,	150, 	 0.0f);
-										glTexCoord2f(1,1);
-										glVertex3f(640,	336, 0.0f);
-										glTexCoord2f(0,1);
-										if(anim!=1)glVertex3f(190, 336, 0.0f);
-										if(anim==1)glVertex3f(190+movex[4]*transition, 336, 	 0.0f);
-										glEnd();
-										glPopMatrix();*/
-									glPopMatrix();
-								glPopMatrix();
-								glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-							glPopMatrix();
-							glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-
-						}
+					}
+					else
+					{
+						glClear(GL_DEPTH_BUFFER_BIT);
+						glEnable(GL_ALPHA_TEST);
+						glAlphaFunc(GL_GREATER, 0.001f);
+						glEnable(GL_TEXTURE_2D);
+						glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
+						glDisable(GL_CULL_FACE);
+						glDisable(GL_LIGHTING);
+						if(j==6)glColor4f(1,1,1,1);
+						else glColor4f(1,0,0,1);
 
 						glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
 						glPushMatrix();										// Store The Projection Matrix
-						glLoadIdentity();									// Reset The Projection Matrix
-						glOrtho(0,640,0,480,-100,100);						// Set Up An Ortho Screen
-						glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-						glPushMatrix();										// Store The Modelview Matrix
-						glLoadIdentity();								// Reset The Modelview Matrix
-						glEnable(GL_TEXTURE_2D);
-						if(nummenuitems>0)
-						{
-							for(j=0;j<nummenuitems;j++)
-							{
-								if(j<=3||(mainmenu!=1&&mainmenu!=2))
-								{
-									//glDisable(GL_BLEND);
-									glEnable(GL_ALPHA_TEST);
-									glEnable(GL_BLEND);
-									//glDisable(GL_ALPHA_TEST);
-									glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-									if(mainmenu==1||mainmenu==2)
+							glLoadIdentity();									// Reset The Projection Matrix
+							glOrtho(0,640,0,480,-100,100);						// Set Up An Ortho Screen
+							glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+							glPushMatrix();										// Store The Modelview Matrix
+								glLoadIdentity();								// Reset The Modelview Matrix
+								glPushMatrix();
+
+									//Draw world, draw map
+									glTranslatef(2,-5,0);
+
+									if(j>6&&j<nummenuitems-1)
 									{
-										glColor4f(1,1,1,1);
-										glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-										glBindTexture( GL_TEXTURE_2D, Mainmenuitems[j]);
-										glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-										glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+										XYZ linestart,lineend,offset;
+										XYZ fac;
+										float startsize;
+										float endsize;
+										linestart=0;
+										lineend=0;
+										offset=0;
+										//float linestartx,lineendx,linestarty,lineendy,offsetx,offsety;
+										linestart.x=(startx[j]+endx[j])/2;
+										linestart.y=(starty[j]+endy[j])/2;
+										if(j>=6+accountactive->getCampaignChoicesMade()){
+											linestart.x=(startx[6+accountactive->getCampaignChoicesMade()]+endx[6+accountactive->getCampaignChoicesMade()])/2;
+											linestart.y=(starty[6+accountactive->getCampaignChoicesMade()]+endy[6+accountactive->getCampaignChoicesMade()])/2;
+										}
+										lineend.x=(startx[j+1]+endx[j+1])/2;
+										lineend.y=(starty[j+1]+endy[j+1])/2;
+										offset=lineend-linestart;
+										fac=offset;
+										Normalise(&fac);
+										offset=DoRotation(offset,0,0,90);
+										Normalise(&offset);
+										glDisable(GL_TEXTURE_2D);							
+
+										if(j<6+accountactive->getCampaignChoicesMade()){
+											glColor4f(0.5,0,0,1);
+											endsize=.5;
+										} else {
+											glColor4f(1,0,0,1);
+											endsize=1;
+										}
+										startsize=.5;
+
+										linestart+=fac*4*startsize;
+										lineend-=fac*4*endsize;
+
+										if(!(j>7+accountactive->getCampaignChoicesMade()+campaignchoicenum)){
+											glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+											glPushMatrix();
+												glBegin(GL_QUADS);
+												glTexCoord2f(0,0);
+												glVertex3f(linestart.x-offset.x*startsize,	linestart.y-offset.y*startsize, 	 0.0f);
+												glTexCoord2f(1,0);
+												glVertex3f(linestart.x+offset.x*startsize,	linestart.y+offset.y*startsize, 	 0.0f);
+												glTexCoord2f(1,1);
+												glVertex3f(lineend.x+offset.x*endsize,		lineend.y+offset.y*endsize, 0.0f);
+												glTexCoord2f(0,1);
+												glVertex3f(lineend.x-offset.x*endsize, 		lineend.y-offset.y*endsize, 0.0f);
+												glEnd();
+											glPopMatrix();
+										}
+										glEnable(GL_TEXTURE_2D);
+									}
+
+
+									if(j==6)glBindTexture( GL_TEXTURE_2D, Mainmenuitems[7]);
+									else glBindTexture( GL_TEXTURE_2D, Mapcircletexture);
+									glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+									glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+									if(j-7<accountactive->getCampaignChoicesMade())glColor4f(0.5,0,0,1);
+									if(j-7>=accountactive->getCampaignChoicesMade())glColor4f(1,0,0,1);
+									if(j==6)glColor4f(1,1,1,1);
+									XYZ midpoint;
+									float itemsize;
+									itemsize=abs(startx[j]-endx[j])/2;
+									midpoint=0;
+									midpoint.x=(startx[j]+endx[j])/2;
+									midpoint.y=(starty[j]+endy[j])/2;
+									if(j>6&&(j-7<accountactive->getCampaignChoicesMade()))itemsize*=.5;
+									if(!(j-7>accountactive->getCampaignChoicesMade()+campaignchoicenum))
+									{
 										glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 										glPushMatrix();
 											glBegin(GL_QUADS);
 											glTexCoord2f(0,0);
-											glVertex3f(startx[j]+movex[j]*transition,	starty[j]+movey[j]*transition, 	 0.0f);
+											glVertex3f(midpoint.x-itemsize+movex[j]*transition,	midpoint.y-itemsize+movey[j]*transition, 	 0.0f);
 											glTexCoord2f(1,0);
-											glVertex3f(endx[j]+movex[j]*transition,		starty[j]+movey[j]*transition, 	 0.0f);
+											glVertex3f(midpoint.x+itemsize+movex[j]*transition,		midpoint.y-itemsize+movey[j]*transition, 	 0.0f);
 											glTexCoord2f(1,1);
-											glVertex3f(endx[j]+movex[j]*transition,		endy[j]+movey[j]*transition, 0.0f);
+											glVertex3f(midpoint.x+itemsize+movex[j]*transition,		midpoint.y+itemsize+movey[j]*transition, 0.0f);
 											glTexCoord2f(0,1);
-											glVertex3f(startx[j]+movex[j]*transition, 	endy[j]+movey[j]*transition, 0.0f);
+											glVertex3f(midpoint.x-itemsize+movex[j]*transition, 	midpoint.y+itemsize+movey[j]*transition, 0.0f);
 											glEnd();
 										glPopMatrix();
 										glEnable(GL_BLEND);
@@ -3389,365 +3531,154 @@ int Game::DrawGLScene(StereoSide side)
 										{
 											if(1-((float)i)/10-(1-selectedlong[j])>0)
 											{
-												glColor4f(1,1,1,(1-((float)i)/10-(1-selectedlong[j]))*.25);
+												glColor4f(1,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
 												glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 												glPushMatrix();
 													glBegin(GL_QUADS);
 													glTexCoord2f(0,0);
-													glVertex3f(startx[j]-((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	starty[j]-((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 	 0.0f);
+													glVertex3f(midpoint.x-itemsize-((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	midpoint.y-itemsize-((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 	 0.0f);
 													glTexCoord2f(1,0);
-													glVertex3f(endx[j]+((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	starty[j]-((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 	 0.0f);
+													glVertex3f(midpoint.x+itemsize+((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	midpoint.y-itemsize-((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 	 0.0f);
 													glTexCoord2f(1,1);
-													glVertex3f(endx[j]+((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	endy[j]+((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 0.0f);
+													glVertex3f(midpoint.x+itemsize+((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	midpoint.y+itemsize+((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 0.0f);
 													glTexCoord2f(0,1);
-													glVertex3f(startx[j]-((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition, endy[j]+((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 0.0f);
+													glVertex3f(midpoint.x-itemsize-((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition, midpoint.y+itemsize+((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 0.0f);
 													glEnd();
 												glPopMatrix();
 											}
 										}
 									}
-									if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==11||mainmenu==13||mainmenu==17||mainmenu==18)
-									{
-										if(mainmenu!=5||j<6)
-										{
-											glColor4f(1,0,0,1);
-											if(mainmenu==9&&j>accountactive->getProgress()&&j<numchallengelevels)glColor4f(0.5,0,0,1);
-											if(mainmenu==11&&j>accountactive->getProgress()&&j<numchallengelevels)glColor4f(0.5,0,0,1);
-											//if(1-((float)i)/10-(1-selectedlong[j])>0){
-											glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-											glPushMatrix();
-												if(mainmenu!=7||j!=0||!entername)
-													text.glPrint(startx[j],starty[j],menustring[j],0,1,640,480);
-												else
-												{
-													if(displayblink){
-														sprintf (string, "_");
-														text.glPrint(startx[j]+(float)(displayselected)*10,starty[j],string,0,1,640,480);
-													}
-													for(l=0;l<displaychars[0];l++){
-														sprintf (string, "%c",displaytext[0][l]);
-														text.glPrint(startx[j]+l*10,starty[j],string,0,1,640,480);
-													}
-												}
-											glPopMatrix();
-											glEnable(GL_BLEND);
-											glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-											for(i=0;i<15;i++)
-											{
-												if(1-((float)i)/15-(1-selectedlong[j])>0)
-												{
-													glColor4f(1,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
-													if(mainmenu==9&&j>accountactive->getProgress()&&j<numchallengelevels)glColor4f(0.5,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
-													if(mainmenu==11&&j>accountactive->getProgress()&&j<numchallengelevels)glColor4f(0.5,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
-													if(mainmenu==3)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4-((/*1*/+((float)i)/70)*strlen(menustring[j]))*3,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
-													if(mainmenu==4)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
-													if(mainmenu==5)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
-													if(mainmenu==6)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
-													if(mainmenu==7&&(j!=0||!entername)) text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
-													if(mainmenu==8)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
-													if(mainmenu==9)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
-													if(mainmenu==11)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
-													if(mainmenu==10)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
-													if(mainmenu==17)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
-													if(mainmenu==13&&j!=1)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
-													if(mainmenu==18)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4/*-((((float)i)/70)*strlen(menustring[j]))*3*/,starty[j]/*-i*1/2*/+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
-													/*else{
-													if(displayblink){
-													sprintf (string, "_");
-													text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4+(float)(displayselected)*10*(1+((float)i)/70),starty[j]+offsety[j]*((float)i)/4,string,0,1+((float)i)/70,640,480);
-													}
-													k=0;
-													for(l=0;l<displaychars[k];l++){
-													if(l<displaychars[k]){
-													sprintf (string, "%c",displaytext[k][l]);
-													text.glPrint(startx[j]-((float)k)+offsetx[j]*((float)k)/4+l*10*(1+((float)i)/70),starty[j]+offsety[j]*((float)i)/4,string,0,1+((float)i)/70,640,480);
-													}
-													}
-													}*/
-												}
-											}
-										}
-										else
-										{
-											glClear(GL_DEPTH_BUFFER_BIT);
-											glEnable(GL_ALPHA_TEST);
-											glAlphaFunc(GL_GREATER, 0.001f);
-											glEnable(GL_TEXTURE_2D);
-											glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
-											glDisable(GL_CULL_FACE);
-											glDisable(GL_LIGHTING);
-											if(j==6)glColor4f(1,1,1,1);
-											else glColor4f(1,0,0,1);
-
-											glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-											glPushMatrix();										// Store The Projection Matrix
-												glLoadIdentity();									// Reset The Projection Matrix
-												glOrtho(0,640,0,480,-100,100);						// Set Up An Ortho Screen
-												glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-												glPushMatrix();										// Store The Modelview Matrix
-													glLoadIdentity();								// Reset The Modelview Matrix
-													glPushMatrix();
-
-														//Draw world, draw map
-														glTranslatef(2,-5,0);
-
-														if(j>6&&j<nummenuitems-1)
-														{
-															XYZ linestart,lineend,offset;
-															XYZ fac;
-															float startsize;
-															float endsize;
-															linestart=0;
-															lineend=0;
-															offset=0;
-															//float linestartx,lineendx,linestarty,lineendy,offsetx,offsety;
-															linestart.x=(startx[j]+endx[j])/2;
-															linestart.y=(starty[j]+endy[j])/2;
-															if(j>=6+accountactive->getCampaignChoicesMade()){
-																linestart.x=(startx[6+accountactive->getCampaignChoicesMade()]+endx[6+accountactive->getCampaignChoicesMade()])/2;
-																linestart.y=(starty[6+accountactive->getCampaignChoicesMade()]+endy[6+accountactive->getCampaignChoicesMade()])/2;
-															}
-															lineend.x=(startx[j+1]+endx[j+1])/2;
-															lineend.y=(starty[j+1]+endy[j+1])/2;
-															offset=lineend-linestart;
-															fac=offset;
-															Normalise(&fac);
-															offset=DoRotation(offset,0,0,90);
-															Normalise(&offset);
-															glDisable(GL_TEXTURE_2D);							
-
-															if(j<6+accountactive->getCampaignChoicesMade()){
-																glColor4f(0.5,0,0,1);
-																startsize=.5;
-																endsize=.5;
-															}
-															if(j>=6+accountactive->getCampaignChoicesMade()){
-																glColor4f(1,0,0,1);
-																endsize=1;
-																startsize=.5;
-															}
-
-															linestart+=fac*4*startsize;
-															lineend-=fac*4*endsize;
-
-															if(!(j>7+accountactive->getCampaignChoicesMade()+campaignchoicenum)){
-																glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-																glPushMatrix();
-																	glBegin(GL_QUADS);
-																	glTexCoord2f(0,0);
-																	glVertex3f(linestart.x-offset.x*startsize,	linestart.y-offset.y*startsize, 	 0.0f);
-																	glTexCoord2f(1,0);
-																	glVertex3f(linestart.x+offset.x*startsize,	linestart.y+offset.y*startsize, 	 0.0f);
-																	glTexCoord2f(1,1);
-																	glVertex3f(lineend.x+offset.x*endsize,		lineend.y+offset.y*endsize, 0.0f);
-																	glTexCoord2f(0,1);
-																	glVertex3f(lineend.x-offset.x*endsize, 		lineend.y-offset.y*endsize, 0.0f);
-																	glEnd();
-																glPopMatrix();
-															}
-															glEnable(GL_TEXTURE_2D);
-														}
-
-
-														if(j==6)glBindTexture( GL_TEXTURE_2D, Mainmenuitems[7]);
-														else glBindTexture( GL_TEXTURE_2D, Mapcircletexture);
-														glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-														glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-														if(j-7<accountactive->getCampaignChoicesMade())glColor4f(0.5,0,0,1);
-														if(j-7>=accountactive->getCampaignChoicesMade())glColor4f(1,0,0,1);
-														if(j==6)glColor4f(1,1,1,1);
-														XYZ midpoint;
-														float itemsize;
-														itemsize=abs(startx[j]-endx[j])/2;
-														midpoint=0;
-														midpoint.x=(startx[j]+endx[j])/2;
-														midpoint.y=(starty[j]+endy[j])/2;
-														if(j>6&&(j-7<accountactive->getCampaignChoicesMade()))itemsize*=.5;
-														if(!(j-7>accountactive->getCampaignChoicesMade()+campaignchoicenum))
-														{
-															glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-															glPushMatrix();
-																glBegin(GL_QUADS);
-																glTexCoord2f(0,0);
-																glVertex3f(midpoint.x-itemsize+movex[j]*transition,	midpoint.y-itemsize+movey[j]*transition, 	 0.0f);
-																glTexCoord2f(1,0);
-																glVertex3f(midpoint.x+itemsize+movex[j]*transition,		midpoint.y-itemsize+movey[j]*transition, 	 0.0f);
-																glTexCoord2f(1,1);
-																glVertex3f(midpoint.x+itemsize+movex[j]*transition,		midpoint.y+itemsize+movey[j]*transition, 0.0f);
-																glTexCoord2f(0,1);
-																glVertex3f(midpoint.x-itemsize+movex[j]*transition, 	midpoint.y+itemsize+movey[j]*transition, 0.0f);
-																glEnd();
-															glPopMatrix();
-															glEnable(GL_BLEND);
-															//glDisable(GL_ALPHA_TEST);
-															if(j<4)glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-															for(i=0;i<10;i++)
-															{
-																if(1-((float)i)/10-(1-selectedlong[j])>0)
-																{
-																	glColor4f(1,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
-																	glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-																	glPushMatrix();
-																		glBegin(GL_QUADS);
-																		glTexCoord2f(0,0);
-																		glVertex3f(midpoint.x-itemsize-((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	midpoint.y-itemsize-((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 	 0.0f);
-																		glTexCoord2f(1,0);
-																		glVertex3f(midpoint.x+itemsize+((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	midpoint.y-itemsize-((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 	 0.0f);
-																		glTexCoord2f(1,1);
-																		glVertex3f(midpoint.x+itemsize+((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	midpoint.y+itemsize+((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 0.0f);
-																		glTexCoord2f(0,1);
-																		glVertex3f(midpoint.x-itemsize-((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition, midpoint.y+itemsize+((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 0.0f);
-																		glEnd();
-																	glPopMatrix();
-																}
-															}
-														}
-													glPopMatrix();
-												glPopMatrix();
-												glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-											glPopMatrix();
-											glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-
-											if(j-7>=accountactive->getCampaignChoicesMade()){
-												//glColor4f(0,0,0,1);
-												//text.glPrintOutline(startx[j]+10-1.5,starty[j]-4-1.5,menustring[j],0,0.6*1.25,640,480);
-												//glColor4f(1,0,0,1);
-												//text.glPrint(startx[j]+10,starty[j]-4,menustring[j],0,0.6,640,480);
-												text.glPrintOutlined(0.9,0,0,startx[j]+10,starty[j]-4,menustring[j],0,0.6,640,480);
-												glDisable(GL_DEPTH_TEST);
-											}
-										}
-									}
-								}
-							}
-						}
-						glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+								glPopMatrix();
+							glPopMatrix();
+							glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
 						glPopMatrix();
 						glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+
+						if(j-7>=accountactive->getCampaignChoicesMade()){
+							text.glPrintOutlined(0.9,0,0,startx[j]+10,starty[j]-4,menustring[j],0,0.6,640,480);
+							glDisable(GL_DEPTH_TEST);
+						}
+					}
+				}
+			}
+		}
+		glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+		glPopMatrix();
+		glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+		glPopMatrix();
+
+			if(mainmenu==1||mainmenu==2)
+				if(transition<.1||transition>.9){
+					glClear(GL_DEPTH_BUFFER_BIT);
+					glEnable(GL_ALPHA_TEST);
+					glAlphaFunc(GL_GREATER, 0.001f);
+					glEnable(GL_TEXTURE_2D);
+					glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
+					glDisable(GL_CULL_FACE);
+					glDisable(GL_LIGHTING);
+					glDepthMask(0);
+					glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+					glPushMatrix();										// Store The Projection Matrix
+						glLoadIdentity();									// Reset The Projection Matrix
+						glOrtho(0,640,0,480,-100,100);						// Set Up An Ortho Screen
+						glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+						glPushMatrix();										// Store The Modelview Matrix
+							glLoadIdentity();								// Reset The Modelview Matrix
+							glPushMatrix();
+								glDisable(GL_TEXTURE_2D);
+								if(transition<.1)
+									glColor4f(1,0,0,1-(transition*10));
+								if(transition>.9)
+									glColor4f(1,0,0,1-((1-transition)*10));
+							glPopMatrix();
 						glPopMatrix();
+						glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+					glPopMatrix();
+				}
 
-							if(mainmenu==1||mainmenu==2)
-								if(transition<.1||transition>.9){
-									glClear(GL_DEPTH_BUFFER_BIT);
-									glEnable(GL_ALPHA_TEST);
-									glAlphaFunc(GL_GREATER, 0.001f);
-									glEnable(GL_TEXTURE_2D);
-									glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
-									glDisable(GL_CULL_FACE);
-									glDisable(GL_LIGHTING);
-									glDepthMask(0);
-									glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-									glPushMatrix();										// Store The Projection Matrix
-										glLoadIdentity();									// Reset The Projection Matrix
-										glOrtho(0,640,0,480,-100,100);						// Set Up An Ortho Screen
-										glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-										glPushMatrix();										// Store The Modelview Matrix
-											glLoadIdentity();								// Reset The Modelview Matrix
-											glPushMatrix();
-												glDisable(GL_TEXTURE_2D);
-												if(transition<.1)glColor4f(1,0,0,1-(transition*10));
-												if(transition>.9)glColor4f(1,0,0,1-((1-transition)*10));
-												/*glPushMatrix();
-												glBegin(GL_QUADS);
-												glTexCoord2f(0,0);
-												glVertex3f(190,	150, 	 0.0f);
-												glTexCoord2f(1,0);
-												glVertex3f(640,	150, 	 0.0f);
-												glTexCoord2f(1,1);
-												glVertex3f(640,	336, 0.0f);
-												glTexCoord2f(0,1);
-												glVertex3f(190, 336, 0.0f);
-												glEnd();
-												glPopMatrix();*/
-											glPopMatrix();
-										glPopMatrix();
-										glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-									glPopMatrix();
-								}
-
-								glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-								glPushMatrix();										// Store The Projection Matrix
-									glLoadIdentity();									// Reset The Projection Matrix
-									glOrtho(0,screenwidth,0,screenheight,-100,100);						// Set Up An Ortho Screen
-									glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-									glPushMatrix();										// Store The Modelview Matrix
-										glLoadIdentity();								// Reset The Modelview Matrix
-										glTranslatef(screenwidth/2,screenheight/2,0);
-										glPushMatrix();
-											glScalef((float)screenwidth/2,(float)screenheight/2,1);
-											glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-											glEnable(GL_BLEND);
-											glEnable(GL_TEXTURE_2D);
-											glColor4f(1,1,1,1);
-											glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
-											glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
-										glPopMatrix();
-										if(!waiting) { // hide the cursor while waiting for a key
-											glPushMatrix();
-												glTranslatef(mousecoordh-screenwidth/2,mousecoordv*-1+screenheight/2,0);
-												glScalef((float)screenwidth/64,(float)screenwidth/64,1);
-												glTranslatef(1,-1,0);
-												glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-												glColor4f(1,1,1,1);
-												glBindTexture( GL_TEXTURE_2D, cursortexture);
-												glPushMatrix();
-													//glScalef(.25,.25,.25);
-													glBegin(GL_QUADS);
-													glTexCoord2f(0,0);
-													glVertex3f(-1,		-1, 	 0.0f);
-													glTexCoord2f(1,0);
-													glVertex3f(1,	-1, 	 0.0f);
-													glTexCoord2f(1,1);
-													glVertex3f(1,	1, 0.0f);
-													glTexCoord2f(0,1);
-													glVertex3f(-1, 	1, 0.0f);
-													glEnd();
-												glPopMatrix();
-											glPopMatrix();
-										}
-									glPopMatrix();
-									glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-								glPopMatrix();
+			glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+			glPushMatrix();										// Store The Projection Matrix
+				glLoadIdentity();									// Reset The Projection Matrix
+				glOrtho(0,screenwidth,0,screenheight,-100,100);						// Set Up An Ortho Screen
+				glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+				glPushMatrix();										// Store The Modelview Matrix
+					glLoadIdentity();								// Reset The Modelview Matrix
+					glTranslatef(screenwidth/2,screenheight/2,0);
+					glPushMatrix();
+						glScalef((float)screenwidth/2,(float)screenheight/2,1);
+						glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+						glEnable(GL_BLEND);
+						glEnable(GL_TEXTURE_2D);
+						glColor4f(1,1,1,1);
+						glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
+						glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
+					glPopMatrix();
+					if(!waiting) { // hide the cursor while waiting for a key
+						glPushMatrix();
+							glTranslatef(mousecoordh-screenwidth/2,mousecoordv*-1+screenheight/2,0);
+							glScalef((float)screenwidth/64,(float)screenwidth/64,1);
+							glTranslatef(1,-1,0);
+							glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+							glColor4f(1,1,1,1);
+							glBindTexture( GL_TEXTURE_2D, cursortexture);
+							glPushMatrix();
+								//glScalef(.25,.25,.25);
+								glBegin(GL_QUADS);
+								glTexCoord2f(0,0);
+								glVertex3f(-1,		-1, 	 0.0f);
+								glTexCoord2f(1,0);
+								glVertex3f(1,	-1, 	 0.0f);
+								glTexCoord2f(1,1);
+								glVertex3f(1,	1, 0.0f);
+								glTexCoord2f(0,1);
+								glVertex3f(-1, 	1, 0.0f);
+								glEnd();
+							glPopMatrix();
+						glPopMatrix();
+					}
+				glPopMatrix();
+				glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+			glPopMatrix();
 
 
-								if(flashamount>0)
-								{
-									//printf("Flash amount: %f, delay %i\n", flashamount, flashdelay);
-									if(flashamount>1)flashamount=1;
-									if(flashdelay<=0)flashamount-=multiplier;
-									flashdelay--;
-									if(flashamount<0)flashamount=0;
-									glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
-									glDisable(GL_CULL_FACE);
-									glDisable(GL_LIGHTING);
-									glDisable(GL_TEXTURE_2D);
-									glDepthMask(0);
-									glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-									glPushMatrix();										// Store The Projection Matrix
-										glLoadIdentity();									// Reset The Projection Matrix
-										glOrtho(0,screenwidth,0,screenheight,-100,100);						// Set Up An Ortho Screen
-										glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-										glPushMatrix();										// Store The Modelview Matrix
-											glLoadIdentity();								// Reset The Modelview Matrix
-											glScalef(screenwidth,screenheight,1);
-											glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-											glEnable(GL_BLEND);
-											glColor4f(flashr,flashg,flashb,flashamount);
-											glBegin(GL_QUADS);
-											glVertex3f(0,		0, 	 0.0f);
-											glVertex3f(256,	0, 	 0.0f);
-											glVertex3f(256,	256, 0.0f);
-											glVertex3f(0, 	256, 0.0f);
-											glEnd();
-											glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-										glPopMatrix();										// Restore The Old Projection Matrix
-									glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-									glPopMatrix();										// Restore The Old Projection Matrix
-									glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
-									glEnable(GL_CULL_FACE);
-									glDisable(GL_BLEND);
-									glDepthMask(1);
-								}	
+			if(flashamount>0)
+			{
+				//printf("Flash amount: %f, delay %i\n", flashamount, flashdelay);
+				if(flashamount>1)flashamount=1;
+				if(flashdelay<=0)flashamount-=multiplier;
+				flashdelay--;
+				if(flashamount<0)flashamount=0;
+				glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
+				glDisable(GL_CULL_FACE);
+				glDisable(GL_LIGHTING);
+				glDisable(GL_TEXTURE_2D);
+				glDepthMask(0);
+				glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+				glPushMatrix();										// Store The Projection Matrix
+					glLoadIdentity();									// Reset The Projection Matrix
+					glOrtho(0,screenwidth,0,screenheight,-100,100);						// Set Up An Ortho Screen
+					glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+					glPushMatrix();										// Store The Modelview Matrix
+						glLoadIdentity();								// Reset The Modelview Matrix
+						glScalef(screenwidth,screenheight,1);
+						glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+						glEnable(GL_BLEND);
+						glColor4f(flashr,flashg,flashb,flashamount);
+						glBegin(GL_QUADS);
+						glVertex3f(0,		0, 	 0.0f);
+						glVertex3f(256,	0, 	 0.0f);
+						glVertex3f(256,	256, 0.0f);
+						glVertex3f(0, 	256, 0.0f);
+						glEnd();
+						glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+					glPopMatrix();										// Restore The Old Projection Matrix
+				glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+				glPopMatrix();										// Restore The Old Projection Matrix
+				glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
+				glEnable(GL_CULL_FACE);
+				glDisable(GL_BLEND);
+				glDepthMask(1);
+			}
 	}
 
 	if(freeze||winfreeze||(mainmenu&&gameon)||(!gameon&&gamestarted)||(!gameon&&gamestarted)){
