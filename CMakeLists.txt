@@ -66,7 +66,6 @@ set(LUGARU_SRCS
 	${SRCDIR}/Person.cpp
 	${SRCDIR}/private.c
 	${SRCDIR}/Quaternions.cpp
-	${SRCDIR}/Random.c
 	${SRCDIR}/Skeleton.cpp
 	${SRCDIR}/Skybox.cpp
 	${SRCDIR}/Sprite.cpp

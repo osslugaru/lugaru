@@ -230,8 +230,6 @@ Boolean SetUp (Game & game)
 
 	LOGFUNC;
 
-	randSeed = UpTime().lo;
-
 	osx = 0;
 	cellophane=0;
 	texdetail=4;

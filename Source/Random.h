@@ -22,18 +22,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _RANDOM_H_
 #define _RANDOM_H_
 
+#include <stdlib.h>
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
-
-extern int randSeed;
-short Random ();
-
-
-#if defined(__cplusplus)
+static inline short Random()
+{
+    return rand();
 }
-#endif
 
 #endif
