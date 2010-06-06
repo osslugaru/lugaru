@@ -39,4 +39,6 @@ animation_count
 };
 
 extern Animation animation[animation_count];
+
+extern void loadAllAnimations();
 #endif

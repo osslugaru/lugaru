@@ -129,6 +129,8 @@ DECLARE_ANIM(dead2anim, "Dead2", lowheight, neutral)
 DECLARE_ANIM(dead3anim, "Dead3", lowheight, neutral)
 DECLARE_ANIM(dead4anim, "Dead4", lowheight, neutral)
 
+DECLARE_ANIM(loadable_anim_end, "", 0, 0)
+
 /* Not implemented.  */
 DECLARE_ANIM(rabbittacklereversal, "", 0, 0)
 DECLARE_ANIM(rabbittacklereversed, "", 0, 0)

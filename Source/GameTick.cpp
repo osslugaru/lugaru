@@ -1629,7 +1629,7 @@ void	Game::Loadlevel(char *name){
 		won=0;
 
 		//campaign=0;
-		animation[bounceidleanim].Load((char *)":Data:Animations:Idle",middleheight,neutral);
+		animation[bounceidleanim].Load((char *)"Idle",middleheight,neutral);
 
 		numdialogues=0;
 
@@ -2195,7 +2195,7 @@ void	Game::Loadlevel(char *name){
 				player[i].proportionlegs.z=0;
 			}
 
-			player[i].tempanimation.Load((char *)":Data:Animations:Tempanim",0,0);
+			player[i].tempanimation.Load((char *)"Tempanim",0,0);
 
 			player[i].headmorphness=0;
 			player[i].targetheadmorphness=1;
@@ -5101,7 +5101,7 @@ void	Game::Tick()
 									player[numplayers].proportionlegs.z=0;
 								}
 
-								player[numplayers].tempanimation.Load((char *)":Data:Animations:Tempanim",0,0);
+								player[numplayers].tempanimation.Load((char *)"Tempanim",0,0);
 
 								player[numplayers].damagetolerance=200;
 

@@ -80,6 +80,7 @@ set(LUGARU_SRCS
 	${SRCDIR}/Input.cpp
 	${SRCDIR}/Settings.cpp
 	${SRCDIR}/Stereo.cpp
+	${SRCDIR}/Animation.cpp
 )
 
 set(LUGARU_H

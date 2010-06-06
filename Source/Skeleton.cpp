@@ -1008,17 +1008,24 @@ void Skeleton::FindRotationMuscle(int which, int animation)
 	if(!isnormal(muscles[which].rotate3))muscles[which].rotate3=0;
 }
 
-void Animation::Load(char *filename, int aheight, int aattack)
+void Animation::Load(const char *filename, int aheight, int aattack)
 {
 	static FILE *tfile;
 	static int i,j;
 	static XYZ startoffset,endoffset;
 	static int howmany;
 
+	static const char *anim_prefix = ":Data:Animations:";
+
+
 	LOGFUNC;
 
+	int len = strlen(anim_prefix) + strlen(filename);
+	char *buf = new char[len + 1];
+	snprintf(buf, len + 1, "%s%s", anim_prefix, filename);
 	// Changing the filename into something the OS can understand
-	char *fixedFN = ConvertFileName(filename);
+	char *fixedFN = ConvertFileName(buf);
+	delete[] buf;
 
 	LOG(std::string("Loading animation...") + fixedFN);
 

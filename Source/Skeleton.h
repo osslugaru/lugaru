@@ -134,7 +134,7 @@ public:
 
 	Animation & operator = (const Animation & ani);
 
-	void Load(char *fileName, int aheight, int aattack);
+	void Load(const char *fileName, int aheight, int aattack);
 	void Move(XYZ how);
 
 protected:
