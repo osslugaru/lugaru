@@ -34,14 +34,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Sprite.h"
 #include "binio.h"
 
-#define neutral 0
-#define normalattack 1
-#define reversed 2
-#define reversal 3
-#define lowheight 0
-#define middleheight 1
-#define highheight 2
-
 class Joint
 {
 public:

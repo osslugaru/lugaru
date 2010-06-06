@@ -22,8 +22,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef ANIMATION_H
 #define	ANIMATION_H
 
+enum anim_attack_type {
+  neutral, normalattack, reversed, reversal
+};
+
+enum anim_height_type {
+  lowheight, middleheight, highheight
+};
+
+
 enum animation_types {
-#define DECLARE_ANIM(id) id,
+#define DECLARE_ANIM(id, file, height, attack) id,
 #include "Animation.def"
 #undef DECLARE_ANIM
 animation_count
