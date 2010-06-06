@@ -43,17 +43,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "GL/glext.h"
 #include "MacCompatibility.h"
 
-#if !PLATFORM_MACOSX
-struct RGBColor
-{
-	unsigned short red;
-	unsigned short green;
-	unsigned short blue;
-};
-typedef struct RGBColor RGBColor;
-typedef RGBColor * RGBColorPtr;
-#endif
-
 using namespace std;
 
 /* !!! FIXME: until we replace logger better. --ryan. */

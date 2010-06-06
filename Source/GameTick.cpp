@@ -1159,7 +1159,7 @@ static void cmd_dispatch(Game *game, const char *cmd)
 }
 
 /********************> Tick() <*****/
-extern void ScreenShot(const char * fname);
+extern bool save_image(const char * fname);
 void Screenshot	(void)
 {
 	char temp[1024];
@@ -1172,8 +1172,8 @@ void Screenshot	(void)
 	#else
 	mkdir("Screenshots", S_IRWXU);
 	#endif
-
-	ScreenShot(temp);
+	
+	save_image(temp);
 }
 
 

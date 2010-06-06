@@ -48,7 +48,7 @@ extern "C" {
 static bool load_image(const char * fname, TGAImageRec & tex);
 static bool load_png(const char * fname, TGAImageRec & tex);
 static bool load_jpg(const char * fname, TGAImageRec & tex);
-static bool save_image(const char * fname);
+bool save_image(const char * fname);
 static bool save_png(const char * fname);
 
 
@@ -66,9 +66,6 @@ extern float sps;
 extern float realmultiplier;
 extern int slomo;
 extern bool cellophane;
-// MODIFIED GWC
-//extern int terraindetail;
-//extern int texdetail;
 extern float terraindetail;
 extern float texdetail;
 
@@ -101,8 +98,6 @@ extern float slomofreq;
 
 using namespace std;
 
-
-
 SDL_Rect **resolutions = NULL;
 static SDL_Rect rect_1024_768 = { 0, 0, 1024, 768 };
 static SDL_Rect rect_800_600  = { 0, 0, 800,  600 };
@@ -114,34 +109,14 @@ static SDL_Rect *hardcoded_resolutions[] = {
     NULL
 };
 
-
-
-unsigned int resolutionDepths[8][2] = {0};
-
-int closestResolution(int width, int height);
-int resolutionID(int width, int height);
-
-void ReportError (char * strError);
-
 void DrawGL(Game & game);
 
-void CreateGLWindow (void);
 Boolean SetUp (Game & game);
 void DoUpdate (Game & game);
 
-void DoEvent (void);
 void CleanUp (void);
 
-
 // statics/globals (internal only) ------------------------------------------
-#ifndef WIN32
-typedef struct tagPOINT { 
-  int x;
-  int y;
-} POINT, *PPOINT; 
-#endif
-
-
 
 #ifdef _MSC_VER
 #pragma warning(push)
@@ -186,50 +161,17 @@ static void GLAPIENTRY glDeleteTextures_doNothing(GLsizei n, const GLuint *textu
     // no-op.
 }
 
-
-
-void sdlGetCursorPos(POINT *pt)
-{
-    SDL_GetMouseState(&(pt->x), &(pt->y));
-}
-#define GetCursorPos(x) sdlGetCursorPos(x)
-#define SetCursorPos(x, y) SDL_WarpMouse(x, y)
-#define ScreenToClient(x, pt)
-#define ClientToScreen(x, pt)
 #ifdef MessageBox
 #undef MessageBox
 #endif
 #define MessageBox(hwnd,text,title,flags) STUBBED("msgbox")
 
-
-Point delta;
-
-static bool g_button, fullscreen = true;
-
-
 // Menu defs
-enum 
-{
-	kFileQuit = 1
-};
-
-enum 
-{
-	kForegroundSleep = 10,
-	kBackgroundSleep = 10000
-};
-
 
 int kContextWidth;
 int kContextHeight;
 
-const RGBColor rgbBlack = { 0x0000, 0x0000, 0x0000 };
-
-GLuint gFontList;
-char gcstrMode [256] = "";
-
-UInt32 gSleepTime = kForegroundSleep;
-Boolean gDone = false, gfFrontProcess = true;
+Boolean gDone = false;
 
 Game * pgame = 0;
 
@@ -252,45 +194,12 @@ bool cmdline(const char *cmd)
     return false;
 }
 
-
-// --------------------------------------------------------------------------
-
-void ReportError (char * strError)
-{
-#ifdef _MSC_VER  // !!! FIXME.  --ryan.
-	throw std::exception( strError);
-#endif
-
-	/*	char errMsgCStr [256];
-	Str255 strErr;
-
-	sprintf (errMsgCStr, "%s", strError); 
-
-	// out as debug string
-	CToPStr (strErr, errMsgCStr);
-	DebugStr (strErr);
-	*/
-}
-
 //-----------------------------------------------------------------------------------------------------------------------
 
 // OpenGL Drawing
 
-void DrawGL (Game & game)
-{
-	if ( stereomode == stereoNone ) {
-		game.DrawGLScene(stereoCenter);
-	} else {
-		game.DrawGLScene(stereoLeft);
-		game.DrawGLScene(stereoRight);
-	}
-}
-
 static void sdlEventProc(const SDL_Event &e, Game &game)
 {
-    int val;
-    SDLMod mod;
-
     switch(e.type)
 	{
         case SDL_MOUSEMOTION:
@@ -632,7 +541,7 @@ void DoUpdate (Game & game)
 		num_channels = 0;
 	}
 */
-	DrawGL (game);
+	game.DrawGL();
 }
 
 // --------------------------------------------------------------------------
@@ -641,11 +550,6 @@ void DoUpdate (Game & game)
 void CleanUp (void)
 {
 	LOGFUNC;
-
-//	game.Dispose();
-
-
-
 
     SDL_Quit();
     #define GL_FUNC(ret,fn,params,call,rt) p##fn = NULL;
@@ -805,10 +709,6 @@ int main(int argc, char **argv)
 
 	LOGFUNC;
 
-	//memset( &g_theKeys, 0, sizeof( KeyMap));
-
-    //initSDLKeyTable();
-
 	try
 	{
 		bool regnow = false;
@@ -897,77 +797,77 @@ int main(int argc, char **argv)
 
 
 
-	// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
 
-	extern int channels[100];
-	extern OPENAL_SAMPLE * samp[100];
-	extern OPENAL_STREAM * strm[20];
+extern int channels[100];
+extern OPENAL_SAMPLE * samp[100];
+extern OPENAL_STREAM * strm[20];
 
-	extern "C" void PlaySoundEx(int chan, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused)
+extern "C" void PlaySoundEx(int chan, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused)
+{
+	const OPENAL_SAMPLE * currSample = OPENAL_GetCurrentSample(channels[chan]);
+	if (currSample && currSample == samp[chan])
 	{
-		const OPENAL_SAMPLE * currSample = OPENAL_GetCurrentSample(channels[chan]);
-		if (currSample && currSample == samp[chan])
+		if (OPENAL_GetPaused(channels[chan]))
 		{
-			if (OPENAL_GetPaused(channels[chan]))
+			OPENAL_StopSound(channels[chan]);
+			channels[chan] = OPENAL_FREE;
+		}
+		else if (OPENAL_IsPlaying(channels[chan]))
+		{
+			int loop_mode = OPENAL_GetLoopMode(channels[chan]);
+			if (loop_mode & OPENAL_LOOP_OFF)
 			{
-				OPENAL_StopSound(channels[chan]);
 				channels[chan] = OPENAL_FREE;
 			}
-			else if (OPENAL_IsPlaying(channels[chan]))
-			{
-				int loop_mode = OPENAL_GetLoopMode(channels[chan]);
-				if (loop_mode & OPENAL_LOOP_OFF)
-				{
-					channels[chan] = OPENAL_FREE;
-				}
-			}
-		}
-		else
-		{
-			channels[chan] = OPENAL_FREE;
-		}
-
-		channels[chan] = OPENAL_PlaySoundEx(channels[chan], sptr, dsp, startpaused);
-		if (channels[chan] < 0)
-		{
-			channels[chan] = OPENAL_PlaySoundEx(OPENAL_FREE, sptr, dsp, startpaused);
 		}
 	}
-
-	extern "C" void PlayStreamEx(int chan, OPENAL_STREAM *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused)
+	else
 	{
-		const OPENAL_SAMPLE * currSample = OPENAL_GetCurrentSample(channels[chan]);
-		if (currSample && currSample == OPENAL_Stream_GetSample(sptr))
-		{
-				OPENAL_StopSound(channels[chan]);
-				OPENAL_Stream_Stop(sptr);
-		}
-		else
-		{
+		channels[chan] = OPENAL_FREE;
+	}
+
+	channels[chan] = OPENAL_PlaySoundEx(channels[chan], sptr, dsp, startpaused);
+	if (channels[chan] < 0)
+	{
+		channels[chan] = OPENAL_PlaySoundEx(OPENAL_FREE, sptr, dsp, startpaused);
+	}
+}
+
+extern "C" void PlayStreamEx(int chan, OPENAL_STREAM *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused)
+{
+	const OPENAL_SAMPLE * currSample = OPENAL_GetCurrentSample(channels[chan]);
+	if (currSample && currSample == OPENAL_Stream_GetSample(sptr))
+	{
+			OPENAL_StopSound(channels[chan]);
 			OPENAL_Stream_Stop(sptr);
-			channels[chan] = OPENAL_FREE;
-		}
-
-		channels[chan] = OPENAL_Stream_PlayEx(channels[chan], sptr, dsp, startpaused);
-		if (channels[chan] < 0)
-		{
-			channels[chan] = OPENAL_Stream_PlayEx(OPENAL_FREE, sptr, dsp, startpaused);
-		}
 	}
-
-
-	bool LoadImage(const char * fname, TGAImageRec & tex)
+	else
 	{
-		if ( tex.data == NULL )
-			return false;
-		else
-			return load_image(fname, tex);
+		OPENAL_Stream_Stop(sptr);
+		channels[chan] = OPENAL_FREE;
 	}
 
-	void ScreenShot(const char * fname)
+	channels[chan] = OPENAL_Stream_PlayEx(channels[chan], sptr, dsp, startpaused);
+	if (channels[chan] < 0)
 	{
-        save_image(fname);
+		channels[chan] = OPENAL_Stream_PlayEx(OPENAL_FREE, sptr, dsp, startpaused);
 	}
+}
+
+
+bool LoadImage(const char * fname, TGAImageRec & tex)
+{
+	if ( tex.data == NULL )
+		return false;
+	else
+		return load_image(fname, tex);
+}
+
+void ScreenShot(const char * fname)
+{
+	
+}
 
 
 
@@ -1135,7 +1035,7 @@ png_done:
 }
 
 
-static bool save_image(const char *file_name)
+bool save_image(const char *file_name)
 {
     const char *ptr = strrchr((char *)file_name, '.');
     if (ptr)

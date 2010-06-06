@@ -262,16 +262,15 @@ int Game::DrawGLScene(StereoSide side)
 
 		if(winfreeze||mainmenu)drawmode=normalmode;
 
-		//drawmode=glowmode;
+#if PLATFORM_MACOSX
 		if(drawmode==glowmode){
 			RGBColor color2;
 			color2.red=0;
 			color2.green=0;
 			color2.blue=0;
-#if PLATFORM_MACOSX
 			DSpContext_FadeGamma(NULL,200,&color2);
-#endif
 		}
+#endif
 
 		if(drawtoggle!=2)drawtoggle=1-drawtoggle;
 

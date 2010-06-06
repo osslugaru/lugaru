@@ -241,6 +241,7 @@ class Game
 		void FadeLoadingScreen(float howmuch);
 		void Dispose();
 		int DrawGLScene(StereoSide side);
+		void DrawGL();
 		void Tick();
 		void TickOnce();
 		void TickOnceAfter();

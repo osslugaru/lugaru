@@ -355,3 +355,12 @@ int Game::thread(void *data) {
         (pt->game->*(pt->method))();
     }
 }
+
+void Game::DrawGL() {
+	if ( stereomode == stereoNone ) {
+		DrawGLScene(stereoCenter);
+	} else {
+		DrawGLScene(stereoLeft);
+		DrawGLScene(stereoRight);
+	}
+}
