@@ -564,29 +564,6 @@ static bool IsFocused()
 }
 
 
-static void launch_web_browser(const char *url)
-{
-#ifdef WIN32
-    ShellExecute(NULL, "open", url, NULL, NULL, SW_SHOWNORMAL);
-
-#elif (defined(__APPLE__) && defined(__MACH__))
-    const char *fmt = "open '%s'";
-    const size_t len = strlen(fmt) + strlen(url) + 16;
-    char *buf = new char[len];
-    snprintf(buf, len, fmt, url);
-    system(buf);
-    delete[] buf;
-
-#elif PLATFORM_LINUX
-    const char *fmt = "PATH=$PATH:. xdg-open '%s'";
-    const size_t len = strlen(fmt) + strlen(url) + 16;
-    char *buf = new char[len];
-    snprintf(buf, len, fmt, url);
-    system(buf);
-    delete[] buf;
-#endif
-}
-
 
 #ifndef WIN32
 // (code lifted from physfs: http://icculus.org/physfs/ ... zlib license.)
