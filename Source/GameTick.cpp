@@ -2738,7 +2738,7 @@ void	Game::Tick()
 				gameon=1;
 				OPENAL_SetPaused(channels[stream_music3], true);
 			}
-			if(Input::Button()&&!oldbutton&&(selected-7>=accountactive->getCampaignChoicesMade())){//selected>=7&&(selected-7<=campaignnumchoices)){
+			if(Input::Button()&&!oldbutton&&(selected-7>=accountactive->getCampaignChoicesMade())){
 				fireSound();
 
 				flash();
