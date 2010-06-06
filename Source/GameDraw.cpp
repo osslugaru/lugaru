@@ -2239,7 +2239,7 @@ int Game::DrawGLScene(StereoSide side)
 
 		oldmainmenu=mainmenu;
 
-		if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==119||mainmenu==13||mainmenu==17||mainmenu==18){
+		if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==119||mainmenu==18){
 			glClear(GL_DEPTH_BUFFER_BIT);
 			glEnable(GL_ALPHA_TEST);
 			glAlphaFunc(GL_GREATER, 0.001f);
@@ -2816,51 +2816,6 @@ int Game::DrawGLScene(StereoSide side)
 				//numchallengelevels=tempncl;
 
 			}
-			if(mainmenu==11){			
-				nummenuitems=2+numchallengelevels;
-				char temp[255];
-
-				for(j=0;j<numchallengelevels;j++){
-					for(i=0;i<255;i++)menustring[j][i]='\0';
-					sprintf (temp, "Level %d",j+1);
-					strcpy(menustring[j],temp);
-					for(i=0;i<17;i++)if(menustring[j][i]=='\0')menustring[j][i]=' ';
-					menustring[j][17]='\0';
-					sprintf (temp, "%d",(int)accountactive->getHighScore(j));
-					strcat(menustring[j],temp);
-					for(i=18;i<32;i++)if(menustring[j][i]=='\0')menustring[j][i]=' ';
-					menustring[j][32]='\0';
-					sprintf (temp, "%d:",(int)(((int)accountactive->getFastTime(j)-(int)(accountactive->getFastTime(j))%60)/60));
-					strcat(menustring[j],temp);
-					if((int)(accountactive->getFastTime(j))%60<10)strcat(menustring[j],"0");
-					sprintf (temp, "%d",(int)(accountactive->getFastTime(j))%60);
-					strcat(menustring[j],temp);
-
-					startx[j]=10;
-					starty[j]=360-j*40;
-					endx[j]=startx[j]+strlen(menustring[j])*10;
-					endy[j]=starty[j]+20;
-					movex[j]=0;
-					movey[j]=0;
-				}
-
-				sprintf (menustring[numchallengelevels], "Back");
-				startx[numchallengelevels]=10;
-				endx[numchallengelevels]=startx[numchallengelevels]+strlen(menustring[numchallengelevels])*10;
-				starty[numchallengelevels]=10;
-				endy[numchallengelevels]=starty[numchallengelevels]+20;
-				movex[numchallengelevels]=0;
-				movey[numchallengelevels]=0;
-
-				sprintf (menustring[numchallengelevels+1], "             High Score      Best Time");
-				startx[numchallengelevels+1]=10;
-				starty[numchallengelevels+1]=400;
-				endx[numchallengelevels+1]=startx[numchallengelevels+1]+strlen(menustring[numchallengelevels+1])*10;
-				endy[numchallengelevels+1]=starty[numchallengelevels+1]+20;
-				movex[numchallengelevels+1]=0;
-				movey[numchallengelevels+1]=0;
-
-			}
 			if(mainmenu==10){			
 				nummenuitems=6;
 				char temp[255];
@@ -3156,13 +3111,12 @@ int Game::DrawGLScene(StereoSide side)
 				}
 			}
 
-		if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==11||mainmenu==13||mainmenu==17||mainmenu==18)
+		if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==18)
 			for(i=0;i<nummenuitems;i++){
 				if((mousecoordh/screenwidth*640)>startx[i]&&(mousecoordh/screenwidth*640)<endx[i]&&480-(mousecoordv/screenheight*480)>starty[i]&&480-(mousecoordv/screenheight*480)<endy[i]){
 					if(mainmenu!=5)selected=i;
 					if(mainmenu==5&&(i!=0&&i!=6))selected=i;
-					if(mainmenu==9&&(i!=numchallengelevels+1))selected=i;
-					if(mainmenu==11&&(i!=numchallengelevels+1))selected=i;
+					if(mainmenu==9&&(i!=numchallengelevels+1))selected=i; // seem useless, if mainmenu==9 then mainmenu!=5, so selected==i.
 				}
 			}
 
@@ -3330,14 +3284,12 @@ int Game::DrawGLScene(StereoSide side)
 						}
 					}
 				}
-				if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==11||mainmenu==13||mainmenu==17||mainmenu==18)
+				if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==18)
 				{
 					if(mainmenu!=5||j<6)
 					{
 						glColor4f(1,0,0,1);
 						if(mainmenu==9&&j>accountactive->getProgress()&&j<numchallengelevels)glColor4f(0.5,0,0,1);
-						if(mainmenu==11&&j>accountactive->getProgress()&&j<numchallengelevels)glColor4f(0.5,0,0,1);
-						//if(1-((float)i)/10-(1-selectedlong[j])>0){
 						glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 						glPushMatrix();
 							if(mainmenu!=7||j!=0||!entername)
@@ -3370,10 +3322,7 @@ int Game::DrawGLScene(StereoSide side)
 								if(mainmenu==7&&(j!=0||!entername)) text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
 								if(mainmenu==8)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
 								if(mainmenu==9)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
-								if(mainmenu==11)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
 								if(mainmenu==10)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
-								if(mainmenu==17)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
-								if(mainmenu==13&&j!=1)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
 								if(mainmenu==18)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
 							}
 						}

@@ -2403,7 +2403,7 @@ void	Game::Tick()
 		if(mainmenu&&endgame==1)mainmenu=10;
 		if( (Input::isKeyDown(SDLK_ESCAPE)||(mainmenu==0&&((Input::isKeyDown(jumpkey)||Input::isKeyDown(SDLK_SPACE)||(campaign)))&&!oldjumpkeydown&&campaign&&winfreeze))
 		    && !mainmenutogglekeydown
-		    && (!mainmenu||gameon||mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||(mainmenu==7&&!entername)||mainmenu==9||mainmenu==11||mainmenu==13||mainmenu==17||mainmenu==10)
+		    && (!mainmenu||gameon||mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||(mainmenu==7&&!entername)||mainmenu==9||mainmenu==10)
 		  ) { // go back
 			selected=-1;
 			if(mainmenu==1||mainmenu==2||mainmenu==0){
@@ -2439,7 +2439,7 @@ void	Game::Tick()
 
 				SaveSettings(*this);
 			}
-			if(mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==9||mainmenu==13||mainmenu==10||mainmenu==11||mainmenu==100){
+			if(mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==9||mainmenu==10||mainmenu==100){
 				fireSound();
 
 				flash();
@@ -2452,8 +2452,6 @@ void	Game::Tick()
 			if(mainmenu==6)mainmenu=5;
 			if(mainmenu==7)mainmenu=1;
 			if(mainmenu==9)mainmenu=5;
-			if(mainmenu==11)mainmenu=5;
-			if(mainmenu==13)mainmenu=12;
 			if(mainmenu==10)mainmenu=5;
 			if(mainmenu==100){
 				mainmenu=5;
@@ -2466,16 +2464,6 @@ void	Game::Tick()
 			mainmenutogglekeydown=0;
 		}
 	}
-
-	/*static bool minimaptogglekeydown;
-	if(Input::isKeyDown(SDLK_TAB)&&!minimaptogglekeydown){
-	minimap=1-minimap;
-	minimaptogglekeydown=1;
-	}
-	if(!Input::isKeyDown(SDLK_TAB)){
-	minimaptogglekeydown=0;
-	}
-	*/
 
 	static bool minimaptogglekeydown;
 	if(Input::isKeyDown(SDLK_TAB)&&!minimaptogglekeydown&&tutoriallevel){
@@ -2821,36 +2809,6 @@ void	Game::Tick()
 				else {
 					Loadlevel(selected);
 				}
-				campaign=0;
-
-				mainmenu=0;
-				gameon=1;
-				OPENAL_SetPaused(channels[stream_music3], true);
-			}
-			if(Input::Button()&&!oldbutton&&selected==numchallengelevels){
-				fireSound();
-
-				flash();
-
-				mainmenu=5;
-			}
-		}
-		if(mainmenu==11){
-			if(Input::Button()&&!oldbutton&&selected<numchallengelevels&&selected>=0&&selected<=accountactive->getProgress()){
-				fireSound();
-
-				flash();
-
-				startbonustotal=0;
-
-				loading=2;
-				loadtime=0;
-				targetlevel=selected;
-				if(firstload) {
-					TickOnceAfter();
-					Loadlevel(selected);
-				} else
-					LoadStuff();
 				campaign=0;
 
 				mainmenu=0;
