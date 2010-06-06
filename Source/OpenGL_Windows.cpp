@@ -413,7 +413,7 @@ Boolean SetUp (Game & game)
 static void DoMouse(Game & game)
 {
 
-	if(mainmenu||(abs(game.deltah)<10*realmultiplier*1000&&abs(game.deltav)<10*realmultiplier*1000))
+	if(mainmenu|| ( (abs(game.deltah)<10*realmultiplier*1000) && (abs(game.deltav)<10*realmultiplier*1000) ))
 	{
 		game.deltah *= usermousesensitivity;
 		game.deltav *= usermousesensitivity;
@@ -480,7 +480,6 @@ void DoUpdate (Game & game)
 
 	count = multiplier*sps;
 	if(count<2)count=2;
-	//if(count>10)count=10;
 
 	realmultiplier=multiplier;
 	multiplier*=gamespeed;
@@ -488,9 +487,7 @@ void DoUpdate (Game & game)
 	if(difficulty==0)multiplier*=.8;
 
 	if(game.loading==4)multiplier*=.00001;
-	//multiplier*.9;
 	if(slomo&&!mainmenu)multiplier*=slomospeed;
-	//if(freeze)multiplier*=0.00001;
 	oldmult=multiplier;
 	multiplier/=(float)count;
 
