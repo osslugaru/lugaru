@@ -89,12 +89,10 @@ set(LUGARU_H
 	${SRCDIR}/Account.h
 	${SRCDIR}/Game.h
 	${SRCDIR}/Lights.h
-	${SRCDIR}/LinkedList.h
 	${SRCDIR}/Models.h
 	${SRCDIR}/Objects.h
 	${SRCDIR}/Person.h
 	${SRCDIR}/PhysicsMath.h
-	${SRCDIR}/Pointer.h
 	${SRCDIR}/Quaternions.h
 	${SRCDIR}/Random.h
 	${SRCDIR}/Skeleton.h
