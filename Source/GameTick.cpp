@@ -60,7 +60,6 @@ extern int slomo;
 extern float slomodelay;
 extern bool floatjump;
 extern float volume;
-extern Animation animation[animation_count];
 extern Light light;
 extern float texdetail;
 extern GLubyte bloodText[512*512*3];

@@ -25,7 +25,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Animation.h"
 
 extern float multiplier;
-extern Animation animation[animation_count];
 extern OPENAL_SAMPLE	*samp[100];
 extern int channels[100];
 extern Terrain terrain;

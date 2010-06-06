@@ -32,7 +32,6 @@ extern float fadestart;
 extern float texscale;
 extern float gravity;
 extern Light light;
-extern Animation animation[animation_count];
 extern Skeleton testskeleton;
 extern int numsounds;
 extern OPENAL_SAMPLE	*samp[100];

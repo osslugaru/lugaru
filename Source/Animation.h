@@ -29,4 +29,5 @@ enum animation_types {
 animation_count
 };
 
+extern Animation animation[animation_count];
 #endif
