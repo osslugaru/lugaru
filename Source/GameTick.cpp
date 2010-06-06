@@ -6740,21 +6740,6 @@ void	Game::Tick()
 																	else player[i].targetrotation-=90;
 																}
 															}
-															/*if(findDistancefast(&player[i].coords,&weapons.position[player[i].ally])<3){
-															if(abs(Random()%6)){
-															player[i].crouchkeydown=1;
-															if(!findDistancefast(&player[i].coords,&weapons.position[player[i].ally])<1){
-															if(player[i].isRun()){
-															player[i].targetframe=0;
-															player[i].target=0;
-															player[i].targetanimation=sneakanim;
-															}
-															}
-															else player[i].forwardkeydown=0;
-															}
-															else player[i].crouchkeydown=0;
-															}
-															else player[i].crouchkeydown=0;*/
 														}
 
 														player[i].leftkeydown=0;
@@ -7737,65 +7722,76 @@ void	Game::Tick()
 
 							objects.DoStuff();
 							
-							if(numenvsounds!=0)
-								for(j=numenvsounds-1;j>=0;j--){
-									envsoundlife[j]-=multiplier;
-									if(envsoundlife[j]<0){
-										numenvsounds--;
-										envsoundlife[j]=envsoundlife[numenvsounds];
-										envsound[j]=envsound[numenvsounds];
-									}
+							for(j=numenvsounds-1;j>=0;j--){
+								envsoundlife[j]-=multiplier;
+								if(envsoundlife[j]<0){
+									numenvsounds--;
+									envsoundlife[j]=envsoundlife[numenvsounds];
+									envsound[j]=envsound[numenvsounds];
 								}
-								if(!slomo)OPENAL_SetFrequency(OPENAL_ALL, 22050);
-								if(slomo)OPENAL_SetFrequency(OPENAL_ALL, slomofreq);
+							}
+							if(slomo) OPENAL_SetFrequency(OPENAL_ALL, slomofreq);
+							else OPENAL_SetFrequency(OPENAL_ALL, 22050);
 
-								if(tutoriallevel==1){
-									XYZ temp;
-									XYZ temp2;
-									XYZ temp3;
-									XYZ oldtemp;
-									XYZ oldtemp2;
-									temp.x=1011;
-									temp.y=84;
-									temp.z=491;
-									temp2.x=1025;
-									temp2.y=75;
-									temp2.z=447;
-									temp3.x=1038;
-									temp3.y=76;
-									temp3.z=453;
-									oldtemp=temp;
-									oldtemp2=temp2;
-									if(tutorialstage>=51)
+							if(tutoriallevel==1){
+								XYZ temp;
+								XYZ temp2;
+								XYZ temp3;
+								XYZ oldtemp;
+								XYZ oldtemp2;
+								temp.x=1011;
+								temp.y=84;
+								temp.z=491;
+								temp2.x=1025;
+								temp2.y=75;
+								temp2.z=447;
+								temp3.x=1038;
+								temp3.y=76;
+								temp3.z=453;
+								oldtemp=temp;
+								oldtemp2=temp2;
+								if(tutorialstage>=51)
+									if(findDistancefast(&temp,&player[0].coords)>=findDistancefast(&temp,&temp2)-1||findDistancefast(&temp3,&player[0].coords)<4){
+										OPENAL_StopSound(OPENAL_ALL);  // hack...OpenAL renderer isn't stopping music after tutorial goes to level menu...
+										OPENAL_SetFrequency(OPENAL_ALL, 0.001);
+
+										PlayStreamEx( stream_music3, strm[stream_music3], NULL, true);
+										OPENAL_SetPaused(channels[stream_music3], false);
+										OPENAL_SetVolume(channels[stream_music3], 256);
+
+										gameon=0;
+										mainmenu=5;
+
+										fireSound();
+
+										flash();
+									}
+									if(tutorialstage<51)
 										if(findDistancefast(&temp,&player[0].coords)>=findDistancefast(&temp,&temp2)-1||findDistancefast(&temp3,&player[0].coords)<4){
-		                                    OPENAL_StopSound(OPENAL_ALL);  // hack...OpenAL renderer isn't stopping music after tutorial goes to level menu...
-											OPENAL_SetFrequency(OPENAL_ALL, 0.001);
-
-											PlayStreamEx( stream_music3, strm[stream_music3], NULL, true);
-											OPENAL_SetPaused(channels[stream_music3], false);
-											OPENAL_SetVolume(channels[stream_music3], 256);
-
-											gameon=0;
-											mainmenu=5;
-
-											float gLoc[3]={0,0,0};
-											float vel[3]={0,0,0};
-											OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+											float gLoc[3];
+											float vel[3];
+											gLoc[0]=player[0].coords.x;
+											gLoc[1]=player[0].coords.y;
+											gLoc[2]=player[0].coords.z;
+											vel[0]=0;
+											vel[1]=0;
+											vel[2]=0;
 											PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
 											OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
 											OPENAL_SetVolume(channels[fireendsound], 256);
 											OPENAL_SetPaused(channels[fireendsound], false);
-											OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+
+											player[0].coords=(oldtemp+oldtemp2)/2;
 
 											flash();
 										}
-										if(tutorialstage<51)
-											if(findDistancefast(&temp,&player[0].coords)>=findDistancefast(&temp,&temp2)-1||findDistancefast(&temp3,&player[0].coords)<4){
+										if(tutorialstage>=14&&tutorialstage<50)
+											if(findDistancefast(&temp,&player[1].coords)>=findDistancefast(&temp,&temp2)-1||findDistancefast(&temp3,&player[1].coords)<4){
 												float gLoc[3];
 												float vel[3];
-												gLoc[0]=player[0].coords.x;
-												gLoc[1]=player[0].coords.y;
-												gLoc[2]=player[0].coords.z;
+												gLoc[0]=player[1].coords.x;
+												gLoc[1]=player[1].coords.y;
+												gLoc[2]=player[1].coords.z;
 												vel[0]=0;
 												vel[1]=0;
 												vel[2]=0;
@@ -7804,87 +7800,68 @@ void	Game::Tick()
 												OPENAL_SetVolume(channels[fireendsound], 256);
 												OPENAL_SetPaused(channels[fireendsound], false);
 
-												player[0].coords=(oldtemp+oldtemp2)/2;
-
-												flash();
-											}
-											if(tutorialstage>=14&&tutorialstage<50)
-												if(findDistancefast(&temp,&player[1].coords)>=findDistancefast(&temp,&temp2)-1||findDistancefast(&temp3,&player[1].coords)<4){
-													float gLoc[3];
-													float vel[3];
-													gLoc[0]=player[1].coords.x;
-													gLoc[1]=player[1].coords.y;
-													gLoc[2]=player[1].coords.z;
-													vel[0]=0;
-													vel[1]=0;
-													vel[2]=0;
-													PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-													OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-													OPENAL_SetVolume(channels[fireendsound], 256);
-													OPENAL_SetPaused(channels[fireendsound], false);
-
-													for(int i=0;i<player[1].skeleton.num_joints;i++){
-														if(Random()%2==0){
-															if(!player[1].skeleton.free)temp2=(player[1].coords-player[1].oldcoords)/multiplier/2;//velocity/2;
-															if(player[1].skeleton.free)temp2=player[1].skeleton.joints[i].velocity*player[1].scale/2;
-															if(!player[1].skeleton.free)temp=DoRotation(DoRotation(DoRotation(player[1].skeleton.joints[i].position,0,0,player[1].tilt),player[1].tilt2,0,0),0,player[1].rotation,0)*player[1].scale+player[1].coords;
-															if(player[1].skeleton.free)temp=player[1].skeleton.joints[i].position*player[1].scale+player[1].coords;
-															Sprite::MakeSprite(breathsprite, temp,temp2, 1,1,1, .6+(float)abs(Random()%100)/200-.25, 1);
-														}
-													}
-
-													player[1].coords=(oldtemp+oldtemp2)/2;
-													for(int i=0;i<player[1].skeleton.num_joints;i++){
-														player[1].skeleton.joints[i].velocity=0;
-														if(Random()%2==0){
-															if(!player[1].skeleton.free)temp2=(player[1].coords-player[1].oldcoords)/multiplier/2;//velocity/2;
-															if(player[1].skeleton.free)temp2=player[1].skeleton.joints[i].velocity*player[1].scale/2;
-															if(!player[1].skeleton.free)temp=DoRotation(DoRotation(DoRotation(player[1].skeleton.joints[i].position,0,0,player[1].tilt),player[1].tilt2,0,0),0,player[1].rotation,0)*player[1].scale+player[1].coords;
-															if(player[1].skeleton.free)temp=player[1].skeleton.joints[i].position*player[1].scale+player[1].coords;
-															Sprite::MakeSprite(breathsprite, temp,temp2, 1,1,1, .6+(float)abs(Random()%100)/200-.25, 1);
-														}
+												for(int i=0;i<player[1].skeleton.num_joints;i++){
+													if(Random()%2==0){
+														if(!player[1].skeleton.free)temp2=(player[1].coords-player[1].oldcoords)/multiplier/2;//velocity/2;
+														if(player[1].skeleton.free)temp2=player[1].skeleton.joints[i].velocity*player[1].scale/2;
+														if(!player[1].skeleton.free)temp=DoRotation(DoRotation(DoRotation(player[1].skeleton.joints[i].position,0,0,player[1].tilt),player[1].tilt2,0,0),0,player[1].rotation,0)*player[1].scale+player[1].coords;
+														if(player[1].skeleton.free)temp=player[1].skeleton.joints[i].position*player[1].scale+player[1].coords;
+														Sprite::MakeSprite(breathsprite, temp,temp2, 1,1,1, .6+(float)abs(Random()%100)/200-.25, 1);
 													}
 												}
-								}
+
+												player[1].coords=(oldtemp+oldtemp2)/2;
+												for(int i=0;i<player[1].skeleton.num_joints;i++){
+													player[1].skeleton.joints[i].velocity=0;
+													if(Random()%2==0){
+														if(!player[1].skeleton.free)temp2=(player[1].coords-player[1].oldcoords)/multiplier/2;//velocity/2;
+														if(player[1].skeleton.free)temp2=player[1].skeleton.joints[i].velocity*player[1].scale/2;
+														if(!player[1].skeleton.free)temp=DoRotation(DoRotation(DoRotation(player[1].skeleton.joints[i].position,0,0,player[1].tilt),player[1].tilt2,0,0),0,player[1].rotation,0)*player[1].scale+player[1].coords;
+														if(player[1].skeleton.free)temp=player[1].skeleton.joints[i].position*player[1].scale+player[1].coords;
+														Sprite::MakeSprite(breathsprite, temp,temp2, 1,1,1, .6+(float)abs(Random()%100)/200-.25, 1);
+													}
+												}
+											}
+							}
 
 
-								//3d sound
-								static float gLoc[3];
-								gLoc[0]=viewer.x;
-								gLoc[1]=viewer.y;
-								gLoc[2]=viewer.z;
-								static float vel[3];
-								vel[0]=(viewer.x-oldviewer.x)/multiplier;
-								vel[1]=(viewer.y-oldviewer.y)/multiplier;
-								vel[2]=(viewer.z-oldviewer.z)/multiplier;
+							//3d sound
+							static float gLoc[3];
+							gLoc[0]=viewer.x;
+							gLoc[1]=viewer.y;
+							gLoc[2]=viewer.z;
+							static float vel[3];
+							vel[0]=(viewer.x-oldviewer.x)/multiplier;
+							vel[1]=(viewer.y-oldviewer.y)/multiplier;
+							vel[2]=(viewer.z-oldviewer.z)/multiplier;
 
-								//Set orientation with forward and up vectors
-								static XYZ upvector;
-								upvector=0;
-								upvector.z=-1;
+							//Set orientation with forward and up vectors
+							static XYZ upvector;
+							upvector=0;
+							upvector.z=-1;
 
-								upvector=DoRotation(upvector,-rotation2+90,0,0);
-								upvector=DoRotation(upvector,0,0-rotation,0);
+							upvector=DoRotation(upvector,-rotation2+90,0,0);
+							upvector=DoRotation(upvector,0,0-rotation,0);
 
-								facing=0;
-								facing.z=-1;
+							facing=0;
+							facing.z=-1;
 
-								facing=DoRotation(facing,-rotation2,0,0);
-								facing=DoRotation(facing,0,0-rotation,0);
+							facing=DoRotation(facing,-rotation2,0,0);
+							facing=DoRotation(facing,0,0-rotation,0);
 
 
-								static float ori[6];
-								ori[0] = -facing.x;
-								ori[1] = facing.y;
-								ori[2] = -facing.z;
-								ori[3] = -upvector.x;
-								ori[4] = upvector.y;
-								ori[5] = -upvector.z;
+							static float ori[6];
+							ori[0] = -facing.x;
+							ori[1] = facing.y;
+							ori[2] = -facing.z;
+							ori[3] = -upvector.x;
+							ori[4] = upvector.y;
+							ori[5] = -upvector.z;
 
-								OPENAL_3D_Listener_SetAttributes(&gLoc[0], &vel[0], ori[0], ori[1], ori[2], ori[3], ori[4], ori[5]);
-								OPENAL_Update();
+							OPENAL_3D_Listener_SetAttributes(&gLoc[0], &vel[0], ori[0], ori[1], ori[2], ori[3], ori[4], ori[5]);
+							OPENAL_Update();
 
-								oldviewer=viewer;
+							oldviewer=viewer;
 		}
 	}
 
@@ -7895,15 +7872,16 @@ void	Game::Tick()
 }
 
 void	Game::TickOnce(){
-	if(!mainmenu)
-		if(directing||indialogue==-1){
+	if(mainmenu)
+		rotation+=multiplier*5;
+	else
+		if(directing||indialogue==-1) {
 			rotation+=deltah*.7;
 			if(!invertmouse)rotation2+=deltav*.7;
 			if(invertmouse)rotation2-=deltav*.7;
 			if(rotation2>90)rotation2=90;
 			if(rotation2<-70)rotation2=-70;
 		}
-		if(mainmenu)rotation+=multiplier*5;
 }
 
 void	Game::TickOnceAfter(){
@@ -8002,20 +7980,6 @@ void	Game::TickOnceAfter(){
 				PlayStreamEx( stream_music3, strm[stream_music3], NULL, true);
 				OPENAL_SetPaused(channels[stream_music3], false);
 			}
-		}
-
-		if(!musictoggle){
-			OPENAL_SetPaused(channels[music1], true);
-			OPENAL_SetPaused(channels[stream_music2], true);
-			OPENAL_SetPaused(channels[stream_music3], true);
-
-			for(i=0;i<4;i++){
-				oldmusicvolume[i]=0;
-				musicvolume[i]=0;
-			}
-		}
-
-		if(musictoggle){
 			if(musicvolume[0]<=0&&oldmusicvolume[0]>0){
 				OPENAL_SetPaused(channels[music1], true);
 			}
@@ -8039,283 +8003,276 @@ void	Game::TickOnceAfter(){
 			for(i=0;i<3;i++){
 				oldmusicvolume[i]=musicvolume[i];
 			}
+		} else {
+			OPENAL_SetPaused(channels[music1], true);
+			OPENAL_SetPaused(channels[stream_music2], true);
+			OPENAL_SetPaused(channels[stream_music3], true);
+
+			for(i=0;i<4;i++){
+				oldmusicvolume[i]=0;
+				musicvolume[i]=0;
+			}
 		}
 
 		killhotspot=2;
-		if(numhotspots)
-			for(i=0;i<numhotspots;i++){
-				if(hotspottype[i]>10&&hotspottype[i]<20){
-					if(player[hotspottype[i]-10].dead==0){
-						killhotspot=0;
+		for(i=0;i<numhotspots;i++){
+			if(hotspottype[i]>10&&hotspottype[i]<20){
+				if(player[hotspottype[i]-10].dead==0){
+					killhotspot=0;
+				}
+				else if(killhotspot==2)
+					killhotspot=1;
+			}
+		}
+		if(killhotspot==2)killhotspot=0;
+
+
+		winhotspot=0;
+		for(i=0;i<numhotspots;i++){
+			if(hotspottype[i]==-1){
+				if(findDistancefast(&player[0].coords,&hotspot[i])<hotspotsize[i])
+					winhotspot=1;
+			}
+		}
+
+		int numalarmed=0;
+		for(i=1;i<numplayers;i++){
+			if(!player[i].dead&&player[i].aitype==attacktypecutoff&&player[i].surprised<=0)numalarmed++;
+		}
+		if(numalarmed>maxalarmed)maxalarmed=numalarmed;
+
+		if(changedelay<=0&&!loading&&!editorenabled&&gameon&&!tutoriallevel&&changedelay!=-999&&!won){
+			if(player[0].dead&&changedelay<=0){
+				changedelay=1;
+				targetlevel=whichlevel;
+			}
+			alldead=1;
+			for(i=1;i<numplayers;i++){
+				if(!player[i].dead&&player[i].howactive<typedead1)alldead=0;
+			}
+
+
+			if(alldead&&!player[0].dead&&maptype==mapkilleveryone){
+				changedelay=1;
+				targetlevel=whichlevel+1;
+				if(targetlevel>numchallengelevels-1)targetlevel=0;
+			}
+			if(winhotspot||windialogue){
+				changedelay=0.1;
+				targetlevel=whichlevel+1;
+				if(targetlevel>numchallengelevels-1)targetlevel=0;
+			}
+
+
+			if(killhotspot){
+				changedelay=1;
+				targetlevel=whichlevel+1;
+				if(targetlevel>numchallengelevels-1)targetlevel=0;
+			}
+
+			if(changedelay>0&&!player[0].dead&&!won){
+				//high scores, awards, win
+				if(campaign){
+					accountactive->winCampaignLevel(whichchoice, bonustotal, leveltime);
+					scoreadded=1;
+				}
+				else
+				{
+					accountactive->winLevel(whichlevel,bonustotal-startbonustotal,leveltime);
+				}
+				won=1;
+			}
+		}
+
+		if(!winfreeze){
+
+			if(leveltime<1){
+				loading=0;
+				changedelay=.1;
+				alldead=0;
+				winhotspot=0;
+				killhotspot=0;
+			}
+
+			if(!editorenabled&&gameon&&!mainmenu){
+				if(changedelay!=-999)changedelay-=multiplier/7;
+				if(player[0].dead)targetlevel=whichlevel;
+				if(loading==2&&!campaign){
+					flash();
+
+					fireSound(firestartsound);
+
+					if(!player[0].dead&&targetlevel!=whichlevel){
+						startbonustotal=bonustotal;
 					}
-					else if(killhotspot==2)
-						killhotspot=1;
+					if(player[0].dead) Loadlevel(whichlevel);
+					else Loadlevel(targetlevel);
+
+					fireSound();
+
+					loading=3;
+				}
+				if(loading==2&&targetlevel==whichlevel){
+					flash();
+					loadtime=0;
+
+					fireSound(firestartsound);
+
+					for(i=0;i<255;i++){
+						mapname[i]='\0';
+					}
+					mapname[0]=':';
+					mapname[1]='D';
+					mapname[2]='a';
+					mapname[3]='t';
+					mapname[4]='a';
+					mapname[5]=':';
+					mapname[6]='M';
+					mapname[7]='a';
+					mapname[8]='p';
+					mapname[9]='s';
+					mapname[10]=':';
+					strcat(mapname,campaignmapname[levelorder[accountactive->getCampaignChoicesMade()]]);//[campaignchoicewhich[whichchoice]]);
+					Loadlevel(mapname);
+
+					fireSound();
+
+					loading=3;
+				}
+				if(changedelay<=-999&&whichlevel!=-2&&!loading&&(player[0].dead||(alldead&&maptype==mapkilleveryone)||(winhotspot)||(killhotspot))&&!winfreeze)loading=1;
+				if((player[0].dead||(alldead&&maptype==mapkilleveryone)||(winhotspot)||(windialogue)||(killhotspot))&&changedelay<=0){
+			{
+						if(whichlevel!=-2&&!loading&&!player[0].dead){
+							winfreeze=1;
+							changedelay=-999;
+						}
+						if(player[0].dead)loading=1;
+					}
 				}
 			}
-			if(killhotspot==2)killhotspot=0;
 
-
-			winhotspot=0;
-			if(numhotspots)
-				for(i=0;i<numhotspots;i++){
-					if(hotspottype[i]==-1){
-						if(findDistancefast(&player[0].coords,&hotspot[i])<hotspotsize[i])
-							winhotspot=1;
+			if(campaign)
+				if(mainmenu==0&&winfreeze&&(campaignchoosenext[campaignchoicewhich[whichchoice]])==1){
+					if(campaignnumnext[campaignchoicewhich[whichchoice]]==0){
+						endgame=1;
 					}
 				}
+				else if(mainmenu==0&&winfreeze){
+					if(campaignchoosenext[campaignchoicewhich[whichchoice]]==2)
+						stealthloading=1;
+					else stealthloading=0;
 
-				int numalarmed=0;
-				if(numplayers>1)
-					for(i=1;i<numplayers;i++){
-						if(!player[i].dead&&player[i].aitype==attacktypecutoff&&player[i].surprised<=0)numalarmed++;
-					}
-					if(numalarmed>maxalarmed)maxalarmed=numalarmed;
+					if(!stealthloading){
+						float gLoc[3]={0,0,0};
+						float vel[3]={0,0,0};
+						fireSound(firestartsound);
 
-					if(changedelay<=0&&!loading&&!editorenabled&&gameon&&!tutoriallevel&&changedelay!=-999&&!won){
-						if(player[0].dead&&changedelay<=0){
-							changedelay=1;
-							targetlevel=whichlevel;
-						}
-						alldead=1;
-						if(numplayers>1)
-							for(i=1;i<numplayers;i++){
-								if(!player[i].dead&&player[i].howactive<typedead1)alldead=0;
-							}
-
-
-							if(alldead&&!player[0].dead&&maptype==mapkilleveryone){
-								changedelay=1;
-								targetlevel=whichlevel+1;
-								if(targetlevel>numchallengelevels-1)targetlevel=0;
-							}
-							if(winhotspot||windialogue){
-								changedelay=0.1;
-								targetlevel=whichlevel+1;
-								if(targetlevel>numchallengelevels-1)targetlevel=0;
-							}
-
-
-							if(killhotspot){
-								changedelay=1;
-								targetlevel=whichlevel+1;
-								if(targetlevel>numchallengelevels-1)targetlevel=0;
-							}
-
-							if(changedelay>0&&!player[0].dead&&!won){
-								//high scores, awards, win
-								if(campaign){
-									won=1;
-									accountactive->winCampaignLevel(whichchoice, bonustotal, leveltime);
-									/*accountcampaignchoices[accountactive][accountactive->getCampaignChoicesMade()]=whichchoice;
-									accountactive->getCampaignChoicesMade()++;
-									accountcampaignscore[accountactive]+=bonustotal;
-									accountcampaigntime[accountactive]+=leveltime;
-									if(accountcampaignscore[accountactive]>accountcampaignhighscore[accountactive])
-										accountcampaignhighscore[accountactive]=accountcampaignscore[accountactive];*/
-									scoreadded=1;
-								}
-								else
-								{
-									won=1;
-									accountactive->winLevel(whichlevel,bonustotal-startbonustotal,leveltime);
-								}
-							}
+						flash();
 					}
 
-					if(!winfreeze){
+					startbonustotal=0;
 
-						if(leveltime<1){
-							loading=0;
-							changedelay=.1;
-							alldead=0;
-							winhotspot=0;
-							killhotspot=0;
+					ifstream ipstream(ConvertFileName(":Data:Campaigns:main.txt"));
+					ipstream.ignore(256,':');
+					ipstream >> campaignnumlevels;
+					for(i=0;i<campaignnumlevels;i++){
+						ipstream.ignore(256,':');
+						ipstream.ignore(256,':');
+						ipstream.ignore(256,' ');
+						ipstream >> campaignmapname[i];
+						ipstream.ignore(256,':');
+						ipstream >> campaigndescription[i];
+						for(j=0;j<256;j++){
+							if(campaigndescription[i][j]=='_')campaigndescription[i][j]=' ';
 						}
-
-						if(!editorenabled&&gameon&&!mainmenu){
-							if(changedelay!=-999)changedelay-=multiplier/7;
-							if(player[0].dead)targetlevel=whichlevel;
-							if(loading==2&&!campaign){
-								flash();
-
-								fireSound(firestartsound);
-
-								if(!player[0].dead&&targetlevel!=whichlevel){
-									startbonustotal=bonustotal;
-								}
-								if(!player[0].dead)Loadlevel(targetlevel);
-								if(player[0].dead)Loadlevel(whichlevel);
-
-								fireSound();
-
-								loading=3;
-							}
-							if(loading==2&&targetlevel==whichlevel){
-								flash();
-								loadtime=0;
-
-								float gLoc[3]={0,0,0};
-								float vel[3]={0,0,0};
-								fireSound(firestartsound);
-
-								for(i=0;i<255;i++){
-									mapname[i]='\0';
-								}
-								mapname[0]=':';
-								mapname[1]='D';
-								mapname[2]='a';
-								mapname[3]='t';
-								mapname[4]='a';
-								mapname[5]=':';
-								mapname[6]='M';
-								mapname[7]='a';
-								mapname[8]='p';
-								mapname[9]='s';
-								mapname[10]=':';
-								strcat(mapname,campaignmapname[levelorder[accountactive->getCampaignChoicesMade()]]);//[campaignchoicewhich[whichchoice]]);
-								Loadlevel(mapname);
-
-								fireSound();
-
-								loading=3;
-							}
-							if(changedelay<=-999&&whichlevel!=-2&&!loading&&(player[0].dead||(alldead&&maptype==mapkilleveryone)||(winhotspot)||(killhotspot))&&!winfreeze)loading=1;
-							if((player[0].dead||(alldead&&maptype==mapkilleveryone)||(winhotspot)||(windialogue)||(killhotspot))&&changedelay<=0){
-                        {
-									if(whichlevel!=-2&&!loading&&!player[0].dead){
-										winfreeze=1;
-										changedelay=-999;
-									}
-									if(player[0].dead)loading=1;
-								}
-							}
+						ipstream.ignore(256,':');
+						ipstream >> campaignchoosenext[i];
+						ipstream.ignore(256,':');
+						ipstream >> campaignnumnext[i];
+						for(j=0;j<campaignnumnext[i];j++){
+							ipstream.ignore(256,':');
+							ipstream >> campaignnextlevel[i][j];
+							campaignnextlevel[i][j]-=1;
 						}
+						ipstream.ignore(256,':');
+						ipstream >> campaignlocationx[i];
+						ipstream.ignore(256,':');
+						ipstream >> campaignlocationy[i];
+					}
+					ipstream.close();
 
-						if(campaign)
-							if(mainmenu==0&&winfreeze&&(campaignchoosenext[campaignchoicewhich[whichchoice]])==1){
-								if(campaignnumnext[campaignchoicewhich[whichchoice]]==0){
-									endgame=1;
-								}
-							}
-							else if(mainmenu==0&&winfreeze){
-								if(campaignchoosenext[campaignchoicewhich[whichchoice]]==2)
-									stealthloading=1;
-								else stealthloading=0;
-
-								if(!stealthloading){
-									float gLoc[3]={0,0,0};
-									float vel[3]={0,0,0};
-									fireSound(firestartsound);
-
-									flash();
-								}
-
-								startbonustotal=0;
-
-								ifstream ipstream(ConvertFileName(":Data:Campaigns:main.txt"));
-								ipstream.ignore(256,':');
-								ipstream >> campaignnumlevels;
-								for(i=0;i<campaignnumlevels;i++){
-									ipstream.ignore(256,':');
-									ipstream.ignore(256,':');
-									ipstream.ignore(256,' ');
-									ipstream >> campaignmapname[i];
-									ipstream.ignore(256,':');
-									ipstream >> campaigndescription[i];
-									for(j=0;j<256;j++){
-										if(campaigndescription[i][j]=='_')campaigndescription[i][j]=' ';
-									}
-									ipstream.ignore(256,':');
-									ipstream >> campaignchoosenext[i];
-									ipstream.ignore(256,':');
-									ipstream >> campaignnumnext[i];
-									if(campaignnumnext[i])
-										for(j=0;j<campaignnumnext[i];j++){
-											ipstream.ignore(256,':');
-											ipstream >> campaignnextlevel[i][j];
-											campaignnextlevel[i][j]-=1;
-										}
-										ipstream.ignore(256,':');
-										ipstream >> campaignlocationx[i];
-										ipstream.ignore(256,':');
-										ipstream >> campaignlocationy[i];
-								}
-								ipstream.close();
-
-								for(i=0;i<campaignnumlevels;i++){
-									levelvisible[i]=0;
-									levelhighlight[i]=0;
-								}
-
-
-								for(i=0;i<campaignnumlevels;i++){
-									levelvisible[i]=0;
-									levelhighlight[i]=0;
-								}
-
-								levelorder[0]=0;
-								levelvisible[0]=1;
-								if(accountactive->getCampaignChoicesMade())
-									for(i=0;i<accountactive->getCampaignChoicesMade();i++){
-										levelorder[i+1]=campaignnextlevel[levelorder[i]][accountactive->getCampaignChoice(i)];
-										levelvisible[levelorder[i+1]]=1;
-									}
-									int whichlevelstart;
-									whichlevelstart=accountactive->getCampaignChoicesMade()-1;
-									if(whichlevelstart<0){
-										campaignchoicenum=1;
-										campaignchoicewhich[0]=0;
-									}
-									else
-									{
-										campaignchoicenum=campaignnumnext[levelorder[whichlevelstart]];
-										if(campaignchoicenum)
-											for(i=0;i<campaignchoicenum;i++){
-												campaignchoicewhich[i]=campaignnextlevel[levelorder[whichlevelstart]][i];
-												levelvisible[campaignnextlevel[levelorder[whichlevelstart]][i]]=1;
-												levelhighlight[campaignnextlevel[levelorder[whichlevelstart]][i]]=1;
-											}
-									}
-
-									loading=2;
-									loadtime=0;
-									targetlevel=7;
-									//if(firstload)TickOnceAfter();
-									if(!firstload)LoadStuff();
-									//else {
-									for(i=0;i<255;i++){
-										mapname[i]='\0';
-									}
-									mapname[0]=':';
-									mapname[1]='D';
-									mapname[2]='a';
-									mapname[3]='t';
-									mapname[4]='a';
-									mapname[5]=':';
-									mapname[6]='M';
-									mapname[7]='a';
-									mapname[8]='p';
-									mapname[9]='s';
-									mapname[10]=':';
-
-									strcat(mapname,campaignmapname[campaignchoicewhich[0]]);
-									whichchoice=0;
-									visibleloading=1;
-									stillloading=1;
-									Loadlevel(mapname);
-									campaign=1;
-									mainmenu=0;
-									gameon=1;
-									OPENAL_SetPaused(channels[stream_music3], true);
-
-									stealthloading=0;
-							}
-
-							if(loading==3)loading=0;
-
+					for(i=0;i<campaignnumlevels;i++){
+						levelvisible[i]=0;
+						levelhighlight[i]=0;
 					}
 
-					oldmusictype=musictype;
+
+					for(i=0;i<campaignnumlevels;i++){
+						levelvisible[i]=0;
+						levelhighlight[i]=0;
+					}
+
+					levelorder[0]=0;
+					levelvisible[0]=1;
+					for(i=0;i<accountactive->getCampaignChoicesMade();i++){
+						levelorder[i+1]=campaignnextlevel[levelorder[i]][accountactive->getCampaignChoice(i)];
+						levelvisible[levelorder[i+1]]=1;
+					}
+					int whichlevelstart;
+					whichlevelstart=accountactive->getCampaignChoicesMade()-1;
+					if(whichlevelstart<0){
+						campaignchoicenum=1;
+						campaignchoicewhich[0]=0;
+					}
+					else
+					{
+						campaignchoicenum=campaignnumnext[levelorder[whichlevelstart]];
+						for(i=0;i<campaignchoicenum;i++){
+							campaignchoicewhich[i]=campaignnextlevel[levelorder[whichlevelstart]][i];
+							levelvisible[campaignnextlevel[levelorder[whichlevelstart]][i]]=1;
+							levelhighlight[campaignnextlevel[levelorder[whichlevelstart]][i]]=1;
+						}
+					}
+
+					loading=2;
+					loadtime=0;
+					targetlevel=7;
+					//if(firstload)TickOnceAfter();
+					if(!firstload)LoadStuff();
+					//else {
+					for(i=0;i<255;i++){
+						mapname[i]='\0';
+					}
+					mapname[0]=':';
+					mapname[1]='D';
+					mapname[2]='a';
+					mapname[3]='t';
+					mapname[4]='a';
+					mapname[5]=':';
+					mapname[6]='M';
+					mapname[7]='a';
+					mapname[8]='p';
+					mapname[9]='s';
+					mapname[10]=':';
+
+					strcat(mapname,campaignmapname[campaignchoicewhich[0]]);
+					whichchoice=0;
+					visibleloading=1;
+					stillloading=1;
+					Loadlevel(mapname);
+					campaign=1;
+					mainmenu=0;
+					gameon=1;
+					OPENAL_SetPaused(channels[stream_music3], true);
+
+					stealthloading=0;
+				}
+
+				if(loading==3)loading=0;
+
+			}
+
+			oldmusictype=musictype;
 	}
 
 	facing=0;

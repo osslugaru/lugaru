@@ -2211,8 +2211,6 @@ int Game::DrawGLScene(StereoSide side)
 		if(lastcheck>.5||oldmainmenu!=mainmenu){
 			if(mainmenu==5){
 				ifstream ipstream(ConvertFileName(":Data:Campaigns:main.txt"));
-				//campaignnumlevels=0;
-				//accountactive->getCampaignChoicesMade()=0;
 				ipstream.ignore(256,':');
 				ipstream >> campaignnumlevels;
 				for(i=0;i<campaignnumlevels;i++){
@@ -2229,18 +2227,15 @@ int Game::DrawGLScene(StereoSide side)
 					ipstream >> campaignchoosenext[i];
 					ipstream.ignore(256,':');
 					ipstream >> campaignnumnext[i];
-					if(campaignnumnext[i])
-						for(j=0;j<campaignnumnext[i];j++){
-							ipstream.ignore(256,':');
-							ipstream >> campaignnextlevel[i][j];
-							campaignnextlevel[i][j]-=1;
-						}
+					for(j=0;j<campaignnumnext[i];j++){
 						ipstream.ignore(256,':');
-						ipstream >> campaignlocationx[i];
-						//campaignlocationx[i]-=30;
-						ipstream.ignore(256,':');
-						ipstream >> campaignlocationy[i];
-						//campaignlocationy[i]+=30;
+						ipstream >> campaignnextlevel[i][j];
+						campaignnextlevel[i][j]-=1;
+					}
+					ipstream.ignore(256,':');
+					ipstream >> campaignlocationx[i];
+					ipstream.ignore(256,':');
+					ipstream >> campaignlocationy[i];
 				}
 				ipstream.close();
 
@@ -2251,36 +2246,26 @@ int Game::DrawGLScene(StereoSide side)
 
 				levelorder[0]=0;
 				levelvisible[0]=1;
-				if(accountactive->getCampaignChoicesMade())
-					for(i=0;i<accountactive->getCampaignChoicesMade();i++){
-						levelorder[i+1]=campaignnextlevel[levelorder[i]][accountactive->getCampaignChoice(i)];
-						levelvisible[levelorder[i+1]]=1;
+				for(i=0;i<accountactive->getCampaignChoicesMade();i++){
+					levelorder[i+1]=campaignnextlevel[levelorder[i]][accountactive->getCampaignChoice(i)];
+					levelvisible[levelorder[i+1]]=1;
+				}
+				int whichlevelstart = accountactive->getCampaignChoicesMade()-1;
+				if(whichlevelstart<0){
+					accountactive->setCampaignScore(0);
+					accountactive->resetFasttime();
+					campaignchoicenum=1;
+					campaignchoicewhich[0]=0;
+				}
+				else
+				{
+					campaignchoicenum=campaignnumnext[levelorder[whichlevelstart]];
+					for(i=0;i<campaignchoicenum;i++){
+						campaignchoicewhich[i]=campaignnextlevel[levelorder[whichlevelstart]][i];
+						levelvisible[campaignnextlevel[levelorder[whichlevelstart]][i]]=1;
+						levelhighlight[campaignnextlevel[levelorder[whichlevelstart]][i]]=1;
 					}
-					int whichlevelstart;
-					whichlevelstart=accountactive->getCampaignChoicesMade()-1;
-					if(whichlevelstart<0){
-						accountactive->setCampaignScore(0);
-						accountactive->resetFasttime();
-						campaignchoicenum=1;
-						campaignchoicewhich[0]=0;
-					}
-					else
-					{
-						campaignchoicenum=campaignnumnext[levelorder[whichlevelstart]];
-						if(campaignchoicenum==0){
-							//if(accountactive->getCampaignFasttime()==0||accountcampaigntime[accountactive]<accountactive->getCampaignFasttime())accountactive->getCampaignFasttime()=accountcampaigntime[accountactive];		
-						}
-						if(campaignchoicenum)
-							for(i=0;i<campaignchoicenum;i++){
-								campaignchoicewhich[i]=campaignnextlevel[levelorder[whichlevelstart]][i];
-								levelvisible[campaignnextlevel[levelorder[whichlevelstart]][i]]=1;
-								levelhighlight[campaignnextlevel[levelorder[whichlevelstart]][i]]=1;
-							}
-					}
-					/*levelorder[0]=0;
-					levelorder[1]=1;
-					levelorder[2]=2;
-					levelorder[3]=3;*/
+				}
 			}
 		}
 		if(mainmenu==5){
@@ -2289,7 +2274,7 @@ int Game::DrawGLScene(StereoSide side)
 
 		texdetail=temptexdetail;
 
-		/*if(mainmenu!=0)*/oldmainmenu=mainmenu;
+		oldmainmenu=mainmenu;
 
 		if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==119||mainmenu==13||mainmenu==17||mainmenu==18){
 			glClear(GL_DEPTH_BUFFER_BIT);
