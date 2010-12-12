@@ -1,0 +1,84 @@
+/*
+Copyright (C) 2010 - Lugaru authors
+
+This file is part of Lugaru.
+
+Lugaru is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
+
+DECLARE_SOUND(footstepsound)
+DECLARE_SOUND(footstepsound2)
+DECLARE_SOUND(footstepsound3)
+DECLARE_SOUND(footstepsound4)
+DECLARE_SOUND(jumpsound)
+DECLARE_SOUND(landsound)
+DECLARE_SOUND(whooshsound)
+DECLARE_SOUND(hawksound)
+DECLARE_SOUND(landsound1)
+DECLARE_SOUND(landsound2)
+DECLARE_SOUND(breaksound)
+DECLARE_SOUND(lowwhooshsound)
+DECLARE_SOUND(heavyimpactsound)
+DECLARE_SOUND(firestartsound)
+DECLARE_SOUND(fireendsound)
+DECLARE_SOUND(breaksound2)
+DECLARE_SOUND(knifedrawsound)
+DECLARE_SOUND(knifesheathesound)
+DECLARE_SOUND(knifeswishsound)
+DECLARE_SOUND(knifeslicesound)
+DECLARE_SOUND(skidsound)
+DECLARE_SOUND(snowskidsound)
+DECLARE_SOUND(bushrustle)
+DECLARE_SOUND(midwhooshsound)
+DECLARE_SOUND(highwhooshsound)
+DECLARE_SOUND(movewhooshsound)
+DECLARE_SOUND(thudsound)
+DECLARE_SOUND(whooshhitsound)
+DECLARE_SOUND(clank1sound)
+DECLARE_SOUND(clank2sound)
+DECLARE_SOUND(clank3sound)
+DECLARE_SOUND(clank4sound)
+DECLARE_SOUND(consolefailsound)
+DECLARE_SOUND(consolesuccesssound)
+DECLARE_SOUND(swordslicesound)
+DECLARE_SOUND(metalhitsound)
+DECLARE_SOUND(clawslicesound)
+DECLARE_SOUND(splattersound)
+DECLARE_SOUND(growlsound)
+DECLARE_SOUND(growl2sound)
+DECLARE_SOUND(barksound)
+DECLARE_SOUND(snarlsound)
+DECLARE_SOUND(snarl2sound)
+DECLARE_SOUND(barkgrowlsound)
+DECLARE_SOUND(bark2sound)
+DECLARE_SOUND(bark3sound)
+DECLARE_SOUND(rabbitattacksound)
+DECLARE_SOUND(rabbitattack2sound)
+DECLARE_SOUND(rabbitattack3sound)
+DECLARE_SOUND(rabbitattack4sound)
+DECLARE_SOUND(rabbitpainsound)
+DECLARE_SOUND(rabbitpain1sound)
+DECLARE_SOUND(rabbitpain2sound)
+DECLARE_SOUND(rabbitchitter)
+DECLARE_SOUND(rabbitchitter2)
+DECLARE_SOUND(fleshstabsound)
+DECLARE_SOUND(fleshstabremovesound)
+DECLARE_SOUND(swordstaffsound)
+DECLARE_SOUND(staffbodysound)
+DECLARE_SOUND(staffheadsound)
+DECLARE_SOUND(alarmsound)
+DECLARE_SOUND(staffbreaksound)
+
