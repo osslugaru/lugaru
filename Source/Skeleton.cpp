@@ -29,7 +29,6 @@ extern float multiplier;
 extern float gravity;
 extern Skeleton testskeleton;
 extern Terrain terrain;
-extern OPENAL_SAMPLE	*samp[100];
 extern int channels[100];
 extern Objects objects;
 extern int environment;

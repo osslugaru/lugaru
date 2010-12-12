@@ -23,9 +23,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define SOUNDS_H
 
 enum sound_types {
-#define DECLARE_SOUND(id) id,
+#define DECLARE_SOUND(id, filename) id,
 #include "Sounds.def"
 #undef DECLARE_SOUND
+sounds_count
 };
 
+extern struct OPENAL_SAMPLE *samp[sounds_count];
+
+extern void loadAllSounds();
 #endif

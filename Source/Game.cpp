@@ -3,7 +3,6 @@
 #include "SDL_thread.h"
 
 extern int mainmenu;
-extern OPENAL_SAMPLE *samp[100];
 extern int channels[100];
 extern "C" void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 

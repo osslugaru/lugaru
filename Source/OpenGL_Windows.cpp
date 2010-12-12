@@ -772,7 +772,6 @@ int main(int argc, char **argv)
 // --------------------------------------------------------------------------
 
 extern int channels[100];
-extern OPENAL_SAMPLE * samp[100];
 extern OPENAL_STREAM * strm[20];
 
 extern "C" void PlaySoundEx(int chan, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused)

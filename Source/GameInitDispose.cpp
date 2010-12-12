@@ -34,7 +34,6 @@ extern float gravity;
 extern Light light;
 extern Skeleton testskeleton;
 extern int numsounds;
-extern OPENAL_SAMPLE	*samp[100];
 extern int channels[100];
 extern Terrain terrain;
 //extern Sprites sprites;
@@ -165,7 +164,6 @@ void Game::Dispose()
 }
 
 
-//void Game::LoadSounds();
 void Game::LoadSounds()
 {
 	LOGFUNC;
@@ -176,189 +174,8 @@ void Game::LoadSounds()
 
 	OPENAL_SetSFXMasterVolume((int)(volume*255));
 
-	samp[footstepsound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepsnow1.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[footstepsound], 4.0f, 1000.0f);
-
-	samp[footstepsound2] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepsnow2.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[footstepsound2], 4.0f, 1000.0f);
-
-	samp[footstepsound3] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepstone1.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[footstepsound3], 4.0f, 1000.0f);
-
-	samp[footstepsound4] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepstone2.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[footstepsound4], 4.0f, 1000.0f);
-
-	samp[landsound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:land.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[landsound], 4.0f, 1000.0f);
-
-	samp[jumpsound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:jump.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[jumpsound], 4.0f, 1000.0f);
-
-	samp[hawksound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:hawk.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[hawksound], 40.0f, 10000.0f);
-
-	samp[whooshsound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:whoosh.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[whooshsound], 4.0f, 1000.0f);
-	OPENAL_Sample_SetMode(samp[whooshsound], OPENAL_LOOP_NORMAL);
-
-	samp[landsound1] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:land1.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[landsound1], 4.0f, 1000.0f);
-
-
-
-	samp[landsound2] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:land2.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[landsound2], 4.0f, 1000.0f);
-
-	samp[breaksound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:broken.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[breaksound], 8.0f, 2000.0f);
-
-	samp[lowwhooshsound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:Lowwhoosh.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[lowwhooshsound], 8.0f, 2000.0f);
-
-	samp[midwhooshsound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:midwhoosh.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[midwhooshsound], 8.0f, 2000.0f);
-
-	samp[highwhooshsound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:highwhoosh.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[highwhooshsound], 8.0f, 2000.0f);
-
-	samp[movewhooshsound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:movewhoosh.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[movewhooshsound], 8.0f, 2000.0f);
-
-	samp[heavyimpactsound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:heavyimpact.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[heavyimpactsound], 8.0f, 2000.0f);
-
-	samp[whooshhitsound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:Whooshhit.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[whooshhitsound], 8.0f, 2000.0f);
-
-	samp[thudsound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:thud.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[thudsound], 8.0f, 2000.0f);
-
-	samp[alarmsound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:alarm.ogg"), OPENAL_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[alarmsound], 8.0f, 2000.0f);
-
-	samp[breaksound2] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:break.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[breaksound2], 8.0f, 2000.0f);
-
-	samp[knifedrawsound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:knifedraw.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[knifedrawsound], 8.0f, 2000.0f);
-
-	samp[knifesheathesound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:knifesheathe.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[knifesheathesound], 8.0f, 2000.0f);
-
-	samp[fleshstabsound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:Fleshstab.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[fleshstabsound], 8.0f, 2000.0f);
-
-	samp[fleshstabremovesound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:Fleshstabremove.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[fleshstabremovesound], 8.0f, 2000.0f);
-
-	samp[knifeswishsound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:knifeswish.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[knifeswishsound], 8.0f, 2000.0f);
-
-	samp[knifeslicesound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:knifeslice.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[knifeslicesound], 8.0f, 2000.0f);
-
-	samp[swordslicesound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:swordslice.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[swordslicesound], 8.0f, 2000.0f);
-
-	samp[skidsound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:skid.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[skidsound], 8.0f, 2000.0f);
-
-	samp[snowskidsound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:snowskid.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[snowskidsound], 8.0f, 2000.0f);
-
-	samp[bushrustle] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:bushrustle.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[bushrustle], 4.0f, 1000.0f);
-
-	samp[clank1sound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:clank1.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[clank1sound], 8.0f, 2000.0f);
-
-	samp[clank2sound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:clank2.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[clank2sound], 8.0f, 2000.0f);
-
-	samp[clank3sound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:clank3.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[clank3sound], 8.0f, 2000.0f);
-
-	samp[clank4sound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:clank4.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[clank4sound], 8.0f, 2000.0f);
-
-	samp[consolesuccesssound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:consolesuccess.ogg"), OPENAL_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[consolesuccesssound], 4.0f, 1000.0f);
-
-	samp[consolefailsound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:consolefail.ogg"), OPENAL_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[consolefailsound], 4.0f, 1000.0f);
-
-	samp[metalhitsound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:MetalHit.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[metalhitsound], 8.0f, 2000.0f);
-
-	samp[clawslicesound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:clawslice.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[clawslicesound], 8.0f, 2000.0f);
-
-	samp[splattersound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:splatter.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[splattersound], 8.0f, 2000.0f);
-
-	samp[growlsound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:Growl.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[growlsound], 1000.0f, 2000.0f);
-
-	samp[growl2sound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:Growl2.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[growl2sound], 1000.0f, 2000.0f);
-
-	samp[barksound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:bark.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[barksound], 1000.0f, 2000.0f);
-
-	samp[bark2sound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:bark2.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[bark2sound], 1000.0f, 2000.0f);
-
-	samp[bark3sound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:bark3.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[bark3sound], 1000.0f, 2000.0f);
-
-	samp[snarlsound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:snarl.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[snarlsound], 1000.0f, 2000.0f);
-
-
-	samp[snarl2sound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:snarl2.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[snarl2sound], 1000.0f, 2000.0f);
-
-	samp[barkgrowlsound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:barkgrowl.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[barkgrowlsound], 1000.0f, 2000.0f);
-
-	samp[rabbitattacksound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:rabbitattack.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[rabbitattacksound], 1000.0f, 2000.0f);
-
-	samp[rabbitattack2sound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:rabbitattack2.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[rabbitattack2sound], 1000.0f, 2000.0f);
-
-	samp[rabbitattack3sound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:rabbitattack3.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[rabbitattack3sound], 1000.0f, 2000.0f);
-
-	samp[rabbitattack4sound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:rabbitattack4.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[rabbitattack4sound], 1000.0f, 2000.0f);
-
-	samp[rabbitpainsound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:rabbitpain.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[rabbitpainsound], 1000.0f, 2000.0f);
-
-	samp[rabbitpain1sound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:rabbitpain2.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[rabbitpain1sound], 1000.0f, 2000.0f);
-
-	/*samp[rabbitpain2sound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:rabbitpain2.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[rabbitpain2sound], 1000.0f, 2000.0f);
-	*/
-	samp[rabbitchitter] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:rabbitchitter.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[rabbitchitter], 1000.0f, 2000.0f);
-
-	samp[rabbitchitter2] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:rabbitchitter2.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[rabbitchitter2], 1000.0f, 2000.0f);
-
-	samp[swordstaffsound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:swordstaff.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[swordstaffsound], 8.0f, 2000.0f);
-
-	samp[staffbodysound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:staffbody.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[staffbodysound], 8.0f, 2000.0f);
-
-	samp[staffheadsound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:staffhead.ogg"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[staffheadsound], 8.0f, 2000.0f);
-
-	samp[staffbreaksound] = OPENAL_Sample_LoadEx(OPENAL_FREE, ConvertFileName(":Data:Sounds:staffbreak.wav"), OPENAL_HW3D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[staffbreaksound], 8.0f, 2000.0f);
+	if(visibleloading){LoadingScreen(); loadscreencolor=5;}
+	loadAllSounds();
 }
 
 void Game::LoadTexture(const char *fileName, GLuint *textureid,int mipmap, bool hasalpha)
@@ -1040,11 +857,7 @@ void Game::InitGame()
 		//terraindetail=2;
 	}
 
-	for (int it = 0; it < 100; ++it)
-	{
-		channels[it] = -1;
-		samp[it] = NULL;
-	}
+	memset(channels, 0xff, sizeof(channels));
 	for (int it = 0; it < 20; ++it)
 	{
 		strm[it] = NULL;
@@ -1116,17 +929,11 @@ void Game::InitGame()
 
 	FadeLoadingScreen(40);
 
-	samp[firestartsound] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:firestart.ogg"), OPENAL_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
-
 	strm[stream_firesound] = OPENAL_Stream_Open(ConvertFileName(":Data:Sounds:fire.ogg"), OPENAL_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
 //	OPENAL_Sample_SetMinMaxDistance(strm[stream_firesound], 8.0f, 2000.0f);
 	OPENAL_Stream_SetMode(strm[stream_firesound], OPENAL_LOOP_NORMAL);
 
 	FadeLoadingScreen(50);
-
-	samp[fireendsound] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:fireend.ogg"), OPENAL_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
 	//if(musictoggle){
 	strm[stream_music1grass] = OPENAL_Stream_Open(ConvertFileName(":Data:Sounds:music1grass.mp3"), OPENAL_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=1;}
