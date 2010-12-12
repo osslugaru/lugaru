@@ -137,16 +137,6 @@ const int stream_desertambient = 7;
 const int stream_firesound = 8;
 const int stream_wind = 9;
 
-//const int music1desert = 0;
-//const int music1grass = 1;
-//const int music1snow = 2;
-//const int music2 = 3;
-//const int music3 = 4;
-//const int music4 = 5;
-//const int menumusic = 6;
-//const int desertambient = 7;
-//const int firesound = 8;
-//const int wind = 9;
 const int footstepsound = 10;
 const int footstepsound2 = 11;
 const int footstepsound3 = 12;
