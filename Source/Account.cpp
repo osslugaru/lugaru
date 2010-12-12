@@ -169,7 +169,7 @@ void Account::saveFile(string filename, Account* accountactive) {
 	int numaccounts;
 	int j;
 	
-	tfile=fopen(ConvertFileName(filename.c_str()), "wb" );
+	tfile=fopen(ConvertFileName(filename.c_str(), "wb"), "wb" );
 	if(tfile)
 	{
 		printf("writing %d accounts :\n",getNbAccounts());
