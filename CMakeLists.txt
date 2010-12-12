@@ -108,8 +108,6 @@ set(LUGARU_H
 	${SRCDIR}/openal_wrapper.h
 	${SRCDIR}/gamegl.h
 	${SRCDIR}/glstubs.h
-	${SRCDIR}/mmgr.h
-	${SRCDIR}/nommgr.h
 	${SRCDIR}/pack_private.h
 	${SRCDIR}/private.h
 	${SRCDIR}/unpack_private.h
