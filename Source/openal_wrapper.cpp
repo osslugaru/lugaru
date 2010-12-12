@@ -112,7 +112,6 @@ typedef struct OPENAL_SAMPLE
     ALuint bid;  // buffer id.
     int mode;
     int is2d;
-    float min_distance;
 } OPENAL_SAMPLE;
 
 typedef struct OPENAL_STREAM
@@ -128,17 +127,6 @@ static OPENAL_Channels *channels = NULL;
 static bool initialized = false;
 static float listener_position[3];
 
-static inline bool source_too_close(const int channel)
-{
-    const OPENAL_Channels *chan = &channels[channel];
-    const float *pos = chan->position;
-    const float distance = sqrtf(powf((pos[0] - listener_position[0]), 2.0f) +
-                                 powf((pos[1] - listener_position[1]), 2.0f) +
-                                 powf((pos[2] - listener_position[2]), 2.0f));
-    return (distance <= chan->sample->min_distance);
-}
-
-
 static void set_channel_position(const int channel, const float x,
                                  const float y, const float z)
 {
@@ -153,7 +141,7 @@ static void set_channel_position(const int channel, const float x,
         return;
 
     const ALuint sid = chan->sid;
-    const bool no_attenuate = ((sptr->is2d) || (source_too_close(channel)));
+    const bool no_attenuate = sptr->is2d;
 
     if (no_attenuate)
     {
@@ -525,7 +513,6 @@ AL_API signed char OPENAL_Sample_SetMinMaxDistance(OPENAL_SAMPLE *sptr, float mi
 {
     if (!initialized) return false;
     if (sptr == NULL) return false;
-    sptr->min_distance = mindist;
     // we ignore maxdist. It's not really important to this game, and the
     //  FMOD docs suggest that it's worthless anyhow.
 
