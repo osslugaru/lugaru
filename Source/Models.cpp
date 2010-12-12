@@ -21,7 +21,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Game.h"
 #include "Models.h"
-//#include "altivec.h"
 
 extern float multiplier;
 extern float viewdistance;
@@ -33,25 +32,6 @@ extern int loadscreencolor;
 
 extern Game * pgame;
 extern bool visibleloading;
-//Functions
-void *allocate_aligned(size_t pointer_size, size_t byte_alignment)
-{
-	uintptr_t pointer = (uintptr_t)malloc(pointer_size + byte_alignment + 1);
-	uintptr_t aligned_pointer = (pointer + byte_alignment + 1);
-	aligned_pointer -= (aligned_pointer % byte_alignment);
-	*(uint8_t *)(aligned_pointer - 1) = (aligned_pointer - pointer);
-	return (void *)aligned_pointer;
-}
-
-void free_aligned(void *aligned_pointer)
-{
-	free((uint8_t *)(aligned_pointer) - *((uint8_t *)(aligned_pointer) - 1));
-}
-
-void dealloc(void* param){
-	free(param);
-	param=0;
-}
 
 int Model::LineCheck(XYZ *p1,XYZ *p2, XYZ *p, XYZ *move, float *rotate)
 {
@@ -443,13 +423,6 @@ bool Model::loadnotex(const char *filename )
 	funpackf(tfile, "Bs Bs", &vertexNum, &TriangleNum);
 
 	// read the model data
-	/*if(owner)dealloc(owner);
-	if(possible)dealloc(possible);
-	if(vertex)dealloc(vertex);
-	if(normals)dealloc(normals);
-	if(facenormals)dealloc(facenormals);
-	if(Triangles)dealloc(Triangles);
-	if(vArray)dealloc(vArray);*/
 	deallocate();
 
 	numpossible=0;
@@ -528,13 +501,6 @@ bool Model::load(const char *filename,bool texture )
 	funpackf(tfile, "Bs Bs", &vertexNum, &TriangleNum);
 
 	// read the model data
-	/*if(owner)dealloc(owner);
-	if(possible)dealloc(possible);
-	if(vertex)dealloc(vertex);
-	if(normals)dealloc(normals);
-	if(facenormals)dealloc(facenormals);
-	if(Triangles)dealloc(Triangles);
-	if(vArray)dealloc(vArray);*/
 	deallocate();
 
 	numpossible=0;
@@ -616,13 +582,6 @@ bool Model::loaddecal(const char *filename,bool texture )
 
 	// read the model data
 
-	/*if(owner)dealloc(owner);
-	if(possible)dealloc(possible);
-	if(vertex)dealloc(vertex);
-	if(normals)dealloc(normals);
-	if(facenormals)dealloc(facenormals);
-	if(Triangles)dealloc(Triangles);
-	if(vArray)dealloc(vArray);*/
 	deallocate();
 
 	numpossible=0;
@@ -722,13 +681,6 @@ bool Model::loadraw(char *filename )
 	funpackf(tfile, "Bs Bs", &vertexNum, &TriangleNum);
 
 	// read the model data
-	/*if(owner)dealloc(owner);
-	if(possible)dealloc(possible);
-	if(vertex)dealloc(vertex);
-	if(normals)dealloc(normals);
-	if(facenormals)dealloc(facenormals);
-	if(Triangles)dealloc(Triangles);
-	if(vArray)dealloc(vArray);*/
 	deallocate();
 
 	numpossible=0;
@@ -1447,25 +1399,25 @@ void Model::deallocate()
 {
 	int i = 0, j = 0;
 
-	if(owner)dealloc(owner);
+	if(owner)free(owner);
 	owner = 0;
 
-	if(possible)dealloc(possible);
+	if(possible)free(possible);
 	possible = 0;
 
-	if(vertex)dealloc(vertex);
+	if(vertex)free(vertex);
 	vertex = 0;
 
-	if(normals)dealloc(normals);
+	if(normals)free(normals);
 	normals = 0;
 
-	if(facenormals)dealloc(facenormals);
+	if(facenormals)free(facenormals);
 	facenormals = 0;
 
-	if(Triangles)dealloc(Triangles);
+	if(Triangles)free(Triangles);
 	Triangles = 0;
 
-	if(vArray)dealloc(vArray);
+	if(vArray)free(vArray);
 	vArray = 0;
 
 
@@ -1476,11 +1428,11 @@ void Model::deallocate()
 		{
 			for(j=0;j<3;j++)
 			{
-				dealloc(decaltexcoords[i][j]);
+				free(decaltexcoords[i][j]);
 			}
-			dealloc(decaltexcoords[i]);
+			free(decaltexcoords[i]);
 		}
-		dealloc(decaltexcoords);
+		free(decaltexcoords);
 	}
 	decaltexcoords = 0;
 
@@ -1489,26 +1441,26 @@ void Model::deallocate()
 	{
 		for(i=0;i<max_model_decals;i++)
 		{
-			dealloc(decalvertex[i]);
+			free(decalvertex[i]);
 		}
-		dealloc(decalvertex);
+		free(decalvertex);
 	}
 	decalvertex = 0;
 
 
-	dealloc(decaltype);
+	free(decaltype);
 	decaltype = 0;
 
-	dealloc(decalopacity);
+	free(decalopacity);
 	decalopacity = 0;
 
-	dealloc(decalrotation);
+	free(decalrotation);
 	decalrotation = 0;
 
-	dealloc(decalalivetime);
+	free(decalalivetime);
 	decalalivetime = 0;
 
-	dealloc(decalposition);
+	free(decalposition);
 	decalposition = 0;
 
 };
