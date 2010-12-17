@@ -771,61 +771,6 @@ int main(int argc, char **argv)
 
 // --------------------------------------------------------------------------
 
-extern int channels[100];
-extern OPENAL_STREAM * strm[20];
-
-extern "C" void PlaySoundEx(int chan, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused)
-{
-	const OPENAL_SAMPLE * currSample = OPENAL_GetCurrentSample(channels[chan]);
-	if (currSample && currSample == samp[chan])
-	{
-		if (OPENAL_GetPaused(channels[chan]))
-		{
-			OPENAL_StopSound(channels[chan]);
-			channels[chan] = OPENAL_FREE;
-		}
-		else if (OPENAL_IsPlaying(channels[chan]))
-		{
-			int loop_mode = OPENAL_GetLoopMode(channels[chan]);
-			if (loop_mode & OPENAL_LOOP_OFF)
-			{
-				channels[chan] = OPENAL_FREE;
-			}
-		}
-	}
-	else
-	{
-		channels[chan] = OPENAL_FREE;
-	}
-
-	channels[chan] = OPENAL_PlaySoundEx(channels[chan], sptr, dsp, startpaused);
-	if (channels[chan] < 0)
-	{
-		channels[chan] = OPENAL_PlaySoundEx(OPENAL_FREE, sptr, dsp, startpaused);
-	}
-}
-
-extern "C" void PlayStreamEx(int chan, OPENAL_STREAM *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused)
-{
-	const OPENAL_SAMPLE * currSample = OPENAL_GetCurrentSample(channels[chan]);
-	if (currSample && currSample == OPENAL_Stream_GetSample(sptr))
-	{
-			OPENAL_StopSound(channels[chan]);
-			OPENAL_Stream_Stop(sptr);
-	}
-	else
-	{
-		OPENAL_Stream_Stop(sptr);
-		channels[chan] = OPENAL_FREE;
-	}
-
-	channels[chan] = OPENAL_Stream_PlayEx(channels[chan], sptr, dsp, startpaused);
-	if (channels[chan] < 0)
-	{
-		channels[chan] = OPENAL_Stream_PlayEx(OPENAL_FREE, sptr, dsp, startpaused);
-	}
-}
-
 
 bool LoadImage(const char * fname, TGAImageRec & tex)
 {
