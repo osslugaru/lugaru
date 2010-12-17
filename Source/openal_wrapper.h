@@ -81,7 +81,6 @@ AL_API int OPENAL_PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *
 AL_API OPENAL_SAMPLE *OPENAL_Sample_Load(int index, const char *name_or_data, unsigned int mode, int offset, int length);
 AL_API void OPENAL_Sample_Free(OPENAL_SAMPLE *sptr);
 AL_API signed char OPENAL_Sample_SetMode(OPENAL_SAMPLE *sptr, unsigned int mode);
-AL_API signed char OPENAL_Sample_SetMinMaxDistance(OPENAL_SAMPLE *sptr, float mindist, float maxdist);
 AL_API signed char OPENAL_SetFrequency(int channel, int freq);
 AL_API signed char OPENAL_SetVolume(int channel, int vol);
 AL_API signed char OPENAL_SetPaused(int channel, signed char paused);

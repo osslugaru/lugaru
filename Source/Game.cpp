@@ -220,12 +220,10 @@ typedef struct {
 void Game::fireSound(int sound) {
 	float gLoc[3]={0,0,0};
 	float vel[3]={0,0,0};
-	OPENAL_Sample_SetMinMaxDistance(samp[sound], 9999.0f, 99999.0f);
 	PlaySoundEx( sound, samp[sound], NULL, true);
 	OPENAL_3D_SetAttributes(channels[sound], gLoc, vel);
 	OPENAL_SetVolume(channels[sound], 256);
 	OPENAL_SetPaused(channels[sound], false);
-	OPENAL_Sample_SetMinMaxDistance(samp[sound], 8.0f, 2000.0f);
 }
 
 void Game::inputText(char* str, int* charselected, int* nb_chars) {

@@ -1351,12 +1351,10 @@ void Game::LoadStuff()
 	if(targetlevel!=7){
 		float gLoc[3]={0,0,0};
 		float vel[3]={0,0,0};
-		OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
 		PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
 		OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
 		OPENAL_SetVolume(channels[fireendsound], 256);
 		OPENAL_SetPaused(channels[fireendsound], false);
-		OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 	}
 
 	stillloading=0;

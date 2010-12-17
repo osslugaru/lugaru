@@ -509,26 +509,6 @@ AL_API signed char OPENAL_Sample_SetMode(OPENAL_SAMPLE *sptr, unsigned int mode)
     return true;
 }
 
-AL_API signed char OPENAL_Sample_SetMinMaxDistance(OPENAL_SAMPLE *sptr, float mindist, float maxdist)
-{
-    if (!initialized) return false;
-    if (sptr == NULL) return false;
-    // we ignore maxdist. It's not really important to this game, and the
-    //  FMOD docs suggest that it's worthless anyhow.
-
-    // recalc sources to see if we need to adjust attenuation.
-    for (int i = 0; i < num_channels; i++)
-    {
-        if (channels[i].sample == sptr)
-        {
-            const float *p = channels[i].position;
-            set_channel_position(i, p[0], p[1], p[2]);
-        }
-    }
-
-    return 0;
-}
-
 AL_API signed char OPENAL_SetFrequency(int channel, int freq)
 {
     if (!initialized) return false;
