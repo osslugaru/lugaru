@@ -265,14 +265,14 @@ AL_API void OPENAL_Close()
     initialized = false;
 }
 
-AL_API OPENAL_SAMPLE *OPENAL_GetCurrentSample(int channel)
+static OPENAL_SAMPLE *OPENAL_GetCurrentSample(int channel)
 {
     if (!initialized) return NULL;
     if ((channel < 0) || (channel >= num_channels)) return NULL;
     return impl_channels[channel].sample;
 }
 
-AL_API signed char OPENAL_GetPaused(int channel)
+static signed char OPENAL_GetPaused(int channel)
 {
     if (!initialized) return false;
     if ((channel < 0) || (channel >= num_channels)) return false;
@@ -284,7 +284,7 @@ AL_API signed char OPENAL_GetPaused(int channel)
     return((state == AL_PAUSED) ? true : false);
 }
 
-AL_API unsigned int OPENAL_GetLoopMode(int channel)
+static unsigned int OPENAL_GetLoopMode(int channel)
 {
     if (!initialized) return 0;
     if ((channel < 0) || (channel >= num_channels)) return 0;
@@ -304,7 +304,7 @@ AL_API signed char OPENAL_IsPlaying(int channel)
     return((state == AL_PLAYING) ? true : false);
 }
 
-AL_API int OPENAL_PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused)
+static int OPENAL_PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused)
 {
     if (!initialized) return -1;
     if (sptr == NULL) return -1;
@@ -487,7 +487,7 @@ AL_API void OPENAL_Sample_Free(OPENAL_SAMPLE *sptr)
     }
 }
 
-AL_API signed char OPENAL_Sample_SetMode(OPENAL_SAMPLE *sptr, unsigned int mode)
+static signed char OPENAL_Sample_SetMode(OPENAL_SAMPLE *sptr, unsigned int mode)
 {
     if (!initialized) return false;
     if ((mode != OPENAL_LOOP_NORMAL) && (mode != OPENAL_LOOP_OFF)) return false;
@@ -592,18 +592,18 @@ AL_API void OPENAL_Stream_Close(OPENAL_STREAM *stream)
     OPENAL_Sample_Free((OPENAL_SAMPLE *) stream);
 }
 
-AL_API OPENAL_SAMPLE *OPENAL_Stream_GetSample(OPENAL_STREAM *stream)
+static OPENAL_SAMPLE *OPENAL_Stream_GetSample(OPENAL_STREAM *stream)
 {
     if (!initialized) return NULL;
     return (OPENAL_SAMPLE *) stream;
 }
 
-AL_API int OPENAL_Stream_PlayEx(int channel, OPENAL_STREAM *stream, OPENAL_DSPUNIT *dsp, signed char startpaused)
+static int OPENAL_Stream_PlayEx(int channel, OPENAL_STREAM *stream, OPENAL_DSPUNIT *dsp, signed char startpaused)
 {
     return OPENAL_PlaySoundEx(channel, (OPENAL_SAMPLE *) stream, dsp, startpaused);
 }
 
-AL_API signed char OPENAL_Stream_Stop(OPENAL_STREAM *stream)
+static signed char OPENAL_Stream_Stop(OPENAL_STREAM *stream)
 {
     if (!initialized) return false;
     for (int i = 0; i < num_channels; i++)
