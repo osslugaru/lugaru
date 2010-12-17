@@ -903,7 +903,6 @@ void Game::InitGame()
 	OPENAL_SetSFXMasterVolume((int)(volume*255));
 
 	strm[stream_music3] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:music3.mp3"), OPENAL_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=0;}
-//	OPENAL_Sample_SetMinMaxDistance(strm[stream_music3], 4.0f, 1000.0f);
 	OPENAL_Stream_SetMode(strm[stream_music3], OPENAL_LOOP_NORMAL);
 
 	if(musictoggle){
@@ -917,42 +916,35 @@ void Game::InitGame()
 
 	if(ambientsound){
 		strm[stream_wind] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:wind.mp3"), OPENAL_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-//		OPENAL_Sample_SetMinMaxDistance(strm[stream_wind], 4.0f, 1000.0f);
 		OPENAL_Stream_SetMode(strm[stream_wind], OPENAL_LOOP_NORMAL);
 
 		FadeLoadingScreen(30);
 
 		strm[stream_desertambient] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:desertambient.mp3"), OPENAL_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-//		OPENAL_Sample_SetMinMaxDistance(strm[stream_desertambient], 4.0f, 1000.0f);
 		OPENAL_Stream_SetMode(strm[stream_desertambient], OPENAL_LOOP_NORMAL);
 	}
 
 	FadeLoadingScreen(40);
 
 	strm[stream_firesound] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:fire.ogg"), OPENAL_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-//	OPENAL_Sample_SetMinMaxDistance(strm[stream_firesound], 8.0f, 2000.0f);
 	OPENAL_Stream_SetMode(strm[stream_firesound], OPENAL_LOOP_NORMAL);
 
 	FadeLoadingScreen(50);
 
 	//if(musictoggle){
 	strm[stream_music1grass] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:music1grass.mp3"), OPENAL_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=1;}
-//	OPENAL_Sample_SetMinMaxDistance(strm[stream_music1grass], 4.0f, 1000.0f);
 	OPENAL_Stream_SetMode(strm[stream_music1grass], OPENAL_LOOP_NORMAL);
 
 	strm[stream_music1snow] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:music1snow.mp3"), OPENAL_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=2;}
-//	OPENAL_Sample_SetMinMaxDistance(strm[stream_music1snow], 4.0f, 1000.0f);
 	OPENAL_Stream_SetMode(strm[stream_music1snow], OPENAL_LOOP_NORMAL);
 
 	FadeLoadingScreen(60);
 
 	strm[stream_music1desert] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:music1desert.mp3"), OPENAL_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=3;}
-//	OPENAL_Sample_SetMinMaxDistance(strm[stream_music1desert], 4.0f, 1000.0f);
 	OPENAL_Stream_SetMode(strm[stream_music1desert], OPENAL_LOOP_NORMAL);
 
 	FadeLoadingScreen(80);
 	strm[stream_music2] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:music2.ogg"), OPENAL_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=4;}
-//	OPENAL_Sample_SetMinMaxDistance(strm[stream_music2], 4.0f, 1000.0f);
 	OPENAL_Stream_SetMode(strm[stream_music2], OPENAL_LOOP_NORMAL);
 
 	//}
