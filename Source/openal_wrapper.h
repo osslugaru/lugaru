@@ -70,7 +70,6 @@ extern "C" {
 
 AL_API void OPENAL_3D_Listener_SetAttributes(const float *pos, const float *vel, float fx, float fy, float fz, float tx, float ty, float tz);
 AL_API signed char OPENAL_3D_SetAttributes(int channel, const float *pos, const float *vel);
-AL_API void OPENAL_3D_SetDopplerFactor(float scale);
 AL_API signed char OPENAL_Init(int mixrate, int maxsoftwarechannels, unsigned int flags);
 AL_API void OPENAL_Close();
 AL_API OPENAL_SAMPLE *OPENAL_GetCurrentSample(int channel);

@@ -170,8 +170,6 @@ void Game::LoadSounds()
 
 	LOG(std::string("Loading sounds..."));
 
-	OPENAL_3D_SetDopplerFactor(0);
-
 	OPENAL_SetSFXMasterVolume((int)(volume*255));
 
 	if(visibleloading){LoadingScreen(); loadscreencolor=5;}

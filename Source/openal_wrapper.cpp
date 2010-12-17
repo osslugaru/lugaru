@@ -185,12 +185,6 @@ AL_API signed char OPENAL_3D_SetAttributes(int channel, const float *pos, const 
     return true;
 }
 
-AL_API void OPENAL_3D_SetDopplerFactor(float scale)
-{
-    if (!initialized) return;
-    // unimplemented...looks like init routines just call this with scale == 0.0f anyhow.
-}
-
 AL_API signed char OPENAL_Init(int mixrate, int maxsoftwarechannels, unsigned int flags)
 {
     if (initialized) return false;
