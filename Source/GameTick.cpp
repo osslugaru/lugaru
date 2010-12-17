@@ -1398,14 +1398,10 @@ void	Game::Setenvironment(int which)
 		LoadTexture(":Data:Textures:bouldersnow.jpg",&objects.rocktextureptr,1,0);
 		LoadTexture(":Data:Textures:snowbox.jpg",&objects.boxtextureptr,1,0);
 
-		OPENAL_Sample_Free(samp[footstepsound]);
-		OPENAL_Sample_Free(samp[footstepsound2]);
-		OPENAL_Sample_Free(samp[footstepsound3]);
-		OPENAL_Sample_Free(samp[footstepsound4]);
-		samp[footstepsound] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepsnow1.ogg"), OPENAL_HW3D, 0, 0);
-		samp[footstepsound2] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepsnow2.ogg"), OPENAL_HW3D, 0, 0);
-		samp[footstepsound3] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepstone1.ogg"), OPENAL_HW3D, 0, 0);
-		samp[footstepsound4] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepstone2.ogg"), OPENAL_HW3D, 0, 0);
+		footstepsound = footstepsn1;
+		footstepsound2 = footstepsn2;
+		footstepsound3 = footstepst1;
+		footstepsound4 = footstepst2;
 
 		LoadTexture(":Data:Textures:snow.jpg",&terraintexture,1,0);
 
@@ -1448,14 +1444,10 @@ void	Game::Setenvironment(int which)
 			OPENAL_SetVolume(channels[stream_desertambient], 256);
 		}
 
-		OPENAL_Sample_Free(samp[footstepsound]);
-		OPENAL_Sample_Free(samp[footstepsound2]);
-		OPENAL_Sample_Free(samp[footstepsound3]);
-		OPENAL_Sample_Free(samp[footstepsound4]);
-		samp[footstepsound] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepsnow1.ogg"), OPENAL_HW3D, 0, 0);
-		samp[footstepsound2] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepsnow2.ogg"), OPENAL_HW3D, 0, 0);
-		samp[footstepsound3] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepsnow1.ogg"), OPENAL_HW3D, 0, 0);
-		samp[footstepsound4] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepsnow2.ogg"), OPENAL_HW3D, 0, 0);
+		footstepsound = footstepsn1;
+		footstepsound2 = footstepsn2;
+		footstepsound3 = footstepsn1;
+		footstepsound4 = footstepsn2;
 
 		LoadTexture(":Data:Textures:sand.jpg",&terraintexture,1,0);
 
@@ -1495,14 +1487,10 @@ void	Game::Setenvironment(int which)
 			OPENAL_SetVolume(channels[stream_wind], 100);
 		}
 
-		OPENAL_Sample_Free(samp[footstepsound]);
-		OPENAL_Sample_Free(samp[footstepsound2]);
-		OPENAL_Sample_Free(samp[footstepsound3]);
-		OPENAL_Sample_Free(samp[footstepsound4]);
-		samp[footstepsound] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepgrass1.ogg"), OPENAL_HW3D, 0, 0);
-		samp[footstepsound2] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepgrass2.ogg"), OPENAL_HW3D, 0, 0);
-		samp[footstepsound3] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepstone1.ogg"), OPENAL_HW3D, 0, 0);
-		samp[footstepsound4] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:footstepstone2.ogg"), OPENAL_HW3D, 0, 0);
+		footstepsound = footstepgr1;
+		footstepsound2 = footstepgr2;
+		footstepsound3 = footstepst1;
+		footstepsound4 = footstepst2;
 
 		LoadTexture(":Data:Textures:grassdirt.jpg",&terraintexture,1,0);
 

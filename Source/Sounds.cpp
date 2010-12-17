@@ -24,6 +24,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 struct OPENAL_SAMPLE *samp[sounds_count];
 
+int footstepsound, footstepsound2, footstepsound3, footstepsound4;
+
 static const char *sound_data[sounds_count] = {
 #define DECLARE_SOUND(id, filename) filename,
 #include "Sounds.def"
@@ -58,6 +60,10 @@ void loadAllSounds()
 				   snd_mode(i),
 				   0, 0);
     }
+  footstepsound = footstepsn1;
+  footstepsound2 = footstepsn2;
+  footstepsound3 = footstepst1;
+  footstepsound4 = footstepst2;
   // Huh?
   // OPENAL_Sample_SetMode(samp[whooshsound], OPENAL_LOOP_NORMAL);
 }

@@ -19,10 +19,12 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-DECLARE_SOUND(footstepsound, "footstepsnow1.ogg")
-DECLARE_SOUND(footstepsound2, "footstepsnow2.ogg")
-DECLARE_SOUND(footstepsound3, "footstepstone1.ogg")
-DECLARE_SOUND(footstepsound4, "footstepstone2.ogg")
+DECLARE_SOUND(footstepsn1, "footstepsnow1.ogg")
+DECLARE_SOUND(footstepsn2, "footstepsnow2.ogg")
+DECLARE_SOUND(footstepst1, "footstepstone1.ogg")
+DECLARE_SOUND(footstepst2, "footstepstone2.ogg")
+DECLARE_SOUND(footstepgr1, "footstepgrass1.ogg")
+DECLARE_SOUND(footstepgr2, "footstepgrass2.ogg")
 DECLARE_SOUND(landsound, "land.ogg")
 DECLARE_SOUND(jumpsound, "jump.ogg")
 DECLARE_SOUND(hawksound, "hawk.ogg")

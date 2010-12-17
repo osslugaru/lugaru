@@ -32,4 +32,6 @@ sounds_count
 extern struct OPENAL_SAMPLE *samp[sounds_count];
 
 extern void loadAllSounds();
+
+extern int footstepsound, footstepsound2, footstepsound3, footstepsound4;
 #endif
