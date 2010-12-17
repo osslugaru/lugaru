@@ -115,14 +115,14 @@ typedef struct OPENAL_SAMPLE
 } OPENAL_SAMPLE;
 
 static size_t num_channels = 0;
-static OPENAL_Channels *channels = NULL;
+static OPENAL_Channels *impl_channels = NULL;
 static bool initialized = false;
 static float listener_position[3];
 
 static void set_channel_position(const int channel, const float x,
                                  const float y, const float z)
 {
-    OPENAL_Channels *chan = &channels[channel];
+    OPENAL_Channels *chan = &impl_channels[channel];
 
     chan->position[0] = x;
     chan->position[1] = y;
@@ -167,7 +167,7 @@ AL_API void OPENAL_3D_Listener_SetAttributes(const float *pos, const float *vel,
     // adjust existing positions...
     for (int i = 0; i < num_channels; i++)
     {
-        const float *p = channels[i].position;
+        const float *p = impl_channels[i].position;
         set_channel_position(i, p[0], p[1], p[2]);
     }
 }
@@ -227,10 +227,10 @@ AL_API signed char OPENAL_Init(int mixrate, int maxsoftwarechannels, unsigned in
     }
 
     num_channels = maxsoftwarechannels;
-    channels = new OPENAL_Channels[maxsoftwarechannels];
-    memset(channels, '\0', sizeof (OPENAL_Channels) * num_channels);
+    impl_channels = new OPENAL_Channels[maxsoftwarechannels];
+    memset(impl_channels, '\0', sizeof (OPENAL_Channels) * num_channels);
     for (int i = 0; i < num_channels; i++)
-        alGenSources(1, &channels[i].sid);  // !!! FIXME: verify this didn't fail!
+        alGenSources(1, &impl_channels[i].sid);  // !!! FIXME: verify this didn't fail!
 
     initialized = true;
     return true;
@@ -245,9 +245,9 @@ AL_API void OPENAL_Close()
     {
         for (int i = 0; i < num_channels; i++)
         {
-            alSourceStop(channels[i].sid);
-            alSourcei(channels[i].sid, AL_BUFFER, 0);
-            alDeleteSources(1, &channels[i].sid);
+            alSourceStop(impl_channels[i].sid);
+            alSourcei(impl_channels[i].sid, AL_BUFFER, 0);
+            alDeleteSources(1, &impl_channels[i].sid);
         }
         ALCdevice *dev = alcGetContextsDevice(ctx);
         alcMakeContextCurrent(NULL);
@@ -257,8 +257,8 @@ AL_API void OPENAL_Close()
     }
 
     num_channels = 0;
-    delete[] channels;
-    channels = NULL;
+    delete[] impl_channels;
+    impl_channels = NULL;
 
     unload_alsyms();
     initialized = false;
@@ -268,18 +268,18 @@ AL_API OPENAL_SAMPLE *OPENAL_GetCurrentSample(int channel)
 {
     if (!initialized) return NULL;
     if ((channel < 0) || (channel >= num_channels)) return NULL;
-    return channels[channel].sample;
+    return impl_channels[channel].sample;
 }
 
 AL_API signed char OPENAL_GetPaused(int channel)
 {
     if (!initialized) return false;
     if ((channel < 0) || (channel >= num_channels)) return false;
-    if (channels[channel].startpaused)
+    if (impl_channels[channel].startpaused)
         return(true);
 
     ALint state = 0;
-    alGetSourceiv(channels[channel].sid, AL_SOURCE_STATE, &state);
+    alGetSourceiv(impl_channels[channel].sid, AL_SOURCE_STATE, &state);
     return((state == AL_PAUSED) ? true : false);
 }
 
@@ -288,7 +288,7 @@ AL_API unsigned int OPENAL_GetLoopMode(int channel)
     if (!initialized) return 0;
     if ((channel < 0) || (channel >= num_channels)) return 0;
     ALint loop = 0;
-    alGetSourceiv(channels[channel].sid, AL_LOOPING, &loop);
+    alGetSourceiv(impl_channels[channel].sid, AL_LOOPING, &loop);
     if (loop)
         return(OPENAL_LOOP_NORMAL);
     return OPENAL_LOOP_OFF;
@@ -299,7 +299,7 @@ AL_API signed char OPENAL_IsPlaying(int channel)
     if (!initialized) return false;
     if ((channel < 0) || (channel >= num_channels)) return false;
     ALint state = 0;
-    alGetSourceiv(channels[channel].sid, AL_SOURCE_STATE, &state);
+    alGetSourceiv(impl_channels[channel].sid, AL_SOURCE_STATE, &state);
     return((state == AL_PLAYING) ? true : false);
 }
 
@@ -313,7 +313,7 @@ AL_API int OPENAL_PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *
         for (int i = 0; i < num_channels; i++)
         {
             ALint state = 0;
-            alGetSourceiv(channels[i].sid, AL_SOURCE_STATE, &state);
+            alGetSourceiv(impl_channels[i].sid, AL_SOURCE_STATE, &state);
             if ((state != AL_PLAYING) && (state != AL_PAUSED))
             {
                 channel = i;
@@ -323,15 +323,15 @@ AL_API int OPENAL_PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *
     }
 
     if ((channel < 0) || (channel >= num_channels)) return -1;
-    alSourceStop(channels[channel].sid);
-    channels[channel].sample = sptr;
-    alSourcei(channels[channel].sid, AL_BUFFER, sptr->bid);
-    alSourcei(channels[channel].sid, AL_LOOPING, (sptr->mode == OPENAL_LOOP_OFF) ? AL_FALSE : AL_TRUE);
+    alSourceStop(impl_channels[channel].sid);
+    impl_channels[channel].sample = sptr;
+    alSourcei(impl_channels[channel].sid, AL_BUFFER, sptr->bid);
+    alSourcei(impl_channels[channel].sid, AL_LOOPING, (sptr->mode == OPENAL_LOOP_OFF) ? AL_FALSE : AL_TRUE);
     set_channel_position(channel, 0.0f, 0.0f, 0.0f);
 
-    channels[channel].startpaused = ((startpaused) ? true : false);
+    impl_channels[channel].startpaused = ((startpaused) ? true : false);
     if (!startpaused)
-        alSourcePlay(channels[channel].sid);
+        alSourcePlay(impl_channels[channel].sid);
     return channel;
 }
 
@@ -473,11 +473,11 @@ AL_API void OPENAL_Sample_Free(OPENAL_SAMPLE *sptr)
     {
         for (int i = 0; i < num_channels; i++)
         {
-            if (channels[i].sample == sptr)
+            if (impl_channels[i].sample == sptr)
             {
-                alSourceStop(channels[i].sid);
-                alSourcei(channels[i].sid, AL_BUFFER, 0);
-                channels[i].sample = NULL;
+                alSourceStop(impl_channels[i].sid);
+                alSourcei(impl_channels[i].sid, AL_BUFFER, 0);
+                impl_channels[i].sample = NULL;
             }
         }
         alDeleteBuffers(1, &sptr->bid);
@@ -507,9 +507,9 @@ AL_API signed char OPENAL_SetFrequency(int channel, int freq)
 
     if ((channel < 0) || (channel >= num_channels)) return false;
     if (freq == 8012)  // hack
-        alSourcef(channels[channel].sid, AL_PITCH, 8012.0f / 44100.0f);
+        alSourcef(impl_channels[channel].sid, AL_PITCH, 8012.0f / 44100.0f);
     else
-        alSourcef(channels[channel].sid, AL_PITCH, 1.0f);
+        alSourcef(impl_channels[channel].sid, AL_PITCH, 1.0f);
     return true;
 }
 
@@ -529,7 +529,7 @@ AL_API signed char OPENAL_SetVolume(int channel, int vol)
     if (vol < 0) vol = 0;
     else if (vol > 255) vol = 255;
     ALfloat gain = ((ALfloat) vol) / 255.0f;
-    alSourcef(channels[channel].sid, AL_GAIN, gain);
+    alSourcef(impl_channels[channel].sid, AL_GAIN, gain);
     return true;
 }
 
@@ -547,17 +547,17 @@ AL_API signed char OPENAL_SetPaused(int channel, signed char paused)
     if ((channel < 0) || (channel >= num_channels)) return false;
 
     ALint state = 0;
-    if (channels[channel].startpaused)
+    if (impl_channels[channel].startpaused)
         state = AL_PAUSED;
     else
-        alGetSourceiv(channels[channel].sid, AL_SOURCE_STATE, &state);
+        alGetSourceiv(impl_channels[channel].sid, AL_SOURCE_STATE, &state);
 
     if ((paused) && (state == AL_PLAYING))
-        alSourcePause(channels[channel].sid);
+        alSourcePause(impl_channels[channel].sid);
     else if ((!paused) && (state == AL_PAUSED))
     {
-        alSourcePlay(channels[channel].sid);
-        channels[channel].startpaused = false;
+        alSourcePlay(impl_channels[channel].sid);
+        impl_channels[channel].startpaused = false;
     }
     return true;
 }
@@ -581,8 +581,8 @@ AL_API signed char OPENAL_StopSound(int channel)
     }
 
     if ((channel < 0) || (channel >= num_channels)) return false;
-    alSourceStop(channels[channel].sid);
-    channels[channel].startpaused = false;
+    alSourceStop(impl_channels[channel].sid);
+    impl_channels[channel].startpaused = false;
     return true;
 }
 
@@ -607,10 +607,10 @@ AL_API signed char OPENAL_Stream_Stop(OPENAL_STREAM *stream)
     if (!initialized) return false;
     for (int i = 0; i < num_channels; i++)
     {
-        if (channels[i].sample == (OPENAL_SAMPLE *) stream)
+        if (impl_channels[i].sample == (OPENAL_SAMPLE *) stream)
         {
-            alSourceStop(channels[i].sid);
-            channels[i].startpaused = false;
+            alSourceStop(impl_channels[i].sid);
+            impl_channels[i].startpaused = false;
         }
     }
     return true;
