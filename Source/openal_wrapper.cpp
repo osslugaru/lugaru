@@ -114,14 +114,6 @@ typedef struct OPENAL_SAMPLE
     int is2d;
 } OPENAL_SAMPLE;
 
-typedef struct OPENAL_STREAM
-{
-    char *name;
-    ALuint bid;  // buffer id.
-    int mode;
-    int is2d;
-} OPENAL_STREAM;
-
 static size_t num_channels = 0;
 static OPENAL_Channels *channels = NULL;
 static bool initialized = false;
@@ -598,11 +590,6 @@ AL_API signed char OPENAL_StopSound(int channel)
     alSourceStop(channels[channel].sid);
     channels[channel].startpaused = false;
     return true;
-}
-
-AL_API OPENAL_STREAM *OPENAL_Stream_Open(const char *name_or_data, unsigned int mode, int offset, int length)
-{
-    return (OPENAL_STREAM *) OPENAL_Sample_Load(OPENAL_FREE, name_or_data, mode, offset, length);
 }
 
 AL_API void OPENAL_Stream_Close(OPENAL_STREAM *stream)

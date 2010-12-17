@@ -44,7 +44,7 @@
 
 
 typedef struct OPENAL_SAMPLE    OPENAL_SAMPLE;
-typedef struct OPENAL_STREAM    OPENAL_STREAM;
+typedef OPENAL_SAMPLE    OPENAL_STREAM;
 typedef struct OPENAL_DSPUNIT   OPENAL_DSPUNIT;
 
 enum OPENAL_OUTPUTTYPES
@@ -86,7 +86,6 @@ AL_API signed char OPENAL_SetVolume(int channel, int vol);
 AL_API signed char OPENAL_SetPaused(int channel, signed char paused);
 AL_API void OPENAL_SetSFXMasterVolume(int volume);
 AL_API signed char OPENAL_StopSound(int channel);
-AL_API OPENAL_STREAM *OPENAL_Stream_Open(const char *name_or_data, unsigned int mode, int offset, int length);
 AL_API void OPENAL_Stream_Close(OPENAL_STREAM *stream);
 AL_API OPENAL_SAMPLE *OPENAL_Stream_GetSample(OPENAL_STREAM *stream);
 AL_API int OPENAL_Stream_PlayEx(int channel, OPENAL_STREAM *stream, OPENAL_DSPUNIT *dsp, signed char startpaused);
