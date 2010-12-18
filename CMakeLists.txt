@@ -62,7 +62,6 @@ set(LUGARU_SRCS
 	${SRCDIR}/Models.cpp
 	${SRCDIR}/Objects.cpp
 	${SRCDIR}/pack.c
-	${SRCDIR}/pack_private.c
 	${SRCDIR}/Person.cpp
 	${SRCDIR}/private.c
 	${SRCDIR}/Quaternions.cpp
@@ -108,7 +107,6 @@ set(LUGARU_H
 	${SRCDIR}/openal_wrapper.h
 	${SRCDIR}/gamegl.h
 	${SRCDIR}/glstubs.h
-	${SRCDIR}/pack_private.h
 	${SRCDIR}/private.h
 	${SRCDIR}/Settings.h
 	${SRCDIR}/Stereo.h
