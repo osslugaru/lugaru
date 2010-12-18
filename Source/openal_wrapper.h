@@ -72,7 +72,6 @@ AL_API void OPENAL_3D_Listener_SetAttributes(const float *pos, const float *vel,
 AL_API signed char OPENAL_3D_SetAttributes(int channel, const float *pos, const float *vel);
 AL_API signed char OPENAL_Init(int mixrate, int maxsoftwarechannels, unsigned int flags);
 AL_API void OPENAL_Close();
-AL_API signed char OPENAL_IsPlaying(int channel);
 AL_API OPENAL_SAMPLE *OPENAL_Sample_Load(int index, const char *name_or_data, unsigned int mode, int offset, int length);
 AL_API void OPENAL_Sample_Free(OPENAL_SAMPLE *sptr);
 AL_API signed char OPENAL_SetFrequency(int channel, int freq);

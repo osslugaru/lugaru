@@ -295,7 +295,7 @@ static unsigned int OPENAL_GetLoopMode(int channel)
     return OPENAL_LOOP_OFF;
 }
 
-AL_API signed char OPENAL_IsPlaying(int channel)
+static signed char OPENAL_IsPlaying(int channel)
 {
     if (!initialized) return false;
     if ((channel < 0) || (channel >= num_channels)) return false;
