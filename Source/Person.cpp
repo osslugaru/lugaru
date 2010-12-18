@@ -106,7 +106,6 @@ extern int indialogue;
 
 extern bool gamestarted;
 
-extern OPENAL_STREAM * strm[20];
 extern "C"	void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 extern "C" void PlayStreamEx(int chan, OPENAL_STREAM *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 
@@ -221,7 +220,7 @@ void Person::CatchFire(){
 	vel[1]=velocity.y;
 	vel[2]=velocity.z;
 	//PlaySoundEx( firesound, samp[firesound], NULL, true);
-	PlayStreamEx( stream_firesound, strm[stream_firesound], NULL, true);
+	PlayStreamEx( stream_firesound, samp[stream_firesound], NULL, true);
 	OPENAL_3D_SetAttributes(channels[stream_firesound], gLoc, vel);
 	OPENAL_SetVolume(channels[stream_firesound], 256);
 	OPENAL_SetPaused(channels[stream_firesound], false);

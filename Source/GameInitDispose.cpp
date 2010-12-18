@@ -100,8 +100,6 @@ extern float accountcampaigntime[10];
 extern int accountcampaignchoicesmade[10];
 extern int accountcampaignchoices[10][5000];
 
-extern OPENAL_STREAM * strm[20];
-
 extern "C"	void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 extern "C" void PlayStreamEx(int chan, OPENAL_STREAM *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 
@@ -141,17 +139,10 @@ void Game::Dispose()
 // this is causing problems on Linux, but we'll force an _exit() a little
 //  later in the shutdown process.  --ryan.
 #if !PLATFORM_LINUX
-#define streamcount 20
-#define samplecount 100
 
-	for (i=0; i < samplecount; ++i)
+	for (i=0; i < sounds_count; ++i)
 	{
 		OPENAL_Sample_Free(samp[i]);
-	}
-
-	for (i=0; i < streamcount; ++i)
-	{
-		OPENAL_Stream_Close(strm[i]);
 	}
 
 	OPENAL_Close();
@@ -163,18 +154,6 @@ void Game::Dispose()
 #endif
 }
 
-
-void Game::LoadSounds()
-{
-	LOGFUNC;
-
-	LOG(std::string("Loading sounds..."));
-
-	OPENAL_SetSFXMasterVolume((int)(volume*255));
-
-	if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	loadAllSounds();
-}
 
 void Game::LoadTexture(const char *fileName, GLuint *textureid,int mipmap, bool hasalpha)
 {
@@ -856,10 +835,6 @@ void Game::InitGame()
 	}
 
 	memset(channels, 0xff, sizeof(channels));
-	for (int it = 0; it < 20; ++it)
-	{
-		strm[it] = NULL;
-	}
 
 	LOG("Initializing sound system...");
 
@@ -899,57 +874,13 @@ void Game::InitGame()
     #endif
 
 	OPENAL_SetSFXMasterVolume((int)(volume*255));
-
-	strm[stream_music3] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:music3.mp3"), OPENAL_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=0;}
-	OPENAL_Stream_SetMode(strm[stream_music3], OPENAL_LOOP_NORMAL);
+	loadAllSounds();
 
 	if(musictoggle){
-//		PlaySoundEx( stream_music3, strm[stream_music3], NULL, true);
-		PlayStreamEx(stream_music3, strm[stream_music3], 0, true);
+		PlayStreamEx(stream_music3, samp[stream_music3], 0, true);
 		OPENAL_SetPaused(channels[stream_music3], false);
 		OPENAL_SetVolume(channels[stream_music3], 256);
 	}
-
-	FadeLoadingScreen(20);
-
-	if(ambientsound){
-		strm[stream_wind] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:wind.mp3"), OPENAL_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-		OPENAL_Stream_SetMode(strm[stream_wind], OPENAL_LOOP_NORMAL);
-
-		FadeLoadingScreen(30);
-
-		strm[stream_desertambient] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:desertambient.mp3"), OPENAL_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-		OPENAL_Stream_SetMode(strm[stream_desertambient], OPENAL_LOOP_NORMAL);
-	}
-
-	FadeLoadingScreen(40);
-
-	strm[stream_firesound] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:fire.ogg"), OPENAL_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=5;}
-	OPENAL_Stream_SetMode(strm[stream_firesound], OPENAL_LOOP_NORMAL);
-
-	FadeLoadingScreen(50);
-
-	//if(musictoggle){
-	strm[stream_music1grass] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:music1grass.mp3"), OPENAL_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=1;}
-	OPENAL_Stream_SetMode(strm[stream_music1grass], OPENAL_LOOP_NORMAL);
-
-	strm[stream_music1snow] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:music1snow.mp3"), OPENAL_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=2;}
-	OPENAL_Stream_SetMode(strm[stream_music1snow], OPENAL_LOOP_NORMAL);
-
-	FadeLoadingScreen(60);
-
-	strm[stream_music1desert] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:music1desert.mp3"), OPENAL_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=3;}
-	OPENAL_Stream_SetMode(strm[stream_music1desert], OPENAL_LOOP_NORMAL);
-
-	FadeLoadingScreen(80);
-	strm[stream_music2] = OPENAL_Sample_Load(OPENAL_FREE, ConvertFileName(":Data:Sounds:music2.ogg"), OPENAL_2D, 0, 0); if(visibleloading){LoadingScreen(); loadscreencolor=4;}
-	OPENAL_Stream_SetMode(strm[stream_music2], OPENAL_LOOP_NORMAL);
-
-	//}
-
-
-	FadeLoadingScreen(90);
-
 
 	LoadTexture(":Data:Textures:Cursor.png",&cursortexture,0,1);
 
@@ -1330,14 +1261,7 @@ void Game::LoadStuff()
 
 		glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, kTextureSize, kTextureSize, 0);
 	}
-	//}
 
-	LoadSounds();
-
-	/*PlaySoundEx( consolesuccesssound, samp[consolesuccesssound], NULL, true);
-	OPENAL_SetVolume(channels[consolesuccesssound], 256);
-	OPENAL_SetPaused(channels[consolesuccesssound], false);
-	*/
 	if(targetlevel!=7){
 		float gLoc[3]={0,0,0};
 		float vel[3]={0,0,0};

@@ -241,7 +241,6 @@ static bool stripfx(const char *str, const char *pfx)
   return !strncasecmp(str, pfx, strlen(pfx));
 }
 
-extern OPENAL_STREAM * strm[20];
 extern "C"	void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 extern "C" void PlayStreamEx(int chan, OPENAL_STREAM *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 
@@ -1388,7 +1387,7 @@ void	Game::Setenvironment(int which)
 		windvector.z=3;
 		if(ambientsound){
 			//PlaySoundEx( wind, samp[wind], NULL, true);
-			PlayStreamEx(stream_wind, strm[stream_wind], 0, true);
+			PlayStreamEx(stream_wind, samp[stream_wind], 0, true);
 			OPENAL_SetPaused(channels[stream_wind], false);
 			OPENAL_SetVolume(channels[stream_wind], 256);
 		}
@@ -1439,7 +1438,7 @@ void	Game::Setenvironment(int which)
 
 		if(ambientsound){
 			//PlaySoundEx( desertambient, samp[desertambient], NULL, true);
-			PlayStreamEx( stream_desertambient, strm[stream_desertambient], NULL, true);
+			PlayStreamEx( stream_desertambient, samp[stream_desertambient], NULL, true);
 			OPENAL_SetPaused(channels[stream_desertambient], false);
 			OPENAL_SetVolume(channels[stream_desertambient], 256);
 		}
@@ -1482,7 +1481,7 @@ void	Game::Setenvironment(int which)
 		LoadTexture(":Data:Textures:grassbox.jpg",&objects.boxtextureptr,1,0);
 
 		if(ambientsound){
-			PlayStreamEx( stream_wind, strm[stream_wind], NULL, true);
+			PlayStreamEx( stream_wind, samp[stream_wind], NULL, true);
 			OPENAL_SetPaused(channels[stream_wind], false);
 			OPENAL_SetVolume(channels[stream_wind], 100);
 		}
@@ -2271,7 +2270,7 @@ void	Game::Loadlevel(char *name){
 		{
 			if(ambientsound)
 			{
-				PlayStreamEx(stream_wind, strm[stream_wind], NULL, true);
+				PlayStreamEx(stream_wind, samp[stream_wind], NULL, true);
 				OPENAL_SetPaused(channels[stream_wind], false);
 				OPENAL_SetVolume(channels[stream_wind], 256);
 			}
@@ -2283,7 +2282,7 @@ void	Game::Loadlevel(char *name){
 				//PlaySoundEx(desertambient,
 				//	samp[desertambient], NULL, true);
 				PlayStreamEx(stream_desertambient,
-					strm[stream_desertambient], NULL, true);
+					samp[stream_desertambient], NULL, true);
 				OPENAL_SetPaused(channels[stream_desertambient], false);
 				OPENAL_SetVolume(channels[stream_desertambient], 256);
 			}
@@ -2293,7 +2292,7 @@ void	Game::Loadlevel(char *name){
 			if(ambientsound)
 			{
 				//PlaySoundEx(wind, samp[wind], NULL, true);
-				PlayStreamEx(stream_wind, strm[stream_wind], NULL, true);
+				PlayStreamEx(stream_wind, samp[stream_wind], NULL, true);
 				OPENAL_SetPaused(channels[stream_wind], false);
 				OPENAL_SetVolume(channels[stream_wind], 100);
 			}
@@ -2391,7 +2390,7 @@ void	Game::Tick()
 				if(mainmenu&&musictoggle){
 					if(mainmenu==1||mainmenu==2||mainmenu==100){
 						OPENAL_SetFrequency(OPENAL_ALL, 0.001);
-						PlayStreamEx( stream_music3, strm[stream_music3], NULL, true);
+						PlayStreamEx( stream_music3, samp[stream_music3], NULL, true);
 						OPENAL_SetPaused(channels[stream_music3], false);
 						OPENAL_SetVolume(channels[stream_music3], 256);
 						OPENAL_SetPaused(channels[music1], true);
@@ -2598,7 +2597,7 @@ void	Game::Tick()
 				}
 
 				if(musictoggle){
-					PlayStreamEx( stream_music3, strm[stream_music3], NULL, true);
+					PlayStreamEx( stream_music3, samp[stream_music3], NULL, true);
 					OPENAL_SetPaused(channels[stream_music3], false);
 					OPENAL_SetVolume(channels[stream_music3], 256);
 				}
@@ -7667,7 +7666,7 @@ void	Game::Tick()
 										OPENAL_StopSound(OPENAL_ALL);  // hack...OpenAL renderer isn't stopping music after tutorial goes to level menu...
 										OPENAL_SetFrequency(OPENAL_ALL, 0.001);
 
-										PlayStreamEx( stream_music3, strm[stream_music3], NULL, true);
+										PlayStreamEx( stream_music3, samp[stream_music3], NULL, true);
 										OPENAL_SetPaused(channels[stream_music3], false);
 										OPENAL_SetVolume(channels[stream_music3], 256);
 
@@ -7881,15 +7880,15 @@ void	Game::TickOnceAfter(){
 
 		if(musictoggle){
 			if(musicvolume[0]>0&&oldmusicvolume[0]<=0){
-				PlayStreamEx( music1, strm[music1], NULL, true);
+				PlayStreamEx( music1, samp[music1], NULL, true);
 				OPENAL_SetPaused(channels[music1], false);
 			}
 			if(musicvolume[1]>0&&oldmusicvolume[1]<=0){
-				PlayStreamEx( stream_music2, strm[stream_music2], NULL, true);
+				PlayStreamEx( stream_music2, samp[stream_music2], NULL, true);
 				OPENAL_SetPaused(channels[stream_music2], false);
 			}
 			if(musicvolume[2]>0&&oldmusicvolume[2]<=0){
-				PlayStreamEx( stream_music3, strm[stream_music3], NULL, true);
+				PlayStreamEx( stream_music3, samp[stream_music3], NULL, true);
 				OPENAL_SetPaused(channels[stream_music3], false);
 			}
 			if(musicvolume[0]<=0&&oldmusicvolume[0]>0){
