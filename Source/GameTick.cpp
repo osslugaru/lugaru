@@ -2767,7 +2767,7 @@ void	Game::Tick()
 				mainmenu=9;
 			}
 		}
-		if(mainmenu==9){
+		else if(mainmenu==9){
 			if(Input::Button()&&!oldbutton&&selected<numchallengelevels&&selected>=0&&selected<=accountactive->getProgress()){
 				fireSound();
 
