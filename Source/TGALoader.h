@@ -56,9 +56,5 @@ typedef struct TGAImageRec
 
 bool upload_image(const unsigned char* filePath, bool hasalpha);
 
-/**> FUNCTION PROTOTYPES <**/
-TGAImageRec*	LoadTGA( char *filename );
-
-
 #endif
 
