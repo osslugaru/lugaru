@@ -73,7 +73,6 @@ set(LUGARU_SRCS
 	${SRCDIR}/Text.cpp
 	${SRCDIR}/TGALoader.cpp
 	${SRCDIR}/unpack.c
-	${SRCDIR}/unpack_private.c
 	${SRCDIR}/Weapons.cpp
 	${SRCDIR}/OpenGL_Windows.cpp
 	${SRCDIR}/openal_wrapper.cpp
@@ -111,7 +110,6 @@ set(LUGARU_H
 	${SRCDIR}/glstubs.h
 	${SRCDIR}/pack_private.h
 	${SRCDIR}/private.h
-	${SRCDIR}/unpack_private.h
 	${SRCDIR}/Settings.h
 	${SRCDIR}/Stereo.h
 	${SRCDIR}/Animation.h
