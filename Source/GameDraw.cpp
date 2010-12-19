@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Game.h"
 #include "openal_wrapper.h"
 #include "Input.h"
+#include "Awards.h"
 
 using namespace std;
 
@@ -1843,32 +1844,8 @@ int Game::DrawGLScene(StereoSide side)
 			strcat(string,temp);
 			text.glPrintOutlined(1024/30,768*6/8-40,string,1,2,1024,768);
 
-			for(i=0;i<numawards;i++){
-				if(i<6){
-					if(awards[i]==awardklutz)sprintf (string, "Suicidal");
-					if(awards[i]==awardflawless)sprintf (string, "Flawless!");
-					if(awards[i]==awardalldead)sprintf (string, "Take no prisoners");
-					if(awards[i]==awardnodead)sprintf (string, "Merciful");
-					if(awards[i]==awardstealth)sprintf (string, "One with the shadows!");
-					if(awards[i]==awardswordsman)sprintf (string, "Swordsman");
-					if(awards[i]==awardkungfu)sprintf (string, "Unarmed!");
-					if(awards[i]==awardknifefighter)sprintf (string, "Knife fighter");
-					if(awards[i]==awardcoward)sprintf (string, "Coward");
-					if(awards[i]==awardevasion)sprintf (string, "Escape artist");
-					if(awards[i]==awardacrobat)sprintf (string, "Gymnast");
-					if(awards[i]==awardlongrange)sprintf (string, "Blade slinger");
-					if(awards[i]==awardbrutal)sprintf (string, "Brutal");
-					if(awards[i]==awardhyper)sprintf (string, "Hyper");
-					if(awards[i]==awardaikido)sprintf (string, "Aikido master!");
-					if(awards[i]==awardrambo)sprintf (string, "Rambo");
-					if(awards[i]==awardfast)sprintf (string, "Fast");
-					if(awards[i]==awardrealfast)sprintf (string, "Real fast");
-					if(awards[i]==awarddamnfast)sprintf (string, "Damn fast");
-					if(awards[i]==awardstrategy)sprintf (string, "Divide and conquer");
-					if(awards[i]==awardbojutsu)sprintf (string, "Bojutsu");
-					text.glPrintOutlined(1024/30,768*6/8-90-40*i,string,1,2,1024,768);
-				}
-			}
+			for (i = 0; i < numawards && i < 6; i++)
+			  text.glPrintOutlined(1024/30,768*6/8-90-40*i,award_names[awards[i]],1,2,1024,768);
 		}
 
 		if(drawmode!=normalmode){

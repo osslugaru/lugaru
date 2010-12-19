@@ -1,0 +1,42 @@
+/*
+Copyright (C) 2010 - Lugaru authors
+
+This file is part of Lugaru.
+
+Lugaru is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
+
+DECLARE_AWARD(awardklutz, "Suicidal")
+DECLARE_AWARD(awardflawless, "Flawless!")
+DECLARE_AWARD(awardalldead, "Take no prisoners")
+DECLARE_AWARD(awardnodead, "Merciful")
+DECLARE_AWARD(awardstealth, "One with the shadows!")
+DECLARE_AWARD(awardswordsman, "Swordsman")
+DECLARE_AWARD(awardkungfu, "Unarmed!")
+DECLARE_AWARD(awardknifefighter, "Knife fighter")
+DECLARE_AWARD(awardcoward, "Coward")
+DECLARE_AWARD(awardevasion, "Escape artist")
+DECLARE_AWARD(awardacrobat, "Gymnast")
+DECLARE_AWARD(awardlongrange, "Blade slinger")
+DECLARE_AWARD(awardbrutal, "Brutal")
+DECLARE_AWARD(awardhyper, "Hyper")
+DECLARE_AWARD(awardaikido, "Aikido master!")
+DECLARE_AWARD(awardrambo, "Rambo")
+DECLARE_AWARD(awardfast, "Fast")
+DECLARE_AWARD(awardrealfast, "Real fast")
+DECLARE_AWARD(awarddamnfast, "Damn fast")
+DECLARE_AWARD(awardstrategy, "Divide and conquer")
+DECLARE_AWARD(awardbojutsu, "Bojutsu")

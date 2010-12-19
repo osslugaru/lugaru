@@ -25,28 +25,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // cat src/Constants.h | sed -e 's/#define/const int/' -e 's/ [0-9]*$/ =&;/'
 // chew on that --Jookia
 
-const int awardklutz = 0;
-const int awardflawless = 1;
-const int awardalldead = 2;
-const int awardnodead = 3;
-const int awardstealth = 4;
-const int awardswordsman = 5;
-const int awardkungfu = 6;
-const int awardknifefighter = 7;
-const int awardcoward = 8;
-const int awardevasion = 9;
-const int awardacrobat = 10;
-const int awardlongrange = 11;
-const int awardbrutal = 12;
-const int awardhyper = 13;
-const int awardaikido = 14;
-const int awardrambo = 15;
-const int awardfast = 16;
-const int awardrealfast = 17;
-const int awarddamnfast = 18;
-const int awardstrategy = 19;
-const int awardbojutsu = 20;
-
 const int mapkilleveryone = 0;
 const int mapgosomewhere = 1;
 const int mapkillsomeone = 2;
