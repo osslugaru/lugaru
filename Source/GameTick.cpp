@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Settings.h"
 #include "Input.h"
 #include "Animation.h"
+#include "Awards.h"
 
 using namespace std;
 
@@ -140,7 +141,6 @@ extern bool reversaltrain;
 extern bool canattack;
 extern bool cananger;
 extern float damagedealt;
-extern float damagetaken;
 extern int maptype;
 extern int editoractive;
 extern int editorpathtype;
@@ -164,23 +164,6 @@ extern int hostile;
 
 extern bool stillloading;
 extern bool winfreeze;
-
-extern int numfalls;
-extern int numflipfail;
-extern int numseen;
-extern int numstaffattack;
-extern int numswordattack;
-extern int numknifeattack;
-extern int numunarmedattack;
-extern int numescaped;
-extern int numflipped;
-extern int numwallflipped;
-extern int numthrowkill;
-extern int numafterkill;
-extern int numreversals;
-extern int numattacks;
-extern int maxalarmed;
-extern int numresponded;
 
 extern int numdialogues;
 extern int numdialogueboxes[max_dialogues];

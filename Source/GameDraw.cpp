@@ -95,7 +95,6 @@ extern float tutorialmaxtime;
 extern int tutorialstage;
 extern bool againbonus;
 extern float damagedealt;
-extern float damagetaken;
 extern bool invertmouse;
 
 extern int numhotspots;
@@ -106,23 +105,6 @@ extern int hotspottype[40];
 extern float hotspotsize[40];
 extern char hotspottext[40][256];
 extern int currenthotspot;;
-
-extern int numfalls;
-extern int numflipfail;
-extern int numseen;
-extern int numstaffattack;
-extern int numswordattack;
-extern int numknifeattack;
-extern int numunarmedattack;
-extern int numescaped;
-extern int numflipped;
-extern int numwallflipped;
-extern int numthrowkill;
-extern int numafterkill;
-extern int numreversals;
-extern int numattacks;
-extern int maxalarmed;
-extern int numresponded;
 
 extern bool campaign;
 extern bool winfreeze;
@@ -1738,83 +1720,6 @@ int Game::DrawGLScene(StereoSide side)
 
 			glEnable(GL_TEXTURE_2D);
 
-			//Awards
-			int numawards = 0;
-			int awards[30];
-
-			if(damagetaken==0&&player[0].bloodloss==0){
-				awards[numawards]=awardflawless;
-				numawards++;
-			}
-			bool alldead = true;
-			for(i=1;i<numplayers;i++){		
-				if(player[i].dead!=2)alldead=0;
-			}
-			if(alldead){
-				awards[numawards]=awardalldead;
-				numawards++;
-			}
-			alldead=1;
-			for(i=1;i<numplayers;i++){		
-				if(player[i].dead!=1)alldead=0;
-			}
-			if(alldead){
-				awards[numawards]=awardnodead;
-				numawards++;
-			}
-			if(numresponded==0&&!numthrowkill){
-				awards[numawards]=awardstealth;
-				numawards++;
-			}
-			if(numattacks==numstaffattack&&numattacks>0){
-				awards[numawards]=awardbojutsu;
-				numawards++;
-			}
-			if(numattacks==numswordattack&&numattacks>0){
-				awards[numawards]=awardswordsman;
-				numawards++;
-			}
-			if(numattacks==numknifeattack&&numattacks>0){
-				awards[numawards]=awardknifefighter;
-				numawards++;
-			}
-			if(numattacks==numunarmedattack&&numthrowkill==0&&weapons.numweapons>0){
-				awards[numawards]=awardkungfu;
-				numawards++;
-			}
-			if(numescaped>0){
-				awards[numawards]=awardevasion;
-				numawards++;
-			}
-			if(numflipfail==0&&numflipped+numwallflipped*2>20){
-				awards[numawards]=awardacrobat;
-				numawards++;
-			}
-			if(numthrowkill==numplayers-1){
-				awards[numawards]=awardlongrange;
-				numawards++;
-			}
-			alldead=1;
-			for(i=1;i<numplayers;i++){		
-				if(player[i].dead!=2)alldead=0;
-			}
-			if(numafterkill>0&&alldead){
-				awards[numawards]=awardbrutal;
-				numawards++;
-			}
-			if(numreversals>((float)numattacks)*.8&&numreversals>3){
-				awards[numawards]=awardaikido;
-				numawards++;
-			}
-			if(maxalarmed==1&&numplayers>2){
-				awards[numawards]=awardstrategy;
-				numawards++;
-			}
-			if(numflipfail>3){
-				awards[numawards]=awardklutz;
-				numawards++;
-			}
-
 			//Win Screen Won Victory
 
 			glEnable(GL_TEXTURE_2D);
@@ -1840,6 +1745,10 @@ int Game::DrawGLScene(StereoSide side)
 			sprintf (temp, "%d",(int)(leveltime)%60);
 			strcat(string,temp);
 			text.glPrintOutlined(1024/30,768*6/8-40,string,1,2,1024,768);
+
+			//Awards
+			int awards[award_count];
+			int numawards = award_awards(awards);
 
 			for (i = 0; i < numawards && i < 6; i++)
 			  text.glPrintOutlined(1024/30,768*6/8-90-40*i,award_names[awards[i]],1,2,1024,768);

@@ -83,24 +83,9 @@ extern bool reversaltrain;
 extern bool canattack;
 extern bool cananger;
 extern float damagedealt;
-extern float damagetaken;
 extern int hostile;
 extern float hostiletime;
 
-extern int numfalls;
-extern int numflipfail;
-extern int numseen;
-extern int numswordattack;
-extern int numknifeattack;
-extern int numunarmedattack;
-extern int numescaped;
-extern int numflipped;
-extern int numwallflipped;
-extern int numthrowkill;
-extern int numafterkill;
-extern int numreversals;
-extern int numattacks;
-extern int maxalarmed;
 extern int indialogue;
 
 extern bool gamestarted;

@@ -181,7 +181,6 @@ float tutorialsuccess = 0;
 bool againbonus = 0;
 
 float damagedealt = 0;
-float damagetaken = 0;
 
 int maptype = 0;
 
@@ -230,23 +229,6 @@ bool won = 0;
 
 
 bool campaign = 0;
-
-int numfalls = 0;
-int numflipfail = 0;
-int numseen = 0;
-int numresponded = 0;
-int numstaffattack = 0;
-int numswordattack = 0;
-int numknifeattack = 0;
-int numunarmedattack = 0;
-int numescaped = 0;
-int numflipped = 0;
-int numwallflipped = 0;
-int numthrowkill = 0;
-int numafterkill = 0;
-int numreversals = 0;
-int numattacks = 0;
-int maxalarmed = 0;
 
 bool gamestarted = 0;
 

@@ -35,5 +35,24 @@ static const char *award_names[award_count] = {
 #undef DECLARE_AWARD
 };
 
+extern int award_awards(int *);
+
+extern float damagetaken;
+extern int numfalls;
+extern int numflipfail;
+extern int numseen;
+extern int numresponded;
+extern int numstaffattack;
+extern int numswordattack;
+extern int numknifeattack;
+extern int numunarmedattack;
+extern int numescaped;
+extern int numflipped;
+extern int numwallflipped;
+extern int numthrowkill;
+extern int numafterkill;
+extern int numreversals;
+extern int numattacks;
+extern int maxalarmed;
 #endif
 
