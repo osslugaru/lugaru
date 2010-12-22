@@ -373,4 +373,5 @@ class Person
 		void RagDoll(bool checkcollision);
 };
 
+extern Person player[maxplayers];
 #endif

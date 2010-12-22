@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Sprite.h"
 #include "Person.h"
+#include "Game.h"
 extern XYZ viewer;
 extern float viewdistance;
 extern float fadestart;
@@ -36,8 +37,6 @@ extern XYZ viewerfacing;
 extern float terraindetail;
 extern int bloodtoggle;
 extern XYZ windvector;
-extern int numplayers;
-extern Person player[maxplayers];
 
 // init statics
 GLuint Sprite::cloudtexture = 0;

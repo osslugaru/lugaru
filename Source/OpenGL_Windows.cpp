@@ -70,9 +70,7 @@ extern float terraindetail;
 extern float texdetail;
 
 extern bool osx;
-extern int numplayers;
 extern bool freeze;
-extern Person player[maxplayers];
 extern bool stillloading;
 extern int mainmenu;
 /*extern*/ bool gameFocused;

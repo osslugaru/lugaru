@@ -114,4 +114,5 @@ public:
 	~Weapons();
 };
 
+extern Weapons weapons;
 #endif

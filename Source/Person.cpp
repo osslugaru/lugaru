@@ -24,6 +24,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "openal_wrapper.h"
 #include "Animation.h"
 #include "Sounds.h"
+#include "Awards.h"
+#include "Game.h"
 
 extern float multiplier;
 extern int channels[100];
@@ -51,11 +53,8 @@ extern float terraindetail;
 extern float viewdistance;
 extern float blackout;
 extern int difficulty;
-extern Weapons weapons;
 extern bool decals;
 extern float fadestart;
-extern Person player[maxplayers];
-extern int numplayers;
 extern bool freeze;
 extern bool winfreeze;
 extern float flashamount,flashr,flashg,flashb;

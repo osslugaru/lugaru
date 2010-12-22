@@ -319,4 +319,5 @@ extern "C" { void UndefinedSymbolToExposeStubbedCode(void); }
 #define STUBBED(x) { static bool seen = false; if (!seen) { seen = true; fprintf(stderr, "STUBBED: %s at %s:%d\n", x, __FILE__, __LINE__); } }
 //#define STUBBED(x)
 
+extern int numplayers;
 #endif
