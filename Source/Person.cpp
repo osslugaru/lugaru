@@ -2604,7 +2604,6 @@ void	Person::DoAnimations(){
 								}
 
 								if((targetanimation==crouchstabanim||targetanimation==swordgroundstabanim)&&animation[targetanimation].label[currentframe]==5){
-									// if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*9){
 									//if(id==0)camerashake+=.4;
 									float gLoc[3];
 									float vel[3];
@@ -2705,7 +2704,6 @@ void	Person::DoAnimations(){
 								}
 
 								if((targetanimation==crouchstabanim||targetanimation==swordgroundstabanim)&&animation[targetanimation].label[currentframe]==6){
-									// if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*9){
 									//if(id==0)camerashake+=.4;
 									float gLoc[3];
 									float vel[3];
@@ -2830,7 +2828,6 @@ void	Person::DoAnimations(){
 										vel[0]=velocity.x;
 										vel[1]=velocity.y;
 										vel[2]=velocity.z;
-										//if(!victim->isIdle()||victim->damage>victim->damagetolerance-60){
 										if(1==1){
 											if(tutoriallevel!=1){
 												PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
@@ -2886,7 +2883,6 @@ void	Person::DoAnimations(){
 										vel[0]=velocity.x;
 										vel[1]=velocity.y;
 										vel[2]=velocity.z;
-										//if(!victim->isIdle()||victim->damage>victim->damagetolerance-60){
 										if(victim->damage<=victim->damagetolerance-60&&normaldotproduct(victim->facing,victim->coords-coords)<(scale*5)*(scale*5)*0&&animation[victim->targetanimation].height!=lowheight){
 											if(tutoriallevel!=1){
 												PlaySoundEx( thudsound, samp[thudsound], NULL, true);
@@ -3022,9 +3018,7 @@ void	Person::DoAnimations(){
 									if(hasvictim)
 										if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*4.5&&/*animation[victim->targetanimation].height!=lowheight&&*/victim->targetanimation!=dodgebackanim&&victim->targetanimation!=rollanim){
 											escapednum=0;
-											//if(Random()%2){
 											if(tutoriallevel!=1)victim->DoBloodBig(1.5/victim->armorhigh,225);
-											//}
 
 											award_bonus(id, Slicebonus);
 											if(tutoriallevel!=1){
@@ -3103,16 +3097,12 @@ void	Person::DoAnimations(){
 												OPENAL_SetPaused(channels[swordslicesound], false);
 											}
 											//victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].velocity+=relative*damagemult*200;
-											//if(animation[victim->targetanimation].attack){
-											//if(victim->creature==rabbittype){
 											if(tutoriallevel!=1){
 												victim->targetframe=0;
 												victim->targetanimation=staggerbackhardanim;
 												victim->targetrotation=targetrotation+180;
 												victim->target=0;
 											}
-											//}
-											//}
 
 											if(tutoriallevel!=1){
 												if(bloodtoggle&&!weapons.bloody[weaponids[weaponactive]])weapons.bloody[weaponids[weaponactive]]=1;
@@ -4633,14 +4623,12 @@ void	Person::DoAnimations(){
 		}
 
 		if(isLanding()&&landhard){
-			//if(abs(velocity.y)>fast_sqrt(velocity.x*velocity.x*velocity.z*velocity.z)){
 			if(id==0)camerashake+=.4;
 			targetanimation=getLandhard();
 			targetframe=0;
 			target=0;
 			landhard=0;
 			transspeed=15;
-			//}
 		}
 	}
 	//skeleton.DoConstraints();
@@ -5486,12 +5474,8 @@ void	Person::DoStuff(){
 				if(terrainnormal.z<0)targetrotation=180-targetrotation;
 				rotation=targetrotation;
 
-				//if(skeleton.forward.y<0){
 				targetframe=0;
-				//}
-				//if(skeleton.forward.y>-.3){
 				//	targetframe=2;
-				//}
 				targetanimation=flipanim;
 				crouchtogglekeydown=1;
 				target=0;
@@ -5923,7 +5907,6 @@ void	Person::DoStuff(){
 
 				if(targetanimation==bounceidleanim||targetanimation==wolfidle||targetanimation==walkanim||targetanimation==drawrightanim||targetanimation==crouchdrawrightanim||targetanimation==drawleftanim||targetanimation==fightidleanim||targetanimation==fightsidestep||targetanimation==hanganim||isCrouch()||targetanimation==backhandspringanim){
 					//open hands and close mouth
-					//if(targetanimation!=wolfidle){
 					if(righthandmorphend!=0&&righthandmorphness==targetrighthandmorphness){
 						righthandmorphness=0;
 						righthandmorphend=0;
@@ -5935,7 +5918,6 @@ void	Person::DoStuff(){
 						lefthandmorphend=0;
 						targetlefthandmorphness=1;
 					}
-					//s}
 
 					if(headmorphend!=3&&headmorphend!=5&&headmorphstart!=3&&headmorphstart!=5&&headmorphend!=0&&headmorphness==targetheadmorphness){
 						headmorphness=0;
@@ -6725,24 +6707,18 @@ int Person::DrawSkeleton(){
 										(skeleton.model[start].vertex[skeleton.muscles[i].vertices[j]].z*(1-morphness)+skeleton.model[endthing].vertex[skeleton.muscles[i].vertices[j]].z*morphness)*proportionhead.z);
 									glGetFloatv(GL_MODELVIEW_MATRIX,M);
 									//if(!isnormal(M[12])||!isnormal(M[13])||!isnormal(M[14]))test=0;
-									//if(isnormal(M[12])&&isnormal(M[13])&&isnormal(M[14])){
 									//if(!isnormal(scale))test=1;
-									//if(isnormal(scale)){
 									skeleton.drawmodel.vertex[skeleton.muscles[i].vertices[j]].x=M[12]*scale;
 									skeleton.drawmodel.vertex[skeleton.muscles[i].vertices[j]].y=M[13]*scale;
 									skeleton.drawmodel.vertex[skeleton.muscles[i].vertices[j]].z=M[14]*scale;
 									//test=2;
-									//}
-									//}
 								glPopMatrix();
-								//}
 							}
 						}
 						if(!playerdetail||skeleton.free==3)
 						{
 							for(j=0;j<skeleton.muscles[i].numverticeslow;j++)
 							{
-								//if(skeleton.muscles[i].verticeslow[j]<skeleton.modellow.vertexNum&&skeleton.muscles[i].verticeslow[j]>=0){
 								glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 								glPushMatrix();
 									if(skeleton.muscles[i].parent1->label==abdomen||skeleton.muscles[i].parent2->label==abdomen)
@@ -6767,7 +6743,6 @@ int Person::DrawSkeleton(){
 									skeleton.drawmodellow.vertex[skeleton.muscles[i].verticeslow[j]].y=M[13]*scale;
 									skeleton.drawmodellow.vertex[skeleton.muscles[i].verticeslow[j]].z=M[14]*scale;
 								glPopMatrix();
-								//}
 							}
 						}
 					glPopMatrix();
@@ -7180,8 +7155,6 @@ int Person::DrawSkeleton(){
 					if(weaponstuckwhere==0)weapons.smallrotation[i]=180;
 					else weapons.smallrotation[i]=0;
 					weapons.smallrotation2[i]=10;
-					//if(animation[targetanimation].height==lowheight&&animation[targetanimation].attack==neutral){
-					//}
 				}
 			}
 		}
