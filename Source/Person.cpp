@@ -2828,24 +2828,13 @@ void	Person::DoAnimations(){
 										vel[0]=velocity.x;
 										vel[1]=velocity.y;
 										vel[2]=velocity.z;
-										if(1==1){
-											if(tutoriallevel!=1){
-												PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
-												OPENAL_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
-												OPENAL_SetVolume(channels[heavyimpactsound], 128);
-												OPENAL_SetPaused(channels[heavyimpactsound], false);
-											}
-										}
-										else {
-											if(tutoriallevel!=1){
-												PlaySoundEx( landsound2, samp[landsound2], NULL, true);
-												OPENAL_3D_SetAttributes(channels[landsound2], gLoc, vel);
-												OPENAL_SetVolume(channels[landsound2], 256);
-												OPENAL_SetPaused(channels[landsound2], false);
-											}
+										if(tutoriallevel!=1){
+										  PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
+										  OPENAL_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
+										  OPENAL_SetVolume(channels[heavyimpactsound], 128);
+										  OPENAL_SetPaused(channels[heavyimpactsound], false);
 										}
 
-										//if(!victim->isIdle()||victim->damage>victim->damagetolerance-60)
 										victim->RagDoll(0);
 										XYZ relative;
 										relative=victim->coords-coords;
