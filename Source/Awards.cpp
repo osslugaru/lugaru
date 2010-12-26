@@ -28,6 +28,8 @@ float bonusvalue;
 float bonustotal;
 float startbonustotal;
 float bonustime;
+float bonusnum[100];
+
 
 // FIXME: make these per-player
 float damagetaken;

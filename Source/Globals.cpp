@@ -199,8 +199,6 @@ float skyboxlightr = 0;
 float skyboxlightg = 0;
 float skyboxlightb = 0;
 
-float bonusnum[100] = {0};
-
 int hostile = 0;
 float hostiletime = 0;
 
