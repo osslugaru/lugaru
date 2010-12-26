@@ -5333,9 +5333,7 @@ void	Person::DoStuff(){
 		bled=0;
 
 		if(!dead&&creature==wolftype){
-			bonus=Wolfbonus;
-			bonustime=0;
-			bonusvalue=300;
+		  award_bonus(0, Wolfbonus);
 		}
 
 		if(unconscioustime<.1&&(bonus!=spinecrusher||bonustime>1)&&(bonus!=FinishedBonus||bonustime>1)&&bloodloss<damagetolerance)
