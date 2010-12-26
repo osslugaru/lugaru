@@ -218,13 +218,6 @@ bool vertexweird[6] = {0};
 TGAImageRec texture;
 bool debugmode = 0;
 
-int oldbonus = 0;
-int bonus = 0;
-float bonusvalue = 0;
-float bonustotal = 0;
-float startbonustotal = 0;
-float bonustime = 0;
-
 bool won = 0;
 
 

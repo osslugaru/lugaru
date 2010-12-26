@@ -40,8 +40,6 @@ extern XYZ envsound[30];
 extern float envsoundvol[30];
 extern int numenvsounds;
 extern float envsoundlife[30];
-extern int bonus;
-extern float bonustime;
 extern int tutoriallevel;
 
 extern int whichjointstartarray[26];

@@ -23,6 +23,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Person.h"
 #include "Game.h"
 
+int bonus;
+float bonusvalue;
+float bonustotal;
+float startbonustotal;
+float bonustime;
+
 // FIXME: make these per-player
 float damagetaken;
 int numfalls;

@@ -35,6 +35,13 @@ static const char *bonus_names[bonus_count] = {
 #undef DECLARE_BONUS
 };
 
+extern int bonus;
+extern float bonusvalue;
+extern float bonustotal;
+extern float bonustime;
+extern float startbonustotal;
+extern float bonusnum[100];
+
 enum award_types {
 #define DECLARE_AWARD(id, name) id,
 #include "Awards.def"
