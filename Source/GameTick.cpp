@@ -5715,16 +5715,12 @@ void	Game::Tick()
 
 																												player[i].RagDoll(0);
 																												if(player[i].damage>player[i].damagetolerance-findLengthfast(&rotatetarget)/4&&!player[i].dead){
-																													bonus=aimbonus;
-																													bonustime=0;
-																													bonusvalue=150;
+																												  award_bonus(0, aimbonus);
 																												}
 																												player[i].DoDamage(findLengthfast(&rotatetarget)/4);
 																												player[k].RagDoll(0);
 																												if(player[k].damage>player[k].damagetolerance-findLengthfast(&rotatetarget)/4&&!player[k].dead){
-																													bonus=aimbonus;
-																													bonustime=0;
-																													bonusvalue=150;
+																												  award_bonus(0, aimbonus); // Huh, again?
 																												}
 																												player[k].DoDamage(findLengthfast(&rotatetarget)/4);
 
@@ -5790,11 +5786,7 @@ void	Game::Tick()
 																														player[i].DoDamage(20);
 																														player[i].RagDoll(0);
 																														player[k].lastcollide=1;
-																														if(k==0){
-																															bonus=AboveBonus;
-																															bonustime=0;
-																															bonusvalue=50;
-																														}
+																														award_bonus(k, AboveBonus);
 																													}
 																													if(i==0&&k!=0&&player[i].targetanimation==jumpdownanim&&!player[k].isCrouch()&&player[k].targetanimation!=rollanim&&!player[i].skeleton.oldfree&&!player[i].skeleton.free&&player[i].lastcollide<=0&&player[i].velocity.y<-10){
 																														player[k].velocity=player[i].velocity;
@@ -5804,11 +5796,7 @@ void	Game::Tick()
 																														player[k].DoDamage(20);
 																														player[k].RagDoll(0);
 																														player[i].lastcollide=1;
-																														if(i==0){
-																															bonus=AboveBonus;
-																															bonustime=0;
-																															bonusvalue=50;
-																														}
+																														award_bonus(i, AboveBonus);
 																													}
 																												}
 																											}

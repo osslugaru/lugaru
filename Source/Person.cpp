@@ -141,13 +141,7 @@ void Person::CheckKick(){
 						skeleton.free=0;
 						if(id==0)OPENAL_SetPaused(channels[whooshsound], false);
 
-						//if(victim->damage>victim->damagetolerance){
-						if(id==0){
-							bonus=cannon;
-							bonustime=0;
-							bonusvalue=100;
-						}
-						//}
+						award_bonus(id, cannon);
 					}
 					else if (victim->isCrouch()){
 						targetanimation=rabbitkickreversedanim;
@@ -363,32 +357,21 @@ bool Person::isWallJump(){
 	else return 0;
 }
 
-void SolidHitBonus();
 void SolidHitBonus(){
 	if(bonustime<1.5&&(bonus==fourxcombo||bonus==megacombo)){
-		bonus=megacombo;
-		bonustime=0;
-		bonusvalue=160;
+	  award_bonus(0, megacombo);
 	}
 	else if(bonustime<1.5&&bonus==threexcombo){
-		bonus=fourxcombo;
-		bonustime=0;
-		bonusvalue=80;
+	  award_bonus(0, fourxcombo);
 	}
 	else if(bonustime<1.5&&bonus==twoxcombo){
-		bonus=threexcombo;
-		bonustime=0;
-		bonusvalue=40;
+	  award_bonus(0, threexcombo);
 	}
 	else if(bonustime<1.5&&bonus==solidhit){
-		bonus=twoxcombo;
-		bonustime=0;
-		bonusvalue=20;
+	  award_bonus(0, twoxcombo);
 	}
 	else {
-		bonus=solidhit;
-		bonustime=0;
-		bonusvalue=10;
+	  award_bonus(0, solidhit);
 	}
 }
 
@@ -1384,9 +1367,7 @@ void Person::DoDamage(float howmuch){
 		slomodelay=.2;
 		}*/
 		if(!dead&&creature==wolftype){
-			bonus=Wolfbonus;
-			bonustime=0;
-			bonusvalue=300;
+		  award_bonus(0, Wolfbonus);
 		}
 		dead=2;
 		coords=20;
@@ -1838,10 +1819,8 @@ void	Person::DoAnimations(){
 						victim->spurt=1;
 						victim->DoBloodBig(1/victim->armorhead,210);
 					}
+					award_bonus(id, TackleBonus);
 					if(id==0){
-						bonus=TackleBonus;
-						bonustime=0;
-						bonusvalue=5;
 						if(victim->aitype==gethelptype)bonusvalue=50;
 					}
 				}
@@ -2413,11 +2392,7 @@ void	Person::DoAnimations(){
 										victim->DoDamage(damagemult*150/victim->protectionhead);
 
 										if(victim->damage>victim->damagetolerance){
-											if(id==0){
-												bonus=style;
-												bonustime=0;
-												bonusvalue=150;
-											}
+										  award_bonus(id, style);
 										}
 										else if(id==0){
 											SolidHitBonus();
@@ -2468,11 +2443,7 @@ void	Person::DoAnimations(){
 										victim->DoDamage(damagemult*150/victim->protectionhead);
 
 										if(victim->damage>victim->damagetolerance){
-											if(id==0){
-												bonus=style;
-												bonustime=0;
-												bonusvalue=150;
-											}
+										  award_bonus(id, style);
 										}
 										else if(id==0){
 											SolidHitBonus();
@@ -2716,11 +2687,8 @@ void	Person::DoAnimations(){
 											if(whichtri!=-1){
 												if(victim->dead!=2){
 													victim->DoDamage(abs((victim->damagetolerance-victim->permanentdamage)*2));
-													if(id==0&&!victim->dead){
-														bonus=FinishedBonus;
-														bonustime=0;
-														bonusvalue=200;
-													}
+													if (!victim->dead)
+													  award_bonus(id, FinishedBonus);
 												}
 												if(bloodtoggle)weapons.bloody[weaponids[weaponactive]]=2;
 
@@ -3080,11 +3048,7 @@ void	Person::DoAnimations(){
 											if(tutoriallevel!=1)victim->DoBloodBig(1.5/victim->armorhigh,225);
 											//}
 
-											if(id==0){
-												bonus=Slicebonus;
-												bonustime=0;
-												bonusvalue=10;
-											}
+											award_bonus(id, Slicebonus);
 											if(tutoriallevel!=1){
 												float gLoc[3];
 												float vel[3];
@@ -3141,11 +3105,7 @@ void	Person::DoAnimations(){
 								if(targetanimation==swordslashanim&&animation[targetanimation].label[currentframe]==5&&victim->targetanimation!=rollanim){
 									if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*6.5&&victim->targetanimation!=dodgebackanim){
 										if(victim->weaponactive==-1||normaldotproduct(victim->facing,victim->coords-coords)>0||(Random()%2==0)){
-											if(id==0){
-												bonus=Slashbonus;
-												bonustime=0;
-												bonusvalue=40;
-											}
+											award_bonus(id, Slashbonus);
 											escapednum=0;
 											if(tutoriallevel!=1){
 												if(normaldotproduct(victim->facing,victim->coords-coords)<0)victim->DoBloodBig(2/victim->armorhigh,190);
@@ -3309,11 +3269,7 @@ void	Person::DoAnimations(){
 										if(tutoriallevel!=1){
 											victim->DoDamage(damagemult*120/victim->protectionhigh);
 
-											if(id==0){
-												bonus=solidhit;
-												bonustime=0;
-												bonusvalue=30;
-											}
+											award_bonus(id, solidhit, 30);
 										}
 									}
 								}
@@ -3355,11 +3311,7 @@ void	Person::DoAnimations(){
 										victim->Puff(head);
 										if(tutoriallevel!=1){victim->DoDamage(damagemult*350/victim->protectionhead);
 
-										if(id==0){
-											bonus=solidhit;
-											bonustime=0;
-											bonusvalue=60;
-										}
+										award_bonus(id, solidhit, 60);
 										}
 									}
 								}
@@ -3423,11 +3375,7 @@ void	Person::DoAnimations(){
 										if(tutoriallevel!=1){victim->DoDamage(damagemult*100/victim->protectionhigh);
 
 										if(!victim->dead){
-											if(id==0){
-												bonus=solidhit;
-												bonustime=0;
-												bonusvalue=40;
-											}
+										  award_bonus(id, solidhit, 40);
 										}
 										}
 									}
@@ -3628,11 +3576,7 @@ void	Person::DoAnimations(){
 									victim->Puff(abdomen);
 									victim->DoDamage(damagemult*150/victim->protectionhigh);
 
-									if(id==0){
-										bonus=Reversal;
-										bonustime=0;
-										bonusvalue=60;
-									}
+									award_bonus(id, Reversal);
 								}
 
 								if((targetanimation==swordslashreversalanim||targetanimation==knifeslashreversalanim||targetanimation==staffhitreversalanim||targetanimation==staffspinhitreversalanim)&&animation[targetanimation].label[currentframe]==5){
@@ -3705,11 +3649,7 @@ void	Person::DoAnimations(){
 									vel[1]=velocity.y;
 									vel[2]=velocity.z;
 
-									if(id==0){
-										bonus=staffreversebonus;
-										bonustime=0;
-										bonusvalue=100;
-									}
+									award_bonus(id, staffreversebonus);
 
 									if(tutoriallevel!=1){
 										PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
@@ -3718,11 +3658,7 @@ void	Person::DoAnimations(){
 										OPENAL_SetPaused(channels[heavyimpactsound], false);
 									}
 									victim->RagDoll(0);
-									if(id==0){
-										bonus=staffreversebonus;
-										bonustime=0;
-										bonusvalue=100;
-									}
+									award_bonus(id, staffreversebonus); // Huh, again?
 
 									XYZ relative;
 									relative=victim->coords-oldcoords;
@@ -3762,11 +3698,7 @@ void	Person::DoAnimations(){
 									victim->Puff(abdomen);
 									victim->DoDamage(damagemult*90/victim->protectionhigh);
 
-									if(id==0){
-										bonus=Reversal;
-										bonustime=0;
-										bonusvalue=60;
-									}
+									award_bonus(id, Reversal);
 
 									bool doslice;
 									doslice=0;
@@ -3824,30 +3756,7 @@ void	Person::DoAnimations(){
 									victim->skeleton.joints[victim->skeleton.jointlabels[rightelbow]].velocity*=.5-1;
 									victim->skeleton.joints[victim->skeleton.jointlabels[rightshoulder]].velocity*=.7-1;
 
-									if(id==0){
-										bonus=swordreversebonus;
-										bonustime=0;
-										bonusvalue=100;
-									}
-									//victim->DoDamage(90);
-
-									/*if(weaponactive!=-1){
-									float gLoc[3];
-									float vel[3];
-									gLoc[0]=victim->coords.x;
-									gLoc[1]=victim->coords.y;
-									gLoc[2]=victim->coords.z;
-									vel[0]=velocity.x;
-									vel[1]=velocity.y;
-									vel[2]=velocity.z;
-									victim->DoBloodBig(2,225);
-									PlaySoundEx( knifeslicesound, samp[knifeslicesound], NULL, true);
-									OPENAL_3D_SetAttributes(channels[knifeslicesound], gLoc, vel);
-									OPENAL_SetVolume(channels[knifeslicesound], 512);
-									OPENAL_SetPaused(channels[knifeslicesound], false);
-									if(bloodtoggle&&!weapons.bloody[weaponids[weaponactive]])weapons.bloody[weaponids[weaponactive]]=1;
-									weapons.blooddrip[weaponids[weaponactive]]+=3;
-									}*/
+									award_bonus(id, swordreversebonus);
 								}
 
 								if(hasvictim&&targetanimation==knifeslashreversalanim&&animation[targetanimation].label[currentframe]==7){
@@ -3885,11 +3794,7 @@ void	Person::DoAnimations(){
 									victim->Puff(abdomen);
 									victim->DoDamage(damagemult*30/victim->protectionhigh);
 
-									if(id==0){
-										bonus=Reversal;
-										bonustime=0;
-										bonusvalue=60;
-									}
+									award_bonus(id, Reversal);
 								}
 
 								if(hasvictim&&targetanimation==sneakattackanim&&animation[targetanimation].label[currentframe]==7){
@@ -3939,11 +3844,7 @@ void	Person::DoAnimations(){
 											victim->DoBloodBig(2,175);
 										}
 									}
-									if(id==0){
-										bonus=spinecrusher;
-										bonustime=0;
-										bonusvalue=100;
-									}
+									award_bonus(id, spinecrusher);
 								}
 
 								if(hasvictim&&(targetanimation==knifefollowanim||targetanimation==knifesneakattackanim)&&animation[targetanimation].label[currentframe]==5){
@@ -3969,20 +3870,10 @@ void	Person::DoAnimations(){
 											Sprite::MakeSprite(bloodflamesprite, footpoint,footvel*5, 1,1,1, .3, 1);
 											Sprite::MakeSprite(bloodflamesprite, footpoint,footvel*2, 1,1,1, .3, 1);
 											victim->DoBloodBig(200,195);
-											if(id==0){
-												bonus=tracheotomy;
-												bonustime=0;
-												bonusvalue=100;
-											}
-
-											//victim->neckspurtamount=5;
+											award_bonus(id, tracheotomy);
 										}
 										if(targetanimation==knifefollowanim){
-											if(id==0){
-												bonus=Stabbonus;
-												bonustime=0;
-												bonusvalue=40;
-											}
+											award_bonus(id, Stabbonus);
 											XYZ footvel,footpoint;
 											footvel=0;
 											footpoint=weapons.tippoint[weaponids[0]];
@@ -4055,11 +3946,7 @@ void	Person::DoAnimations(){
 
 								if(hasvictim&&(targetanimation==swordsneakattackanim)&&animation[targetanimation].label[currentframe]==5){
 									if(weaponactive!=-1&&victim->bloodloss<victim->damagetolerance){
-										if(id==0){
-											bonus=backstab;
-											bonustime=0;
-											bonusvalue=100;
-										}
+										award_bonus(id, backstab);
 
 										escapednum=0;
 
@@ -4174,11 +4061,7 @@ void	Person::DoAnimations(){
 										}
 									}
 
-									if(id==0){
-										bonus=Reversal;
-										bonustime=0;
-										bonusvalue=60;
-									}
+									award_bonus(id, Reversal);
 
 									victim->Puff(neck);
 
@@ -4218,11 +4101,7 @@ void	Person::DoAnimations(){
 
 								if(hasvictim&&(targetanimation==spinkickreversalanim||targetanimation==sweepreversalanim||targetanimation==rabbitkickreversalanim||targetanimation==upunchreversalanim||targetanimation==jumpreversalanim||targetanimation==swordslashreversalanim||targetanimation==knifeslashreversalanim||targetanimation==rabbittacklereversal||targetanimation==wolftacklereversal||targetanimation==staffhitreversalanim||targetanimation==staffspinhitreversalanim))
 									if(victim->damage>victim->damagetolerance&&bonus!=reverseko){
-										if(id==0){
-											bonus=reverseko;
-											bonustime=0;
-											bonusvalue=100;
-										}
+									  award_bonus(id, reverseko);
 									}
 							}
 
@@ -4991,9 +4870,7 @@ void	Person::DoStuff(){
 			}
 
 			if(!dead&&creature==wolftype){
-				bonus=Wolfbonus;
-				bonustime=0;
-				bonusvalue=300;
+			  award_bonus(0, Wolfbonus);
 			}
 			dead=2;
 			if(targetanimation==knifefollowedanim&&!skeleton.free){
@@ -5368,9 +5245,7 @@ void	Person::DoStuff(){
 		unconscioustime=0;
 
 		if(creature==wolftype){
-			bonus=Wolfbonus;
-			bonustime=0;
-			bonusvalue=300;
+		  award_bonus(0, Wolfbonus);
 		}
 
 		RagDoll(0);
@@ -5463,11 +5338,8 @@ void	Person::DoStuff(){
 			bonusvalue=300;
 		}
 
-		if(id!=0&&unconscioustime<.1&&(bonus!=spinecrusher||bonustime>1)&&(bonus!=FinishedBonus||bonustime>1)&&bloodloss<damagetolerance){
-			bonus=touchofdeath;
-			bonustime=0;
-			bonusvalue=150;
-		}
+		if(unconscioustime<.1&&(bonus!=spinecrusher||bonustime>1)&&(bonus!=FinishedBonus||bonustime>1)&&bloodloss<damagetolerance)
+		  award_bonus(id, touchofdeath);
 		if(id!=0&&unconscioustime>.1){
 			numafterkill++;
 		}
@@ -5517,11 +5389,8 @@ void	Person::DoStuff(){
 		skeleton.DoGravity(&scale);
 		float damageamount;
 		damageamount=skeleton.DoConstraints(&coords,&scale)*5;
-		if(id!=0&&damage>damagetolerance-damageamount&&!dead&&(bonus!=spinecrusher||bonustime>1)&&(bonus!=style||bonustime>1)&&(bonus!=cannon||bonustime>1)){
-			bonus=deepimpact;
-			bonustime=0;
-			bonusvalue=50;
-		}
+		if(damage>damagetolerance-damageamount&&!dead&&(bonus!=spinecrusher||bonustime>1)&&(bonus!=style||bonustime>1)&&(bonus!=cannon||bonustime>1))
+		  award_bonus(id, deepimpact);
 		DoDamage(damageamount/((protectionhigh+protectionhead+protectionlow)/3));
 
 		average=0;

@@ -23,14 +23,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define AWARDS_H
 
 enum bonus_types {
-#define DECLARE_BONUS(id, name) id,
+#define DECLARE_BONUS(id, ...) id,
 #include "Bonuses.def"
 #undef DECLARE_BONUS
 bonus_count
 };
 
 static const char *bonus_names[bonus_count] = {
-#define DECLARE_BONUS(id, name) name,
+#define DECLARE_BONUS(id, name, ...) name,
 #include "Bonuses.def"
 #undef DECLARE_BONUS
 };
@@ -41,6 +41,8 @@ extern float bonustotal;
 extern float bonustime;
 extern float startbonustotal;
 extern float bonusnum[100];
+
+extern void award_bonus(int playerid, int bonusid, int alt_value = 0);
 
 enum award_types {
 #define DECLARE_AWARD(id, name) id,

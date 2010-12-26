@@ -30,6 +30,21 @@ float startbonustotal;
 float bonustime;
 float bonusnum[100];
 
+static const int bonus_values[bonus_count] = {
+#define DECLARE_BONUS(id, name, value, ...) value,
+#include "Bonuses.def"
+#undef DECLARE_BONUS
+};
+
+void
+award_bonus(int playerid, int bonusid, int alt_value)
+{
+  if (playerid != 0)
+    return;
+  bonus = bonusid;
+  bonustime = 0;
+  bonusvalue = alt_value ? alt_value : bonus_values[bonusid];
+}
 
 // FIXME: make these per-player
 float damagetaken;

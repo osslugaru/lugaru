@@ -275,16 +275,10 @@ void	Weapons::DoStuff(){
 									OPENAL_SetVolume(channels[fleshstabsound], 128);
 									OPENAL_SetPaused(channels[fleshstabsound], false);
 
-									if(animation[player[0].targetanimation].height==highheight){
-										bonus=ninja;
-										bonustime=0;
-										bonusvalue=60;
-									}
-									else{
-										bonus=Bullseyebonus;
-										bonustime=0;
-										bonusvalue=30;
-									}
+									if(animation[player[0].targetanimation].height==highheight)
+									  award_bonus(0, ninja);
+									else
+									  award_bonus(0, Bullseyebonus);
 								}
 							}
 							else missed[i]=1;
