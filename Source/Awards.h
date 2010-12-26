@@ -22,6 +22,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef AWARDS_H
 #define AWARDS_H
 
+enum bonus_types {
+#define DECLARE_BONUS(id, name) id,
+#include "Bonuses.def"
+#undef DECLARE_BONUS
+bonus_count
+};
+
+static const char *bonus_names[bonus_count] = {
+#define DECLARE_BONUS(id, name) name,
+#include "Bonuses.def"
+#undef DECLARE_BONUS
+};
+
 enum award_types {
 #define DECLARE_AWARD(id, name) id,
 #include "Awards.def"

@@ -586,38 +586,16 @@ int Game::DrawGLScene(StereoSide side)
 
 			if(!tutoriallevel)
 				if(bonus>0&&bonustime<1&&!winfreeze&&indialogue==-1/*bonustime<4*/){
-					if(bonus==tracheotomy)sprintf (string, "Tracheotomy!");
-					else if(bonus==backstab)sprintf (string, "Backstabber!");
-					else if(bonus==spinecrusher)sprintf (string, "Spinecrusher!");
-					else if(bonus==ninja)sprintf (string, "Ninja Bonus!");
-					else if(bonus==style)sprintf (string, "Style Bonus!");
-					else if(bonus==cannon)sprintf (string, "Leg Cannon!");
-					else if(bonus==aimbonus)sprintf (string, "Nice Aim!");
-					else if(bonus==deepimpact)sprintf (string, "Heavy Impact!");
-					else if(bonus==touchofdeath)sprintf (string, "Touch of Death!");
-					else if(bonus==swordreversebonus)sprintf (string, "Sword Disarm!");
-					else if(bonus==staffreversebonus)sprintf (string, "Staff Disarm!");
-					else if(bonus==reverseko)sprintf (string, "Reversal KO!");
-					else if(bonus==solidhit)sprintf (string, "Solid Hit!");
-					else if(bonus==twoxcombo)sprintf (string, "2X Combo!");
-					else if(bonus==threexcombo)sprintf (string, "3X Combo!");
-					else if(bonus==fourxcombo)sprintf (string, "4X COMBO!");
-					else if(bonus==megacombo)sprintf (string, "MEGA COMBO!");
-					else if(bonus==Reversal)sprintf (string, "Reversal!");
-					else if(bonus==Stabbonus)sprintf (string, "Punctured!");
-					else if(bonus==Slicebonus)sprintf (string, "Sliced!");
-					else if(bonus==Bullseyebonus)sprintf (string, "Bullseye!");
-					else if(bonus==Slashbonus)sprintf (string, "Slashed!");
-					else if(bonus==Wolfbonus)sprintf (string, "WOLF SLAYER!");
-					else if(bonus==FinishedBonus)sprintf (string, "SLAIN!");
-					else if(bonus==TackleBonus)sprintf (string, "Tackle!");
-					else if(bonus==AboveBonus)sprintf (string, "Death from Above!");
-					else sprintf (string, "Excellent!");
+					const char *bonus_name;
+					if (bonus < bonus_count)
+					  bonus_name = bonus_names[bonus];
+					else
+					  bonus_name = "Excellent!"; // When does this happen?
 
 					glColor4f(0,0,0,1-bonustime);
-					text.glPrintOutline(1024/2-10*strlen(string)-4,768/16-4+768*4/5,string,1,2.5,1024,768);
+					text.glPrintOutline(1024/2-10*strlen(bonus_name)-4,768/16-4+768*4/5,bonus_name,1,2.5,1024,768);
 					glColor4f(1,0,0,1-bonustime);
-					text.glPrint(1024/2-10*strlen(string),768/16+768*4/5,string,1,2,1024,768);
+					text.glPrint(1024/2-10*strlen(bonus_name),768/16+768*4/5,bonus_name,1,2,1024,768);
 
 					sprintf (string, "%d",(int)bonusvalue);
 					glColor4f(0,0,0,1-bonustime);

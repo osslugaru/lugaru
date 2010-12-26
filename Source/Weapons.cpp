@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Animation.h"
 #include "Sounds.h"
 #include "Game.h"
+#include "Awards.h"
 
 extern float multiplier;
 extern int channels[100];

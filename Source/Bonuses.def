@@ -1,0 +1,48 @@
+/*
+Copyright (C) 2010 - Lugaru authors
+
+This file is part of Lugaru.
+
+Lugaru is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
+
+DECLARE_BONUS(nobonus, "")
+DECLARE_BONUS(tracheotomy, "Tracheotomy!")
+DECLARE_BONUS(backstab, "Backstabber!")
+DECLARE_BONUS(spinecrusher, "Spinecrusher!")
+DECLARE_BONUS(ninja, "Ninja Bonus!")
+DECLARE_BONUS(style, "Style Bonus!")
+DECLARE_BONUS(cannon, "Leg Cannon!")
+DECLARE_BONUS(aimbonus, "Nice Aim!")
+DECLARE_BONUS(deepimpact, "Heavy Impact!")
+DECLARE_BONUS(touchofdeath, "Touch of Death!")
+DECLARE_BONUS(swordreversebonus, "Sword Disarm!")
+DECLARE_BONUS(staffreversebonus, "Staff Disarm!")
+DECLARE_BONUS(reverseko, "Reversal KO!")
+DECLARE_BONUS(solidhit, "Solid Hit!")
+DECLARE_BONUS(twoxcombo, "2X Combo!")
+DECLARE_BONUS(threexcombo, "3X Combo!")
+DECLARE_BONUS(fourxcombo, "4X COMBO!")
+DECLARE_BONUS(megacombo, "MEGA COMBO!")
+DECLARE_BONUS(Reversal, "Reversal!")
+DECLARE_BONUS(Stabbonus, "Punctured!")
+DECLARE_BONUS(Slicebonus, "Sliced!")
+DECLARE_BONUS(Bullseyebonus, "Bullseye!")
+DECLARE_BONUS(Slashbonus, "Slashed!")
+DECLARE_BONUS(Wolfbonus, "WOLF SLAYER!")
+DECLARE_BONUS(FinishedBonus, "SLAIN!")
+DECLARE_BONUS(TackleBonus, "Tackle!")
+DECLARE_BONUS(AboveBonus, "Death from Above!")

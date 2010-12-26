@@ -42,33 +42,6 @@ static const char *editortypenames[] = {
   "dead1", "dead2", "dead3", "dead4"
 };
 
-const int tracheotomy = 1;
-const int backstab = 2;
-const int spinecrusher = 3;
-const int ninja = 4;
-const int style = 5;
-const int cannon = 6;
-const int aimbonus = 7;
-const int deepimpact = 8;
-const int touchofdeath = 9;
-const int swordreversebonus = 10;
-const int staffreversebonus = 11;
-const int reverseko = 12;
-const int solidhit = 13;
-const int twoxcombo = 14;
-const int threexcombo = 15;
-const int fourxcombo = 16;
-const int megacombo = 17;
-const int Reversal = 18;
-const int Stabbonus = 19;
-const int Slicebonus = 20;
-const int Bullseyebonus = 21;
-const int Slashbonus = 22;
-const int Wolfbonus = 23;
-const int FinishedBonus = 24;
-const int TackleBonus = 25;
-const int AboveBonus = 26;
-
 const int boneconnect = 0;
 const int constraint = 1;
 const int muscle = 2;
