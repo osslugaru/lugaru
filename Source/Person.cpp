@@ -1819,10 +1819,8 @@ void	Person::DoAnimations(){
 						victim->spurt=1;
 						victim->DoBloodBig(1/victim->armorhead,210);
 					}
-					award_bonus(id, TackleBonus);
-					if(id==0){
-						if(victim->aitype==gethelptype)bonusvalue=50;
-					}
+					award_bonus(id, TackleBonus,
+						    victim->aitype == gethelptype ? 50 : 0);
 				}
 			}
 
