@@ -32,6 +32,7 @@ DECLARE_BONUS(touchofdeath, "Touch of Death!", 150)
 DECLARE_BONUS(swordreversebonus, "Sword Disarm!", 100)
 DECLARE_BONUS(staffreversebonus, "Staff Disarm!", 100)
 DECLARE_BONUS(reverseko, "Reversal KO!", 100)
+// The following five should be kept in that order
 DECLARE_BONUS(solidhit, "Solid Hit!", 10)
 DECLARE_BONUS(twoxcombo, "2X Combo!", 20)
 DECLARE_BONUS(threexcombo, "3X Combo!", 40)

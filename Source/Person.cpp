@@ -357,22 +357,13 @@ bool Person::isWallJump(){
 	else return 0;
 }
 
-void SolidHitBonus(){
-	if(bonustime<1.5&&(bonus==fourxcombo||bonus==megacombo)){
-	  award_bonus(0, megacombo);
-	}
-	else if(bonustime<1.5&&bonus==threexcombo){
-	  award_bonus(0, fourxcombo);
-	}
-	else if(bonustime<1.5&&bonus==twoxcombo){
-	  award_bonus(0, threexcombo);
-	}
-	else if(bonustime<1.5&&bonus==solidhit){
-	  award_bonus(0, twoxcombo);
-	}
-	else {
-	  award_bonus(0, solidhit);
-	}
+static void
+SolidHitBonus(int playerid)
+{
+  if (bonustime < 1.5 && bonus >= solidhit && bonus <= megacombo)
+    award_bonus(playerid, bonus == megacombo ? bonus : bonus + 1);
+  else
+    award_bonus(playerid, solidhit);
 }
 
 void Person::DoBlood(float howmuch,int which){
@@ -2295,9 +2286,7 @@ void	Person::DoAnimations(){
 										victim->Puff(head);
 										victim->DoDamage(damagemult*100/victim->protectionhead);
 
-										if(id==0){
-											SolidHitBonus();
-										}
+										SolidHitBonus(id);
 									}
 								}
 
@@ -2389,12 +2378,10 @@ void	Person::DoAnimations(){
 										victim->Puff(head);
 										victim->DoDamage(damagemult*150/victim->protectionhead);
 
-										if(victim->damage>victim->damagetolerance){
+										if(victim->damage>victim->damagetolerance)
 										  award_bonus(id, style);
-										}
-										else if(id==0){
-											SolidHitBonus();
-										}
+										else
+										  SolidHitBonus(id);
 									}
 								}
 
@@ -2440,12 +2427,10 @@ void	Person::DoAnimations(){
 										victim->Puff(head);
 										victim->DoDamage(damagemult*150/victim->protectionhead);
 
-										if(victim->damage>victim->damagetolerance){
+										if(victim->damage>victim->damagetolerance)
 										  award_bonus(id, style);
-										}
-										else if(id==0){
-											SolidHitBonus();
-										}
+										else
+										  SolidHitBonus(id);
 									}
 								}
 
@@ -2605,9 +2590,8 @@ void	Person::DoAnimations(){
 										for(i=0;i<victim->skeleton.num_joints;i++){
 											victim->skeleton.joints[i].velocity+=relative*damagemult*20;
 										}
-										if(id==0&&!victim->dead){
-											SolidHitBonus();
-										}
+										if(!victim->dead)
+										  SolidHitBonus(id);
 
 										victim->Puff(abdomen);
 										victim->DoDamage(damagemult*20/victim->protectionhigh);
@@ -2885,9 +2869,7 @@ void	Person::DoAnimations(){
 										victim->Puff(abdomen);
 										victim->DoDamage(damagemult*60/victim->protectionhigh);
 
-										if(id==0){
-											SolidHitBonus();
-										}
+										SolidHitBonus(id);
 									}
 								}
 
@@ -2952,9 +2934,7 @@ void	Person::DoAnimations(){
 										victim->Puff(abdomen);
 										victim->DoDamage(damagemult*60/victim->protectionhigh);
 
-										if(id==0){
-											SolidHitBonus();
-										}
+										SolidHitBonus(id);
 									}
 								}
 
@@ -3396,9 +3376,7 @@ void	Person::DoAnimations(){
 										relative.y=0;
 										Normalise(&relative);
 
-										if(id==0){
-											SolidHitBonus();
-										}
+										SolidHitBonus(id);
 
 										if(animation[victim->targetanimation].height==lowheight){
 											if(Random()%2){
@@ -3523,9 +3501,7 @@ void	Person::DoAnimations(){
 											victim->DoDamage(damagemult*30/victim->protectionlow);
 										}
 
-										if(id==0){
-											SolidHitBonus();
-										}
+										SolidHitBonus(id);
 
 									}
 								}
@@ -4485,7 +4461,7 @@ void	Person::DoAnimations(){
 										//DoDamage(100);
 										RagDoll(0);
 										skeleton.spinny=0;
-										if(id!=0)SolidHitBonus();
+										SolidHitBonus(!id); // FIXME: tricky id
 									}
 									if(feint){
 										escapednum++;
@@ -4508,7 +4484,7 @@ void	Person::DoAnimations(){
 										//DoDamage(100);
 										RagDoll(0);
 										skeleton.spinny=0;
-										if(id!=0)SolidHitBonus();
+										SolidHitBonus(!id); // FIXME: tricky id
 									}
 									if(feint){
 										escapednum++;
