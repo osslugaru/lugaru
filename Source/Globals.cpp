@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Animation.h"
 
 bool visibleloading = 0;
-int channels[100] = {0};
 
 float volume = 0;
 bool ismotionblur = 0;

@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdlib.h>
 #include <string.h>
 
+#include "Quaternions.h"
 #include "openal_wrapper.h"
 #include "Sounds.h"
 
@@ -182,6 +183,16 @@ AL_API signed char OPENAL_3D_SetAttributes(int channel, const float *pos, const 
         set_channel_position(channel, pos[0], pos[1], -pos[2]);
 
     // we ignore velocity, since doppler's broken in the Linux AL at the moment...
+
+    return true;
+}
+
+AL_API signed char OPENAL_3D_SetAttributes_(int channel, const XYZ &pos, const float *vel)
+{
+    if (!initialized) return false;
+    if ((channel < 0) || (channel >= num_channels)) return false;
+
+    set_channel_position(channel, pos.x, pos.y, -pos.z);
 
     return true;
 }

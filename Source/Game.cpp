@@ -218,12 +218,7 @@ typedef struct {
 } params_thread;
 
 void Game::fireSound(int sound) {
-	float gLoc[3]={0,0,0};
-	float vel[3]={0,0,0};
-	PlaySoundEx( sound, samp[sound], NULL, true);
-	OPENAL_3D_SetAttributes(channels[sound], gLoc, vel);
-	OPENAL_SetVolume(channels[sound], 256);
-	OPENAL_SetPaused(channels[sound], false);
+	emit_sound_at(sound);
 }
 
 void Game::inputText(char* str, int* charselected, int* nb_chars) {

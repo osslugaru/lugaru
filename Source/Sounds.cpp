@@ -19,12 +19,15 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include "Quaternions.h"
 #include "Sounds.h"
 #include "openal_wrapper.h"
 
 struct OPENAL_SAMPLE *samp[sounds_count];
 
 int footstepsound, footstepsound2, footstepsound3, footstepsound4;
+
+int channels[100];
 
 static const char *sound_data[sounds_count] = {
 #define DECLARE_SOUND(id, filename) filename,
@@ -68,5 +71,14 @@ void loadAllSounds()
   // OPENAL_Sample_SetMode(samp[whooshsound], OPENAL_LOOP_NORMAL);
   for (int i = stream_firesound; i <= stream_music3; i++)
     OPENAL_Stream_SetMode(samp[i], OPENAL_LOOP_NORMAL);
+}
+
+void
+emit_sound_at(int soundid, const XYZ &pos, float vol)
+{
+  PlaySoundEx (soundid, samp[soundid], NULL, true);
+  OPENAL_3D_SetAttributes_ (channels[soundid], pos, NULL);
+  OPENAL_SetVolume (channels[soundid], vol);
+  OPENAL_SetPaused (channels[soundid], false);
 }
 

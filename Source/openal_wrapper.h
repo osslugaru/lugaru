@@ -70,6 +70,7 @@ extern "C" {
 
 AL_API void OPENAL_3D_Listener_SetAttributes(const float *pos, const float *vel, float fx, float fy, float fz, float tx, float ty, float tz);
 AL_API signed char OPENAL_3D_SetAttributes(int channel, const float *pos, const float *vel);
+AL_API signed char OPENAL_3D_SetAttributes_(int channel, const XYZ &pos, const float *vel);
 AL_API signed char OPENAL_Init(int mixrate, int maxsoftwarechannels, unsigned int flags);
 AL_API void OPENAL_Close();
 AL_API OPENAL_SAMPLE *OPENAL_Sample_Load(int index, const char *name_or_data, unsigned int mode, int offset, int length);
@@ -83,6 +84,7 @@ AL_API void OPENAL_Stream_Close(OPENAL_STREAM *stream);
 AL_API signed char OPENAL_Stream_SetMode(OPENAL_STREAM *stream, unsigned int mode);
 AL_API void OPENAL_Update();
 AL_API signed char OPENAL_SetOutput(int outputtype);
+void PlaySoundEx(int chan, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 
 #ifdef __cplusplus
 }
