@@ -82,3 +82,12 @@ emit_sound_at(int soundid, const XYZ &pos, float vol)
   OPENAL_SetPaused (channels[soundid], false);
 }
 
+void
+emit_stream_at(int soundid, const XYZ &pos, float vol)
+{
+  PlayStreamEx (soundid, samp[soundid], NULL, true);
+  OPENAL_3D_SetAttributes_ (channels[soundid], pos, NULL);
+  OPENAL_SetVolume (channels[soundid], vol);
+  OPENAL_SetPaused (channels[soundid], false);
+}
+

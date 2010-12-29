@@ -85,18 +85,7 @@ void	Weapons::DoStuff(){
 			oldowner[i]=owner[i];
 		}
 		if(damage[i]>=2&&type[i]==staff&&owner[i]!=-1){
-			float gLoc[3];
-			float vel[3];
-			gLoc[0]=tippoint[i].x;
-			gLoc[1]=tippoint[i].y;
-			gLoc[2]=tippoint[i].z;
-			vel[0]=0;
-			vel[1]=0;
-			vel[2]=0;
-			PlaySoundEx( staffbreaksound, samp[staffbreaksound], NULL, true);
-			OPENAL_3D_SetAttributes(channels[staffbreaksound], gLoc, vel);
-			OPENAL_SetVolume(channels[staffbreaksound], 256);
-			OPENAL_SetPaused(channels[staffbreaksound], false);
+			emit_sound_at(staffbreaksound, tippoint[i]);
 			XYZ tempvel;
 			XYZ speed;
 			//speed=(tippoint[i]-oldtippoint[i])/multiplier/6;
@@ -169,18 +158,7 @@ void	Weapons::DoStuff(){
 								bigtilt2[i]=0;
 								bigrotation[i]=0;
 
-								float gLoc[3];
-								float vel[3];
-								gLoc[0]=position[i].x;
-								gLoc[1]=position[i].y;
-								gLoc[2]=position[i].z;
-								vel[0]=0;
-								vel[1]=0;
-								vel[2]=0;
-								PlaySoundEx( knifesheathesound, samp[knifesheathesound], NULL, true);
-								OPENAL_3D_SetAttributes(channels[knifesheathesound], gLoc, vel);
-								OPENAL_SetVolume(channels[knifesheathesound], 128);
-								OPENAL_SetPaused(channels[knifesheathesound], false);
+								emit_sound_at(knifesheathesound, position[i], 128.);
 
 								bloody[i]=0;
 
@@ -204,18 +182,7 @@ void	Weapons::DoStuff(){
 							if((player[j].aitype!=attacktypecutoff||abs(Random()%6)==0||(player[j].targetanimation!=backhandspringanim&&player[j].targetanimation!=rollanim&&player[j].targetanimation!=flipanim&&Random()%2==0))&&!missed[i]){
 								bool caught=0;
 								if((player[j].creature==wolftype&&Random()%3!=0&&player[j].weaponactive==-1&&(player[j].isIdle()||player[j].isRun()||player[j].targetanimation==walkanim))||(player[j].creature==rabbittype&&Random()%2==0&&player[j].aitype==attacktypecutoff&&player[j].weaponactive==-1)){
-									float gLoc[3];
-									float vel[3];
-									gLoc[0]=player[j].coords.x;
-									gLoc[1]=player[j].coords.y;
-									gLoc[2]=player[j].coords.z;
-									vel[0]=player[j].velocity.x;
-									vel[1]=player[j].velocity.y;
-									vel[2]=player[j].velocity.z;
-									PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, true);
-									OPENAL_3D_SetAttributes(channels[knifedrawsound], gLoc, vel);
-									OPENAL_SetVolume(channels[knifedrawsound], 128);
-									OPENAL_SetPaused(channels[knifedrawsound], false);
+									emit_sound_at(knifedrawsound, player[j].coords, 128.);
 
 									player[j].weaponactive=0;
 									player[j].targetanimation=removeknifeanim;
@@ -262,18 +229,7 @@ void	Weapons::DoStuff(){
 										blooddrip[i]=5;
 									}
 
-									float gLoc[3];
-									float vel[3];
-									gLoc[0]=position[i].x;
-									gLoc[1]=position[i].y;
-									gLoc[2]=position[i].z;
-									vel[0]=0;
-									vel[1]=0;
-									vel[2]=0;
-									PlaySoundEx( fleshstabsound, samp[fleshstabsound], NULL, true);
-									OPENAL_3D_SetAttributes(channels[fleshstabsound], gLoc, vel);
-									OPENAL_SetVolume(channels[fleshstabsound], 128);
-									OPENAL_SetPaused(channels[fleshstabsound], false);
+									emit_sound_at(fleshstabsound, position[i], 128.);
 
 									if(animation[player[0].targetanimation].height==highheight)
 									  award_bonus(0, ninja);
@@ -325,18 +281,7 @@ void	Weapons::DoStuff(){
 							bigtilt2[i]=0;
 							bigrotation[i]=0;
 
-							float gLoc[3];
-							float vel[3];
-							gLoc[0]=position[i].x;
-							gLoc[1]=position[i].y;
-							gLoc[2]=position[i].z;
-							vel[0]=0;
-							vel[1]=0;
-							vel[2]=0;
-							PlaySoundEx( knifesheathesound, samp[knifesheathesound], NULL, true);
-							OPENAL_3D_SetAttributes(channels[knifesheathesound], gLoc, vel);
-							OPENAL_SetVolume(channels[knifesheathesound], 128);
-							OPENAL_SetPaused(channels[knifesheathesound], false);
+							emit_sound_at(knifesheathesound, position[i], 128.);
 
 							XYZ terrainlight;
 							terrainlight=terrain.getLighting(position[i].x,position[i].z);
@@ -473,21 +418,10 @@ void	Weapons::DoStuff(){
 								velocity[i]+=bounceness*elasticity;
 
 								if(findLengthfast(&bounceness)>1){
-									float gLoc[3];
-									float vel[3];
-									//int whichsound=clank1sound+abs(Random()%4);
 									int whichsound;
 									if(type[i]==staff)whichsound=footstepsound3+abs(Random()%2);
-									if(type[i]!=staff)whichsound=clank1sound+abs(Random()%4);gLoc[0]=position[i].x;
-									gLoc[1]=position[i].y;
-									gLoc[2]=position[i].z;
-									vel[0]=0;
-									vel[1]=0;
-									vel[2]=0;
-									PlaySoundEx( whichsound, samp[whichsound], NULL, true);
-									OPENAL_3D_SetAttributes(channels[whichsound], gLoc, vel);
-									OPENAL_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
-									OPENAL_SetPaused(channels[whichsound], false);
+									if(type[i]!=staff)whichsound=clank1sound+abs(Random()%4);
+									emit_sound_at(whichsound, position[i], 128*findLengthfast(&bounceness));
 								}
 							}
 							start=oldtippoint[i];
@@ -509,22 +443,10 @@ void	Weapons::DoStuff(){
 								tipvelocity[i]+=bounceness*elasticity;
 
 								if(findLengthfast(&bounceness)>1){
-									float gLoc[3];
-									float vel[3];
-									//int whichsound=clank1sound+abs(Random()%4);
 									int whichsound;
 									if(type[i]==staff)whichsound=footstepsound3+abs(Random()%2);
-									if(type[i]!=staff)whichsound=clank1sound+abs(Random()%4);gLoc[0]=position[i].x;
-									gLoc[0]=position[i].x;
-									gLoc[1]=position[i].y;
-									gLoc[2]=position[i].z;
-									vel[0]=0;
-									vel[1]=0;
-									vel[2]=0;
-									PlaySoundEx( whichsound, samp[whichsound], NULL, true);
-									OPENAL_3D_SetAttributes(channels[whichsound], gLoc, vel);
-									OPENAL_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
-									OPENAL_SetPaused(channels[whichsound], false);
+									if(type[i]!=staff)whichsound=clank1sound+abs(Random()%4);
+									emit_sound_at(whichsound, position[i], 128*findLengthfast(&bounceness));
 								}
 							}
 
@@ -552,21 +474,10 @@ void	Weapons::DoStuff(){
 										velocity[i]+=bounceness*elasticity;
 
 										if(findLengthfast(&bounceness)>1){
-											float gLoc[3];
-											float vel[3];
-											//int whichsound=clank1sound+abs(Random()%4);
 											int whichsound;
 											if(type[i]==staff)whichsound=footstepsound3+abs(Random()%2);
-											if(type[i]!=staff)whichsound=clank1sound+abs(Random()%4);gLoc[0]=mid.x;
-											gLoc[1]=mid.y;
-											gLoc[2]=mid.z;
-											vel[0]=0;
-											vel[1]=0;
-											vel[2]=0;
-											PlaySoundEx( whichsound, samp[whichsound], NULL, true);
-											OPENAL_3D_SetAttributes(channels[whichsound], gLoc, vel);
-											OPENAL_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
-											OPENAL_SetPaused(channels[whichsound], false);
+											if(type[i]!=staff)whichsound=clank1sound+abs(Random()%4);
+											emit_sound_at(whichsound, mid, 128*findLengthfast(&bounceness));
 										}
 										position[i]+=(mid-oldmid2)*(20/(1+(float)m*10));
 									}
@@ -593,21 +504,10 @@ void	Weapons::DoStuff(){
 										tipvelocity[i]+=bounceness*elasticity;
 
 										if(findLengthfast(&bounceness)>1){
-											float gLoc[3];
-											float vel[3];
-											//int whichsound=clank1sound+abs(Random()%4);
 											int whichsound;
 											if(type[i]==staff)whichsound=footstepsound3+abs(Random()%2);
-											if(type[i]!=staff)whichsound=clank1sound+abs(Random()%4);gLoc[0]=mid.x;
-											gLoc[1]=mid.y;
-											gLoc[2]=mid.z;
-											vel[0]=0;
-											vel[1]=0;
-											vel[2]=0;
-											PlaySoundEx( whichsound, samp[whichsound], NULL, true);
-											OPENAL_3D_SetAttributes(channels[whichsound], gLoc, vel);
-											OPENAL_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
-											OPENAL_SetPaused(channels[whichsound], false);
+											if(type[i]!=staff)whichsound=clank1sound+abs(Random()%4);
+											emit_sound_at(whichsound, mid, 128*findLengthfast(&bounceness));
 										}
 										tippoint[i]+=(mid-oldmid2)*(20/(1+(float)m*10));
 									}

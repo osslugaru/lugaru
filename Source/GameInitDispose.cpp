@@ -1260,12 +1260,7 @@ void Game::LoadStuff()
 	}
 
 	if(targetlevel!=7){
-		float gLoc[3]={0,0,0};
-		float vel[3]={0,0,0};
-		PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-		OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-		OPENAL_SetVolume(channels[fireendsound], 256);
-		OPENAL_SetPaused(channels[fireendsound], false);
+		emit_sound_at(fireendsound);
 	}
 
 	stillloading=0;

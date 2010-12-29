@@ -414,19 +414,8 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 						if(joints[i].label==groin&&!joints[i].locked&&joints[i].delay<=0){
 							joints[i].locked=1;
 							joints[i].delay=1;
-							static float gLoc[3];
-							static float vel[3];
-							gLoc[0]=joints[i].position.x*(*scale)+coords->x;
-							gLoc[1]=joints[i].position.y*(*scale)+coords->y;
-							gLoc[2]=joints[i].position.z*(*scale)+coords->z;
-							vel[0]=joints[i].velocity.x;
-							vel[1]=joints[i].velocity.y;
-							vel[2]=joints[i].velocity.z;
 							if(tutoriallevel!=1||id==0){
-								PlaySoundEx( landsound1, samp[landsound1], NULL, true);
-								OPENAL_3D_SetAttributes(channels[landsound1], gLoc, vel);
-								OPENAL_SetVolume(channels[landsound1], 128);
-								OPENAL_SetPaused(channels[landsound1], false);
+								emit_sound_at(landsound1, joints[i].position*(*scale)+*coords, 128.);
 							}
 							breaking=1;
 						}
@@ -434,19 +423,8 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 						if(joints[i].label==head&&!joints[i].locked&&joints[i].delay<=0){
 							joints[i].locked=1;
 							joints[i].delay=1;
-							static float gLoc[3];
-							static float vel[3];
-							gLoc[0]=joints[i].position.x*(*scale)+coords->x;
-							gLoc[1]=joints[i].position.y*(*scale)+coords->y;
-							gLoc[2]=joints[i].position.z*(*scale)+coords->z;
-							vel[0]=joints[i].velocity.x;
-							vel[1]=joints[i].velocity.y;
-							vel[2]=joints[i].velocity.z;
 							if(tutoriallevel!=1||id==0){
-								PlaySoundEx( landsound2, samp[landsound2], NULL, true);
-								OPENAL_3D_SetAttributes(channels[landsound2], gLoc, vel);
-								OPENAL_SetVolume(channels[landsound2], 128);
-								OPENAL_SetPaused(channels[landsound2], false);
+								emit_sound_at(landsound2, joints[i].position*(*scale)+*coords, 128.);
 							}
 						}
 
@@ -468,18 +446,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 								breaking=0;
 								camerashake+=.6;
 
-								static float gLoc[3];
-								static float vel[3];
-								gLoc[0]=joints[i].position.x*(*scale)+coords->x;
-								gLoc[1]=joints[i].position.y*(*scale)+coords->y;
-								gLoc[2]=joints[i].position.z*(*scale)+coords->z;
-								vel[0]=joints[i].velocity.x;
-								vel[1]=joints[i].velocity.y;
-								vel[2]=joints[i].velocity.z;
-								PlaySoundEx( breaksound2, samp[breaksound2], NULL, true);
-								OPENAL_3D_SetAttributes(channels[breaksound2], gLoc, vel);
-								OPENAL_SetVolume(channels[breaksound2], 300);
-								OPENAL_SetPaused(channels[breaksound2], false);
+								emit_sound_at(breaksound2, joints[i].position*(*scale)+*coords);
 
 								envsound[numenvsounds]=*coords;
 								envsoundvol[numenvsounds]=64;
@@ -536,19 +503,8 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 										if(joints[i].label==groin&&!joints[i].locked&&joints[i].delay<=0){
 											joints[i].locked=1;
 											joints[i].delay=1;
-											static float gLoc[3];
-											static float vel[3];
-											gLoc[0]=joints[i].position.x*(*scale)+coords->x;
-											gLoc[1]=joints[i].position.y*(*scale)+coords->y;
-											gLoc[2]=joints[i].position.z*(*scale)+coords->z;
-											vel[0]=joints[i].velocity.x;
-											vel[1]=joints[i].velocity.y;
-											vel[2]=joints[i].velocity.z;
 											if(tutoriallevel!=1||id==0){
-												PlaySoundEx( landsound1, samp[landsound1], NULL, true);
-												OPENAL_3D_SetAttributes(channels[landsound1], gLoc, vel);
-												OPENAL_SetVolume(channels[landsound1], 128);
-												OPENAL_SetPaused(channels[landsound1], false);
+												emit_sound_at(landsound1, joints[i].position*(*scale)+*coords, 128.);
 											}
 											breaking=1;
 										}
@@ -556,19 +512,8 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 										if(joints[i].label==head&&!joints[i].locked&&joints[i].delay<=0){
 											joints[i].locked=1;
 											joints[i].delay=1;
-											static float gLoc[3];
-											static float vel[3];
-											gLoc[0]=joints[i].position.x*(*scale)+coords->x;
-											gLoc[1]=joints[i].position.y*(*scale)+coords->y;
-											gLoc[2]=joints[i].position.z*(*scale)+coords->z;
-											vel[0]=joints[i].velocity.x;
-											vel[1]=joints[i].velocity.y;
-											vel[2]=joints[i].velocity.z;
 											if(tutoriallevel!=1||id==0){
-												PlaySoundEx( landsound2, samp[landsound2], NULL, true);
-												OPENAL_3D_SetAttributes(channels[landsound2], gLoc, vel);
-												OPENAL_SetVolume(channels[landsound2], 128);
-												OPENAL_SetPaused(channels[landsound2], false);
+												emit_sound_at(landsound2, joints[i].position*(*scale)+*coords, 128.);
 											}
 										}
 
@@ -586,18 +531,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 												breaking=0;
 												camerashake+=.6;
 
-												static float gLoc[3];
-												static float vel[3];
-												gLoc[0]=joints[i].position.x*(*scale)+coords->x;
-												gLoc[1]=joints[i].position.y*(*scale)+coords->y;
-												gLoc[2]=joints[i].position.z*(*scale)+coords->z;
-												vel[0]=joints[i].velocity.x;
-												vel[1]=joints[i].velocity.y;
-												vel[2]=joints[i].velocity.z;
-												PlaySoundEx( breaksound2, samp[breaksound2], NULL, true);
-												OPENAL_3D_SetAttributes(channels[breaksound2], gLoc, vel);
-												OPENAL_SetVolume(channels[breaksound2], 300);
-												OPENAL_SetPaused(channels[breaksound2], false);
+												emit_sound_at(breaksound2, joints[i].position*(*scale)+*coords);
 
 												envsound[numenvsounds]=*coords;
 												envsoundvol[numenvsounds]=64;

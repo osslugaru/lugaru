@@ -107,20 +107,8 @@ void Person::CheckKick(){
 					if(animation[victim->targetanimation].height!=lowheight){
 						victim->spurt=1;
 						DoBlood(.2,250);
-						float gLoc[3];
-						float vel[3];
-						gLoc[0]=victim->coords.x;
-						gLoc[1]=victim->coords.y;
-						gLoc[2]=victim->coords.z;
-						vel[0]=velocity.x;
-						vel[1]=velocity.y;
-						vel[2]=velocity.z;
-						if(tutoriallevel!=1){
-							PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
-							OPENAL_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
-							OPENAL_SetVolume(channels[heavyimpactsound], 128);
-							OPENAL_SetPaused(channels[heavyimpactsound], false);
-						}
+						if(tutoriallevel!=1)
+						  emit_sound_at(heavyimpactsound, victim->coords);
 						victim->RagDoll(0);
 						relative=velocity;
 						relative.y=0;
@@ -177,27 +165,9 @@ void Person::CatchFire(){
 
 	onfiredelay=0.5;
 
-	float gLoc[3];
-	float vel[3];
-	gLoc[0]=coords.x;
-	gLoc[1]=coords.y;
-	gLoc[2]=coords.z;
-	vel[0]=0;
-	vel[1]=0;
-	vel[2]=0;
-	PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-	OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-	OPENAL_SetVolume(channels[firestartsound], 256);
-	OPENAL_SetPaused(channels[firestartsound], false);
+	emit_sound_at(firestartsound, coords);
 
-	vel[0]=velocity.x;
-	vel[1]=velocity.y;
-	vel[2]=velocity.z;
-	//PlaySoundEx( firesound, samp[firesound], NULL, true);
-	PlayStreamEx( stream_firesound, samp[stream_firesound], NULL, true);
-	OPENAL_3D_SetAttributes(channels[stream_firesound], gLoc, vel);
-	OPENAL_SetVolume(channels[stream_firesound], 256);
-	OPENAL_SetPaused(channels[stream_firesound], false);
+	emit_stream_at(stream_firesound, coords);
 
 	flamedelay=0;
 
@@ -449,14 +419,6 @@ void Person::DoBloodBig(float howmuch,int which){
 	if(tutoriallevel!=1||id==0)
 		if(aitype!=playercontrolled&&howmuch>0){
 			int whichsound=-1;
-			float gLoc[3];
-			float vel[3];
-			gLoc[0]=coords.x;
-			gLoc[1]=coords.y;
-			gLoc[2]=coords.z;
-			vel[0]=velocity.x;
-			vel[1]=velocity.y;
-			vel[2]=velocity.z;
 
 			if(creature==wolftype){
 				int i=abs(Random()%2);
@@ -478,12 +440,8 @@ void Person::DoBloodBig(float howmuch,int which){
 				//if(i==2)whichsound=rabbitpain2sound;
 			}
 
-			if(whichsound!=-1){
-				PlaySoundEx( whichsound, samp[whichsound], NULL, true);
-				OPENAL_3D_SetAttributes(channels[whichsound], gLoc, vel);
-				OPENAL_SetVolume(channels[whichsound], 512);
-				OPENAL_SetPaused(channels[whichsound], false);
-			}
+			if(whichsound!=-1)
+			  emit_sound_at(whichsound, coords);
 		}
 
 		if(id==0&&howmuch>0){
@@ -1119,29 +1077,14 @@ void Person::Reverse(){
 				victim->targetrotation=targetrotation+180;
 
 				if(abs(Random()%20)==0||weapons.type[victim->weaponids[victim->weaponactive]]==knife){
-					float gLoc[3];
-					float vel[3];
-					gLoc[0]=victim->coords.x;
-					gLoc[1]=victim->coords.y;
-					gLoc[2]=victim->coords.z;
-					vel[0]=velocity.x;
-					vel[1]=velocity.y;
-					vel[2]=velocity.z;
 					if(victim->weaponactive!=-1){
 						if(weapons.type[victim->weaponids[0]]==staff||weapons.type[weaponids[0]]==staff){
 							if(weapons.type[victim->weaponids[0]]==staff)weapons.damage[victim->weaponids[0]]+=.2+float(abs(Random()%100)-50)/250;
 							if(weapons.type[weaponids[0]]==staff)weapons.damage[weaponids[0]]+=.2+float(abs(Random()%100)-50)/250;
-
-							PlaySoundEx( swordstaffsound, samp[swordstaffsound], NULL, true);
-							OPENAL_3D_SetAttributes(channels[swordstaffsound], gLoc, vel);
-							OPENAL_SetVolume(channels[swordstaffsound], 512);
-							OPENAL_SetPaused(channels[swordstaffsound], false);
+							emit_sound_at(swordstaffsound, victim->coords);
 						}
 						else{
-							PlaySoundEx( metalhitsound, samp[metalhitsound], NULL, true);
-							OPENAL_3D_SetAttributes(channels[metalhitsound], gLoc, vel);
-							OPENAL_SetVolume(channels[metalhitsound], 512);
-							OPENAL_SetPaused(channels[metalhitsound], false);
+							emit_sound_at(metalhitsound, victim->coords);
 						}
 					}
 					XYZ aim;
@@ -1182,29 +1125,15 @@ void Person::Reverse(){
 				}
 
 				if(abs(Random()%20)==0){
-					float gLoc[3];
-					float vel[3];
-					gLoc[0]=coords.x;
-					gLoc[1]=coords.y;
-					gLoc[2]=coords.z;
-					vel[0]=velocity.x;
-					vel[1]=velocity.y;
-					vel[2]=velocity.z;
 					if(weaponactive!=-1){
 						if(weapons.type[victim->weaponids[0]]==staff||weapons.type[weaponids[0]]==staff){
 							if(weapons.type[victim->weaponids[0]]==staff)weapons.damage[victim->weaponids[0]]+=.2+float(abs(Random()%100)-50)/250;
 							if(weapons.type[weaponids[0]]==staff)weapons.damage[weaponids[0]]+=.2+float(abs(Random()%100)-50)/250;
 
-							PlaySoundEx( swordstaffsound, samp[swordstaffsound], NULL, true);
-							OPENAL_3D_SetAttributes(channels[swordstaffsound], gLoc, vel);
-							OPENAL_SetVolume(channels[swordstaffsound], 512);
-							OPENAL_SetPaused(channels[swordstaffsound], false);
+							emit_sound_at(swordstaffsound, coords);
 						}
 						else{
-							PlaySoundEx( metalhitsound, samp[metalhitsound], NULL, true);
-							OPENAL_3D_SetAttributes(channels[metalhitsound], gLoc, vel);
-							OPENAL_SetVolume(channels[metalhitsound], 512);
-							OPENAL_SetPaused(channels[metalhitsound], false);
+							emit_sound_at(metalhitsound, coords);
 						}
 					}
 
@@ -1337,18 +1266,7 @@ void Person::DoDamage(float howmuch){
 			Sprite::MakeSprite(cloudsprite, flatfacing2,flatvelocity2*0, .6,0,0, 1, .5);
 		}
 
-		float gLoc[3];
-		float vel[3];
-		gLoc[0]=coords.x;
-		gLoc[1]=coords.y;
-		gLoc[2]=coords.z;
-		vel[0]=0;
-		vel[1]=0;
-		vel[2]=0;
-		PlaySoundEx( splattersound, samp[splattersound], NULL, true);
-		OPENAL_3D_SetAttributes(channels[splattersound], gLoc, vel);
-		OPENAL_SetVolume(channels[splattersound], 256);
-		OPENAL_SetPaused(channels[splattersound], false);
+		emit_sound_at(splattersound, coords);
 
 		skeleton.free=2;
 		DoDamage(10000);
@@ -1367,14 +1285,6 @@ void Person::DoDamage(float howmuch){
 	if(tutoriallevel!=1||id==0)
 		if(speechdelay<=0&&!dead&&aitype!=playercontrolled){
 			int whichsound=-1;
-			float gLoc[3];
-			float vel[3];
-			gLoc[0]=coords.x;
-			gLoc[1]=coords.y;
-			gLoc[2]=coords.z;
-			vel[0]=velocity.x;
-			vel[1]=velocity.y;
-			vel[2]=velocity.z;
 
 			if(creature==wolftype){
 				int i=abs(Random()%2);
@@ -1397,10 +1307,7 @@ void Person::DoDamage(float howmuch){
 			}
 
 			if(whichsound!=-1){
-				PlaySoundEx( whichsound, samp[whichsound], NULL, true);
-				OPENAL_3D_SetAttributes(channels[whichsound], gLoc, vel);
-				OPENAL_SetVolume(channels[whichsound], 512);
-				OPENAL_SetPaused(channels[whichsound], false);
+				emit_sound_at(whichsound, coords);
 			}
 		}
 		speechdelay=.3;
@@ -1765,18 +1672,7 @@ void	Person::DoAnimations(){
 		if(target>=1){
 			if(targetanimation==rollanim&&targetframe==3&&onfire){
 				onfire=0;
-				float gLoc[3];
-				float vel[3];
-				gLoc[0]=coords.x;
-				gLoc[1]=coords.y;
-				gLoc[2]=coords.z;
-				vel[0]=0;
-				vel[1]=0;
-				vel[2]=0;
-				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				OPENAL_SetVolume(channels[fireendsound], 256);
-				OPENAL_SetPaused(channels[fireendsound], false);
+				emit_sound_at(fireendsound, coords);
 				OPENAL_SetPaused(channels[stream_firesound], true);
 				deathbleeding=0;
 			}
@@ -1795,18 +1691,7 @@ void	Person::DoAnimations(){
 					//victim->DoDamage(30);
 					if(creature==wolftype){
 						DoBloodBig(0,255);
-						float gLoc[3];
-						float vel[3];
-						gLoc[0]=victim->coords.x;
-						gLoc[1]=victim->coords.y;
-						gLoc[2]=victim->coords.z;
-						vel[0]=velocity.x;
-						vel[1]=velocity.y;
-						vel[2]=velocity.z;
-						PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, true);
-						OPENAL_3D_SetAttributes(channels[clawslicesound], gLoc, vel);
-						OPENAL_SetVolume(channels[clawslicesound], 128);
-						OPENAL_SetPaused(channels[clawslicesound], false);
+						emit_sound_at(clawslicesound, victim->coords);
 						victim->spurt=1;
 						victim->DoBloodBig(1/victim->armorhead,210);
 					}
@@ -1821,34 +1706,10 @@ void	Person::DoAnimations(){
 					else if(weaponactive==0)weaponactive=-1;
 
 					if(weaponactive==-1){
-						float gLoc[3];
-						float vel[3];
-						gLoc[0]=coords.x;
-						gLoc[1]=coords.y;
-						gLoc[2]=coords.z;
-						vel[0]=velocity.x;
-						vel[1]=velocity.y;
-						vel[2]=velocity.z;
-
-						PlaySoundEx( knifesheathesound, samp[knifesheathesound], NULL, true);
-						OPENAL_3D_SetAttributes(channels[knifesheathesound], gLoc, vel);
-						OPENAL_SetVolume(channels[knifesheathesound], 128);
-						OPENAL_SetPaused(channels[knifesheathesound], false);
+						emit_sound_at(knifesheathesound, coords);
 					}
 					if(weaponactive!=-1){
-						float gLoc[3];
-						float vel[3];
-						gLoc[0]=coords.x;
-						gLoc[1]=coords.y;
-						gLoc[2]=coords.z;
-						vel[0]=velocity.x;
-						vel[1]=velocity.y;
-						vel[2]=velocity.z;
-
-						PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, true);
-						OPENAL_3D_SetAttributes(channels[knifedrawsound], gLoc, vel);
-						OPENAL_SetVolume(channels[knifedrawsound], 128);
-						OPENAL_SetPaused(channels[knifedrawsound], false);
+						emit_sound_at(knifedrawsound, coords, 128);
 					}
 				}
 				drawtogglekeydown=1;
@@ -1916,10 +1777,7 @@ void	Person::DoAnimations(){
 
 						if(animation[targetanimation].label[targetframe]==3){
 							whichsound--;
-							PlaySoundEx( whichsound, samp[whichsound], NULL, true);
-							OPENAL_3D_SetAttributes(channels[whichsound], gLoc, vel);
-							OPENAL_SetVolume(channels[whichsound], 128);
-							OPENAL_SetPaused(channels[whichsound], false);
+							emit_sound_at(whichsound, coords, 128.);
 						}
 				}
 
@@ -1929,14 +1787,6 @@ void	Person::DoAnimations(){
 						if(targetanimation!=crouchstabanim&&targetanimation!=swordgroundstabanim&&targetanimation!=staffgroundsmashanim)
 							if((animation[targetanimation].label[targetframe]&&(animation[targetanimation].label[targetframe]<5||animation[targetanimation].label[targetframe]==8))/*||(targetanimation==rollanim&&targetframe==animation[rollanim].numframes-1)*/){
 								int whichsound=-1;
-								float gLoc[3];
-								float vel[3];
-								gLoc[0]=coords.x;
-								gLoc[1]=coords.y;
-								gLoc[2]=coords.z;
-								vel[0]=velocity.x;
-								vel[1]=velocity.y;
-								vel[2]=velocity.z;
 								if(animation[targetanimation].label[targetframe]==4&&aitype!=playercontrolled){
 									if(animation[targetanimation].attack!=neutral){
 										i=abs(Random()%4);
@@ -1960,10 +1810,7 @@ void	Person::DoAnimations(){
 								//if(animation[targetanimation].label[targetframe]==8)whichsound=landsound2;
 
 								if(whichsound!=-1){
-									PlaySoundEx( whichsound, samp[whichsound], NULL, true);
-									OPENAL_3D_SetAttributes(channels[whichsound], gLoc, vel);
-									OPENAL_SetVolume(channels[whichsound], 512);
-									OPENAL_SetPaused(channels[whichsound], false);
+									emit_sound_at(whichsound, coords);
 								}
 							}
 
@@ -1986,18 +1833,7 @@ void	Person::DoAnimations(){
 										if(findDistancefastflat(&coords,&weapons.position[i])<4&&weaponactive==-1){
 											if(findDistancefast(&coords,&weapons.position[i])>=1){
 												if(weapons.type[i]!=staff){
-													float gLoc[3];
-													float vel[3];
-													gLoc[0]=coords.x;
-													gLoc[1]=coords.y;
-													gLoc[2]=coords.z;
-													vel[0]=velocity.x;
-													vel[1]=velocity.y;
-													vel[2]=velocity.z;
-													PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, true);
-													OPENAL_3D_SetAttributes(channels[knifedrawsound], gLoc, vel);
-													OPENAL_SetVolume(channels[knifedrawsound], 128);
-													OPENAL_SetPaused(channels[knifedrawsound], false);
+													emit_sound_at(knifedrawsound, coords, 128.);
 												}
 
 												weaponactive=0;
@@ -2023,14 +1859,6 @@ void	Person::DoAnimations(){
 									if((/*weapons.velocity[i].x==0&&weapons.velocity[i].y==0&&weapons.velocity[i].z==0&&*/weapons.owner[i]==-1)||(hasvictim&&weapons.owner[i]==victim->id&&victim->skeleton.free))
 										if(willwork&&findDistancefastflat(&coords,&weapons.position[i])<3&&weaponactive==-1){
 											if(findDistancefast(&coords,&weapons.position[i])<1||hasvictim){
-												float gLoc[3];
-												float vel[3];
-												gLoc[0]=coords.x;
-												gLoc[1]=coords.y;
-												gLoc[2]=coords.z;
-												vel[0]=velocity.x;
-												vel[1]=velocity.y;
-												vel[2]=velocity.z;
 												bool fleshstuck=0;
 												if(weapons.owner[i]!=-1)
 													if(victim->weaponstuck!=-1){
@@ -2040,17 +1868,11 @@ void	Person::DoAnimations(){
 													}
 													if(!fleshstuck){
 														if(weapons.type[i]!=staff){
-															PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, true);
-															OPENAL_3D_SetAttributes(channels[knifedrawsound], gLoc, vel);
-															OPENAL_SetVolume(channels[knifedrawsound], 128);
-															OPENAL_SetPaused(channels[knifedrawsound], false);
+															emit_sound_at(knifedrawsound, coords, 128.);
 														}
 													}
 													if(fleshstuck){
-														PlaySoundEx( fleshstabremovesound, samp[fleshstabremovesound], NULL, true);
-														OPENAL_3D_SetAttributes(channels[fleshstabremovesound], gLoc, vel);
-														OPENAL_SetVolume(channels[fleshstabremovesound], 128);
-														OPENAL_SetPaused(channels[fleshstabremovesound], false);
+														emit_sound_at(fleshstabremovesound, coords, 128.);
 													}
 													weaponactive=0;
 													if(weapons.owner[i]!=-1){
@@ -2118,34 +1940,10 @@ void	Person::DoAnimations(){
 									}
 								}
 								if(weaponactive==-1){
-									float gLoc[3];
-									float vel[3];
-									gLoc[0]=coords.x;
-									gLoc[1]=coords.y;
-									gLoc[2]=coords.z;
-									vel[0]=velocity.x;
-									vel[1]=velocity.y;
-									vel[2]=velocity.z;
-
-									PlaySoundEx( knifesheathesound, samp[knifesheathesound], NULL, true);
-									OPENAL_3D_SetAttributes(channels[knifesheathesound], gLoc, vel);
-									OPENAL_SetVolume(channels[knifesheathesound], 128);
-									OPENAL_SetPaused(channels[knifesheathesound], false);
+									emit_sound_at(knifesheathesound, coords, 128.);
 								}
 								if(weaponactive!=-1){
-									float gLoc[3];
-									float vel[3];
-									gLoc[0]=coords.x;
-									gLoc[1]=coords.y;
-									gLoc[2]=coords.z;
-									vel[0]=velocity.x;
-									vel[1]=velocity.y;
-									vel[2]=velocity.z;
-
-									PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, true);
-									OPENAL_3D_SetAttributes(channels[knifedrawsound], gLoc, vel);
-									OPENAL_SetVolume(channels[knifedrawsound], 128);
-									OPENAL_SetPaused(channels[knifedrawsound], false);
+									emit_sound_at(knifedrawsound, coords, 128.);
 								}
 							}
 
@@ -2170,19 +1968,7 @@ void	Person::DoAnimations(){
 								if((targetanimation==rabbitrunninganim||targetanimation==wolfrunninganim)&&id==0){
 									targetanimation=rabbittackleanim;
 									targetframe=0;
-									float gLoc[3];
-									float vel[3];
-									gLoc[0]=coords.x;
-									gLoc[1]=coords.y;
-									gLoc[2]=coords.z;
-									vel[0]=velocity.x;
-									vel[1]=velocity.y;
-									vel[2]=velocity.z;
-
-									PlaySoundEx( jumpsound, samp[jumpsound], NULL, true);
-									OPENAL_3D_SetAttributes(channels[jumpsound], gLoc, vel);
-									OPENAL_SetVolume(channels[jumpsound], 128);
-									OPENAL_SetPaused(channels[jumpsound], false);
+									emit_sound_at(jumpsound, coords);
 								}
 
 								float closestdist;
@@ -2218,19 +2004,7 @@ void	Person::DoAnimations(){
 											if(rotatetarget.z<0)targetrotation=180-targetrotation;
 										}
 										if(targetanimation!=rabbitrunninganim){
-											float gLoc[3];
-											float vel[3];
-											gLoc[0]=coords.x;
-											gLoc[1]=coords.y;
-											gLoc[2]=coords.z;
-											vel[0]=velocity.x;
-											vel[1]=velocity.y;
-											vel[2]=velocity.z;
-
-											PlaySoundEx( jumpsound, samp[jumpsound], NULL, true);
-											OPENAL_3D_SetAttributes(channels[jumpsound], gLoc, vel);
-											OPENAL_SetVolume(channels[jumpsound], 128);
-											OPENAL_SetPaused(channels[jumpsound], false);
+											emit_sound_at(jumpsound, coords, 128.);
 										}
 									}
 							}
@@ -2250,25 +2024,11 @@ void	Person::DoAnimations(){
 											DoBlood(.2,250);
 											if(creature==wolftype)DoBloodBig(0,250);
 										}
-										float gLoc[3];
-										float vel[3];
-										gLoc[0]=victim->coords.x;
-										gLoc[1]=victim->coords.y;
-										gLoc[2]=victim->coords.z;
-										vel[0]=velocity.x;
-										vel[1]=velocity.y;
-										vel[2]=velocity.z;
 										if(tutoriallevel!=1){
-											PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
-											OPENAL_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
-											OPENAL_SetVolume(channels[heavyimpactsound], 128);
-											OPENAL_SetPaused(channels[heavyimpactsound], false);
+											emit_sound_at(heavyimpactsound, victim->coords, 128.);
 										}
 										if(creature==wolftype){
-											PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, true);
-											OPENAL_3D_SetAttributes(channels[clawslicesound], gLoc, vel);
-											OPENAL_SetVolume(channels[clawslicesound], 128);
-											OPENAL_SetPaused(channels[clawslicesound], false);
+											emit_sound_at(clawslicesound, victim->coords, 128.);
 											victim->spurt=1;
 											victim->DoBloodBig(2/victim->armorhead,175);
 										}
@@ -2298,23 +2058,9 @@ void	Person::DoAnimations(){
 											victim->spurt=1;
 											if(creature==wolftype)DoBloodBig(0,235);
 										}
-										float gLoc[3];
-										float vel[3];
-										gLoc[0]=victim->coords.x;
-										gLoc[1]=victim->coords.y;
-										gLoc[2]=victim->coords.z;
-										vel[0]=velocity.x;
-										vel[1]=velocity.y;
-										vel[2]=velocity.z;
-										PlaySoundEx( whooshhitsound, samp[whooshhitsound], NULL, true);
-										OPENAL_3D_SetAttributes(channels[whooshhitsound], gLoc, vel);
-										OPENAL_SetVolume(channels[whooshhitsound], 512);
-										OPENAL_SetPaused(channels[whooshhitsound], false);
+										emit_sound_at(whooshhitsound, victim->coords);
 										if(creature==wolftype){
-											PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, true);
-											OPENAL_3D_SetAttributes(channels[clawslicesound], gLoc, vel);
-											OPENAL_SetVolume(channels[clawslicesound], 128);
-											OPENAL_SetPaused(channels[clawslicesound], false);
+											emit_sound_at(clawslicesound, victim->coords, 128.);
 											victim->spurt=1;
 											victim->DoBloodBig(2,175);
 										}
@@ -2342,25 +2088,11 @@ void	Person::DoAnimations(){
 										if(id==0)camerashake+=.4;
 										victim->spurt=1;
 										DoBlood(.2,250);
-										float gLoc[3];
-										float vel[3];
-										gLoc[0]=victim->coords.x;
-										gLoc[1]=victim->coords.y;
-										gLoc[2]=victim->coords.z;
-										vel[0]=velocity.x;
-										vel[1]=velocity.y;
-										vel[2]=velocity.z;
 										if(tutoriallevel!=1){
-											PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
-											OPENAL_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
-											OPENAL_SetVolume(channels[heavyimpactsound], 160);
-											OPENAL_SetPaused(channels[heavyimpactsound], false);
+											emit_sound_at(heavyimpactsound, victim->coords, 160.);
 										}
 										if(creature==wolftype){
-											PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, true);
-											OPENAL_3D_SetAttributes(channels[clawslicesound], gLoc, vel);
-											OPENAL_SetVolume(channels[clawslicesound], 128);
-											OPENAL_SetPaused(channels[clawslicesound], false);
+											emit_sound_at(clawslicesound, victim->coords, 128.);
 											victim->spurt=1;
 											victim->DoBloodBig(2/victim->armorhead,175);
 										}
@@ -2391,25 +2123,11 @@ void	Person::DoAnimations(){
 										if(id==0)camerashake+=.4;
 										victim->spurt=1;
 										DoBlood(.2,250);
-										float gLoc[3];
-										float vel[3];
-										gLoc[0]=victim->coords.x;
-										gLoc[1]=victim->coords.y;
-										gLoc[2]=victim->coords.z;
-										vel[0]=velocity.x;
-										vel[1]=velocity.y;
-										vel[2]=velocity.z;
 										if(tutoriallevel!=1){
-											PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
-											OPENAL_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
-											OPENAL_SetVolume(channels[heavyimpactsound], 160);
-											OPENAL_SetPaused(channels[heavyimpactsound], false);
+											emit_sound_at(heavyimpactsound, victim->coords, 160.);
 										}
 										if(creature==wolftype){
-											PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, true);
-											OPENAL_3D_SetAttributes(channels[clawslicesound], gLoc, vel);
-											OPENAL_SetVolume(channels[clawslicesound], 128);
-											OPENAL_SetPaused(channels[clawslicesound], false);
+											emit_sound_at(clawslicesound, victim->coords, 128.);
 											victim->spurt=1;
 											victim->DoBloodBig(2/victim->armorhead,175);
 										}
@@ -2442,18 +2160,7 @@ void	Person::DoAnimations(){
 											victim->spurt=1;
 											DoBlood(.2,235);
 										}
-										float gLoc[3];
-										float vel[3];
-										gLoc[0]=victim->coords.x;
-										gLoc[1]=victim->coords.y;
-										gLoc[2]=victim->coords.z;
-										vel[0]=velocity.x;
-										vel[1]=velocity.y;
-										vel[2]=velocity.z;
-										PlaySoundEx( whooshhitsound, samp[whooshhitsound], NULL, true);
-										OPENAL_3D_SetAttributes(channels[whooshhitsound], gLoc, vel);
-										OPENAL_SetVolume(channels[whooshhitsound], 512);
-										OPENAL_SetPaused(channels[whooshhitsound], false);
+										emit_sound_at(whooshhitsound, victim->coords);
 										victim->RagDoll(0);
 										XYZ relative;
 										relative=victim->coords-coords;
@@ -2473,23 +2180,7 @@ void	Person::DoAnimations(){
 									if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&victim->dead){
 										escapednum=0;
 										if(id==0)camerashake+=.2;
-										float gLoc[3];
-										float vel[3];
-										gLoc[0]=victim->coords.x;
-										gLoc[1]=victim->coords.y;
-										gLoc[2]=victim->coords.z;
-										vel[0]=velocity.x;
-										vel[1]=velocity.y;
-										vel[2]=velocity.z;
-										/*PlaySoundEx( landsound2, samp[landsound2], NULL, true);
-										OPENAL_3D_SetAttributes(channels[landsound2], gLoc, vel);
-										OPENAL_SetVolume(channels[landsound2], 128);
-										OPENAL_SetPaused(channels[landsound2], false);
-										*/
-										PlaySoundEx( movewhooshsound, samp[movewhooshsound], NULL, true);
-										OPENAL_3D_SetAttributes(channels[movewhooshsound], gLoc, vel);
-										OPENAL_SetVolume(channels[movewhooshsound], 128);
-										OPENAL_SetPaused(channels[movewhooshsound], false);
+										emit_sound_at(whooshhitsound, victim->coords, 128.);
 
 										victim->skeleton.longdead=0;
 										victim->skeleton.free=1;
@@ -2522,19 +2213,8 @@ void	Person::DoAnimations(){
 									if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*9&&victim->dead){
 										escapednum=0;
 										if(id==0)camerashake+=.4;
-										float gLoc[3];
-										float vel[3];
-										gLoc[0]=coords.x;
-										gLoc[1]=coords.y;
-										gLoc[2]=coords.z;
-										vel[0]=velocity.x;
-										vel[1]=velocity.y;
-										vel[2]=velocity.z;
 										if(tutoriallevel!=1){
-											PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
-											OPENAL_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
-											OPENAL_SetVolume(channels[heavyimpactsound], 128);
-											OPENAL_SetPaused(channels[heavyimpactsound], false);
+											emit_sound_at(heavyimpactsound, coords, 128.);
 										}
 										XYZ relative;
 										relative=victim->coords-coords;
@@ -2557,19 +2237,8 @@ void	Person::DoAnimations(){
 									if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*9&&victim->skeleton.free){
 										escapednum=0;
 										if(id==0)camerashake+=.4;
-										float gLoc[3];
-										float vel[3];
-										gLoc[0]=coords.x;
-										gLoc[1]=coords.y;
-										gLoc[2]=coords.z;
-										vel[0]=velocity.x;
-										vel[1]=velocity.y;
-										vel[2]=velocity.z;
 										if(tutoriallevel!=1){
-											PlaySoundEx( thudsound, samp[thudsound], NULL, true);
-											OPENAL_3D_SetAttributes(channels[thudsound], gLoc, vel);
-											OPENAL_SetVolume(channels[thudsound], 400);
-											OPENAL_SetPaused(channels[thudsound], false);
+											emit_sound_at(thudsound, coords);
 										}
 
 										victim->skeleton.longdead=0;
@@ -2605,24 +2274,13 @@ void	Person::DoAnimations(){
 
 								if((targetanimation==crouchstabanim||targetanimation==swordgroundstabanim)&&animation[targetanimation].label[currentframe]==5){
 									//if(id==0)camerashake+=.4;
-									float gLoc[3];
-									float vel[3];
-									gLoc[0]=coords.x;
-									gLoc[1]=coords.y;
-									gLoc[2]=coords.z;
-									vel[0]=velocity.x;
-									vel[1]=velocity.y;
-									vel[2]=velocity.z;
 
 									if(hasvictim)
 										if(!victim->skeleton.free)hasvictim=0;
 
 									if(!hasvictim){
 										terrain.MakeDecal(blooddecalfast,(weapons.tippoint[weaponids[weaponactive]]*.8+weapons.position[weaponids[weaponactive]]*.2),.08,.6,Random()%360);
-										PlaySoundEx( knifesheathesound, samp[knifesheathesound], NULL, true);
-										OPENAL_3D_SetAttributes(channels[knifesheathesound], gLoc, vel);
-										OPENAL_SetVolume(channels[knifesheathesound], 128);
-										OPENAL_SetPaused(channels[knifesheathesound], false);
+										emit_sound_at(knifesheathesound, coords, 128.);
 									}
 
 									if(victim&&hasvictim){
@@ -2682,10 +2340,7 @@ void	Person::DoAnimations(){
 													victim->skeleton.joints[i].locked=0;
 													//victim->skeleton.joints[i].velocity=0;
 												}
-												PlaySoundEx( fleshstabsound, samp[fleshstabsound], NULL, true);
-												OPENAL_3D_SetAttributes(channels[fleshstabsound], gLoc, vel);
-												OPENAL_SetVolume(channels[fleshstabsound], 128);
-												OPENAL_SetPaused(channels[fleshstabsound], false);
+												emit_sound_at(fleshstabsound, coords, 128);
 
 											}
 											if(whichtri!=-1||weapons.bloody[weaponids[weaponactive]]){
@@ -2694,39 +2349,21 @@ void	Person::DoAnimations(){
 											}
 											if(whichtri==-1){
 												hasvictim=0;
-												PlaySoundEx( knifesheathesound, samp[knifesheathesound], NULL, true);
-												OPENAL_3D_SetAttributes(channels[knifesheathesound], gLoc, vel);
-												OPENAL_SetVolume(channels[knifesheathesound], 128);
-												OPENAL_SetPaused(channels[knifesheathesound], false);
+												emit_sound_at(knifesheathesound, coords, 128.);
 											}
 										}
 									}
 								}
 
 								if((targetanimation==crouchstabanim||targetanimation==swordgroundstabanim)&&animation[targetanimation].label[currentframe]==6){
-									//if(id==0)camerashake+=.4;
-									float gLoc[3];
-									float vel[3];
-									gLoc[0]=coords.x;
-									gLoc[1]=coords.y;
-									gLoc[2]=coords.z;
-									vel[0]=velocity.x;
-									vel[1]=velocity.y;
-									vel[2]=velocity.z;
 									if(!hasvictim){
-										PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, true);
-										OPENAL_3D_SetAttributes(channels[knifedrawsound], gLoc, vel);
-										OPENAL_SetVolume(channels[knifedrawsound], 128);
-										OPENAL_SetPaused(channels[knifedrawsound], false);
+										emit_sound_at(knifedrawsound, coords, 128);
 									}
 
 									if(victim&&hasvictim){
 										XYZ footvel,footpoint;
 
-										PlaySoundEx( fleshstabremovesound, samp[fleshstabremovesound], NULL, true);
-										OPENAL_3D_SetAttributes(channels[fleshstabremovesound], gLoc, vel);
-										OPENAL_SetVolume(channels[fleshstabremovesound], 128);
-										OPENAL_SetPaused(channels[fleshstabremovesound], false);
+										emit_sound_at(fleshstabremovesound, coords, 128.);
 
 										footvel=0;
 										footpoint=(weapons.tippoint[weaponids[weaponactive]]*.8+weapons.position[weaponids[weaponactive]]*.2);
@@ -2820,19 +2457,8 @@ void	Person::DoAnimations(){
 											victim->spurt=1;
 											DoBlood(.2,235);
 										}
-										float gLoc[3];
-										float vel[3];
-										gLoc[0]=victim->coords.x;
-										gLoc[1]=victim->coords.y;
-										gLoc[2]=victim->coords.z;
-										vel[0]=velocity.x;
-										vel[1]=velocity.y;
-										vel[2]=velocity.z;
 										if(tutoriallevel!=1){
-										  PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
-										  OPENAL_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
-										  OPENAL_SetVolume(channels[heavyimpactsound], 128);
-										  OPENAL_SetPaused(channels[heavyimpactsound], false);
+										  emit_sound_at(heavyimpactsound, victim->coords, 128);
 										}
 
 										victim->RagDoll(0);
@@ -2864,36 +2490,19 @@ void	Person::DoAnimations(){
 									if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*2){
 										escapednum=0;
 										if(id==0)camerashake+=.4;
-										float gLoc[3];
-										float vel[3];
-										gLoc[0]=victim->coords.x;
-										gLoc[1]=victim->coords.y;
-										gLoc[2]=victim->coords.z;
-										vel[0]=velocity.x;
-										vel[1]=velocity.y;
-										vel[2]=velocity.z;
 										if(victim->damage<=victim->damagetolerance-60&&normaldotproduct(victim->facing,victim->coords-coords)<(scale*5)*(scale*5)*0&&animation[victim->targetanimation].height!=lowheight){
 											if(tutoriallevel!=1){
-												PlaySoundEx( thudsound, samp[thudsound], NULL, true);
-												OPENAL_3D_SetAttributes(channels[thudsound], gLoc, vel);
-												OPENAL_SetVolume(channels[thudsound], 512);
-												OPENAL_SetPaused(channels[thudsound], false);
+												emit_sound_at(thudsound, victim->coords);
 											}
 										}
 										else if(victim->damage<=victim->damagetolerance-60&&normaldotproduct(victim->facing,victim->coords-coords)<(scale*5)*(scale*5)*0&&animation[victim->targetanimation].height==lowheight){
 											if(tutoriallevel!=1){
-												PlaySoundEx( whooshhitsound, samp[whooshhitsound], NULL, true);
-												OPENAL_3D_SetAttributes(channels[whooshhitsound], gLoc, vel);
-												OPENAL_SetVolume(channels[whooshhitsound], 512);
-												OPENAL_SetPaused(channels[whooshhitsound], false);
+												emit_sound_at(whooshhitsound, victim->coords);
 											}
 										}
 										else {
 											if(tutoriallevel!=1){
-												PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
-												OPENAL_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
-												OPENAL_SetVolume(channels[heavyimpactsound], 256);
-												OPENAL_SetPaused(channels[heavyimpactsound], false);
+												emit_sound_at(heavyimpactsound, victim->coords);
 											}
 										}
 
@@ -2926,19 +2535,7 @@ void	Person::DoAnimations(){
 								if(targetanimation==blockhighleftanim&&animation[targetanimation].label[currentframe]==5){
 									if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*4){
 										if(victim->id==0)camerashake+=.4;
-										float gLoc[3];
-										float vel[3];
-										gLoc[0]=victim->coords.x;
-										gLoc[1]=victim->coords.y;
-										gLoc[2]=victim->coords.z;
-										vel[0]=velocity.x;
-										vel[1]=velocity.y;
-										vel[2]=velocity.z;
-
-										PlaySoundEx( landsound2, samp[landsound2], NULL, true);
-										OPENAL_3D_SetAttributes(channels[landsound2], gLoc, vel);
-										OPENAL_SetVolume(channels[landsound2], 256);
-										OPENAL_SetPaused(channels[landsound2], false);
+										emit_sound_at(landsound2, victim->coords);
 
 										Puff(righthand);
 									}
@@ -2947,30 +2544,16 @@ void	Person::DoAnimations(){
 								if(targetanimation==swordslashparryanim&&animation[targetanimation].label[currentframe]==5){
 									if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*4){
 										if(victim->id==0)camerashake+=.4;
-										float gLoc[3];
-										float vel[3];
-										gLoc[0]=victim->coords.x;
-										gLoc[1]=victim->coords.y;
-										gLoc[2]=victim->coords.z;
-										vel[0]=velocity.x;
-										vel[1]=velocity.y;
-										vel[2]=velocity.z;
 
 										if(weaponactive!=-1){
 											if(weapons.type[victim->weaponids[0]]==staff||weapons.type[weaponids[0]]==staff){
 												if(weapons.type[victim->weaponids[0]]==staff)weapons.damage[victim->weaponids[0]]+=.2+float(abs(Random()%100)-50)/250;
 												if(weapons.type[weaponids[0]]==staff)weapons.damage[weaponids[0]]+=.2+float(abs(Random()%100)-50)/250;
 
-												PlaySoundEx( swordstaffsound, samp[swordstaffsound], NULL, true);
-												OPENAL_3D_SetAttributes(channels[swordstaffsound], gLoc, vel);
-												OPENAL_SetVolume(channels[swordstaffsound], 512);
-												OPENAL_SetPaused(channels[swordstaffsound], false);
+												emit_sound_at(swordstaffsound, victim->coords);
 											}
 											else{
-												PlaySoundEx( metalhitsound, samp[metalhitsound], NULL, true);
-												OPENAL_3D_SetAttributes(channels[metalhitsound], gLoc, vel);
-												OPENAL_SetVolume(channels[metalhitsound], 512);
-												OPENAL_SetPaused(channels[metalhitsound], false);
+												emit_sound_at(metalhitsound, victim->coords);
 											}
 										}
 
@@ -3011,18 +2594,7 @@ void	Person::DoAnimations(){
 
 											award_bonus(id, Slicebonus);
 											if(tutoriallevel!=1){
-												float gLoc[3];
-												float vel[3];
-												gLoc[0]=victim->coords.x;
-												gLoc[1]=victim->coords.y;
-												gLoc[2]=victim->coords.z;
-												vel[0]=velocity.x;
-												vel[1]=velocity.y;
-												vel[2]=velocity.z;
-												PlaySoundEx( knifeslicesound, samp[knifeslicesound], NULL, true);
-												OPENAL_3D_SetAttributes(channels[knifeslicesound], gLoc, vel);
-												OPENAL_SetVolume(channels[knifeslicesound], 512);
-												OPENAL_SetPaused(channels[knifeslicesound], false);
+												emit_sound_at(knifeslicesound, victim->coords);
 											}
 											//victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].velocity+=relative*damagemult*200;
 											if(animation[victim->targetanimation].attack&&(victim->aitype!=playercontrolled||victim->targetanimation==knifeslashstartanim)&&(victim->creature==rabbittype||victim->deathbleeding<=0)){
@@ -3072,18 +2644,7 @@ void	Person::DoAnimations(){
 												if(normaldotproduct(victim->facing,victim->coords-coords)<0)victim->DoBloodBig(2/victim->armorhigh,190);
 												else victim->DoBloodBig(2/victim->armorhigh,185);
 												victim->deathbleeding=1;
-												float gLoc[3];
-												float vel[3];
-												gLoc[0]=victim->coords.x;
-												gLoc[1]=victim->coords.y;
-												gLoc[2]=victim->coords.z;
-												vel[0]=velocity.x;
-												vel[1]=velocity.y;
-												vel[2]=velocity.z;
-												PlaySoundEx( swordslicesound, samp[swordslicesound], NULL, true);
-												OPENAL_3D_SetAttributes(channels[swordslicesound], gLoc, vel);
-												OPENAL_SetVolume(channels[swordslicesound], 512);
-												OPENAL_SetPaused(channels[swordslicesound], false);
+												emit_sound_at(swordslicesound, victim->coords);
 											}
 											//victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].velocity+=relative*damagemult*200;
 											if(tutoriallevel!=1){
@@ -3121,31 +2682,15 @@ void	Person::DoAnimations(){
 											}
 										}
 										else {
-
-
-											float gLoc[3];
-											float vel[3];
-											gLoc[0]=victim->coords.x;
-											gLoc[1]=victim->coords.y;
-											gLoc[2]=victim->coords.z;
-											vel[0]=velocity.x;
-											vel[1]=velocity.y;
-											vel[2]=velocity.z;
 											if(victim->weaponactive!=-1){
 												if(weapons.type[victim->weaponids[0]]==staff||weapons.type[weaponids[0]]==staff){
 													if(weapons.type[victim->weaponids[0]]==staff)weapons.damage[victim->weaponids[0]]+=.2+float(abs(Random()%100)-50)/250;
 													if(weapons.type[weaponids[0]]==staff)weapons.damage[weaponids[0]]+=.2+float(abs(Random()%100)-50)/250;
 
-													PlaySoundEx( swordstaffsound, samp[swordstaffsound], NULL, true);
-													OPENAL_3D_SetAttributes(channels[swordstaffsound], gLoc, vel);
-													OPENAL_SetVolume(channels[swordstaffsound], 512);
-													OPENAL_SetPaused(channels[swordstaffsound], false);
+													emit_sound_at(swordstaffsound, victim->coords);
 												}
 												else{
-													PlaySoundEx( metalhitsound, samp[metalhitsound], NULL, true);
-													OPENAL_3D_SetAttributes(channels[metalhitsound], gLoc, vel);
-													OPENAL_SetVolume(channels[metalhitsound], 512);
-													OPENAL_SetPaused(channels[metalhitsound], false);
+													emit_sound_at(metalhitsound, victim->coords);
 												}
 											}
 
@@ -3195,18 +2740,7 @@ void	Person::DoAnimations(){
 											if(Random()%2||creature==wolftype){
 												victim->spurt=1;
 											}
-											float gLoc[3];
-											float vel[3];
-											gLoc[0]=victim->coords.x;
-											gLoc[1]=victim->coords.y;
-											gLoc[2]=victim->coords.z;
-											vel[0]=velocity.x;
-											vel[1]=velocity.y;
-											vel[2]=velocity.z;
-											PlaySoundEx( staffheadsound, samp[staffheadsound], NULL, true);
-											OPENAL_3D_SetAttributes(channels[staffheadsound], gLoc, vel);
-											OPENAL_SetVolume(channels[staffheadsound], 256);
-											OPENAL_SetPaused(channels[staffheadsound], false);
+											emit_sound_at(staffheadsound, victim->coords);
 										}
 										victim->RagDoll(0);
 										XYZ relative;
@@ -3240,18 +2774,7 @@ void	Person::DoAnimations(){
 											if(Random()%2||creature==wolftype){
 												victim->spurt=1;
 											}
-											float gLoc[3];
-											float vel[3];
-											gLoc[0]=victim->coords.x;
-											gLoc[1]=victim->coords.y;
-											gLoc[2]=victim->coords.z;
-											vel[0]=velocity.x;
-											vel[1]=velocity.y;
-											vel[2]=velocity.z;
-											PlaySoundEx( staffheadsound, samp[staffheadsound], NULL, true);
-											OPENAL_3D_SetAttributes(channels[staffheadsound], gLoc, vel);
-											OPENAL_SetVolume(channels[staffheadsound], 256);
-											OPENAL_SetPaused(channels[staffheadsound], false);
+											emit_sound_at(staffheadsound, victim->coords);
 										}
 										victim->RagDoll(0);
 										XYZ relative;
@@ -3282,18 +2805,7 @@ void	Person::DoAnimations(){
 											if(Random()%2||creature==wolftype){
 												victim->spurt=1;
 											}
-											float gLoc[3];
-											float vel[3];
-											gLoc[0]=victim->coords.x;
-											gLoc[1]=victim->coords.y;
-											gLoc[2]=victim->coords.z;
-											vel[0]=velocity.x;
-											vel[1]=velocity.y;
-											vel[2]=velocity.z;
-											PlaySoundEx( staffbodysound, samp[staffbodysound], NULL, true);
-											OPENAL_3D_SetAttributes(channels[staffbodysound], gLoc, vel);
-											OPENAL_SetVolume(channels[staffbodysound], 256);
-											OPENAL_SetPaused(channels[staffbodysound], false);
+											emit_sound_at(staffbodysound, victim->coords);
 										}
 										victim->skeleton.longdead=0;
 										victim->skeleton.free=1;
@@ -3342,14 +2854,6 @@ void	Person::DoAnimations(){
 									if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&animation[victim->targetanimation].height!=highheight){
 										escapednum=0;
 										if(id==0)camerashake+=.4;
-										float gLoc[3];
-										float vel[3];
-										gLoc[0]=victim->coords.x;
-										gLoc[1]=victim->coords.y;
-										gLoc[2]=victim->coords.z;
-										vel[0]=velocity.x;
-										vel[1]=velocity.y;
-										vel[2]=velocity.z;
 										XYZ relative;
 										relative=victim->coords-coords;
 										relative.y=0;
@@ -3368,19 +2872,13 @@ void	Person::DoAnimations(){
 											}
 											victim->skeleton.joints[victim->skeleton.jointlabels[head]].velocity+=relative*damagemult*200;
 											if(tutoriallevel!=1){
-												PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
-												OPENAL_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
-												OPENAL_SetVolume(channels[heavyimpactsound], 128);
-												OPENAL_SetPaused(channels[heavyimpactsound], false);
+												emit_sound_at(heavyimpactsound, victim->coords, 128.);
 											}
 											victim->Puff(head);
 											victim->DoDamage(damagemult*100/victim->protectionhead);
 											if(victim->howactive==typesleeping)victim->DoDamage(damagemult*150/victim->protectionhead);
 											if(creature==wolftype){
-												PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, true);
-												OPENAL_3D_SetAttributes(channels[clawslicesound], gLoc, vel);
-												OPENAL_SetVolume(channels[clawslicesound], 128);
-												OPENAL_SetPaused(channels[clawslicesound], false);
+												emit_sound_at(clawslicesound, victim->coords, 128.);
 												victim->spurt=1;
 												victim->DoBloodBig(2/victim->armorhead,175);
 											}
@@ -3396,18 +2894,12 @@ void	Person::DoAnimations(){
 											victim->targetrotation=targetrotation+180;
 											victim->target=0;
 											if(tutoriallevel!=1){
-												PlaySoundEx( landsound2, samp[landsound2], NULL, true);
-												OPENAL_3D_SetAttributes(channels[landsound2], gLoc, vel);
-												OPENAL_SetVolume(channels[landsound2], 128);
-												OPENAL_SetPaused(channels[landsound2], false);
+												emit_sound_at(landsound2, victim->coords, 128.);
 											}
 											victim->Puff(abdomen);
 											victim->DoDamage(damagemult*30/victim->protectionhigh);
 											if(creature==wolftype){
-												PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, true);
-												OPENAL_3D_SetAttributes(channels[clawslicesound], gLoc, vel);
-												OPENAL_SetVolume(channels[clawslicesound], 128);
-												OPENAL_SetPaused(channels[clawslicesound], false);
+												emit_sound_at(clawslicesound, victim->coords, 128.);
 												victim->spurt=1;
 												victim->DoBloodBig(2/victim->armorhigh,170);
 											}
@@ -3420,19 +2912,8 @@ void	Person::DoAnimations(){
 									if(victim->targetanimation!=jumpupanim&&findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&victim!=this){
 										escapednum=0;
 										if(id==0)camerashake+=.2;
-										float gLoc[3];
-										float vel[3];
-										gLoc[0]=victim->coords.x;
-										gLoc[1]=victim->coords.y;
-										gLoc[2]=victim->coords.z;
-										vel[0]=velocity.x;
-										vel[1]=velocity.y;
-										vel[2]=velocity.z;
 										if(tutoriallevel!=1){
-											PlaySoundEx( landsound2, samp[landsound2], NULL, true);
-											OPENAL_3D_SetAttributes(channels[landsound2], gLoc, vel);
-											OPENAL_SetVolume(channels[landsound2], 128);
-											OPENAL_SetPaused(channels[landsound2], false);
+											emit_sound_at(landsound2, victim->coords, 128.);
 										}
 										XYZ relative;
 										relative=victim->coords-coords;
@@ -3471,10 +2952,7 @@ void	Person::DoAnimations(){
 											victim->targetrotation=targetrotation+180;
 											victim->target=0;
 											if(tutoriallevel!=1){
-												PlaySoundEx( landsound2, samp[landsound2], NULL, true);
-												OPENAL_3D_SetAttributes(channels[landsound2], gLoc, vel);
-												OPENAL_SetVolume(channels[landsound2], 128);
-												OPENAL_SetPaused(channels[landsound2], false);
+												emit_sound_at(landsound2, victim->coords, 128.);
 											}
 											victim->Puff(abdomen);
 											victim->DoDamage(damagemult*30/victim->protectionlow);
@@ -3493,25 +2971,11 @@ void	Person::DoAnimations(){
 										victim->spurt=1;
 										DoBlood(.2,230);
 									}
-									float gLoc[3];
-									float vel[3];
-									gLoc[0]=victim->coords.x;
-									gLoc[1]=victim->coords.y;
-									gLoc[2]=victim->coords.z;
-									vel[0]=velocity.x;
-									vel[1]=velocity.y;
-									vel[2]=velocity.z;
 									if(tutoriallevel!=1){
-										PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
-										OPENAL_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
-										OPENAL_SetVolume(channels[heavyimpactsound], 128);
-										OPENAL_SetPaused(channels[heavyimpactsound], false);
+										emit_sound_at(heavyimpactsound, victim->coords, 128.);
 									}
 									if(creature==wolftype){
-										PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, true);
-										OPENAL_3D_SetAttributes(channels[clawslicesound], gLoc, vel);
-										OPENAL_SetVolume(channels[clawslicesound], 128);
-										OPENAL_SetPaused(channels[clawslicesound], false);
+										emit_sound_at(clawslicesound, victim->coords, 128);
 										victim->spurt=1;
 										victim->DoBloodBig(2/victim->armorhigh,170);
 									}
@@ -3559,18 +3023,7 @@ void	Person::DoAnimations(){
 										victim->spurt=1;
 										DoBlood(.2,230);
 									}
-									float gLoc[3];
-									float vel[3];
-									gLoc[0]=victim->coords.x;
-									gLoc[1]=victim->coords.y;
-									gLoc[2]=victim->coords.z;
-									vel[0]=velocity.x;
-									vel[1]=velocity.y;
-									vel[2]=velocity.z;
-									PlaySoundEx( whooshhitsound, samp[whooshhitsound], NULL, true);
-									OPENAL_3D_SetAttributes(channels[whooshhitsound], gLoc, vel);
-									OPENAL_SetVolume(channels[whooshhitsound], 128);
-									OPENAL_SetPaused(channels[whooshhitsound], false);
+									emit_sound_at(whooshhitsound, victim->coords, 128.);
 									victim->RagDoll(0);
 									XYZ relative;
 									relative=victim->coords-oldcoords;
@@ -3593,22 +3046,11 @@ void	Person::DoAnimations(){
 										victim->spurt=1;
 										DoBlood(.2,230);
 									}
-									float gLoc[3];
-									float vel[3];
-									gLoc[0]=victim->coords.x;
-									gLoc[1]=victim->coords.y;
-									gLoc[2]=victim->coords.z;
-									vel[0]=velocity.x;
-									vel[1]=velocity.y;
-									vel[2]=velocity.z;
 
 									award_bonus(id, staffreversebonus);
 
 									if(tutoriallevel!=1){
-										PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
-										OPENAL_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
-										OPENAL_SetVolume(channels[heavyimpactsound], 128);
-										OPENAL_SetPaused(channels[heavyimpactsound], false);
+										emit_sound_at(heavyimpactsound, victim->coords, 128.);
 									}
 									victim->RagDoll(0);
 									award_bonus(id, staffreversebonus); // Huh, again?
@@ -3658,28 +3100,14 @@ void	Person::DoAnimations(){
 									if(weaponactive!=-1||creature==wolftype)doslice=1;
 									if(creature==rabbittype&&weaponactive!=-1)if(weapons.type[weaponids[0]]==staff)doslice=0;
 									if(doslice){
-										float gLoc[3];
-										float vel[3];
-										gLoc[0]=victim->coords.x;
-										gLoc[1]=victim->coords.y;
-										gLoc[2]=victim->coords.z;
-										vel[0]=velocity.x;
-										vel[1]=velocity.y;
-										vel[2]=velocity.z;
 										if(weaponactive!=-1){
 											victim->DoBloodBig(2/victim->armorhigh,225);
-											PlaySoundEx( knifeslicesound, samp[knifeslicesound], NULL, true);
-											OPENAL_3D_SetAttributes(channels[knifeslicesound], gLoc, vel);
-											OPENAL_SetVolume(channels[knifeslicesound], 512);
-											OPENAL_SetPaused(channels[knifeslicesound], false);
+											emit_sound_at(knifeslicesound, victim->coords);
 											if(bloodtoggle&&!weapons.bloody[weaponids[weaponactive]])weapons.bloody[weaponids[weaponactive]]=1;
 											weapons.blooddrip[weaponids[weaponactive]]+=3;
 										}
-										if(weaponactive==-1&&creature==wolftype){
-											PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, true);
-											OPENAL_3D_SetAttributes(channels[clawslicesound], gLoc, vel);
-											OPENAL_SetVolume(channels[clawslicesound], 128);
-											OPENAL_SetPaused(channels[clawslicesound], false);
+										if(weaponactive==-1&&creature==wolftype){;
+											emit_sound_at(clawslicesound, victim->coords, 128.);
 											victim->spurt=1;
 											victim->DoBloodBig(2/victim->armorhigh,175);
 										}
@@ -3719,19 +3147,8 @@ void	Person::DoAnimations(){
 										victim->spurt=1;
 										DoBlood(.2,230);
 									}
-									float gLoc[3];
-									float vel[3];
-									gLoc[0]=victim->coords.x;
-									gLoc[1]=victim->coords.y;
-									gLoc[2]=victim->coords.z;
-									vel[0]=velocity.x;
-									vel[1]=velocity.y;
-									vel[2]=velocity.z;
 									if(tutoriallevel!=1){
-										PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
-										OPENAL_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
-										OPENAL_SetVolume(channels[heavyimpactsound], 128);
-										OPENAL_SetPaused(channels[heavyimpactsound], false);
+										emit_sound_at(heavyimpactsound, victim->coords, 128.);
 									}
 									victim->RagDoll(0);
 									XYZ relative;
@@ -3770,29 +3187,15 @@ void	Person::DoAnimations(){
 									if(weaponactive!=-1||creature==wolftype)doslice=1;
 									if(creature==rabbittype&&weaponactive!=-1)if(weapons.type[weaponids[0]]==staff)doslice=0;
 									if(doslice){
-										float gLoc[3];
-										float vel[3];
-										gLoc[0]=victim->coords.x;
-										gLoc[1]=victim->coords.y;
-										gLoc[2]=victim->coords.z;
-										vel[0]=velocity.x;
-										vel[1]=velocity.y;
-										vel[2]=velocity.z;
 										if(weaponactive!=-1){
 											victim->DoBloodBig(200,225);
-											PlaySoundEx( knifeslicesound, samp[knifeslicesound], NULL, true);
-											OPENAL_3D_SetAttributes(channels[knifeslicesound], gLoc, vel);
-											OPENAL_SetVolume(channels[knifeslicesound], 512);
-											OPENAL_SetPaused(channels[knifeslicesound], false);
+											emit_sound_at(knifeslicesound, victim->coords);
 											if(bloodtoggle)weapons.bloody[weaponids[weaponactive]]=2;
 											weapons.blooddrip[weaponids[weaponactive]]+=5;
 										}
 
 										if(creature==wolftype&&weaponactive==-1){
-											PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, true);
-											OPENAL_3D_SetAttributes(channels[clawslicesound], gLoc, vel);
-											OPENAL_SetVolume(channels[clawslicesound], 128);
-											OPENAL_SetPaused(channels[clawslicesound], false);
+											emit_sound_at(clawslicesound, victim->coords, 128.);
 											victim->spurt=1;
 											victim->DoBloodBig(2,175);
 										}
@@ -3840,18 +3243,7 @@ void	Person::DoAnimations(){
 										}
 										victim->bloodloss+=10000;
 										victim->velocity=0;
-										float gLoc[3];
-										float vel[3];
-										gLoc[0]=victim->coords.x;
-										gLoc[1]=victim->coords.y;
-										gLoc[2]=victim->coords.z;
-										vel[0]=velocity.x;
-										vel[1]=velocity.y;
-										vel[2]=velocity.z;
-										PlaySoundEx( fleshstabsound, samp[fleshstabsound], NULL, true);
-										OPENAL_3D_SetAttributes(channels[fleshstabsound], gLoc, vel);
-										OPENAL_SetVolume(channels[fleshstabsound], 512);
-										OPENAL_SetPaused(channels[fleshstabsound], false);
+										emit_sound_at(fleshstabsound, victim->coords);
 										if(bloodtoggle)weapons.bloody[weaponids[weaponactive]]=2;
 										weapons.blooddrip[weaponids[weaponactive]]+=5;
 									}
@@ -3870,18 +3262,7 @@ void	Person::DoAnimations(){
 										}
 									}
 									if(weaponactive!=-1&&animation[victim->targetanimation].attack!=reversal){
-										float gLoc[3];
-										float vel[3];
-										gLoc[0]=victim->coords.x;
-										gLoc[1]=victim->coords.y;
-										gLoc[2]=victim->coords.z;
-										vel[0]=velocity.x;
-										vel[1]=velocity.y;
-										vel[2]=velocity.z;
-										PlaySoundEx( fleshstabremovesound, samp[fleshstabremovesound], NULL, true);
-										OPENAL_3D_SetAttributes(channels[fleshstabremovesound], gLoc, vel);
-										OPENAL_SetVolume(channels[fleshstabremovesound], 512);
-										OPENAL_SetPaused(channels[fleshstabremovesound], false);
+										emit_sound_at(fleshstabremovesound, victim->coords);
 										if(bloodtoggle)weapons.bloody[weaponids[weaponactive]]=2;
 										weapons.blooddrip[weaponids[weaponactive]]+=5;
 
@@ -3916,18 +3297,7 @@ void	Person::DoAnimations(){
 										victim->DoBloodBig(200,215);
 										victim->bloodloss+=10000;
 										victim->velocity=0;
-										float gLoc[3];
-										float vel[3];
-										gLoc[0]=victim->coords.x;
-										gLoc[1]=victim->coords.y;
-										gLoc[2]=victim->coords.z;
-										vel[0]=velocity.x;
-										vel[1]=velocity.y;
-										vel[2]=velocity.z;
-										PlaySoundEx( fleshstabsound, samp[fleshstabsound], NULL, true);
-										OPENAL_3D_SetAttributes(channels[fleshstabsound], gLoc, vel);
-										OPENAL_SetVolume(channels[fleshstabsound], 512);
-										OPENAL_SetPaused(channels[fleshstabsound], false);
+										emit_sound_at(fleshstabsound, victim->coords);
 										if(bloodtoggle)weapons.bloody[weaponids[weaponactive]]=2;
 										weapons.blooddrip[weaponids[weaponactive]]+=5;
 									}
@@ -3940,18 +3310,7 @@ void	Person::DoAnimations(){
 										victim->skeleton.joints[i].velocity=0;
 									}
 									if(weaponactive!=-1){
-										float gLoc[3];
-										float vel[3];
-										gLoc[0]=victim->coords.x;
-										gLoc[1]=victim->coords.y;
-										gLoc[2]=victim->coords.z;
-										vel[0]=velocity.x;
-										vel[1]=velocity.y;
-										vel[2]=velocity.z;
-										PlaySoundEx( fleshstabremovesound, samp[fleshstabremovesound], NULL, true);
-										OPENAL_3D_SetAttributes(channels[fleshstabremovesound], gLoc, vel);
-										OPENAL_SetVolume(channels[fleshstabremovesound], 512);
-										OPENAL_SetPaused(channels[fleshstabremovesound], false);
+										emit_sound_at(fleshstabremovesound, victim->coords);
 										if(bloodtoggle)weapons.bloody[weaponids[weaponactive]]=2;
 										weapons.blooddrip[weaponids[weaponactive]]+=5;
 
@@ -3974,20 +3333,9 @@ void	Person::DoAnimations(){
 										victim->spurt=1;
 										DoBlood(.2,240);
 									}
-									float gLoc[3];
-									float vel[3];
-									gLoc[0]=victim->coords.x;
-									gLoc[1]=victim->coords.y;
-									gLoc[2]=victim->coords.z;
-									vel[0]=velocity.x;
-									vel[1]=velocity.y;
-									vel[2]=velocity.z;
 									if(weaponactive==-1){
 										if(tutoriallevel!=1){
-											PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
-											OPENAL_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
-											OPENAL_SetVolume(channels[heavyimpactsound], 128);
-											OPENAL_SetPaused(channels[heavyimpactsound], false);
+											emit_sound_at(heavyimpactsound, victim->coords, 128.);
 										}
 									}
 									bool doslice;
@@ -3997,18 +3345,12 @@ void	Person::DoAnimations(){
 									if(doslice){
 										if(weaponactive!=-1){
 											victim->DoBloodBig(2/victim->armorhead,225);
-											PlaySoundEx( knifeslicesound, samp[knifeslicesound], NULL, true);
-											OPENAL_3D_SetAttributes(channels[knifeslicesound], gLoc, vel);
-											OPENAL_SetVolume(channels[knifeslicesound], 512);
-											OPENAL_SetPaused(channels[knifeslicesound], false);
+											emit_sound_at(knifeslicesound, victim->coords);
 											if(bloodtoggle&&!weapons.bloody[weaponids[weaponactive]])weapons.bloody[weaponids[weaponactive]]=1;
 											weapons.blooddrip[weaponids[weaponactive]]+=3;
 										}
 										if(weaponactive==-1&&creature==wolftype){
-											PlaySoundEx( clawslicesound, samp[clawslicesound], NULL, true);
-											OPENAL_3D_SetAttributes(channels[clawslicesound], gLoc, vel);
-											OPENAL_SetVolume(channels[clawslicesound], 128);
-											OPENAL_SetPaused(channels[clawslicesound], false);
+											emit_sound_at(clawslicesound, victim->coords, 128.);
 											victim->spurt=1;
 											victim->DoBloodBig(2/victim->armorhead,175);
 										}
@@ -4070,19 +3412,7 @@ void	Person::DoAnimations(){
 								if(currentanimation==rabbittackleanim||currentanimation==rabbittacklinganim){
 									targetanimation=rollanim;
 									targetframe=3;
-									float gLoc[3];
-									float vel[3];
-									gLoc[0]=coords.x;
-									gLoc[1]=coords.y;
-									gLoc[2]=coords.z;
-									vel[0]=velocity.x;
-									vel[1]=velocity.y;
-									vel[2]=velocity.z;
-
-									PlaySoundEx( movewhooshsound, samp[movewhooshsound], NULL, true);
-									OPENAL_3D_SetAttributes(channels[movewhooshsound], gLoc, vel);
-									OPENAL_SetVolume(channels[movewhooshsound], 128);
-									OPENAL_SetPaused(channels[movewhooshsound], false);
+									emit_sound_at(movewhooshsound, coords, 128.);
 								}
 								if(currentanimation==staggerbackhighanim){
 									targetanimation=getIdle();
@@ -4122,34 +3452,10 @@ void	Person::DoAnimations(){
 									}
 
 									if(weaponactive==-1){
-										float gLoc[3];
-										float vel[3];
-										gLoc[0]=coords.x;
-										gLoc[1]=coords.y;
-										gLoc[2]=coords.z;
-										vel[0]=velocity.x;
-										vel[1]=velocity.y;
-										vel[2]=velocity.z;
-
-										PlaySoundEx( knifesheathesound, samp[knifesheathesound], NULL, true);
-										OPENAL_3D_SetAttributes(channels[knifesheathesound], gLoc, vel);
-										OPENAL_SetVolume(channels[knifesheathesound], 128);
-										OPENAL_SetPaused(channels[knifesheathesound], false);
+										emit_sound_at(knifesheathesound, coords, 128.);
 									}
 									if(weaponactive!=-1){
-										float gLoc[3];
-										float vel[3];
-										gLoc[0]=coords.x;
-										gLoc[1]=coords.y;
-										gLoc[2]=coords.z;
-										vel[0]=velocity.x;
-										vel[1]=velocity.y;
-										vel[2]=velocity.z;
-
-										PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, true);
-										OPENAL_3D_SetAttributes(channels[knifedrawsound], gLoc, vel);
-										OPENAL_SetVolume(channels[knifedrawsound], 128);
-										OPENAL_SetPaused(channels[knifedrawsound], false);
+										emit_sound_at(knifedrawsound, coords, 128.);
 									}
 								}
 								if(currentanimation==rollanim){
@@ -4369,18 +3675,7 @@ void	Person::DoAnimations(){
 									if(targetanimation==sweepreversedanim)targetrotation+=90;
 									targetanimation=backhandspringanim;
 									targetframe=2;
-									float gLoc[3];
-									float vel[3];
-									gLoc[0]=coords.x;
-									gLoc[1]=coords.y;
-									gLoc[2]=coords.z;
-									vel[0]=velocity.x;
-									vel[1]=velocity.y;
-									vel[2]=velocity.z;
-									PlaySoundEx( landsound, samp[landsound], NULL, true);
-									OPENAL_3D_SetAttributes(channels[landsound], gLoc, vel);
-									OPENAL_SetVolume(channels[landsound], 128);
-									OPENAL_SetPaused(channels[landsound], false);
+									emit_sound_at(landsound, coords, 128);
 
 									if(currentanimation==upunchreversedanim||currentanimation==swordslashreversedanim){
 										targetanimation=rollanim;
@@ -5297,18 +4592,7 @@ void	Person::DoStuff(){
 
 		skeleton.free=1;
 
-		float gLoc[3];
-		float vel[3];
-		gLoc[0]=coords.x;
-		gLoc[1]=coords.y;
-		gLoc[2]=coords.z;
-		vel[0]=velocity.x;
-		vel[1]=velocity.y;
-		vel[2]=velocity.z;
-		PlaySoundEx( breaksound, samp[breaksound], NULL, true);
-		OPENAL_3D_SetAttributes(channels[breaksound], gLoc, vel);
-		OPENAL_SetVolume(channels[breaksound], 512);
-		OPENAL_SetPaused(channels[breaksound], false);
+		emit_sound_at(breaksound, coords);
 		/*if(id==0||findDistancefast(&coords,&viewer)<50){
 		slomo=1;
 		slomodelay=.2;
@@ -5607,18 +4891,7 @@ void	Person::DoStuff(){
 				}
 				target=0;
 
-				float gLoc[3];
-				float vel[3];
-				gLoc[0]=coords.x;
-				gLoc[1]=coords.y;
-				gLoc[2]=coords.z;
-				vel[0]=velocity.x;
-				vel[1]=velocity.y;
-				vel[2]=velocity.z;
-				PlaySoundEx( movewhooshsound, samp[movewhooshsound], NULL, true);
-				OPENAL_3D_SetAttributes(channels[movewhooshsound], gLoc, vel);
-				OPENAL_SetVolume(channels[movewhooshsound], 128);
-				OPENAL_SetPaused(channels[movewhooshsound], false);
+				emit_sound_at(movewhooshsound, coords, 128.);
 
 				currentanimation=targetanimation;
 				currentframe=targetframe-1;
@@ -5647,18 +4920,7 @@ void	Person::DoStuff(){
 					if(findDistancefastflat(&coords,&objects.position[i])<objects.scale[i]*objects.scale[i]*12&&findDistancefast(&coords,&objects.position[i])<objects.scale[i]*objects.scale[i]*49){
 						if(onfire){
 							if(!objects.onfire[i]){
-								float gLoc[3];
-								float vel[3];
-								gLoc[0]=objects.position[i].x;
-								gLoc[1]=objects.position[i].y;
-								gLoc[2]=objects.position[i].z;
-								vel[0]=0;
-								vel[1]=0;
-								vel[2]=0;
-								PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-								OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-								OPENAL_SetVolume(channels[firestartsound], 256);
-								OPENAL_SetPaused(channels[firestartsound], false);
+								emit_sound_at(firestartsound, objects.position[i]);
 							}
 							objects.onfire[i]=1;
 						}
@@ -5672,18 +4934,7 @@ void	Person::DoStuff(){
 						if(findDistancefastflat(&coords,&objects.position[i])<objects.scale[i]*objects.scale[i]*12&&findDistancefast(&coords,&objects.position[i])<objects.scale[i]*objects.scale[i]*49){
 							if(onfire){
 								if(!objects.onfire[i]){
-									float gLoc[3];
-									float vel[3];
-									gLoc[0]=objects.position[i].x;
-									gLoc[1]=objects.position[i].y;
-									gLoc[2]=objects.position[i].z;
-									vel[0]=0;
-									vel[1]=0;
-									vel[2]=0;
-									PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-									OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-									OPENAL_SetVolume(channels[firestartsound], 256);
-									OPENAL_SetPaused(channels[firestartsound], false);
+									emit_sound_at(firestartsound, objects.position[i]);
 								}
 								objects.onfire[i]=1;
 							}
@@ -5697,18 +4948,7 @@ void	Person::DoStuff(){
 								XYZ tempvel;
 								XYZ pos;
 
-								float gLoc[3];
-								float vel[3];
-								gLoc[0]=coords.x;
-								gLoc[1]=coords.y;
-								gLoc[2]=coords.z;
-								vel[0]=velocity.x;
-								vel[1]=velocity.y;
-								vel[2]=velocity.z;
-								PlaySoundEx( bushrustle, samp[bushrustle], NULL, true);
-								OPENAL_3D_SetAttributes(channels[bushrustle], gLoc, vel);
-								OPENAL_SetVolume(channels[bushrustle], 40*findLength(&velocity));
-								OPENAL_SetPaused(channels[bushrustle], false);
+								emit_sound_at(bushrustle, coords, 40*findLength(&velocity));
 
 								if(id==0){
 									envsound[numenvsounds]=coords;
@@ -5768,18 +5008,7 @@ void	Person::DoStuff(){
 									XYZ tempvel;
 									XYZ pos;
 
-									float gLoc[3];
-									float vel[3];
-									gLoc[0]=coords.x;
-									gLoc[1]=coords.y;
-									gLoc[2]=coords.z;
-									vel[0]=velocity.x;
-									vel[1]=velocity.y;
-									vel[2]=velocity.z;
-									PlaySoundEx( bushrustle, samp[bushrustle], NULL, true);
-									OPENAL_3D_SetAttributes(channels[bushrustle], gLoc, vel);
-									OPENAL_SetVolume(channels[bushrustle], 40*findLength(&velocity));
-									OPENAL_SetPaused(channels[bushrustle], false);
+									emit_sound_at(bushrustle, coords, 40*findLength(&velocity));
 
 									if(id==0){
 										envsound[numenvsounds]=coords;
@@ -5837,14 +5066,6 @@ void	Person::DoStuff(){
 				if(tutoriallevel==1&&id!=0)play=0;
 				if(play&&aitype!=playercontrolled){
 					int whichsound=-1;
-					float gLoc[3];
-					float vel[3];
-					gLoc[0]=coords.x;
-					gLoc[1]=coords.y;
-					gLoc[2]=coords.z;
-					vel[0]=velocity.x;
-					vel[1]=velocity.y;
-					vel[2]=velocity.z;
 					i=abs(Random()%4);
 					if(speechdelay<=0){
 						if(creature==rabbittype){
@@ -5859,10 +5080,7 @@ void	Person::DoStuff(){
 					speechdelay=.3;
 
 					if(whichsound!=-1){
-						PlaySoundEx( whichsound, samp[whichsound], NULL, true);
-						OPENAL_3D_SetAttributes(channels[whichsound], gLoc, vel);
-						OPENAL_SetVolume(channels[whichsound], 512);
-						OPENAL_SetPaused(channels[whichsound], false);
+						emit_sound_at(whichsound, coords);
 					}
 				}
 
@@ -6273,18 +5491,7 @@ void	Person::DoStuff(){
 						if(targetanimation==jumpdownanim||isFlip()){
 							if(isFlip())jumppower=-4;
 							targetanimation=getLanding();
-							float gLoc[3];
-							float vel[3];
-							gLoc[0]=coords.x;
-							gLoc[1]=coords.y;
-							gLoc[2]=coords.z;
-							vel[0]=velocity.x;
-							vel[1]=velocity.y;
-							vel[2]=velocity.z;
-							PlaySoundEx( landsound, samp[landsound], NULL, true);
-							OPENAL_3D_SetAttributes(channels[landsound], gLoc, vel);
-							OPENAL_SetVolume(channels[landsound], 128);
-							OPENAL_SetPaused(channels[landsound], false);
+							emit_sound_at(landsound, coords, 128.);
 
 							if(id==0){
 								envsound[numenvsounds]=coords;
@@ -6340,25 +5547,11 @@ void	Person::DoStuff(){
 					if(skiddingdelay<0)skiddingdelay+=multiplier;
 					if(skiddingdelay>.02&&!forwardkeydown&&!backkeydown&&!leftkeydown&&!rightkeydown&&!jumpkeydown&&isLanding()&&!landhard){
 						skiddingdelay=-1;
-						float gLoc[3];
-						float vel[3];
-						gLoc[0]=coords.x;
-						gLoc[1]=coords.y;
-						gLoc[2]=coords.z;
-						vel[0]=velocity.x;
-						vel[1]=velocity.y;
-						vel[2]=velocity.z;
 						if(!onterrain||environment==grassyenvironment){
-							PlaySoundEx( skidsound, samp[skidsound], NULL, true);
-							OPENAL_3D_SetAttributes(channels[skidsound], gLoc, vel);
-							OPENAL_SetVolume(channels[skidsound], 128*velspeed/10);
-							OPENAL_SetPaused(channels[skidsound], false);
+							emit_sound_at(skidsound, coords, 128*velspeed/10);
 						}
 						else {
-							PlaySoundEx( snowskidsound, samp[snowskidsound], NULL, true);
-							OPENAL_3D_SetAttributes(channels[snowskidsound], gLoc, vel);
-							OPENAL_SetVolume(channels[snowskidsound], 128*velspeed/10);
-							OPENAL_SetPaused(channels[snowskidsound], false);
+							emit_sound_at(snowskidsound, coords, 128*velspeed/10);
 						}
 					}
 
@@ -7218,18 +6411,7 @@ int Person::SphereCheck(XYZ *p1,float radius, XYZ *p, XYZ *move, float *rotate, 
 								if((targetanimation==jumpdownanim||isFlip())&&!wasLanding()&&!wasLandhard()){
 									if(isFlip())jumppower=-4;
 									targetanimation=getLanding();
-									float gLoc[3];
-									float vel[3];
-									gLoc[0]=coords.x;
-									gLoc[1]=coords.y;
-									gLoc[2]=coords.z;
-									vel[0]=velocity.x;
-									vel[1]=velocity.y;
-									vel[2]=velocity.z;
-									PlaySoundEx( landsound, samp[landsound], NULL, true);
-									OPENAL_3D_SetAttributes(channels[landsound], gLoc, vel);
-									OPENAL_SetVolume(channels[landsound], 128);
-									OPENAL_SetPaused(channels[landsound], false);
+									emit_sound_at(landsound, coords, 128.);
 
 									if(id==0){
 										envsound[numenvsounds]=coords;

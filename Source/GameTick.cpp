@@ -988,20 +988,12 @@ static void ch_play(Game *game, const char *args)
   directing=0;
   indialogue=0;
 
-  float gLoc[3];
-  float vel[3];
   XYZ temppos;
   temppos=player[participantfocus[whichdialogue][indialogue]].coords;
   temppos=temppos-viewer;
   Normalise(&temppos);
   temppos+=viewer;
 
-  gLoc[0]=temppos.x;
-  gLoc[1]=temppos.y;
-  gLoc[2]=temppos.z;
-  vel[0]=0;
-  vel[1]=0;
-  vel[2]=0;
   int whichsoundplay;
   whichsoundplay=rabbitchitter;
   if(dialogueboxsound[whichdialogue][indialogue]==2)whichsoundplay=rabbitchitter2;
@@ -1023,10 +1015,7 @@ static void ch_play(Game *game, const char *args)
   if(dialogueboxsound[whichdialogue][indialogue]==-2)whichsoundplay=firestartsound;
   if(dialogueboxsound[whichdialogue][indialogue]==-3)whichsoundplay=consolesuccesssound;
   if(dialogueboxsound[whichdialogue][indialogue]==-4)whichsoundplay=consolefailsound;
-  PlaySoundEx( whichsoundplay, samp[whichsoundplay], NULL, true);
-  OPENAL_3D_SetAttributes(channels[whichsoundplay], gLoc, vel);
-  OPENAL_SetVolume(channels[whichsoundplay], 256);
-  OPENAL_SetPaused(channels[whichsoundplay], false);
+  emit_sound_at(whichsoundplay, temppos);
 }
 
 static void ch_mapkilleveryone(Game *game, const char *args)
@@ -3114,19 +3103,12 @@ void	Game::Tick()
 								dialoguetime=0;
 								dialoguegonethrough[i]++;
 								if(dialogueboxsound[whichdialogue][indialogue]!=0){
-									static float gLoc[3];
-									static float vel[3];
 									XYZ temppos;
 									temppos=player[participantfocus[whichdialogue][indialogue]].coords;
 									temppos=temppos-viewer;
 									Normalise(&temppos);
 									temppos+=viewer;
 
-									gLoc[0]=temppos.x;
-									gLoc[1]=temppos.y;
-									gLoc[2]=temppos.z;vel[0]=0;
-									vel[1]=0;
-									vel[2]=0;
 									int whichsoundplay;
 									if(dialogueboxsound[whichdialogue][indialogue]==1)whichsoundplay=rabbitchitter;
 									if(dialogueboxsound[whichdialogue][indialogue]==2)whichsoundplay=rabbitchitter2;
@@ -3148,10 +3130,7 @@ void	Game::Tick()
 									if(dialogueboxsound[whichdialogue][indialogue]==-2)whichsoundplay=firestartsound;
 									if(dialogueboxsound[whichdialogue][indialogue]==-3)whichsoundplay=consolesuccesssound;
 									if(dialogueboxsound[whichdialogue][indialogue]==-4)whichsoundplay=consolefailsound;
-									PlaySoundEx( whichsoundplay, samp[whichsoundplay], NULL, true);
-									OPENAL_3D_SetAttributes(channels[whichsoundplay], gLoc, vel);
-									OPENAL_SetVolume(channels[whichsoundplay], 256);
-									OPENAL_SetPaused(channels[whichsoundplay], false);
+									emit_sound_at(whichsoundplay, temppos);
 								}
 								if(Input::isKeyDown(attackkey))oldbuttondialogue=1;
 							}
@@ -3238,18 +3217,7 @@ void	Game::Tick()
 
 							player[1].coords=(temp+temp2)/2;
 
-							float gLoc[3];
-							float vel[3];
-							gLoc[0]=player[1].coords.x;
-							gLoc[1]=player[1].coords.y;
-							gLoc[2]=player[1].coords.z;
-							vel[0]=0;
-							vel[1]=0;
-							vel[2]=0;
-							PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-							OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-							OPENAL_SetVolume(channels[fireendsound], 256);
-							OPENAL_SetPaused(channels[fireendsound], false);
+							emit_sound_at(fireendsound, player[1].coords);
 
 							for(i=0;i<player[1].skeleton.num_joints;i++){
 								if(Random()%2==0){
@@ -3490,18 +3458,7 @@ void	Game::Tick()
 							tutorialmaxtime=8;
 
 							XYZ temp,temp2;
-							float gLoc[3];
-							float vel[3];
-							gLoc[0]=player[1].coords.x;
-							gLoc[1]=player[1].coords.y;
-							gLoc[2]=player[1].coords.z;
-							vel[0]=0;
-							vel[1]=0;
-							vel[2]=0;
-							PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-							OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-							OPENAL_SetVolume(channels[fireendsound], 256);
-							OPENAL_SetPaused(channels[fireendsound], false);
+							emit_sound_at(fireendsound, player[1].coords);
 
 							for(i=0;i<player[1].skeleton.num_joints;i++){
 								if(Random()%2==0){
@@ -3780,18 +3737,7 @@ void	Game::Tick()
 															player[k].target=0;
 															player[k].targetanimation=walljumpleftanim;
 															player[k].targetframe=0;
-															float gLoc[3];
-															float vel[3];
-															gLoc[0]=player[k].coords.x;
-															gLoc[1]=player[k].coords.y;
-															gLoc[2]=player[k].coords.z;
-															vel[0]=0;
-															vel[1]=0;
-															vel[2]=0;
-															PlaySoundEx( movewhooshsound, samp[movewhooshsound], NULL, true);
-															OPENAL_3D_SetAttributes(channels[movewhooshsound], gLoc, vel);
-															OPENAL_SetVolume(channels[movewhooshsound], 256);
-															OPENAL_SetPaused(channels[movewhooshsound], false);
+															emit_sound_at(movewhooshsound, player[k].coords);
 															if(k==0)OPENAL_SetPaused(channels[whooshsound], true);
 
 															lowpointtarget=DoRotation(objects.model[i].facenormals[whichhit],0,objects.rotation[i],0);
@@ -3811,18 +3757,7 @@ void	Game::Tick()
 																player[k].target=0;
 																player[k].targetanimation=walljumprightanim;
 																player[k].targetframe=0;
-																float gLoc[3];
-																float vel[3];
-																gLoc[0]=player[k].coords.x;
-																gLoc[1]=player[k].coords.y;
-																gLoc[2]=player[k].coords.z;
-																vel[0]=0;
-																vel[1]=0;
-																vel[2]=0;
-																PlaySoundEx( movewhooshsound, samp[movewhooshsound], NULL, true);
-																OPENAL_3D_SetAttributes(channels[movewhooshsound], gLoc, vel);
-																OPENAL_SetVolume(channels[movewhooshsound], 256);
-																OPENAL_SetPaused(channels[movewhooshsound], false);
+																emit_sound_at(movewhooshsound, player[k].coords);
 																if(k==0)OPENAL_SetPaused(channels[whooshsound], true);
 
 																lowpointtarget=DoRotation(objects.model[i].facenormals[whichhit],0,objects.rotation[i],0);
@@ -3842,18 +3777,7 @@ void	Game::Tick()
 																	player[k].target=0;
 																	player[k].targetanimation=walljumpbackanim;
 																	player[k].targetframe=0;
-																	float gLoc[3];
-																	float vel[3];
-																	gLoc[0]=player[k].coords.x;
-																	gLoc[1]=player[k].coords.y;
-																	gLoc[2]=player[k].coords.z;
-																	vel[0]=0;
-																	vel[1]=0;
-																	vel[2]=0;
-																	PlaySoundEx( movewhooshsound, samp[movewhooshsound], NULL, true);
-																	OPENAL_3D_SetAttributes(channels[movewhooshsound], gLoc, vel);
-																	OPENAL_SetVolume(channels[movewhooshsound], 256);
-																	OPENAL_SetPaused(channels[movewhooshsound], false);
+																	emit_sound_at(movewhooshsound, player[k].coords);
 																	if(k==0)OPENAL_SetPaused(channels[whooshsound], true);
 
 																	lowpointtarget=DoRotation(objects.model[i].facenormals[whichhit],0,objects.rotation[i],0);
@@ -3873,18 +3797,7 @@ void	Game::Tick()
 																		player[k].target=0;
 																		player[k].targetanimation=walljumpfrontanim;
 																		player[k].targetframe=0;
-																		float gLoc[3];
-																		float vel[3];
-																		gLoc[0]=player[k].coords.x;
-																		gLoc[1]=player[k].coords.y;
-																		gLoc[2]=player[k].coords.z;
-																		vel[0]=0;
-																		vel[1]=0;
-																		vel[2]=0;
-																		PlaySoundEx( movewhooshsound, samp[movewhooshsound], NULL, true);
-																		OPENAL_3D_SetAttributes(channels[movewhooshsound], gLoc, vel);
-																		OPENAL_SetVolume(channels[movewhooshsound], 256);
-																		OPENAL_SetPaused(channels[movewhooshsound], false);
+																		emit_sound_at(movewhooshsound, player[k].coords);
 																		if(k==0)OPENAL_SetPaused(channels[whooshsound], true);
 
 																		lowpointtarget=DoRotation(objects.model[i].facenormals[whichhit],0,objects.rotation[i],0);
@@ -3927,18 +3840,7 @@ void	Game::Tick()
 														if((player[k].targetanimation==jumpdownanim||player[k].isFlip())&&!player[k].wasLanding()){
 															if(player[k].isFlip())player[k].jumppower=-4;
 															player[k].targetanimation=player[k].getLanding();
-															float gLoc[3];
-															float vel[3];
-															gLoc[0]=player[k].coords.x;
-															gLoc[1]=player[k].coords.y;
-															gLoc[2]=player[k].coords.z;
-															vel[0]=player[k].velocity.x;
-															vel[1]=player[k].velocity.y;
-															vel[2]=player[k].velocity.z;
-															PlaySoundEx( landsound, samp[landsound], NULL, true);
-															OPENAL_3D_SetAttributes(channels[landsound], gLoc, vel);
-															OPENAL_SetVolume(channels[landsound], 128);
-															OPENAL_SetPaused(channels[landsound], false);
+															emit_sound_at(landsound, player[k].coords, 128.);
 															if(k==0){
 																envsound[numenvsounds]=player[k].coords;
 																envsoundvol[numenvsounds]=16;
@@ -4038,18 +3940,7 @@ void	Game::Tick()
 																										if(player[k].targetanimation==jumpdownanim||player[k].targetanimation==jumpupanim){
 																											if(k==0)OPENAL_SetPaused(channels[whooshsound], true);
 																										}
-																										float gLoc[3];
-																										float vel[3];
-																										gLoc[0]=player[k].coords.x;
-																										gLoc[1]=player[k].coords.y;
-																										gLoc[2]=player[k].coords.z;
-																										vel[0]=player[k].velocity.x;
-																										vel[1]=player[k].velocity.y;
-																										vel[2]=player[k].velocity.z;
-																										PlaySoundEx( jumpsound, samp[jumpsound], NULL, true);
-																										OPENAL_3D_SetAttributes(channels[jumpsound], gLoc, vel);
-																										OPENAL_SetVolume(channels[jumpsound], 128);
-																										OPENAL_SetPaused(channels[jumpsound], false);
+																										emit_sound_at(jumpsound, player[k].coords, 128.);
 
 																										lowpointtarget=DoRotation(objects.model[i].facenormals[whichhit],0,objects.rotation[i],0);
 																										player[k].rotation=-asin(0-lowpointtarget.x);
@@ -4099,20 +3990,8 @@ void	Game::Tick()
 														player[k].targetframe=0;
 														player[k].target=0;
 
-														float gLoc[3];
-														float vel[3];
-														gLoc[0]=player[k].coords.x;
-														gLoc[1]=player[k].coords.y;
-														gLoc[2]=player[k].coords.z;
-														vel[0]=player[k].velocity.x;
-														vel[1]=player[k].velocity.y;
-														vel[2]=player[k].velocity.z;
-														if(k==0){
-															PlaySoundEx( whooshsound, samp[whooshsound], NULL, true);
-															OPENAL_3D_SetAttributes(channels[whooshsound], gLoc, vel);
-															OPENAL_SetVolume(channels[whooshsound], 128);
-															OPENAL_SetPaused(channels[whooshsound], false);
-														}
+														if(!k)
+														  emit_sound_at(whooshsound, player[k].coords, 128.);
 													}
 													player[k].velocity.y+=gravity;
 												}
@@ -4204,19 +4083,12 @@ void	Game::Tick()
 										indialogue++;
 										if(indialogue<numdialogueboxes[whichdialogue]){
 											if(dialogueboxsound[whichdialogue][indialogue]!=0){
-												static float gLoc[3];
-												static float vel[3];
 												XYZ temppos;
 												temppos=player[participantfocus[whichdialogue][indialogue]].coords;
 												temppos=temppos-viewer;
 												Normalise(&temppos);
 												temppos+=viewer;
 
-												gLoc[0]=temppos.x;
-												gLoc[1]=temppos.y;
-												gLoc[2]=temppos.z;vel[0]=0;
-												vel[1]=0;
-												vel[2]=0;
 												int whichsoundplay;
 												if(dialogueboxsound[whichdialogue][indialogue]==1)whichsoundplay=rabbitchitter;
 												if(dialogueboxsound[whichdialogue][indialogue]==2)whichsoundplay=rabbitchitter2;
@@ -4238,10 +4110,7 @@ void	Game::Tick()
 												if(dialogueboxsound[whichdialogue][indialogue]==-2)whichsoundplay=firestartsound;
 												if(dialogueboxsound[whichdialogue][indialogue]==-3)whichsoundplay=consolesuccesssound;
 												if(dialogueboxsound[whichdialogue][indialogue]==-4)whichsoundplay=consolefailsound;
-												PlaySoundEx( whichsoundplay, samp[whichsoundplay], NULL, true);
-												OPENAL_3D_SetAttributes(channels[whichsoundplay], gLoc, vel);
-												OPENAL_SetVolume(channels[whichsoundplay], 256);
-												OPENAL_SetPaused(channels[whichsoundplay], false);
+												emit_sound_at(whichsoundplay, temppos);
 											}
 										}
 
@@ -4294,19 +4163,12 @@ void	Game::Tick()
 											endkeydown=1;
 											if(indialogue<numdialogueboxes[whichdialogue]){
 												if(dialogueboxsound[whichdialogue][indialogue]!=0){
-													static float gLoc[3];
-													static float vel[3];
 													XYZ temppos;
 													temppos=player[participantfocus[whichdialogue][indialogue]].coords;
 													temppos=temppos-viewer;
 													Normalise(&temppos);
 													temppos+=viewer;
 
-													gLoc[0]=temppos.x;
-													gLoc[1]=temppos.y;
-													gLoc[2]=temppos.z;vel[0]=0;
-													vel[1]=0;
-													vel[2]=0;
 													int whichsoundplay;
 													if(dialogueboxsound[whichdialogue][indialogue]==1)whichsoundplay=rabbitchitter;
 													if(dialogueboxsound[whichdialogue][indialogue]==2)whichsoundplay=rabbitchitter2;
@@ -4330,10 +4192,7 @@ void	Game::Tick()
 													if(dialogueboxsound[whichdialogue][indialogue]==-4)whichsoundplay=consolefailsound;
 													if(dialogueboxsound[whichdialogue][indialogue]==-6)whichsoundplay=alarmsound;
 													if(dialogueboxsound[whichdialogue][indialogue]!=-5){
-														PlaySoundEx( whichsoundplay, samp[whichsoundplay], NULL, true);
-														OPENAL_3D_SetAttributes(channels[whichsoundplay], gLoc, vel);
-														OPENAL_SetVolume(channels[whichsoundplay], 256);
-														OPENAL_SetPaused(channels[whichsoundplay], false);
+														emit_sound_at(whichsoundplay, temppos);
 													}
 													if(dialogueboxsound[whichdialogue][indialogue]==-5){
 														hotspot[numhotspots]=player[0].coords;
@@ -4400,18 +4259,7 @@ void	Game::Tick()
 
 						if(hawkcalldelay<=0)
 						{
-							static float gLoc[3];
-							static float vel[3];
-							gLoc[0]=realhawkcoords.x;
-							gLoc[1]=realhawkcoords.y;
-							gLoc[2]=realhawkcoords.z;
-							vel[0]=0;
-							vel[1]=0;
-							vel[2]=0;
-							PlaySoundEx( hawksound, samp[hawksound], NULL, true);
-							OPENAL_3D_SetAttributes(channels[hawksound], gLoc, vel);
-							OPENAL_SetVolume(channels[hawksound], 128);
-							OPENAL_SetPaused(channels[hawksound], false);
+							emit_sound_at(hawksound, realhawkcoords);
 
 							hawkcalldelay=16+abs(Random()%8);
 						}
@@ -4712,23 +4560,8 @@ void	Game::Tick()
 									}
 									Sprite::MakeSprite(cloudsprite, flatfacing2,flatvelocity2*0, .6,0,0, 1, .5);
 
-									float gLoc[3];
-									float vel[3];
-									gLoc[0]=blah.x;
-									gLoc[1]=blah.y;
-									gLoc[2]=blah.z;
-									vel[0]=0;
-									vel[1]=0;
-									vel[2]=0;
-									PlaySoundEx( splattersound, samp[splattersound], NULL, true);
-									OPENAL_3D_SetAttributes(channels[splattersound], gLoc, vel);
-									OPENAL_SetVolume(channels[splattersound], 256);
-									OPENAL_SetPaused(channels[splattersound], false);
-
-									PlaySoundEx( breaksound2, samp[breaksound2], NULL, true);
-									OPENAL_3D_SetAttributes(channels[breaksound2], gLoc, vel);
-									OPENAL_SetVolume(channels[breaksound2], 100);
-									OPENAL_SetPaused(channels[breaksound2], false);
+									emit_sound_at(splattersound, blah);
+									emit_sound_at(breaksound2, blah, 100.);
 
 									if(player[closest].skeleton.free==2)player[closest].skeleton.free=0;
 									player[closest].RagDoll(0);
@@ -4760,24 +4593,9 @@ void	Game::Tick()
 								}
 
 								if(closest!=-1){
-									float gLoc[3];
-									float vel[3];
-									gLoc[0]=blah.x;
-									gLoc[1]=blah.y;
-									gLoc[2]=blah.z;
-									vel[0]=0;
-									vel[1]=0;
-									vel[2]=0;
+									emit_sound_at(splattersound, blah);
 
-									PlaySoundEx( splattersound, samp[splattersound], NULL, true);
-									OPENAL_3D_SetAttributes(channels[splattersound], gLoc, vel);
-									OPENAL_SetVolume(channels[splattersound], 256);
-									OPENAL_SetPaused(channels[splattersound], false);
-
-									PlaySoundEx( breaksound2, samp[breaksound2], NULL, true);
-									OPENAL_3D_SetAttributes(channels[breaksound2], gLoc, vel);
-									OPENAL_SetVolume(channels[breaksound2], 600);
-									OPENAL_SetPaused(channels[breaksound2], false);
+									emit_sound_at(breaksound2, blah);
 
 									for(i=0;i<player[closest].skeleton.num_joints; i++){
 										if(!player[closest].skeleton.free)flatvelocity2=player[closest].velocity;
@@ -4876,18 +4694,7 @@ void	Game::Tick()
 								player[0].CatchFire();
 							}
 							if(!player[0].onfire){
-								float gLoc[3];
-								float vel[3];
-								gLoc[0]=player[0].coords.x;
-								gLoc[1]=player[0].coords.y;
-								gLoc[2]=player[0].coords.z;
-								vel[0]=0;
-								vel[1]=0;
-								vel[2]=0;
-								PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-								OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-								OPENAL_SetVolume(channels[fireendsound], 256);
-								OPENAL_SetPaused(channels[fireendsound], false);
+								emit_sound_at(fireendsound, player[0].coords);
 								OPENAL_SetPaused(channels[stream_firesound], true);
 							}
 							slomotogglekeydown=1;
@@ -5273,18 +5080,7 @@ void	Game::Tick()
 							//player[0].spurt=1;
 							//player[0].DoDamage(1000);
 
-							float gLoc[3];
-							float vel[3];
-							gLoc[0]=player[0].coords.x;
-							gLoc[1]=player[0].coords.y;
-							gLoc[2]=player[0].coords.z;
-							vel[0]=player[0].velocity.x;
-							vel[1]=player[0].velocity.y;
-							vel[2]=player[0].velocity.z;
-							PlaySoundEx( whooshsound, samp[whooshsound], NULL, true);
-							OPENAL_3D_SetAttributes(channels[whooshsound], gLoc, vel);
-							OPENAL_SetVolume(channels[whooshsound], 128);
-							OPENAL_SetPaused(channels[whooshsound], false);
+							emit_sound_at(whooshsound, player[0].coords, 128.);
 							//OPENAL_SetPaused(channels[whooshsound], true);
 
 							texturesizetogglekeydown=1;
@@ -5696,19 +5492,8 @@ void	Game::Tick()
 																										if(((((findLengthfast(&rotatetarget)>150&&(i!=0&&k!=0))||(findLengthfast(&rotatetarget)>50&&player[0].rabbitkickragdoll/*currentanimation==rabbitkickanim*/&&(i==0||k==0)))&&normaldotproduct(rotatetarget,player[k].coords-player[i].coords)>0)&&((i==0||k==0)||((player[i].skeleton.oldfree==1&&k!=0&&animation[player[k].currentanimation].attack==neutral)||(player[k].skeleton.oldfree==1&&i!=0&&animation[player[i].currentanimation].attack==neutral)||(player[i].isFlip()&&!player[i].skeleton.oldfree&&(i==0||k==0))||(player[k].isFlip()&&!player[k].skeleton.oldfree&&(i==0||k==0))||(i==0||k==0))))||((player[i].targetanimation==jumpupanim||player[i].targetanimation==jumpdownanim||player[i].isFlip())&&(player[k].targetanimation==jumpupanim||player[k].targetanimation==jumpdownanim||player[k].isFlip())&&(i==0||k==0)&&(!player[i].skeleton.oldfree&&!player[k].skeleton.oldfree))){
 																											//If hit by body
 																											if((i!=0||player[i].skeleton.free)&&(k!=0||player[k].skeleton.free)||(animation[player[i].targetanimation].height==highheight&&animation[player[k].targetanimation].height==highheight)){
-																												static float gLoc[3];
-																												static float vel[3];
-																												gLoc[0]=player[i].coords.x;
-																												gLoc[1]=player[i].coords.y;
-																												gLoc[2]=player[i].coords.z;
-																												vel[0]=player[i].velocity.x;
-																												vel[1]=player[i].velocity.y;
-																												vel[2]=player[i].velocity.z;
 																												if(tutoriallevel!=1){
-																													PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
-																													OPENAL_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);
-																													OPENAL_SetVolume(channels[heavyimpactsound], 256);
-																													OPENAL_SetPaused(channels[heavyimpactsound], false);
+																													emit_sound_at(heavyimpactsound, player[i].coords);
 																												}
 																												//player[i].velocity=player[k].velocity;
 																												//player[k].velocity=player[i].velocity;
@@ -6935,20 +6720,8 @@ void	Game::Tick()
 																if((((weapons.velocity[j].x==0&&weapons.velocity[j].y==0&&weapons.velocity[j].z==0)||player[i].aitype==playercontrolled)&&weapons.owner[j]==-1)||(player[i].victim&&weapons.owner[j]==player[i].victim->id))
 																	if(findDistancefastflat(&player[i].coords,&weapons.position[j])<2&&player[i].weaponactive==-1){
 																		if(findDistancefast(&player[i].coords,&weapons.position[j])<1||player[i].victim){
-																			float gLoc[3];
-																			float vel[3];
-																			gLoc[0]=player[i].coords.x;
-																			gLoc[1]=player[i].coords.y;
-																			gLoc[2]=player[i].coords.z;
-																			vel[0]=player[i].velocity.x;
-																			vel[1]=player[i].velocity.y;
-																			vel[2]=player[i].velocity.z;
-																			if(weapons.type[j]!=staff){
-																				PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, true);
-																				OPENAL_3D_SetAttributes(channels[knifedrawsound], gLoc, vel);
-																				OPENAL_SetVolume(channels[knifedrawsound], 128);
-																				OPENAL_SetPaused(channels[knifedrawsound], false);
-																			}
+																			if(weapons.type[j]!=staff)
+																			  emit_sound_at(knifedrawsound, player[i].coords, 128.);
 
 																			player[i].weaponactive=0;
 																			weapons.owner[j]=player[i].id;
@@ -6982,20 +6755,8 @@ void	Game::Tick()
 																	if(player[i].weaponactive==-1)
 																		if((((weapons.velocity[k].x==0&&weapons.velocity[k].y==0&&weapons.velocity[k].z==0)||player[i].aitype==playercontrolled)&&weapons.owner[k]==-1)||(player[i].victim&&weapons.owner[k]==player[i].victim->id))
 																			if(findDistancefastflat(&player[i].coords,&weapons.position[k])<3&&player[i].weaponactive==-1){
-																				float gLoc[3];
-																				float vel[3];
-																				gLoc[0]=player[i].coords.x;
-																				gLoc[1]=player[i].coords.y;
-																				gLoc[2]=player[i].coords.z;
-																				vel[0]=player[i].velocity.x;
-																				vel[1]=player[i].velocity.y;
-																				vel[2]=player[i].velocity.z;
-																				if(weapons.type[k]!=staff){
-																					PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, true);
-																					OPENAL_3D_SetAttributes(channels[knifedrawsound], gLoc, vel);
-																					OPENAL_SetVolume(channels[knifedrawsound], 128);
-																					OPENAL_SetPaused(channels[knifedrawsound], false);
-																				}
+																				if(weapons.type[k]!=staff)
+																				  emit_sound_at(knifedrawsound, player[i].coords, 128.);
 
 																				player[i].weaponactive=0;
 																				weapons.owner[k]=player[i].id;
@@ -7035,14 +6796,6 @@ void	Game::Tick()
 																		player[i].hasvictim=1;
 																		int k = player[j].weaponids[0];
 																		if(player[i].hasvictim){
-																			float gLoc[3];
-																			float vel[3];
-																			gLoc[0]=player[i].coords.x;
-																			gLoc[1]=player[i].coords.y;
-																			gLoc[2]=player[i].coords.z;
-																			vel[0]=player[i].velocity.x;
-																			vel[1]=player[i].velocity.y;
-																			vel[2]=player[i].velocity.z;
 																			bool fleshstuck;
 																			fleshstuck=0;
 																			if(player[i].victim->weaponstuck!=-1){
@@ -7051,19 +6804,11 @@ void	Game::Tick()
 																				}
 																			}
 																			if(!fleshstuck){
-																				if(weapons.type[k]!=staff){
-																					PlaySoundEx( knifedrawsound, samp[knifedrawsound], NULL, true);
-																					OPENAL_3D_SetAttributes(channels[knifedrawsound], gLoc, vel);
-																					OPENAL_SetVolume(channels[knifedrawsound], 128);
-																					OPENAL_SetPaused(channels[knifedrawsound], false);
-																				}
+																				if(weapons.type[k]!=staff)
+																				  emit_sound_at(knifedrawsound, player[i].coords, 128.);
 																			}
-																			if(fleshstuck){
-																				PlaySoundEx( fleshstabremovesound, samp[fleshstabremovesound], NULL, true);
-																				OPENAL_3D_SetAttributes(channels[fleshstabremovesound], gLoc, vel);
-																				OPENAL_SetVolume(channels[fleshstabremovesound], 128);
-																				OPENAL_SetPaused(channels[fleshstabremovesound], false);
-																			}
+																			if(fleshstuck)
+																			  emit_sound_at(fleshstabremovesound, player[i].coords, 128.);
 
 																			player[i].weaponactive=0;
 																			if(weapons.owner[k]!=-1){
@@ -7477,26 +7222,10 @@ void	Game::Tick()
 														player[i].coords.y+=.2;
 														player[i].jumppower-=1;
 
-														static float gLoc[3];
-														static float vel[3];
-														gLoc[0]=player[i].coords.x;
-														gLoc[1]=player[i].coords.y;
-														gLoc[2]=player[i].coords.z;
-														vel[0]=player[i].velocity.x;
-														vel[1]=player[i].velocity.y;
-														vel[2]=player[i].velocity.z;
+														if (!i)
+														  emit_sound_at(whooshsound, player[i].coords, 128.);
 
-														if(i==0){
-															PlaySoundEx( whooshsound, samp[whooshsound], NULL, true);
-															OPENAL_3D_SetAttributes(channels[whooshsound], gLoc, vel);
-															OPENAL_SetVolume(channels[whooshsound], 128);
-															OPENAL_SetPaused(channels[whooshsound], false);
-														}
-
-														PlaySoundEx( jumpsound, samp[jumpsound], NULL, true);
-														OPENAL_3D_SetAttributes(channels[jumpsound], gLoc, vel);
-														OPENAL_SetVolume(channels[jumpsound], 128);
-														OPENAL_SetPaused(channels[jumpsound], false);
+														emit_sound_at(jumpsound, player[i].coords, 128.);
 												}
 												if((player[i].isIdle())&&player[i].jumppower>1){
 													player[i].targetanimation=player[i].getLanding();
@@ -7640,18 +7369,7 @@ void	Game::Tick()
 									}
 									if(tutorialstage<51)
 										if(findDistancefast(&temp,&player[0].coords)>=findDistancefast(&temp,&temp2)-1||findDistancefast(&temp3,&player[0].coords)<4){
-											float gLoc[3];
-											float vel[3];
-											gLoc[0]=player[0].coords.x;
-											gLoc[1]=player[0].coords.y;
-											gLoc[2]=player[0].coords.z;
-											vel[0]=0;
-											vel[1]=0;
-											vel[2]=0;
-											PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-											OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-											OPENAL_SetVolume(channels[fireendsound], 256);
-											OPENAL_SetPaused(channels[fireendsound], false);
+											emit_sound_at(fireendsound, player[0].coords);
 
 											player[0].coords=(oldtemp+oldtemp2)/2;
 
@@ -7659,18 +7377,7 @@ void	Game::Tick()
 										}
 										if(tutorialstage>=14&&tutorialstage<50)
 											if(findDistancefast(&temp,&player[1].coords)>=findDistancefast(&temp,&temp2)-1||findDistancefast(&temp3,&player[1].coords)<4){
-												float gLoc[3];
-												float vel[3];
-												gLoc[0]=player[1].coords.x;
-												gLoc[1]=player[1].coords.y;
-												gLoc[2]=player[1].coords.z;
-												vel[0]=0;
-												vel[1]=0;
-												vel[2]=0;
-												PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-												OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-												OPENAL_SetVolume(channels[fireendsound], 256);
-												OPENAL_SetPaused(channels[fireendsound], false);
+												emit_sound_at(fireendsound, player[1].coords);
 
 												for(int i=0;i<player[1].skeleton.num_joints;i++){
 													if(Random()%2==0){

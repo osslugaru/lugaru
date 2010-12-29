@@ -954,14 +954,6 @@ int Game::DrawGLScene(StereoSide side)
 							indialogue=0;
 							dialoguegonethrough[whichdialogue]++;
 							if(dialogueboxsound[whichdialogue][indialogue]!=0){
-								static float gLoc[3];
-								static float vel[3];
-								gLoc[0]=player[participantfocus[whichdialogue][indialogue]].coords.x;
-								gLoc[1]=player[participantfocus[whichdialogue][indialogue]].coords.y;
-								gLoc[2]=player[participantfocus[whichdialogue][indialogue]].coords.z;
-								vel[0]=0;
-								vel[1]=0;
-								vel[2]=0;
 								int whichsoundplay;
 								if(dialogueboxsound[whichdialogue][indialogue]==1)whichsoundplay=rabbitchitter;
 								if(dialogueboxsound[whichdialogue][indialogue]==2)whichsoundplay=rabbitchitter2;
@@ -983,10 +975,7 @@ int Game::DrawGLScene(StereoSide side)
 								if(dialogueboxsound[whichdialogue][indialogue]==-2)whichsoundplay=firestartsound;
 								if(dialogueboxsound[whichdialogue][indialogue]==-3)whichsoundplay=consolesuccesssound;
 								if(dialogueboxsound[whichdialogue][indialogue]==-4)whichsoundplay=consolefailsound;
-								PlaySoundEx( whichsoundplay, samp[whichsoundplay], NULL, true);
-								OPENAL_3D_SetAttributes(channels[whichsoundplay], gLoc, vel);
-								OPENAL_SetVolume(channels[whichsoundplay], 256);
-								OPENAL_SetPaused(channels[whichsoundplay], false);
+								emit_sound_at(whichsoundplay, player[participantfocus[whichdialogue][indialogue]].coords);
 							}
 						}
 					}

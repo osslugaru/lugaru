@@ -85,6 +85,7 @@ AL_API signed char OPENAL_Stream_SetMode(OPENAL_STREAM *stream, unsigned int mod
 AL_API void OPENAL_Update();
 AL_API signed char OPENAL_SetOutput(int outputtype);
 void PlaySoundEx(int chan, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
+void PlayStreamEx(int chan, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 
 #ifdef __cplusplus
 }
