@@ -19,6 +19,20 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#ifdef DECLARE_ANIM_BIT
+DECLARE_ANIM_BIT(ab_idle)
+DECLARE_ANIM_BIT(ab_sit)
+DECLARE_ANIM_BIT(ab_sleep)
+DECLARE_ANIM_BIT(ab_crouch)
+DECLARE_ANIM_BIT(ab_run)
+DECLARE_ANIM_BIT(ab_stop)
+DECLARE_ANIM_BIT(ab_land)
+DECLARE_ANIM_BIT(ab_landhard)
+DECLARE_ANIM_BIT(ab_flip)
+DECLARE_ANIM_BIT(ab_walljump)
+#endif
+
+#ifdef DECLARE_ANIM
 DECLARE_ANIM(runanim, "Run", middleheight, neutral)
 DECLARE_ANIM(bounceidleanim, "Idle", middleheight, neutral)
 DECLARE_ANIM(stopanim, "Stop", middleheight, neutral)
@@ -152,3 +166,4 @@ DECLARE_ANIM(wolftacklereversed, "", 0, 0)
 DECLARE_ANIM(wolftacklinganim, "", 0, 0)
 
 DECLARE_ANIM(tempanim, "", 0, 0)
+#endif
