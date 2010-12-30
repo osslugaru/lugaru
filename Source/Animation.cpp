@@ -30,7 +30,7 @@ struct animation_data_elt
 };
 
 static animation_data_elt animation_data[animation_count] = {
-#define DECLARE_ANIM(id, file, height, attack) {file, height, attack},
+#define DECLARE_ANIM(id, file, height, attack, ...) {file, height, attack},
 #include "Animation.def"
 #undef DECLARE_ANIM
 };

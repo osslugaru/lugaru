@@ -32,7 +32,7 @@ enum anim_height_type {
 
 
 enum animation_types {
-#define DECLARE_ANIM(id, file, height, attack) id,
+#define DECLARE_ANIM(id, ...) id,
 #include "Animation.def"
 #undef DECLARE_ANIM
 animation_count
