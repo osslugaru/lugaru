@@ -223,17 +223,6 @@ int Person::getStop(){
 	return 0;
 }
 
-
-bool Person::isLanding(){
-	if(targetanimation==landanim||targetanimation==wolflandanim)return 1;
-	else return 0;
-}
-
-
-bool Person::wasLanding(){
-	if(currentanimation==landanim||currentanimation==wolflandanim)return 1;
-	else return 0;
-}
 int Person::getLanding(){
 	if(creature==rabbittype)return landanim;
 	if(creature==wolftype)return wolflandanim;

@@ -376,9 +376,15 @@ class Person
 		  return animation_bits[targetanimation] & ab_run;
 		}
 		int getRun();
-		
-		bool wasLanding();
-		bool isLanding();
+
+		bool wasLanding()
+		{
+		  return animation_bits[currentanimation] & ab_land;
+		}
+		bool isLanding()
+		{
+		  return animation_bits[targetanimation] & ab_land;
+		}
 		int getLanding();
 		
 		bool wasLandhard();
