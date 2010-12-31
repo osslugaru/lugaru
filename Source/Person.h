@@ -353,8 +353,14 @@ class Person
 		}
 		int getCrouch();
 		
-		bool wasStop();
-		bool isStop();
+		bool wasStop()
+		{
+		  return animation_bits[currentanimation] & ab_stop;
+		}
+		bool isStop()
+		{
+		  return animation_bits[targetanimation] & ab_stop;
+		}
 		int getStop();
 		
 		bool wasSneak();

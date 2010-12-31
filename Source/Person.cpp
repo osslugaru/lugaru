@@ -217,16 +217,6 @@ int Person::getRun(){
 	return 0;
 }
 
-bool Person::isStop(){
-	if(targetanimation==stopanim||targetanimation==wolfstopanim)return 1;
-	else return 0;
-}
-
-
-bool Person::wasStop(){
-	if(currentanimation==stopanim||currentanimation==wolfstopanim)return 1;
-	else return 0;
-}
 int Person::getStop(){
 	if(creature==rabbittype)return stopanim;
 	if(creature==wolftype)return wolfstopanim;
