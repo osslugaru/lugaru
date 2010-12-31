@@ -174,15 +174,6 @@ void Person::CatchFire(){
 	onfire=1;
 }
 
-bool Person::isSleeping(){
-	if(targetanimation==sleepanim)return 1;
-	if(targetanimation==dead1anim)return 1;
-	if(targetanimation==dead2anim)return 1;
-	if(targetanimation==dead3anim)return 1;
-	if(targetanimation==dead4anim)return 1;
-	else return 0;
-}
-
 int Person::getIdle(){
 	if(indialogue!=-1&&howactive==typeactive&&creature==rabbittype)return talkidleanim;
 	if(hasvictim&&victim!=this/*||(id==0&&attackkeydown)*/)if(/*(id==0&&attackkeydown)||*/(!victim->dead&&victim->aitype!=passivetype&&victim->aitype!=searchtype&&aitype!=passivetype&&aitype!=searchtype&&victim->id<numplayers)){

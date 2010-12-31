@@ -337,8 +337,11 @@ class Person
 		{
 		  return animation_bits[targetanimation] & ab_sit;
 		}
-		bool isSleeping();
-		
+
+		bool isSleeping()
+		{
+		  return animation_bits[targetanimation] & ab_sleep;
+		}
 		
 		bool wasCrouch();
 		bool isCrouch();
