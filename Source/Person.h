@@ -386,14 +386,26 @@ class Person
 		  return animation_bits[targetanimation] & ab_land;
 		}
 		int getLanding();
-		
-		bool wasLandhard();
-		bool isLandhard();
+
+		bool wasLandhard()
+		{
+		  return animation_bits[currentanimation] & ab_landhard;
+		}
+		bool isLandhard()
+		{
+		  return animation_bits[targetanimation] & ab_landhard;
+		}
 		int getLandhard();
-		
-		bool isFlip();
-		bool wasFlip();
-		
+
+		bool wasFlip()
+		{
+		  return animation_bits[currentanimation] & ab_flip;
+		}
+		bool isFlip()
+		{
+		  return animation_bits[targetanimation] & ab_flip;;
+		}
+
 		bool jumpclimb;
 		
 		bool isWallJump();

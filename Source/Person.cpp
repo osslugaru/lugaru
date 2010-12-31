@@ -229,33 +229,12 @@ int Person::getLanding(){
 	return 0;
 }
 
-
-bool Person::isLandhard(){
-	if(targetanimation==landhardanim||targetanimation==wolflandhardanim)return 1;
-	else return 0;
-}
-
-
-bool Person::wasLandhard(){
-	if(currentanimation==landhardanim||currentanimation==wolflandhardanim)return 1;
-	else return 0;
-}
 int Person::getLandhard(){
 	if(creature==rabbittype)return landhardanim;
 	if(creature==wolftype)return wolflandhardanim;
 	return 0;
 }
 
-
-bool Person::isFlip(){
-	if(targetanimation==flipanim||targetanimation==frontflipanim||targetanimation==backflipanim||targetanimation==rightflipanim||targetanimation==leftflipanim||targetanimation==walljumprightkickanim||targetanimation==walljumpleftkickanim)return 1;
-	else return 0;
-}
-
-bool Person::wasFlip(){
-	if(currentanimation==flipanim||currentanimation==frontflipanim||currentanimation==backflipanim||currentanimation==rightflipanim||currentanimation==leftflipanim||currentanimation==walljumprightkickanim||currentanimation==walljumpleftkickanim)return 1;
-	else return 0;
-}
 
 bool Person::isWallJump(){
 	if(targetanimation==walljumpfrontanim||targetanimation==walljumpbackanim||targetanimation==walljumpleftanim||targetanimation==walljumprightanim)return 1;
