@@ -208,16 +208,6 @@ int Person::getCrouch(){
 	return 0;
 }
 
-bool Person::isRun(){
-	if(targetanimation==runanim||targetanimation==wolfrunanim||targetanimation==wolfrunninganim||targetanimation==rabbitrunninganim)return 1;
-	else return 0;
-}
-
-
-bool Person::wasRun(){
-	if(currentanimation==runanim||currentanimation==wolfrunanim||currentanimation==wolfrunninganim||currentanimation==rabbitrunninganim)return 1;
-	else return 0;
-}
 int Person::getRun(){
 	if(creature==rabbittype&&(!superruntoggle||weaponactive!=-1))return runanim;
 	if(creature==wolftype&&(!superruntoggle))return wolfrunanim;

@@ -361,8 +361,14 @@ class Person
 		bool isSneak();
 		int getSneak();
 		
-		bool wasRun();
-		bool isRun();
+		bool wasRun()
+		{
+		  return animation_bits[currentanimation] & ab_run;
+		}
+		bool isRun()
+		{
+		  return animation_bits[targetanimation] & ab_run;
+		}
 		int getRun();
 		
 		bool wasLanding();
