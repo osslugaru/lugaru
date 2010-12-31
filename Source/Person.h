@@ -342,9 +342,15 @@ class Person
 		{
 		  return animation_bits[targetanimation] & ab_sleep;
 		}
-		
-		bool wasCrouch();
-		bool isCrouch();
+
+		bool wasCrouch()
+		{
+		  return animation_bits[currentanimation] & ab_crouch;
+		}
+		bool isCrouch()
+		{
+		  return animation_bits[targetanimation] & ab_crouch;
+		}
 		int getCrouch();
 		
 		bool wasStop();

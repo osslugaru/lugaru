@@ -202,16 +202,6 @@ int Person::getIdle(){
 	return 0;
 }
 
-bool Person::isCrouch(){
-	if(targetanimation==crouchanim||targetanimation==wolfcrouchanim)return 1;
-	else return 0;
-}
-
-
-bool Person::wasCrouch(){
-	if(currentanimation==crouchanim||currentanimation==wolfcrouchanim)return 1;
-	else return 0;
-}
 int Person::getCrouch(){
 	if(creature==rabbittype)return crouchanim;
 	if(creature==wolftype)return wolfcrouchanim;
