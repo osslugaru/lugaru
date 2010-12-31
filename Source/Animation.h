@@ -38,6 +38,25 @@ enum animation_types {
 animation_count
 };
 
+enum animation_bit_offsets {
+#define DECLARE_ANIM_BIT(bit) o_##bit,
+#include "Animation.def"
+#undef DECLARE_ANIM_BIT
+animation_bit_count
+};
+
+enum animation_bits_def {
+#define DECLARE_ANIM_BIT(bit) bit = 1 << o_##bit,
+#include "Animation.def"
+#undef DECLARE_ANIM_BIT
+};
+
+static const int animation_bits[animation_count] = {
+#define DECLARE_ANIM(id, name, height, type, bits) bits,
+#include "Animation.def"
+#undef DECLARE_ANIM
+};
+
 extern Animation animation[animation_count];
 
 extern void loadAllAnimations();

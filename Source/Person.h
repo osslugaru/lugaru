@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Sprite.h"
 #include <cmath>
 #include "Weapons.h"
+#include "Animation.h"
 
 #define passivetype 0
 #define guardtype 1
@@ -322,8 +323,14 @@ class Person
 		void DoBloodBig(float howmuch, int which);
 		bool DoBloodBigWhere(float howmuch, int which, XYZ where);
 		
-		bool wasIdle();
-		bool isIdle();
+		bool wasIdle()
+		{
+		  return animation_bits[currentanimation] & ab_idle;
+		}
+		bool isIdle()
+		{
+		  return animation_bits[targetanimation] & ab_idle;
+		}
 		int getIdle();
 		
 		bool isSitting();

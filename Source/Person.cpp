@@ -174,11 +174,6 @@ void Person::CatchFire(){
 	onfire=1;
 }
 
-bool Person::isIdle(){
-	if(targetanimation==sleepanim||targetanimation==sitanim||targetanimation==talkidleanim||targetanimation==hurtidleanim||targetanimation==bounceidleanim||targetanimation==talkidleanim||targetanimation==fightidleanim||targetanimation==knifefightidleanim||targetanimation==swordfightidleanim||targetanimation==swordfightidlebothanim||targetanimation==fightsidestep||targetanimation==wolfidle)return 1;
-	else return 0;
-}
-
 bool Person::isSitting(){
 	if(targetanimation==sitanim)return 1;
 	if(targetanimation==sitwallanim)return 1;
@@ -194,10 +189,6 @@ bool Person::isSleeping(){
 	else return 0;
 }
 
-bool Person::wasIdle(){
-	if(currentanimation==sleepanim||currentanimation==talkidleanim||currentanimation==sitanim||currentanimation==hurtidleanim||currentanimation==bounceidleanim||currentanimation==fightidleanim||currentanimation==swordfightidleanim||currentanimation==swordfightidlebothanim||currentanimation==knifefightidleanim||currentanimation==fightsidestep||currentanimation==wolfidle)return 1;
-	else return 0;
-}
 int Person::getIdle(){
 	if(indialogue!=-1&&howactive==typeactive&&creature==rabbittype)return talkidleanim;
 	if(hasvictim&&victim!=this/*||(id==0&&attackkeydown)*/)if(/*(id==0&&attackkeydown)||*/(!victim->dead&&victim->aitype!=passivetype&&victim->aitype!=searchtype&&aitype!=passivetype&&aitype!=searchtype&&victim->id<numplayers)){
