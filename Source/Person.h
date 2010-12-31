@@ -333,7 +333,10 @@ class Person
 		}
 		int getIdle();
 		
-		bool isSitting();
+		bool isSitting()
+		{
+		  return animation_bits[targetanimation] & ab_sit;
+		}
 		bool isSleeping();
 		
 		

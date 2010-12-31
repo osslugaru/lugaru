@@ -174,12 +174,6 @@ void Person::CatchFire(){
 	onfire=1;
 }
 
-bool Person::isSitting(){
-	if(targetanimation==sitanim)return 1;
-	if(targetanimation==sitwallanim)return 1;
-	else return 0;
-}
-
 bool Person::isSleeping(){
 	if(targetanimation==sleepanim)return 1;
 	if(targetanimation==dead1anim)return 1;
