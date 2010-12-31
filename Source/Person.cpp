@@ -235,12 +235,6 @@ int Person::getLandhard(){
 	return 0;
 }
 
-
-bool Person::isWallJump(){
-	if(targetanimation==walljumpfrontanim||targetanimation==walljumpbackanim||targetanimation==walljumpleftanim||targetanimation==walljumprightanim)return 1;
-	else return 0;
-}
-
 static void
 SolidHitBonus(int playerid)
 {

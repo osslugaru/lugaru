@@ -403,12 +403,15 @@ class Person
 		}
 		bool isFlip()
 		{
-		  return animation_bits[targetanimation] & ab_flip;;
+		  return animation_bits[targetanimation] & ab_flip;
 		}
 
 		bool jumpclimb;
-		
-		bool isWallJump();
+
+		bool isWallJump()
+		{
+		  return animation_bits[targetanimation] & ab_walljump;
+		}
 		void Reverse();
 		void DoDamage(float howmuch);
 		void DoHead();
