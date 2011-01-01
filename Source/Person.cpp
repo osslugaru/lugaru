@@ -733,322 +733,325 @@ bool Person::DoBloodBigWhere(float howmuch,int which, XYZ where){
 
 
 
-void Person::Reverse(){
-	if(victim->aitype==playercontrolled||hostiletime>1)
-		if(victim->targetanimation!=jumpupanim&&victim->targetanimation!=jumpdownanim&&((tutoriallevel!=1||cananger)&&hostile)){
-			if(normaldotproduct(victim->facing,victim->coords-coords)>0&&!(victim->id==0&&difficulty<2)&&(creature!=wolftype||victim->creature==wolftype))return;
-			if(victim->aitype!=playercontrolled&&staggerdelay>0)return;
-			if(targetanimation==sweepanim){
-				targetanimation=sweepreversedanim;
-				currentanimation=sweepreversedanim;
-				victim->currentanimation=sweepreversalanim;
-				victim->targetanimation=sweepreversalanim;
-			}
-			if(targetanimation==spinkickanim){
-				targetanimation=spinkickreversedanim;
-				currentanimation=spinkickreversedanim;
-				victim->currentanimation=spinkickreversalanim;
-				victim->targetanimation=spinkickreversalanim;
-			}
-			if(targetanimation==upunchanim||targetanimation==rabbittacklinganim){
-				if(targetanimation==rabbittacklinganim){
-					currentframe=6;
-					targetframe=7;
-					victim->currentframe=6;
-					victim->targetframe=7;
-				}
-				targetanimation=upunchreversedanim;
-				currentanimation=upunchreversedanim;
-				victim->currentanimation=upunchreversalanim;
-				victim->targetanimation=upunchreversalanim;
-			}
-			if(targetanimation==staffhitanim&&findDistancefast(&victim->coords,&coords)<2&&((victim->id==0&&victim->crouchkeydown)||Random()%4==0)){
-				if(victim->weaponactive!=-1){
-					victim->throwtogglekeydown=1;
-					weapons.owner[victim->weaponids[0]]=-1;
-					weapons.velocity[victim->weaponids[0]]=victim->velocity*.2;
-					if(weapons.velocity[victim->weaponids[0]].x==0)weapons.velocity[victim->weaponids[0]].x=.1;
-					weapons.tipvelocity[victim->weaponids[0]]=weapons.velocity[victim->weaponids[0]];
-					weapons.missed[victim->weaponids[0]]=1;
-					weapons.freetime[victim->weaponids[0]]=0;
-					weapons.firstfree[victim->weaponids[0]]=1;
-					weapons.physics[victim->weaponids[0]]=1;
-					victim->num_weapons--;
-					if(victim->num_weapons){
-						victim->weaponids[0]=victim->weaponids[victim->num_weapons];
-						if(victim->weaponstuck==victim->num_weapons)victim->weaponstuck=0;
-				 }
+void Person::Reverse()
+{
+  if (!((victim->aitype == playercontrolled
+	 || hostiletime > 1
+	 || staggerdelay <= 0)
+	&& victim->targetanimation != jumpupanim
+	&& victim->targetanimation != jumpdownanim
+	&& (tutoriallevel != 1 || cananger)
+	&& hostile))
+    return;
 
-					victim->weaponactive=-1;
-					for(int j=0;j<numplayers;j++){
-						player[j].wentforweapon=0;
-				 }
-				}
+  if (normaldotproduct (victim->facing, victim->coords-coords) > 0
+      && (victim->id != 0 || difficulty >= 2)
+      && (creature != wolftype || victim->creature == wolftype))
+    return;
 
-				targetanimation=staffhitreversedanim;
-				currentanimation=staffhitreversedanim;
-				victim->currentanimation=staffhitreversalanim;
-				victim->targetanimation=staffhitreversalanim;
-			}
-			if(targetanimation==staffspinhitanim&&findDistancefast(&victim->coords,&coords)<2&&((victim->id==0&&victim->crouchkeydown)||Random()%2==0)){
-				if(victim->weaponactive!=-1){
-					victim->throwtogglekeydown=1;
-					weapons.owner[victim->weaponids[0]]=-1;
-					weapons.velocity[victim->weaponids[0]]=victim->velocity*.2;
-					if(weapons.velocity[victim->weaponids[0]].x==0)weapons.velocity[victim->weaponids[0]].x=.1;
-					weapons.tipvelocity[victim->weaponids[0]]=weapons.velocity[victim->weaponids[0]];
-					weapons.missed[victim->weaponids[0]]=1;
-					weapons.freetime[victim->weaponids[0]]=0;
-					weapons.firstfree[victim->weaponids[0]]=1;
-					weapons.physics[victim->weaponids[0]]=1;
-					victim->num_weapons--;
-					if(victim->num_weapons){
-						victim->weaponids[0]=victim->weaponids[victim->num_weapons];
-						if(victim->weaponstuck==victim->num_weapons)victim->weaponstuck=0;
-				 }
+  if(targetanimation==sweepanim){
+    targetanimation=sweepreversedanim;
+    currentanimation=sweepreversedanim;
+    victim->currentanimation=sweepreversalanim;
+    victim->targetanimation=sweepreversalanim;
+  }
+  if(targetanimation==spinkickanim){
+    targetanimation=spinkickreversedanim;
+    currentanimation=spinkickreversedanim;
+    victim->currentanimation=spinkickreversalanim;
+    victim->targetanimation=spinkickreversalanim;
+  }
+  if(targetanimation==upunchanim||targetanimation==rabbittacklinganim){
+    if(targetanimation==rabbittacklinganim){
+      currentframe=6;
+      targetframe=7;
+      victim->currentframe=6;
+      victim->targetframe=7;
+    }
+    targetanimation=upunchreversedanim;
+    currentanimation=upunchreversedanim;
+    victim->currentanimation=upunchreversalanim;
+    victim->targetanimation=upunchreversalanim;
+  }
+  if(targetanimation==staffhitanim&&findDistancefast(&victim->coords,&coords)<2&&((victim->id==0&&victim->crouchkeydown)||Random()%4==0)){
+    if(victim->weaponactive!=-1){
+      victim->throwtogglekeydown=1;
+      weapons.owner[victim->weaponids[0]]=-1;
+      weapons.velocity[victim->weaponids[0]]=victim->velocity*.2;
+      if(weapons.velocity[victim->weaponids[0]].x==0)weapons.velocity[victim->weaponids[0]].x=.1;
+      weapons.tipvelocity[victim->weaponids[0]]=weapons.velocity[victim->weaponids[0]];
+      weapons.missed[victim->weaponids[0]]=1;
+      weapons.freetime[victim->weaponids[0]]=0;
+      weapons.firstfree[victim->weaponids[0]]=1;
+      weapons.physics[victim->weaponids[0]]=1;
+      victim->num_weapons--;
+      if(victim->num_weapons){
+	victim->weaponids[0]=victim->weaponids[victim->num_weapons];
+	if(victim->weaponstuck==victim->num_weapons)victim->weaponstuck=0;
+      }
 
-					victim->weaponactive=-1;
-					for(int j=0;j<numplayers;j++){
-						player[j].wentforweapon=0;
-				 }
-				}
-				targetanimation=staffspinhitreversedanim;
-				currentanimation=staffspinhitreversedanim;
-				victim->currentanimation=staffspinhitreversalanim;
-				victim->targetanimation=staffspinhitreversalanim;
-			}
-			if(targetanimation==swordslashanim&&findDistancefast(&victim->coords,&coords)<2&&((victim->id==0&&victim->crouchkeydown)||Random()%4==0)){
-				if(victim->weaponactive!=-1){
-					victim->throwtogglekeydown=1;
-					weapons.owner[victim->weaponids[0]]=-1;
-					weapons.velocity[victim->weaponids[0]]=victim->velocity*.2;
-					if(weapons.velocity[victim->weaponids[0]].x==0)weapons.velocity[victim->weaponids[0]].x=.1;
-					weapons.tipvelocity[victim->weaponids[0]]=weapons.velocity[victim->weaponids[0]];
-					weapons.missed[victim->weaponids[0]]=1;
-					weapons.freetime[victim->weaponids[0]]=0;
-					weapons.firstfree[victim->weaponids[0]]=1;
-					weapons.physics[victim->weaponids[0]]=1;
-					victim->num_weapons--;
-					if(victim->num_weapons){
-						victim->weaponids[0]=victim->weaponids[victim->num_weapons];
-						if(victim->weaponstuck==victim->num_weapons)victim->weaponstuck=0;
-				 }
+      victim->weaponactive=-1;
+      for(int j=0;j<numplayers;j++){
+	player[j].wentforweapon=0;
+      }
+    }
 
-					victim->weaponactive=-1;
-					for(int j=0;j<numplayers;j++){
-						player[j].wentforweapon=0;
-				 }
-				}
-				targetanimation=swordslashreversedanim;
-				currentanimation=swordslashreversedanim;
-				victim->currentanimation=swordslashreversalanim;
-				victim->targetanimation=swordslashreversalanim;
-			}
-			if(targetanimation==knifeslashstartanim&&findDistancefast(&victim->coords,&coords)<2&&(victim->id==0||Random()%4==0)){
-				if(victim->weaponactive!=-1){
-					victim->throwtogglekeydown=1;
-					weapons.owner[victim->weaponids[0]]=-1;
-					weapons.velocity[victim->weaponids[0]]=victim->velocity*.2;
-					if(weapons.velocity[victim->weaponids[0]].x==0)weapons.velocity[victim->weaponids[0]].x=.1;
-					weapons.tipvelocity[victim->weaponids[0]]=weapons.velocity[victim->weaponids[0]];
-					weapons.missed[victim->weaponids[0]]=1;
-					weapons.freetime[victim->weaponids[0]]=0;
-					weapons.firstfree[victim->weaponids[0]]=1;
-					weapons.physics[victim->weaponids[0]]=1;
-					victim->num_weapons--;
-					if(victim->num_weapons){
-						victim->weaponids[0]=victim->weaponids[victim->num_weapons];
-						if(victim->weaponstuck==victim->num_weapons)victim->weaponstuck=0;
-				 }
+    targetanimation=staffhitreversedanim;
+    currentanimation=staffhitreversedanim;
+    victim->currentanimation=staffhitreversalanim;
+    victim->targetanimation=staffhitreversalanim;
+  }
+  if(targetanimation==staffspinhitanim&&findDistancefast(&victim->coords,&coords)<2&&((victim->id==0&&victim->crouchkeydown)||Random()%2==0)){
+    if(victim->weaponactive!=-1){
+      victim->throwtogglekeydown=1;
+      weapons.owner[victim->weaponids[0]]=-1;
+      weapons.velocity[victim->weaponids[0]]=victim->velocity*.2;
+      if(weapons.velocity[victim->weaponids[0]].x==0)weapons.velocity[victim->weaponids[0]].x=.1;
+      weapons.tipvelocity[victim->weaponids[0]]=weapons.velocity[victim->weaponids[0]];
+      weapons.missed[victim->weaponids[0]]=1;
+      weapons.freetime[victim->weaponids[0]]=0;
+      weapons.firstfree[victim->weaponids[0]]=1;
+      weapons.physics[victim->weaponids[0]]=1;
+      victim->num_weapons--;
+      if(victim->num_weapons){
+	victim->weaponids[0]=victim->weaponids[victim->num_weapons];
+	if(victim->weaponstuck==victim->num_weapons)victim->weaponstuck=0;
+      }
 
-					victim->weaponactive=-1;
-					for(int j=0;j<numplayers;j++){
-						player[j].wentforweapon=0;
-				 }
-				}
-				targetanimation=knifeslashreversedanim;
-				currentanimation=knifeslashreversedanim;
-				victim->currentanimation=knifeslashreversalanim;
-				victim->targetanimation=knifeslashreversalanim;
-			}
-			if(targetanimation!=knifeslashstartanim&&targetanimation!=staffhitanim&&targetanimation!=staffspinhitanim&&targetanimation!=winduppunchanim&&targetanimation!=wolfslapanim&&targetanimation!=swordslashanim&&targetanimation!=swordslashanim){
-				victim->targettilt2=targettilt2;
-				victim->currentframe=currentframe;
-				victim->targetframe=targetframe;
-				victim->target=target;
-				victim->velocity=0;
-				victim->oldcoords=victim->coords;
-				victim->coords=coords;
-				victim->targetrotation=targetrotation;
-				victim->rotation=targetrotation;
-				victim->victim=this;
-			}
-			if(targetanimation==winduppunchanim){
-				targetanimation=winduppunchblockedanim;
-				victim->targetanimation=blockhighleftanim;
-				victim->targetframe=1;
-				victim->target=.5;
-				victim->victim=this;
-				victim->targetrotation=targetrotation+180;
-			}
-			if(targetanimation==wolfslapanim){
-				targetanimation=winduppunchblockedanim;
-				victim->targetanimation=blockhighleftanim;
-				victim->targetframe=1;
-				victim->target=.5;
-				victim->victim=this;
-				victim->targetrotation=targetrotation+180;
-			}
-			if((targetanimation==swordslashanim||targetanimation==staffhitanim||targetanimation==staffspinhitanim)&&victim->weaponactive!=-1){
-				targetanimation=swordslashparriedanim;
-				parriedrecently=.4;
-				victim->parriedrecently=0;
-				victim->targetanimation=swordslashparryanim;
-				victim->targetframe=1;
-				victim->target=.5;
-				victim->victim=this;
-				victim->targetrotation=targetrotation+180;
+      victim->weaponactive=-1;
+      for(int j=0;j<numplayers;j++){
+	player[j].wentforweapon=0;
+      }
+    }
+    targetanimation=staffspinhitreversedanim;
+    currentanimation=staffspinhitreversedanim;
+    victim->currentanimation=staffspinhitreversalanim;
+    victim->targetanimation=staffspinhitreversalanim;
+  }
+  if(targetanimation==swordslashanim&&findDistancefast(&victim->coords,&coords)<2&&((victim->id==0&&victim->crouchkeydown)||Random()%4==0)){
+    if(victim->weaponactive!=-1){
+      victim->throwtogglekeydown=1;
+      weapons.owner[victim->weaponids[0]]=-1;
+      weapons.velocity[victim->weaponids[0]]=victim->velocity*.2;
+      if(weapons.velocity[victim->weaponids[0]].x==0)weapons.velocity[victim->weaponids[0]].x=.1;
+      weapons.tipvelocity[victim->weaponids[0]]=weapons.velocity[victim->weaponids[0]];
+      weapons.missed[victim->weaponids[0]]=1;
+      weapons.freetime[victim->weaponids[0]]=0;
+      weapons.firstfree[victim->weaponids[0]]=1;
+      weapons.physics[victim->weaponids[0]]=1;
+      victim->num_weapons--;
+      if(victim->num_weapons){
+	victim->weaponids[0]=victim->weaponids[victim->num_weapons];
+	if(victim->weaponstuck==victim->num_weapons)victim->weaponstuck=0;
+      }
 
-				if(abs(Random()%20)==0||weapons.type[victim->weaponids[victim->weaponactive]]==knife){
-					if(victim->weaponactive!=-1){
-						if(weapons.type[victim->weaponids[0]]==staff||weapons.type[weaponids[0]]==staff){
-							if(weapons.type[victim->weaponids[0]]==staff)weapons.damage[victim->weaponids[0]]+=.2+float(abs(Random()%100)-50)/250;
-							if(weapons.type[weaponids[0]]==staff)weapons.damage[weaponids[0]]+=.2+float(abs(Random()%100)-50)/250;
-							emit_sound_at(swordstaffsound, victim->coords);
-						}
-						else{
-							emit_sound_at(metalhitsound, victim->coords);
-						}
-					}
-					XYZ aim;
-					victim->Puff(righthand);
-					victim->target=0;
-					victim->targetframe=0;
-					victim->targetanimation=staggerbackhighanim;
-					victim->targetrotation=targetrotation+180;
-					victim->target=0;
-					weapons.owner[victim->weaponids[0]]=-1;
-					aim=DoRotation(facing,0,90,0)*21;
-					aim.y+=7;
-					weapons.velocity[victim->weaponids[0]]=aim*-.2;
-					weapons.tipvelocity[victim->weaponids[0]]=aim;
-					weapons.missed[victim->weaponids[0]]=1;
-					weapons.hitsomething[victim->weaponids[0]]=0;
-					weapons.freetime[victim->weaponids[0]]=0;
-					weapons.firstfree[victim->weaponids[0]]=1;
-					weapons.physics[victim->weaponids[0]]=1;
-					victim->num_weapons--;
-					if(victim->num_weapons){
-						victim->weaponids[0]=victim->weaponids[num_weapons];
-						if(victim->weaponstuck==victim->num_weapons)victim->weaponstuck=0;
-				 }
-					victim->weaponactive=-1;
-					for(int i=0;i<numplayers;i++){
-						player[i].wentforweapon=0;
-				 }
+      victim->weaponactive=-1;
+      for(int j=0;j<numplayers;j++){
+	player[j].wentforweapon=0;
+      }
+    }
+    targetanimation=swordslashreversedanim;
+    currentanimation=swordslashreversedanim;
+    victim->currentanimation=swordslashreversalanim;
+    victim->targetanimation=swordslashreversalanim;
+  }
+  if(targetanimation==knifeslashstartanim&&findDistancefast(&victim->coords,&coords)<2&&(victim->id==0||Random()%4==0)){
+    if(victim->weaponactive!=-1){
+      victim->throwtogglekeydown=1;
+      weapons.owner[victim->weaponids[0]]=-1;
+      weapons.velocity[victim->weaponids[0]]=victim->velocity*.2;
+      if(weapons.velocity[victim->weaponids[0]].x==0)weapons.velocity[victim->weaponids[0]].x=.1;
+      weapons.tipvelocity[victim->weaponids[0]]=weapons.velocity[victim->weaponids[0]];
+      weapons.missed[victim->weaponids[0]]=1;
+      weapons.freetime[victim->weaponids[0]]=0;
+      weapons.firstfree[victim->weaponids[0]]=1;
+      weapons.physics[victim->weaponids[0]]=1;
+      victim->num_weapons--;
+      if(victim->num_weapons){
+	victim->weaponids[0]=victim->weaponids[victim->num_weapons];
+	if(victim->weaponstuck==victim->num_weapons)victim->weaponstuck=0;
+      }
+
+      victim->weaponactive=-1;
+      for(int j=0;j<numplayers;j++){
+	player[j].wentforweapon=0;
+      }
+    }
+    targetanimation=knifeslashreversedanim;
+    currentanimation=knifeslashreversedanim;
+    victim->currentanimation=knifeslashreversalanim;
+    victim->targetanimation=knifeslashreversalanim;
+  }
+  if(targetanimation!=knifeslashstartanim&&targetanimation!=staffhitanim&&targetanimation!=staffspinhitanim&&targetanimation!=winduppunchanim&&targetanimation!=wolfslapanim&&targetanimation!=swordslashanim&&targetanimation!=swordslashanim){
+    victim->targettilt2=targettilt2;
+    victim->currentframe=currentframe;
+    victim->targetframe=targetframe;
+    victim->target=target;
+    victim->velocity=0;
+    victim->oldcoords=victim->coords;
+    victim->coords=coords;
+    victim->targetrotation=targetrotation;
+    victim->rotation=targetrotation;
+    victim->victim=this;
+  }
+  if(targetanimation==winduppunchanim){
+    targetanimation=winduppunchblockedanim;
+    victim->targetanimation=blockhighleftanim;
+    victim->targetframe=1;
+    victim->target=.5;
+    victim->victim=this;
+    victim->targetrotation=targetrotation+180;
+  }
+  if(targetanimation==wolfslapanim){
+    targetanimation=winduppunchblockedanim;
+    victim->targetanimation=blockhighleftanim;
+    victim->targetframe=1;
+    victim->target=.5;
+    victim->victim=this;
+    victim->targetrotation=targetrotation+180;
+  }
+  if((targetanimation==swordslashanim||targetanimation==staffhitanim||targetanimation==staffspinhitanim)&&victim->weaponactive!=-1){
+    targetanimation=swordslashparriedanim;
+    parriedrecently=.4;
+    victim->parriedrecently=0;
+    victim->targetanimation=swordslashparryanim;
+    victim->targetframe=1;
+    victim->target=.5;
+    victim->victim=this;
+    victim->targetrotation=targetrotation+180;
+
+    if(abs(Random()%20)==0||weapons.type[victim->weaponids[victim->weaponactive]]==knife){
+      if(victim->weaponactive!=-1){
+	if(weapons.type[victim->weaponids[0]]==staff||weapons.type[weaponids[0]]==staff){
+	  if(weapons.type[victim->weaponids[0]]==staff)weapons.damage[victim->weaponids[0]]+=.2+float(abs(Random()%100)-50)/250;
+	  if(weapons.type[weaponids[0]]==staff)weapons.damage[weaponids[0]]+=.2+float(abs(Random()%100)-50)/250;
+	  emit_sound_at(swordstaffsound, victim->coords);
+	}
+	else{
+	  emit_sound_at(metalhitsound, victim->coords);
+	}
+      }
+      XYZ aim;
+      victim->Puff(righthand);
+      victim->target=0;
+      victim->targetframe=0;
+      victim->targetanimation=staggerbackhighanim;
+      victim->targetrotation=targetrotation+180;
+      victim->target=0;
+      weapons.owner[victim->weaponids[0]]=-1;
+      aim=DoRotation(facing,0,90,0)*21;
+      aim.y+=7;
+      weapons.velocity[victim->weaponids[0]]=aim*-.2;
+      weapons.tipvelocity[victim->weaponids[0]]=aim;
+      weapons.missed[victim->weaponids[0]]=1;
+      weapons.hitsomething[victim->weaponids[0]]=0;
+      weapons.freetime[victim->weaponids[0]]=0;
+      weapons.firstfree[victim->weaponids[0]]=1;
+      weapons.physics[victim->weaponids[0]]=1;
+      victim->num_weapons--;
+      if(victim->num_weapons){
+	victim->weaponids[0]=victim->weaponids[num_weapons];
+	if(victim->weaponstuck==victim->num_weapons)victim->weaponstuck=0;
+      }
+      victim->weaponactive=-1;
+      for(int i=0;i<numplayers;i++){
+	player[i].wentforweapon=0;
+      }
+    }
+
+    if(abs(Random()%20)==0){
+      if(weaponactive!=-1){
+	if(weapons.type[victim->weaponids[0]]==staff||weapons.type[weaponids[0]]==staff){
+	  if(weapons.type[victim->weaponids[0]]==staff)weapons.damage[victim->weaponids[0]]+=.2+float(abs(Random()%100)-50)/250;
+	  if(weapons.type[weaponids[0]]==staff)weapons.damage[weaponids[0]]+=.2+float(abs(Random()%100)-50)/250;
+
+	  emit_sound_at(swordstaffsound, coords);
+	}
+	else{
+	  emit_sound_at(metalhitsound, coords);
+	}
+      }
+
+      XYZ aim;
+      Puff(righthand);
+      target=0;
+      targetframe=0;
+      targetanimation=staggerbackhighanim;
+      targetrotation=targetrotation+180;
+      target=0;
+      weapons.owner[weaponids[0]]=-1;
+      aim=DoRotation(facing,0,90,0)*21;
+      aim.y+=7;
+      weapons.velocity[weaponids[0]]=aim*-.2;
+      weapons.tipvelocity[weaponids[0]]=aim;
+      weapons.hitsomething[weaponids[0]]=0;
+      weapons.missed[weaponids[0]]=1;
+      weapons.freetime[weaponids[0]]=0;
+      weapons.firstfree[weaponids[0]]=1;
+      weapons.physics[weaponids[0]]=1;
+      num_weapons--;
+      if(num_weapons){
+	weaponids[0]=weaponids[num_weapons];
+	if(weaponstuck==num_weapons)weaponstuck=0;
+      }
+      weaponactive=-1;
+      for(int i=0;i<numplayers;i++){
+	player[i].wentforweapon=0;
+      }
 
 
+    }
+  }
+  if(hasvictim)
+    if(targetanimation==knifeslashstartanim||targetanimation==swordslashanim||targetanimation==staffhitanim||targetanimation==staffspinhitanim){
+      if((targetanimation!=staffhitanim&&targetanimation!=staffspinhitanim)||findDistancefast(&coords,&victim->coords)>.2){
+	victim->targetanimation=dodgebackanim;
+	victim->targetframe=0;
+	victim->target=0;
 
+	XYZ rotatetarget;
+	rotatetarget=coords-victim->coords;
+	Normalise(&rotatetarget);
+	victim->targetrotation=-asin(0-rotatetarget.x);
+	victim->targetrotation*=360/6.28;
+	if(rotatetarget.z<0)victim->targetrotation=180-victim->targetrotation;
 
+	victim->targettilt2=-asin(rotatetarget.y)*360/6.28;//*-70;
 
-				}
+	victim->lastattack3=victim->lastattack2;
+	victim->lastattack2=victim->lastattack;
+	victim->lastattack=victim->targetanimation;
+      }
+      else
+	{
+	  victim->targetanimation=sweepanim;
+	  victim->targetframe=0;
+	  victim->target=0;
 
-				if(abs(Random()%20)==0){
-					if(weaponactive!=-1){
-						if(weapons.type[victim->weaponids[0]]==staff||weapons.type[weaponids[0]]==staff){
-							if(weapons.type[victim->weaponids[0]]==staff)weapons.damage[victim->weaponids[0]]+=.2+float(abs(Random()%100)-50)/250;
-							if(weapons.type[weaponids[0]]==staff)weapons.damage[weaponids[0]]+=.2+float(abs(Random()%100)-50)/250;
+	  XYZ rotatetarget;
+	  rotatetarget=coords-victim->coords;
+	  Normalise(&rotatetarget);
+	  victim->targetrotation=-asin(0-rotatetarget.x);
+	  victim->targetrotation*=360/6.28;
+	  if(rotatetarget.z<0)victim->targetrotation=180-victim->targetrotation;
 
-							emit_sound_at(swordstaffsound, coords);
-						}
-						else{
-							emit_sound_at(metalhitsound, coords);
-						}
-					}
+	  victim->targettilt2=-asin(rotatetarget.y)*360/6.28;//*-70;
 
-					XYZ aim;
-					Puff(righthand);
-					target=0;
-					targetframe=0;
-					targetanimation=staggerbackhighanim;
-					targetrotation=targetrotation+180;
-					target=0;
-					weapons.owner[weaponids[0]]=-1;
-					aim=DoRotation(facing,0,90,0)*21;
-					aim.y+=7;
-					weapons.velocity[weaponids[0]]=aim*-.2;
-					weapons.tipvelocity[weaponids[0]]=aim;
-					weapons.hitsomething[weaponids[0]]=0;
-					weapons.missed[weaponids[0]]=1;
-					weapons.freetime[weaponids[0]]=0;
-					weapons.firstfree[weaponids[0]]=1;
-					weapons.physics[weaponids[0]]=1;
-					num_weapons--;
-					if(num_weapons){
-						weaponids[0]=weaponids[num_weapons];
-						if(weaponstuck==num_weapons)weaponstuck=0;
-				 }
-					weaponactive=-1;
-					for(int i=0;i<numplayers;i++){
-						player[i].wentforweapon=0;
-				 }
+	  victim->lastattack3=victim->lastattack2;
+	  victim->lastattack2=victim->lastattack;
+	  victim->lastattack=victim->targetanimation;
+	}
+    }
 
+  velocity=0;
+  victim->velocity=0;
 
-				}
-			}
-			if(hasvictim)
-				if(targetanimation==knifeslashstartanim||targetanimation==swordslashanim||targetanimation==staffhitanim||targetanimation==staffspinhitanim){
-					if((targetanimation!=staffhitanim&&targetanimation!=staffspinhitanim)||findDistancefast(&coords,&victim->coords)>.2){
-						//victim->targetanimation=sweepanim;
-						victim->targetanimation=dodgebackanim;
-						victim->targetframe=0;
-						victim->target=0;
-						//victim->velocity=0;
+  if(aitype!=playercontrolled)feint=0;
+  if(aitype!=playercontrolled&&Random()%3==0&&escapednum<2&&difficulty==2)feint=1;
+  if(aitype!=playercontrolled&&Random()%5==0&&escapednum<2&&difficulty==1)feint=1;
+  if(aitype!=playercontrolled&&Random()%10==0&&escapednum<2&&difficulty==0)feint=1;
 
-						XYZ rotatetarget;
-						rotatetarget=coords-victim->coords;
-						Normalise(&rotatetarget);
-						victim->targetrotation=-asin(0-rotatetarget.x);
-						victim->targetrotation*=360/6.28;
-						if(rotatetarget.z<0)victim->targetrotation=180-victim->targetrotation;
-
-						victim->targettilt2=-asin(rotatetarget.y)*360/6.28;//*-70;
-
-						victim->lastattack3=victim->lastattack2;
-						victim->lastattack2=victim->lastattack;
-						victim->lastattack=victim->targetanimation;
-					}
-					else
-					{
-						victim->targetanimation=sweepanim;
-						victim->targetframe=0;
-						victim->target=0;
-
-						XYZ rotatetarget;
-						rotatetarget=coords-victim->coords;
-						Normalise(&rotatetarget);
-						victim->targetrotation=-asin(0-rotatetarget.x);
-						victim->targetrotation*=360/6.28;
-						if(rotatetarget.z<0)victim->targetrotation=180-victim->targetrotation;
-
-						victim->targettilt2=-asin(rotatetarget.y)*360/6.28;//*-70;
-
-						victim->lastattack3=victim->lastattack2;
-						victim->lastattack2=victim->lastattack;
-						victim->lastattack=victim->targetanimation;
-					}
-				}
-
-				velocity=0;
-				victim->velocity=0;
-
-				if(aitype!=playercontrolled)feint=0;
-				if(aitype!=playercontrolled&&Random()%3==0&&escapednum<2&&difficulty==2)feint=1;
-				if(aitype!=playercontrolled&&Random()%5==0&&escapednum<2&&difficulty==1)feint=1;
-				if(aitype!=playercontrolled&&Random()%10==0&&escapednum<2&&difficulty==0)feint=1;
-
-				if(victim->id==0&&animation[victim->targetanimation].attack==reversal)numreversals++;
-		}
+  if(victim->id==0&&animation[victim->targetanimation].attack==reversal)numreversals++;
 }
 
 void Person::DoDamage(float howmuch){
