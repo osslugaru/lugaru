@@ -86,66 +86,64 @@ extern int indialogue;
 
 extern bool gamestarted;
 
-void Person::CheckKick(){
-	static XYZ relative;
-	static int i;
+void Person::CheckKick()
+{
+  if (!(hasvictim
+	&& (targetanimation == rabbitkickanim
+	    && victim
+	    && victim != this
+	    && currentframe >= 2
+	    && currentanimation == rabbitkickanim)
+	&& (findDistancefast(&coords,&victim->coords) < 1.2)
+	&& (!victim->skeleton.free)))
+    return;
 
-	float damagemult=1*power;
-	if(creature==wolftype)damagemult=2.5*power;
-	damagemult*=power;
+  if (animation[victim->targetanimation].height!=lowheight)
+    {
+      float damagemult = (creature == wolftype ? 2.5 : 1.) * power * power;
+      XYZ relative = velocity;
+      relative.y=0;
+      Normalise(&relative);
 
-	if(hasvictim)
-		if(targetanimation==rabbitkickanim&&victim&&victim!=this&&currentframe>=2&&currentanimation==rabbitkickanim){
-			if(findDistancefast(&coords,&victim->coords)<1.2){
-				if(!victim->skeleton.free){
-					relative=velocity;
-					Normalise(&relative);
-					relative=coords+relative*1;
-					if(animation[victim->targetanimation].height!=lowheight){
-						victim->spurt=1;
-						DoBlood(.2,250);
-						if(tutoriallevel!=1)
-						  emit_sound_at(heavyimpactsound, victim->coords);
-						victim->RagDoll(0);
-						relative=velocity;
-						relative.y=0;
-						Normalise(&relative);
-						for(i=0;i<victim->skeleton.num_joints;i++){
-							victim->skeleton.joints[i].velocity+=relative*120*damagemult;
-						}
-						victim->Puff(neck);
-						victim->DoDamage(100*damagemult/victim->protectionhigh);
-						if(id==0)camerashake+=.4;
+      victim->spurt=1;
+      DoBlood(.2,250);
+      if(tutoriallevel!=1)
+	emit_sound_at(heavyimpactsound, victim->coords);
+      victim->RagDoll(0);
+      for(int i=0;i<victim->skeleton.num_joints;i++){
+	victim->skeleton.joints[i].velocity+=relative*120*damagemult;
+      }
+      victim->Puff(neck);
+      victim->DoDamage(100*damagemult/victim->protectionhigh);
+      if(id==0)camerashake+=.4;
 
-						target=0;
-						currentframe=3;
-						targetanimation=backflipanim;
-						targetframe=4;
-						velocity=facing*-10;
-						velocity.y=5;
-						skeleton.free=0;
-						if(id==0)OPENAL_SetPaused(channels[whooshsound], false);
+      target=0;
+      currentframe=3;
+      targetanimation=backflipanim;
+      targetframe=4;
+      velocity=facing*-10;
+      velocity.y=5;
+      skeleton.free=0;
+      if(id==0)OPENAL_SetPaused(channels[whooshsound], false);
 
-						award_bonus(id, cannon);
-					}
-					else if (victim->isCrouch()){
-						targetanimation=rabbitkickreversedanim;
-						currentanimation=rabbitkickreversedanim;
-						victim->currentanimation=rabbitkickreversalanim;
-						victim->targetanimation=rabbitkickreversalanim;
-						targettilt2=0;
-						currentframe=0;
-						targetframe=1;
-						target=0;
-						velocity=0;
-						victim->oldcoords=victim->coords;
-						coords=victim->coords;
-						victim->targetrotation=targetrotation;
-						victim->victim=this;
-					}
-				}
-			}
-		}
+      award_bonus(id, cannon);
+    }
+  else if (victim->isCrouch())
+    {
+      targetanimation=rabbitkickreversedanim;
+      currentanimation=rabbitkickreversedanim;
+      victim->currentanimation=rabbitkickreversalanim;
+      victim->targetanimation=rabbitkickreversalanim;
+      targettilt2=0;
+      currentframe=0;
+      targetframe=1;
+      target=0;
+      velocity=0;
+      victim->oldcoords=victim->coords;
+      coords=victim->coords;
+      victim->targetrotation=targetrotation;
+      victim->victim=this;
+    }
 }
 
 void Person::CatchFire(){
