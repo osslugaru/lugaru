@@ -86,9 +86,6 @@ extern int indialogue;
 
 extern bool gamestarted;
 
-extern "C"	void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
-extern "C" void PlayStreamEx(int chan, OPENAL_STREAM *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
-
 void Person::CheckKick(){
 	static XYZ relative;
 	static int i;
@@ -1026,10 +1023,6 @@ void Person::Reverse(){
 
 
 
-					/*PlaySoundEx( metalhitsound, samp[metalhitsound], NULL, true);
-					OPENAL_3D_SetAttributes(channels[metalhitsound], gLoc, vel);
-					OPENAL_SetVolume(channels[metalhitsound], 512);
-					OPENAL_SetPaused(channels[metalhitsound], false);*/
 				}
 
 				if(abs(Random()%20)==0){
@@ -1073,10 +1066,6 @@ void Person::Reverse(){
 				 }
 
 
-					/*PlaySoundEx( metalhitsound, samp[metalhitsound], NULL, true);
-					OPENAL_3D_SetAttributes(channels[metalhitsound], gLoc, vel);
-					OPENAL_SetVolume(channels[metalhitsound], 512);
-					OPENAL_SetPaused(channels[metalhitsound], false);*/
 				}
 			}
 			if(hasvictim)
@@ -1626,14 +1615,6 @@ void	Person::DoAnimations(){
 			if(tutoriallevel!=1||id==0)
 				if((animation[targetanimation].label[targetframe]&&(animation[targetanimation].label[targetframe]<5||animation[targetanimation].label[targetframe]==8))/*||(targetanimation==rollanim&&targetframe==animation[rollanim].numframes-1)*/){
 					int whichsound;
-					float gLoc[3];
-					float vel[3];
-					gLoc[0]=coords.x;
-					gLoc[1]=coords.y;
-					gLoc[2]=coords.z;
-					vel[0]=velocity.x;
-					vel[1]=velocity.y;
-					vel[2]=velocity.z;
 					if(onterrain){
 						if(terrain.getOpacity(coords.x,coords.z)<.2){
 							if(animation[targetanimation].label[targetframe]==1)whichsound=footstepsound;
@@ -1667,12 +1648,7 @@ void	Person::DoAnimations(){
 					else if(animation[targetanimation].label[targetframe]==4)whichsound=knifeswishsound;
 					if(animation[targetanimation].label[targetframe]==8&&tutoriallevel!=1)whichsound=landsound2;
 
-					PlaySoundEx( whichsound, samp[whichsound], NULL, true);
-					OPENAL_3D_SetAttributes(channels[whichsound], gLoc, vel);
-					if(whichsound!=knifeswishsound)OPENAL_SetVolume(channels[whichsound], 128);
-					if(whichsound!=knifeswishsound&&(targetanimation==staffhitanim||targetanimation==staffgroundsmashanim||targetanimation==staffspinhitanim))OPENAL_SetVolume(channels[whichsound], 256);
-					if(whichsound==knifeswishsound)OPENAL_SetVolume(channels[whichsound], 512);
-					OPENAL_SetPaused(channels[whichsound], false);
+					emit_sound_at(whichsound, coords, 256.);
 
 					if(id==0)
 						if(whichsound==footstepsound||whichsound==footstepsound2||whichsound==footstepsound3||whichsound==footstepsound4){
@@ -2629,11 +2605,6 @@ void	Person::DoAnimations(){
 											for(i=0;i<numplayers;i++){
 												player[i].wentforweapon=0;
 											}
-
-											/*PlaySoundEx( metalhitsound, samp[metalhitsound], NULL, true);
-											OPENAL_3D_SetAttributes(channels[metalhitsound], gLoc, vel);
-											OPENAL_SetVolume(channels[metalhitsound], 512);
-											OPENAL_SetPaused(channels[metalhitsound], false);*/
 
 										}
 									}
