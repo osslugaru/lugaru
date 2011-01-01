@@ -126,7 +126,6 @@ short vRefNum = 0;
 long dirID = 0;
 int mainmenu = 0;
 int oldmainmenu = 0;
-GLubyte texturearray[512*512*3] = {0};
 int loadscreencolor = 0;
 int whichjointstartarray[26] = {0};
 int whichjointendarray[26] = {0};

@@ -411,7 +411,16 @@ struct Person
 		void Reverse();
 		void DoDamage(float howmuch);
 		void DoHead();
-		void DoMipmaps(int howmanylevels, float startx, float endx, float starty, float endy);
+		void DoMipmaps()
+		{
+		  glBindTexture(GL_TEXTURE_2D, skeleton.drawmodel.textureptr);
+		  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB,
+				    skeleton.skinsize,
+				    skeleton.skinsize,
+				    GL_RGB, GL_UNSIGNED_BYTE,
+				    &skeleton.skinText[0]);
+		}
+
 		int SphereCheck(XYZ *p1,float radius, XYZ *p, XYZ *move, float *rotate, Model *model);
 		int DrawSkeleton();
 		void Puff(int whichlabel);

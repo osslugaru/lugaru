@@ -610,7 +610,7 @@ static void set_clothes(int pnum, Game *game, const char *args)
   if (!game->AddClothes(buf,0,1,&player[pnum].skeleton.skinText[pnum],&player[pnum].skeleton.skinsize))
     return;
 
-  player[pnum].DoMipmaps(5,0,0,player[pnum].skeleton.skinsize,player[pnum].skeleton.skinsize);
+  player[pnum].DoMipmaps();
   strcpy(player[pnum].clothes[player[pnum].numclothes],buf);
   player[pnum].clothestintr[player[pnum].numclothes]=tintr;
   player[pnum].clothestintg[player[pnum].numclothes]=tintg;
@@ -2060,7 +2060,7 @@ void	Game::Loadlevel(char *name){
 					tintb=player[i].clothestintb[j];
 					AddClothes((char *)player[i].clothes[j],0,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
 				}
-				player[i].DoMipmaps(5,0,0,player[i].skeleton.skinsize,player[i].skeleton.skinsize);
+				player[i].DoMipmaps();
 			}
 
 			player[i].currentanimation=bounceidleanim;
@@ -4426,7 +4426,7 @@ void	Game::Tick()
 										tintb=player[closest].clothestintb[i];
 										AddClothes((char *)player[closest].clothes[i],0,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
 									}
-									player[closest].DoMipmaps(5,0,0,player[closest].skeleton.skinsize,player[closest].skeleton.skinsize);
+									player[closest].DoMipmaps();
 								}
 
 								detailtogglekeydown=1;
@@ -4884,7 +4884,7 @@ void	Game::Tick()
 										AddClothes((char *)player[numplayers].clothes[i],0,1,&player[numplayers].skeleton.skinText[0],&player[numplayers].skeleton.skinsize);
 									}
 									if(player[numplayers].numclothes){
-										player[numplayers].DoMipmaps(5,0,0,player[numplayers].skeleton.skinsize,player[numplayers].skeleton.skinsize);
+										player[numplayers].DoMipmaps();
 									}
 
 									player[numplayers].power=player[0].power;

@@ -67,7 +67,6 @@ extern bool tiltweird;
 extern bool midweird;
 extern bool proportionweird;
 extern bool vertexweird[6];
-extern GLubyte texturearray[512*512*3];
 extern XYZ envsound[30];
 extern float envsoundvol[30];
 extern float envsoundlife[30];
@@ -475,8 +474,7 @@ void Person::DoBloodBig(float howmuch,int which){
 								}
 							}
 							glBindTexture(GL_TEXTURE_2D,skeleton.drawmodel.textureptr);
-							if(detail!=2||osx)DoMipmaps(5,0,0,skeleton.skinsize,skeleton.skinsize);
-							else DoMipmaps(0,startx/realtexdetail,endx/realtexdetail,starty/realtexdetail,endy/realtexdetail);
+							DoMipmaps();
 
 							bleedxint=0;
 							bleedyint=0;
@@ -704,8 +702,7 @@ bool Person::DoBloodBigWhere(float howmuch,int which, XYZ where){
 								}
 							}
 							glBindTexture(GL_TEXTURE_2D,skeleton.drawmodel.textureptr);
-							if(detail!=2||osx)DoMipmaps(5,0,0,skeleton.skinsize,skeleton.skinsize);
-							else DoMipmaps(0,startx/realtexdetail,endx/realtexdetail,starty/realtexdetail,endy/realtexdetail);
+							DoMipmaps();
 
 							bleedy=(1+coordsy)*512;
 							bleedx=coordsx*512;
@@ -734,73 +731,6 @@ bool Person::DoBloodBigWhere(float howmuch,int which, XYZ where){
 	return 1;
 }
 
-
-void Person::DoMipmaps(int howmanylevels,float startx, float endx, float starty, float endy){
-	int i,j,k;
-	static float temp;
-	static int bytesPerPixel=3;
-	static int newsize,totalsize,rowsize,bigstep,smallstep,sum;
-	static int newstartx,newstarty,newendx,newendy;
-	static int newnewstartx,newnewstarty,newnewendx,newnewendy;
-	static int which;
-	static float sizemult;
-	/*
-	for(i=0;i<skeleton.skinsize*skeleton.skinsize*bytesPerPixel;i++){
-	texture[i]=skeleton.skinText[i];
-	}
-	*/
-	if((!osx||howmanylevels)){
-
-		if(startx<0)startx=0;
-		if(starty<0)starty=0;
-		if(endx>skeleton.skinsize-1)endx=skeleton.skinsize-1;
-		if(endy>skeleton.skinsize-1)endy=skeleton.skinsize-1;
-		if((endx>startx&&endy>starty)||howmanylevels){
-
-			newstartx=startx;
-			newstarty=starty;
-			newendx=endx;
-			newendy=endy;
-
-			for(i=startx;i<endx;i++){
-				for(j=starty;j<endy;j++){
-					texturearray[(i-newstartx)*(newendy-newstarty)*3+(j-newstarty)*3+0]=skeleton.skinText[i*skeleton.skinsize*3+j*3+0];
-					texturearray[(i-newstartx)*(newendy-newstarty)*3+(j-newstarty)*3+1]=skeleton.skinText[i*skeleton.skinsize*3+j*3+1];
-					texturearray[(i-newstartx)*(newendy-newstarty)*3+(j-newstarty)*3+2]=skeleton.skinText[i*skeleton.skinsize*3+j*3+2];
-				}
-			}
-
-			glBindTexture(GL_TEXTURE_2D,skeleton.drawmodel.textureptr);
-
-			if(!howmanylevels){
-				if(!osx)glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
-				glTexSubImage2D(GL_TEXTURE_2D,0,starty,startx,endy-starty,endx-startx,GL_RGB,GL_UNSIGNED_BYTE,texturearray);
-				if(!osx)glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_FALSE);
-			}
-
-			newsize=skeleton.skinsize;
-
-			if(howmanylevels)
-				gluBuild2DMipmaps( GL_TEXTURE_2D, GL_RGB, skeleton.skinsize, skeleton.skinsize, GL_RGB, GL_UNSIGNED_BYTE, &skeleton.skinText[0] );
-		}
-		/*for(j=1;j<=howmanylevels;j++){
-		if(j==1)texpointer=&skeleton.skinText[0];
-		else texpointer=&texture[0];
-
-		totalsize=int( newsize*newsize*bytesPerPixel);
-		rowsize=int( newsize*bytesPerPixel );
-		bigstep=bytesPerPixel*newsize*2;
-		smallstep=bytesPerPixel*2;
-
-		which=0;
-
-
-
-		glTexSubImage2D(GL_TEXTURE_2D,j,0,0,newsize/2,newsize/2,GL_RGB,GL_UNSIGNED_BYTE,texture);
-		newsize/=2;
-		}*/
-	}
-}
 
 
 void Person::Reverse(){
@@ -3915,7 +3845,7 @@ void	Person::DoStuff(){
 		bleeding-=multiplier*.3;
 		if(bloodtoggle==2){
 			glBindTexture(GL_TEXTURE_2D,skeleton.drawmodel.textureptr);
-			if(bleeding<=0&&(detail!=2||osx))DoMipmaps(5,0,0,skeleton.skinsize,skeleton.skinsize);
+			if(bleeding<=0&&(detail!=2||osx))DoMipmaps();
 		}
 	}
 
@@ -4042,7 +3972,7 @@ void	Person::DoStuff(){
 		}
 		if(!osx&&detail>1){
 			glBindTexture(GL_TEXTURE_2D,skeleton.drawmodel.textureptr);
-			DoMipmaps(0,startx,endx,starty,endy);
+			DoMipmaps();
 		}
 
 		if(!skeleton.free){
