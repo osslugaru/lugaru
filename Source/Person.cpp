@@ -4403,10 +4403,6 @@ void	Person::DoStuff(){
 		skeleton.free=1;
 
 		emit_sound_at(breaksound, coords);
-		/*if(id==0||findDistancefast(&coords,&viewer)<50){
-		slomo=1;
-		slomodelay=.2;
-		}*/
 	}
 
 	if(skeleton.free==1){
@@ -5650,35 +5646,11 @@ int Person::DrawSkeleton(){
 
 						skeleton.muscles[i].lastrotate3=skeleton.muscles[i].rotate3;
 						glRotatef(-skeleton.muscles[i].lastrotate3,0,1,0);
-						/*
-						if(!isnormal(proportionbody.x)||!isnormal(proportionbody.y)||!isnormal(proportionbody.z)){
-						proportionbody=1;
-						proportionweird=1;
-						}
-						if(!isnormal(proportionarms.x)||!isnormal(proportionarms.y)||!isnormal(proportionarms.z)){
-						proportionarms=1;
-						proportionweird=1;
-						}
-						if(!isnormal(proportionhead.x)||!isnormal(proportionhead.y)||!isnormal(proportionhead.z)){
-						proportionhead=1;
-						proportionweird=1;
-						}
-						if(!isnormal(proportionlegs.x)||!isnormal(proportionlegs.y)||!isnormal(proportionlegs.z)){
-						proportionlegs=1;
-						proportionweird=1;
-						}*/
 
 						if(playerdetail||skeleton.free==3)
 						{
 							for(j=0;j<skeleton.muscles[i].numvertices;j++)
 							{
-								/*if(!isnormal(skeleton.model[start].vertex[skeleton.muscles[i].vertices[j]].x))vertexweird[0]=1;
-								if(!isnormal(skeleton.model[start].vertex[skeleton.muscles[i].vertices[j]].y))vertexweird[1]=1;
-								if(!isnormal(skeleton.model[start].vertex[skeleton.muscles[i].vertices[j]].z))vertexweird[2]=1;
-								if(!isnormal(skeleton.model[endthing].vertex[skeleton.muscles[i].vertices[j]].x))vertexweird[3]=1;
-								if(!isnormal(skeleton.model[endthing].vertex[skeleton.muscles[i].vertices[j]].y))vertexweird[4]=1;
-								if(!isnormal(skeleton.model[endthing].vertex[skeleton.muscles[i].vertices[j]].z))vertexweird[5]=1;
-								if(skeleton.muscles[i].vertices[j]<skeleton.model[start].vertexNum&&skeleton.muscles[i].vertices[j]>=0){*/
 								glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 								glPushMatrix();
 									if(skeleton.muscles[i].parent1->label==abdomen||skeleton.muscles[i].parent2->label==abdomen)
@@ -5973,13 +5945,6 @@ int Person::DrawSkeleton(){
 						CrossProduct(&vec1,&vec2,&tempnormthing);
 						Normalise(&tempnormthing);
 						if(targetanimation!=staffhitanim&&currentanimation!=staffhitanim&&targetanimation!=staffgroundsmashanim&&currentanimation!=staffgroundsmashanim&&targetanimation!=staffspinhitanim&&currentanimation!=staffspinhitanim)weaponpoint+=tempnormthing*.1-skeleton.specialforward[1]*.3+(skeleton.joints[skeleton.jointlabels[rightwrist]].position-skeleton.joints[skeleton.jointlabels[rightelbow]].position);
-						/*if(targetanimation==staffhitanim||currentanimation==staffhitanim){
-						XYZ weaptargnorm;
-						weaptargnorm=DoRotation(weapons.tippoint[i]-weapons.position[i],0,-rotation,0);
-						//weaptargnorm=animation[currentanimation].weapontarget[currentframe]*(1-target)+animation[targetanimation].weapontarget[targetframe]*(target);
-						Normalise(&weaptargnorm);
-						weaponpoint-=weaptargnorm*2;
-						}*/
 					}
 				}
 				if(weaponactive!=k&&weaponstuck!=k){
