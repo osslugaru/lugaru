@@ -430,5 +430,6 @@ struct Person
 		void RagDoll(bool checkcollision);
 };
 
+const int maxplayers = 10;
 extern Person player[maxplayers];
 #endif

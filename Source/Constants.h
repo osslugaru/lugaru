@@ -44,6 +44,4 @@ static const char *editortypenames[] = {
 
 const int max_dialogues = 20;
 const int max_dialoguelength = 20;
-
-const int maxplayers = 10;
 #endif

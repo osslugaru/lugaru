@@ -100,8 +100,6 @@ bool musictoggle = 0;
 bool trilinear;
 Weapons weapons;
 bool damageeffects = 0;
-//apvector<Person> player(maxplayers);
-Person player[maxplayers];
 int numplayers = 0;
 bool ambientsound = 0;
 bool mousejump = 0;

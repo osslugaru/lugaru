@@ -84,6 +84,8 @@ extern int indialogue;
 
 extern bool gamestarted;
 
+Person player[maxplayers];
+
 void Person::CheckKick()
 {
   if (!(hasvictim
