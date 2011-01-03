@@ -45,8 +45,5 @@ static const char *editortypenames[] = {
 const int max_dialogues = 20;
 const int max_dialoguelength = 20;
 
-const int max_model_vertex = 3000;		// maximum number of vertexs
-const int max_textured_triangle = 3000;		// maximum number of texture-filled triangles in a model
-
 const int maxplayers = 10;
 #endif
