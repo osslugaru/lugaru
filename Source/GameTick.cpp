@@ -1686,21 +1686,6 @@ void	Game::Loadlevel(char *name){
 			player[0].creature=rabbittype;
 		}
 
-		for(i=0;i<max_dialogues;i++)
-		{
-			for(j=0;j<max_dialoguelength;j++)
-			{
-				for(k=0;k<128;k++)
-				{
-					dialoguetext[i][j][k]='\0';
-				}
-				for(k=0;k<64;k++)
-				{
-					dialoguename[i][j][k]='\0';
-				}
-			}
-		}
-
 		player[0].lastattack=-1;
 		player[0].lastattack2=-1;
 		player[0].lastattack3=-1;
@@ -1737,6 +1722,7 @@ void	Game::Loadlevel(char *name){
 								funpackf(tfile, "Bb", &dialoguetext[k][l][m]);
 								if(dialoguetext[k][l][m]=='\0')break;
 							}
+							dialoguetext[k][l][m] = 0;
 
 							funpackf(tfile, "Bi",&templength);
 							if(templength>64||templength<=0)templength=64;
@@ -1746,6 +1732,7 @@ void	Game::Loadlevel(char *name){
 									break;
 								}
 							}
+							dialoguename[k][l][m] = 0;
 							funpackf(tfile, "Bf Bf Bf", &dialoguecamera[k][l].x, &dialoguecamera[k][l].y, &dialoguecamera[k][l].z);
 							funpackf(tfile, "Bi", &participantfocus[k][l]);
 							funpackf(tfile, "Bi", &participantaction[k][l]);
