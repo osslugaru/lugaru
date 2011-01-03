@@ -644,7 +644,7 @@ AL_API signed char OPENAL_SetOutput(int outputtype)
     return true;
 }
 
-extern int channels[100];
+extern int channels[];
 
 extern "C" void PlaySoundEx(int chan, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused)
 {

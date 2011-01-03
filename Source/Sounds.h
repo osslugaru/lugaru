@@ -30,6 +30,7 @@ sounds_count
 };
 
 extern struct OPENAL_SAMPLE *samp[sounds_count];
+extern int channels[];
 
 extern void loadAllSounds();
 

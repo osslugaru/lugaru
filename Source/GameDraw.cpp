@@ -132,8 +132,6 @@ extern bool gamestarted;
 
 extern bool showdamagebar;
 
-extern int channels[100];
-
 void Game::flash() { // shouldn't be that way, these should be attributes and Person class should not change rendering.
 	flashr=1;
 	flashg=0;

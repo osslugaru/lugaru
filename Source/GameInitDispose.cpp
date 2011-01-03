@@ -34,7 +34,6 @@ extern float gravity;
 extern Light light;
 extern Skeleton testskeleton;
 extern int numsounds;
-extern int channels[100];
 extern Terrain terrain;
 //extern Sprites sprites;
 extern int kTextureSize;
@@ -827,8 +826,6 @@ void Game::InitGame()
 		terraindetail=1;
 		//terraindetail=2;
 	}
-
-	memset(channels, 0xff, sizeof(channels));
 
 	LOG("Initializing sound system...");
 

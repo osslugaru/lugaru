@@ -49,7 +49,6 @@ extern XYZ viewer;
 extern int environment;
 extern float texscale;
 extern Terrain terrain;
-extern int channels[100];
 extern int kTextureSize;
 extern float screenwidth,screenheight;
 extern float gravity;

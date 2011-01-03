@@ -29,7 +29,6 @@ extern float multiplier;
 extern float gravity;
 extern Skeleton testskeleton;
 extern Terrain terrain;
-extern int channels[100];
 extern Objects objects;
 extern int environment;
 extern float terraindetail;

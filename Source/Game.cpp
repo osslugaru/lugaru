@@ -3,9 +3,6 @@
 #include "SDL_thread.h"
 
 extern int mainmenu;
-extern int channels[100];
-
-
 
 Game::Game()
 {

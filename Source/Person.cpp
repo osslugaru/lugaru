@@ -28,7 +28,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Game.h"
 
 extern float multiplier;
-extern int channels[100];
 extern Terrain terrain;
 extern float gravity;
 extern int environment;
