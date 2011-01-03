@@ -107,3 +107,15 @@ emit_stream_np(int soundid, float vol)
   OPENAL_SetPaused (channels[soundid], false);
 }
 
+void
+resume_stream(int soundid)
+{
+  OPENAL_SetPaused (channels[soundid], false);
+}
+
+void
+pause_sound(int soundid)
+{
+  OPENAL_SetPaused (channels[soundid], true);
+}
+

@@ -2314,7 +2314,7 @@ void	Game::Tick()
 				}
 				if(!mainmenu){
 					OPENAL_SetPaused(channels[stream_music3], true);
-					OPENAL_SetPaused(channels[music1], false);
+					resume_stream(music1);
 				}
 			}
 			if(mainmenu==3){
@@ -2388,7 +2388,7 @@ void	Game::Tick()
 					//resume
 					mainmenu=0;
 					OPENAL_SetPaused(channels[stream_music3], true);
-					OPENAL_SetPaused(channels[music1], false);
+					resume_stream(music1);
 				}
 			}
 

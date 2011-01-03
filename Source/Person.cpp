@@ -123,7 +123,8 @@ void Person::CheckKick()
       velocity=facing*-10;
       velocity.y=5;
       skeleton.free=0;
-      if(id==0)OPENAL_SetPaused(channels[whooshsound], false);
+      if(id==0)
+	resume_stream(whooshsound);
 
       award_bonus(id, cannon);
     }
@@ -3340,7 +3341,8 @@ void	Person::DoAnimations(){
 										targetframe=3;
 										velocity=facing*-8;
 										velocity.y=4;
-										if(id==0)OPENAL_SetPaused(channels[whooshsound], false);
+										if(id==0)
+										  resume_stream(whooshsound);
 									}
 									if(targetanimation==walljumprightanim){
 										targetanimation=rightflipanim;
@@ -3358,7 +3360,8 @@ void	Person::DoAnimations(){
 										velocity=facing*8;
 										velocity.y=4;
 									}
-									if(id==0)OPENAL_SetPaused(channels[whooshsound], false);
+									if(id==0)
+									  resume_stream(whooshsound);
 								}
 								if(targetanimation==walljumpleftanim){
 									if(attackkeydown){
@@ -3398,7 +3401,8 @@ void	Person::DoAnimations(){
 										velocity=DoRotation(facing,0,-30,0)*-8;
 										velocity.y=4;
 									}
-									if(id==0)OPENAL_SetPaused(channels[whooshsound], false);
+									if(id==0)
+									  resume_stream(whooshsound);
 								}
 								if(targetanimation==sneakattackanim){
 									float ycoords=oldcoords.y;
