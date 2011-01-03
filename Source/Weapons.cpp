@@ -54,7 +54,6 @@ extern int difficulty;
 extern bool freeze;
 extern int tutoriallevel;
 extern int numthrowkill;
-extern "C"	void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 
 void	Weapons::DoStuff(){
 	static int i,whichpatchx,whichpatchz,j,k,whichhit,m;
@@ -576,25 +575,17 @@ void	Weapons::DoStuff(){
 						else velocity[i]+=bounceness*elasticity;
 //if (type[i]==knife) printf("velocity of knife %d now %f,%f,%f.\n", i, velocity[i].x, velocity[i].y, velocity[i].z);
 						if(findLengthfast(&bounceness)>1){
-							float gLoc[3];
-							float vel[3];
 							int whichsound;
 							if(terrain.getOpacity(position[i].x,position[i].z)>.2){
 								if(type[i]==staff)whichsound=footstepsound3+abs(Random()%2);
 								if(type[i]!=staff)whichsound=clank1sound+abs(Random()%4);
 							}
 							else whichsound=footstepsound+abs(Random()%2);
-							gLoc[0]=position[i].x;
-							gLoc[1]=position[i].y;
-							gLoc[2]=position[i].z;
-							vel[0]=0;
-							vel[1]=0;
-							vel[2]=0;
-							PlaySoundEx( whichsound, samp[whichsound], NULL, true);
-							OPENAL_3D_SetAttributes(channels[whichsound], gLoc, vel);
-							if(terrain.getOpacity(position[i].x,position[i].z)>.2)OPENAL_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
-							else OPENAL_SetVolume(channels[whichsound], 32*findLengthfast(&bounceness));
-							OPENAL_SetPaused(channels[whichsound], false);
+							emit_sound_at(whichsound, position[i],
+								      findLengthfast(&bounceness)
+								      * (terrain.getOpacity(position[i].x,position[i].z) > .2
+									 ? 128.
+									 : 32.));
 
 							if(terrain.getOpacity(position[i].x,position[i].z)<.2){
 								XYZ terrainlight;
@@ -630,25 +621,17 @@ void	Weapons::DoStuff(){
 //if (type[i]==knife) printf("tipvelocity of knife %d now %f,%f,%f.\n", i, tipvelocity[i].x, tipvelocity[i].y, tipvelocity[i].z);
 
 						if(findLengthfast(&bounceness)>1){
-							float gLoc[3];
-							float vel[3];
 							int whichsound;
 							if(terrain.getOpacity(tippoint[i].x,tippoint[i].z)>.2){
 								if(type[i]==staff)whichsound=footstepsound3+abs(Random()%2);
 								if(type[i]!=staff)whichsound=clank1sound+abs(Random()%4);
 							}
 							else whichsound=footstepsound+abs(Random()%2);
-							gLoc[0]=tippoint[i].x;
-							gLoc[1]=tippoint[i].y;
-							gLoc[2]=tippoint[i].z;
-							vel[0]=0;
-							vel[1]=0;
-							vel[2]=0;
-							PlaySoundEx( whichsound, samp[whichsound], NULL, true);
-							OPENAL_3D_SetAttributes(channels[whichsound], gLoc, vel);
-							if(terrain.getOpacity(tippoint[i].x,tippoint[i].z)>.2)OPENAL_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
-							else OPENAL_SetVolume(channels[whichsound], 32*findLengthfast(&bounceness));
-							OPENAL_SetPaused(channels[whichsound], false);
+							emit_sound_at(whichsound, tippoint[i],
+								      findLengthfast(&bounceness)
+								      * (terrain.getOpacity(tippoint[i].x,tippoint[i].z) > .2
+									 ? 128.
+									 : 32.));
 
 							if(terrain.getOpacity(tippoint[i].x,tippoint[i].z)<.2){
 								XYZ terrainlight;
@@ -688,25 +671,17 @@ void	Weapons::DoStuff(){
 						else velocity[i]+=bounceness*elasticity;
 
 						if(findLengthfast(&bounceness)>1){
-							float gLoc[3];
-							float vel[3];
 							int whichsound;
 							if(terrain.getOpacity(mid.x,mid.z)>.2){
 								if(type[i]==staff)whichsound=footstepsound3+abs(Random()%2);
 								if(type[i]!=staff)whichsound=clank1sound+abs(Random()%4);
 							}
 							else whichsound=footstepsound+abs(Random()%2);
-							gLoc[0]=mid.x;
-							gLoc[1]=mid.y;
-							gLoc[2]=mid.z;
-							vel[0]=0;
-							vel[1]=0;
-							vel[2]=0;
-							PlaySoundEx( whichsound, samp[whichsound], NULL, true);
-							OPENAL_3D_SetAttributes(channels[whichsound], gLoc, vel);
-							if(terrain.getOpacity(position[i].x,position[i].z)>.2)OPENAL_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
-							else OPENAL_SetVolume(channels[whichsound], 32*findLengthfast(&bounceness));
-							OPENAL_SetPaused(channels[whichsound], false);
+							emit_sound_at(whichsound, mid,
+								      findLengthfast(&bounceness)
+								      * (terrain.getOpacity(position[i].x,position[i].z) > .2
+									 ? 128.
+									 : 32.));
 						}
 						position[i]+=(mid-oldmid)*20;
 					}
@@ -732,25 +707,17 @@ void	Weapons::DoStuff(){
 						else tipvelocity[i]+=bounceness*elasticity;
 
 						if(findLengthfast(&bounceness)>1){
-							float gLoc[3];
-							float vel[3];
 							int whichsound;
 							if(terrain.getOpacity(mid.x,mid.z)>.2){
 								if(type[i]==staff)whichsound=footstepsound3+abs(Random()%2);
 								if(type[i]!=staff)whichsound=clank1sound+abs(Random()%4);
 							}
 							else whichsound=footstepsound+abs(Random()%2);
-							gLoc[0]=mid.x;
-							gLoc[1]=mid.y;
-							gLoc[2]=mid.z;
-							vel[0]=0;
-							vel[1]=0;
-							vel[2]=0;
-							PlaySoundEx( whichsound, samp[whichsound], NULL, true);
-							OPENAL_3D_SetAttributes(channels[whichsound], gLoc, vel);
-							if(terrain.getOpacity(position[i].x,position[i].z)>.2)OPENAL_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
-							else OPENAL_SetVolume(channels[whichsound], 32*findLengthfast(&bounceness));
-							OPENAL_SetPaused(channels[whichsound], false);
+							emit_sound_at(whichsound, mid,
+								      findLengthfast(&bounceness)
+								      * (terrain.getOpacity(position[i].x,position[i].z) > .2
+									 ? 128.
+									 : 32.));
 						}
 						tippoint[i]+=(mid-oldmid)*20;
 					}

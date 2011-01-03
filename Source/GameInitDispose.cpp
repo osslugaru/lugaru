@@ -97,7 +97,6 @@ extern float accountcampaigntime[10];
 extern int accountcampaignchoicesmade[10];
 extern int accountcampaignchoices[10][5000];
 
-extern "C"	void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 extern "C" void PlayStreamEx(int chan, OPENAL_STREAM *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 
 void LOG(const std::string &fmt, ...)

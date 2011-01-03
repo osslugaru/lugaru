@@ -214,7 +214,6 @@ static bool stripfx(const char *str, const char *pfx)
   return !strncasecmp(str, pfx, strlen(pfx));
 }
 
-extern "C"	void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 extern "C" void PlayStreamEx(int chan, OPENAL_STREAM *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 
 
@@ -1104,18 +1103,7 @@ static void cmd_dispatch(Game *game, const char *cmd)
 	cmd_handlers[i](game, cmd + strlen(cmd_names[i]));
 	break;
       }
-  if (i < n_cmds)
-    {
-      PlaySoundEx(consolesuccesssound, samp[consolesuccesssound], NULL, true);
-      OPENAL_SetVolume(channels[consolesuccesssound], 256);
-      OPENAL_SetPaused(channels[consolesuccesssound], false);
-    }
-  else
-    {
-      PlaySoundEx(consolefailsound, samp[consolefailsound], NULL, true);
-      OPENAL_SetVolume(channels[consolefailsound], 256);
-      OPENAL_SetPaused(channels[consolefailsound], false);
-    }
+  emit_sound_np(i < n_cmds ? consolesuccesssound : consolefailsound);
 }
 
 /********************> Tick() <*****/
@@ -1625,9 +1613,7 @@ void	Game::Loadlevel(char *name){
 		changedelay=0;
 		if(console)
 		{
-			PlaySoundEx( consolesuccesssound, samp[consolesuccesssound], NULL, true);
-			OPENAL_SetVolume(channels[consolesuccesssound], 256);
-			OPENAL_SetPaused(channels[consolesuccesssound], false);
+			emit_sound_np(consolesuccesssound);
 			freeze=0;
 			console=0;
 		}
@@ -2405,9 +2391,7 @@ void	Game::Tick()
 	if(Input::isKeyDown(SDLK_TAB)&&!minimaptogglekeydown&&tutoriallevel){
 		if(tutorialstage!=51)
 			tutorialstagetime=tutorialmaxtime;
-		PlaySoundEx( consolefailsound, samp[consolefailsound], NULL, true);
-		OPENAL_SetVolume(channels[consolefailsound], 128);
-		OPENAL_SetPaused(channels[consolefailsound], false);
+		emit_sound_np(consolefailsound, 128.);
 		minimaptogglekeydown=1;
 	}
 	if(!Input::isKeyDown(SDLK_TAB)){
@@ -3029,9 +3013,7 @@ void	Game::Tick()
 		static int oldwinfreeze;
 		if(winfreeze&&!oldwinfreeze){
 			OPENAL_SetFrequency(OPENAL_ALL, 0.001);
-			PlaySoundEx( consolesuccesssound, samp[consolesuccesssound], NULL, true);
-			OPENAL_SetVolume(channels[consolesuccesssound], 256);
-			OPENAL_SetPaused(channels[consolesuccesssound], false);
+			emit_sound_np(consolesuccesssound);
 		}
 		if(winfreeze==0)oldwinfreeze=winfreeze;
 		else oldwinfreeze++;
@@ -3602,9 +3584,7 @@ void	Game::Tick()
 
 
 						if(tutorialstagetime==tutorialmaxtime-3){
-							PlaySoundEx( consolesuccesssound, samp[consolesuccesssound], NULL, true);
-							OPENAL_SetVolume(channels[consolesuccesssound], 256);
-							OPENAL_SetPaused(channels[consolesuccesssound], false);
+							emit_sound_np(consolesuccesssound);
 						}
 
 						if(tutorialsuccess>=1){
@@ -3622,16 +3602,12 @@ void	Game::Tick()
 
 					if(tutoriallevel!=1){
 						if(bonustime==0&&bonus!=solidhit&&bonus!=spinecrusher&&bonus!=tracheotomy&&bonus!=backstab&&bonusvalue>10){
-							PlaySoundEx( consolesuccesssound, samp[consolesuccesssound], NULL, true);
-							OPENAL_SetVolume(channels[consolesuccesssound], 256);
-							OPENAL_SetPaused(channels[consolesuccesssound], false);
+							emit_sound_np(consolesuccesssound);
 						}
 					}
 					else
 						if(bonustime==0){
-							PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-							OPENAL_SetVolume(channels[fireendsound], 256);
-							OPENAL_SetPaused(channels[fireendsound], false);
+							emit_sound_np(fireendsound);
 						}
 						if(bonustime==0){
 							if(bonus!=solidhit&&bonus!=twoxcombo&&bonus!=threexcombo&&bonus!=fourxcombo&&bonus!=megacombo)bonusnum[bonus]++;
@@ -7516,17 +7492,7 @@ void	Game::TickOnceAfter(){
 
 		if(musictoggle){
 			if(musictype!=oldmusictype&&musictype==stream_music2){
-				static float gLoc[3];
-				static float vel[3];
-				gLoc[0]=cameraloc.x;
-				gLoc[1]=cameraloc.y;
-				gLoc[2]=cameraloc.z;
-				vel[0]=0;
-				vel[1]=0;
-				vel[2]=0;
-				PlaySoundEx( alarmsound, samp[alarmsound], NULL, true);
-				OPENAL_SetVolume(channels[alarmsound], 512);
-				OPENAL_SetPaused(channels[alarmsound], false);
+				emit_sound_np(alarmsound);
 
 			}
 		}

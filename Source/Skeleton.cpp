@@ -47,7 +47,6 @@ extern int whichjointendarray[26];
 
 extern Game * pgame;
 extern bool visibleloading;
-extern "C"	void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 
 void dealloc2(void* param){
 	free(param);

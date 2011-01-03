@@ -4,7 +4,6 @@
 
 extern int mainmenu;
 extern int channels[100];
-extern "C" void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 
 
 
