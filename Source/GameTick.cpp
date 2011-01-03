@@ -214,9 +214,6 @@ static bool stripfx(const char *str, const char *pfx)
   return !strncasecmp(str, pfx, strlen(pfx));
 }
 
-extern "C" void PlayStreamEx(int chan, OPENAL_STREAM *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
-
-
 static const char *cmd_names[] = {
 #define DECLARE_COMMAND(cmd) #cmd " ",
 #include "ConsoleCmds.h"
@@ -1335,12 +1332,8 @@ void	Game::Setenvironment(int which)
 	if(environment==snowyenvironment){
 		windvector=0;
 		windvector.z=3;
-		if(ambientsound){
-			//PlaySoundEx( wind, samp[wind], NULL, true);
-			PlayStreamEx(stream_wind, samp[stream_wind], 0, true);
-			OPENAL_SetPaused(channels[stream_wind], false);
-			OPENAL_SetVolume(channels[stream_wind], 256);
-		}
+		if(ambientsound)
+		  emit_stream_np(stream_wind);
 
 		LoadTexture(":Data:Textures:snowtree.png",&objects.treetextureptr,0,1);
 		LoadTexture(":Data:Textures:bushsnow.png",&objects.bushtextureptr,0,1);
@@ -1386,12 +1379,8 @@ void	Game::Setenvironment(int which)
 		LoadTexture(":Data:Textures:desertbox.jpg",&objects.boxtextureptr,1,0);
 
 
-		if(ambientsound){
-			//PlaySoundEx( desertambient, samp[desertambient], NULL, true);
-			PlayStreamEx( stream_desertambient, samp[stream_desertambient], NULL, true);
-			OPENAL_SetPaused(channels[stream_desertambient], false);
-			OPENAL_SetVolume(channels[stream_desertambient], 256);
-		}
+		if(ambientsound)
+		  emit_stream_np(stream_desertambient);
 
 		footstepsound = footstepsn1;
 		footstepsound2 = footstepsn2;
@@ -1430,11 +1419,8 @@ void	Game::Setenvironment(int which)
 		LoadTexture(":Data:Textures:boulder.jpg",&objects.rocktextureptr,1,0);
 		LoadTexture(":Data:Textures:grassbox.jpg",&objects.boxtextureptr,1,0);
 
-		if(ambientsound){
-			PlayStreamEx( stream_wind, samp[stream_wind], NULL, true);
-			OPENAL_SetPaused(channels[stream_wind], false);
-			OPENAL_SetVolume(channels[stream_wind], 100);
-		}
+		if(ambientsound)
+		  emit_stream_np(stream_wind, 100.);
 
 		footstepsound = footstepgr1;
 		footstepsound2 = footstepgr2;
@@ -2217,33 +2203,17 @@ void	Game::Loadlevel(char *name){
 		if(environment==snowyenvironment)
 		{
 			if(ambientsound)
-			{
-				PlayStreamEx(stream_wind, samp[stream_wind], NULL, true);
-				OPENAL_SetPaused(channels[stream_wind], false);
-				OPENAL_SetVolume(channels[stream_wind], 256);
-			}
+			  emit_stream_np(stream_wind);
 		}
 		else if(environment==desertenvironment)
 		{
 			if(ambientsound)
-			{
-				//PlaySoundEx(desertambient,
-				//	samp[desertambient], NULL, true);
-				PlayStreamEx(stream_desertambient,
-					samp[stream_desertambient], NULL, true);
-				OPENAL_SetPaused(channels[stream_desertambient], false);
-				OPENAL_SetVolume(channels[stream_desertambient], 256);
-			}
+			  emit_stream_np(stream_desertambient);
 		}
 		else if(environment==grassyenvironment)
 		{
 			if(ambientsound)
-			{
-				//PlaySoundEx(wind, samp[wind], NULL, true);
-				PlayStreamEx(stream_wind, samp[stream_wind], NULL, true);
-				OPENAL_SetPaused(channels[stream_wind], false);
-				OPENAL_SetVolume(channels[stream_wind], 100);
-			}
+			  emit_stream_np(stream_wind, 100.);
 		}
 		oldmusicvolume[0]=0;
 		oldmusicvolume[1]=0;
@@ -2338,9 +2308,7 @@ void	Game::Tick()
 				if(mainmenu&&musictoggle){
 					if(mainmenu==1||mainmenu==2||mainmenu==100){
 						OPENAL_SetFrequency(OPENAL_ALL, 0.001);
-						PlayStreamEx( stream_music3, samp[stream_music3], NULL, true);
-						OPENAL_SetPaused(channels[stream_music3], false);
-						OPENAL_SetVolume(channels[stream_music3], 256);
+						emit_stream_np(stream_music3);
 						OPENAL_SetPaused(channels[music1], true);
 					}
 				}
@@ -2542,11 +2510,8 @@ void	Game::Tick()
 					}
 				}
 
-				if(musictoggle){
-					PlayStreamEx( stream_music3, samp[stream_music3], NULL, true);
-					OPENAL_SetPaused(channels[stream_music3], false);
-					OPENAL_SetVolume(channels[stream_music3], 256);
-				}
+				if(musictoggle)
+				  emit_stream_np(stream_music3);
 			}
 			if(Input::Button()&&!oldbutton&&selected==9){
 				invertmouse=1-invertmouse;
@@ -7332,9 +7297,7 @@ void	Game::Tick()
 										OPENAL_StopSound(OPENAL_ALL);  // hack...OpenAL renderer isn't stopping music after tutorial goes to level menu...
 										OPENAL_SetFrequency(OPENAL_ALL, 0.001);
 
-										PlayStreamEx( stream_music3, samp[stream_music3], NULL, true);
-										OPENAL_SetPaused(channels[stream_music3], false);
-										OPENAL_SetVolume(channels[stream_music3], 256);
+										emit_stream_np(stream_music3);
 
 										gameon=0;
 										mainmenu=5;
@@ -7513,18 +7476,12 @@ void	Game::TickOnceAfter(){
 		if(musicvolume[2]>128&&!loading&&!mainmenu)musicvolume[2]=128;
 
 		if(musictoggle){
-			if(musicvolume[0]>0&&oldmusicvolume[0]<=0){
-				PlayStreamEx( music1, samp[music1], NULL, true);
-				OPENAL_SetPaused(channels[music1], false);
-			}
-			if(musicvolume[1]>0&&oldmusicvolume[1]<=0){
-				PlayStreamEx( stream_music2, samp[stream_music2], NULL, true);
-				OPENAL_SetPaused(channels[stream_music2], false);
-			}
-			if(musicvolume[2]>0&&oldmusicvolume[2]<=0){
-				PlayStreamEx( stream_music3, samp[stream_music3], NULL, true);
-				OPENAL_SetPaused(channels[stream_music3], false);
-			}
+			if(musicvolume[0]>0&&oldmusicvolume[0]<=0)
+			  emit_stream_np(music1, musicvolume[0]);
+			if(musicvolume[1]>0&&oldmusicvolume[1]<=0)
+			  emit_stream_np(stream_music2, musicvolume[1]);
+			if(musicvolume[2]>0&&oldmusicvolume[2]<=0)
+			  emit_stream_np(stream_music3, musicvolume[2]);
 			if(musicvolume[0]<=0&&oldmusicvolume[0]>0){
 				OPENAL_SetPaused(channels[music1], true);
 			}

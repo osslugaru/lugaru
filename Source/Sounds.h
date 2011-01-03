@@ -36,6 +36,7 @@ extern void loadAllSounds();
 extern void emit_sound_at(int soundid, const XYZ &pos = XYZ(), float vol = 256.f);
 extern void emit_sound_np(int soundid, float vol = 256.f);
 extern void emit_stream_at(int soundid, const XYZ &pos = XYZ(), float vol = 256.f);
+extern void emit_stream_np(int soundid, float vol = 256.f);
 
 extern int footstepsound, footstepsound2, footstepsound3, footstepsound4;
 #endif

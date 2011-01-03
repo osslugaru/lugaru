@@ -97,8 +97,6 @@ extern float accountcampaigntime[10];
 extern int accountcampaignchoicesmade[10];
 extern int accountcampaignchoices[10][5000];
 
-extern "C" void PlayStreamEx(int chan, OPENAL_STREAM *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
-
 void LOG(const std::string &fmt, ...)
 {
     // !!! FIXME: write me.
@@ -872,11 +870,8 @@ void Game::InitGame()
 	OPENAL_SetSFXMasterVolume((int)(volume*255));
 	loadAllSounds();
 
-	if(musictoggle){
-		PlayStreamEx(stream_music3, samp[stream_music3], 0, true);
-		OPENAL_SetPaused(channels[stream_music3], false);
-		OPENAL_SetVolume(channels[stream_music3], 256);
-	}
+	if(musictoggle)
+	  emit_stream_np(stream_music3);
 
 	LoadTexture(":Data:Textures:Cursor.png",&cursortexture,0,1);
 
