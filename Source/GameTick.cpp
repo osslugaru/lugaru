@@ -1315,18 +1315,12 @@ void	Game::Setenvironment(int which)
 
 	float temptexdetail;
 	environment=which;
-/*
-	OPENAL_SetPaused(channels[music1snow], true);
-	OPENAL_SetPaused(channels[music1grass], true);
-	OPENAL_SetPaused(channels[music1desert], true);
-	OPENAL_SetPaused(channels[wind], true);
-	OPENAL_SetPaused(channels[desertambient], true);
-*/
-	OPENAL_SetPaused(channels[stream_music1snow], true);
-	OPENAL_SetPaused(channels[stream_music1grass], true);
-	OPENAL_SetPaused(channels[stream_music1desert], true);
-	OPENAL_SetPaused(channels[stream_wind], true);
-	OPENAL_SetPaused(channels[stream_desertambient], true);
+
+	pause_sound(stream_music1snow);
+	pause_sound(stream_music1grass);
+	pause_sound(stream_music1desert);
+	pause_sound(stream_wind);
+	pause_sound(stream_desertambient);
 
 
 	if(environment==snowyenvironment){
@@ -1517,8 +1511,8 @@ void	Game::Loadlevel(char *name){
 	if(!firstload){
 		oldlevel=50;
 	}
-	OPENAL_SetPaused(channels[whooshsound], true);
-	OPENAL_SetPaused(channels[stream_firesound], true);
+	pause_sound(whooshsound);
+	pause_sound(stream_firesound);
 
 	// Change the map filename into something that is os specific
 	char *FixedFN = ConvertFileName(name);
@@ -1528,7 +1522,7 @@ void	Game::Loadlevel(char *name){
 	tfile=fopen( FixedFN, "rb" );
 	if(tfile)
 	{
-		OPENAL_SetPaused(channels[stream_firesound], true);
+		pause_sound(stream_firesound);
 
 
 		scoreadded=0;
@@ -2309,11 +2303,11 @@ void	Game::Tick()
 					if(mainmenu==1||mainmenu==2||mainmenu==100){
 						OPENAL_SetFrequency(OPENAL_ALL, 0.001);
 						emit_stream_np(stream_music3);
-						OPENAL_SetPaused(channels[music1], true);
+						pause_sound(music1);
 					}
 				}
 				if(!mainmenu){
-					OPENAL_SetPaused(channels[stream_music3], true);
+					pause_sound(stream_music3);
 					resume_stream(music1);
 				}
 			}
@@ -2387,7 +2381,7 @@ void	Game::Tick()
 				{
 					//resume
 					mainmenu=0;
-					OPENAL_SetPaused(channels[stream_music3], true);
+					pause_sound(stream_music3);
 					resume_stream(music1);
 				}
 			}
@@ -2417,7 +2411,7 @@ void	Game::Tick()
 				if(!gameon){
 					//quit
 					tryquit=1;
-					OPENAL_SetPaused(channels[stream_music3], true);
+					pause_sound(stream_music3);
 				}
 				else{
 					//end game
@@ -2500,9 +2494,9 @@ void	Game::Tick()
 				musictoggle=1-musictoggle;
 
 				if(!musictoggle){
-					OPENAL_SetPaused(channels[music1], true);
-					OPENAL_SetPaused(channels[stream_music2], true);
-					OPENAL_SetPaused(channels[stream_music3], true);
+					pause_sound(music1);
+					pause_sound(stream_music2);
+					pause_sound(stream_music3);
 
 					for(i=0;i<4;i++){
 						oldmusicvolume[i]=0;
@@ -2609,7 +2603,7 @@ void	Game::Tick()
 
 				mainmenu=0;
 				gameon=1;
-				OPENAL_SetPaused(channels[stream_music3], true);
+				pause_sound(stream_music3);
 			}
 			if(Input::Button()&&!oldbutton&&(selected-7>=accountactive->getCampaignChoicesMade())){
 				fireSound();
@@ -2646,7 +2640,7 @@ void	Game::Tick()
 				campaign=1;
 				mainmenu=0;
 				gameon=1;
-				OPENAL_SetPaused(channels[stream_music3], true);
+				pause_sound(stream_music3);
 			}
 			if(Input::Button()&&!oldbutton&&selected==4){
 				fireSound();
@@ -2698,7 +2692,7 @@ void	Game::Tick()
 
 				mainmenu=0;
 				gameon=1;
-				OPENAL_SetPaused(channels[stream_music3], true);
+				pause_sound(stream_music3);
 			}
 			if(Input::Button()&&!oldbutton&&selected==numchallengelevels){
 				fireSound();
@@ -3679,7 +3673,7 @@ void	Game::Tick()
 															player[k].targetanimation=walljumpleftanim;
 															player[k].targetframe=0;
 															emit_sound_at(movewhooshsound, player[k].coords);
-															if(k==0)OPENAL_SetPaused(channels[whooshsound], true);
+															if(k==0)pause_sound(whooshsound);
 
 															lowpointtarget=DoRotation(objects.model[i].facenormals[whichhit],0,objects.rotation[i],0);
 															player[k].rotation=-asin(0-lowpointtarget.x);
@@ -3699,7 +3693,7 @@ void	Game::Tick()
 																player[k].targetanimation=walljumprightanim;
 																player[k].targetframe=0;
 																emit_sound_at(movewhooshsound, player[k].coords);
-																if(k==0)OPENAL_SetPaused(channels[whooshsound], true);
+																if(k==0)pause_sound(whooshsound);
 
 																lowpointtarget=DoRotation(objects.model[i].facenormals[whichhit],0,objects.rotation[i],0);
 																player[k].rotation=-asin(0-lowpointtarget.x);
@@ -3719,7 +3713,7 @@ void	Game::Tick()
 																	player[k].targetanimation=walljumpbackanim;
 																	player[k].targetframe=0;
 																	emit_sound_at(movewhooshsound, player[k].coords);
-																	if(k==0)OPENAL_SetPaused(channels[whooshsound], true);
+																	if(k==0)pause_sound(whooshsound);
 
 																	lowpointtarget=DoRotation(objects.model[i].facenormals[whichhit],0,objects.rotation[i],0);
 																	player[k].rotation=-asin(0-lowpointtarget.x);
@@ -3739,7 +3733,7 @@ void	Game::Tick()
 																		player[k].targetanimation=walljumpfrontanim;
 																		player[k].targetframe=0;
 																		emit_sound_at(movewhooshsound, player[k].coords);
-																		if(k==0)OPENAL_SetPaused(channels[whooshsound], true);
+																		if(k==0)pause_sound(whooshsound);
 
 																		lowpointtarget=DoRotation(objects.model[i].facenormals[whichhit],0,objects.rotation[i],0);
 																		player[k].rotation=-asin(0-lowpointtarget.x);
@@ -3774,7 +3768,7 @@ void	Game::Tick()
 														player[k].onterrain=1;
 
 														if(player[k].id==0){
-															OPENAL_SetPaused(channels[whooshsound], true);
+															pause_sound(whooshsound);
 															OPENAL_SetVolume(channels[whooshsound], 0);
 														}
 
@@ -3879,7 +3873,7 @@ void	Game::Tick()
 
 																									if(j>10||!player[k].isRun()){
 																										if(player[k].targetanimation==jumpdownanim||player[k].targetanimation==jumpupanim){
-																											if(k==0)OPENAL_SetPaused(channels[whooshsound], true);
+																											if(k==0)pause_sound(whooshsound);
 																										}
 																										emit_sound_at(jumpsound, player[k].coords, 128.);
 
@@ -4089,7 +4083,7 @@ void	Game::Tick()
 											}
 							}
 							if(!directing){
-								OPENAL_SetPaused(channels[whooshsound], true);
+								pause_sound(whooshsound);
 								viewer=dialoguecamera[whichdialogue][indialogue];
 								if(viewer.y<terrain.getHeight(viewer.x,viewer.z)+.1){
 									viewer.y=terrain.getHeight(viewer.x,viewer.z)+.1;
@@ -4636,7 +4630,7 @@ void	Game::Tick()
 							}
 							if(!player[0].onfire){
 								emit_sound_at(fireendsound, player[0].coords);
-								OPENAL_SetPaused(channels[stream_firesound], true);
+								pause_sound(stream_firesound);
 							}
 							slomotogglekeydown=1;
 						}
@@ -5022,7 +5016,6 @@ void	Game::Tick()
 							//player[0].DoDamage(1000);
 
 							emit_sound_at(whooshsound, player[0].coords, 128.);
-							//OPENAL_SetPaused(channels[whooshsound], true);
 
 							texturesizetogglekeydown=1;
 						}
@@ -7483,13 +7476,13 @@ void	Game::TickOnceAfter(){
 			if(musicvolume[2]>0&&oldmusicvolume[2]<=0)
 			  emit_stream_np(stream_music3, musicvolume[2]);
 			if(musicvolume[0]<=0&&oldmusicvolume[0]>0){
-				OPENAL_SetPaused(channels[music1], true);
+				pause_sound(music1);
 			}
 			if(musicvolume[1]<=0&&oldmusicvolume[1]>0){
-				OPENAL_SetPaused(channels[stream_music2], true);
+				pause_sound(stream_music2);
 			}
 			if(musicvolume[2]<=0&&oldmusicvolume[2]>0){
-				OPENAL_SetPaused(channels[stream_music3], true);
+				pause_sound(stream_music3);
 			}
 
 			if(musicvolume[0]!=oldmusicvolume[0]){
@@ -7506,9 +7499,9 @@ void	Game::TickOnceAfter(){
 				oldmusicvolume[i]=musicvolume[i];
 			}
 		} else {
-			OPENAL_SetPaused(channels[music1], true);
-			OPENAL_SetPaused(channels[stream_music2], true);
-			OPENAL_SetPaused(channels[stream_music3], true);
+			pause_sound(music1);
+			pause_sound(stream_music2);
+			pause_sound(stream_music3);
 
 			for(i=0;i<4;i++){
 				oldmusicvolume[i]=0;
@@ -7765,7 +7758,7 @@ void	Game::TickOnceAfter(){
 					campaign=1;
 					mainmenu=0;
 					gameon=1;
-					OPENAL_SetPaused(channels[stream_music3], true);
+					pause_sound(stream_music3);
 
 					stealthloading=0;
 				}

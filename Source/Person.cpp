@@ -1502,7 +1502,7 @@ void	Person::DoAnimations(){
 			if(targetanimation==rollanim&&targetframe==3&&onfire){
 				onfire=0;
 				emit_sound_at(fireendsound, coords);
-				OPENAL_SetPaused(channels[stream_firesound], true);
+				pause_sound(stream_firesound);
 				deathbleeding=0;
 			}
 
@@ -3555,7 +3555,7 @@ void	Person::DoAnimations(){
 										escapednum++;
 										targetanimation=rollanim;
 										coords+=facing;
-										if(id==0)OPENAL_SetPaused(channels[whooshsound], true);
+										if(id==0)pause_sound(whooshsound);
 									}
 									lastfeint=0;
 								}
@@ -3578,7 +3578,7 @@ void	Person::DoAnimations(){
 										escapednum++;
 										targetanimation=rollanim;
 										coords+=facing*2;
-										if(id==0)OPENAL_SetPaused(channels[whooshsound], true);
+										if(id==0)pause_sound(whooshsound);
 									}
 									lastfeint=0;
 								}
@@ -4410,7 +4410,7 @@ void	Person::DoStuff(){
 	}
 
 	if(skeleton.free==1){
-		if(id==0)OPENAL_SetPaused(channels[whooshsound], true);
+		if(id==0)pause_sound(whooshsound);
 
 		if(!dead){
 			//If knocked over, open hands and close mouth
@@ -4473,7 +4473,7 @@ void	Person::DoStuff(){
 			skeleton.longdead+=(2000-findLength(&average))*multiplier+multiplier;
 			if(skeleton.longdead>2000){
 				if(skeleton.longdead>6000){
-					if(id==0)OPENAL_SetPaused(channels[whooshsound], true);
+					if(id==0)pause_sound(whooshsound);
 					skeleton.free=3;
 					DrawSkeleton();
 					skeleton.free=2;
@@ -4582,7 +4582,7 @@ void	Person::DoStuff(){
 		if(findLength(&average)<10&&!dead&&skeleton.free){
 			skeleton.longdead+=(2000-findLength(&average))*multiplier+multiplier;
 			if(skeleton.longdead>(damage+500)*1.5){
-				if(id==0)OPENAL_SetPaused(channels[whooshsound], true);
+				if(id==0)pause_sound(whooshsound);
 				skeleton.free=0;
 				velocity=0;
 				XYZ middle;
@@ -5294,7 +5294,7 @@ void	Person::DoStuff(){
 						onterrain=1;
 
 						if(id==0){
-							OPENAL_SetPaused(channels[whooshsound], true);
+							pause_sound(whooshsound);
 							OPENAL_SetVolume(channels[whooshsound], 0);
 						}
 
@@ -6183,7 +6183,7 @@ int Person::SphereCheck(XYZ *p1,float radius, XYZ *p, XYZ *move, float *rotate, 
 								onterrain=1;
 
 								if(id==0){
-									OPENAL_SetPaused(channels[whooshsound], true);
+									pause_sound(whooshsound);
 									OPENAL_SetVolume(channels[whooshsound], 0);
 								}
 
