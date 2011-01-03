@@ -28,7 +28,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Quaternions.h"
 #include "Skeleton.h"
 #include "Models.h"
-#include "Constants.h"
 #include "Terrain.h"
 #include "Sprite.h"
 #include "Person.h"

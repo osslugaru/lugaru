@@ -84,7 +84,6 @@ set(LUGARU_SRCS
 )
 
 set(LUGARU_H
-	${SRCDIR}/Constants.h
 	${SRCDIR}/Frustum.h
 	${SRCDIR}/Account.h
 	${SRCDIR}/Game.h
