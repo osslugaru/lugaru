@@ -25,21 +25,4 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // cat src/Constants.h | sed -e 's/#define/const int/' -e 's/ [0-9]*$/ =&;/'
 // chew on that --Jookia
 
-const int mapkilleveryone = 0;
-const int mapgosomewhere = 1;
-const int mapkillsomeone = 2;
-const int mapkillmost = 3;
-
-enum pathtypes {wpkeepwalking, wppause};
-
-static const char *pathtypenames[] = {"keepwalking", "pause"};
-
-enum editortypes {typeactive, typesitting, typesittingwall, typesleeping,
-		  typedead1, typedead2, typedead3, typedead4};
-
-static const char *editortypenames[] = {
-  "active", "sitting", "sitting wall", "sleeping",
-  "dead1", "dead2", "dead3", "dead4"
-};
-
 #endif

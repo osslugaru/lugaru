@@ -345,4 +345,21 @@ extern int directing;
 extern float dialoguetime;
 extern int dialoguegonethrough[20];
 
+enum maptypes {
+  mapkilleveryone, mapgosomewhere,
+  mapkillsomeone, mapkillmost // These two are unused
+};
+
+enum pathtypes {wpkeepwalking, wppause};
+
+static const char *pathtypenames[] = {"keepwalking", "pause"};
+
+enum editortypes {typeactive, typesitting, typesittingwall, typesleeping,
+		  typedead1, typedead2, typedead3, typedead4};
+
+static const char *editortypenames[] = {
+  "active", "sitting", "sitting wall", "sleeping",
+  "dead1", "dead2", "dead3", "dead4"
+};
+
 #endif
