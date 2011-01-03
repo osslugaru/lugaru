@@ -157,28 +157,6 @@ extern int hostile;
 extern bool stillloading;
 extern bool winfreeze;
 
-extern int numdialogues;
-extern int numdialogueboxes[max_dialogues];
-extern int dialoguetype[max_dialogues];
-extern int dialogueboxlocation[max_dialogues][max_dialoguelength];
-extern float dialogueboxcolor[max_dialogues][max_dialoguelength][3];
-extern int dialogueboxsound[max_dialogues][max_dialoguelength];
-extern char dialoguetext[max_dialogues][max_dialoguelength][128];
-extern char dialoguename[max_dialogues][max_dialoguelength][64];
-extern XYZ dialoguecamera[max_dialogues][max_dialoguelength];
-extern XYZ participantlocation[max_dialogues][10];
-extern int participantfocus[max_dialogues][max_dialoguelength];
-extern int participantaction[max_dialogues][max_dialoguelength];
-extern float participantrotation[max_dialogues][10];
-extern XYZ participantfacing[max_dialogues][max_dialoguelength][10];
-extern float dialoguecamerarotation[max_dialogues][max_dialoguelength];
-extern float dialoguecamerarotation2[max_dialogues][max_dialoguelength];
-extern int indialogue;
-extern int whichdialogue;
-extern int directing;
-extern float dialoguetime;
-extern int dialoguegonethrough[20];
-
 extern bool campaign;
 
 extern float oldgamespeed;

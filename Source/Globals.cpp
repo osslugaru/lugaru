@@ -141,28 +141,6 @@ int killhotspot = 0;
 
 float menupulse = 0;
 
-int numdialogues = 0;
-int numdialogueboxes[max_dialogues] = {0};
-int dialoguetype[max_dialogues] = {0};
-int dialogueboxlocation[max_dialogues][max_dialoguelength] = {0};
-float dialogueboxcolor[max_dialogues][max_dialoguelength][3] = {0};
-int dialogueboxsound[max_dialogues][max_dialoguelength] = {0};
-char dialoguetext[max_dialogues][max_dialoguelength][128] = {0};
-char dialoguename[max_dialogues][max_dialoguelength][64] = {0};
-XYZ dialoguecamera[max_dialogues][max_dialoguelength]; //l = {0};
-XYZ participantlocation[max_dialogues][10]; // = {0};
-int participantfocus[max_dialogues][max_dialoguelength] = {0};
-int participantaction[max_dialogues][max_dialoguelength] = {0};
-float participantrotation[max_dialogues][10] = {0};
-XYZ participantfacing[max_dialogues][max_dialoguelength][10]; // = {0};
-float dialoguecamerarotation[max_dialogues][max_dialoguelength] = {0};
-float dialoguecamerarotation2[max_dialogues][max_dialoguelength] = {0};
-int indialogue = 0;
-int whichdialogue = 0;
-int directing = 0;
-float dialoguetime = 0;
-int dialoguegonethrough[20] = {0};
-
 float smoketex = 0;
 
 float slomospeed = 0;

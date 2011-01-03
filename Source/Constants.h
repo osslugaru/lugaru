@@ -42,6 +42,4 @@ static const char *editortypenames[] = {
   "dead1", "dead2", "dead3", "dead4"
 };
 
-const int max_dialogues = 20;
-const int max_dialoguelength = 20;
 #endif
