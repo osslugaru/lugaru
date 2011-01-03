@@ -52,6 +52,8 @@ void dealloc2(void* param){
 	param=0;
 }
 
+enum {boneconnect, constraint, muscle};
+
 void Muscle::DoConstraint(bool spinny)
 {
 	static XYZ vel;
@@ -712,6 +714,7 @@ void Skeleton::SetJoint(float x, float y, float z, int which, int whichjoint)
 
 void Skeleton::AddMuscle(int attach1,int attach2,float minlength,float maxlength,int type)
 {
+	const int max_muscles = 100; // FIXME: Probably can be dropped
 	if(num_muscles<max_muscles-1&&attach1<num_joints&&attach1>=0&&attach2<num_joints&&attach2>=0&&attach1!=attach2){
 		muscles[num_muscles].parent1=&joints[attach1];
 		muscles[num_muscles].parent2=&joints[attach2];

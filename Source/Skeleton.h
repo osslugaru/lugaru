@@ -142,6 +142,8 @@ protected:
 };
 
 
+const int max_joints = 50;
+
 class Skeleton
 {
 public:

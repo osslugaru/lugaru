@@ -42,10 +42,6 @@ static const char *editortypenames[] = {
   "dead1", "dead2", "dead3", "dead4"
 };
 
-const int boneconnect = 0;
-const int constraint = 1;
-const int muscle = 2;
-
 const int head = 0; // DO NOT CONFLICT WITH ZLIB's variable head
 const int neck = 1;
 const int leftshoulder = 2;
@@ -66,10 +62,6 @@ const int leftfoot = 16;
 const int rightknee = 17;
 const int rightankle = 18;
 const int rightfoot = 19;
-
-const int max_joints = 50;
-const int max_frames = 50;
-const int max_muscles = 100;
 
 const int max_dialogues = 20;
 const int max_dialoguelength = 20;
