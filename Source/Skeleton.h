@@ -34,6 +34,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Sprite.h"
 #include "binio.h"
 
+enum bodyparts {
+  head, neck,
+  leftshoulder,  leftelbow,  leftwrist,  lefthand,
+  rightshoulder, rightelbow, rightwrist, righthand,
+  abdomen, lefthip, righthip, groin,
+  leftknee,  leftankle,  leftfoot,
+  rightknee, rightankle, rightfoot
+};
+
 class Joint
 {
 public:

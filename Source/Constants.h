@@ -42,27 +42,6 @@ static const char *editortypenames[] = {
   "dead1", "dead2", "dead3", "dead4"
 };
 
-const int head = 0; // DO NOT CONFLICT WITH ZLIB's variable head
-const int neck = 1;
-const int leftshoulder = 2;
-const int leftelbow = 3;
-const int leftwrist = 4;
-const int lefthand = 5;
-const int rightshoulder = 6;
-const int rightelbow = 7;
-const int rightwrist = 8;
-const int righthand = 9;
-const int abdomen = 10;
-const int lefthip = 11;
-const int righthip = 12;
-const int groin = 13;
-const int leftknee = 14;
-const int leftankle = 15;
-const int leftfoot = 16;
-const int rightknee = 17;
-const int rightankle = 18;
-const int rightfoot = 19;
-
 const int max_dialogues = 20;
 const int max_dialoguelength = 20;
 
