@@ -920,11 +920,6 @@ void Game::LoadStuff()
 
 	visibleloading=1;
 
-	/*musicvolume[3]=512;
-	PlaySoundEx( music4, samp[music4], NULL, true);
-	OPENAL_SetPaused(channels[music4], false);
-	OPENAL_SetVolume(channels[music4], 512);
-	*/
 	loadtime=0;
 
 	stillloading=1;
