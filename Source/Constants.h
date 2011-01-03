@@ -48,12 +48,5 @@ const int max_dialoguelength = 20;
 const int max_model_vertex = 3000;		// maximum number of vertexs
 const int max_textured_triangle = 3000;		// maximum number of texture-filled triangles in a model
 
-const int normalmode = 0;
-const int motionblurmode = 1;
-const int radialzoommode = 2;
-const int realmotionblurmode = 3;
-const int doublevisionmode = 4;
-const int glowmode = 5;
-
 const int maxplayers = 10;
 #endif

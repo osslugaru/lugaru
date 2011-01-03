@@ -132,6 +132,11 @@ extern bool gamestarted;
 
 extern bool showdamagebar;
 
+enum drawmodes {
+  normalmode, motionblurmode, radialzoommode,
+  realmotionblurmode, doublevisionmode, glowmode,
+};
+
 void Game::flash() { // shouldn't be that way, these should be attributes and Person class should not change rendering.
 	flashr=1;
 	flashg=0;
