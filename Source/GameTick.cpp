@@ -1425,30 +1425,24 @@ void	Game::Setenvironment(int which)
 
 void	Game::Loadlevel(int which){
 	stealthloading=0;
-
-	if(which==0)Loadlevel((char *)":Data:Maps:map1");
-	else if(which==1)Loadlevel((char *)":Data:Maps:map2");
-	else if(which==2)Loadlevel((char *)":Data:Maps:map3");
-	else if(which==3)Loadlevel((char *)":Data:Maps:map4");
-	else if(which==4)Loadlevel((char *)":Data:Maps:map5");
-	else if(which==5)Loadlevel((char *)":Data:Maps:map6");
-	else if(which==6)Loadlevel((char *)":Data:Maps:map7");
-	else if(which==7)Loadlevel((char *)":Data:Maps:map8");
-	else if(which==8)Loadlevel((char *)":Data:Maps:map9");
-	else if(which==9)Loadlevel((char *)":Data:Maps:map10");
-	else if(which==10)Loadlevel((char *)":Data:Maps:map11");
-	else if(which==11)Loadlevel((char *)":Data:Maps:map12");
-	else if(which==12)Loadlevel((char *)":Data:Maps:map13");
-	else if(which==13)Loadlevel((char *)":Data:Maps:map14");
-	else if(which==14)Loadlevel((char *)":Data:Maps:map15");
-	else if(which==15)Loadlevel((char *)":Data:Maps:map16");
-	else if(which==-1){tutoriallevel=-1;Loadlevel((char *)":Data:Maps:tutorial");}
-	else Loadlevel((char *)":Data:Maps:mapsave");
-
 	whichlevel=which;
+
+	if (which == -1)
+	  {
+	    tutoriallevel = -1;
+	    Loadlevel(":Data:Maps:tutorial");
+	  }
+	else if (which >= 0 && which <= 15)
+	  {
+	    char buf[32];
+	    snprintf(buf, 32, ":Data:Maps:map%d", which + 1);
+	    Loadlevel(buf);
+	  }
+	else
+	  Loadlevel(":Data:Maps:mapsave");
 }
 
-void	Game::Loadlevel(char *name){
+void	Game::Loadlevel(const char *name){
 	int i,j,k,l,m;
 	static int oldlevel;
 	int templength;

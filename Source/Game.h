@@ -246,7 +246,7 @@ class Game
 		void TickOnceAfter();
 		void SetUpLighting();
 		void Loadlevel(int which);
-		void Loadlevel(char *name);
+		void Loadlevel(const char *name);
 		void Setenvironment(int which);
 		GLvoid ReSizeGLScene(float fov, float near);
 		int findPathDist(int start,int end);
