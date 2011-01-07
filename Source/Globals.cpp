@@ -81,7 +81,6 @@ int detail = 0;
 FRUSTUM frustum;
 float texdetail = 0;
 float realtexdetail = 0;
-float terraindetail = 0;
 float playerdist = 0;
 Objects objects;
 int slomo = 0;

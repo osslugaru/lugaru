@@ -66,7 +66,6 @@ extern float sps;
 extern float realmultiplier;
 extern int slomo;
 extern bool cellophane;
-extern float terraindetail;
 extern float texdetail;
 
 extern bool osx;
@@ -231,7 +230,6 @@ Boolean SetUp (Game & game)
 	osx = 0;
 	cellophane=0;
 	texdetail=4;
-	terraindetail=2;
 	slomospeed=0.25;
 	slomofreq=8012;
 	numplayers=1;

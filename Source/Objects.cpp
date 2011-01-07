@@ -31,7 +31,6 @@ extern float multiplier;
 extern float gravity;
 extern FRUSTUM frustum;
 extern Terrain terrain;
-extern float terraindetail;
 extern bool foliage;
 extern int detail;
 extern float blurness;
@@ -67,8 +66,8 @@ void Objects::SphereCheckPossible(XYZ *p1,float radius)
 	static int whichpatchx;
 	static int whichpatchz;
 
-	whichpatchx=p1->x/(terrain.size/subdivision*terrain.scale*terraindetail);
-	whichpatchz=p1->z/(terrain.size/subdivision*terrain.scale*terraindetail);
+	whichpatchx=p1->x/(terrain.size/subdivision*terrain.scale);
+	whichpatchz=p1->z/(terrain.size/subdivision*terrain.scale);
 
 	if(whichpatchx>=0&&whichpatchz>=0&&whichpatchx<subdivision&&whichpatchz<subdivision)
 		if(terrain.patchobjectnum[whichpatchx][whichpatchz]>0&&terrain.patchobjectnum[whichpatchx][whichpatchz]<500)
@@ -713,8 +712,8 @@ void Objects::DoShadows()
 					terrainpoint=position[i]+DoRotation(model[i].vertex[j]+model[i].normals[j]*.1,0,rotation[i],0);
 					//terrainpoint.y+=model[i].boundingsphereradius;
 					shadowed[i]=0;
-					patchx=terrainpoint.x/(terrain.size/subdivision*terrain.scale*terraindetail);
-					patchz=terrainpoint.z/(terrain.size/subdivision*terrain.scale*terraindetail);
+					patchx=terrainpoint.x/(terrain.size/subdivision*terrain.scale);
+					patchz=terrainpoint.z/(terrain.size/subdivision*terrain.scale);
 					if(patchx>=0&&patchz>=0&&patchx<subdivision&&patchz<subdivision)
 						if(terrain.patchobjectnum[patchx][patchz])
 							for(k=0;k<terrain.patchobjectnum[patchx][patchz];k++){

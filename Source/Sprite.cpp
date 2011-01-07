@@ -34,7 +34,6 @@ extern Terrain terrain;
 extern Objects objects;
 extern int detail;
 extern XYZ viewerfacing;
-extern float terraindetail;
 extern int bloodtoggle;
 extern XYZ windvector;
 
@@ -329,8 +328,8 @@ void Sprite::Draw()
 					}
 				}
 
-				whichpatchx=sprites[i]->position.x/(terrain.size/subdivision*terrain.scale*terraindetail);
-				whichpatchz=sprites[i]->position.z/(terrain.size/subdivision*terrain.scale*terraindetail);
+				whichpatchx=sprites[i]->position.x/(terrain.size/subdivision*terrain.scale);
+				whichpatchz=sprites[i]->position.z/(terrain.size/subdivision*terrain.scale);
 				if(whichpatchx>0&&whichpatchz>0&&whichpatchx<subdivision&&whichpatchz<subdivision)
 					if(terrain.patchobjectnum[whichpatchx][whichpatchz]){
 						if(!spritehit)

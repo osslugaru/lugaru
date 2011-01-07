@@ -39,7 +39,6 @@ extern Terrain terrain;
 extern int kTextureSize;
 extern float texdetail;
 extern float realtexdetail;
-extern float terraindetail;
 extern float volume;
 extern Objects objects;
 extern int detail;
@@ -814,16 +813,12 @@ void Game::InitGame()
 
 	if(detail==2){
 		texdetail=1;
-		terraindetail=1;
 	}
 	if(detail==1){
 		texdetail=2;
-		terraindetail=1;
 	}
 	if(detail==0){
 		texdetail=4;
-		terraindetail=1;
-		//terraindetail=2;
 	}
 
 	LOG("Initializing sound system...");
@@ -954,16 +949,12 @@ void Game::LoadStuff()
 
 	if(detail==2){
 		texdetail=1;
-		terraindetail=1;
 	}
 	if(detail==1){
 		texdetail=2;
-		terraindetail=1;
 	}
 	if(detail==0){
 		texdetail=4;
-		terraindetail=1;
-		//terraindetail=2;
 	}
 
 	realtexdetail=texdetail;
@@ -1111,7 +1102,7 @@ void Game::LoadStuff()
 	gravity=-10;
 
 	texscale=.2/megascale/viewdistdetail;
-	terrain.scale=3*megascale*terraindetail*viewdistdetail;
+	terrain.scale=3*megascale*viewdistdetail;
 
 	viewer.x=terrain.size/2*terrain.scale;
 	viewer.z=terrain.size/2*terrain.scale;

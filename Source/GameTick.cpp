@@ -63,7 +63,6 @@ extern Light light;
 extern float texdetail;
 extern GLubyte bloodText[512*512*3];
 extern GLubyte wolfbloodText[512*512*3];
-extern float terraindetail;
 extern float camerashake;
 extern float woozy;
 extern float blackout;
@@ -7188,8 +7187,8 @@ void	Game::Tick()
 
 							for(k=0;k<numplayers;k++){
 								player[k].DoAnimations();
-								player[k].whichpatchx=player[k].coords.x/(terrain.size/subdivision*terrain.scale*terraindetail);
-								player[k].whichpatchz=player[k].coords.z/(terrain.size/subdivision*terrain.scale*terraindetail);
+								player[k].whichpatchx=player[k].coords.x/(terrain.size/subdivision*terrain.scale);
+								player[k].whichpatchz=player[k].coords.z/(terrain.size/subdivision*terrain.scale);
 							}
 
 							objects.DoStuff();

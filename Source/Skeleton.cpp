@@ -31,7 +31,6 @@ extern Skeleton testskeleton;
 extern Terrain terrain;
 extern Objects objects;
 extern int environment;
-extern float terraindetail;
 extern float camerashake;
 extern bool freeze;
 extern int detail;
@@ -194,8 +193,8 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 	if(free){
 		freetime+=multiplier;
 
-		whichpatchx=coords->x/(terrain.size/subdivision*terrain.scale*terraindetail);
-		whichpatchz=coords->z/(terrain.size/subdivision*terrain.scale*terraindetail);
+		whichpatchx=coords->x/(terrain.size/subdivision*terrain.scale);
+		whichpatchz=coords->z/(terrain.size/subdivision*terrain.scale);
 
 		terrainlight=*coords;
 		objects.SphereCheckPossible(&terrainlight, 1);

@@ -46,7 +46,6 @@ extern bool osx;
 extern bool autoslomo;
 extern float camerashake;
 extern float woozy;
-extern float terraindetail;
 extern float viewdistance;
 extern float blackout;
 extern int difficulty;
@@ -118,8 +117,8 @@ void	Weapons::DoStuff(){
 		if(owner[i]==-1&&(velocity[i].x||velocity[i].y||velocity[i].z)&&!physics[i]){
 			position[i]+=velocity[i]*multiplier;
 			tippoint[i]+=velocity[i]*multiplier;
-			whichpatchx=position[i].x/(terrain.size/subdivision*terrain.scale*terraindetail);
-			whichpatchz=position[i].z/(terrain.size/subdivision*terrain.scale*terraindetail);
+			whichpatchx=position[i].x/(terrain.size/subdivision*terrain.scale);
+			whichpatchz=position[i].z/(terrain.size/subdivision*terrain.scale);
 			if(whichpatchx>0&&whichpatchz>0&&whichpatchx<subdivision&&whichpatchz<subdivision)
 				if(terrain.patchobjectnum[whichpatchx][whichpatchz]){
 					for(j=0;j<terrain.patchobjectnum[whichpatchx][whichpatchz];j++){
@@ -355,8 +354,8 @@ void	Weapons::DoStuff(){
 
 
 				//Object collisions
-				whichpatchx=(position[i].x)/(terrain.size/subdivision*terrain.scale*terraindetail);
-				whichpatchz=(position[i].z)/(terrain.size/subdivision*terrain.scale*terraindetail);
+				whichpatchx=(position[i].x)/(terrain.size/subdivision*terrain.scale);
+				whichpatchz=(position[i].z)/(terrain.size/subdivision*terrain.scale);
 				if(whichpatchx>0&&whichpatchz>0&&whichpatchx<subdivision&&whichpatchz<subdivision)
 					if(terrain.patchobjectnum[whichpatchx][whichpatchz]){
 						for(j=0;j<terrain.patchobjectnum[whichpatchx][whichpatchz];j++){

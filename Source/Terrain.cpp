@@ -31,7 +31,7 @@ extern float texscale;
 extern Light light;
 extern float multiplier;
 extern FRUSTUM frustum;
-extern float texdetail,terraindetail;
+extern float texdetail;
 extern int detail;
 extern bool decals;
 extern float blurness;
@@ -378,7 +378,6 @@ bool Terrain::load(const char *fileName)
 	static float patch_size;
 
 	float temptexdetail=texdetail;
-	texdetail=terraindetail;
 	//LoadTGA( fileName );
 
 	// Fixing filename so that it works with its own os
@@ -429,7 +428,7 @@ bool Terrain::load(const char *fileName)
 
 		for(i=0;i<size;i++){
 			for(j=0;j<size;j++){
-				heightmap[size-1-i][j]=(float)((texture.data[(i+(j*size))*texture.bpp/8]))/5/terraindetail;
+				heightmap[size-1-i][j]=(float)((texture.data[(i+(j*size))*texture.bpp/8]))/5;
 			}
 		}
 
@@ -1154,10 +1153,10 @@ void Terrain::AddObject(XYZ where, float radius, int id)
 					points[3].x=(size/subdivision)*i;
 					points[3].z=(size/subdivision)*(j+1);
 					points[3].y=heightmap[(int)points[3].x][(int)points[3].z];
-					points[0]*=scale*terraindetail;
-					points[1]*=scale*terraindetail;
-					points[2]*=scale*terraindetail;
-					points[3]*=scale*terraindetail;
+					points[0]*=scale;
+					points[1]*=scale;
+					points[2]*=scale;
+					points[3]*=scale;
 					if(!done&&where.x+radius>points[0].x&&where.x-radius<points[2].x&&where.z+radius>points[0].z&&where.z-radius<points[2].z){
 						patchobjects[i][j][patchobjectnum[i][j]]=id;
 						patchobjectnum[i][j]++;

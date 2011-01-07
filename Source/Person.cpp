@@ -48,7 +48,6 @@ extern bool osx;
 extern bool autoslomo;
 extern float camerashake;
 extern float woozy;
-extern float terraindetail;
 extern float viewdistance;
 extern float blackout;
 extern int difficulty;
@@ -1324,8 +1323,8 @@ void Person::RagDoll(bool checkcollision){
 				skeleton.joints[j].position-=average;
 			}
 
-			whichpatchx=coords.x/(terrain.size/subdivision*terrain.scale*terraindetail);
-			whichpatchz=coords.z/(terrain.size/subdivision*terrain.scale*terraindetail);
+			whichpatchx=coords.x/(terrain.size/subdivision*terrain.scale);
+			whichpatchz=coords.z/(terrain.size/subdivision*terrain.scale);
 			if(terrain.patchobjectnum[whichpatchx][whichpatchz])
 				for(l=0;l<terrain.patchobjectnum[whichpatchx][whichpatchz];l++){
 					i=terrain.patchobjects[whichpatchx][whichpatchz][l];
