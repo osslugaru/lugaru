@@ -1332,9 +1332,7 @@ void	Game::Setenvironment(int which)
 			":Data:Textures:Skybox(snow):Back.jpg",
 			":Data:Textures:Skybox(snow):Right.jpg",
 			":Data:Textures:Skybox(snow):Up.jpg",
-			":Data:Textures:Skybox(snow):Down.jpg",
-			":Data:Textures:Skybox(snow):Cloud.jpg",
-			":Data:Textures:Skybox(snow):Reflect.jpg");
+			":Data:Textures:Skybox(snow):Down.jpg");
 
 
 
@@ -1373,9 +1371,7 @@ void	Game::Setenvironment(int which)
 			":Data:Textures:Skybox(sand):Back.jpg",
 			":Data:Textures:Skybox(sand):Right.jpg",
 			":Data:Textures:Skybox(sand):Up.jpg",
-			":Data:Textures:Skybox(sand):Down.jpg",
-			":Data:Textures:Skybox(sand):Cloud.jpg",
-			":Data:Textures:Skybox(sand):Reflect.jpg");
+			":Data:Textures:Skybox(sand):Down.jpg");
 
 
 
@@ -1413,9 +1409,7 @@ void	Game::Setenvironment(int which)
 			":Data:Textures:Skybox(grass):Back.jpg",
 			":Data:Textures:Skybox(grass):Right.jpg",
 			":Data:Textures:Skybox(grass):Up.jpg",
-			":Data:Textures:Skybox(grass):Down.jpg",
-			":Data:Textures:Skybox(grass):Cloud.jpg",
-			":Data:Textures:Skybox(grass):Reflect.jpg");
+			":Data:Textures:Skybox(grass):Down.jpg");
 
 
 
@@ -4149,7 +4143,6 @@ void	Game::Tick()
 
 
 						dialoguetime+=multiplier;
-						skybox.cloudmove+=multiplier;
 						hawkrotation+=multiplier*25;
 						realhawkcoords=0;
 						realhawkcoords.x=25;

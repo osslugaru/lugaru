@@ -29,13 +29,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class SkyBox{
 public:
-	GLuint 				front,left,back,right,up,down,cloud,reflect;
-	float cloudmove;
+	GLuint front, left, back, right, up, down;
 
-	bool load(const char *ffront,const char *fleft,const char *fback,const char *fright,const char *fup,const char *fdown,const char *fcloud,const char *freflect);
+	void load(const char *ffront, const char *fleft, const char *fback,
+		  const char *fright, const char *fup,   const char *fdown);
 	void draw();
 
-	SkyBox();
+	SkyBox(): front(0), left(0), back(0), right(0), up(0), down(0) {}
 	~SkyBox();
 };
 
