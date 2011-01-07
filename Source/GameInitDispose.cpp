@@ -70,7 +70,6 @@ extern int whichjointendarray[26];
 extern int difficulty;
 extern float tintr,tintg,tintb;
 extern float slomospeed;
-extern char mapname[256];
 extern bool gamestarted;
 
 extern int numdialogues;

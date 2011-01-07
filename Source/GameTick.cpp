@@ -83,7 +83,6 @@ extern bool autoslomo;
 extern bool keyboardfrozen;
 extern int netdatanew;
 extern bool loadingstuff;
-extern char mapname[256];
 extern XYZ windvector;
 extern bool debugmode;
 static int music1;
@@ -216,9 +215,7 @@ static void ch_quit(Game *game, const char *args)
 
 static void ch_map(Game *game, const char *args)
 {
-  char buf[64];
-  snprintf(buf, 63, ":Data:Maps:%s", args);
-  game->Loadlevel(buf);
+  game->Loadlevel(args);
   game->whichlevel = -2;
   campaign = 0;
 }
@@ -1430,16 +1427,16 @@ void	Game::Loadlevel(int which){
 	if (which == -1)
 	  {
 	    tutoriallevel = -1;
-	    Loadlevel(":Data:Maps:tutorial");
+	    Loadlevel("tutorial");
 	  }
 	else if (which >= 0 && which <= 15)
 	  {
 	    char buf[32];
-	    snprintf(buf, 32, ":Data:Maps:map%d", which + 1);
+	    snprintf(buf, 32, "map%d", which + 1);
 	    Loadlevel(buf);
 	  }
 	else
-	  Loadlevel(":Data:Maps:mapsave");
+	  Loadlevel("mapsave");
 }
 
 void	Game::Loadlevel(const char *name){
@@ -1448,6 +1445,8 @@ void	Game::Loadlevel(const char *name){
 	int templength;
 	float lamefloat;
 	int lameint;
+	static const char *pfx = ":Data:Maps:";
+	char *buf;
 
 	float headprop,legprop,armprop,bodyprop;
 
@@ -1480,7 +1479,9 @@ void	Game::Loadlevel(const char *name){
 	pause_sound(stream_firesound);
 
 	// Change the map filename into something that is os specific
-	char *FixedFN = ConvertFileName(name);
+	buf = (char*) alloca(strlen(pfx) + strlen(name) + 1);
+	sprintf(buf, "%s%s", pfx, name);
+	const char *FixedFN = ConvertFileName(buf);
 
 	int mapvers;
 	FILE			*tfile;
@@ -2569,25 +2570,10 @@ void	Game::Tick()
 				targetlevel=7;
 				if(firstload) TickOnceAfter();
 				else LoadStuff();
-				for(i=0;i<255;i++){
-					mapname[i]='\0';
-				}
-				mapname[0]=':';
-				mapname[1]='D';
-				mapname[2]='a';
-				mapname[3]='t';
-				mapname[4]='a';
-				mapname[5]=':';
-				mapname[6]='M';
-				mapname[7]='a';
-				mapname[8]='p';
-				mapname[9]='s';
-				mapname[10]=':';
-				strcat(mapname,campaignmapname[campaignchoicewhich[selected-7-accountactive->getCampaignChoicesMade()]]);
 				whichchoice=selected-7-accountactive->getCampaignChoicesMade();
 				visibleloading=1;
 				stillloading=1;
-				Loadlevel(mapname);
+				Loadlevel(campaignmapname[campaignchoicewhich[selected-7-accountactive->getCampaignChoicesMade()]]);
 				//Loadlevel(campaignmapname[levelorder[selected-7]]);
 				campaign=1;
 				mainmenu=0;
@@ -7564,22 +7550,7 @@ void	Game::TickOnceAfter(){
 
 					fireSound(firestartsound);
 
-					for(i=0;i<255;i++){
-						mapname[i]='\0';
-					}
-					mapname[0]=':';
-					mapname[1]='D';
-					mapname[2]='a';
-					mapname[3]='t';
-					mapname[4]='a';
-					mapname[5]=':';
-					mapname[6]='M';
-					mapname[7]='a';
-					mapname[8]='p';
-					mapname[9]='s';
-					mapname[10]=':';
-					strcat(mapname,campaignmapname[levelorder[accountactive->getCampaignChoicesMade()]]);//[campaignchoicewhich[whichchoice]]);
-					Loadlevel(mapname);
+					Loadlevel(campaignmapname[levelorder[accountactive->getCampaignChoicesMade()]]);
 
 					fireSound();
 
@@ -7683,29 +7654,11 @@ void	Game::TickOnceAfter(){
 					loading=2;
 					loadtime=0;
 					targetlevel=7;
-					//if(firstload)TickOnceAfter();
 					if(!firstload)LoadStuff();
-					//else {
-					for(i=0;i<255;i++){
-						mapname[i]='\0';
-					}
-					mapname[0]=':';
-					mapname[1]='D';
-					mapname[2]='a';
-					mapname[3]='t';
-					mapname[4]='a';
-					mapname[5]=':';
-					mapname[6]='M';
-					mapname[7]='a';
-					mapname[8]='p';
-					mapname[9]='s';
-					mapname[10]=':';
-
-					strcat(mapname,campaignmapname[campaignchoicewhich[0]]);
 					whichchoice=0;
 					visibleloading=1;
 					stillloading=1;
-					Loadlevel(mapname);
+					Loadlevel(campaignmapname[campaignchoicewhich[0]]);
 					campaign=1;
 					mainmenu=0;
 					gameon=1;

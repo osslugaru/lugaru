@@ -109,7 +109,6 @@ int flashdelay = 0;
 bool vblsync = 0;
 float motionbluramount = 0;
 bool keyboardfrozen = 0;
-char mapname[256] = {0};
 bool loadingstuff = 0;
 bool stillloading = 0;
 bool showpoints = 0;
