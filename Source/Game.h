@@ -225,7 +225,6 @@ class Game
 		int consoleselected;
 		//int togglekey[140];
 		//float togglekeydelay[140];
-		bool registernow;
 		bool autocam;
 
 		unsigned short crouchkey,jumpkey,forwardkey,chatkey,backkey,leftkey,rightkey,drawkey,throwkey,attackkey;

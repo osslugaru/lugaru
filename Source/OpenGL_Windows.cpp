@@ -681,7 +681,6 @@ int main(int argc, char **argv)
 
 	try
 	{
-		bool regnow = false;
 		{
 			Game game;
 			pgame = &game;
@@ -740,7 +739,6 @@ int main(int argc, char **argv)
 				}
 			}
 
-			regnow = game.registernow;
 		}
 		pgame = 0;
 

@@ -200,7 +200,6 @@ Game::Game()
 	consoleselected = 0;
 //	memset(togglekey, 0, sizeof(togglekey));
 //	memset(togglekeydelay, 0, sizeof(togglekeydelay));
-	registernow = 0;
 	autocam = 0;
 
 	crouchkey = 0,jumpkey = 0,forwardkey = 0,chatkey = 0,backkey = 0,leftkey = 0,rightkey = 0,drawkey = 0,throwkey = 0,attackkey = 0;
