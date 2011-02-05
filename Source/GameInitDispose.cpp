@@ -141,7 +141,7 @@ void Game::Dispose()
 	sprintf (mapname, ":Data:Users");
 
 	FILE			*tfile;
-	tfile=fopen( ConvertFileName(mapname), "wb" );
+	tfile=fopen( ConvertFileName(mapname, "wb"), "wb" );
 	if (tfile)
 	{
 		fpackf(tfile, "Bi", numaccounts);
