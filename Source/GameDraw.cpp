@@ -2031,11 +2031,11 @@ int Game::DrawGLScene(StereoSide side)
 
 				levelorder[0]=0;
 				levelvisible[0]=1;
-				for(i=0;i<accountactive->getCampaignChoicesMade();i++){
+				for(i=0;i<(accountactive?accountactive->getCampaignChoicesMade():0);i++){
 					levelorder[i+1]=campaignnextlevel[levelorder[i]][accountactive->getCampaignChoice(i)];
 					levelvisible[levelorder[i+1]]=1;
 				}
-				int whichlevelstart = accountactive->getCampaignChoicesMade()-1;
+				int whichlevelstart = (accountactive?accountactive->getCampaignChoicesMade():0)-1;
 				if(whichlevelstart<0){
 					accountactive->setCampaignScore(0);
 					accountactive->resetFasttime();
@@ -2345,7 +2345,7 @@ int Game::DrawGLScene(StereoSide side)
 				movey[9]=0;
 			}
 			if(mainmenu==5){			
-				nummenuitems=7+accountactive->getCampaignChoicesMade()+campaignchoicenum;
+				nummenuitems=7+(accountactive?accountactive->getCampaignChoicesMade():0)+campaignchoicenum;
 
 				sprintf (menustring[0], "%s",accountactive->getName());
 				startx[0]=5;
@@ -2405,8 +2405,8 @@ int Game::DrawGLScene(StereoSide side)
 				movex[6]=0;
 				movey[6]=0;
 
-				if(accountactive->getCampaignChoicesMade())
-					for(i=0;i<accountactive->getCampaignChoicesMade();i++){
+				if((accountactive?accountactive->getCampaignChoicesMade():0))
+					for(i=0;i<(accountactive?accountactive->getCampaignChoicesMade():0);i++){
 						sprintf (menustring[7+i], "%s", campaigndescription[levelorder[i]]);
 						startx[7+i]=30+120+campaignlocationx[levelorder[i]]*400/512;
 						starty[7+i]=30+30+(512-campaignlocationy[levelorder[i]])*400/512;
@@ -2417,10 +2417,10 @@ int Game::DrawGLScene(StereoSide side)
 					}
 
 					if(campaignchoicenum>0)
-						for(i=accountactive->getCampaignChoicesMade();i<accountactive->getCampaignChoicesMade()+campaignchoicenum;i++){
+						for(i=(accountactive?accountactive->getCampaignChoicesMade():0);i<(accountactive?accountactive->getCampaignChoicesMade():0)+campaignchoicenum;i++){
 							sprintf (menustring[7+i], "%s", campaigndescription[levelorder[i]]);
-							startx[7+i]=30+120+campaignlocationx[campaignchoicewhich[i-(accountactive->getCampaignChoicesMade())]]*400/512;
-							starty[7+i]=30+30+(512-campaignlocationy[campaignchoicewhich[i-(accountactive->getCampaignChoicesMade())]])*400/512;
+							startx[7+i]=30+120+campaignlocationx[campaignchoicewhich[i-((accountactive?accountactive->getCampaignChoicesMade():0))]]*400/512;
+							starty[7+i]=30+30+(512-campaignlocationy[campaignchoicewhich[i-((accountactive?accountactive->getCampaignChoicesMade():0))]])*400/512;
 							endx[7+i]=startx[7+i]+10;
 							endy[7+i]=starty[7+i]+10;
 							movex[7+i]=0;
@@ -3185,9 +3185,9 @@ int Game::DrawGLScene(StereoSide side)
 										//float linestartx,lineendx,linestarty,lineendy,offsetx,offsety;
 										linestart.x=(startx[j]+endx[j])/2;
 										linestart.y=(starty[j]+endy[j])/2;
-										if(j>=6+accountactive->getCampaignChoicesMade()){
-											linestart.x=(startx[6+accountactive->getCampaignChoicesMade()]+endx[6+accountactive->getCampaignChoicesMade()])/2;
-											linestart.y=(starty[6+accountactive->getCampaignChoicesMade()]+endy[6+accountactive->getCampaignChoicesMade()])/2;
+										if(j>=6+(accountactive?accountactive->getCampaignChoicesMade():0)){
+											linestart.x=(startx[6+(accountactive?accountactive->getCampaignChoicesMade():0)]+endx[6+(accountactive?accountactive->getCampaignChoicesMade():0)])/2;
+											linestart.y=(starty[6+(accountactive?accountactive->getCampaignChoicesMade():0)]+endy[6+(accountactive?accountactive->getCampaignChoicesMade():0)])/2;
 										}
 										lineend.x=(startx[j+1]+endx[j+1])/2;
 										lineend.y=(starty[j+1]+endy[j+1])/2;
@@ -3198,7 +3198,7 @@ int Game::DrawGLScene(StereoSide side)
 										Normalise(&offset);
 										glDisable(GL_TEXTURE_2D);							
 
-										if(j<6+accountactive->getCampaignChoicesMade()){
+										if(j<6+(accountactive?accountactive->getCampaignChoicesMade():0)){
 											glColor4f(0.5,0,0,1);
 											endsize=.5;
 										} else {
@@ -3210,7 +3210,7 @@ int Game::DrawGLScene(StereoSide side)
 										linestart+=fac*4*startsize;
 										lineend-=fac*4*endsize;
 
-										if(!(j>7+accountactive->getCampaignChoicesMade()+campaignchoicenum)){
+										if(!(j>7+(accountactive?accountactive->getCampaignChoicesMade():0)+campaignchoicenum)){
 											glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 											glPushMatrix();
 												glBegin(GL_QUADS);
@@ -3233,8 +3233,8 @@ int Game::DrawGLScene(StereoSide side)
 									else glBindTexture( GL_TEXTURE_2D, Mapcircletexture);
 									glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 									glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-									if(j-7<accountactive->getCampaignChoicesMade())glColor4f(0.5,0,0,1);
-									if(j-7>=accountactive->getCampaignChoicesMade())glColor4f(1,0,0,1);
+									if(j-7<(accountactive?accountactive->getCampaignChoicesMade():0))glColor4f(0.5,0,0,1);
+									if(j-7>=(accountactive?accountactive->getCampaignChoicesMade():0))glColor4f(1,0,0,1);
 									if(j==6)glColor4f(1,1,1,1);
 									XYZ midpoint;
 									float itemsize;
@@ -3242,8 +3242,8 @@ int Game::DrawGLScene(StereoSide side)
 									midpoint=0;
 									midpoint.x=(startx[j]+endx[j])/2;
 									midpoint.y=(starty[j]+endy[j])/2;
-									if(j>6&&(j-7<accountactive->getCampaignChoicesMade()))itemsize*=.5;
-									if(!(j-7>accountactive->getCampaignChoicesMade()+campaignchoicenum))
+									if(j>6&&(j-7<(accountactive?accountactive->getCampaignChoicesMade():0)))itemsize*=.5;
+									if(!(j-7>(accountactive?accountactive->getCampaignChoicesMade():0)+campaignchoicenum))
 									{
 										glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 										glPushMatrix();
@@ -3288,7 +3288,7 @@ int Game::DrawGLScene(StereoSide side)
 						glPopMatrix();
 						glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 
-						if(j-7>=accountactive->getCampaignChoicesMade()){
+						if(j-7>=(accountactive?accountactive->getCampaignChoicesMade():0)){
 							text.glPrintOutlined(0.9,0,0,startx[j]+10,starty[j]-4,menustring[j],0,0.6,640,480);
 							glDisable(GL_DEPTH_TEST);
 						}
