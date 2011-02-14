@@ -1406,14 +1406,14 @@ void Game::Loadlevel(int which){
 	stealthloading=0;
 	whichlevel=which;
 
-	if (which == -1) {
+	if(which == -1){
 	    tutoriallevel = -1;
 	    Loadlevel("tutorial");
-	} else if (which >= 0 && which <= 15) {
+	}else if(which >= 0 && which <= 15){
 	    char buf[32];
 	    snprintf(buf, 32, "map%d", which + 1);
 	    Loadlevel(buf);
-	} else
+	}else
 	    Loadlevel("mapsave");
 }
 
