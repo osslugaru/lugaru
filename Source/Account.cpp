@@ -54,7 +54,8 @@ Account* Account::add(string name) {
 }
 
 Account* Account::get(int i) {
-	if(i<accounts.size()) {
+	
+	if((i>=0)&&(i<accounts.size())) {
 		return accounts[i];
 	} else
 		return NULL;
