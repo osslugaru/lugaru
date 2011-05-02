@@ -54,13 +54,6 @@ static bool save_png(const char * fname);
 
 #include "openal_wrapper.h"
 
-// ADDED GWC
-#ifdef _MSC_VER
-#pragma comment(lib, "opengl32.lib")
-#pragma comment(lib, "glu32.lib")
-#pragma comment(lib, "glaux.lib")
-#endif
-
 extern float multiplier;
 extern float sps;
 extern float realmultiplier;
