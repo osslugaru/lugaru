@@ -28,7 +28,7 @@ void DefaultSettings(Game &game) {
 	velocityblur=0;
 	volume = 0.8f;
 	ambientsound=1;
-	vblsync=0;
+	vblsync=1;
 	debugmode=0;
 	
 	game.crouchkey=SDLK_LSHIFT;

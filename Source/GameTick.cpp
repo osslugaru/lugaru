@@ -106,7 +106,6 @@ extern bool texttoggle;
 extern bool alwaysblur;
 extern float gamespeed;
 extern bool decals;
-extern bool vblsync;
 extern bool immediate;
 extern bool velocityblur;
 extern float tintr,tintg,tintb;
