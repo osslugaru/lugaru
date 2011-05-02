@@ -88,6 +88,10 @@ GL_FUNC(void,glVertexPointer,(GLint size, GLenum type, GLsizei stride, const GLv
 GL_FUNC(void,glViewport,(GLint x, GLint y, GLsizei width, GLsizei height),(x,y,width,height),)
 GL_FUNC(void,glLockArraysEXT,(GLint first, GLsizei count),(first,count),)
 GL_FUNC(void,glUnlockArraysEXT,(void),(),)
+GL_FUNC(void,glStencilFunc,(GLenum func, GLint ref, GLuint mask),(func,ref,mask),)
+GL_FUNC(void,glStencilOp,(GLenum fail, GLenum zfail, GLenum zpass),(fail,zfail,zpass),)
+GL_FUNC(void,glClearStencil,(GLint s),(s),)
+GL_FUNC(void,glLineWidth,(GLfloat width),(width),)
 
 // stuff GLU needs...
 GL_FUNC(void,glGetIntegerv,(GLenum pname, GLint *params),(pname,params),)
