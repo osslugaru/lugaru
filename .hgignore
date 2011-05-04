@@ -15,3 +15,5 @@ CMakeCache.txt
 Makefile
 cscope.*
 tags
+Data/Users
+Data/config.txt
