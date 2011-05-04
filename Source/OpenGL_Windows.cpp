@@ -296,7 +296,9 @@ Boolean SetUp (Game & game)
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 1);
+#if SDL_VERSION_ATLEAST(1, 2, 10)
     SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, vblsync);
+#endif
     
     if (SDL_SetVideoMode(kContextWidth, kContextHeight, 0, sdlflags) == NULL)
     {
