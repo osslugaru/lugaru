@@ -84,13 +84,8 @@ Game::Game()
 //	SkyBox skybox;
 
 	cameramode = 0;
-	cameratogglekeydown = 0;
-	chattogglekeydown = 0;
 	olddrawmode = 0;
 	drawmode = 0;
-	drawmodetogglekeydown = 0;
-	explodetogglekeydown = 0;
-	detailtogglekeydown = 0;
 	firstload = 0;
 	oldbutton = 0;
 
@@ -154,10 +149,6 @@ Game::Game()
 //	XYZ cameraloc;
 	cameradist = 0;
 
-	envtogglekeydown = 0;
-	slomotogglekeydown = 0;
-	texturesizetogglekeydown = 0;
-	freezetogglekeydown = 0;
 	drawtoggle = 0;
 
 	editorenabled = 0;
@@ -194,12 +185,9 @@ Game::Game()
 	displayblink = 0;
 	displayselected = 0;
 	consolekeydown = 0;
-	consoletogglekeydown = 0;
 	consoleblinkdelay = 0;
 	consoleblink = 0;
 	consoleselected = 0;
-//	memset(togglekey, 0, sizeof(togglekey));
-//	memset(togglekeydelay, 0, sizeof(togglekeydelay));
 	autocam = 0;
 
 	crouchkey = 0,jumpkey = 0,forwardkey = 0,chatkey = 0,backkey = 0,leftkey = 0,rightkey = 0,drawkey = 0,throwkey = 0,attackkey = 0;

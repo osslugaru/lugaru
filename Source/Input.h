@@ -34,11 +34,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 /**> FUNCTION PROTOTYPES <**/
 class Input {
 	public:
+		static void Tick();
 		static bool isKeyDown(int k);
+		static bool isKeyPressed(int k);
 		static const char* keyToChar(unsigned short which);
 		static void setKeyFor(Game* g);
 		static unsigned short 	CharToKey(const char* which);
-		static Boolean Button();
+		static Boolean MouseClicked();
 };
 
 #endif

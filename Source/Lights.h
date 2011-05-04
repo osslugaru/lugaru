@@ -34,6 +34,15 @@ public:
 	GLfloat ambient[3];
 	int attach;
 	XYZ location;
+    inline void setColors(GLfloat cr, GLfloat cg, GLfloat cb,
+            GLfloat ar, GLfloat ag, GLfloat ab){
+        color[0]=cr;
+        color[1]=cg;
+        color[2]=cb;
+        ambient[0]=ar;
+        ambient[1]=ag;
+        ambient[2]=ab;
+    }
 };
 
 void SetUpMainLight(Light* whichsource, int whichlight, float ambientr, float ambientg, float ambientb);

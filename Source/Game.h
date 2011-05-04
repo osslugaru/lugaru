@@ -118,13 +118,8 @@ class Game
 		float rotation,rotation2;
 		SkyBox skybox;
 		bool cameramode;
-		bool cameratogglekeydown;
-		bool chattogglekeydown;
 		int olddrawmode;
 		int drawmode;
-		bool drawmodetogglekeydown;
-		bool explodetogglekeydown;
-		bool detailtogglekeydown;
 		bool firstload;
 		bool oldbutton;
 
@@ -180,10 +175,6 @@ class Game
 		XYZ cameraloc;
 		float cameradist;
 
-		bool envtogglekeydown;
-		bool slomotogglekeydown;
-		bool texturesizetogglekeydown;
-		bool freezetogglekeydown;
 		int drawtoggle;
 
 		bool editorenabled;
@@ -219,12 +210,9 @@ class Game
 		bool displayblink;
 		int displayselected;
 		bool consolekeydown;
-		bool consoletogglekeydown;
 		float consoleblinkdelay;
 		bool consoleblink;
 		int consoleselected;
-		//int togglekey[140];
-		//float togglekeydelay[140];
 		bool autocam;
 
 		unsigned short crouchkey,jumpkey,forwardkey,chatkey,backkey,leftkey,rightkey,drawkey,throwkey,attackkey;
@@ -241,6 +229,16 @@ class Game
 		void Dispose();
 		int DrawGLScene(StereoSide side);
 		void DrawGL();
+        //factored from Tick() -sf17k
+		void MenuTick();
+        void doTutorial();
+        void doDebugKeys();
+		void doJumpReversals();
+		void doAerialAcrobatics();
+		void doAttacks();
+		void doPlayerCollisions();
+		void doAI(int i);
+        //end factored
 		void Tick();
 		void TickOnce();
 		void TickOnceAfter();
@@ -296,7 +294,6 @@ class Game
 		void inputText(char* str, int* charselected, int* nb_chars);
 		void flash();
 		bool waiting;
-		bool mainmenutogglekeydown;
 		//int mainmenu;
 		Account* accountactive;
 };

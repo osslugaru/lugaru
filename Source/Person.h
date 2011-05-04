@@ -179,7 +179,6 @@ struct Person
 		float turnspeed;
 		
 		int aitype;
-		int aitarget;
 		float aiupdatedelay;
 		float losupdatedelay;
 		int ally;

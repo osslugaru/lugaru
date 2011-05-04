@@ -25,13 +25,33 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern bool keyboardfrozen;
 
+bool keyDown[SDLK_LAST+6];
+bool keyPressed[SDLK_LAST+6];
+
+void Input::Tick(){
+    SDL_PumpEvents();
+	Uint8 *keyState = SDL_GetKeyState(NULL);
+    for(int i=0;i<SDLK_LAST;i++){
+        keyPressed[i] = !keyDown[i]&&keyState[i];
+        keyDown[i] = keyState[i];
+    }
+    Uint8 mb = SDL_GetMouseState(NULL,NULL);
+    for(int i=1;i<6;i++){
+        keyPressed[SDLK_LAST+i] = !keyDown[SDLK_LAST+i]&&(mb&SDL_BUTTON(i));
+        keyDown[SDLK_LAST+i] = (mb&SDL_BUTTON(i));
+    }
+}
+
 bool Input::isKeyDown(int k) {
-	if(keyboardfrozen)return 0; // vraiment utile? à vérifier
-	Uint8 *keystate = SDL_GetKeyState(NULL);
-	if(k<SDLK_LAST)
-		return keystate[k];
-	else
-		return SDL_GetMouseState(NULL,NULL)&SDL_BUTTON(k-SDLK_LAST);
+	if(keyboardfrozen||k>=SDLK_LAST+6) // vraiment utile? à vérifier
+        return false;
+    return keyDown[k];
+}
+
+bool Input::isKeyPressed(int k) {
+	if(keyboardfrozen||k>=SDLK_LAST+6)
+        return false;
+    return keyPressed[k];
 }
 
 const char* Input::keyToChar(unsigned short i) {
@@ -47,8 +67,7 @@ const char* Input::keyToChar(unsigned short i) {
 		return "unknown";
 }
 
-unsigned short 	Input::CharToKey(const char* which)
-{
+unsigned short 	Input::CharToKey(const char* which) {
 	for(unsigned short i=0;i<SDLK_LAST;i++) {
 		if(!strcasecmp(which,SDL_GetKeyName(SDLKey(i))))
 			return i;
@@ -62,7 +81,6 @@ unsigned short 	Input::CharToKey(const char* which)
 	return SDLK_LAST;
 }
 
-Boolean Input::Button()
-{
-    return SDL_GetMouseState(NULL,NULL)&SDL_BUTTON(SDL_BUTTON_LEFT);
+Boolean Input::MouseClicked(){
+    return isKeyPressed(SDLK_LAST+SDL_BUTTON_LEFT);
 }

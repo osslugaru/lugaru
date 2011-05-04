@@ -141,11 +141,11 @@ bool LoadSettings(Game &game) {
 	printf("Loading config\n");
 	while(!ipstream.eof()) {
 		ipstream.getline( setting, sizeof(setting) );
-		printf("setting : %s\n",setting);
 		
 		// skip blank lines
 		// assume lines starting with spaces are all blank
 		if ( strlen(setting) == 0 || setting[0] == ' ' || setting[0] == '\t') continue;
+		printf("setting : %s\n",setting);
 
 		if ( ipstream.eof() || ipstream.fail() ) {
 			fprintf(stderr, "Error reading config file: Got setting name '%s', but value can't be read\n", setting);
