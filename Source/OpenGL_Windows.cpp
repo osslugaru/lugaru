@@ -188,24 +188,95 @@ bool cmdline(const char *cmd)
 
 // OpenGL Drawing
 
-static void sdlEventProc(const SDL_Event &e, Game &game)
-{
-    switch(e.type)
-	{
+void initGL(){
+	glClear( GL_COLOR_BUFFER_BIT );
+	swap_gl_buffers();
+
+	// clear all states
+	glDisable( GL_ALPHA_TEST);
+	glDisable( GL_BLEND);
+	glDisable( GL_DEPTH_TEST);
+	//	glDisable( GL_DITHER);
+	glDisable( GL_FOG);
+	glDisable( GL_LIGHTING);
+	glDisable( GL_LOGIC_OP);
+	glDisable( GL_TEXTURE_1D);
+	glDisable( GL_TEXTURE_2D);
+	glPixelTransferi( GL_MAP_COLOR, GL_FALSE);
+	glPixelTransferi( GL_RED_SCALE, 1);
+	glPixelTransferi( GL_RED_BIAS, 0);
+	glPixelTransferi( GL_GREEN_SCALE, 1);
+	glPixelTransferi( GL_GREEN_BIAS, 0);
+	glPixelTransferi( GL_BLUE_SCALE, 1);
+	glPixelTransferi( GL_BLUE_BIAS, 0);
+	glPixelTransferi( GL_ALPHA_SCALE, 1);
+	glPixelTransferi( GL_ALPHA_BIAS, 0);
+
+	// set initial rendering states
+	glShadeModel( GL_SMOOTH);
+	glClearDepth( 1.0f);
+	glDepthFunc( GL_LEQUAL);
+	glDepthMask( GL_TRUE);
+	//	glDepthRange( FRONT_CLIP, BACK_CLIP);
+	glEnable( GL_DEPTH_TEST);
+	glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+	glCullFace( GL_FRONT);
+	glEnable( GL_CULL_FACE);
+	glEnable( GL_LIGHTING);
+//	glEnable( GL_LIGHT_MODEL_AMBIENT);
+	glEnable( GL_DITHER);
+	glEnable( GL_COLOR_MATERIAL);
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glAlphaFunc( GL_GREATER, 0.5f);
+
+	if ( CanInitStereo(stereomode) ) {
+		InitStereo(stereomode);
+	} else {
+		fprintf(stderr, "Failed to initialize stereo, disabling.\n");
+		stereomode = stereoNone;
+	}
+
+    //TODO: load textures here
+}
+
+static void toggleFullscreen(){
+    SDL_Surface* screen=SDL_GetVideoSurface();
+    Uint32 flags=screen->flags;
+    screen=SDL_SetVideoMode(0,0,0,flags^SDL_FULLSCREEN);
+    if(!screen)
+        screen=SDL_SetVideoMode(0,0,0,flags);
+    if(!screen)
+        exit(1);
+    initGL();
+}
+
+static void sdlEventProc(const SDL_Event &e, Game &game){
+    switch(e.type){
         case SDL_MOUSEMOTION:
             game.deltah += e.motion.xrel;
             game.deltav += e.motion.yrel;
-            return;
-
+            break;
         case SDL_KEYDOWN:
             if ((e.key.keysym.sym == SDLK_g) &&
 				(e.key.keysym.mod & KMOD_CTRL) &&
 				!(SDL_GetVideoSurface()->flags & SDL_FULLSCREEN) ) {
 				SDL_WM_GrabInput( ((SDL_WM_GrabInput(SDL_GRAB_QUERY)==SDL_GRAB_ON) ? SDL_GRAB_OFF:SDL_GRAB_ON) );
 			} else if ( (e.key.keysym.sym == SDLK_RETURN) && (e.key.keysym.mod & KMOD_ALT) ) {
-				SDL_WM_ToggleFullScreen(SDL_GetVideoSurface());
+                toggleFullscreen();
             }
-            return;
+            break;
+        case SDL_ACTIVEEVENT:
+            if(e.active.state&SDL_APPINPUTFOCUS){
+                if(e.active.gain){
+                    SDL_WM_GrabInput(SDL_GRAB_ON);
+                    gameFocused=true;
+                }else{
+                    SDL_WM_GrabInput(SDL_GRAB_OFF);
+                    gameFocused=false;
+                }
+            }
+            break;
     }
 }
 
@@ -337,46 +408,7 @@ Boolean SetUp (Game & game)
         SDL_WM_GrabInput(SDL_GRAB_ON);
 
 
-	glClear( GL_COLOR_BUFFER_BIT );
-	swap_gl_buffers();
-
-	// clear all states
-	glDisable( GL_ALPHA_TEST);
-	glDisable( GL_BLEND);
-	glDisable( GL_DEPTH_TEST);
-	//	glDisable( GL_DITHER);
-	glDisable( GL_FOG);
-	glDisable( GL_LIGHTING);
-	glDisable( GL_LOGIC_OP);
-	glDisable( GL_TEXTURE_1D);
-	glDisable( GL_TEXTURE_2D);
-	glPixelTransferi( GL_MAP_COLOR, GL_FALSE);
-	glPixelTransferi( GL_RED_SCALE, 1);
-	glPixelTransferi( GL_RED_BIAS, 0);
-	glPixelTransferi( GL_GREEN_SCALE, 1);
-	glPixelTransferi( GL_GREEN_BIAS, 0);
-	glPixelTransferi( GL_BLUE_SCALE, 1);
-	glPixelTransferi( GL_BLUE_BIAS, 0);
-	glPixelTransferi( GL_ALPHA_SCALE, 1);
-	glPixelTransferi( GL_ALPHA_BIAS, 0);
-
-	// set initial rendering states
-	glShadeModel( GL_SMOOTH);
-	glClearDepth( 1.0f);
-	glDepthFunc( GL_LEQUAL);
-	glDepthMask( GL_TRUE);
-	//	glDepthRange( FRONT_CLIP, BACK_CLIP);
-	glEnable( GL_DEPTH_TEST);
-	glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-	glCullFace( GL_FRONT);
-	glEnable( GL_CULL_FACE);
-	glEnable( GL_LIGHTING);
-//	glEnable( GL_LIGHT_MODEL_AMBIENT);
-	glEnable( GL_DITHER);
-	glEnable( GL_COLOR_MATERIAL);
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glAlphaFunc( GL_GREATER, 0.5f);
+    initGL();
 
 	GLint width = kContextWidth;
 	GLint height = kContextHeight;
@@ -388,13 +420,6 @@ Boolean SetUp (Game & game)
 	game.newdetail=detail;
 	game.newscreenwidth=screenwidth;
 	game.newscreenheight=screenheight;
-
-	if ( CanInitStereo(stereomode) ) {
-		InitStereo(stereomode);
-	} else {
-		fprintf(stderr, "Failed to initialize stereo, disabling.\n");
-		stereomode = stereoNone;
-	}
 
 	game.InitGame();
 
@@ -689,9 +714,8 @@ int main(int argc, char **argv)
 
 			while (!gDone&&!game.quit&&(!game.tryquit))
 			{
-				if (IsFocused())
-				{
-					gameFocused = true;
+				//if (IsFocused()) {
+					//gameFocused = true;
 
 					// check windows messages
 			
@@ -700,22 +724,24 @@ int main(int argc, char **argv)
 					SDL_Event e;
 					if(!game.isWaiting()) {
 						// message pump
-						while( SDL_PollEvent( &e ) )
-						{
-							if( e.type == SDL_QUIT )
-							{
-								gDone=true;
-								break;
+						while( SDL_PollEvent( &e ) ){
+                            switch(e.type){
+                            case SDL_QUIT:
+                                gDone=true;
+                                break;
+                            default:
+                                sdlEventProc(e, game);
+                                break;
 							}
-							sdlEventProc(e, game);
 						}
 					}
 
 					// game
 					DoUpdate(game);
-				}
-				else
-				{
+				/*
+                }
+                else
+                {
 					if (gameFocused)
 					{
 						// allow game chance to pause
@@ -731,6 +757,7 @@ int main(int argc, char **argv)
 					else if (evt.type == SDL_QUIT)
 						gDone = true;
 				}
+                */
 			}
 
 		}
