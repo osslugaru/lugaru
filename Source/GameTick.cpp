@@ -80,7 +80,6 @@ extern bool debugmode;
 static int music1;
 extern int mainmenu;
 extern bool visibleloading;
-extern int loadscreencolor;
 extern XYZ envsound[30];
 extern float envsoundvol[30];
 extern int numenvsounds;
@@ -283,40 +282,37 @@ static void ch_map(Game *game, const char *args)
   campaign = 0;
 }
 
-static void ch_save(Game *game, const char *args)
-{
-  char buf[64];
-  int i, j, k, l, m, templength;
-  float headprop, bodyprop, armprop, legprop;
-  snprintf(buf, 63, ":Data:Maps:%s", args);
+static void ch_save(Game *game, const char *args){
+    char buf[64];
+    snprintf(buf, 63, ":Data:Maps:%s", args);
 
+    int mapvers = 12;
 
-  int mapvers = 12;;
+    FILE *tfile;
+    tfile=fopen( ConvertFileName(buf), "wb" );
+    fpackf(tfile, "Bi", mapvers);
+    fpackf(tfile, "Bi", maptype);
+    fpackf(tfile, "Bi", hostile);
+    fpackf(tfile, "Bf Bf", viewdistance, fadestart);
+    fpackf(tfile, "Bb Bf Bf Bf", skyboxtexture, skyboxr, skyboxg, skyboxb);
+    fpackf(tfile, "Bf Bf Bf", skyboxlightr, skyboxlightg, skyboxlightb);
+    fpackf(tfile, "Bf Bf Bf Bf Bf Bi", player[0].coords.x, player[0].coords.y, player[0].coords.z,
+            player[0].rotation, player[0].targetrotation, player[0].num_weapons);
+    if(player[0].num_weapons>0&&player[0].num_weapons<5)
+        for(int j=0;j<player[0].num_weapons;j++)
+          fpackf(tfile, "Bi", weapons.type[player[0].weaponids[j]]);
 
-  FILE			*tfile;
-  tfile=fopen( ConvertFileName(buf), "wb" );
-  fpackf(tfile, "Bi", mapvers);
-  fpackf(tfile, "Bi", maptype);
-  fpackf(tfile, "Bi", hostile);
-  fpackf(tfile, "Bf Bf", viewdistance, fadestart);
-  fpackf(tfile, "Bb Bf Bf Bf", skyboxtexture, skyboxr, skyboxg, skyboxb);
-  fpackf(tfile, "Bf Bf Bf", skyboxlightr, skyboxlightg, skyboxlightb);
-  fpackf(tfile, "Bf Bf Bf Bf Bf Bi", player[0].coords.x, player[0].coords.y, player[0].coords.z, player[0].rotation, player[0].targetrotation, player[0].num_weapons);
-  if(player[0].num_weapons>0&&player[0].num_weapons<5)
-    for(int j=0;j<player[0].num_weapons;j++){
-      fpackf(tfile, "Bi", weapons.type[player[0].weaponids[j]]);
-    }
+    fpackf(tfile, "Bf Bf Bf", player[0].armorhead, player[0].armorhigh, player[0].armorlow);
+    fpackf(tfile, "Bf Bf Bf", player[0].protectionhead, player[0].protectionhigh, player[0].protectionlow);
+    fpackf(tfile, "Bf Bf Bf", player[0].metalhead, player[0].metalhigh, player[0].metallow);
+    fpackf(tfile, "Bf Bf", player[0].power, player[0].speedmult);
 
-  fpackf(tfile, "Bf Bf Bf", player[0].armorhead, player[0].armorhigh, player[0].armorlow);
-  fpackf(tfile, "Bf Bf Bf", player[0].protectionhead, player[0].protectionhigh, player[0].protectionlow);
-  fpackf(tfile, "Bf Bf Bf", player[0].metalhead, player[0].metalhigh, player[0].metallow);
-  fpackf(tfile, "Bf Bf", player[0].power, player[0].speedmult);
+    fpackf(tfile, "Bi", player[0].numclothes);
 
-  fpackf(tfile, "Bi", player[0].numclothes);
+    fpackf(tfile, "Bi Bi", player[0].whichskin, player[0].creature);
 
-  fpackf(tfile, "Bi Bi", player[0].whichskin, player[0].creature);
+    fpackf(tfile, "Bi", numdialogues);
 
-  fpackf(tfile, "Bi", numdialogues);
 	for(int k=0;k<numdialogues;k++){
 		fpackf(tfile, "Bi", numdialogueboxes[k]);
 		fpackf(tfile, "Bi", dialoguetype[k]);
@@ -331,18 +327,20 @@ static void ch_save(Game *game, const char *args)
 			fpackf(tfile, "Bf", dialogueboxcolor[k][l][2]);
 			fpackf(tfile, "Bi", dialogueboxsound[k][l]);
 
-			templength=strlen(dialoguetext[k][l]);
+			int templength=strlen(dialoguetext[k][l]);
 			fpackf(tfile, "Bi",(templength));
 			for(int m=0;m<templength;m++){
 				fpackf(tfile, "Bb", dialoguetext[k][l][m]);
-				if(dialoguetext[k][l][m]=='\0')break;
+				if(dialoguetext[k][l][m]=='\0')
+                    break;
 			}
 
 			templength=strlen(dialoguename[k][l]);
 			fpackf(tfile, "Bi",templength);
 			for(int m=0;m<templength;m++){
 				fpackf(tfile, "Bb", dialoguename[k][l][m]);
-				if(dialoguename[k][l][m]=='\0')break;
+				if(dialoguename[k][l][m]=='\0')
+                    break;
 			}
 
 			fpackf(tfile, "Bf Bf Bf", dialoguecamera[k][l].x, dialoguecamera[k][l].y, dialoguecamera[k][l].z);
@@ -357,95 +355,96 @@ static void ch_save(Game *game, const char *args)
 	}
 
 	for(int k=0;k<player[0].numclothes;k++){
-		templength=strlen(player[0].clothes[k]);
+		int templength=strlen(player[0].clothes[k]);
 		fpackf(tfile, "Bi", templength);
 		for(int l=0;l<templength;l++)
 			fpackf(tfile, "Bb", player[0].clothes[k][l]);
 		fpackf(tfile, "Bf Bf Bf", player[0].clothestintr[k], player[0].clothestintg[k], player[0].clothestintb[k]);
 	}
 
-  fpackf(tfile, "Bi", environment);
+    fpackf(tfile, "Bi", environment);
 
-  fpackf(tfile, "Bi", objects.numobjects);
+    fpackf(tfile, "Bi", objects.numobjects);
 
-    for(int k=0;k<objects.numobjects;k++){
-      fpackf(tfile, "Bi Bf Bf Bf Bf Bf Bf", objects.type[k], objects.rotation[k], objects.rotation2[k], objects.position[k].x, objects.position[k].y, objects.position[k].z, objects.scale[k]);
-    }
+    for(int k=0;k<objects.numobjects;k++)
+        fpackf(tfile, "Bi Bf Bf Bf Bf Bf Bf", objects.type[k], objects.rotation[k], objects.rotation2[k],
+            objects.position[k].x, objects.position[k].y, objects.position[k].z, objects.scale[k]);
 
-  fpackf(tfile, "Bi", numhotspots);
+    fpackf(tfile, "Bi", numhotspots);
 	for(int i=0;i<numhotspots;i++){
 		fpackf(tfile, "Bi Bf Bf Bf Bf", hotspottype[i],hotspotsize[i],hotspot[i].x,hotspot[i].y,hotspot[i].z);
-		templength=strlen(hotspottext[i]);
+		int templength=strlen(hotspottext[i]);
 		fpackf(tfile, "Bi",templength);
 		for(int l=0;l<templength;l++)
 			fpackf(tfile, "Bb", hotspottext[i][l]);
 	}
 
-  fpackf(tfile, "Bi", numplayers);
-  if(numplayers<maxplayers)
-    for(int j=1;j<numplayers;j++){
-		fpackf(tfile, "Bi Bi Bf Bf Bf Bi Bi Bf Bb Bf", player[j].whichskin, player[j].creature, player[j].coords.x, player[j].coords.y, player[j].coords.z, player[j].num_weapons, player[j].howactive, player[j].scale, player[j].immobile, player[j].rotation);
-		if(player[j].num_weapons<5)
-			for(int k=0;k<player[j].num_weapons;k++){
-				fpackf(tfile, "Bi", weapons.type[player[j].weaponids[k]]);
-			}
-		if(player[j].numwaypoints<30){
-			fpackf(tfile, "Bi", player[j].numwaypoints);
-			for(int k=0;k<player[j].numwaypoints;k++){
-				fpackf(tfile, "Bf", player[j].waypoints[k].x);
-				fpackf(tfile, "Bf", player[j].waypoints[k].y);
-				fpackf(tfile, "Bf", player[j].waypoints[k].z);
-				fpackf(tfile, "Bi", player[j].waypointtype[k]);
-			}
-			fpackf(tfile, "Bi", player[j].waypoint);
-		} else {
-			player[j].numwaypoints=0;
-			player[j].waypoint=0;
-			fpackf(tfile, "Bi Bi Bi", player[j].numwaypoints, player[j].waypoint, player[j].waypoint);
-		}
+    fpackf(tfile, "Bi", numplayers);
+    if(numplayers<maxplayers)
+        for(int j=1;j<numplayers;j++){
+            fpackf(tfile, "Bi Bi Bf Bf Bf Bi Bi Bf Bb Bf", player[j].whichskin, player[j].creature,
+                    player[j].coords.x, player[j].coords.y, player[j].coords.z,
+                    player[j].num_weapons, player[j].howactive, player[j].scale, player[j].immobile, player[j].rotation);
+            if(player[j].num_weapons<5)
+                for(int k=0;k<player[j].num_weapons;k++)
+                    fpackf(tfile, "Bi", weapons.type[player[j].weaponids[k]]);
+            if(player[j].numwaypoints<30){
+                fpackf(tfile, "Bi", player[j].numwaypoints);
+                for(int k=0;k<player[j].numwaypoints;k++){
+                    fpackf(tfile, "Bf", player[j].waypoints[k].x);
+                    fpackf(tfile, "Bf", player[j].waypoints[k].y);
+                    fpackf(tfile, "Bf", player[j].waypoints[k].z);
+                    fpackf(tfile, "Bi", player[j].waypointtype[k]);
+                }
+                fpackf(tfile, "Bi", player[j].waypoint);
+            }else{
+                player[j].numwaypoints=0;
+                player[j].waypoint=0;
+                fpackf(tfile, "Bi Bi Bi", player[j].numwaypoints, player[j].waypoint, player[j].waypoint);
+            }
 
-		fpackf(tfile, "Bf Bf Bf", player[j].armorhead, player[j].armorhigh, player[j].armorlow);
-		fpackf(tfile, "Bf Bf Bf", player[j].protectionhead, player[j].protectionhigh, player[j].protectionlow);
-		fpackf(tfile, "Bf Bf Bf", player[j].metalhead, player[j].metalhigh, player[j].metallow);
-		fpackf(tfile, "Bf Bf", player[j].power, player[j].speedmult);
+            fpackf(tfile, "Bf Bf Bf", player[j].armorhead, player[j].armorhigh, player[j].armorlow);
+            fpackf(tfile, "Bf Bf Bf", player[j].protectionhead, player[j].protectionhigh, player[j].protectionlow);
+            fpackf(tfile, "Bf Bf Bf", player[j].metalhead, player[j].metalhigh, player[j].metallow);
+            fpackf(tfile, "Bf Bf", player[j].power, player[j].speedmult);
 
-		if(player[j].creature==wolftype) {
-			headprop=player[j].proportionhead.x/1.1;
-			bodyprop=player[j].proportionbody.x/1.1;
-			armprop=player[j].proportionarms.x/1.1;
-			legprop=player[j].proportionlegs.x/1.1;
-		} else if(player[j].creature==rabbittype){
-			headprop=player[j].proportionhead.x/1.2;
-			bodyprop=player[j].proportionbody.x/1.05;
-			armprop=player[j].proportionarms.x/1.00;
-			legprop=player[j].proportionlegs.x/1.1;
-		}
+            float headprop, bodyprop, armprop, legprop;
+            if(player[j].creature==wolftype){
+                headprop=player[j].proportionhead.x/1.1;
+                bodyprop=player[j].proportionbody.x/1.1;
+                armprop=player[j].proportionarms.x/1.1;
+                legprop=player[j].proportionlegs.x/1.1;
+            }else if(player[j].creature==rabbittype){
+                headprop=player[j].proportionhead.x/1.2;
+                bodyprop=player[j].proportionbody.x/1.05;
+                armprop=player[j].proportionarms.x/1.00;
+                legprop=player[j].proportionlegs.x/1.1;
+            }
 
-		fpackf(tfile, "Bf Bf Bf Bf", headprop, bodyprop, armprop, legprop);
+            fpackf(tfile, "Bf Bf Bf Bf", headprop, bodyprop, armprop, legprop);
 
-		fpackf(tfile, "Bi", player[j].numclothes);
-		if(player[j].numclothes)
-			for(int k=0;k<player[j].numclothes;k++){
-				int templength;
-				templength=strlen(player[j].clothes[k]);
-				fpackf(tfile, "Bi", templength);
-				for(int l=0;l<templength;l++)
-					fpackf(tfile, "Bb", player[j].clothes[k][l]);
-				fpackf(tfile, "Bf Bf Bf", player[j].clothestintr[k], player[j].clothestintg[k], player[j].clothestintb[k]);
-			}
-    }
+            fpackf(tfile, "Bi", player[j].numclothes);
+            if(player[j].numclothes)
+                for(int k=0;k<player[j].numclothes;k++){
+                    int templength;
+                    templength=strlen(player[j].clothes[k]);
+                    fpackf(tfile, "Bi", templength);
+                    for(int l=0;l<templength;l++)
+                        fpackf(tfile, "Bb", player[j].clothes[k][l]);
+                    fpackf(tfile, "Bf Bf Bf", player[j].clothestintr[k], player[j].clothestintg[k], player[j].clothestintb[k]);
+                }
+        }
 
-  fpackf(tfile, "Bi", game->numpathpoints);
+    fpackf(tfile, "Bi", game->numpathpoints);
 	for(int j=0;j<game->numpathpoints;j++){
 		fpackf(tfile, "Bf Bf Bf Bi", game->pathpoint[j].x, game->pathpoint[j].y, game->pathpoint[j].z, game->numpathpointconnect[j]);
-		for(int k=0;k<game->numpathpointconnect[j];k++){
+		for(int k=0;k<game->numpathpointconnect[j];k++)
 			fpackf(tfile, "Bi", game->pathpointconnect[j][k]);
-		}
 	}
 
-  fpackf(tfile, "Bf Bf Bf Bf", game->mapcenter.x, game->mapcenter.y, game->mapcenter.z, game->mapradius);
+    fpackf(tfile, "Bf Bf Bf Bf", game->mapcenter.x, game->mapcenter.y, game->mapcenter.z, game->mapradius);
 
-  fclose(tfile);
+    fclose(tfile);
 }
 
 static void ch_cellar(Game *game, const char *args)
@@ -1402,7 +1401,7 @@ void	Game::Setenvironment(int which)
 }
 
 
-void	Game::Loadlevel(int which){
+void Game::Loadlevel(int which){
 	stealthloading=0;
 	whichlevel=which;
 
@@ -1417,7 +1416,7 @@ void	Game::Loadlevel(int which){
 	    Loadlevel("mapsave");
 }
 
-void	Game::Loadlevel(const char *name){
+void Game::Loadlevel(const char *name){
 	static int oldlevel;
 	int templength;
 	float lamefloat;
@@ -1431,27 +1430,30 @@ void	Game::Loadlevel(const char *name){
 
 	LOG(std::string("Loading level...") + name);
 
-	if(!gameon)visibleloading=1;
-
-	if(stealthloading)visibleloading=0;
-
-	if(!stillloading)loadtime=0;
+	if(!gameon)
+        visibleloading=1;
+	if(stealthloading)
+        visibleloading=0;
+	if(!stillloading)
+        loadtime=0;
 	gamestarted=1;
 
 	numenvsounds=0;
 	//visibleloading=1;
-	if(tutoriallevel!=-1)tutoriallevel=0;
-	else tutoriallevel=1;
+	if(tutoriallevel!=-1)
+        tutoriallevel=0;
+	else
+        tutoriallevel=1;
 
-	if(tutoriallevel==1)tutorialstage=0;
+	if(tutoriallevel==1)
+        tutorialstage=0;
 	if(tutorialstage==0){
 		tutorialstagetime=0;
 		tutorialmaxtime=1;
 	}
 	loadingstuff=1;
-	if(!firstload){
+	if(!firstload)
 		oldlevel=50;
-	}
 	pause_sound(whooshsound);
 	pause_sound(stream_firesound);
 
@@ -1461,29 +1463,21 @@ void	Game::Loadlevel(const char *name){
 	const char *FixedFN = ConvertFileName(buf);
 
 	int mapvers;
-	FILE			*tfile;
+	FILE *tfile;
 	tfile=fopen( FixedFN, "rb" );
-	if(tfile)
-	{
+	if(tfile){
 		pause_sound(stream_firesound);
-
-
 		scoreadded=0;
 		windialogue=0;
-
 		hostiletime=0;
-
 		won=0;
 
-		//campaign=0;
 		animation[bounceidleanim].Load((char *)"Idle",middleheight,neutral);
 
 		numdialogues=0;
 
 		for(int i=0;i<20;i++)
-		{
 			dialoguegonethrough[i]=0;
-		}
 
 		indialogue=-1;
 		cameramode=0;
@@ -1491,10 +1485,13 @@ void	Game::Loadlevel(const char *name){
 		damagedealt=0;
 		damagetaken=0;
 
-		if(accountactive)difficulty=accountactive->getDifficulty();
+		if(accountactive)
+            difficulty=accountactive->getDifficulty();
 
-		if(difficulty!=2)minimap=1;
-		else minimap=0;
+		if(difficulty!=2)
+            minimap=1;
+		else
+            minimap=0;
 
 		numhotspots=0;
 		currenthotspot=-1;
@@ -1509,9 +1506,7 @@ void	Game::Loadlevel(const char *name){
 		winfreeze=0;
 
 		for(int i=0;i<100;i++)
-		{
 			bonusnum[i]=0;
-		}
 
 		numfalls=0;
 		numflipfail=0;
@@ -1534,84 +1529,83 @@ void	Game::Loadlevel(const char *name){
 		bonus=0;
 		gameon=1;
 		changedelay=0;
-		if(console)
-		{
+		if(console){
 			emit_sound_np(consolesuccesssound);
 			freeze=0;
 			console=0;
 		}
 
-		if(!stealthloading)
-		{
+		if(!stealthloading){
 			terrain.numdecals=0;
 			Sprite::deleteSprites();
 			for(int i=0;i<objects.numobjects;i++)
-			{
 				objects.model[i].numdecals=0;
-			}
 
 			int j=objects.numobjects;
-			for(int i=0;i<j;i++)
-			{
+			for(int i=0;i<j;i++){
 				objects.DeleteObject(0);
-				if(visibleloading){loadscreencolor=4; LoadingScreen();}
+				if(visibleloading)
+                    LoadingScreen();
 			}
 
 			for(int i=0;i<subdivision;i++)
-			{
 				for(int j=0;j<subdivision;j++)
-				{
 					terrain.patchobjectnum[i][j]=0;
-				}
-			}
-			if(visibleloading){loadscreencolor=4; LoadingScreen();}
+			if(visibleloading)
+                LoadingScreen();
 		}
 
 		weapons.numweapons=0;
 
 		funpackf(tfile, "Bi", &mapvers);
-		if(mapvers>=15)funpackf(tfile, "Bi", &indemo);
-		else indemo=0;
-		if(mapvers>=5)funpackf(tfile, "Bi", &maptype);
-		else maptype=mapkilleveryone;
-		if(mapvers>=6)funpackf(tfile, "Bi", &hostile);
-		else hostile=1;
-		if(mapvers>=4)funpackf(tfile, "Bf Bf", &viewdistance, &fadestart);
+		if(mapvers>=15)
+            funpackf(tfile, "Bi", &indemo);
 		else
-		{
+            indemo=0;
+		if(mapvers>=5)
+            funpackf(tfile, "Bi", &maptype);
+		else
+            maptype=mapkilleveryone;
+		if(mapvers>=6)
+            funpackf(tfile, "Bi", &hostile);
+		else
+            hostile=1;
+		if(mapvers>=4)
+            funpackf(tfile, "Bf Bf", &viewdistance, &fadestart);
+		else{
 			viewdistance=100;
 			fadestart=.6;
 		}
-		if(mapvers>=2)funpackf(tfile, "Bb Bf Bf Bf", &skyboxtexture, &skyboxr, &skyboxg, &skyboxb);
-		else
-		{
+		if(mapvers>=2)
+            funpackf(tfile, "Bb Bf Bf Bf", &skyboxtexture, &skyboxr, &skyboxg, &skyboxb);
+		else{
 			skyboxtexture=1;
 			skyboxr=1;
 			skyboxg=1;
 			skyboxb=1;
 		}
-		if(mapvers>=10)funpackf(tfile, "Bf Bf Bf", &skyboxlightr, &skyboxlightg, &skyboxlightb);
-		else
-		{
+		if(mapvers>=10)
+            funpackf(tfile, "Bf Bf Bf", &skyboxlightr, &skyboxlightg, &skyboxlightb);
+		else{
 			skyboxlightr=skyboxr;
 			skyboxlightg=skyboxg;
 			skyboxlightb=skyboxb;
 		}
-		if(!stealthloading)funpackf(tfile, "Bf Bf Bf Bf Bf Bi", &player[0].coords.x,&player[0].coords.y,&player[0].coords.z,&player[0].rotation,&player[0].targetrotation, &player[0].num_weapons);
-		if(stealthloading)funpackf(tfile, "Bf Bf Bf Bf Bf Bi", &lamefloat,&lamefloat,&lamefloat,&lamefloat,&lamefloat, &player[0].num_weapons);
+		if(!stealthloading)
+            funpackf(tfile, "Bf Bf Bf Bf Bf Bi", &player[0].coords.x,&player[0].coords.y,&player[0].coords.z,&player[0].rotation,&player[0].targetrotation, &player[0].num_weapons);
+		if(stealthloading)
+            funpackf(tfile, "Bf Bf Bf Bf Bf Bi", &lamefloat,&lamefloat,&lamefloat,&lamefloat,&lamefloat, &player[0].num_weapons);
 		player[0].originalcoords=player[0].coords;
 		if(player[0].num_weapons>0&&player[0].num_weapons<5)
-		{
-			for(int j=0;j<player[0].num_weapons;j++)
-			{
+			for(int j=0;j<player[0].num_weapons;j++){
 				player[0].weaponids[j]=weapons.numweapons;
 				funpackf(tfile, "Bi", &weapons.type[weapons.numweapons]);
 				weapons.owner[weapons.numweapons]=0;
 				weapons.numweapons++;
 			}
-		}
 
-		if(visibleloading){loadscreencolor=4; LoadingScreen();}
+		if(visibleloading)
+            LoadingScreen();
 
 		funpackf(tfile, "Bf Bf Bf", &player[0].armorhead, &player[0].armorhigh, &player[0].armorlow);
 		funpackf(tfile, "Bf Bf Bf", &player[0].protectionhead, &player[0].protectionhigh, &player[0].protectionlow);
@@ -1621,11 +1615,8 @@ void	Game::Loadlevel(const char *name){
 		funpackf(tfile, "Bi", &player[0].numclothes);
 
 		if(mapvers>=9)
-		{
 			funpackf(tfile, "Bi Bi", &player[0].whichskin, &player[0].creature);
-		}
-		else
-		{
+		else{
 			player[0].whichskin=0;
 			player[0].creature=rabbittype;
 		}
@@ -1634,130 +1625,108 @@ void	Game::Loadlevel(const char *name){
 		player[0].lastattack2=-1;
 		player[0].lastattack3=-1;
 
-		if(mapvers>=8)
-		{
+        //dialogues
+		if(mapvers>=8){
 			funpackf(tfile, "Bi", &numdialogues);
-			if(numdialogues)
-			{
-				for(int k=0;k<numdialogues;k++)
-				{
-					funpackf(tfile, "Bi", &numdialogueboxes[k]);
-					funpackf(tfile, "Bi", &dialoguetype[k]);
-					for(int l=0;l<10;l++)
-					{
-						funpackf(tfile, "Bf Bf Bf", &participantlocation[k][l].x, &participantlocation[k][l].y, &participantlocation[k][l].z);
-						funpackf(tfile, "Bf", &participantrotation[k][l]);
-					}
-					if(numdialogueboxes)
-					{
-						for(int l=0;l<numdialogueboxes[k];l++)
-						{
-							funpackf(tfile, "Bi", &dialogueboxlocation[k][l]);
-							funpackf(tfile, "Bf", &dialogueboxcolor[k][l][0]);
-							funpackf(tfile, "Bf", &dialogueboxcolor[k][l][1]);
-							funpackf(tfile, "Bf", &dialogueboxcolor[k][l][2]);
-							funpackf(tfile, "Bi", &dialogueboxsound[k][l]);
+            for(int k=0;k<numdialogues;k++){
+                funpackf(tfile, "Bi", &numdialogueboxes[k]);
+                funpackf(tfile, "Bi", &dialoguetype[k]);
+                for(int l=0;l<10;l++){
+                    funpackf(tfile, "Bf Bf Bf", &participantlocation[k][l].x, &participantlocation[k][l].y, &participantlocation[k][l].z);
+                    funpackf(tfile, "Bf", &participantrotation[k][l]);
+                }
+                for(int l=0;l<numdialogueboxes[k];l++){
+                    funpackf(tfile, "Bi", &dialogueboxlocation[k][l]);
+                    funpackf(tfile, "Bf", &dialogueboxcolor[k][l][0]);
+                    funpackf(tfile, "Bf", &dialogueboxcolor[k][l][1]);
+                    funpackf(tfile, "Bf", &dialogueboxcolor[k][l][2]);
+                    funpackf(tfile, "Bi", &dialogueboxsound[k][l]);
 
-							bool doneread;
+                    bool doneread;
 
-							funpackf(tfile, "Bi",&templength);
-							if(templength>128||templength<=0)templength=128;
-                            int m;
-							for(m=0;m<templength;m++){
-								funpackf(tfile, "Bb", &dialoguetext[k][l][m]);
-								if(dialoguetext[k][l][m]=='\0')break;
-							}
-							dialoguetext[k][l][m] = 0;
+                    funpackf(tfile, "Bi",&templength);
+                    if(templength>128||templength<=0)
+                        templength=128;
+                    int m;
+                    for(m=0;m<templength;m++){
+                        funpackf(tfile, "Bb", &dialoguetext[k][l][m]);
+                        if(dialoguetext[k][l][m]=='\0')
+                            break;
+                    }
+                    dialoguetext[k][l][m] = 0;
 
-							funpackf(tfile, "Bi",&templength);
-							if(templength>64||templength<=0)templength=64;
-							for(m=0;m<templength;m++){
-								funpackf(tfile, "Bb", &dialoguename[k][l][m]);
-								if(dialoguename[k][l][m]=='\0'){
-									break;
-								}
-							}
-							dialoguename[k][l][m] = 0;
-							funpackf(tfile, "Bf Bf Bf", &dialoguecamera[k][l].x, &dialoguecamera[k][l].y, &dialoguecamera[k][l].z);
-							funpackf(tfile, "Bi", &participantfocus[k][l]);
-							funpackf(tfile, "Bi", &participantaction[k][l]);
+                    funpackf(tfile, "Bi",&templength);
+                    if(templength>64||templength<=0)templength=64;
+                    for(m=0;m<templength;m++){
+                        funpackf(tfile, "Bb", &dialoguename[k][l][m]);
+                        if(dialoguename[k][l][m]=='\0')
+                            break;
+                    }
+                    dialoguename[k][l][m] = 0;
+                    funpackf(tfile, "Bf Bf Bf", &dialoguecamera[k][l].x, &dialoguecamera[k][l].y, &dialoguecamera[k][l].z);
+                    funpackf(tfile, "Bi", &participantfocus[k][l]);
+                    funpackf(tfile, "Bi", &participantaction[k][l]);
 
-							for(m=0;m<10;m++)
-								funpackf(tfile, "Bf Bf Bf", &participantfacing[k][l][m].x, &participantfacing[k][l][m].y, &participantfacing[k][l][m].z);
+                    for(m=0;m<10;m++)
+                        funpackf(tfile, "Bf Bf Bf", &participantfacing[k][l][m].x, &participantfacing[k][l][m].y, &participantfacing[k][l][m].z);
 
-							funpackf(tfile, "Bf Bf",&dialoguecamerarotation[k][l],&dialoguecamerarotation2[k][l]);
-						}
-					}
-				}
-			}
-		}
-		else numdialogues=0;
+                    funpackf(tfile, "Bf Bf",&dialoguecamerarotation[k][l],&dialoguecamerarotation2[k][l]);
+                }
+            }
+		}else
+            numdialogues=0;
 
-		if(player[0].numclothes)
-		{
-			for(int k=0;k<player[0].numclothes;k++)
-			{
-				funpackf(tfile, "Bi", &templength);
-				for(int l=0;l<templength;l++)
-					funpackf(tfile, "Bb", &player[0].clothes[k][l]);
-				player[0].clothes[k][templength]='\0';
-				funpackf(tfile, "Bf Bf Bf", &player[0].clothestintr[k], &player[0].clothestintg[k], &player[0].clothestintb[k]);
-			}
-		}
+        for(int k=0;k<player[0].numclothes;k++){
+            funpackf(tfile, "Bi", &templength);
+            for(int l=0;l<templength;l++)
+                funpackf(tfile, "Bb", &player[0].clothes[k][l]);
+            player[0].clothes[k][templength]='\0';
+            funpackf(tfile, "Bf Bf Bf", &player[0].clothestintr[k], &player[0].clothestintg[k], &player[0].clothestintb[k]);
+        }
 
 		funpackf(tfile, "Bi", &environment);
 
 		funpackf(tfile, "Bi", &objects.numobjects);
-		if(objects.numobjects)
-		{
-			for(int i=0;i<objects.numobjects;i++)
-			{
-				funpackf(tfile, "Bi Bf Bf Bf Bf Bf Bf", &objects.type[i],&objects.rotation[i],&objects.rotation2[i], &objects.position[i].x, &objects.position[i].y, &objects.position[i].z,&objects.scale[i]);
-				if(objects.type[i]==treeleavestype)objects.scale[i]=objects.scale[i-1];
-			}
-		}
+        for(int i=0;i<objects.numobjects;i++){
+            funpackf(tfile, "Bi Bf Bf Bf Bf Bf Bf", &objects.type[i],&objects.rotation[i],&objects.rotation2[i], &objects.position[i].x, &objects.position[i].y, &objects.position[i].z,&objects.scale[i]);
+            if(objects.type[i]==treeleavestype)
+                objects.scale[i]=objects.scale[i-1];
+        }
 
-		if(mapvers>=7)
-		{
+		if(mapvers>=7){
 			funpackf(tfile, "Bi", &numhotspots);
-			if(numhotspots)
-			{
-				for(int i=0;i<numhotspots;i++)
-				{
-					funpackf(tfile, "Bi Bf Bf Bf Bf", &hotspottype[i],&hotspotsize[i],&hotspot[i].x,&hotspot[i].y,&hotspot[i].z);
-					funpackf(tfile, "Bi", &templength);
-					if(templength)
-						for(int l=0;l<templength;l++)
-							funpackf(tfile, "Bb", &hotspottext[i][l]);
-					hotspottext[i][templength]='\0';
-					if(hotspottype[i]==-111)indemo=1;
-				}
-			}
-		}
-		else numhotspots=0;
+            for(int i=0;i<numhotspots;i++){
+                funpackf(tfile, "Bi Bf Bf Bf Bf", &hotspottype[i],&hotspotsize[i],&hotspot[i].x,&hotspot[i].y,&hotspot[i].z);
+                funpackf(tfile, "Bi", &templength);
+                if(templength)
+                    for(int l=0;l<templength;l++)
+                        funpackf(tfile, "Bb", &hotspottext[i][l]);
+                hotspottext[i][templength]='\0';
+                if(hotspottype[i]==-111)
+                    indemo=1;
+            }
+		}else
+            numhotspots=0;
 
-		if(visibleloading){loadscreencolor=4; LoadingScreen();}
+		if(visibleloading)
+            LoadingScreen();
 
-		if(!stealthloading)
-		{
+		if(!stealthloading){
 			objects.center=0;
 			for(int i=0;i<objects.numobjects;i++)
-			{
 				objects.center+=objects.position[i];
-			}
 			objects.center/=objects.numobjects;
 
 
-			if(visibleloading){loadscreencolor=4; LoadingScreen();}
+			if(visibleloading)
+                LoadingScreen();
 
 			float maxdistance=0;
 			float tempdist;
 			int whichclosest;
-			for(int i=0;i<objects.numobjects;i++)
-			{
+			for(int i=0;i<objects.numobjects;i++){
 				tempdist=findDistancefast(&objects.center,&objects.position[i]);
-				if(tempdist>maxdistance)
-				{
+				if(tempdist>maxdistance){
 					whichclosest=i;
 					maxdistance=tempdist;
 				}
@@ -1765,40 +1734,45 @@ void	Game::Loadlevel(const char *name){
 			objects.radius=fast_sqrt(maxdistance);
 		}
 
-		if(visibleloading){loadscreencolor=4; LoadingScreen();}
+		if(visibleloading)
+            LoadingScreen();
 		//mapcenter=objects.center;
 		//mapradius=objects.radius;
 
 		funpackf(tfile, "Bi", &numplayers);
 		int howmanyremoved=0;
 		bool removeanother=0;
-		if(numplayers>1&&numplayers<maxplayers)
-		{
-			for(int i=1;i<numplayers;i++)
-			{
-				if(visibleloading){loadscreencolor=4; LoadingScreen();}
+		if(numplayers>1&&numplayers<maxplayers){
+			for(int i=1;i<numplayers;i++){
+				if(visibleloading)
+                    LoadingScreen();
 				removeanother=0;
 
 				funpackf(tfile, "Bi Bi Bf Bf Bf Bi",&player[i-howmanyremoved].whichskin,&player[i-howmanyremoved].creature, &player[i-howmanyremoved].coords.x,&player[i-howmanyremoved].coords.y,&player[i-howmanyremoved].coords.z,&player[i-howmanyremoved].num_weapons);
-				if(mapvers>=5)funpackf(tfile, "Bi", &player[i-howmanyremoved].howactive);
-				else player[i-howmanyremoved].howactive=typeactive;
-				if(mapvers>=3)funpackf(tfile, "Bf",&player[i-howmanyremoved].scale);
-				else player[i-howmanyremoved].scale=-1;
-				if(mapvers>=11)funpackf(tfile, "Bb",&player[i-howmanyremoved].immobile);
-				else player[i-howmanyremoved].immobile=0;
-				if(mapvers>=12)funpackf(tfile, "Bf",&player[i-howmanyremoved].rotation);
-				else player[i-howmanyremoved].rotation=0;
+				if(mapvers>=5)
+                    funpackf(tfile, "Bi", &player[i-howmanyremoved].howactive);
+				else
+                    player[i-howmanyremoved].howactive=typeactive;
+				if(mapvers>=3)
+                    funpackf(tfile, "Bf",&player[i-howmanyremoved].scale);
+				else
+                    player[i-howmanyremoved].scale=-1;
+				if(mapvers>=11)
+                    funpackf(tfile, "Bb",&player[i-howmanyremoved].immobile);
+				else
+                    player[i-howmanyremoved].immobile=0;
+				if(mapvers>=12)
+                    funpackf(tfile, "Bf",&player[i-howmanyremoved].rotation);
+				else
+                    player[i-howmanyremoved].rotation=0;
 				player[i-howmanyremoved].targetrotation=player[i-howmanyremoved].rotation;
 				if(player[i-howmanyremoved].num_weapons<0||player[i-howmanyremoved].num_weapons>5){
 					removeanother=1;
 					howmanyremoved++;
 				}
-				if(!removeanother)
-				{
-					if(player[i-howmanyremoved].num_weapons>0&&player[i-howmanyremoved].num_weapons<5)
-					{
-						for(int j=0;j<player[i-howmanyremoved].num_weapons;j++)
-						{
+				if(!removeanother){
+					if(player[i-howmanyremoved].num_weapons>0&&player[i-howmanyremoved].num_weapons<5){
+						for(int j=0;j<player[i-howmanyremoved].num_weapons;j++){
 							player[i-howmanyremoved].weaponids[j]=weapons.numweapons;
 							funpackf(tfile, "Bi", &weapons.type[player[i-howmanyremoved].weaponids[j]]);
 							weapons.owner[player[i-howmanyremoved].weaponids[j]]=i;
@@ -1807,41 +1781,41 @@ void	Game::Loadlevel(const char *name){
 					}
 					funpackf(tfile, "Bi", &player[i-howmanyremoved].numwaypoints);
 					//player[i-howmanyremoved].numwaypoints=10;
-					for(int j=0;j<player[i-howmanyremoved].numwaypoints;j++)
-					{
+					for(int j=0;j<player[i-howmanyremoved].numwaypoints;j++){
 						funpackf(tfile, "Bf", &player[i-howmanyremoved].waypoints[j].x);
 						funpackf(tfile, "Bf", &player[i-howmanyremoved].waypoints[j].y);
 						funpackf(tfile, "Bf", &player[i-howmanyremoved].waypoints[j].z);
-						if(mapvers>=5)funpackf(tfile, "Bi", &player[i-howmanyremoved].waypointtype[j]);
-						else player[i-howmanyremoved].waypointtype[j] = wpkeepwalking;
+						if(mapvers>=5)
+                            funpackf(tfile, "Bi", &player[i-howmanyremoved].waypointtype[j]);
+						else
+                            player[i-howmanyremoved].waypointtype[j] = wpkeepwalking;
 					}
 
 					funpackf(tfile, "Bi", &player[i-howmanyremoved].waypoint);
-					if(player[i-howmanyremoved].waypoint>player[i-howmanyremoved].numwaypoints-1)player[i-howmanyremoved].waypoint=0;
+					if(player[i-howmanyremoved].waypoint>player[i-howmanyremoved].numwaypoints-1)
+                        player[i-howmanyremoved].waypoint=0;
 
 					funpackf(tfile, "Bf Bf Bf", &player[i-howmanyremoved].armorhead, &player[i-howmanyremoved].armorhigh, &player[i-howmanyremoved].armorlow);
 					funpackf(tfile, "Bf Bf Bf", &player[i-howmanyremoved].protectionhead, &player[i-howmanyremoved].protectionhigh, &player[i-howmanyremoved].protectionlow);
 					funpackf(tfile, "Bf Bf Bf", &player[i-howmanyremoved].metalhead, &player[i-howmanyremoved].metalhigh, &player[i-howmanyremoved].metallow);
 					funpackf(tfile, "Bf Bf", &player[i-howmanyremoved].power, &player[i-howmanyremoved].speedmult);
 
-					if(mapvers>=4)funpackf(tfile, "Bf Bf Bf Bf", &headprop, &bodyprop, &armprop, &legprop);
-					else
-					{
+					if(mapvers>=4)
+                        funpackf(tfile, "Bf Bf Bf Bf", &headprop, &bodyprop, &armprop, &legprop);
+					else{
 						headprop=1;
 						bodyprop=1;
 						armprop=1;
 						legprop=1;
 					}
-					if(player[i-howmanyremoved].creature==wolftype)
-					{
+					if(player[i-howmanyremoved].creature==wolftype){
 						player[i-howmanyremoved].proportionhead=1.1*headprop;
 						player[i-howmanyremoved].proportionbody=1.1*bodyprop;
 						player[i-howmanyremoved].proportionarms=1.1*armprop;
 						player[i-howmanyremoved].proportionlegs=1.1*legprop;
 					}
 
-					if(player[i-howmanyremoved].creature==rabbittype)
-					{
+					if(player[i-howmanyremoved].creature==rabbittype){
 						player[i-howmanyremoved].proportionhead=1.2*headprop;
 						player[i-howmanyremoved].proportionbody=1.05*bodyprop;
 						player[i-howmanyremoved].proportionarms=1.00*armprop;
@@ -1850,10 +1824,8 @@ void	Game::Loadlevel(const char *name){
 					}
 
 					funpackf(tfile, "Bi", &player[i-howmanyremoved].numclothes);
-					if(player[i-howmanyremoved].numclothes)
-					{
-						for(int k=0;k<player[i-howmanyremoved].numclothes;k++)
-						{
+					if(player[i-howmanyremoved].numclothes){
+						for(int k=0;k<player[i-howmanyremoved].numclothes;k++){
 							int templength;
 							funpackf(tfile, "Bi", &templength);
 							for(int l=0;l<templength;l++)
@@ -1865,23 +1837,21 @@ void	Game::Loadlevel(const char *name){
 				}
 			}
 		}
-		if(visibleloading){loadscreencolor=4; LoadingScreen();}
+		if(visibleloading)
+            LoadingScreen();
 
 		numplayers-=howmanyremoved;
 		funpackf(tfile, "Bi", &numpathpoints);
 		if(numpathpoints>30||numpathpoints<0)
 			numpathpoints=0;
-		if(numpathpoints)
-		{
-			for(int j=0;j<numpathpoints;j++)
-			{
-				funpackf(tfile, "Bf Bf Bf Bi", &pathpoint[j].x,&pathpoint[j].y,&pathpoint[j].z,&numpathpointconnect[j]);
-				for(int k=0;k<numpathpointconnect[j];k++){
-					funpackf(tfile, "Bi", &pathpointconnect[j][k]);
-				}
-			}
-		}
-		if(visibleloading){loadscreencolor=4; LoadingScreen();}
+        for(int j=0;j<numpathpoints;j++){
+            funpackf(tfile, "Bf Bf Bf Bi", &pathpoint[j].x,&pathpoint[j].y,&pathpoint[j].z,&numpathpointconnect[j]);
+            for(int k=0;k<numpathpointconnect[j];k++){
+                funpackf(tfile, "Bi", &pathpointconnect[j][k]);
+            }
+        }
+		if(visibleloading)
+            LoadingScreen();
 
 		funpackf(tfile, "Bf Bf Bf Bf", &mapcenter.x,&mapcenter.y,&mapcenter.z,&mapradius);
 
@@ -1890,25 +1860,21 @@ void	Game::Loadlevel(const char *name){
             Setenvironment(environment);
 		oldenvironment=environment;
 
-		if(!stealthloading)
-		{
+		if(!stealthloading){
 			int j=objects.numobjects;
 			objects.numobjects=0;
-			for(int i=0;i<j;i++)
-			{
-				//if(objects.type[i]!=spiketype)
+			for(int i=0;i<j;i++){
 				objects.MakeObject(objects.type[i],objects.position[i],objects.rotation[i],objects.rotation2[i],objects.scale[i]);
-				if(visibleloading){loadscreencolor=4; LoadingScreen();}
+				if(visibleloading)
+                    LoadingScreen();
 			}
 
-			//if(skyboxtexture){
 			terrain.DoShadows();
-			if(visibleloading){loadscreencolor=4; LoadingScreen();}
+			if(visibleloading)
+                LoadingScreen();
 			objects.DoShadows();
-			if(visibleloading){loadscreencolor=4; LoadingScreen();}
-			/*}
-			else terrain.DoLighting();
-			*/
+			if(visibleloading)
+                LoadingScreen();
 		}
 
 		fclose(tfile);
@@ -1916,20 +1882,22 @@ void	Game::Loadlevel(const char *name){
 		oldlevel=whichlevel;
 
 
-		if(numplayers>maxplayers-1)numplayers=maxplayers-1;
-		for(int i=0;i<numplayers;i++)
-		{
-			if(visibleloading){loadscreencolor=4; LoadingScreen();}
+		if(numplayers>maxplayers-1)
+            numplayers=maxplayers-1;
+		for(int i=0;i<numplayers;i++){
+			if(visibleloading)
+                LoadingScreen();
 			player[i].burnt=0;
 			player[i].bled=0;
 			player[i].onfire=0;
-			if(i==0||player[i].scale<0)player[i].scale=.2;
+			if(i==0||player[i].scale<0)
+                player[i].scale=.2;
 			player[i].skeleton.free=0;
 			player[i].skeleton.id=i;
-			//if(Random()%2==0)player[i].creature=wolftype;
-			//else player[i].creature=rabbittype;
-			if(i==0&&mapvers<9)player[i].creature=rabbittype;
-			if(player[i].creature!=wolftype)player[i].skeleton.Load(
+			if(i==0&&mapvers<9)
+                player[i].creature=rabbittype;
+			if(player[i].creature!=wolftype){
+                player[i].skeleton.Load(
                     (char *)":Data:Skeleton:Basic Figure",
                     (char *)":Data:Skeleton:Basic Figurelow",
                     (char *)":Data:Skeleton:Rabbitbelt",
@@ -1942,8 +1910,7 @@ void	Game::Loadlevel(const char *name){
                     (char *)":Data:Models:Body7.solid",
                     (char *)":Data:Models:Bodylow.solid",
                     (char *)":Data:Models:Belt.solid",0);
-			else
-			{
+            }else{
 				if(player[i].creature!=wolftype){
 					player[i].skeleton.Load(
                             (char *)":Data:Skeleton:Basic Figure",
@@ -1980,15 +1947,11 @@ void	Game::Loadlevel(const char *name){
 
 			int texsize;
 			texsize=512*512*3/texdetail/texdetail;
-			//if(!player[i].loaded)player[i].skeleton.skinText = new GLubyte[texsize];
-			//player[i].skeleton.skinText.resize(texsize);
 
 			LoadTextureSave(creatureskin[player[i].creature][player[i].whichskin],&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
 
-			if(player[i].numclothes)
-			{
-				for(int j=0;j<player[i].numclothes;j++)
-				{
+			if(player[i].numclothes){
+				for(int j=0;j<player[i].numclothes;j++){
 					tintr=player[i].clothestintr[j];
 					tintg=player[i].clothestintg[j];
 					tintb=player[i].clothestintb[j];
@@ -2003,8 +1966,10 @@ void	Game::Loadlevel(const char *name){
 			player[i].targetframe=1;
 			player[i].target=0;
 			player[i].speed=1+(float)(Random()%100)/1000;
-			if(difficulty==0)player[i].speed-=.2;
-			if(difficulty==1)player[i].speed-=.1;
+			if(difficulty==0)
+                player[i].speed-=.2;
+			if(difficulty==1)
+                player[i].speed-=.1;
 
 			player[i].velocity=0;
 			player[i].oldcoords=player[i].coords;
@@ -2018,8 +1983,7 @@ void	Game::Loadlevel(const char *name){
 			player[i].aitype=passivetype;
 			player[i].madskills=0;
 
-			if(i==0)
-			{
+			if(i==0){
 				player[i].proportionhead=1.2;
 				player[i].proportionbody=1.05;
 				player[i].proportionarms=1.00;
@@ -2029,35 +1993,18 @@ void	Game::Loadlevel(const char *name){
 			player[i].headless=0;
 			player[i].currentoffset=0;
 			player[i].targetoffset=0;
-			/*player[i].armorhead=1;
-			player[i].armorhigh=1;
-			player[i].armorlow=1;
-			player[i].protectionhead=1;
-			player[i].protectionhigh=1;
-			player[i].protectionlow=1;
-			player[i].metalhead=1;
-			player[i].metalhigh=1;
-			player[i].metallow=1;
-			player[i].power=1;
-			player[i].speedmult=1;*/
 
 			player[i].damagetolerance=200;
 
-			if(player[i].creature==wolftype)
-			{
-				/*player[i].proportionhead=1.1;
-				player[i].proportionbody=1.1;
-				player[i].proportionarms=1.1;
-				player[i].proportionlegs=1.1;
-				player[i].proportionlegs.y=1.1;*/
-				if(i==0||player[i].scale<0)player[i].scale=.23;
-
+			if(player[i].creature==wolftype){
+				if(i==0||player[i].scale<0)
+                    player[i].scale=.23;
 				player[i].damagetolerance=300;
 			}
 
-			if(visibleloading){loadscreencolor=4; LoadingScreen();}
-			if(cellophane)
-			{
+			if(visibleloading)
+                LoadingScreen();
+			if(cellophane){
 				player[i].proportionhead.z=0;
 				player[i].proportionbody.z=0;
 				player[i].proportionarms.z=0;
@@ -2103,24 +2050,21 @@ void	Game::Loadlevel(const char *name){
 		player[0].weaponactive=-1;
 
 		if(difficulty==1)
-		{
-			//player[0].speedmult=1/.9;
 			player[0].power=1/.9;
-		}
 
 		if(difficulty==0)
-		{
-			//player[0].speedmult=1/.8;
 			player[0].power=1/.8;
-		}
 
-		//player[0].weaponstuck=1;
-
-		if(difficulty==1)player[0].damagetolerance=250;
-		if(difficulty==0)player[0].damagetolerance=300;
-		if(difficulty==0)player[0].armorhead*=1.5;
-		if(difficulty==0)player[0].armorhigh*=1.5;
-		if(difficulty==0)player[0].armorlow*=1.5;
+		if(difficulty==1)
+            player[0].damagetolerance=250;
+		if(difficulty==0)
+            player[0].damagetolerance=300;
+		if(difficulty==0)
+            player[0].armorhead*=1.5;
+		if(difficulty==0)
+            player[0].armorhigh*=1.5;
+		if(difficulty==0)
+            player[0].armorlow*=1.5;
 		cameraloc=player[0].coords;
 		cameraloc.y+=5;
 		rotation=player[0].rotation;
@@ -2128,17 +2072,15 @@ void	Game::Loadlevel(const char *name){
 		hawkcoords=player[0].coords;
 		hawkcoords.y+=30;
 
-		if(visibleloading){loadscreencolor=4; LoadingScreen();}
-		//weapons.numweapons=numplayers;
-		for(int i=0;i<weapons.numweapons;i++)
-		{
+		if(visibleloading)
+            LoadingScreen();
+		for(int i=0;i<weapons.numweapons;i++){
 			weapons.bloody[i]=0;
 			weapons.blooddrip[i]=0;
 			weapons.blooddripdelay[i]=0;
 			weapons.onfire[i]=0;
 			weapons.flamedelay[i]=0;
 			weapons.damage[i]=0;
-			//weapons.type[i]=sword;
 			if(weapons.type[i]==sword){
 				weapons.mass[i]=1.5;
 				weapons.tipmass[i]=1;
@@ -2161,18 +2103,13 @@ void	Game::Loadlevel(const char *name){
 		LOG("Starting background music...");
 
 		OPENAL_StopSound(OPENAL_ALL);
-		if(environment==snowyenvironment)
-		{
+		if(environment==snowyenvironment){
 			if(ambientsound)
 			  emit_stream_np(stream_wind);
-		}
-		else if(environment==desertenvironment)
-		{
+		}else if(environment==desertenvironment){
 			if(ambientsound)
 			  emit_stream_np(stream_desertambient);
-		}
-		else if(environment==grassyenvironment)
-		{
+		}else if(environment==grassyenvironment){
 			if(ambientsound)
 			  emit_stream_np(stream_wind, 100.);
 		}
@@ -2182,9 +2119,7 @@ void	Game::Loadlevel(const char *name){
 		oldmusicvolume[3]=0;
 
 		if(!firstload)
-		{
 			firstload=1;
-		}
 	}
 	leveltime=0;
 	loadingstuff=0;
@@ -3510,7 +3445,8 @@ void Game::doDebugKeys(){
         //skip level
         if(whichlevel!=-2&&Input::isKeyPressed(SDLK_k)&&Input::isKeyDown(SDLK_LSHIFT)&&!editorenabled){
             targetlevel++;
-            if(targetlevel>numchallengelevels-1)targetlevel=0;
+            if(targetlevel>numchallengelevels-1)
+                targetlevel=0;
             loading=1;
             leveltime=5;
         }
@@ -3762,7 +3698,8 @@ void Game::doDebugKeys(){
 
             if(Input::isKeyPressed(SDLK_PERIOD)){
                 pathpointselected++;
-                if(pathpointselected>=numpathpoints)pathpointselected=-1;
+                if(pathpointselected>=numpathpoints)
+                    pathpointselected=-1;
             }
             if(Input::isKeyPressed(SDLK_COMMA)&&!Input::isKeyDown(SDLK_LSHIFT)){
                 pathpointselected--;

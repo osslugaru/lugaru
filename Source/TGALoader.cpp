@@ -29,16 +29,13 @@ extern short vRefNum;
 extern long dirID;
 extern bool visibleloading;
 extern Game * pgame;
-extern int loadscreencolor;
 
 extern bool LoadImage(const char * fname, TGAImageRec & tex);
 /********************> LoadTGA() <*****/
 bool upload_image(const unsigned char* filePath, bool hasalpha)
 {
-	if(visibleloading) {
-		loadscreencolor=1;
+	if(visibleloading) 
 		pgame->LoadingScreen();
-	}
 
 #if !PLATFORM_MACOSX
 

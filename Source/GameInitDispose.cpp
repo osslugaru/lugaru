@@ -61,7 +61,6 @@ extern long dirID;
 extern int mainmenu;
 extern int oldmainmenu;
 extern bool visibleloading;
-extern int loadscreencolor;
 extern float flashamount,flashr,flashg,flashb;
 extern int flashdelay;
 extern int whichjointstartarray[26];
@@ -418,14 +417,6 @@ void Game::LoadingScreen()
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_BLEND);
 		glColor4f(loadprogress/100,loadprogress/100,loadprogress/100,1);
-		//glColor4f(1,1,1,1);
-		/*if(loadscreencolor==0)glColor4f(1,1,1,1);
-		if(loadscreencolor==1)glColor4f(1,0,0,1);
-		if(loadscreencolor==2)glColor4f(0,1,0,1);
-		if(loadscreencolor==3)glColor4f(0,0,1,1);
-		if(loadscreencolor==4)glColor4f(1,1,0,1);
-		if(loadscreencolor==5)glColor4f(1,0,1,1);
-		*/
 		glPushMatrix();
 		//glScalef(.25,.25,.25);
 		glBegin(GL_QUADS);
@@ -482,13 +473,6 @@ void Game::LoadingScreen()
 		glEnable(GL_BLEND);
 		//glColor4f(loadprogress/100,loadprogress/100,loadprogress/100,1);
 		glColor4f(loadprogress/100,loadprogress/100,loadprogress/100,1);
-		/*if(loadscreencolor==0)glColor4f(1,1,1,1);
-		if(loadscreencolor==1)glColor4f(1,0,0,1);
-		if(loadscreencolor==2)glColor4f(0,1,0,1);
-		if(loadscreencolor==3)glColor4f(0,0,1,1);
-		if(loadscreencolor==4)glColor4f(1,1,0,1);
-		if(loadscreencolor==5)glColor4f(1,0,1,1);
-		*/
 		glPushMatrix();
 		//glScalef(.25,.25,.25);
 		glBegin(GL_QUADS);
@@ -600,7 +584,6 @@ void Game::LoadingScreen()
 		}
 
 		swap_gl_buffers();
-		loadscreencolor=0;
 	}
 }
 
@@ -641,13 +624,6 @@ void Game::FadeLoadingScreen(float howmuch)
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_BLEND);
 	glColor4f(loadprogress/100,0,0,1);
-	/*if(loadscreencolor==0)glColor4f(1,1,1,1);
-	if(loadscreencolor==1)glColor4f(1,0,0,1);
-	if(loadscreencolor==2)glColor4f(0,1,0,1);
-	if(loadscreencolor==3)glColor4f(0,0,1,1);
-	if(loadscreencolor==4)glColor4f(1,1,0,1);
-	if(loadscreencolor==5)glColor4f(1,0,1,1);
-	*/
 	glPushMatrix();
 	//glScalef(.25,.25,.25);
 	glBegin(GL_QUADS);
@@ -679,7 +655,6 @@ void Game::FadeLoadingScreen(float howmuch)
 	text.glPrint(280,125,string,1,1,640,480);
 	*/
 	swap_gl_buffers();
-	loadscreencolor=0;
 }
 
 
@@ -1156,7 +1131,6 @@ void Game::LoadStuff()
 		}
 	}
 
-	loadscreencolor=4;
 	LoadingScreen();
 
 	for(i=0;i<player[0].skeleton.num_joints;i++){
@@ -1165,7 +1139,6 @@ void Game::LoadStuff()
 		}
 	}
 
-	loadscreencolor=4;
 	LoadingScreen();
 
 	for(i=0;i<player[0].skeleton.num_joints;i++){
@@ -1189,13 +1162,11 @@ void Game::LoadStuff()
 			animation[swordsneakattackanim].position[i][j]+=moveamount;
 		}
 	}
-	loadscreencolor=4;
 	LoadingScreen();
 	for(j=0;j<animation[swordsneakattackanim].numframes;j++){
 		animation[swordsneakattackanim].weapontarget[j]+=moveamount;
 	}
 
-	loadscreencolor=4;
 	LoadingScreen();
 
 	for(i=0;i<player[0].skeleton.num_joints;i++){
@@ -1210,13 +1181,11 @@ void Game::LoadStuff()
 	}
 	}
 	*/
-	loadscreencolor=4;
 	LoadingScreen();
 	temptexdetail=texdetail;
 	texdetail=1;
 	texdetail=temptexdetail;
 
-	loadscreencolor=4;
 	LoadingScreen();
 
 	//if(ismotionblur){
