@@ -2176,8 +2176,7 @@ void Game::MenuTick(){
                 mainmenu=1;
             }
         }
-    }
-    if(mainmenu==3){
+    }else if(mainmenu==3){
         if(Input::MouseClicked()){
 
             if(selected!=-1)
@@ -2296,8 +2295,7 @@ void Game::MenuTick(){
                     break;
             }
         }
-    }
-    if(mainmenu==4){
+    }else if(mainmenu==4){
         if(Input::MouseClicked()&&selected!=-1&&!waiting){
             fireSound();
             if(selected<9&&keyselect==-1)
@@ -2317,9 +2315,7 @@ void Game::MenuTick(){
                 if(newscreenheight<0)newscreenheight=screenheight;
             }
         }
-    }
-
-    if(mainmenu==5){
+    }else if(mainmenu==5){
 
         if(endgame==2){
             accountactive->endGame();
@@ -2383,8 +2379,7 @@ void Game::MenuTick(){
                     break;
             }
         }
-    }
-    else if(mainmenu==9){
+    }else if(mainmenu==9){
         if(Input::MouseClicked()&&selected<numchallengelevels&&selected>=0&&selected<=accountactive->getProgress()){
             fireSound();
             flash();
@@ -2410,17 +2405,14 @@ void Game::MenuTick(){
             flash();
             mainmenu=5;
         }
-    }
-    if(mainmenu==10){
+    }else if(mainmenu==10){
         endgame=2;
         if(Input::MouseClicked()&&selected==3){
             fireSound();
             flash();
             mainmenu=5;
         }
-    }
-
-    if(mainmenu==6){
+    }else if(mainmenu==6){
         if(Input::MouseClicked()) {
             if(selected>-1){
                 fireSound();
@@ -2434,8 +2426,7 @@ void Game::MenuTick(){
                 }
             }
         }
-    }
-    if(mainmenu==7){
+    }else if(mainmenu==7){
         if(Input::MouseClicked()) {
             if(selected!=-1){
                 fireSound();
@@ -2459,8 +2450,7 @@ void Game::MenuTick(){
                 }
             }
         }
-    }
-    if(mainmenu==8){
+    }else if(mainmenu==8){
         if(Input::MouseClicked()&&selected>-1){
             fireSound();
             flash();
@@ -2468,8 +2458,7 @@ void Game::MenuTick(){
                 accountactive->setDifficulty(selected);
             mainmenu=5;
         }
-    }
-    if (mainmenu==18) {			
+    }else if(mainmenu==18){			
         if(Input::MouseClicked()&&selected==0) {
             newstereomode = (StereoMode)(newstereomode + 1);
             while(!CanInitStereo(newstereomode)) {
