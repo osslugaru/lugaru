@@ -243,27 +243,30 @@ void Game::inputText(char* str, int* charselected, int* nb_chars) {
 	switch(evenement.type) {
 		case SDL_KEYDOWN:
 			if(evenement.key.keysym.sym == SDLK_ESCAPE) {
-				for(i=0;i<255;i++){
-					str[i]=' ';
-				}
+				for(i=0;i<255;i++)
+					str[i]=0;
 				*nb_chars=0;
 				*charselected=0;
 				waiting=false;
 			} else if(evenement.key.keysym.sym==SDLK_BACKSPACE){
 				if((*charselected)!=0) {
-					for(i=(*charselected)-1;i<255;i++){
+					for(i=(*charselected)-1;i<255;i++)
 						str[i]=str[i+1];
-					}
-					str[255]=' ';
+					str[255]=0;
 					(*charselected)--;
 					(*nb_chars)--;
 				}
 			} else if(evenement.key.keysym.sym==SDLK_DELETE){
-				for(i=(*charselected);i<255;i++){
-					str[i]=str[i+1];
-				}
-				str[255]=' ';
-				(*nb_chars)--;
+				if((*charselected)<(*nb_chars)){
+                    for(i=(*charselected);i<255;i++)
+                        str[i]=str[i+1];
+                    str[255]=0;
+                    (*nb_chars)--;
+                }
+			} else if(evenement.key.keysym.sym==SDLK_HOME){
+                (*charselected)=0;
+			} else if(evenement.key.keysym.sym==SDLK_END){
+                (*charselected)=(*nb_chars);
 			} else if(evenement.key.keysym.sym==SDLK_LEFT){
 				if((*charselected)!=0)
 					(*charselected)--;
@@ -272,10 +275,9 @@ void Game::inputText(char* str, int* charselected, int* nb_chars) {
 					(*charselected)++;
 			} else if(evenement.key.keysym.sym==SDLK_RETURN) {
 				waiting=false;
-			} else if((evenement.key.keysym.unicode<127)&&((*nb_chars)<60)&&(evenement.key.keysym.sym!=SDLK_LSHIFT)&&(evenement.key.keysym.sym!=SDLK_RSHIFT)) {
-				for(i=255;i>=(*charselected)+1;i--){
+			} else if(evenement.key.keysym.unicode>=32&&evenement.key.keysym.unicode<127&&(*nb_chars)<60){
+				for(i=255;i>=(*charselected)+1;i--)
 					str[i]=str[i-1];
-				}
 				str[*charselected]=evenement.key.keysym.unicode;
 				(*charselected)++;
 				(*nb_chars)++;

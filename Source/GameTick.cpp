@@ -2451,7 +2451,7 @@ void Game::MenuTick(){
                     mainmenu=1;
 
                     for(int j=0;j<255;j++){
-                        displaytext[0][j]=' ';
+                        displaytext[0][j]=0;
                     }
                     displaychars[0]=0;
                     displayselected=0;
@@ -2536,7 +2536,7 @@ void Game::MenuTick(){
                 fireSound(firestartsound);
 
                 for(int i=0;i<255;i++){
-                    displaytext[0][i]=' ';
+                    displaytext[0][i]=0;
                 }
                 displaychars[0]=0;
 
@@ -6047,13 +6047,6 @@ void Game::Tick(){
 		if(!winfreeze)leveltime+=multiplier;
 
         //keys
-		if(Input::isKeyDown(SDLK_ESCAPE)){
-			chatting=0;
-			console=0;
-			freeze=0;
-			displaychars[0]=0;
-		}
-
 		if(Input::isKeyPressed(SDLK_v)&&debugmode){
 			freeze=1-freeze;
 			if(freeze){
@@ -6068,9 +6061,8 @@ void Game::Tick(){
 			inputText(displaytext[0],&displayselected,&displaychars[0]);
 			if(!waiting) {
 				if(displaychars[0]){
-					for(int j=0;j<255;j++){
-						displaytext[0][j]=' ';
-					}
+					for(int j=0;j<255;j++)
+						displaytext[0][j]=0;
 					displaychars[0]=0;
 					displayselected=0;
 				}	
@@ -6102,18 +6094,16 @@ void Game::Tick(){
 			inputText(consoletext[0],&consoleselected,&consolechars[0]);
 			if(!waiting) {
 				archiveselected=0;
-				cmd_dispatch(this, consoletext[0]);
 				if(consolechars[0]>0){
-
+                    consoletext[0][consolechars[0]]=' ';
+                    cmd_dispatch(this, consoletext[0]);
 					for(int k=14;k>=1;k--){
-						for(int j=0;j<255;j++){
+						for(int j=0;j<255;j++)
 							consoletext[k][j]=consoletext[k-1][j];
-						}
 						consolechars[k]=consolechars[k-1];
 					}
-					for(int j=0;j<255;j++){
-						consoletext[0][j]=' ';
-					}
+					for(int j=0;j<255;j++)
+						consoletext[0][j]=0;
 					consolechars[0]=0;
 					consoleselected=0;
 				}
@@ -6153,11 +6143,15 @@ void Game::Tick(){
 		if((Input::isKeyPressed(jumpkey)||Input::isKeyPressed(SDLK_SPACE))&&!campaign)
 			if(winfreeze)
                 winfreeze=0;
-		if((Input::isKeyDown(SDLK_ESCAPE))&&!campaign&&gameon)
-			if(winfreeze){
+		if((Input::isKeyDown(SDLK_ESCAPE))&&!campaign&&gameon){
+            if(console){
+                console=0;
+                freeze=0;
+            }else if(winfreeze){
 				mainmenu=9;
 				gameon=0;
 			}
+        }
 
 
 
