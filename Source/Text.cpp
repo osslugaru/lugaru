@@ -78,8 +78,10 @@ void Text::BuildFont()								// Build Our Font Display List
 
 	if (base)
 	{
-		LOG("Font already created...");
-		return;
+		glDeleteLists(base, 512);
+		base = 0;
+		//LOG("Font already created...");
+		//return;
 	}
 
 //	base=glGenLists(256);								// Creating 256 Display Lists

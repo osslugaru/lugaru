@@ -61,13 +61,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern GLuint rabbittexture;
 
+struct TextureInfo;
+
 class Game
 {
 	public:
-		typedef std::map<std::string, GLuint> TextureList;
-		typedef std::map<GLuint, std::string> GLTextureList;
-		typedef TextureList::iterator TexIter;
-		static TextureList textures;
+		static std::vector<TextureInfo> textures;
 
 		GLuint terraintexture;
 		GLuint terraintexture2;
@@ -220,9 +219,12 @@ class Game
 
 		static void LoadTexture(const char *fileName, GLuint *textureid,int mipmap, bool hasalpha);
 		static void LoadTextureSave(const char *fileName, GLuint *textureid,int mipmap,GLubyte *array, int *skinsize);
+		static void LoadTextureData(const char *fileName, GLuint *textureid,int mipmap, bool hasalpha);
+		static void LoadTextureSaveData(const char *fileName, GLuint *textureid,int mipmap,GLubyte *array, int *skinsize, bool reload);
 		void LoadSave(const char *fileName, GLuint *textureid,bool mipmap,GLubyte *array, int *skinsize);
-		bool AddClothes(const char *fileName, GLuint *textureid,bool mipmap,GLubyte *array, int *skinsize);
+        bool AddClothes(const char *fileName, GLubyte *array);
 		void InitGame();
+		void LoadScreenTexture();
 		void LoadStuff();
 		void LoadingScreen();
 		void FadeLoadingScreen(float howmuch);
@@ -296,6 +298,33 @@ class Game
 		bool waiting;
 		//int mainmenu;
 		Account* accountactive;
+};
+
+//keeps track of which textures are loaded
+//TODO: delete them properly
+struct TextureInfo{
+    bool isLoaded;
+    bool isSkin;
+    const char* fileName;
+    GLuint* ptextureid;
+    int mipmap;
+    bool hasalpha;
+    GLubyte* array;
+    int* skinsize;
+
+    void load(){
+        if(isSkin)
+            Game::LoadTextureSaveData(fileName,ptextureid,mipmap,array,skinsize,isLoaded);
+        else
+            Game::LoadTextureData(fileName,ptextureid,mipmap,hasalpha);
+        isLoaded=true;
+    }
+    TextureInfo(const char *_fileName, GLuint *_ptextureid,int _mipmap, bool _hasalpha):
+        isLoaded(false), isSkin(false), array(NULL), skinsize(NULL),
+        fileName(_fileName), ptextureid(_ptextureid), mipmap(_mipmap), hasalpha(_hasalpha) { }
+    TextureInfo(const char *_fileName, GLuint *_ptextureid, int _mipmap, GLubyte *_array, int *_skinsize):
+        isLoaded(false), isSkin(true), hasalpha(false),
+        fileName(_fileName), ptextureid(_ptextureid), mipmap(_mipmap), array(_array), skinsize(_skinsize) { }
 };
 
 #ifndef __forceinline

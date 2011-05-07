@@ -236,8 +236,6 @@ void initGL(){
 		fprintf(stderr, "Failed to initialize stereo, disabling.\n");
 		stereomode = stereoNone;
 	}
-
-    //TODO: load textures here
 }
 
 static void toggleFullscreen(){
@@ -248,7 +246,13 @@ static void toggleFullscreen(){
         screen=SDL_SetVideoMode(0,0,0,flags);
     if(!screen)
         exit(1);
+    //reload opengl state
     initGL();
+    for(std::vector<TextureInfo>::iterator it=Game::textures.begin(); it!=Game::textures.end(); it++){
+        it->load();
+    }
+    pgame->text.BuildFont();
+    pgame->LoadScreenTexture();
 }
 
 static void sdlEventProc(const SDL_Event &e, Game &game){
@@ -358,8 +362,9 @@ Boolean SetUp (Game & game)
 	}
 
     Uint32 sdlflags = SDL_OPENGL;
-    if (!cmdline("windowed"))
-        sdlflags |= SDL_FULLSCREEN;
+    //TODO: commented out temporarily
+    //if (!cmdline("windowed"))
+        //sdlflags |= SDL_FULLSCREEN;
 
     SDL_WM_SetCaption("Lugaru", "Lugaru");
 

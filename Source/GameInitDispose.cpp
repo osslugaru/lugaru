@@ -99,8 +99,6 @@ void LOG(const std::string &fmt, ...)
 }
 
 
-Game::TextureList Game::textures;
-
 void Game::Dispose()
 {
 	int i,j;
@@ -114,13 +112,7 @@ void Game::Dispose()
 
 	Account::saveFile(":Data:Users", accountactive);
 
-	TexIter it = textures.begin();
-	for (; it != textures.end(); ++it)
-	{
-		if (glIsTexture(it->second))
-			glDeleteTextures(1, &it->second);
-	}
-	textures.clear();
+	//textures.clear();
 
 	LOG("Shutting down sound system...");
 
@@ -145,7 +137,17 @@ void Game::Dispose()
 }
 
 
-void Game::LoadTexture(const char *fileName, GLuint *textureid,int mipmap, bool hasalpha)
+void Game::LoadTexture(const char *fileName, GLuint *textureid,int mipmap, bool hasalpha){
+    textures.push_back(TextureInfo(fileName,textureid,mipmap,hasalpha));
+    textures.back().load();
+}
+
+void Game::LoadTextureSave(const char *fileName, GLuint *textureid,int mipmap,GLubyte *array, int *skinsize){
+    textures.push_back(TextureInfo(fileName,textureid,mipmap,array,skinsize));
+    textures.back().load();
+}
+
+void Game::LoadTextureData(const char *fileName, GLuint *textureid,int mipmap, bool hasalpha)
 {
 	GLuint		type;
 
@@ -191,7 +193,7 @@ void Game::LoadTexture(const char *fileName, GLuint *textureid,int mipmap, bool 
 	}
 }
 
-void Game::LoadTextureSave(const char *fileName, GLuint *textureid,int mipmap,GLubyte *array, int *skinsize)
+void Game::LoadTextureSaveData(const char *fileName, GLuint *textureid,int mipmap,GLubyte *array, int *skinsize, bool reload)
 {
 	GLuint		type;
 	int i;
@@ -236,12 +238,12 @@ void Game::LoadTextureSave(const char *fileName, GLuint *textureid,int mipmap,GL
 		if(!mipmap)glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 
 		int tempnum=0;
-		for(i=0;i<(int)(texture.sizeY*texture.sizeX*bytesPerPixel);i++){
-			if((i+1)%4||type==GL_RGB){
-				array[tempnum]=texture.data[i];
-				tempnum++;
-			}
-		}
+        if(!reload)
+            for(i=0;i<(int)(texture.sizeY*texture.sizeX*bytesPerPixel);i++)
+                if((i+1)%4||type==GL_RGB){
+                    array[tempnum]=texture.data[i];
+                    tempnum++;
+                }
 
 		*skinsize=texture.sizeX;
 
@@ -294,7 +296,7 @@ void Game::LoadSave(const char *fileName, GLuint *textureid,bool mipmap,GLubyte 
 	}
 }
 
-bool Game::AddClothes(const char *fileName, GLuint *textureid,bool mipmap,GLubyte *array, int *skinsize)
+bool Game::AddClothes(const char *fileName, GLubyte *array)
 {
 	int i;
 	int bytesPerPixel;
@@ -875,6 +877,22 @@ void Game::InitGame()
 }
 
 
+void Game::LoadScreenTexture(){
+    glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+
+    if(!screentexture)
+        glGenTextures( 1, &screentexture );
+    glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture( GL_TEXTURE_2D, screentexture);
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+
+    glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, kTextureSize, kTextureSize, 0);
+}
+
 void Game::LoadStuff()
 {
 	static float temptexdetail;
@@ -1190,18 +1208,7 @@ void Game::LoadStuff()
 
 	//if(ismotionblur){
 	if(!screentexture){
-		glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-
-		glGenTextures( 1, &screentexture );
-		glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-
-
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture( GL_TEXTURE_2D, screentexture);
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-
-		glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, kTextureSize, kTextureSize, 0);
+        LoadScreenTexture();
 	}
 
 	if(targetlevel!=7){

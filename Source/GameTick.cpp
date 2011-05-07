@@ -639,7 +639,7 @@ static void set_clothes(int pnum, Game *game, const char *args)
   char buf[64];
   snprintf(buf, 63, ":Data:Textures:%s.png", args);
 
-  if (!game->AddClothes(buf,0,1,&player[pnum].skeleton.skinText[pnum],&player[pnum].skeleton.skinsize))
+  if (!game->AddClothes(buf,&player[pnum].skeleton.skinText[pnum]))
     return;
 
   player[pnum].DoMipmaps();
@@ -1955,7 +1955,7 @@ void Game::Loadlevel(const char *name){
 					tintr=player[i].clothestintr[j];
 					tintg=player[i].clothestintg[j];
 					tintb=player[i].clothestintb[j];
-					AddClothes((char *)player[i].clothes[j],0,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
+					AddClothes((char *)player[i].clothes[j],&player[i].skeleton.skinText[0]);
 				}
 				player[i].DoMipmaps();
 			}
@@ -3148,7 +3148,7 @@ void Game::doDebugKeys(){
                     tintr=player[closest].clothestintr[i];
                     tintg=player[closest].clothestintg[i];
                     tintb=player[closest].clothestintb[i];
-                    AddClothes((char *)player[closest].clothes[i],0,1,&player[closest].skeleton.skinText[0],&player[closest].skeleton.skinsize);
+                    AddClothes((char *)player[closest].clothes[i],&player[closest].skeleton.skinText[0]);
                 }
                 player[closest].DoMipmaps();
             }
@@ -3628,7 +3628,7 @@ void Game::doDebugKeys(){
                             tintr=player[numplayers].clothestintr[i];
                             tintg=player[numplayers].clothestintg[i];
                             tintb=player[numplayers].clothestintb[i];
-                            AddClothes((char *)player[numplayers].clothes[i],0,1,&player[numplayers].skeleton.skinText[0],&player[numplayers].skeleton.skinsize);
+                            AddClothes((char *)player[numplayers].clothes[i],&player[numplayers].skeleton.skinText[0]);
                         }
                     if(player[numplayers].numclothes){
                         player[numplayers].DoMipmaps();

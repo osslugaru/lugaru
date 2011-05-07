@@ -26,6 +26,8 @@ int directing;
 float dialoguetime;
 int dialoguegonethrough[20];
 
+std::vector<TextureInfo> Game::textures;
+
 Game::Game()
 {
 	terraintexture = 0;
