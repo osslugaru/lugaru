@@ -2953,55 +2953,6 @@ void Game::doTutorial(){
 void Game::doDebugKeys(){
 	float headprop,bodyprop,armprop,legprop;
     if(debugmode){
-		if(Input::isKeyPressed(SDLK_v)){
-			freeze=1-freeze;
-			if(freeze){
-				OPENAL_SetFrequency(OPENAL_ALL, 0.001);
-			}
-		}
-
-		if(Input::isKeyPressed(SDLK_BACKQUOTE)){
-			console=1-console;
-			if(console){
-				OPENAL_SetFrequency(OPENAL_ALL, 0.001);
-			} else {
-				freeze=0;
-				waiting=false;
-			}
-		}
-
-		if(console)
-            freeze=1;
-		if(console&&!Input::isKeyDown(SDLK_LMETA)){
-			inputText(consoletext[0],&consoleselected,&consolechars[0]);
-			if(!waiting) {
-				archiveselected=0;
-				cmd_dispatch(this, consoletext[0]);
-				if(consolechars[0]>0){
-
-					for(int k=14;k>=1;k--){
-						for(int j=0;j<255;j++){
-							consoletext[k][j]=consoletext[k-1][j];
-						}
-						consolechars[k]=consolechars[k-1];
-					}
-					for(int j=0;j<255;j++){
-						consoletext[0][j]=' ';
-					}
-					consolechars[0]=0;
-					consoleselected=0;
-				}
-			}
-
-			consoleblinkdelay-=multiplier;
-			if(consoleblinkdelay<=0){
-				consoleblinkdelay=.3;
-				consoleblink=1-consoleblink;
-			}
-		}
-
-
-
         if(Input::isKeyPressed(SDLK_h)){
             player[0].damagetolerance=200000;
             player[0].damage=0;
@@ -6103,6 +6054,13 @@ void Game::Tick(){
 			displaychars[0]=0;
 		}
 
+		if(Input::isKeyPressed(SDLK_v)&&debugmode){
+			freeze=1-freeze;
+			if(freeze){
+				OPENAL_SetFrequency(OPENAL_ALL, 0.001);
+			}
+		}
+
 		if(Input::isKeyPressed(chatkey)&&!console&&!chatting&&debugmode)
 			chatting=1;
 
@@ -6127,6 +6085,48 @@ void Game::Tick(){
 		}
 		if(chatting)
             keyboardfrozen=1;
+
+		if(Input::isKeyPressed(SDLK_BACKQUOTE)&&debugmode){
+			console=1-console;
+			if(console){
+				OPENAL_SetFrequency(OPENAL_ALL, 0.001);
+			} else {
+				freeze=0;
+				waiting=false;
+			}
+		}
+
+		if(console)
+            freeze=1;
+		if(console&&!Input::isKeyDown(SDLK_LMETA)){
+			inputText(consoletext[0],&consoleselected,&consolechars[0]);
+			if(!waiting) {
+				archiveselected=0;
+				cmd_dispatch(this, consoletext[0]);
+				if(consolechars[0]>0){
+
+					for(int k=14;k>=1;k--){
+						for(int j=0;j<255;j++){
+							consoletext[k][j]=consoletext[k-1][j];
+						}
+						consolechars[k]=consolechars[k-1];
+					}
+					for(int j=0;j<255;j++){
+						consoletext[0][j]=' ';
+					}
+					consolechars[0]=0;
+					consoleselected=0;
+				}
+			}
+
+			consoleblinkdelay-=multiplier;
+			if(consoleblinkdelay<=0){
+				consoleblinkdelay=.3;
+				consoleblink=1-consoleblink;
+			}
+		}
+
+
 
 		if(Input::isKeyDown(SDLK_q)&&Input::isKeyDown(SDLK_LMETA)){
 			tryquit=1;
@@ -6158,6 +6158,7 @@ void Game::Tick(){
 				mainmenu=9;
 				gameon=0;
 			}
+
 
 
         //TODO: what is this test?
