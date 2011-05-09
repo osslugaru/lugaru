@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <direct.h>
 #endif
 
+#include <limits>
 #include <ctime>
 #include "Game.h"
 #include "openal_wrapper.h"
@@ -495,7 +496,7 @@ static void ch_size(Game *game, const char *args)
 static int find_closest()
 {
   int closest = 0;
-  float closestdist = 1.0/0.0;
+  float closestdist = std::numeric_limits<float>::max();
 
   for (int i = 1; i < numplayers; i++) {
     float distance;
