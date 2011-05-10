@@ -1413,10 +1413,8 @@ void Game::Loadlevel(int which){
 }
 
 void Game::Loadlevel(const char *name){
-	static int oldlevel;
 	int templength;
 	float lamefloat;
-	int lameint;
 	static const char *pfx = ":Data:Maps:";
 	char *buf;
 
@@ -1448,8 +1446,6 @@ void Game::Loadlevel(const char *name){
 		tutorialmaxtime=1;
 	}
 	loadingstuff=1;
-	if(!firstload)
-		oldlevel=50;
 	pause_sound(whooshsound);
 	pause_sound(stream_firesound);
 
@@ -1638,8 +1634,6 @@ void Game::Loadlevel(const char *name){
                     funpackf(tfile, "Bf", &dialogueboxcolor[k][l][2]);
                     funpackf(tfile, "Bi", &dialogueboxsound[k][l]);
 
-                    bool doneread;
-
                     funpackf(tfile, "Bi",&templength);
                     if(templength>128||templength<=0)
                         templength=128;
@@ -1719,11 +1713,11 @@ void Game::Loadlevel(const char *name){
 
 			float maxdistance=0;
 			float tempdist;
-			int whichclosest;
+			//~ int whichclosest;
 			for(int i=0;i<objects.numobjects;i++){
 				tempdist=findDistancefast(&objects.center,&objects.position[i]);
 				if(tempdist>maxdistance){
-					whichclosest=i;
+					//~ whichclosest=i;
 					maxdistance=tempdist;
 				}
 			}
@@ -1875,9 +1869,6 @@ void Game::Loadlevel(const char *name){
 
 		fclose(tfile);
 
-		oldlevel=whichlevel;
-
-
 		if(numplayers>maxplayers-1)
             numplayers=maxplayers-1;
 		for(int i=0;i<numplayers;i++){
@@ -1941,8 +1932,8 @@ void Game::Loadlevel(const char *name){
 			}
 
 
-			int texsize;
-			texsize=512*512*3/texdetail/texdetail;
+			//~ int texsize;
+			//~ texsize=512*512*3/texdetail/texdetail;
 
 			LoadTextureSave(creatureskin[player[i].creature][player[i].whichskin],&player[i].skeleton.drawmodel.textureptr,1,&player[i].skeleton.skinText[0],&player[i].skeleton.skinsize);
 
@@ -3327,9 +3318,6 @@ void Game::doDebugKeys(){
         }
 
         if(Input::isKeyPressed(SDLK_n)&&Input::isKeyDown(SDLK_LCTRL)){
-            int closest=-1;
-            float closestdist=-1;
-            float distance;
             for(int i=0;i<objects.numobjects;i++){
                 if(objects.type[i]==treeleavestype){
                     objects.scale[i]*=.9;
@@ -5888,8 +5876,6 @@ void Game::Tick(){
 	static XYZ facing,flatfacing;
 	static int target;
 
-	int templength;
-
 	for(int i=0;i<15;i++){
 		displaytime[i]+=multiplier;
 	}
@@ -6460,8 +6446,6 @@ void Game::Tick(){
                 }
             }
 
-            static float keyrefreshdelay=0,bigrefreshdelay=0;
-
             if(!player[0].jumpkeydown){
                 player[0].jumptogglekeydown=0;
             }
@@ -6484,8 +6468,6 @@ void Game::Tick(){
 
                 hawkcalldelay=16+abs(Random()%8);
             }
-            static float temptexdetail;
-
 
             doDebugKeys();
 
@@ -6598,8 +6580,6 @@ void Game::Tick(){
                         player[i].targetheadrotation=180-roughDirection(participantfacing[whichdialogue][indialogue][i]);
                         player[i].targetheadrotation2=pitch(participantfacing[whichdialogue][indialogue][i]);
                     }
-
-                    bool pause;
 
                     if(leveltime<.5)
                         numenvsounds=0;
@@ -7558,7 +7538,6 @@ void Game::TickOnceAfter(){
 	static XYZ coltarget;
 	static XYZ target;
 	static XYZ col;
-	static float brotate;
 	static XYZ facing;
 	static float changedelay;
 	static bool alldead;
@@ -7819,8 +7798,6 @@ void Game::TickOnceAfter(){
                         stealthloading=0;
 
 					if(!stealthloading){
-						float gLoc[3]={0,0,0};
-						float vel[3]={0,0,0};
 						fireSound(firestartsound);
 
 						flash();
@@ -7862,7 +7839,6 @@ void Game::TickOnceAfter(){
 	facing=DoRotation(facing,0,0-rotation,0);
 	viewerfacing=facing;
 
-	brotate=0;
 	if(!cameramode){
 		if((animation[player[0].targetanimation].attack!=3&&animation[player[0].currentanimation].attack!=3)||player[0].skeleton.free)target=player[0].coords+player[0].currentoffset*(1-player[0].target)*player[0].scale+player[0].targetoffset*player[0].target*player[0].scale-player[0].facing*.05;
 		else target=player[0].oldcoords+player[0].currentoffset*(1-player[0].target)*player[0].scale+player[0].targetoffset*player[0].target*player[0].scale-player[0].facing*.05;

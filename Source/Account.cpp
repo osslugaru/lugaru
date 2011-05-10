@@ -167,7 +167,6 @@ Account* Account::loadFile(string filename) {
 
 void Account::saveFile(string filename, Account* accountactive) {
 	FILE *tfile;
-	int numaccounts;
 	int j;
 	
 	tfile=fopen(ConvertFileName(filename.c_str(), "wb"), "wb" );
