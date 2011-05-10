@@ -839,7 +839,7 @@ void Game::InitGame()
 	loadAllSounds();
 
 	if(musictoggle)
-	  emit_stream_np(stream_music3);
+	  emit_stream_np(stream_menutheme);
 
 	LoadTexture(":Data:Textures:Cursor.png",&cursortexture,0,1);
 

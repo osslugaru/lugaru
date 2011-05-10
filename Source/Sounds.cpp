@@ -69,7 +69,7 @@ void loadAllSounds()
   footstepsound4 = footstepst2;
   // Huh?
   // OPENAL_Sample_SetMode(samp[whooshsound], OPENAL_LOOP_NORMAL);
-  for (int i = stream_firesound; i <= stream_music3; i++)
+  for (int i = stream_firesound; i <= stream_menutheme; i++)
     OPENAL_Stream_SetMode(samp[i], OPENAL_LOOP_NORMAL);
 }
 

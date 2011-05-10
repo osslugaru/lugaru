@@ -442,7 +442,7 @@ int Game::DrawGLScene(StereoSide side)
 			}
 		}
 
-		if(!cameramode&&musictype==stream_music2)playerdist=findDistancefastflat(&player[0].coords,&viewer);
+		if(!cameramode&&musictype==stream_fighttheme)playerdist=findDistancefastflat(&player[0].coords,&viewer);
 		else playerdist=-100;
 		glPushMatrix();
 		glCullFace(GL_BACK);

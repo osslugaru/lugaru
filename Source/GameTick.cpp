@@ -78,7 +78,7 @@ extern bool keyboardfrozen;
 extern bool loadingstuff;
 extern XYZ windvector;
 extern bool debugmode;
-static int music1;
+static int leveltheme;
 extern int mainmenu;
 extern bool visibleloading;
 extern XYZ envsound[30];
@@ -1272,9 +1272,9 @@ void	Game::Setenvironment(int which)
 	float temptexdetail;
 	environment=which;
 
-	pause_sound(stream_music1snow);
-	pause_sound(stream_music1grass);
-	pause_sound(stream_music1desert);
+	pause_sound(stream_snowtheme);
+	pause_sound(stream_grasstheme);
+	pause_sound(stream_deserttheme);
 	pause_sound(stream_wind);
 	pause_sound(stream_desertambient);
 
@@ -2160,8 +2160,8 @@ void Game::MenuTick(){
                 }else{
                     //resume
                     mainmenu=0;
-                    pause_sound(stream_music3);
-                    resume_stream(music1);
+                    pause_sound(stream_menutheme);
+                    resume_stream(leveltheme);
                 }
             }
 
@@ -2188,7 +2188,7 @@ void Game::MenuTick(){
                 }else{
                     //quit
                     tryquit=1;
-                    pause_sound(stream_music3);
+                    pause_sound(stream_menutheme);
                 }
             }
             break;
@@ -2255,9 +2255,9 @@ void Game::MenuTick(){
                         musictoggle=1-musictoggle;
 
                         if(!musictoggle){
-                            pause_sound(music1);
-                            pause_sound(stream_music2);
-                            pause_sound(stream_music3);
+                            pause_sound(leveltheme);
+                            pause_sound(stream_fighttheme);
+                            pause_sound(stream_menutheme);
 
                             for(int i=0;i<4;i++){
                                 oldmusicvolume[i]=0;
@@ -2266,7 +2266,7 @@ void Game::MenuTick(){
                         }
 
                         if(musictoggle)
-                          emit_stream_np(stream_music3);
+                          emit_stream_np(stream_menutheme);
                         break;
                     case 7:
                         flash();
@@ -2357,7 +2357,7 @@ void Game::MenuTick(){
                     campaign=1;
                     mainmenu=0;
                     gameon=1;
-                    pause_sound(stream_music3);
+                    pause_sound(stream_menutheme);
                 }
                 if(selected>=1 && selected<=5){
                     fireSound();
@@ -2378,7 +2378,7 @@ void Game::MenuTick(){
 
                         mainmenu=0;
                         gameon=1;
-                        pause_sound(stream_music3);
+                        pause_sound(stream_menutheme);
                         break;
                     case 2:
                         mainmenu=9;
@@ -2459,7 +2459,7 @@ void Game::MenuTick(){
 
                 mainmenu=0;
                 gameon=1;
-                pause_sound(stream_music3);
+                pause_sound(stream_menutheme);
             }
             if(Input::MouseClicked()&&selected==numchallengelevels){
                 fireSound();
@@ -2525,7 +2525,7 @@ void Game::MenuTick(){
             loaddistrib=0;
         }
     }
-    OPENAL_SetFrequency(channels[stream_music3], 22050);
+    OPENAL_SetFrequency(channels[stream_menutheme], 22050);
 
     if(entername) {
         inputText(displaytext[0],&displayselected,&displaychars[0]);
@@ -4645,7 +4645,7 @@ void Game::doAttacks(){
                                                          player[i].skeleton.longdead<300&&
                                                          player[k].lastattack!=spinkickanim&&
                                                          player[i].skeleton.free)&&
-                                                        (!player[i].dead||musictype!=stream_music2)){
+                                                        (!player[i].dead||musictype!=stream_fighttheme)){
                                                     player[k].targetanimation=dropkickanim;
                                                     for(int j=0;j<terrain.numdecals;j++){
                                                         if((terrain.decaltype[j]==blooddecal||terrain.decaltype[j]==blooddecalslow)&&
@@ -6020,13 +6020,13 @@ void Game::Tick(){
             //play menu theme
             if(musictoggle&&(mainmenu==1||mainmenu==2||mainmenu==100)){
                 OPENAL_SetFrequency(OPENAL_ALL, 0.001);
-                emit_stream_np(stream_music3);
-                pause_sound(music1);
+                emit_stream_np(stream_menutheme);
+                pause_sound(leveltheme);
             }
             //on resume, play level music
             if(!mainmenu){
-                pause_sound(stream_music3);
-                resume_stream(music1);
+                pause_sound(stream_menutheme);
+                resume_stream(leveltheme);
             }
             //finished with settings menu
 			if(mainmenu==3){
@@ -7070,7 +7070,7 @@ void Game::Tick(){
                             player[i].attackkeydown){
                         if(weapons.bloody[player[i].weaponids[player[i].weaponactive]]&&
                                 player[i].onterrain&&
-                                bloodtoggle&&musictype!=stream_music2){
+                                bloodtoggle&&musictype!=stream_fighttheme){
                             if(weapons.type[player[i].weaponids[player[i].weaponactive]]==knife)
                                 setAnimation(i,crouchstabanim);
                             if(weapons.type[player[i].weaponids[player[i].weaponactive]]==sword)
@@ -7511,7 +7511,7 @@ void Game::Tick(){
                         OPENAL_StopSound(OPENAL_ALL);  // hack...OpenAL renderer isn't stopping music after tutorial goes to level menu...
                         OPENAL_SetFrequency(OPENAL_ALL, 0.001);
 
-                        emit_stream_np(stream_music3);
+                        emit_stream_np(stream_menutheme);
 
                         gameon=0;
                         mainmenu=5;
@@ -7635,15 +7635,15 @@ void	Game::TickOnceAfter(){
 	if(!mainmenu){
 
 		if(environment==snowyenvironment)
-            music1=stream_music1snow;
+            leveltheme=stream_snowtheme;
 		if(environment==grassyenvironment)
-            music1=stream_music1grass;
+            leveltheme=stream_grasstheme;
 		if(environment==desertenvironment)
-            music1=stream_music1desert;
+            leveltheme=stream_deserttheme;
 
 		realthreat=0;
 
-		musictype=music1;
+		musictype=leveltheme;
 		for(int i=0;i<numplayers;i++){
 			if((player[i].aitype==attacktypecutoff||
                         player[i].aitype==getweapontype||
@@ -7653,26 +7653,26 @@ void	Game::TickOnceAfter(){
                     (player[i].targetanimation!=sneakattackedanim&&
                      player[i].targetanimation!=knifesneakattackedanim&&
                      player[i].targetanimation!=swordsneakattackedanim)){
-				musictype=stream_music2;
+				musictype=stream_fighttheme;
 				realthreat=1;
 			}
 		}
 		if(player[0].dead)
-            musictype=stream_music3;
+            musictype=stream_menutheme;
 
 
-		if(musictype==stream_music2)
+		if(musictype==stream_fighttheme)
 			unseendelay=1;
 
-		if(oldmusictype==stream_music2&&musictype!=stream_music2){
+		if(oldmusictype==stream_fighttheme&&musictype!=stream_fighttheme){
 			unseendelay-=multiplier;
 			if(unseendelay>0)
-				musictype=stream_music2;
+				musictype=stream_fighttheme;
 		}
 
 
 		if(loading==2){
-			musictype=stream_music3;
+			musictype=stream_menutheme;
 			musicvolume[2]=512;
 			musicvolume[0]=0;
 			musicvolume[1]=0;
@@ -7680,19 +7680,19 @@ void	Game::TickOnceAfter(){
 		}
 
 		if(musictoggle)
-			if(musictype!=oldmusictype&&musictype==stream_music2)
+			if(musictype!=oldmusictype&&musictype==stream_fighttheme)
 				emit_sound_np(alarmsound);
 		musicselected=musictype;
 
-		if(musicselected==music1)
+		if(musicselected==leveltheme)
             musicvolume[0]+=multiplier*450;
 		else
             musicvolume[0]-=multiplier*450;
-		if(musicselected==stream_music2)
+		if(musicselected==stream_fighttheme)
             musicvolume[1]+=multiplier*450;
 		else
             musicvolume[1]-=multiplier*450;
-		if(musicselected==stream_music3)
+		if(musicselected==stream_menutheme)
             musicvolume[2]+=multiplier*450;
 		else
             musicvolume[2]-=multiplier*450;
@@ -7709,31 +7709,31 @@ void	Game::TickOnceAfter(){
 
 		if(musictoggle){
 			if(musicvolume[0]>0&&oldmusicvolume[0]<=0)
-			  emit_stream_np(music1, musicvolume[0]);
+			  emit_stream_np(leveltheme, musicvolume[0]);
 			if(musicvolume[1]>0&&oldmusicvolume[1]<=0)
-			  emit_stream_np(stream_music2, musicvolume[1]);
+			  emit_stream_np(stream_fighttheme, musicvolume[1]);
 			if(musicvolume[2]>0&&oldmusicvolume[2]<=0)
-			  emit_stream_np(stream_music3, musicvolume[2]);
+			  emit_stream_np(stream_menutheme, musicvolume[2]);
 			if(musicvolume[0]<=0&&oldmusicvolume[0]>0)
-				pause_sound(music1);
+				pause_sound(leveltheme);
 			if(musicvolume[1]<=0&&oldmusicvolume[1]>0)
-				pause_sound(stream_music2);
+				pause_sound(stream_fighttheme);
 			if(musicvolume[2]<=0&&oldmusicvolume[2]>0)
-				pause_sound(stream_music3);
+				pause_sound(stream_menutheme);
 
 			if(musicvolume[0]!=oldmusicvolume[0])
-				OPENAL_SetVolume(channels[music1], musicvolume[0]);
+				OPENAL_SetVolume(channels[leveltheme], musicvolume[0]);
 			if(musicvolume[1]!=oldmusicvolume[1])
-				OPENAL_SetVolume(channels[stream_music2], musicvolume[1]);
+				OPENAL_SetVolume(channels[stream_fighttheme], musicvolume[1]);
 			if(musicvolume[2]!=oldmusicvolume[2])
-				OPENAL_SetVolume(channels[stream_music3], musicvolume[2]);
+				OPENAL_SetVolume(channels[stream_menutheme], musicvolume[2]);
 
 			for(int i=0;i<3;i++)
 				oldmusicvolume[i]=musicvolume[i];
 		} else {
-			pause_sound(music1);
-			pause_sound(stream_music2);
-			pause_sound(stream_music3);
+			pause_sound(leveltheme);
+			pause_sound(stream_fighttheme);
+			pause_sound(stream_menutheme);
 
 			for(int i=0;i<4;i++){
 				oldmusicvolume[i]=0;
@@ -7968,7 +7968,7 @@ void	Game::TickOnceAfter(){
 					campaign=1;
 					mainmenu=0;
 					gameon=1;
-					pause_sound(stream_music3);
+					pause_sound(stream_menutheme);
 
 					stealthloading=0;
 				}
