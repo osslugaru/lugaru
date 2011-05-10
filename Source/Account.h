@@ -47,7 +47,7 @@ class Account {
 		void setDifficulty(int i) { difficulty = i; };
 		const char* getName() { return name.c_str(); };
 		float getCampaignScore() { return campaignscore; };
-		int getCampaignChoicesMade() { return campaignchoicesmade; };
+		int getCampaignChoicesMade() { return campaignchoices.size(); };
 		int getCampaignChoice(int i) { return campaignchoices[i]; };
 		void setCampaignScore(int s) {
 			campaignscore=s;
@@ -80,8 +80,7 @@ class Account {
 		float campaignfasttime;
 		float campaignscore;
 		float campaigntime;
-		int campaignchoicesmade;
-		int campaignchoices[5000]; // should really disappear. I'd use a vector or something like that.
+		std::vector<int> campaignchoices;
 	
 	//statics
 		static std::vector<Account*> accounts;

@@ -44,8 +44,6 @@ Account::Account(string n) {
 	campaignfasttime = 0;
 	campaignscore = 0;
 	campaigntime = 0;
-	campaignchoicesmade = 0;
-	memset(campaignchoices, 0, sizeof(campaignchoices));
 }
 
 Account* Account::add(string name) {
@@ -80,13 +78,13 @@ int Account::getDifficulty() {
 }
 
 void Account::endGame() {
-	campaignchoicesmade=0;
+	campaignchoices.clear();
 	campaignscore=0;
 	campaigntime=0;
 }
 
 void Account::winCampaignLevel(int choice, float score, float time) {
-	campaignchoices[campaignchoicesmade++] = choice;
+	campaignchoices.push_back(choice);
 	setCampaignScore(campaignscore+score);
 	campaigntime = time;
 }
@@ -125,14 +123,16 @@ Account* Account::loadFile(string filename) {
 			funpackf(tfile, "Bf", &(acc->campaignhighscore));
 			funpackf(tfile, "Bi", &(acc->difficulty));
 			funpackf(tfile, "Bi", &(acc->progress));
-			funpackf(tfile, "Bi", &(acc->campaignchoicesmade));
-			for(j=0;j<acc->campaignchoicesmade;j++)
+			int campaignchoicesmade,campaignchoice;
+			funpackf(tfile, "Bi", &campaignchoicesmade);
+			for(j=0;j<campaignchoicesmade;j++)
 			{
-				funpackf(tfile, "Bi", &(acc->campaignchoices[j]));
-				if (acc->campaignchoices[j] >= 10)
+				funpackf(tfile, "Bi", &campaignchoice);
+				if (campaignchoice >= 10) // what is that for?
 				{
-					acc->campaignchoices[j] = 0;
+					campaignchoice = 0;
 				}
+				acc->campaignchoices.push_back(campaignchoice);
 			}
 			funpackf(tfile, "Bf", &(acc->points));
 			for(j=0;j<50;j++)
@@ -186,8 +186,8 @@ void Account::saveFile(string filename, Account* accountactive) {
 			fpackf(tfile, "Bf", a->campaignhighscore);
 			fpackf(tfile, "Bi", a->difficulty);
 			fpackf(tfile, "Bi", a->progress);
-			fpackf(tfile, "Bi", a->campaignchoicesmade);
-			for(j=0;j<a->campaignchoicesmade;j++)
+			fpackf(tfile, "Bi", a->getCampaignChoicesMade());
+			for(j=0;j<a->getCampaignChoicesMade();j++)
 			{
 				fpackf(tfile, "Bi", a->campaignchoices[j]);
 			}
