@@ -25,8 +25,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <vector>
 #include <string>
+#include <map>
 #include <fstream>
 
+typedef struct {
+	float highscore;
+	float fasttime;
+	float score;
+	float time;
+	std::vector<int> choices;
+} campaign_progress_t;
 
 class Account {
 	public:
@@ -46,22 +54,22 @@ class Account {
 		int getDifficulty();
 		void setDifficulty(int i) { difficulty = i; };
 		const char* getName() { return name.c_str(); };
-		float getCampaignScore() { return campaignscore; };
-		int getCampaignChoicesMade() { return campaignchoices.size(); };
-		int getCampaignChoice(int i) { return campaignchoices[i]; };
+		float getCampaignScore() { return campaignProgress[currentCampaign].score; };
+		int getCampaignChoicesMade() { return campaignProgress[currentCampaign].choices.size(); };
+		int getCampaignChoice(int i) { return campaignProgress[currentCampaign].choices[i]; };
 		void setCampaignScore(int s) {
-			campaignscore=s;
-			if(s>campaignhighscore)
-				campaignhighscore=s;
+			campaignProgress[currentCampaign].score=s;
+			if(s>campaignProgress[currentCampaign].highscore)
+				campaignProgress[currentCampaign].highscore=s;
 		};
 		void setCampaignFinalTime(float t) {
-				campaigntime = t;
-				if((t<campaignfasttime) || (campaignfasttime==0) && (t!=0))
-					campaignfasttime = t;
+				campaignProgress[currentCampaign].time = t;
+				if((t<campaignProgress[currentCampaign].fasttime) || (campaignProgress[currentCampaign].fasttime==0) && (t!=0))
+					campaignProgress[currentCampaign].fasttime = t;
 		};
-		float getCampaignFasttime() { return campaignfasttime; };
-		void resetFasttime() { campaignfasttime = 0; };
-		float getCampaignHighScore() { return campaignhighscore; };
+		float getCampaignFasttime() { return campaignProgress[currentCampaign].fasttime; };
+		void resetFasttime() { campaignProgress[currentCampaign].fasttime = 0; };
+		float getCampaignHighScore() { return campaignProgress[currentCampaign].highscore; };
 		float getHighScore(int i) { return highscore[i]; };
 		float getFastTime(int i) { return fasttime[i]; };
 		int getProgress() { return progress; };
@@ -70,17 +78,15 @@ class Account {
 	private:
 		Account(std::string n="");
 		int difficulty;
-		int progress;
+		int progress; // progress in challenge levels
 		float points;
 		float highscore[50];
 		float fasttime[50];
 		bool unlocked[60];
 		std::string name;
-		float campaignhighscore;
-		float campaignfasttime;
-		float campaignscore;
-		float campaigntime;
-		std::vector<int> campaignchoices;
+		
+		std::string currentCampaign;
+		std::map<std::string,campaign_progress_t> campaignProgress;
 	
 	//statics
 		static std::vector<Account*> accounts;

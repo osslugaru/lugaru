@@ -40,10 +40,8 @@ Account::Account(string n) {
 	memset(highscore, 0, sizeof(highscore));
 	memset(fasttime, 0, sizeof(fasttime));
 	memset(unlocked, 0, sizeof(unlocked));
-	campaignhighscore = 0;
-	campaignfasttime = 0;
-	campaignscore = 0;
-	campaigntime = 0;
+	
+	currentCampaign = "main";
 }
 
 Account* Account::add(string name) {
@@ -78,15 +76,15 @@ int Account::getDifficulty() {
 }
 
 void Account::endGame() {
-	campaignchoices.clear();
-	campaignscore=0;
-	campaigntime=0;
+	campaignProgress[currentCampaign].choices.clear();
+	campaignProgress[currentCampaign].score=0;
+	campaignProgress[currentCampaign].time=0;
 }
 
 void Account::winCampaignLevel(int choice, float score, float time) {
-	campaignchoices.push_back(choice);
-	setCampaignScore(campaignscore+score);
-	campaigntime = time;
+	campaignProgress[currentCampaign].choices.push_back(choice);
+	setCampaignScore(campaignProgress[currentCampaign].score+score);
+	campaignProgress[currentCampaign].time = time;
 }
 
 void Account::winLevel(int level, float score, float time) {
@@ -117,23 +115,40 @@ Account* Account::loadFile(string filename) {
 		{
 			printf("loading account %d/%d\n",i,numaccounts);
 			Account* acc = new Account();
-			funpackf(tfile, "Bf", &(acc->campaigntime));
-			funpackf(tfile, "Bf", &(acc->campaignscore));
-			funpackf(tfile, "Bf", &(acc->campaignfasttime));
-			funpackf(tfile, "Bf", &(acc->campaignhighscore));
 			funpackf(tfile, "Bi", &(acc->difficulty));
 			funpackf(tfile, "Bi", &(acc->progress));
-			int campaignchoicesmade,campaignchoice;
-			funpackf(tfile, "Bi", &campaignchoicesmade);
-			for(j=0;j<campaignchoicesmade;j++)
-			{
-				funpackf(tfile, "Bi", &campaignchoice);
-				if (campaignchoice >= 10) // what is that for?
+			int nbCampaigns;
+			funpackf(tfile, "Bi", &nbCampaigns);
+			printf("loading %d campaign progress info\n",nbCampaigns);
+			
+			for(int k=0;k<nbCampaigns;++k) {
+				string campaignName = "";
+				int t;
+				char c;
+				funpackf(tfile, "Bi",  &t);
+				for(j=0;j<t;j++)
 				{
-					campaignchoice = 0;
+					funpackf(tfile, "Bb",  &c);
+					campaignName.append(1,c);
 				}
-				acc->campaignchoices.push_back(campaignchoice);
+				printf("loading %s campaign progress info\n",campaignName.c_str());
+				funpackf(tfile, "Bf", &(acc->campaignProgress[campaignName].time));
+				funpackf(tfile, "Bf", &(acc->campaignProgress[campaignName].score));
+				funpackf(tfile, "Bf", &(acc->campaignProgress[campaignName].fasttime));
+				funpackf(tfile, "Bf", &(acc->campaignProgress[campaignName].highscore));
+				int campaignchoicesmade,campaignchoice;
+				funpackf(tfile, "Bi", &campaignchoicesmade);
+				for(j=0;j<campaignchoicesmade;j++)
+				{
+					funpackf(tfile, "Bi", &campaignchoice);
+					if (campaignchoice >= 10) // what is that for?
+					{
+						campaignchoice = 0;
+					}
+					acc->campaignProgress[campaignName].choices.push_back(campaignchoice);
+				}
 			}
+			
 			funpackf(tfile, "Bf", &(acc->points));
 			for(j=0;j<50;j++)
 			{
@@ -180,17 +195,28 @@ void Account::saveFile(string filename, Account* accountactive) {
 		{
 			Account* a = Account::get(i);
 			printf("writing account %d/%d (%s)\n",i+1,getNbAccounts(),a->getName());
-			fpackf(tfile, "Bf", a->campaigntime);
-			fpackf(tfile, "Bf", a->campaignscore);
-			fpackf(tfile, "Bf", a->campaignfasttime);
-			fpackf(tfile, "Bf", a->campaignhighscore);
 			fpackf(tfile, "Bi", a->difficulty);
 			fpackf(tfile, "Bi", a->progress);
-			fpackf(tfile, "Bi", a->getCampaignChoicesMade());
-			for(j=0;j<a->getCampaignChoicesMade();j++)
-			{
-				fpackf(tfile, "Bi", a->campaignchoices[j]);
+			fpackf(tfile, "Bi", a->campaignProgress.size());
+			
+			map<string,campaign_progress_t>::const_iterator it;
+			for( it=a->campaignProgress.begin(); it!= a->campaignProgress.end(); ++it) {
+				fpackf(tfile, "Bi",  it->first.size());
+				for(j=0;j<it->first.size();j++)
+				{
+					fpackf(tfile, "Bb",  it->first[j]);
+				}
+				fpackf(tfile, "Bf", it->second.time);
+				fpackf(tfile, "Bf", it->second.score);
+				fpackf(tfile, "Bf", it->second.fasttime);
+				fpackf(tfile, "Bf", it->second.highscore);
+				fpackf(tfile, "Bi", it->second.choices.size());
+				for(j=0;j<it->second.choices.size();j++)
+				{
+					fpackf(tfile, "Bi", it->second.choices[j]);
+				}
 			}
+			
 			fpackf(tfile, "Bf", a->points);
 			for(j=0;j<50;j++)
 			{

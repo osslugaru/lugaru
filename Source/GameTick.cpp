@@ -5936,10 +5936,10 @@ void Game::Tick(){
             if(mainmenu==0&&!winfreeze)
                 mainmenu=2; //pause
             else if(mainmenu==0&&winfreeze&&campaignchoosenext[campaignchoicewhich[whichchoice]]==1){
-                mainmenu=100;
+                mainmenu=100; // play menu sound and go to menu 5.
                 gameon=0;
                 winfreeze=0;
-            }else if(mainmenu==1||mainmenu==2)
+            } else if(mainmenu==1||mainmenu==2)
                 mainmenu=0; //unpause
             //play menu theme
             if(musictoggle&&(mainmenu==1||mainmenu==2||mainmenu==100)){

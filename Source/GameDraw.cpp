@@ -2098,7 +2098,7 @@ void Game::DrawMenu()
 
 	oldmainmenu=mainmenu;
 
-	if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==119||mainmenu==18){
+	if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==18){
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_ALPHA_TEST);
 		glAlphaFunc(GL_GREATER, 0.001f);
