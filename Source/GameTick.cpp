@@ -2151,17 +2151,17 @@ void Game::MenuTick(){
         case 1:
         case 2:
             if(Input::MouseClicked()&&selected==1){
-                if(!gameon){
-                    fireSound(firestartsound);
-                    flash();
-                    //new game
-                    mainmenu=accountactive?5:7;
-                    selected=-1;
-                }else{
+				if(gameon) {
                     //resume
                     mainmenu=0;
                     pause_sound(stream_menutheme);
                     resume_stream(leveltheme);
+				} else {
+                    fireSound(firestartsound);
+                    flash();
+                    //new game
+                    mainmenu=(accountactive?5:7);
+                    selected=-1;
                 }
             }
 
@@ -2170,12 +2170,12 @@ void Game::MenuTick(){
                 flash();
                 //options
                 mainmenu=3;
-                if(newdetail>2)newdetail=detail;
-                if(newdetail<0)newdetail=detail;
-                if(newscreenwidth>3000)newscreenwidth=screenwidth;
-                if(newscreenwidth<0)newscreenwidth=screenwidth;
-                if(newscreenheight>3000)newscreenheight=screenheight;
-                if(newscreenheight<0)newscreenheight=screenheight;
+                if(newdetail>2) newdetail=detail;
+                if(newdetail<0) newdetail=detail;
+                if(newscreenwidth>3000) newscreenwidth=screenwidth;
+                if(newscreenwidth<0) newscreenwidth=screenwidth;
+                if(newscreenheight>3000) newscreenheight=screenheight;
+                if(newscreenheight<0) newscreenheight=screenheight;
             }
 
             if(Input::MouseClicked()&&selected==3){

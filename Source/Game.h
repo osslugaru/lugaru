@@ -230,6 +230,7 @@ class Game
 		void FadeLoadingScreen(float howmuch);
 		void Dispose();
 		int DrawGLScene(StereoSide side);
+		void DrawMenu();
 		void DrawGL();
         //factored from Tick() -sf17k
 		void MenuTick();

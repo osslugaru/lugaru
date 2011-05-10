@@ -138,10 +138,6 @@ int Game::DrawGLScene(StereoSide side)
 	static char string2[256]="";
 	static char string3[256]="";
 
-	static float lastcheck;
-
-	lastcheck+=multiplier;
-
 	if ( stereomode == stereoAnaglyph ) {
 		switch(side) {
 			case stereoLeft: glColorMask( 0.0, 1.0, 1.0, 1.0 ); break;
@@ -1966,1457 +1962,15 @@ int Game::DrawGLScene(StereoSide side)
 		}
 	}
 
-	if(freeze||winfreeze||(mainmenu&&gameon)||(!gameon&&gamestarted)||(mainmenu&&gameon)||(!gameon&&gamestarted)||(!gameon&&gamestarted)){
+	if(freeze||winfreeze||(mainmenu&&gameon)||(!gameon&&gamestarted)){
 		multiplier=tempmult;
 	}
 
 	if(mainmenu){
-
-        // !!! FIXME: hack: clamp framerate in menu so text input works correctly on fast systems.
-        SDL_Delay(15);
-
-		glDrawBuffer(GL_BACK);
-		glReadBuffer(GL_BACK);
-		glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-		ReSizeGLScene(90,.1f);
-
-		int temptexdetail;
-		temptexdetail=texdetail;
-		if(texdetail>2)texdetail=2;
-		if(mainmenu!=oldmainmenu&&oldmainmenu!=0){
-			if(mainmenu==1){
-				LoadTexture(":Data:Textures:Newgame.png",&Mainmenuitems[1],0,0);
-				LoadTexture(":Data:Textures:Quit.png",&Mainmenuitems[3],0,0);
-			}
-			if(mainmenu==2){
-				LoadTexture(":Data:Textures:Resume.png",&Mainmenuitems[1],0,0);
-				LoadTexture(":Data:Textures:Endgame.png",&Mainmenuitems[3],0,0);
-			}
-		}
-		if(lastcheck>.5||oldmainmenu!=mainmenu){
-			if(mainmenu==5){
-				ifstream ipstream(ConvertFileName(":Data:Campaigns:main.txt"));
-				ipstream.ignore(256,':');
-				ipstream >> campaignnumlevels;
-				for(i=0;i<campaignnumlevels;i++){
-					ipstream.ignore(256,':');
-					ipstream.ignore(256,':');
-					ipstream.ignore(256,' ');
-					ipstream >> campaignmapname[i];
-					ipstream.ignore(256,':');
-					ipstream >> campaigndescription[i];
-					for(j=0;j<256;j++){
-						if(campaigndescription[i][j]=='_')campaigndescription[i][j]=' ';
-					}
-					ipstream.ignore(256,':');
-					ipstream >> campaignchoosenext[i];
-					ipstream.ignore(256,':');
-					ipstream >> campaignnumnext[i];
-					for(j=0;j<campaignnumnext[i];j++){
-						ipstream.ignore(256,':');
-						ipstream >> campaignnextlevel[i][j];
-						campaignnextlevel[i][j]-=1;
-					}
-					ipstream.ignore(256,':');
-					ipstream >> campaignlocationx[i];
-					ipstream.ignore(256,':');
-					ipstream >> campaignlocationy[i];
-				}
-				ipstream.close();
-
-				for(i=0;i<campaignnumlevels;i++){
-					levelvisible[i]=0;
-					levelhighlight[i]=0;
-				}
-
-				levelorder[0]=0;
-				levelvisible[0]=1;
-				for(i=0;i<(accountactive?accountactive->getCampaignChoicesMade():0);i++){
-					levelorder[i+1]=campaignnextlevel[levelorder[i]][accountactive->getCampaignChoice(i)];
-					levelvisible[levelorder[i+1]]=1;
-				}
-				int whichlevelstart = (accountactive?accountactive->getCampaignChoicesMade():0)-1;
-				if(whichlevelstart<0){
-					accountactive->setCampaignScore(0);
-					accountactive->resetFasttime();
-					campaignchoicenum=1;
-					campaignchoicewhich[0]=0;
-				}
-				else
-				{
-					campaignchoicenum=campaignnumnext[levelorder[whichlevelstart]];
-					for(i=0;i<campaignchoicenum;i++){
-						campaignchoicewhich[i]=campaignnextlevel[levelorder[whichlevelstart]][i];
-						levelvisible[campaignnextlevel[levelorder[whichlevelstart]][i]]=1;
-						levelhighlight[campaignnextlevel[levelorder[whichlevelstart]][i]]=1;
-					}
-				}
-			}
-		}
-		if(mainmenu==5){
-			lastcheck=0;
-		}
-
-		texdetail=temptexdetail;
-
-		oldmainmenu=mainmenu;
-
-		if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==119||mainmenu==18){
-			glClear(GL_DEPTH_BUFFER_BIT);
-			glEnable(GL_ALPHA_TEST);
-			glAlphaFunc(GL_GREATER, 0.001f);
-			glEnable(GL_TEXTURE_2D);
-			glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
-			glDisable(GL_CULL_FACE);
-			glDisable(GL_LIGHTING);
-			glDepthMask(0);
-			glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-			glPushMatrix();										// Store The Projection Matrix
-				glLoadIdentity();									// Reset The Projection Matrix
-				glOrtho(0,screenwidth,0,screenheight,-100,100);						// Set Up An Ortho Screen
-				glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-					glPushMatrix();										// Store The Modelview Matrix
-					glLoadIdentity();								// Reset The Modelview Matrix
-					glTranslatef(screenwidth/2,screenheight/2,0);
-					glPushMatrix();
-						glScalef((float)screenwidth/2,(float)screenheight/2,1);
-						glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-						glDisable(GL_BLEND);
-						glColor4f(0,0,0,1.0);
-						glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
-						glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
-						glDisable(GL_TEXTURE_2D);
-						glPushMatrix();
-							//glScalef(.25,.25,.25);
-							glBegin(GL_QUADS);
-							glTexCoord2f(0,0);
-							glVertex3f(-1,		-1, 	 0.0f);
-							glTexCoord2f(1,0);
-							glVertex3f(1,	-1, 	 0.0f);
-							glTexCoord2f(1,1);
-							glVertex3f(1,	1, 0.0f);
-							glTexCoord2f(0,1);
-							glVertex3f(-1, 	1, 0.0f);
-							glEnd();
-						glPopMatrix();
-						glEnable(GL_BLEND);
-						glColor4f(0.4,0.4,0.4,1.0);
-						glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
-						glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
-						glEnable(GL_TEXTURE_2D);
-						glBindTexture( GL_TEXTURE_2D, Mainmenuitems[4]);
-						glPushMatrix();
-							//glScalef(.25,.25,.25);
-							glBegin(GL_QUADS);
-							glTexCoord2f(0,0);
-							glVertex3f(-1,		-1, 	 0.0f);
-							glTexCoord2f(1,0);
-							glVertex3f(1,	-1, 	 0.0f);
-							glTexCoord2f(1,1);
-							glVertex3f(1,	1, 0.0f);
-							glTexCoord2f(0,1);
-							glVertex3f(-1, 	1, 0.0f);
-							glEnd();
-						glPopMatrix();
-					glPopMatrix();
-				glPopMatrix();
-				glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-			glPopMatrix();
-			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-
-			if(mainmenu==3){			
-				nummenuitems=14;
-				if((float)newscreenwidth>(float)newscreenheight*1.61||(float)newscreenwidth<(float)newscreenheight*1.59)sprintf (menustring[0], "Resolution: %d*%d",(int)newscreenwidth,(int)newscreenheight);
-				else sprintf (menustring[0], "Resolution: %d*%d (widescreen)",(int)newscreenwidth,(int)newscreenheight);
-				startx[0]=10+20;
-				starty[0]=440;
-				endx[0]=startx[0]+strlen(menustring[0])*10;
-				endy[0]=starty[0]+20;
-				movex[0]=0;
-				movey[0]=0;
-
-				if(newdetail==2)sprintf (menustring[1], "Detail: High");
-				else if(newdetail==1)sprintf (menustring[1], "Detail: Medium");
-				else sprintf (menustring[1], "Detail: Low");
-				startx[1]=10+60;
-				starty[1]=405;
-				endx[1]=startx[1]+strlen(menustring[1])*10;
-				endy[1]=starty[1]+20;
-				movex[1]=0;
-				movey[1]=0;
-
-				if(bloodtoggle==2)sprintf (menustring[2], "Blood: On, high detail (slower)");
-				if(bloodtoggle==1)sprintf (menustring[2], "Blood: On, low detail");
-				if(bloodtoggle==0)sprintf (menustring[2], "Blood: Off");
-				startx[2]=10+70;
-				starty[2]=370;
-				endx[2]=startx[2]+strlen(menustring[2])*10;
-				endy[2]=starty[2]+20;
-				movex[2]=0;
-				movey[2]=0;
-
-				if(difficulty==2)sprintf (menustring[3], "Difficulty: Insane");
-				if(difficulty==1)sprintf (menustring[3], "Difficulty: Difficult");
-				if(difficulty==0)sprintf (menustring[3], "Difficulty: Easier");
-				startx[3]=10+20-1000;
-				starty[3]=335-1000;
-				endx[3]=startx[3]+strlen(menustring[3])*10;
-				endy[3]=starty[3]+20;
-				movex[3]=0;
-				movey[3]=0;
-
-				if(ismotionblur==1)sprintf (menustring[4], "Blur Effects: Enabled (less compatible)");
-				if(ismotionblur==0)sprintf (menustring[4], "Blur Effects: Disabled (more compatible)");
-				startx[4]=10;
-				starty[4]=335;
-				endx[4]=startx[4]+strlen(menustring[4])*10;
-				endy[4]=starty[4]+20;
-				movex[4]=0;
-				movey[4]=0;
-
-				if(decals==1)sprintf (menustring[5], "Decals: Enabled (slower)");
-				if(decals==0)sprintf (menustring[5], "Decals: Disabled");
-				startx[5]=10+60;
-				starty[5]=300;
-				endx[5]=startx[5]+strlen(menustring[5])*10;
-				endy[5]=starty[5]+20;
-				movex[5]=0;
-				movey[5]=0;
-
-				if(musictoggle==1)sprintf (menustring[6], "Music: Enabled");
-				if(musictoggle==0)sprintf (menustring[6], "Music: Disabled");
-				startx[6]=10+70;
-				starty[6]=265;
-				endx[6]=startx[6]+strlen(menustring[6])*10;
-				endy[6]=starty[6]+20;
-				movex[6]=0;
-				movey[6]=0;
-
-				if(invertmouse==1)sprintf (menustring[9], "Invert mouse: Yes");
-				if(invertmouse==0)sprintf (menustring[9], "Invert mouse: No");
-				startx[9]=10;
-				starty[9]=230;
-				endx[9]=startx[9]+strlen(menustring[9])*10;
-				endy[9]=starty[9]+20;
-				movex[9]=0;
-				movey[9]=0;
-
-				sprintf (menustring[10], "Mouse Speed: %d", (int)(usermousesensitivity*5));
-				startx[10]=20;
-				starty[10]=195;
-				endx[10]=startx[10]+strlen(menustring[10])*10;
-				endy[10]=starty[10]+20;
-				movex[10]=0;
-				movey[10]=0;
-				
-				sprintf (menustring[11], "Volume: %d%%", (int)(volume*100));
-				startx[11]=10+60;
-				starty[11]=160;
-				endx[11]=startx[11]+strlen(menustring[11])*10;
-				endy[11]=starty[11]+20;
-				movex[11]=0;
-				movey[11]=0;
-				
-				sprintf (menustring[13], "Damage Bar: %s",(showdamagebar?"on":"off"));
-				startx[13]=30;
-				starty[13]=125;
-				endx[13]=startx[13]+strlen(menustring[13])*10;
-				endy[13]=starty[13]+20;
-				movex[13]=0;
-				movey[13]=0;
-				
-				sprintf (menustring[7], "-Configure Controls-");
-				startx[7]=10+15;
-				starty[7]=90;
-				endx[7]=startx[7]+strlen(menustring[7])*10;
-				endy[7]=starty[7]+20;
-				movex[7]=0;
-				movey[7]=0;
-
-				sprintf (menustring[12], "-Configure Stereo -");
-				startx[12]=10+15;
-				starty[12]=55;
-				endx[12]=startx[12]+strlen(menustring[7])*10;
-				endy[12]=starty[12]+20;
-				movex[12]=0;
-				movey[12]=0;
-				
-				if(newdetail==detail&&newscreenheight==(int)screenheight&&newscreenwidth==(int)screenwidth)sprintf (menustring[8], "Back");
-				else sprintf (menustring[8], "Back (some changes take effect next time Lugaru is opened)");
-				startx[8]=10;
-				endx[8]=startx[8]+strlen(menustring[8])*10;
-				starty[8]=10;
-				endy[8]=starty[8]+20;
-				movex[8]=0;
-				movey[8]=0;
-			}
-
-			if(mainmenu==4){			
-				nummenuitems=10;
-				if(keyselect!=0)sprintf (menustring[0], "Forwards: %s",Input::keyToChar(forwardkey));
-				else sprintf (menustring[0], "Forwards: _");
-				startx[0]=10;
-				starty[0]=400;
-				endx[0]=startx[0]+strlen(menustring[0])*10;
-				endy[0]=starty[0]+20;
-				movex[0]=0;
-				movey[0]=0;
-
-				if(keyselect!=1)sprintf (menustring[1], "Back: %s",Input::keyToChar(backkey));
-				else sprintf (menustring[1], "Back: _");
-				startx[1]=10+40;
-				starty[1]=360;
-				endx[1]=startx[1]+strlen(menustring[1])*10;
-				endy[1]=starty[1]+20;
-				movex[1]=0;
-				movey[1]=0;
-
-				if(keyselect!=2)sprintf (menustring[2], "Left: %s",Input::keyToChar(leftkey));
-				else sprintf (menustring[2], "Left: _");
-				startx[2]=10+40;
-				starty[2]=320;
-				endx[2]=startx[2]+strlen(menustring[2])*10;
-				endy[2]=starty[2]+20;
-				movex[2]=0;
-				movey[2]=0;
-
-				if(keyselect!=3)sprintf (menustring[3], "Right: %s",Input::keyToChar(rightkey));
-				else sprintf (menustring[3], "Right: _");
-				startx[3]=10+30;
-				starty[3]=280;
-				endx[3]=startx[3]+strlen(menustring[3])*10;
-				endy[3]=starty[3]+20;
-				movex[3]=0;
-				movey[3]=0;
-
-				if(keyselect!=4)sprintf (menustring[4], "Crouch: %s",Input::keyToChar(crouchkey));
-				else sprintf (menustring[4], "Crouch: _");
-				startx[4]=10+20;
-				starty[4]=240;
-				endx[4]=startx[4]+strlen(menustring[4])*10;
-				endy[4]=starty[4]+20;
-				movex[4]=0;
-				movey[4]=0;
-
-				if(keyselect!=5)sprintf (menustring[5], "Jump: %s",Input::keyToChar(jumpkey));
-				else sprintf (menustring[5], "Jump: _");
-				startx[5]=10+40;
-				starty[5]=200;
-				endx[5]=startx[5]+strlen(menustring[5])*10;
-				endy[5]=starty[5]+20;
-				movex[5]=0;
-				movey[5]=0;
-
-				if(keyselect!=6)sprintf (menustring[6], "Draw: %s",Input::keyToChar(drawkey));
-				else sprintf (menustring[6], "Draw: _");
-				startx[6]=10+40;
-				starty[6]=160;
-				endx[6]=startx[6]+strlen(menustring[6])*10;
-				endy[6]=starty[6]+20;
-				movex[6]=0;
-				movey[6]=0;
-
-				if(keyselect!=7)sprintf (menustring[7], "Throw: %s",Input::keyToChar(throwkey));
-				else sprintf (menustring[7], "Throw: _");
-				startx[7]=10+30;
-				starty[7]=120;
-				endx[7]=startx[7]+strlen(menustring[7])*10;
-				endy[7]=starty[7]+20;
-				movex[7]=0;
-				movey[7]=0;
-
-				if(keyselect!=8)sprintf (menustring[8], "Attack: %s",Input::keyToChar(attackkey));
-				else sprintf (menustring[8], "Attack: _");
-				startx[8]=10+20;
-				starty[8]=80;
-				endx[8]=startx[8]+strlen(menustring[8])*10;
-				endy[8]=starty[8]+20;
-				movex[8]=0;
-				movey[8]=0;
-
-
-
-				sprintf (menustring[9], "Back");
-				startx[9]=10;
-				endx[9]=startx[9]+strlen(menustring[9])*10;
-				starty[9]=10;
-				endy[9]=starty[9]+20;
-				movex[9]=0;
-				movey[9]=0;
-			}
-			if(mainmenu==5){			
-				nummenuitems=7+(accountactive?accountactive->getCampaignChoicesMade():0)+campaignchoicenum;
-
-				sprintf (menustring[0], "%s",accountactive->getName());
-				startx[0]=5;
-				starty[0]=400;
-				endx[0]=startx[0]+strlen(menustring[0])*10;
-				endy[0]=starty[0]+20;
-				movex[0]=0;
-				movey[0]=0;
-
-				sprintf (menustring[1], "Tutorial");
-				startx[1]=5;
-				starty[1]=300;
-				endx[1]=startx[1]+strlen(menustring[1])*10;
-				endy[1]=starty[1]+20;
-				movex[1]=0;
-				movey[1]=0;
-
-				sprintf (menustring[2], "Challenge");
-				startx[2]=5;
-				starty[2]=240;
-				endx[2]=startx[2]+strlen(menustring[2])*10;
-				endy[2]=starty[2]+20;
-				movex[2]=0;
-				movey[2]=0;
-
-				sprintf (menustring[3], "Delete User");
-				startx[3]=400;
-				starty[3]=10;
-				endx[3]=startx[3]+strlen(menustring[3])*10;
-				endy[3]=starty[3]+20;
-				movex[3]=0;
-				movey[3]=0;
-
-				sprintf (menustring[4], "Main Menu");
-				startx[4]=5;
-				starty[4]=10;
-				endx[4]=startx[4]+strlen(menustring[4])*10;
-				endy[4]=starty[4]+20;
-				movex[4]=0;
-				movey[4]=0;
-
-				sprintf (menustring[5], "Change User");
-				startx[5]=5;
-				endx[5]=startx[5]+strlen(menustring[5])*10;
-				starty[5]=180;
-				endy[5]=starty[5]+20;
-				movex[5]=0;
-				movey[5]=0;
-
-				//World
-
-				sprintf (menustring[6], "World");
-				startx[6]=30+120;
-				starty[6]=30+480-400-50;
-				endx[6]=startx[6]+400;
-				endy[6]=30+480-50;
-				movex[6]=0;
-				movey[6]=0;
-
-				if((accountactive?accountactive->getCampaignChoicesMade():0)) {
-					for(i=0;i<(accountactive?accountactive->getCampaignChoicesMade():0);i++) {
-						sprintf (menustring[7+i], "%s", campaigndescription[levelorder[i]]);
-						startx[7+i]=30+120+campaignlocationx[levelorder[i]]*400/512;
-						starty[7+i]=30+30+(512-campaignlocationy[levelorder[i]])*400/512;
-						endx[7+i]=startx[7+i]+10;
-						endy[7+i]=starty[7+i]+10;
-						movex[7+i]=0;
-						movey[7+i]=0;
-					}
-				}
-
-				if(campaignchoicenum>0)
-					for(i=(accountactive?accountactive->getCampaignChoicesMade():0);i<(accountactive?accountactive->getCampaignChoicesMade():0)+campaignchoicenum;i++){
-						sprintf (menustring[7+i], "%s", campaigndescription[levelorder[i]]);
-						startx[7+i]=30+120+campaignlocationx[campaignchoicewhich[i-((accountactive?accountactive->getCampaignChoicesMade():0))]]*400/512;
-						starty[7+i]=30+30+(512-campaignlocationy[campaignchoicewhich[i-((accountactive?accountactive->getCampaignChoicesMade():0))]])*400/512;
-						endx[7+i]=startx[7+i]+10;
-						endy[7+i]=starty[7+i]+10;
-						movex[7+i]=0;
-						movey[7+i]=0;
-					}
-
-				/*sprintf (menustring[7], "Dot");
-				startx[7]=120+260*400/512;
-				starty[7]=30+(512-184)*400/512;
-				endx[7]=startx[7]+10;
-				endy[7]=starty[7]+10;
-				movex[7]=0;
-				movey[7]=0;
-
-				sprintf (menustring[8], "Dot");
-				startx[8]=120+129*400/512;
-				starty[8]=30+(512-284)*400/512;
-				endx[8]=startx[8]+10;
-				endy[8]=starty[8]+10;
-				movex[8]=0;
-				movey[8]=0;
-
-				sprintf (menustring[9], "Dot");
-				startx[9]=120+358*400/512;
-				starty[9]=30+(512-235)*400/512;
-				endx[9]=startx[9]+10;
-				endy[9]=starty[9]+10;
-				movex[9]=0;
-				movey[9]=0;
-
-				sprintf (menustring[10], "Dot");
-				startx[10]=120+359*400/512;
-				starty[10]=30+(512-308)*400/512;
-				endx[10]=startx[10]+10;
-				endy[10]=starty[10]+10;
-				movex[10]=0;
-				movey[10]=0;
-
-				sprintf (menustring[11], "Dot");
-				startx[11]=120+288*400/512;
-				starty[11]=30+(512-277)*400/512;
-				endx[11]=startx[11]+10;
-				endy[11]=starty[11]+10;
-				movex[11]=0;
-				movey[11]=0;*/
-			}
-
-			if(mainmenu==6){			
-				nummenuitems=3;
-
-				sprintf (menustring[0], "Are you sure you want to delete this user?");
-				startx[0]=10;
-				starty[0]=400;
-				endx[0]=startx[0]+strlen(menustring[0])*10;
-				endy[0]=starty[0]+20;
-				movex[0]=0;
-				movey[0]=0;
-
-				sprintf (menustring[1], "Yes");
-				startx[1]=10;
-				starty[1]=360;
-				endx[1]=startx[1]+strlen(menustring[1])*10;
-				endy[1]=starty[1]+20;
-				movex[1]=0;
-				movey[1]=0;
-
-				sprintf (menustring[2], "No");
-				startx[2]=10;
-				starty[2]=320;
-				endx[2]=startx[2]+strlen(menustring[2])*10;
-				endy[2]=starty[2]+20;
-				movex[2]=0;
-				movey[2]=0;
-
-				sprintf (menustring[3], "Extra 4");
-				startx[3]=10;
-				starty[3]=280;
-				endx[3]=startx[3]+strlen(menustring[3])*10;
-				endy[3]=starty[3]+20;
-				movex[3]=0;
-				movey[3]=0;
-
-				sprintf (menustring[4], "Extra 5");
-				startx[4]=10;
-				starty[4]=240;
-				endx[4]=startx[4]+strlen(menustring[4])*10;
-				endy[4]=starty[4]+20;
-				movex[4]=0;
-				movey[4]=0;
-
-				sprintf (menustring[5], "Back");
-				startx[5]=10;
-				endx[5]=startx[5]+strlen(menustring[5])*10;
-				starty[5]=10;
-				endy[5]=starty[5]+20;
-				movex[5]=0;
-				movey[5]=0;
-			}
-
-			if(mainmenu==7){	
-				nummenuitems=Account::getNbAccounts()+2;
-
-				int num;
-
-				if(Account::getNbAccounts()<8)
-					sprintf (menustring[0], "New User");
-				else
-					sprintf (menustring[0], "No More Users");
-				startx[0]=10;
-				starty[0]=400;
-				endx[0]=startx[0]+strlen(menustring[0])*10;
-				endy[0]=starty[0]+20;
-				movex[0]=0;
-				movey[0]=0;
-
-				if(entername)
-					startx[0]+=10;
-
-
-				num=1;
-				for(i=0;i<Account::getNbAccounts();i++){
-					sprintf (menustring[num], "%s",Account::get(i)->getName());
-					startx[num]=10;
-					starty[num]=360-20-20*num;
-					endx[num]=startx[num]+strlen(menustring[num])*10;
-					endy[num]=starty[num]+20;
-					movex[num]=0;
-					movey[num]=0;
-
-					num++;
-				}
-
-				sprintf (menustring[num], "Back");
-				startx[num]=10;
-				endx[num]=startx[num]+strlen(menustring[num])*10;
-				starty[num]=10;
-				endy[num]=starty[num]+20;
-				movex[num]=0;
-				movey[num]=0;
-			}
-			if(mainmenu==8){			
-				nummenuitems=3;
-
-				sprintf (menustring[0], "Easier");
-				startx[0]=10;
-				starty[0]=400;
-				endx[0]=startx[0]+strlen(menustring[0])*10;
-				endy[0]=starty[0]+20;
-				movex[0]=0;
-				movey[0]=0;
-
-				sprintf (menustring[1], "Difficult");
-				startx[1]=10;
-				starty[1]=360;
-				endx[1]=startx[1]+strlen(menustring[1])*10;
-				endy[1]=starty[1]+20;
-				movex[1]=0;
-				movey[1]=0;
-
-				sprintf (menustring[2], "Insane");
-				startx[2]=10;
-				starty[2]=320;
-				endx[2]=startx[2]+strlen(menustring[2])*10;
-				endy[2]=starty[2]+20;
-				movex[2]=0;
-				movey[2]=0;
-			}
-			if(mainmenu==9){			
-				int tempncl;
-				//tempncl=numchallengelevels;
-				//numchallengelevels=9;
-				nummenuitems=2+numchallengelevels;
-				char temp[255];
-
-				for(j=0;j<numchallengelevels;j++){
-					for(i=0;i<255;i++)menustring[j][i]='\0';
-					sprintf (temp, "Level %d",j+1);
-					strcpy(menustring[j],temp);
-					for(i=0;i<17;i++)if(menustring[j][i]=='\0')menustring[j][i]=' ';
-					menustring[j][17]='\0';
-					sprintf (temp, "%d",(int)accountactive->getHighScore(j));
-					strcat(menustring[j],temp);
-					for(i=18;i<32;i++)if(menustring[j][i]=='\0')menustring[j][i]=' ';
-					menustring[j][32]='\0';
-					sprintf (temp, "%d:",(int)(((int)accountactive->getFastTime(j)-(int)(accountactive->getFastTime(j))%60)/60));
-					strcat(menustring[j],temp);
-					if((int)(accountactive->getFastTime(j))%60<10)strcat(menustring[j],"0");
-					sprintf (temp, "%d",(int)(accountactive->getFastTime(j))%60);
-					strcat(menustring[j],temp);
-
-					startx[j]=10;
-					starty[j]=400-j*25;
-					endx[j]=startx[j]+strlen(menustring[j])*10;
-					endy[j]=starty[j]+20;
-					movex[j]=0;
-					movey[j]=0;
-				}
-
-				sprintf (menustring[numchallengelevels], "Back");
-				startx[numchallengelevels]=10;
-				endx[numchallengelevels]=startx[numchallengelevels]+strlen(menustring[numchallengelevels])*10;
-				starty[numchallengelevels]=10;
-				endy[numchallengelevels]=starty[numchallengelevels]+20;
-				movex[numchallengelevels]=0;
-				movey[numchallengelevels]=0;
-
-				sprintf (menustring[numchallengelevels+1], "             High Score      Best Time");
-				startx[numchallengelevels+1]=10;
-				starty[numchallengelevels+1]=440;
-				endx[numchallengelevels+1]=startx[numchallengelevels+1]+strlen(menustring[numchallengelevels+1])*10;
-				endy[numchallengelevels+1]=starty[numchallengelevels+1]+20;
-				movex[numchallengelevels+1]=0;
-				movey[numchallengelevels+1]=0;
-
-				//numchallengelevels=tempncl;
-
-			}
-			if(mainmenu==10){			
-				nummenuitems=6;
-				char temp[255];
-
-				sprintf (menustring[0], "Congratulations!");
-				startx[0]=220;
-				starty[0]=330;
-				endx[0]=startx[0]+strlen(menustring[0])*10;
-				endy[0]=starty[0]+20;
-				movex[0]=0;
-				movey[0]=0;
-
-				sprintf (menustring[1], "You have avenged your family and");
-				startx[1]=140;
-				starty[1]=300;
-				endx[1]=startx[1]+strlen(menustring[1])*10;
-				endy[1]=starty[1]+20;
-				movex[1]=0;
-				movey[1]=0;
-
-				sprintf (menustring[2], "restored peace to the island of Lugaru.");
-				startx[2]=110;
-				starty[2]=270;
-				endx[2]=startx[2]+strlen(menustring[2])*10;
-				endy[2]=starty[2]+20;
-				movex[2]=0;
-				movey[2]=0;
-
-				sprintf (menustring[3], "Back");
-				startx[3]=10;
-				endx[3]=startx[3]+strlen(menustring[3])*10;
-				starty[3]=10;
-				endy[3]=starty[3]+20;
-				movex[3]=0;
-				movey[3]=0;
-
-				for(i=0;i<255;i++)menustring[4][i]='\0';
-				sprintf (temp, "Your score:");
-				strcpy(menustring[4],temp);
-				for(i=0;i<20;i++)if(menustring[4][i]=='\0')menustring[4][i]=' ';
-				menustring[4][20]='\0';
-				sprintf (temp, "%d",(int)accountactive->getCampaignScore());
-				strcat(menustring[4],temp);
-				startx[4]=190;
-				endx[4]=startx[4]+strlen(menustring[4])*10;
-				starty[4]=200;
-				endy[4]=starty[4]+20;
-				movex[4]=0;
-				movey[4]=0;
-				/*
-				for(i=0;i<255;i++)menustring[5][i]='\0';
-				sprintf (temp, "Your time:");
-				strcpy(menustring[5],temp);
-				for(i=0;i<20;i++)if(menustring[5][i]=='\0')menustring[5][i]=' ';
-				menustring[5][20]='\0';
-				sprintf (temp, "%d",(int)accountcampaigntime[accountactive]);
-				strcat(menustring[5],temp);
-				startx[5]=200;
-				endx[5]=startx[5]+strlen(menustring[5])*10;
-				starty[5]=180;
-				endy[5]=starty[5]+20;
-				movex[5]=0;
-				movey[5]=0;
-				*/
-				for(i=0;i<255;i++)menustring[5][i]='\0';
-				sprintf (temp, "Highest score:");
-				strcpy(menustring[5],temp);
-				for(i=0;i<20;i++)if(menustring[5][i]=='\0')menustring[5][i]=' ';
-				menustring[5][20]='\0';
-				sprintf (temp, "%d",(int)accountactive->getCampaignHighScore());
-				strcat(menustring[5],temp);
-				startx[5]=190;
-				endx[5]=startx[5]+strlen(menustring[5])*10;
-				starty[5]=180;
-				endy[5]=starty[5]+20;
-				movex[5]=0;
-				movey[5]=0;
-				/*
-				for(i=0;i<255;i++)menustring[7][i]='\0';
-				sprintf (temp, "Lowest time:");
-				strcpy(menustring[7],temp);
-				for(i=0;i<20;i++)if(menustring[7][i]=='\0')menustring[7][i]=' ';
-				menustring[7][20]='\0';
-				sprintf (temp, "%d",(int)accountactive->getCampaignFasttime());
-				strcat(menustring[7],temp);
-				startx[7]=200;
-				endx[7]=startx[7]+strlen(menustring[7])*10;
-				starty[7]=130;
-				endy[7]=starty[7]+20;
-				movex[7]=0;
-				movey[7]=0;*/
-			}
-			if (mainmenu==18) {
-				nummenuitems=4;
-				sprintf (menustring[0], "Stereo mode: %s", StereoModeName(newstereomode));
-				startx[0]=70;
-				starty[0]=400;
-				endx[0]=startx[0]+strlen(menustring[0])*10;
-				endy[0]=starty[0]+20;
-				movex[0]=0;
-				movey[0]=0;
-				
-				sprintf (menustring[1], "Stereo separation: %.3f", stereoseparation);
-				startx[1]=10;
-				starty[1]=360;
-				endx[1]=startx[1]+strlen(menustring[1])*10;
-				endy[1]=starty[1]+20;
-				movex[1]=0;
-				movey[1]=0;
-
-				sprintf (menustring[2], "Reverse stereo: %s", stereoreverse ? "Yes" : "No");
-				startx[2]=40;
-				starty[2]=320;
-				endx[2]=startx[2]+strlen(menustring[2])*10;
-				endy[2]=starty[2]+20;
-				movex[2]=0;
-				movey[2]=0;
-				
-				sprintf (menustring[3], "Back");
-				startx[3]=10;
-				endx[3]=startx[3]+strlen(menustring[3])*10;
-				starty[3]=10;
-				endy[3]=starty[3]+20;
-				movex[3]=0;
-				movey[3]=0;				
-			}
-		}
-
-		if(mainmenu==1||mainmenu==2){
-			nummenuitems=7;
-			startx[0]=150;
-			starty[0]=480-128;
-			endx[0]=150+256;
-			endy[0]=480;
-			movex[0]=0;
-			movey[0]=0;
-
-			startx[1]=18;
-			starty[1]=480-152-32;
-			endx[1]=18+128;
-			endy[1]=480-152;
-			movex[1]=0;
-			movey[1]=0;
-
-			startx[2]=18;
-			starty[2]=480-228-32;
-			endx[2]=2+128;
-			endy[2]=480-228;
-			movex[2]=0;
-			movey[2]=0;
-
-			if(mainmenu==1){
-				startx[3]=18;
-				starty[3]=480-306-32;
-				endx[3]=22+64;
-				endy[3]=480-306;
-				movex[3]=0;
-				movey[3]=0;
-			}
-
-			if(mainmenu==2){
-				startx[3]=18;
-				starty[3]=480-306-32;
-				endx[3]=22+128;
-				endy[3]=480-306;
-				movex[3]=0;
-				movey[3]=0;
-			}
-
-			/*startx[4]=150;
-			starty[4]=480-256;
-			endx[4]=150+256;
-			endy[4]=480;
-			*/
-			if(anim==0){
-				startx[4]=380;
-				starty[4]=480-140-256;
-				endx[4]=380+256;
-				endy[4]=480-140;
-				movex[4]=80;
-				movey[4]=0;
-
-				startx[5]=145;
-				starty[5]=480-138-256;
-				endx[5]=145+256;
-				endy[5]=480-138;
-				movex[5]=40;
-				movey[5]=0;
-
-				startx[6]=254;
-				starty[6]=480-144-256;
-				endx[6]=254+256;
-				endy[6]=480-144;
-				movex[6]=20;
-				movey[6]=0;
-			}
-			if(anim==1){
-				startx[4]=180;
-				starty[4]=480-140-256;
-				endx[4]=180+256;
-				endy[4]=480-140;
-				movex[4]=80;
-				movey[4]=0;
-
-				startx[5]=500;
-				starty[5]=480-138-256;
-				endx[5]=500+256;
-				endy[5]=480-138;
-				movex[5]=40;
-				movey[5]=0;
-
-				startx[6]=340;
-				starty[6]=480-144-256;
-				endx[6]=340+256;
-				endy[6]=480-144;
-				movex[6]=20;
-				movey[6]=0;
-			}
-			if(anim==2){
-				startx[4]=460;
-				starty[4]=480-140-256;
-				endx[4]=460+256;
-				endy[4]=480-140;
-				movex[4]=50;
-				movey[4]=0;
-
-				startx[5]=295;
-				starty[5]=480-150-256;
-				endx[5]=295+256;
-				endy[5]=480-138;
-				movex[5]=-10;
-				movey[5]=0;
-
-				startx[6]=204;
-				starty[6]=480-144-256;
-				endx[6]=204+256;
-				endy[6]=480-144;
-				movex[6]=-30;
-				movey[6]=0;
-			}
-			if(anim==3){
-				startx[4]=150;
-				starty[4]=480-140-256;
-				endx[4]=200+256;
-				endy[4]=480-140;
-				movex[4]=80;
-				movey[4]=0;
-
-				startx[5]=350;
-				starty[5]=480-150-256;
-				endx[5]=350+256;
-				endy[5]=480-138;
-				movex[5]=5;
-				movey[5]=0;
-
-				startx[6]=500;
-				starty[6]=480-144-256;
-				endx[6]=500+256;
-				endy[6]=480-144;
-				movex[6]=-10;
-				movey[6]=0;
-			}
-			if(anim==4){
-				startx[4]=190;
-				starty[4]=480-100-256;
-				endx[4]=190+256;
-				endy[4]=480-100;
-				movex[4]=-30;
-				movey[4]=0;
-
-				startx[5]=185;
-				starty[5]=480-120-256;
-				endx[5]=185+256;
-				endy[5]=480-120;
-				movex[5]=-5;
-				movey[5]=0;
-
-				startx[6]=400;
-				starty[6]=480-144-256;
-				endx[6]=400+256;
-				endy[6]=480-144;
-				movex[6]=20;
-				movey[6]=0;
-			}
-		}
-
-		selected=-1;
-
-		if(mainmenu==1||mainmenu==2)
-			for(i=1;i<4;i++){
-				if((mousecoordh/screenwidth*640)>startx[i]&&(mousecoordh/screenwidth*640)<endx[i]&&480-(mousecoordv/screenheight*480)>starty[i]&&480-(mousecoordv/screenheight*480)<endy[i]){
-					selected=i;
-				}
-			}
-
-		if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==18)
-			for(i=0;i<nummenuitems;i++){
-				if((mousecoordh/screenwidth*640)>startx[i]&&(mousecoordh/screenwidth*640)<endx[i]&&480-(mousecoordv/screenheight*480)>starty[i]&&480-(mousecoordv/screenheight*480)<endy[i]){
-					if(mainmenu!=5)selected=i;
-					if(mainmenu==5&&(i!=0&&i!=6))selected=i;
-					if(mainmenu==9&&(i!=numchallengelevels+1))selected=i; // seem useless, if mainmenu==9 then mainmenu!=5, so selected==i.
-				}
-			}
-
-		for(i=0;i<nummenuitems;i++){
-			if(selected==i) {
-				selectedlong[i]+=multiplier*5;
-				if(selectedlong[i]>1) selectedlong[i]=1;
-			} else {
-				selectedlong[i]-=multiplier*5;
-				if(selectedlong[i]<0) selectedlong[i]=0;	
-			}
-			offsetx[i]=(startx[i]+endx[i])/2-(mousecoordh/screenwidth*640);
-			offsety[i]=(starty[i]+endy[i])/2-(480-(mousecoordv/screenheight*480));
-			offsetx[i]*=.06f;
-			offsety[i]*=.06f;
-			offsetx[i]=0;
-			offsety[i]=0;
-			if(i>=4&&(mainmenu==1||mainmenu==2)){
-				selectedlong[i]=0;
-				offsetx[i]=(startx[i]+endx[i]+movex[i]*transition)/2-(640+190)/2;
-				offsety[i]=(starty[i]+endy[i]+movey[i]*transition)/2-(336+150)/2;
-				offsetx[i]*=.06f;
-				offsety[i]*=.06f;
-			}
-		}
-
-		if(mainmenu==1||mainmenu==2){
-			glClear(GL_DEPTH_BUFFER_BIT);
-			glEnable(GL_ALPHA_TEST);
-			glAlphaFunc(GL_GREATER, 0.001f);
-			glEnable(GL_TEXTURE_2D);
-			glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
-			glDisable(GL_CULL_FACE);
-			glDisable(GL_LIGHTING);
-			glDepthMask(0);
-			glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-			glPushMatrix();										// Store The Projection Matrix
-				glLoadIdentity();									// Reset The Projection Matrix
-				glOrtho(0,screenwidth,0,screenheight,-100,100);						// Set Up An Ortho Screen
-				glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-				glPushMatrix();										// Store The Modelview Matrix
-					glLoadIdentity();								// Reset The Modelview Matrix
-					glTranslatef(screenwidth/2,screenheight/2,0);
-					glPushMatrix();
-						glScalef((float)screenwidth/2,(float)screenheight/2,1);
-						glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-						glDisable(GL_BLEND);
-						glColor4f(0,0,0,1.0);
-						glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
-						glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
-						glDisable(GL_TEXTURE_2D);
-						glPushMatrix();
-							//glScalef(.25,.25,.25);
-							glBegin(GL_QUADS);
-							glTexCoord2f(0,0);
-							glVertex3f(-1,		-1, 	 0.0f);
-							glTexCoord2f(1,0);
-							glVertex3f(1,	-1, 	 0.0f);
-							glTexCoord2f(1,1);
-							glVertex3f(1,	1, 0.0f);
-							glTexCoord2f(0,1);
-							glVertex3f(-1, 	1, 0.0f);
-							glEnd();
-						glPopMatrix();
-						glEnable(GL_BLEND);
-						glColor4f(0.4,0.4,0.4,1.0);
-						glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
-						glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
-						glEnable(GL_TEXTURE_2D);
-						glBindTexture( GL_TEXTURE_2D, Mainmenuitems[4]);
-						glPushMatrix();
-							//glScalef(.25,.25,.25);
-							glBegin(GL_QUADS);
-							glTexCoord2f(0,0);
-							glVertex3f(-1,		-1, 	 0.0f);
-							glTexCoord2f(1,0);
-							glVertex3f(1,	-1, 	 0.0f);
-							glTexCoord2f(1,1);
-							glVertex3f(1,	1, 0.0f);
-							glTexCoord2f(0,1);
-							glVertex3f(-1, 	1, 0.0f);
-							glEnd();
-						glPopMatrix();
-					glPopMatrix();
-				glPopMatrix();
-				glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-			glPopMatrix();
-
-			glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-			glPushMatrix();										// Store The Projection Matrix
-				glLoadIdentity();									// Reset The Projection Matrix
-				glOrtho(0,640,0,480,-100,100);						// Set Up An Ortho Screen
-				glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-				glPushMatrix();										// Store The Modelview Matrix
-					glLoadIdentity();								// Reset The Modelview Matrix
-					glPushMatrix();
-						glDisable(GL_TEXTURE_2D);
-						glColor4f(1,0,0,1);
-					glPopMatrix();
-				glPopMatrix();
-				glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-			glPopMatrix();
-			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-
-		}
-
-		glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-		glPushMatrix();										// Store The Projection Matrix
-		glLoadIdentity();									// Reset The Projection Matrix
-		glOrtho(0,640,0,480,-100,100);						// Set Up An Ortho Screen
-		glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-		glPushMatrix();										// Store The Modelview Matrix
-		glLoadIdentity();								// Reset The Modelview Matrix
-		glEnable(GL_TEXTURE_2D);
-		for(j=0;j<nummenuitems;j++)
-		{
-			if(j>3 && (mainmenu==1||mainmenu==2))
-				continue;
-			//glDisable(GL_BLEND);
-			glEnable(GL_ALPHA_TEST);
-			glEnable(GL_BLEND);
-			//glDisable(GL_ALPHA_TEST);
-			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-			if(mainmenu==1||mainmenu==2)
-			{
-				glColor4f(1,1,1,1);
-				glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-				glBindTexture( GL_TEXTURE_2D, Mainmenuitems[j]);
-				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-				glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-				glPushMatrix();
-					glBegin(GL_QUADS);
-					glTexCoord2f(0,0);
-					glVertex3f(startx[j]+movex[j]*transition,	starty[j]+movey[j]*transition, 	 0.0f);
-					glTexCoord2f(1,0);
-					glVertex3f(endx[j]+movex[j]*transition,		starty[j]+movey[j]*transition, 	 0.0f);
-					glTexCoord2f(1,1);
-					glVertex3f(endx[j]+movex[j]*transition,		endy[j]+movey[j]*transition, 0.0f);
-					glTexCoord2f(0,1);
-					glVertex3f(startx[j]+movex[j]*transition, 	endy[j]+movey[j]*transition, 0.0f);
-					glEnd();
-				glPopMatrix();
-				glEnable(GL_BLEND);
-				//glDisable(GL_ALPHA_TEST);
-				if(j<4)glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-				for(i=0;i<10;i++)
-				{
-					if(1-((float)i)/10-(1-selectedlong[j])>0)
-					{
-						glColor4f(1,1,1,(1-((float)i)/10-(1-selectedlong[j]))*.25);
-						glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-						glPushMatrix();
-							glBegin(GL_QUADS);
-							glTexCoord2f(0,0);
-							glVertex3f(startx[j]-((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	starty[j]-((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 	 0.0f);
-							glTexCoord2f(1,0);
-							glVertex3f(endx[j]+((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	starty[j]-((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 	 0.0f);
-							glTexCoord2f(1,1);
-							glVertex3f(endx[j]+((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	endy[j]+((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 0.0f);
-							glTexCoord2f(0,1);
-							glVertex3f(startx[j]-((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition, endy[j]+((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 0.0f);
-							glEnd();
-						glPopMatrix();
-					}
-				}
-			}
-			if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==18)
-			{
-				if(mainmenu!=5||j<6)
-				{
-					glColor4f(1,0,0,1);
-					if( (mainmenu==9) && j>accountactive->getProgress() && (j<numchallengelevels) )
-						glColor4f(0.5,0,0,1);
-					glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-					glPushMatrix();
-						if(mainmenu!=7||j!=0||!entername)
-							text.glPrint(startx[j],starty[j],menustring[j],0,1,640,480);
-						else
-						{
-							if(displayblink) {
-								sprintf (string, "_");
-								text.glPrint(startx[j]+(float)(displayselected)*10,starty[j],string,0,1,640,480);
-							}
-							for(l=0;l<displaychars[0];l++) {
-								sprintf (string, "%c",displaytext[0][l]);
-								text.glPrint(startx[j]+l*10,starty[j],string,0,1,640,480);
-							}
-						}
-					glPopMatrix();
-					glEnable(GL_BLEND);
-					glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-					for(i=0;i<15;i++)
-					{
-						if(1-((float)i)/15-(1-selectedlong[j])>0)
-						{
-							glColor4f(1,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
-							if(mainmenu==9&&j>accountactive->getProgress()&&j<numchallengelevels)glColor4f(0.5,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
-							if(mainmenu==11&&j>accountactive->getProgress()&&j<numchallengelevels)glColor4f(0.5,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
-							if(mainmenu==3)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4-((/*1*/+((float)i)/70)*strlen(menustring[j]))*3,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
-							if(mainmenu==4)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
-							if(mainmenu==5)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
-							if(mainmenu==6)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
-							if(mainmenu==7&&(j!=0||!entername)) text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
-							if(mainmenu==8)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
-							if(mainmenu==9)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
-							if(mainmenu==10)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
-							if(mainmenu==18)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
-						}
-					}
-				}
-				else
-				{
-					glClear(GL_DEPTH_BUFFER_BIT);
-					glEnable(GL_ALPHA_TEST);
-					glAlphaFunc(GL_GREATER, 0.001f);
-					glEnable(GL_TEXTURE_2D);
-					glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
-					glDisable(GL_CULL_FACE);
-					glDisable(GL_LIGHTING);
-					if(j==6)glColor4f(1,1,1,1);
-					else glColor4f(1,0,0,1);
-
-					glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-					glPushMatrix();										// Store The Projection Matrix
-						glLoadIdentity();									// Reset The Projection Matrix
-						glOrtho(0,640,0,480,-100,100);						// Set Up An Ortho Screen
-						glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-						glPushMatrix();										// Store The Modelview Matrix
-							glLoadIdentity();								// Reset The Modelview Matrix
-							glPushMatrix();
-
-								//Draw world, draw map
-								glTranslatef(2,-5,0);
-
-								if(j>6&&j<nummenuitems-1)
-								{
-									XYZ linestart,lineend,offset;
-									XYZ fac;
-									float startsize;
-									float endsize;
-									linestart=0;
-									lineend=0;
-									offset=0;
-									//float linestartx,lineendx,linestarty,lineendy,offsetx,offsety;
-									linestart.x=(startx[j]+endx[j])/2;
-									linestart.y=(starty[j]+endy[j])/2;
-									if(j>=6+(accountactive?accountactive->getCampaignChoicesMade():0)){
-										linestart.x=(startx[6+(accountactive?accountactive->getCampaignChoicesMade():0)]+endx[6+(accountactive?accountactive->getCampaignChoicesMade():0)])/2;
-										linestart.y=(starty[6+(accountactive?accountactive->getCampaignChoicesMade():0)]+endy[6+(accountactive?accountactive->getCampaignChoicesMade():0)])/2;
-									}
-									lineend.x=(startx[j+1]+endx[j+1])/2;
-									lineend.y=(starty[j+1]+endy[j+1])/2;
-									offset=lineend-linestart;
-									fac=offset;
-									Normalise(&fac);
-									offset=DoRotation(offset,0,0,90);
-									Normalise(&offset);
-									glDisable(GL_TEXTURE_2D);							
-
-									if(j<6+(accountactive?accountactive->getCampaignChoicesMade():0)){
-										glColor4f(0.5,0,0,1);
-										endsize=.5;
-									} else {
-										glColor4f(1,0,0,1);
-										endsize=1;
-									}
-									startsize=.5;
-
-									linestart+=fac*4*startsize;
-									lineend-=fac*4*endsize;
-
-									if(!(j>7+(accountactive?accountactive->getCampaignChoicesMade():0)+campaignchoicenum)){
-										glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-										glPushMatrix();
-											glBegin(GL_QUADS);
-											glTexCoord2f(0,0);
-											glVertex3f(linestart.x-offset.x*startsize,	linestart.y-offset.y*startsize, 	 0.0f);
-											glTexCoord2f(1,0);
-											glVertex3f(linestart.x+offset.x*startsize,	linestart.y+offset.y*startsize, 	 0.0f);
-											glTexCoord2f(1,1);
-											glVertex3f(lineend.x+offset.x*endsize,		lineend.y+offset.y*endsize, 0.0f);
-											glTexCoord2f(0,1);
-											glVertex3f(lineend.x-offset.x*endsize, 		lineend.y-offset.y*endsize, 0.0f);
-											glEnd();
-										glPopMatrix();
-									}
-									glEnable(GL_TEXTURE_2D);
-								}
-
-
-								if(j==6)glBindTexture( GL_TEXTURE_2D, Mainmenuitems[7]);
-								else glBindTexture( GL_TEXTURE_2D, Mapcircletexture);
-								glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-								glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-								if(j-7<(accountactive?accountactive->getCampaignChoicesMade():0))glColor4f(0.5,0,0,1);
-								if(j-7>=(accountactive?accountactive->getCampaignChoicesMade():0))glColor4f(1,0,0,1);
-								if(j==6)glColor4f(1,1,1,1);
-								XYZ midpoint;
-								float itemsize;
-								itemsize=abs(startx[j]-endx[j])/2;
-								midpoint=0;
-								midpoint.x=(startx[j]+endx[j])/2;
-								midpoint.y=(starty[j]+endy[j])/2;
-								if(j>6&&(j-7<(accountactive?accountactive->getCampaignChoicesMade():0)))itemsize*=.5;
-								if(!(j-7>(accountactive?accountactive->getCampaignChoicesMade():0)+campaignchoicenum))
-								{
-									glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-									glPushMatrix();
-										glBegin(GL_QUADS);
-										glTexCoord2f(0,0);
-										glVertex3f(midpoint.x-itemsize+movex[j]*transition,	midpoint.y-itemsize+movey[j]*transition, 	 0.0f);
-										glTexCoord2f(1,0);
-										glVertex3f(midpoint.x+itemsize+movex[j]*transition,		midpoint.y-itemsize+movey[j]*transition, 	 0.0f);
-										glTexCoord2f(1,1);
-										glVertex3f(midpoint.x+itemsize+movex[j]*transition,		midpoint.y+itemsize+movey[j]*transition, 0.0f);
-										glTexCoord2f(0,1);
-										glVertex3f(midpoint.x-itemsize+movex[j]*transition, 	midpoint.y+itemsize+movey[j]*transition, 0.0f);
-										glEnd();
-									glPopMatrix();
-									glEnable(GL_BLEND);
-									//glDisable(GL_ALPHA_TEST);
-									if(j<4)glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-									for(i=0;i<10;i++)
-									{
-										if(1-((float)i)/10-(1-selectedlong[j])>0)
-										{
-											glColor4f(1,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
-											glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-											glPushMatrix();
-												glBegin(GL_QUADS);
-												glTexCoord2f(0,0);
-												glVertex3f(midpoint.x-itemsize-((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	midpoint.y-itemsize-((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 	 0.0f);
-												glTexCoord2f(1,0);
-												glVertex3f(midpoint.x+itemsize+((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	midpoint.y-itemsize-((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 	 0.0f);
-												glTexCoord2f(1,1);
-												glVertex3f(midpoint.x+itemsize+((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	midpoint.y+itemsize+((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 0.0f);
-												glTexCoord2f(0,1);
-												glVertex3f(midpoint.x-itemsize-((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition, midpoint.y+itemsize+((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 0.0f);
-												glEnd();
-											glPopMatrix();
-										}
-									}
-								}
-							glPopMatrix();
-						glPopMatrix();
-						glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-					glPopMatrix();
-					glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-
-					if(j-7>=(accountactive?accountactive->getCampaignChoicesMade():0)){
-						text.glPrintOutlined(0.9,0,0,startx[j]+10,starty[j]-4,menustring[j],0,0.6,640,480);
-						glDisable(GL_DEPTH_TEST);
-					}
-				}
-			}
-		}
-		glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-		glPopMatrix();
-		glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-		glPopMatrix();
-
-			if(mainmenu==1||mainmenu==2)
-				if(transition<.1||transition>.9){
-					glClear(GL_DEPTH_BUFFER_BIT);
-					glEnable(GL_ALPHA_TEST);
-					glAlphaFunc(GL_GREATER, 0.001f);
-					glEnable(GL_TEXTURE_2D);
-					glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
-					glDisable(GL_CULL_FACE);
-					glDisable(GL_LIGHTING);
-					glDepthMask(0);
-					glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-					glPushMatrix();										// Store The Projection Matrix
-						glLoadIdentity();									// Reset The Projection Matrix
-						glOrtho(0,640,0,480,-100,100);						// Set Up An Ortho Screen
-						glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-						glPushMatrix();										// Store The Modelview Matrix
-							glLoadIdentity();								// Reset The Modelview Matrix
-							glPushMatrix();
-								glDisable(GL_TEXTURE_2D);
-								if(transition<.1)
-									glColor4f(1,0,0,1-(transition*10));
-								if(transition>.9)
-									glColor4f(1,0,0,1-((1-transition)*10));
-							glPopMatrix();
-						glPopMatrix();
-						glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-					glPopMatrix();
-				}
-
-			glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-			glPushMatrix();										// Store The Projection Matrix
-				glLoadIdentity();									// Reset The Projection Matrix
-				glOrtho(0,screenwidth,0,screenheight,-100,100);						// Set Up An Ortho Screen
-				glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-				glPushMatrix();										// Store The Modelview Matrix
-					glLoadIdentity();								// Reset The Modelview Matrix
-					glTranslatef(screenwidth/2,screenheight/2,0);
-					glPushMatrix();
-						glScalef((float)screenwidth/2,(float)screenheight/2,1);
-						glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-						glEnable(GL_BLEND);
-						glEnable(GL_TEXTURE_2D);
-						glColor4f(1,1,1,1);
-						glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
-						glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
-					glPopMatrix();
-					if(!waiting) { // hide the cursor while waiting for a key
-						glPushMatrix();
-							glTranslatef(mousecoordh-screenwidth/2,mousecoordv*-1+screenheight/2,0);
-							glScalef((float)screenwidth/64,(float)screenwidth/64,1);
-							glTranslatef(1,-1,0);
-							glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-							glColor4f(1,1,1,1);
-							glBindTexture( GL_TEXTURE_2D, cursortexture);
-							glPushMatrix();
-								//glScalef(.25,.25,.25);
-								glBegin(GL_QUADS);
-								glTexCoord2f(0,0);
-								glVertex3f(-1,		-1, 	 0.0f);
-								glTexCoord2f(1,0);
-								glVertex3f(1,	-1, 	 0.0f);
-								glTexCoord2f(1,1);
-								glVertex3f(1,	1, 0.0f);
-								glTexCoord2f(0,1);
-								glVertex3f(-1, 	1, 0.0f);
-								glEnd();
-							glPopMatrix();
-						glPopMatrix();
-					}
-				glPopMatrix();
-				glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-			glPopMatrix();
-
-
-			if(flashamount>0)
-			{
-				//printf("Flash amount: %f, delay %i\n", flashamount, flashdelay);
-				if(flashamount>1)flashamount=1;
-				if(flashdelay<=0)flashamount-=multiplier;
-				flashdelay--;
-				if(flashamount<0)flashamount=0;
-				glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
-				glDisable(GL_CULL_FACE);
-				glDisable(GL_LIGHTING);
-				glDisable(GL_TEXTURE_2D);
-				glDepthMask(0);
-				glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-				glPushMatrix();										// Store The Projection Matrix
-					glLoadIdentity();									// Reset The Projection Matrix
-					glOrtho(0,screenwidth,0,screenheight,-100,100);						// Set Up An Ortho Screen
-					glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-					glPushMatrix();										// Store The Modelview Matrix
-						glLoadIdentity();								// Reset The Modelview Matrix
-						glScalef(screenwidth,screenheight,1);
-						glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-						glEnable(GL_BLEND);
-						glColor4f(flashr,flashg,flashb,flashamount);
-						glBegin(GL_QUADS);
-						glVertex3f(0,		0, 	 0.0f);
-						glVertex3f(256,	0, 	 0.0f);
-						glVertex3f(256,	256, 0.0f);
-						glVertex3f(0, 	256, 0.0f);
-						glEnd();
-						glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-					glPopMatrix();										// Restore The Old Projection Matrix
-				glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-				glPopMatrix();										// Restore The Old Projection Matrix
-				glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
-				glEnable(GL_CULL_FACE);
-				glDisable(GL_BLEND);
-				glDepthMask(1);
-			}
+		DrawMenu();
 	}
 
-	if(freeze||winfreeze||(mainmenu&&gameon)||(!gameon&&gamestarted)||(!gameon&&gamestarted)){
+	if(freeze||winfreeze||(mainmenu&&gameon)||(!gameon&&gamestarted)){
 		tempmult=multiplier;
 		multiplier=0;
 	}
@@ -3444,3 +1998,1383 @@ int Game::DrawGLScene(StereoSide side)
 	return 0;
 }
 
+void Game::DrawMenu()
+{
+	int i,j;
+	static float lastcheck;
+
+	lastcheck+=multiplier;
+	
+	// !!! FIXME: hack: clamp framerate in menu so text input works correctly on fast systems.
+	SDL_Delay(15);
+
+	glDrawBuffer(GL_BACK);
+	glReadBuffer(GL_BACK);
+	glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+	ReSizeGLScene(90,.1f);
+
+	int temptexdetail;
+	temptexdetail=texdetail;
+	if(texdetail>2)texdetail=2;
+	if(mainmenu!=oldmainmenu&&oldmainmenu!=0){
+		if(mainmenu==1){
+			LoadTexture(":Data:Textures:Newgame.png",&Mainmenuitems[1],0,0);
+			LoadTexture(":Data:Textures:Quit.png",&Mainmenuitems[3],0,0);
+		}
+		if(mainmenu==2){
+			LoadTexture(":Data:Textures:Resume.png",&Mainmenuitems[1],0,0);
+			LoadTexture(":Data:Textures:Endgame.png",&Mainmenuitems[3],0,0);
+		}
+	}
+	if(lastcheck>.5||oldmainmenu!=mainmenu){
+		if(mainmenu==5){
+			ifstream ipstream(ConvertFileName(":Data:Campaigns:main.txt"));
+			ipstream.ignore(256,':');
+			ipstream >> campaignnumlevels;
+			for(i=0;i<campaignnumlevels;i++){
+				ipstream.ignore(256,':');
+				ipstream.ignore(256,':');
+				ipstream.ignore(256,' ');
+				ipstream >> campaignmapname[i];
+				ipstream.ignore(256,':');
+				ipstream >> campaigndescription[i];
+				for(j=0;j<256;j++){
+					if(campaigndescription[i][j]=='_')campaigndescription[i][j]=' ';
+				}
+				ipstream.ignore(256,':');
+				ipstream >> campaignchoosenext[i];
+				ipstream.ignore(256,':');
+				ipstream >> campaignnumnext[i];
+				for(j=0;j<campaignnumnext[i];j++){
+					ipstream.ignore(256,':');
+					ipstream >> campaignnextlevel[i][j];
+					campaignnextlevel[i][j]-=1;
+				}
+				ipstream.ignore(256,':');
+				ipstream >> campaignlocationx[i];
+				ipstream.ignore(256,':');
+				ipstream >> campaignlocationy[i];
+			}
+			ipstream.close();
+
+			for(i=0;i<campaignnumlevels;i++){
+				levelvisible[i]=0;
+				levelhighlight[i]=0;
+			}
+
+			levelorder[0]=0;
+			levelvisible[0]=1;
+			for(i=0;i<(accountactive?accountactive->getCampaignChoicesMade():0);i++){
+				levelorder[i+1]=campaignnextlevel[levelorder[i]][accountactive->getCampaignChoice(i)];
+				levelvisible[levelorder[i+1]]=1;
+			}
+			int whichlevelstart = (accountactive?accountactive->getCampaignChoicesMade():0)-1;
+			if(whichlevelstart<0){
+				accountactive->setCampaignScore(0);
+				accountactive->resetFasttime();
+				campaignchoicenum=1;
+				campaignchoicewhich[0]=0;
+			}
+			else
+			{
+				campaignchoicenum=campaignnumnext[levelorder[whichlevelstart]];
+				for(i=0;i<campaignchoicenum;i++){
+					campaignchoicewhich[i]=campaignnextlevel[levelorder[whichlevelstart]][i];
+					levelvisible[campaignnextlevel[levelorder[whichlevelstart]][i]]=1;
+					levelhighlight[campaignnextlevel[levelorder[whichlevelstart]][i]]=1;
+				}
+			}
+		}
+	}
+	if(mainmenu==5){
+		lastcheck=0;
+	}
+
+	texdetail=temptexdetail;
+
+	oldmainmenu=mainmenu;
+
+	if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==119||mainmenu==18){
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_GREATER, 0.001f);
+		glEnable(GL_TEXTURE_2D);
+		glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
+		glDisable(GL_CULL_FACE);
+		glDisable(GL_LIGHTING);
+		glDepthMask(0);
+		glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+		glPushMatrix();										// Store The Projection Matrix
+			glLoadIdentity();									// Reset The Projection Matrix
+			glOrtho(0,screenwidth,0,screenheight,-100,100);						// Set Up An Ortho Screen
+			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+				glPushMatrix();										// Store The Modelview Matrix
+				glLoadIdentity();								// Reset The Modelview Matrix
+				glTranslatef(screenwidth/2,screenheight/2,0);
+				glPushMatrix();
+					glScalef((float)screenwidth/2,(float)screenheight/2,1);
+					glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+					glDisable(GL_BLEND);
+					glColor4f(0,0,0,1.0);
+					glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
+					glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
+					glDisable(GL_TEXTURE_2D);
+					glPushMatrix();
+						//glScalef(.25,.25,.25);
+						glBegin(GL_QUADS);
+						glTexCoord2f(0,0);
+						glVertex3f(-1,		-1, 	 0.0f);
+						glTexCoord2f(1,0);
+						glVertex3f(1,	-1, 	 0.0f);
+						glTexCoord2f(1,1);
+						glVertex3f(1,	1, 0.0f);
+						glTexCoord2f(0,1);
+						glVertex3f(-1, 	1, 0.0f);
+						glEnd();
+					glPopMatrix();
+					glEnable(GL_BLEND);
+					glColor4f(0.4,0.4,0.4,1.0);
+					glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
+					glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
+					glEnable(GL_TEXTURE_2D);
+					glBindTexture( GL_TEXTURE_2D, Mainmenuitems[4]);
+					glPushMatrix();
+						//glScalef(.25,.25,.25);
+						glBegin(GL_QUADS);
+						glTexCoord2f(0,0);
+						glVertex3f(-1,		-1, 	 0.0f);
+						glTexCoord2f(1,0);
+						glVertex3f(1,	-1, 	 0.0f);
+						glTexCoord2f(1,1);
+						glVertex3f(1,	1, 0.0f);
+						glTexCoord2f(0,1);
+						glVertex3f(-1, 	1, 0.0f);
+						glEnd();
+					glPopMatrix();
+				glPopMatrix();
+			glPopMatrix();
+			glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+		glPopMatrix();
+		glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+
+		if(mainmenu==3){			
+			nummenuitems=14;
+			if((float)newscreenwidth>(float)newscreenheight*1.61||(float)newscreenwidth<(float)newscreenheight*1.59)sprintf (menustring[0], "Resolution: %d*%d",(int)newscreenwidth,(int)newscreenheight);
+			else sprintf (menustring[0], "Resolution: %d*%d (widescreen)",(int)newscreenwidth,(int)newscreenheight);
+			startx[0]=10+20;
+			starty[0]=440;
+			endx[0]=startx[0]+strlen(menustring[0])*10;
+			endy[0]=starty[0]+20;
+			movex[0]=0;
+			movey[0]=0;
+
+			if(newdetail==2)sprintf (menustring[1], "Detail: High");
+			else if(newdetail==1)sprintf (menustring[1], "Detail: Medium");
+			else sprintf (menustring[1], "Detail: Low");
+			startx[1]=10+60;
+			starty[1]=405;
+			endx[1]=startx[1]+strlen(menustring[1])*10;
+			endy[1]=starty[1]+20;
+			movex[1]=0;
+			movey[1]=0;
+
+			if(bloodtoggle==2)sprintf (menustring[2], "Blood: On, high detail (slower)");
+			if(bloodtoggle==1)sprintf (menustring[2], "Blood: On, low detail");
+			if(bloodtoggle==0)sprintf (menustring[2], "Blood: Off");
+			startx[2]=10+70;
+			starty[2]=370;
+			endx[2]=startx[2]+strlen(menustring[2])*10;
+			endy[2]=starty[2]+20;
+			movex[2]=0;
+			movey[2]=0;
+
+			if(difficulty==2)sprintf (menustring[3], "Difficulty: Insane");
+			if(difficulty==1)sprintf (menustring[3], "Difficulty: Difficult");
+			if(difficulty==0)sprintf (menustring[3], "Difficulty: Easier");
+			startx[3]=10+20-1000;
+			starty[3]=335-1000;
+			endx[3]=startx[3]+strlen(menustring[3])*10;
+			endy[3]=starty[3]+20;
+			movex[3]=0;
+			movey[3]=0;
+
+			if(ismotionblur==1)sprintf (menustring[4], "Blur Effects: Enabled (less compatible)");
+			if(ismotionblur==0)sprintf (menustring[4], "Blur Effects: Disabled (more compatible)");
+			startx[4]=10;
+			starty[4]=335;
+			endx[4]=startx[4]+strlen(menustring[4])*10;
+			endy[4]=starty[4]+20;
+			movex[4]=0;
+			movey[4]=0;
+
+			if(decals==1)sprintf (menustring[5], "Decals: Enabled (slower)");
+			if(decals==0)sprintf (menustring[5], "Decals: Disabled");
+			startx[5]=10+60;
+			starty[5]=300;
+			endx[5]=startx[5]+strlen(menustring[5])*10;
+			endy[5]=starty[5]+20;
+			movex[5]=0;
+			movey[5]=0;
+
+			if(musictoggle==1)sprintf (menustring[6], "Music: Enabled");
+			if(musictoggle==0)sprintf (menustring[6], "Music: Disabled");
+			startx[6]=10+70;
+			starty[6]=265;
+			endx[6]=startx[6]+strlen(menustring[6])*10;
+			endy[6]=starty[6]+20;
+			movex[6]=0;
+			movey[6]=0;
+
+			if(invertmouse==1)sprintf (menustring[9], "Invert mouse: Yes");
+			if(invertmouse==0)sprintf (menustring[9], "Invert mouse: No");
+			startx[9]=10;
+			starty[9]=230;
+			endx[9]=startx[9]+strlen(menustring[9])*10;
+			endy[9]=starty[9]+20;
+			movex[9]=0;
+			movey[9]=0;
+
+			sprintf (menustring[10], "Mouse Speed: %d", (int)(usermousesensitivity*5));
+			startx[10]=20;
+			starty[10]=195;
+			endx[10]=startx[10]+strlen(menustring[10])*10;
+			endy[10]=starty[10]+20;
+			movex[10]=0;
+			movey[10]=0;
+			
+			sprintf (menustring[11], "Volume: %d%%", (int)(volume*100));
+			startx[11]=10+60;
+			starty[11]=160;
+			endx[11]=startx[11]+strlen(menustring[11])*10;
+			endy[11]=starty[11]+20;
+			movex[11]=0;
+			movey[11]=0;
+			
+			sprintf (menustring[13], "Damage Bar: %s",(showdamagebar?"on":"off"));
+			startx[13]=30;
+			starty[13]=125;
+			endx[13]=startx[13]+strlen(menustring[13])*10;
+			endy[13]=starty[13]+20;
+			movex[13]=0;
+			movey[13]=0;
+			
+			sprintf (menustring[7], "-Configure Controls-");
+			startx[7]=10+15;
+			starty[7]=90;
+			endx[7]=startx[7]+strlen(menustring[7])*10;
+			endy[7]=starty[7]+20;
+			movex[7]=0;
+			movey[7]=0;
+
+			sprintf (menustring[12], "-Configure Stereo -");
+			startx[12]=10+15;
+			starty[12]=55;
+			endx[12]=startx[12]+strlen(menustring[7])*10;
+			endy[12]=starty[12]+20;
+			movex[12]=0;
+			movey[12]=0;
+			
+			if(newdetail==detail&&newscreenheight==(int)screenheight&&newscreenwidth==(int)screenwidth)sprintf (menustring[8], "Back");
+			else sprintf (menustring[8], "Back (some changes take effect next time Lugaru is opened)");
+			startx[8]=10;
+			endx[8]=startx[8]+strlen(menustring[8])*10;
+			starty[8]=10;
+			endy[8]=starty[8]+20;
+			movex[8]=0;
+			movey[8]=0;
+		}
+
+		if(mainmenu==4){			
+			nummenuitems=10;
+			if(keyselect!=0)sprintf (menustring[0], "Forwards: %s",Input::keyToChar(forwardkey));
+			else sprintf (menustring[0], "Forwards: _");
+			startx[0]=10;
+			starty[0]=400;
+			endx[0]=startx[0]+strlen(menustring[0])*10;
+			endy[0]=starty[0]+20;
+			movex[0]=0;
+			movey[0]=0;
+
+			if(keyselect!=1)sprintf (menustring[1], "Back: %s",Input::keyToChar(backkey));
+			else sprintf (menustring[1], "Back: _");
+			startx[1]=10+40;
+			starty[1]=360;
+			endx[1]=startx[1]+strlen(menustring[1])*10;
+			endy[1]=starty[1]+20;
+			movex[1]=0;
+			movey[1]=0;
+
+			if(keyselect!=2)sprintf (menustring[2], "Left: %s",Input::keyToChar(leftkey));
+			else sprintf (menustring[2], "Left: _");
+			startx[2]=10+40;
+			starty[2]=320;
+			endx[2]=startx[2]+strlen(menustring[2])*10;
+			endy[2]=starty[2]+20;
+			movex[2]=0;
+			movey[2]=0;
+
+			if(keyselect!=3)sprintf (menustring[3], "Right: %s",Input::keyToChar(rightkey));
+			else sprintf (menustring[3], "Right: _");
+			startx[3]=10+30;
+			starty[3]=280;
+			endx[3]=startx[3]+strlen(menustring[3])*10;
+			endy[3]=starty[3]+20;
+			movex[3]=0;
+			movey[3]=0;
+
+			if(keyselect!=4)sprintf (menustring[4], "Crouch: %s",Input::keyToChar(crouchkey));
+			else sprintf (menustring[4], "Crouch: _");
+			startx[4]=10+20;
+			starty[4]=240;
+			endx[4]=startx[4]+strlen(menustring[4])*10;
+			endy[4]=starty[4]+20;
+			movex[4]=0;
+			movey[4]=0;
+
+			if(keyselect!=5)sprintf (menustring[5], "Jump: %s",Input::keyToChar(jumpkey));
+			else sprintf (menustring[5], "Jump: _");
+			startx[5]=10+40;
+			starty[5]=200;
+			endx[5]=startx[5]+strlen(menustring[5])*10;
+			endy[5]=starty[5]+20;
+			movex[5]=0;
+			movey[5]=0;
+
+			if(keyselect!=6)sprintf (menustring[6], "Draw: %s",Input::keyToChar(drawkey));
+			else sprintf (menustring[6], "Draw: _");
+			startx[6]=10+40;
+			starty[6]=160;
+			endx[6]=startx[6]+strlen(menustring[6])*10;
+			endy[6]=starty[6]+20;
+			movex[6]=0;
+			movey[6]=0;
+
+			if(keyselect!=7)sprintf (menustring[7], "Throw: %s",Input::keyToChar(throwkey));
+			else sprintf (menustring[7], "Throw: _");
+			startx[7]=10+30;
+			starty[7]=120;
+			endx[7]=startx[7]+strlen(menustring[7])*10;
+			endy[7]=starty[7]+20;
+			movex[7]=0;
+			movey[7]=0;
+
+			if(keyselect!=8)sprintf (menustring[8], "Attack: %s",Input::keyToChar(attackkey));
+			else sprintf (menustring[8], "Attack: _");
+			startx[8]=10+20;
+			starty[8]=80;
+			endx[8]=startx[8]+strlen(menustring[8])*10;
+			endy[8]=starty[8]+20;
+			movex[8]=0;
+			movey[8]=0;
+
+
+
+			sprintf (menustring[9], "Back");
+			startx[9]=10;
+			endx[9]=startx[9]+strlen(menustring[9])*10;
+			starty[9]=10;
+			endy[9]=starty[9]+20;
+			movex[9]=0;
+			movey[9]=0;
+		}
+		if(mainmenu==5){			
+			nummenuitems=7+(accountactive?accountactive->getCampaignChoicesMade():0)+campaignchoicenum;
+
+			sprintf (menustring[0], "%s",accountactive->getName());
+			startx[0]=5;
+			starty[0]=400;
+			endx[0]=startx[0]+strlen(menustring[0])*10;
+			endy[0]=starty[0]+20;
+			movex[0]=0;
+			movey[0]=0;
+
+			sprintf (menustring[1], "Tutorial");
+			startx[1]=5;
+			starty[1]=300;
+			endx[1]=startx[1]+strlen(menustring[1])*10;
+			endy[1]=starty[1]+20;
+			movex[1]=0;
+			movey[1]=0;
+
+			sprintf (menustring[2], "Challenge");
+			startx[2]=5;
+			starty[2]=240;
+			endx[2]=startx[2]+strlen(menustring[2])*10;
+			endy[2]=starty[2]+20;
+			movex[2]=0;
+			movey[2]=0;
+
+			sprintf (menustring[3], "Delete User");
+			startx[3]=400;
+			starty[3]=10;
+			endx[3]=startx[3]+strlen(menustring[3])*10;
+			endy[3]=starty[3]+20;
+			movex[3]=0;
+			movey[3]=0;
+
+			sprintf (menustring[4], "Main Menu");
+			startx[4]=5;
+			starty[4]=10;
+			endx[4]=startx[4]+strlen(menustring[4])*10;
+			endy[4]=starty[4]+20;
+			movex[4]=0;
+			movey[4]=0;
+
+			sprintf (menustring[5], "Change User");
+			startx[5]=5;
+			endx[5]=startx[5]+strlen(menustring[5])*10;
+			starty[5]=180;
+			endy[5]=starty[5]+20;
+			movex[5]=0;
+			movey[5]=0;
+
+			//World
+
+			sprintf (menustring[6], "World");
+			startx[6]=30+120;
+			starty[6]=30+480-400-50;
+			endx[6]=startx[6]+400;
+			endy[6]=30+480-50;
+			movex[6]=0;
+			movey[6]=0;
+
+			if((accountactive?accountactive->getCampaignChoicesMade():0)) {
+				for(i=0;i<(accountactive?accountactive->getCampaignChoicesMade():0);i++) {
+					sprintf (menustring[7+i], "%s", campaigndescription[levelorder[i]]);
+					startx[7+i]=30+120+campaignlocationx[levelorder[i]]*400/512;
+					starty[7+i]=30+30+(512-campaignlocationy[levelorder[i]])*400/512;
+					endx[7+i]=startx[7+i]+10;
+					endy[7+i]=starty[7+i]+10;
+					movex[7+i]=0;
+					movey[7+i]=0;
+				}
+			}
+
+			if(campaignchoicenum>0)
+				for(i=(accountactive?accountactive->getCampaignChoicesMade():0);i<(accountactive?accountactive->getCampaignChoicesMade():0)+campaignchoicenum;i++){
+					sprintf (menustring[7+i], "%s", campaigndescription[levelorder[i]]);
+					startx[7+i]=30+120+campaignlocationx[campaignchoicewhich[i-((accountactive?accountactive->getCampaignChoicesMade():0))]]*400/512;
+					starty[7+i]=30+30+(512-campaignlocationy[campaignchoicewhich[i-((accountactive?accountactive->getCampaignChoicesMade():0))]])*400/512;
+					endx[7+i]=startx[7+i]+10;
+					endy[7+i]=starty[7+i]+10;
+					movex[7+i]=0;
+					movey[7+i]=0;
+				}
+		}
+
+		if(mainmenu==6){			
+			nummenuitems=3;
+
+			sprintf (menustring[0], "Are you sure you want to delete this user?");
+			startx[0]=10;
+			starty[0]=400;
+			endx[0]=startx[0]+strlen(menustring[0])*10;
+			endy[0]=starty[0]+20;
+			movex[0]=0;
+			movey[0]=0;
+
+			sprintf (menustring[1], "Yes");
+			startx[1]=10;
+			starty[1]=360;
+			endx[1]=startx[1]+strlen(menustring[1])*10;
+			endy[1]=starty[1]+20;
+			movex[1]=0;
+			movey[1]=0;
+
+			sprintf (menustring[2], "No");
+			startx[2]=10;
+			starty[2]=320;
+			endx[2]=startx[2]+strlen(menustring[2])*10;
+			endy[2]=starty[2]+20;
+			movex[2]=0;
+			movey[2]=0;
+
+			sprintf (menustring[3], "Extra 4");
+			startx[3]=10;
+			starty[3]=280;
+			endx[3]=startx[3]+strlen(menustring[3])*10;
+			endy[3]=starty[3]+20;
+			movex[3]=0;
+			movey[3]=0;
+
+			sprintf (menustring[4], "Extra 5");
+			startx[4]=10;
+			starty[4]=240;
+			endx[4]=startx[4]+strlen(menustring[4])*10;
+			endy[4]=starty[4]+20;
+			movex[4]=0;
+			movey[4]=0;
+
+			sprintf (menustring[5], "Back");
+			startx[5]=10;
+			endx[5]=startx[5]+strlen(menustring[5])*10;
+			starty[5]=10;
+			endy[5]=starty[5]+20;
+			movex[5]=0;
+			movey[5]=0;
+		}
+
+		if(mainmenu==7){	
+			nummenuitems=Account::getNbAccounts()+2;
+
+			int num;
+
+			if(Account::getNbAccounts()<8)
+				sprintf (menustring[0], "New User");
+			else
+				sprintf (menustring[0], "No More Users");
+			startx[0]=10;
+			starty[0]=400;
+			endx[0]=startx[0]+strlen(menustring[0])*10;
+			endy[0]=starty[0]+20;
+			movex[0]=0;
+			movey[0]=0;
+
+			if(entername)
+				startx[0]+=10;
+
+
+			num=1;
+			for(i=0;i<Account::getNbAccounts();i++){
+				sprintf (menustring[num], "%s",Account::get(i)->getName());
+				startx[num]=10;
+				starty[num]=360-20-20*num;
+				endx[num]=startx[num]+strlen(menustring[num])*10;
+				endy[num]=starty[num]+20;
+				movex[num]=0;
+				movey[num]=0;
+
+				num++;
+			}
+
+			sprintf (menustring[num], "Back");
+			startx[num]=10;
+			endx[num]=startx[num]+strlen(menustring[num])*10;
+			starty[num]=10;
+			endy[num]=starty[num]+20;
+			movex[num]=0;
+			movey[num]=0;
+		}
+		if(mainmenu==8){			
+			nummenuitems=3;
+
+			sprintf (menustring[0], "Easier");
+			startx[0]=10;
+			starty[0]=400;
+			endx[0]=startx[0]+strlen(menustring[0])*10;
+			endy[0]=starty[0]+20;
+			movex[0]=0;
+			movey[0]=0;
+
+			sprintf (menustring[1], "Difficult");
+			startx[1]=10;
+			starty[1]=360;
+			endx[1]=startx[1]+strlen(menustring[1])*10;
+			endy[1]=starty[1]+20;
+			movex[1]=0;
+			movey[1]=0;
+
+			sprintf (menustring[2], "Insane");
+			startx[2]=10;
+			starty[2]=320;
+			endx[2]=startx[2]+strlen(menustring[2])*10;
+			endy[2]=starty[2]+20;
+			movex[2]=0;
+			movey[2]=0;
+		}
+		if(mainmenu==9){			
+			int tempncl;
+			nummenuitems=2+numchallengelevels;
+			char temp[255];
+
+			for(j=0;j<numchallengelevels;j++){
+				for(i=0;i<255;i++)menustring[j][i]='\0';
+				sprintf (temp, "Level %d",j+1);
+				strcpy(menustring[j],temp);
+				for(i=0;i<17;i++)if(menustring[j][i]=='\0')menustring[j][i]=' ';
+				menustring[j][17]='\0';
+				sprintf (temp, "%d",(int)accountactive->getHighScore(j));
+				strcat(menustring[j],temp);
+				for(i=18;i<32;i++)if(menustring[j][i]=='\0')menustring[j][i]=' ';
+				menustring[j][32]='\0';
+				sprintf (temp, "%d:",(int)(((int)accountactive->getFastTime(j)-(int)(accountactive->getFastTime(j))%60)/60));
+				strcat(menustring[j],temp);
+				if((int)(accountactive->getFastTime(j))%60<10)strcat(menustring[j],"0");
+				sprintf (temp, "%d",(int)(accountactive->getFastTime(j))%60);
+				strcat(menustring[j],temp);
+
+				startx[j]=10;
+				starty[j]=400-j*25;
+				endx[j]=startx[j]+strlen(menustring[j])*10;
+				endy[j]=starty[j]+20;
+				movex[j]=0;
+				movey[j]=0;
+			}
+
+			sprintf (menustring[numchallengelevels], "Back");
+			startx[numchallengelevels]=10;
+			endx[numchallengelevels]=startx[numchallengelevels]+strlen(menustring[numchallengelevels])*10;
+			starty[numchallengelevels]=10;
+			endy[numchallengelevels]=starty[numchallengelevels]+20;
+			movex[numchallengelevels]=0;
+			movey[numchallengelevels]=0;
+
+			sprintf (menustring[numchallengelevels+1], "             High Score      Best Time");
+			startx[numchallengelevels+1]=10;
+			starty[numchallengelevels+1]=440;
+			endx[numchallengelevels+1]=startx[numchallengelevels+1]+strlen(menustring[numchallengelevels+1])*10;
+			endy[numchallengelevels+1]=starty[numchallengelevels+1]+20;
+			movex[numchallengelevels+1]=0;
+			movey[numchallengelevels+1]=0;
+
+			//numchallengelevels=tempncl;
+
+		}
+		if(mainmenu==10){			
+			nummenuitems=6;
+			char temp[255];
+
+			sprintf (menustring[0], "Congratulations!");
+			startx[0]=220;
+			starty[0]=330;
+			endx[0]=startx[0]+strlen(menustring[0])*10;
+			endy[0]=starty[0]+20;
+			movex[0]=0;
+			movey[0]=0;
+
+			sprintf (menustring[1], "You have avenged your family and");
+			startx[1]=140;
+			starty[1]=300;
+			endx[1]=startx[1]+strlen(menustring[1])*10;
+			endy[1]=starty[1]+20;
+			movex[1]=0;
+			movey[1]=0;
+
+			sprintf (menustring[2], "restored peace to the island of Lugaru.");
+			startx[2]=110;
+			starty[2]=270;
+			endx[2]=startx[2]+strlen(menustring[2])*10;
+			endy[2]=starty[2]+20;
+			movex[2]=0;
+			movey[2]=0;
+
+			sprintf (menustring[3], "Back");
+			startx[3]=10;
+			endx[3]=startx[3]+strlen(menustring[3])*10;
+			starty[3]=10;
+			endy[3]=starty[3]+20;
+			movex[3]=0;
+			movey[3]=0;
+
+			for(i=0;i<255;i++)menustring[4][i]='\0';
+			sprintf (temp, "Your score:");
+			strcpy(menustring[4],temp);
+			for(i=0;i<20;i++)if(menustring[4][i]=='\0')menustring[4][i]=' ';
+			menustring[4][20]='\0';
+			sprintf (temp, "%d",(int)accountactive->getCampaignScore());
+			strcat(menustring[4],temp);
+			startx[4]=190;
+			endx[4]=startx[4]+strlen(menustring[4])*10;
+			starty[4]=200;
+			endy[4]=starty[4]+20;
+			movex[4]=0;
+			movey[4]=0;
+			for(i=0;i<255;i++)menustring[5][i]='\0';
+			sprintf (temp, "Highest score:");
+			strcpy(menustring[5],temp);
+			for(i=0;i<20;i++)if(menustring[5][i]=='\0')menustring[5][i]=' ';
+			menustring[5][20]='\0';
+			sprintf (temp, "%d",(int)accountactive->getCampaignHighScore());
+			strcat(menustring[5],temp);
+			startx[5]=190;
+			endx[5]=startx[5]+strlen(menustring[5])*10;
+			starty[5]=180;
+			endy[5]=starty[5]+20;
+			movex[5]=0;
+			movey[5]=0;
+		}
+		if (mainmenu==18) {
+			nummenuitems=4;
+			sprintf (menustring[0], "Stereo mode: %s", StereoModeName(newstereomode));
+			startx[0]=70;
+			starty[0]=400;
+			endx[0]=startx[0]+strlen(menustring[0])*10;
+			endy[0]=starty[0]+20;
+			movex[0]=0;
+			movey[0]=0;
+			
+			sprintf (menustring[1], "Stereo separation: %.3f", stereoseparation);
+			startx[1]=10;
+			starty[1]=360;
+			endx[1]=startx[1]+strlen(menustring[1])*10;
+			endy[1]=starty[1]+20;
+			movex[1]=0;
+			movey[1]=0;
+
+			sprintf (menustring[2], "Reverse stereo: %s", stereoreverse ? "Yes" : "No");
+			startx[2]=40;
+			starty[2]=320;
+			endx[2]=startx[2]+strlen(menustring[2])*10;
+			endy[2]=starty[2]+20;
+			movex[2]=0;
+			movey[2]=0;
+			
+			sprintf (menustring[3], "Back");
+			startx[3]=10;
+			endx[3]=startx[3]+strlen(menustring[3])*10;
+			starty[3]=10;
+			endy[3]=starty[3]+20;
+			movex[3]=0;
+			movey[3]=0;				
+		}
+	}
+
+	if(mainmenu==1||mainmenu==2){
+		nummenuitems=7;
+		startx[0]=150;
+		starty[0]=480-128;
+		endx[0]=150+256;
+		endy[0]=480;
+		movex[0]=0;
+		movey[0]=0;
+
+		startx[1]=18;
+		starty[1]=480-152-32;
+		endx[1]=18+128;
+		endy[1]=480-152;
+		movex[1]=0;
+		movey[1]=0;
+
+		startx[2]=18;
+		starty[2]=480-228-32;
+		endx[2]=2+128;
+		endy[2]=480-228;
+		movex[2]=0;
+		movey[2]=0;
+
+		if(mainmenu==1){
+			startx[3]=18;
+			starty[3]=480-306-32;
+			endx[3]=22+64;
+			endy[3]=480-306;
+			movex[3]=0;
+			movey[3]=0;
+		}
+
+		if(mainmenu==2){
+			startx[3]=18;
+			starty[3]=480-306-32;
+			endx[3]=22+128;
+			endy[3]=480-306;
+			movex[3]=0;
+			movey[3]=0;
+		}
+
+		/*startx[4]=150;
+		starty[4]=480-256;
+		endx[4]=150+256;
+		endy[4]=480;
+		*/
+		if(anim==0){
+			startx[4]=380;
+			starty[4]=480-140-256;
+			endx[4]=380+256;
+			endy[4]=480-140;
+			movex[4]=80;
+			movey[4]=0;
+
+			startx[5]=145;
+			starty[5]=480-138-256;
+			endx[5]=145+256;
+			endy[5]=480-138;
+			movex[5]=40;
+			movey[5]=0;
+
+			startx[6]=254;
+			starty[6]=480-144-256;
+			endx[6]=254+256;
+			endy[6]=480-144;
+			movex[6]=20;
+			movey[6]=0;
+		}
+		if(anim==1){
+			startx[4]=180;
+			starty[4]=480-140-256;
+			endx[4]=180+256;
+			endy[4]=480-140;
+			movex[4]=80;
+			movey[4]=0;
+
+			startx[5]=500;
+			starty[5]=480-138-256;
+			endx[5]=500+256;
+			endy[5]=480-138;
+			movex[5]=40;
+			movey[5]=0;
+
+			startx[6]=340;
+			starty[6]=480-144-256;
+			endx[6]=340+256;
+			endy[6]=480-144;
+			movex[6]=20;
+			movey[6]=0;
+		}
+		if(anim==2){
+			startx[4]=460;
+			starty[4]=480-140-256;
+			endx[4]=460+256;
+			endy[4]=480-140;
+			movex[4]=50;
+			movey[4]=0;
+
+			startx[5]=295;
+			starty[5]=480-150-256;
+			endx[5]=295+256;
+			endy[5]=480-138;
+			movex[5]=-10;
+			movey[5]=0;
+
+			startx[6]=204;
+			starty[6]=480-144-256;
+			endx[6]=204+256;
+			endy[6]=480-144;
+			movex[6]=-30;
+			movey[6]=0;
+		}
+		if(anim==3){
+			startx[4]=150;
+			starty[4]=480-140-256;
+			endx[4]=200+256;
+			endy[4]=480-140;
+			movex[4]=80;
+			movey[4]=0;
+
+			startx[5]=350;
+			starty[5]=480-150-256;
+			endx[5]=350+256;
+			endy[5]=480-138;
+			movex[5]=5;
+			movey[5]=0;
+
+			startx[6]=500;
+			starty[6]=480-144-256;
+			endx[6]=500+256;
+			endy[6]=480-144;
+			movex[6]=-10;
+			movey[6]=0;
+		}
+		if(anim==4){
+			startx[4]=190;
+			starty[4]=480-100-256;
+			endx[4]=190+256;
+			endy[4]=480-100;
+			movex[4]=-30;
+			movey[4]=0;
+
+			startx[5]=185;
+			starty[5]=480-120-256;
+			endx[5]=185+256;
+			endy[5]=480-120;
+			movex[5]=-5;
+			movey[5]=0;
+
+			startx[6]=400;
+			starty[6]=480-144-256;
+			endx[6]=400+256;
+			endy[6]=480-144;
+			movex[6]=20;
+			movey[6]=0;
+		}
+	}
+
+	selected=-1;
+
+	if(mainmenu==1||mainmenu==2)
+		for(i=1;i<4;i++){
+			if((mousecoordh/screenwidth*640)>startx[i]&&(mousecoordh/screenwidth*640)<endx[i]&&480-(mousecoordv/screenheight*480)>starty[i]&&480-(mousecoordv/screenheight*480)<endy[i]){
+				selected=i;
+			}
+		}
+
+	if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==18)
+		for(i=0;i<nummenuitems;i++){
+			if((mousecoordh/screenwidth*640)>startx[i]&&(mousecoordh/screenwidth*640)<endx[i]&&480-(mousecoordv/screenheight*480)>starty[i]&&480-(mousecoordv/screenheight*480)<endy[i]){
+				if(mainmenu!=5)selected=i;
+				if(mainmenu==5&&(i!=0&&i!=6))selected=i;
+				if(mainmenu==9&&(i!=numchallengelevels+1))selected=i; // seem useless, if mainmenu==9 then mainmenu!=5, so selected==i.
+			}
+		}
+
+	for(i=0;i<nummenuitems;i++){
+		if(selected==i) {
+			selectedlong[i]+=multiplier*5;
+			if(selectedlong[i]>1) selectedlong[i]=1;
+		} else {
+			selectedlong[i]-=multiplier*5;
+			if(selectedlong[i]<0) selectedlong[i]=0;	
+		}
+		offsetx[i]=(startx[i]+endx[i])/2-(mousecoordh/screenwidth*640);
+		offsety[i]=(starty[i]+endy[i])/2-(480-(mousecoordv/screenheight*480));
+		offsetx[i]*=.06f;
+		offsety[i]*=.06f;
+		offsetx[i]=0;
+		offsety[i]=0;
+		if(i>=4&&(mainmenu==1||mainmenu==2)){
+			selectedlong[i]=0;
+			offsetx[i]=(startx[i]+endx[i]+movex[i]*transition)/2-(640+190)/2;
+			offsety[i]=(starty[i]+endy[i]+movey[i]*transition)/2-(336+150)/2;
+			offsetx[i]*=.06f;
+			offsety[i]*=.06f;
+		}
+	}
+
+	if(mainmenu==1||mainmenu==2){
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_GREATER, 0.001f);
+		glEnable(GL_TEXTURE_2D);
+		glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
+		glDisable(GL_CULL_FACE);
+		glDisable(GL_LIGHTING);
+		glDepthMask(0);
+		glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+		glPushMatrix();										// Store The Projection Matrix
+			glLoadIdentity();									// Reset The Projection Matrix
+			glOrtho(0,screenwidth,0,screenheight,-100,100);						// Set Up An Ortho Screen
+			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+			glPushMatrix();										// Store The Modelview Matrix
+				glLoadIdentity();								// Reset The Modelview Matrix
+				glTranslatef(screenwidth/2,screenheight/2,0);
+				glPushMatrix();
+					glScalef((float)screenwidth/2,(float)screenheight/2,1);
+					glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+					glDisable(GL_BLEND);
+					glColor4f(0,0,0,1.0);
+					glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
+					glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
+					glDisable(GL_TEXTURE_2D);
+					glPushMatrix();
+						//glScalef(.25,.25,.25);
+						glBegin(GL_QUADS);
+						glTexCoord2f(0,0);
+						glVertex3f(-1,		-1, 	 0.0f);
+						glTexCoord2f(1,0);
+						glVertex3f(1,	-1, 	 0.0f);
+						glTexCoord2f(1,1);
+						glVertex3f(1,	1, 0.0f);
+						glTexCoord2f(0,1);
+						glVertex3f(-1, 	1, 0.0f);
+						glEnd();
+					glPopMatrix();
+					glEnable(GL_BLEND);
+					glColor4f(0.4,0.4,0.4,1.0);
+					glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
+					glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
+					glEnable(GL_TEXTURE_2D);
+					glBindTexture( GL_TEXTURE_2D, Mainmenuitems[4]);
+					glPushMatrix();
+						//glScalef(.25,.25,.25);
+						glBegin(GL_QUADS);
+						glTexCoord2f(0,0);
+						glVertex3f(-1,		-1, 	 0.0f);
+						glTexCoord2f(1,0);
+						glVertex3f(1,	-1, 	 0.0f);
+						glTexCoord2f(1,1);
+						glVertex3f(1,	1, 0.0f);
+						glTexCoord2f(0,1);
+						glVertex3f(-1, 	1, 0.0f);
+						glEnd();
+					glPopMatrix();
+				glPopMatrix();
+			glPopMatrix();
+			glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+		glPopMatrix();
+
+		glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+		glPushMatrix();										// Store The Projection Matrix
+			glLoadIdentity();									// Reset The Projection Matrix
+			glOrtho(0,640,0,480,-100,100);						// Set Up An Ortho Screen
+			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+			glPushMatrix();										// Store The Modelview Matrix
+				glLoadIdentity();								// Reset The Modelview Matrix
+				glPushMatrix();
+					glDisable(GL_TEXTURE_2D);
+					glColor4f(1,0,0,1);
+				glPopMatrix();
+			glPopMatrix();
+			glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+		glPopMatrix();
+		glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+
+	}
+
+	glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+	glPushMatrix();										// Store The Projection Matrix
+	glLoadIdentity();									// Reset The Projection Matrix
+	glOrtho(0,640,0,480,-100,100);						// Set Up An Ortho Screen
+	glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+	glPushMatrix();										// Store The Modelview Matrix
+	glLoadIdentity();								// Reset The Modelview Matrix
+	glEnable(GL_TEXTURE_2D);
+	for(j=0;j<nummenuitems;j++)
+	{
+		if(j>3 && (mainmenu==1||mainmenu==2))
+			continue;
+		//glDisable(GL_BLEND);
+		glEnable(GL_ALPHA_TEST);
+		glEnable(GL_BLEND);
+		//glDisable(GL_ALPHA_TEST);
+		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+		if(mainmenu==1||mainmenu==2)
+		{
+			glColor4f(1,1,1,1);
+			glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+			glBindTexture( GL_TEXTURE_2D, Mainmenuitems[j]);
+			glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+			glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+			glPushMatrix();
+				glBegin(GL_QUADS);
+				glTexCoord2f(0,0);
+				glVertex3f(startx[j]+movex[j]*transition,	starty[j]+movey[j]*transition, 	 0.0f);
+				glTexCoord2f(1,0);
+				glVertex3f(endx[j]+movex[j]*transition,		starty[j]+movey[j]*transition, 	 0.0f);
+				glTexCoord2f(1,1);
+				glVertex3f(endx[j]+movex[j]*transition,		endy[j]+movey[j]*transition, 0.0f);
+				glTexCoord2f(0,1);
+				glVertex3f(startx[j]+movex[j]*transition, 	endy[j]+movey[j]*transition, 0.0f);
+				glEnd();
+			glPopMatrix();
+			glEnable(GL_BLEND);
+			//glDisable(GL_ALPHA_TEST);
+			if(j<4)glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+			for(i=0;i<10;i++)
+			{
+				if(1-((float)i)/10-(1-selectedlong[j])>0)
+				{
+					glColor4f(1,1,1,(1-((float)i)/10-(1-selectedlong[j]))*.25);
+					glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+					glPushMatrix();
+						glBegin(GL_QUADS);
+						glTexCoord2f(0,0);
+						glVertex3f(startx[j]-((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	starty[j]-((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 	 0.0f);
+						glTexCoord2f(1,0);
+						glVertex3f(endx[j]+((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	starty[j]-((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 	 0.0f);
+						glTexCoord2f(1,1);
+						glVertex3f(endx[j]+((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	endy[j]+((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 0.0f);
+						glTexCoord2f(0,1);
+						glVertex3f(startx[j]-((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition, endy[j]+((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 0.0f);
+						glEnd();
+					glPopMatrix();
+				}
+			}
+		}
+		if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==18)
+		{
+			if(mainmenu!=5||j<6)
+			{
+				glColor4f(1,0,0,1);
+				if( (mainmenu==9) && j>accountactive->getProgress() && (j<numchallengelevels) )
+					glColor4f(0.5,0,0,1);
+				glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+				glPushMatrix();
+					if(mainmenu!=7||j!=0||!entername)
+						text.glPrint(startx[j],starty[j],menustring[j],0,1,640,480);
+					else
+					{
+						char string[2]="_";
+						if(displayblink) {
+							//~ sprintf (string, "_");
+							text.glPrint(startx[j]+(float)(displayselected)*10,starty[j],string,0,1,640,480);
+						}
+						for(int l=0;l<displaychars[0];l++) {
+							sprintf (string, "%c",displaytext[0][l]);
+							text.glPrint(startx[j]+l*10,starty[j],string,0,1,640,480);
+						}
+					}
+				glPopMatrix();
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+				for(i=0;i<15;i++)
+				{
+					if(1-((float)i)/15-(1-selectedlong[j])>0)
+					{
+						glColor4f(1,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
+						if(mainmenu==9&&j>accountactive->getProgress()&&j<numchallengelevels)glColor4f(0.5,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
+						if(mainmenu==11&&j>accountactive->getProgress()&&j<numchallengelevels)glColor4f(0.5,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
+						if(mainmenu==3)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4-((/*1*/+((float)i)/70)*strlen(menustring[j]))*3,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
+						if(mainmenu==4)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
+						if(mainmenu==5)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
+						if(mainmenu==6)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
+						if(mainmenu==7&&(j!=0||!entername)) text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
+						if(mainmenu==8)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
+						if(mainmenu==9)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
+						if(mainmenu==10)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
+						if(mainmenu==18)text.glPrint(startx[j]-((float)i)+offsetx[j]*((float)i)/4,starty[j]+offsety[j]*((float)i)/4,menustring[j],0,1+((float)i)/70,640,480);
+					}
+				}
+			}
+			else
+			{
+				glClear(GL_DEPTH_BUFFER_BIT);
+				glEnable(GL_ALPHA_TEST);
+				glAlphaFunc(GL_GREATER, 0.001f);
+				glEnable(GL_TEXTURE_2D);
+				glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
+				glDisable(GL_CULL_FACE);
+				glDisable(GL_LIGHTING);
+				if(j==6)glColor4f(1,1,1,1);
+				else glColor4f(1,0,0,1);
+
+				glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+				glPushMatrix();										// Store The Projection Matrix
+					glLoadIdentity();									// Reset The Projection Matrix
+					glOrtho(0,640,0,480,-100,100);						// Set Up An Ortho Screen
+					glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+					glPushMatrix();										// Store The Modelview Matrix
+						glLoadIdentity();								// Reset The Modelview Matrix
+						glPushMatrix();
+
+							//Draw world, draw map
+							glTranslatef(2,-5,0);
+
+							if(j>6&&j<nummenuitems-1)
+							{
+								XYZ linestart,lineend,offset;
+								XYZ fac;
+								float startsize;
+								float endsize;
+								linestart=0;
+								lineend=0;
+								offset=0;
+								//float linestartx,lineendx,linestarty,lineendy,offsetx,offsety;
+								linestart.x=(startx[j]+endx[j])/2;
+								linestart.y=(starty[j]+endy[j])/2;
+								if(j>=6+(accountactive?accountactive->getCampaignChoicesMade():0)){
+									linestart.x=(startx[6+(accountactive?accountactive->getCampaignChoicesMade():0)]+endx[6+(accountactive?accountactive->getCampaignChoicesMade():0)])/2;
+									linestart.y=(starty[6+(accountactive?accountactive->getCampaignChoicesMade():0)]+endy[6+(accountactive?accountactive->getCampaignChoicesMade():0)])/2;
+								}
+								lineend.x=(startx[j+1]+endx[j+1])/2;
+								lineend.y=(starty[j+1]+endy[j+1])/2;
+								offset=lineend-linestart;
+								fac=offset;
+								Normalise(&fac);
+								offset=DoRotation(offset,0,0,90);
+								Normalise(&offset);
+								glDisable(GL_TEXTURE_2D);							
+
+								if(j<6+(accountactive?accountactive->getCampaignChoicesMade():0)){
+									glColor4f(0.5,0,0,1);
+									endsize=.5;
+								} else {
+									glColor4f(1,0,0,1);
+									endsize=1;
+								}
+								startsize=.5;
+
+								linestart+=fac*4*startsize;
+								lineend-=fac*4*endsize;
+
+								if(!(j>7+(accountactive?accountactive->getCampaignChoicesMade():0)+campaignchoicenum)){
+									glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+									glPushMatrix();
+										glBegin(GL_QUADS);
+										glTexCoord2f(0,0);
+										glVertex3f(linestart.x-offset.x*startsize,	linestart.y-offset.y*startsize, 	 0.0f);
+										glTexCoord2f(1,0);
+										glVertex3f(linestart.x+offset.x*startsize,	linestart.y+offset.y*startsize, 	 0.0f);
+										glTexCoord2f(1,1);
+										glVertex3f(lineend.x+offset.x*endsize,		lineend.y+offset.y*endsize, 0.0f);
+										glTexCoord2f(0,1);
+										glVertex3f(lineend.x-offset.x*endsize, 		lineend.y-offset.y*endsize, 0.0f);
+										glEnd();
+									glPopMatrix();
+								}
+								glEnable(GL_TEXTURE_2D);
+							}
+
+
+							if(j==6)glBindTexture( GL_TEXTURE_2D, Mainmenuitems[7]);
+							else glBindTexture( GL_TEXTURE_2D, Mapcircletexture);
+							glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+							glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+							if(j-7<(accountactive?accountactive->getCampaignChoicesMade():0))glColor4f(0.5,0,0,1);
+							if(j-7>=(accountactive?accountactive->getCampaignChoicesMade():0))glColor4f(1,0,0,1);
+							if(j==6)glColor4f(1,1,1,1);
+							XYZ midpoint;
+							float itemsize;
+							itemsize=abs(startx[j]-endx[j])/2;
+							midpoint=0;
+							midpoint.x=(startx[j]+endx[j])/2;
+							midpoint.y=(starty[j]+endy[j])/2;
+							if(j>6&&(j-7<(accountactive?accountactive->getCampaignChoicesMade():0)))itemsize*=.5;
+							if(!(j-7>(accountactive?accountactive->getCampaignChoicesMade():0)+campaignchoicenum))
+							{
+								glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+								glPushMatrix();
+									glBegin(GL_QUADS);
+									glTexCoord2f(0,0);
+									glVertex3f(midpoint.x-itemsize+movex[j]*transition,	midpoint.y-itemsize+movey[j]*transition, 	 0.0f);
+									glTexCoord2f(1,0);
+									glVertex3f(midpoint.x+itemsize+movex[j]*transition,		midpoint.y-itemsize+movey[j]*transition, 	 0.0f);
+									glTexCoord2f(1,1);
+									glVertex3f(midpoint.x+itemsize+movex[j]*transition,		midpoint.y+itemsize+movey[j]*transition, 0.0f);
+									glTexCoord2f(0,1);
+									glVertex3f(midpoint.x-itemsize+movex[j]*transition, 	midpoint.y+itemsize+movey[j]*transition, 0.0f);
+									glEnd();
+								glPopMatrix();
+								glEnable(GL_BLEND);
+								//glDisable(GL_ALPHA_TEST);
+								if(j<4)glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+								for(i=0;i<10;i++)
+								{
+									if(1-((float)i)/10-(1-selectedlong[j])>0)
+									{
+										glColor4f(1,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
+										glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+										glPushMatrix();
+											glBegin(GL_QUADS);
+											glTexCoord2f(0,0);
+											glVertex3f(midpoint.x-itemsize-((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	midpoint.y-itemsize-((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 	 0.0f);
+											glTexCoord2f(1,0);
+											glVertex3f(midpoint.x+itemsize+((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	midpoint.y-itemsize-((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 	 0.0f);
+											glTexCoord2f(1,1);
+											glVertex3f(midpoint.x+itemsize+((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	midpoint.y+itemsize+((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 0.0f);
+											glTexCoord2f(0,1);
+											glVertex3f(midpoint.x-itemsize-((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition, midpoint.y+itemsize+((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 0.0f);
+											glEnd();
+										glPopMatrix();
+									}
+								}
+							}
+						glPopMatrix();
+					glPopMatrix();
+					glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+				glPopMatrix();
+				glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+
+				if(j-7>=(accountactive?accountactive->getCampaignChoicesMade():0)){
+					text.glPrintOutlined(0.9,0,0,startx[j]+10,starty[j]-4,menustring[j],0,0.6,640,480);
+					glDisable(GL_DEPTH_TEST);
+				}
+			}
+		}
+	}
+	glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+	glPopMatrix();
+
+		if(mainmenu==1||mainmenu==2)
+			if(transition<.1||transition>.9){
+				glClear(GL_DEPTH_BUFFER_BIT);
+				glEnable(GL_ALPHA_TEST);
+				glAlphaFunc(GL_GREATER, 0.001f);
+				glEnable(GL_TEXTURE_2D);
+				glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
+				glDisable(GL_CULL_FACE);
+				glDisable(GL_LIGHTING);
+				glDepthMask(0);
+				glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+				glPushMatrix();										// Store The Projection Matrix
+					glLoadIdentity();									// Reset The Projection Matrix
+					glOrtho(0,640,0,480,-100,100);						// Set Up An Ortho Screen
+					glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+					glPushMatrix();										// Store The Modelview Matrix
+						glLoadIdentity();								// Reset The Modelview Matrix
+						glPushMatrix();
+							glDisable(GL_TEXTURE_2D);
+							if(transition<.1)
+								glColor4f(1,0,0,1-(transition*10));
+							if(transition>.9)
+								glColor4f(1,0,0,1-((1-transition)*10));
+						glPopMatrix();
+					glPopMatrix();
+					glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+				glPopMatrix();
+			}
+
+		glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+		glPushMatrix();										// Store The Projection Matrix
+			glLoadIdentity();									// Reset The Projection Matrix
+			glOrtho(0,screenwidth,0,screenheight,-100,100);						// Set Up An Ortho Screen
+			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+			glPushMatrix();										// Store The Modelview Matrix
+				glLoadIdentity();								// Reset The Modelview Matrix
+				glTranslatef(screenwidth/2,screenheight/2,0);
+				glPushMatrix();
+					glScalef((float)screenwidth/2,(float)screenheight/2,1);
+					glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+					glEnable(GL_BLEND);
+					glEnable(GL_TEXTURE_2D);
+					glColor4f(1,1,1,1);
+					glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
+					glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
+				glPopMatrix();
+				if(!waiting) { // hide the cursor while waiting for a key
+					glPushMatrix();
+						glTranslatef(mousecoordh-screenwidth/2,mousecoordv*-1+screenheight/2,0);
+						glScalef((float)screenwidth/64,(float)screenwidth/64,1);
+						glTranslatef(1,-1,0);
+						glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+						glColor4f(1,1,1,1);
+						glBindTexture( GL_TEXTURE_2D, cursortexture);
+						glPushMatrix();
+							//glScalef(.25,.25,.25);
+							glBegin(GL_QUADS);
+							glTexCoord2f(0,0);
+							glVertex3f(-1,		-1, 	 0.0f);
+							glTexCoord2f(1,0);
+							glVertex3f(1,	-1, 	 0.0f);
+							glTexCoord2f(1,1);
+							glVertex3f(1,	1, 0.0f);
+							glTexCoord2f(0,1);
+							glVertex3f(-1, 	1, 0.0f);
+							glEnd();
+						glPopMatrix();
+					glPopMatrix();
+				}
+			glPopMatrix();
+			glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+		glPopMatrix();
+
+
+		if(flashamount>0)
+		{
+			//printf("Flash amount: %f, delay %i\n", flashamount, flashdelay);
+			if(flashamount>1)flashamount=1;
+			if(flashdelay<=0)flashamount-=multiplier;
+			flashdelay--;
+			if(flashamount<0)flashamount=0;
+			glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
+			glDisable(GL_CULL_FACE);
+			glDisable(GL_LIGHTING);
+			glDisable(GL_TEXTURE_2D);
+			glDepthMask(0);
+			glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+			glPushMatrix();										// Store The Projection Matrix
+				glLoadIdentity();									// Reset The Projection Matrix
+				glOrtho(0,screenwidth,0,screenheight,-100,100);						// Set Up An Ortho Screen
+				glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+				glPushMatrix();										// Store The Modelview Matrix
+					glLoadIdentity();								// Reset The Modelview Matrix
+					glScalef(screenwidth,screenheight,1);
+					glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+					glEnable(GL_BLEND);
+					glColor4f(flashr,flashg,flashb,flashamount);
+					glBegin(GL_QUADS);
+					glVertex3f(0,		0, 	 0.0f);
+					glVertex3f(256,	0, 	 0.0f);
+					glVertex3f(256,	256, 0.0f);
+					glVertex3f(0, 	256, 0.0f);
+					glEnd();
+					glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+				glPopMatrix();										// Restore The Old Projection Matrix
+			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+			glPopMatrix();										// Restore The Old Projection Matrix
+			glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
+			glEnable(GL_CULL_FACE);
+			glDisable(GL_BLEND);
+			glDepthMask(1);
+		}
+}
