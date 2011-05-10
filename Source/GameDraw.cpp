@@ -2163,7 +2163,7 @@ void Game::DrawMenu()
 		glPopMatrix();
 		glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 
-		if(mainmenu==3){			
+		if(mainmenu==3){
 			nummenuitems=14;
 			if((float)newscreenwidth>(float)newscreenheight*1.61||(float)newscreenwidth<(float)newscreenheight*1.59)sprintf (menustring[0], "Resolution: %d*%d",(int)newscreenwidth,(int)newscreenheight);
 			else sprintf (menustring[0], "Resolution: %d*%d (widescreen)",(int)newscreenwidth,(int)newscreenheight);
@@ -2171,8 +2171,6 @@ void Game::DrawMenu()
 			starty[0]=440;
 			endx[0]=startx[0]+strlen(menustring[0])*10;
 			endy[0]=starty[0]+20;
-			movex[0]=0;
-			movey[0]=0;
 
 			if(newdetail==2)sprintf (menustring[1], "Detail: High");
 			else if(newdetail==1)sprintf (menustring[1], "Detail: Medium");
@@ -2181,8 +2179,6 @@ void Game::DrawMenu()
 			starty[1]=405;
 			endx[1]=startx[1]+strlen(menustring[1])*10;
 			endy[1]=starty[1]+20;
-			movex[1]=0;
-			movey[1]=0;
 
 			if(bloodtoggle==2)sprintf (menustring[2], "Blood: On, high detail (slower)");
 			if(bloodtoggle==1)sprintf (menustring[2], "Blood: On, low detail");
@@ -2191,8 +2187,6 @@ void Game::DrawMenu()
 			starty[2]=370;
 			endx[2]=startx[2]+strlen(menustring[2])*10;
 			endy[2]=starty[2]+20;
-			movex[2]=0;
-			movey[2]=0;
 
 			if(difficulty==2)sprintf (menustring[3], "Difficulty: Insane");
 			if(difficulty==1)sprintf (menustring[3], "Difficulty: Difficult");
@@ -2201,8 +2195,6 @@ void Game::DrawMenu()
 			starty[3]=335-1000;
 			endx[3]=startx[3]+strlen(menustring[3])*10;
 			endy[3]=starty[3]+20;
-			movex[3]=0;
-			movey[3]=0;
 
 			if(ismotionblur==1)sprintf (menustring[4], "Blur Effects: Enabled (less compatible)");
 			if(ismotionblur==0)sprintf (menustring[4], "Blur Effects: Disabled (more compatible)");
@@ -2210,8 +2202,6 @@ void Game::DrawMenu()
 			starty[4]=335;
 			endx[4]=startx[4]+strlen(menustring[4])*10;
 			endy[4]=starty[4]+20;
-			movex[4]=0;
-			movey[4]=0;
 
 			if(decals==1)sprintf (menustring[5], "Decals: Enabled (slower)");
 			if(decals==0)sprintf (menustring[5], "Decals: Disabled");
@@ -2219,8 +2209,6 @@ void Game::DrawMenu()
 			starty[5]=300;
 			endx[5]=startx[5]+strlen(menustring[5])*10;
 			endy[5]=starty[5]+20;
-			movex[5]=0;
-			movey[5]=0;
 
 			if(musictoggle==1)sprintf (menustring[6], "Music: Enabled");
 			if(musictoggle==0)sprintf (menustring[6], "Music: Disabled");
@@ -2228,8 +2216,6 @@ void Game::DrawMenu()
 			starty[6]=265;
 			endx[6]=startx[6]+strlen(menustring[6])*10;
 			endy[6]=starty[6]+20;
-			movex[6]=0;
-			movey[6]=0;
 
 			if(invertmouse==1)sprintf (menustring[9], "Invert mouse: Yes");
 			if(invertmouse==0)sprintf (menustring[9], "Invert mouse: No");
@@ -2237,48 +2223,36 @@ void Game::DrawMenu()
 			starty[9]=230;
 			endx[9]=startx[9]+strlen(menustring[9])*10;
 			endy[9]=starty[9]+20;
-			movex[9]=0;
-			movey[9]=0;
 
 			sprintf (menustring[10], "Mouse Speed: %d", (int)(usermousesensitivity*5));
 			startx[10]=20;
 			starty[10]=195;
 			endx[10]=startx[10]+strlen(menustring[10])*10;
 			endy[10]=starty[10]+20;
-			movex[10]=0;
-			movey[10]=0;
 			
 			sprintf (menustring[11], "Volume: %d%%", (int)(volume*100));
 			startx[11]=10+60;
 			starty[11]=160;
 			endx[11]=startx[11]+strlen(menustring[11])*10;
 			endy[11]=starty[11]+20;
-			movex[11]=0;
-			movey[11]=0;
 			
 			sprintf (menustring[13], "Damage Bar: %s",(showdamagebar?"on":"off"));
 			startx[13]=30;
 			starty[13]=125;
 			endx[13]=startx[13]+strlen(menustring[13])*10;
 			endy[13]=starty[13]+20;
-			movex[13]=0;
-			movey[13]=0;
 			
 			sprintf (menustring[7], "-Configure Controls-");
 			startx[7]=10+15;
 			starty[7]=90;
 			endx[7]=startx[7]+strlen(menustring[7])*10;
 			endy[7]=starty[7]+20;
-			movex[7]=0;
-			movey[7]=0;
 
 			sprintf (menustring[12], "-Configure Stereo -");
 			startx[12]=10+15;
 			starty[12]=55;
 			endx[12]=startx[12]+strlen(menustring[7])*10;
 			endy[12]=starty[12]+20;
-			movex[12]=0;
-			movey[12]=0;
 			
 			if(newdetail==detail&&newscreenheight==(int)screenheight&&newscreenwidth==(int)screenwidth)sprintf (menustring[8], "Back");
 			else sprintf (menustring[8], "Back (some changes take effect next time Lugaru is opened)");
@@ -2286,8 +2260,6 @@ void Game::DrawMenu()
 			endx[8]=startx[8]+strlen(menustring[8])*10;
 			starty[8]=10;
 			endy[8]=starty[8]+20;
-			movex[8]=0;
-			movey[8]=0;
 		}
 
 		if(mainmenu==4){			
@@ -2298,8 +2270,6 @@ void Game::DrawMenu()
 			starty[0]=400;
 			endx[0]=startx[0]+strlen(menustring[0])*10;
 			endy[0]=starty[0]+20;
-			movex[0]=0;
-			movey[0]=0;
 
 			if(keyselect!=1)sprintf (menustring[1], "Back: %s",Input::keyToChar(backkey));
 			else sprintf (menustring[1], "Back: _");
@@ -2307,8 +2277,6 @@ void Game::DrawMenu()
 			starty[1]=360;
 			endx[1]=startx[1]+strlen(menustring[1])*10;
 			endy[1]=starty[1]+20;
-			movex[1]=0;
-			movey[1]=0;
 
 			if(keyselect!=2)sprintf (menustring[2], "Left: %s",Input::keyToChar(leftkey));
 			else sprintf (menustring[2], "Left: _");
@@ -2316,8 +2284,6 @@ void Game::DrawMenu()
 			starty[2]=320;
 			endx[2]=startx[2]+strlen(menustring[2])*10;
 			endy[2]=starty[2]+20;
-			movex[2]=0;
-			movey[2]=0;
 
 			if(keyselect!=3)sprintf (menustring[3], "Right: %s",Input::keyToChar(rightkey));
 			else sprintf (menustring[3], "Right: _");
@@ -2325,8 +2291,6 @@ void Game::DrawMenu()
 			starty[3]=280;
 			endx[3]=startx[3]+strlen(menustring[3])*10;
 			endy[3]=starty[3]+20;
-			movex[3]=0;
-			movey[3]=0;
 
 			if(keyselect!=4)sprintf (menustring[4], "Crouch: %s",Input::keyToChar(crouchkey));
 			else sprintf (menustring[4], "Crouch: _");
@@ -2334,8 +2298,6 @@ void Game::DrawMenu()
 			starty[4]=240;
 			endx[4]=startx[4]+strlen(menustring[4])*10;
 			endy[4]=starty[4]+20;
-			movex[4]=0;
-			movey[4]=0;
 
 			if(keyselect!=5)sprintf (menustring[5], "Jump: %s",Input::keyToChar(jumpkey));
 			else sprintf (menustring[5], "Jump: _");
@@ -2343,8 +2305,6 @@ void Game::DrawMenu()
 			starty[5]=200;
 			endx[5]=startx[5]+strlen(menustring[5])*10;
 			endy[5]=starty[5]+20;
-			movex[5]=0;
-			movey[5]=0;
 
 			if(keyselect!=6)sprintf (menustring[6], "Draw: %s",Input::keyToChar(drawkey));
 			else sprintf (menustring[6], "Draw: _");
@@ -2352,8 +2312,6 @@ void Game::DrawMenu()
 			starty[6]=160;
 			endx[6]=startx[6]+strlen(menustring[6])*10;
 			endy[6]=starty[6]+20;
-			movex[6]=0;
-			movey[6]=0;
 
 			if(keyselect!=7)sprintf (menustring[7], "Throw: %s",Input::keyToChar(throwkey));
 			else sprintf (menustring[7], "Throw: _");
@@ -2361,8 +2319,6 @@ void Game::DrawMenu()
 			starty[7]=120;
 			endx[7]=startx[7]+strlen(menustring[7])*10;
 			endy[7]=starty[7]+20;
-			movex[7]=0;
-			movey[7]=0;
 
 			if(keyselect!=8)sprintf (menustring[8], "Attack: %s",Input::keyToChar(attackkey));
 			else sprintf (menustring[8], "Attack: _");
@@ -2370,8 +2326,6 @@ void Game::DrawMenu()
 			starty[8]=80;
 			endx[8]=startx[8]+strlen(menustring[8])*10;
 			endy[8]=starty[8]+20;
-			movex[8]=0;
-			movey[8]=0;
 
 
 
@@ -2380,8 +2334,6 @@ void Game::DrawMenu()
 			endx[9]=startx[9]+strlen(menustring[9])*10;
 			starty[9]=10;
 			endy[9]=starty[9]+20;
-			movex[9]=0;
-			movey[9]=0;
 		}
 		if(mainmenu==5){			
 			nummenuitems=7+(accountactive?accountactive->getCampaignChoicesMade():0)+campaignchoicenum;
@@ -2391,48 +2343,36 @@ void Game::DrawMenu()
 			starty[0]=400;
 			endx[0]=startx[0]+strlen(menustring[0])*10;
 			endy[0]=starty[0]+20;
-			movex[0]=0;
-			movey[0]=0;
 
 			sprintf (menustring[1], "Tutorial");
 			startx[1]=5;
 			starty[1]=300;
 			endx[1]=startx[1]+strlen(menustring[1])*10;
 			endy[1]=starty[1]+20;
-			movex[1]=0;
-			movey[1]=0;
 
 			sprintf (menustring[2], "Challenge");
 			startx[2]=5;
 			starty[2]=240;
 			endx[2]=startx[2]+strlen(menustring[2])*10;
 			endy[2]=starty[2]+20;
-			movex[2]=0;
-			movey[2]=0;
 
 			sprintf (menustring[3], "Delete User");
 			startx[3]=400;
 			starty[3]=10;
 			endx[3]=startx[3]+strlen(menustring[3])*10;
 			endy[3]=starty[3]+20;
-			movex[3]=0;
-			movey[3]=0;
 
 			sprintf (menustring[4], "Main Menu");
 			startx[4]=5;
 			starty[4]=10;
 			endx[4]=startx[4]+strlen(menustring[4])*10;
 			endy[4]=starty[4]+20;
-			movex[4]=0;
-			movey[4]=0;
 
 			sprintf (menustring[5], "Change User");
 			startx[5]=5;
 			endx[5]=startx[5]+strlen(menustring[5])*10;
 			starty[5]=180;
 			endy[5]=starty[5]+20;
-			movex[5]=0;
-			movey[5]=0;
 
 			//World
 
@@ -2441,8 +2381,6 @@ void Game::DrawMenu()
 			starty[6]=30+480-400-50;
 			endx[6]=startx[6]+400;
 			endy[6]=30+480-50;
-			movex[6]=0;
-			movey[6]=0;
 
 			if((accountactive?accountactive->getCampaignChoicesMade():0)) {
 				for(i=0;i<(accountactive?accountactive->getCampaignChoicesMade():0);i++) {
@@ -2451,8 +2389,6 @@ void Game::DrawMenu()
 					starty[7+i]=30+30+(512-campaignlocationy[levelorder[i]])*400/512;
 					endx[7+i]=startx[7+i]+10;
 					endy[7+i]=starty[7+i]+10;
-					movex[7+i]=0;
-					movey[7+i]=0;
 				}
 			}
 
@@ -2463,8 +2399,6 @@ void Game::DrawMenu()
 					starty[7+i]=30+30+(512-campaignlocationy[campaignchoicewhich[i-((accountactive?accountactive->getCampaignChoicesMade():0))]])*400/512;
 					endx[7+i]=startx[7+i]+10;
 					endy[7+i]=starty[7+i]+10;
-					movex[7+i]=0;
-					movey[7+i]=0;
 				}
 		}
 
@@ -2476,48 +2410,36 @@ void Game::DrawMenu()
 			starty[0]=400;
 			endx[0]=startx[0]+strlen(menustring[0])*10;
 			endy[0]=starty[0]+20;
-			movex[0]=0;
-			movey[0]=0;
 
 			sprintf (menustring[1], "Yes");
 			startx[1]=10;
 			starty[1]=360;
 			endx[1]=startx[1]+strlen(menustring[1])*10;
 			endy[1]=starty[1]+20;
-			movex[1]=0;
-			movey[1]=0;
 
 			sprintf (menustring[2], "No");
 			startx[2]=10;
 			starty[2]=320;
 			endx[2]=startx[2]+strlen(menustring[2])*10;
 			endy[2]=starty[2]+20;
-			movex[2]=0;
-			movey[2]=0;
 
 			sprintf (menustring[3], "Extra 4");
 			startx[3]=10;
 			starty[3]=280;
 			endx[3]=startx[3]+strlen(menustring[3])*10;
 			endy[3]=starty[3]+20;
-			movex[3]=0;
-			movey[3]=0;
 
 			sprintf (menustring[4], "Extra 5");
 			startx[4]=10;
 			starty[4]=240;
 			endx[4]=startx[4]+strlen(menustring[4])*10;
 			endy[4]=starty[4]+20;
-			movex[4]=0;
-			movey[4]=0;
 
 			sprintf (menustring[5], "Back");
 			startx[5]=10;
 			endx[5]=startx[5]+strlen(menustring[5])*10;
 			starty[5]=10;
 			endy[5]=starty[5]+20;
-			movex[5]=0;
-			movey[5]=0;
 		}
 
 		if(mainmenu==7){	
@@ -2533,8 +2455,6 @@ void Game::DrawMenu()
 			starty[0]=400;
 			endx[0]=startx[0]+strlen(menustring[0])*10;
 			endy[0]=starty[0]+20;
-			movex[0]=0;
-			movey[0]=0;
 
 			if(entername)
 				startx[0]+=10;
@@ -2547,8 +2467,6 @@ void Game::DrawMenu()
 				starty[num]=360-20-20*num;
 				endx[num]=startx[num]+strlen(menustring[num])*10;
 				endy[num]=starty[num]+20;
-				movex[num]=0;
-				movey[num]=0;
 
 				num++;
 			}
@@ -2558,8 +2476,6 @@ void Game::DrawMenu()
 			endx[num]=startx[num]+strlen(menustring[num])*10;
 			starty[num]=10;
 			endy[num]=starty[num]+20;
-			movex[num]=0;
-			movey[num]=0;
 		}
 		if(mainmenu==8){			
 			nummenuitems=3;
@@ -2569,24 +2485,18 @@ void Game::DrawMenu()
 			starty[0]=400;
 			endx[0]=startx[0]+strlen(menustring[0])*10;
 			endy[0]=starty[0]+20;
-			movex[0]=0;
-			movey[0]=0;
 
 			sprintf (menustring[1], "Difficult");
 			startx[1]=10;
 			starty[1]=360;
 			endx[1]=startx[1]+strlen(menustring[1])*10;
 			endy[1]=starty[1]+20;
-			movex[1]=0;
-			movey[1]=0;
 
 			sprintf (menustring[2], "Insane");
 			startx[2]=10;
 			starty[2]=320;
 			endx[2]=startx[2]+strlen(menustring[2])*10;
 			endy[2]=starty[2]+20;
-			movex[2]=0;
-			movey[2]=0;
 		}
 		if(mainmenu==9){			
 			int tempncl;
@@ -2613,8 +2523,6 @@ void Game::DrawMenu()
 				starty[j]=400-j*25;
 				endx[j]=startx[j]+strlen(menustring[j])*10;
 				endy[j]=starty[j]+20;
-				movex[j]=0;
-				movey[j]=0;
 			}
 
 			sprintf (menustring[numchallengelevels], "Back");
@@ -2622,16 +2530,12 @@ void Game::DrawMenu()
 			endx[numchallengelevels]=startx[numchallengelevels]+strlen(menustring[numchallengelevels])*10;
 			starty[numchallengelevels]=10;
 			endy[numchallengelevels]=starty[numchallengelevels]+20;
-			movex[numchallengelevels]=0;
-			movey[numchallengelevels]=0;
 
 			sprintf (menustring[numchallengelevels+1], "             High Score      Best Time");
 			startx[numchallengelevels+1]=10;
 			starty[numchallengelevels+1]=440;
 			endx[numchallengelevels+1]=startx[numchallengelevels+1]+strlen(menustring[numchallengelevels+1])*10;
 			endy[numchallengelevels+1]=starty[numchallengelevels+1]+20;
-			movex[numchallengelevels+1]=0;
-			movey[numchallengelevels+1]=0;
 
 			//numchallengelevels=tempncl;
 
@@ -2645,32 +2549,24 @@ void Game::DrawMenu()
 			starty[0]=330;
 			endx[0]=startx[0]+strlen(menustring[0])*10;
 			endy[0]=starty[0]+20;
-			movex[0]=0;
-			movey[0]=0;
 
 			sprintf (menustring[1], "You have avenged your family and");
 			startx[1]=140;
 			starty[1]=300;
 			endx[1]=startx[1]+strlen(menustring[1])*10;
 			endy[1]=starty[1]+20;
-			movex[1]=0;
-			movey[1]=0;
 
 			sprintf (menustring[2], "restored peace to the island of Lugaru.");
 			startx[2]=110;
 			starty[2]=270;
 			endx[2]=startx[2]+strlen(menustring[2])*10;
 			endy[2]=starty[2]+20;
-			movex[2]=0;
-			movey[2]=0;
 
 			sprintf (menustring[3], "Back");
 			startx[3]=10;
 			endx[3]=startx[3]+strlen(menustring[3])*10;
 			starty[3]=10;
 			endy[3]=starty[3]+20;
-			movex[3]=0;
-			movey[3]=0;
 
 			for(i=0;i<255;i++)menustring[4][i]='\0';
 			sprintf (temp, "Your score:");
@@ -2683,8 +2579,6 @@ void Game::DrawMenu()
 			endx[4]=startx[4]+strlen(menustring[4])*10;
 			starty[4]=200;
 			endy[4]=starty[4]+20;
-			movex[4]=0;
-			movey[4]=0;
 			for(i=0;i<255;i++)menustring[5][i]='\0';
 			sprintf (temp, "Highest score:");
 			strcpy(menustring[5],temp);
@@ -2696,8 +2590,6 @@ void Game::DrawMenu()
 			endx[5]=startx[5]+strlen(menustring[5])*10;
 			starty[5]=180;
 			endy[5]=starty[5]+20;
-			movex[5]=0;
-			movey[5]=0;
 		}
 		if (mainmenu==18) {
 			nummenuitems=4;
@@ -2706,32 +2598,24 @@ void Game::DrawMenu()
 			starty[0]=400;
 			endx[0]=startx[0]+strlen(menustring[0])*10;
 			endy[0]=starty[0]+20;
-			movex[0]=0;
-			movey[0]=0;
 			
 			sprintf (menustring[1], "Stereo separation: %.3f", stereoseparation);
 			startx[1]=10;
 			starty[1]=360;
 			endx[1]=startx[1]+strlen(menustring[1])*10;
 			endy[1]=starty[1]+20;
-			movex[1]=0;
-			movey[1]=0;
 
 			sprintf (menustring[2], "Reverse stereo: %s", stereoreverse ? "Yes" : "No");
 			startx[2]=40;
 			starty[2]=320;
 			endx[2]=startx[2]+strlen(menustring[2])*10;
 			endy[2]=starty[2]+20;
-			movex[2]=0;
-			movey[2]=0;
 			
 			sprintf (menustring[3], "Back");
 			startx[3]=10;
 			endx[3]=startx[3]+strlen(menustring[3])*10;
 			starty[3]=10;
 			endy[3]=starty[3]+20;
-			movex[3]=0;
-			movey[3]=0;				
 		}
 	}
 
@@ -2741,30 +2625,22 @@ void Game::DrawMenu()
 		starty[0]=480-128;
 		endx[0]=150+256;
 		endy[0]=480;
-		movex[0]=0;
-		movey[0]=0;
 
 		startx[1]=18;
 		starty[1]=480-152-32;
 		endx[1]=18+128;
 		endy[1]=480-152;
-		movex[1]=0;
-		movey[1]=0;
 
 		startx[2]=18;
 		starty[2]=480-228-32;
 		endx[2]=2+128;
 		endy[2]=480-228;
-		movex[2]=0;
-		movey[2]=0;
 
 		if(mainmenu==1){
 			startx[3]=18;
 			starty[3]=480-306-32;
 			endx[3]=22+64;
 			endy[3]=480-306;
-			movex[3]=0;
-			movey[3]=0;
 		}
 
 		if(mainmenu==2){
@@ -2772,8 +2648,6 @@ void Game::DrawMenu()
 			starty[3]=480-306-32;
 			endx[3]=22+128;
 			endy[3]=480-306;
-			movex[3]=0;
-			movey[3]=0;
 		}
 
 		/*startx[4]=150;
@@ -2781,116 +2655,22 @@ void Game::DrawMenu()
 		endx[4]=150+256;
 		endy[4]=480;
 		*/
-		if(anim==0){
+		/*if(anim==0){
 			startx[4]=380;
 			starty[4]=480-140-256;
 			endx[4]=380+256;
 			endy[4]=480-140;
-			movex[4]=80;
-			movey[4]=0;
 
 			startx[5]=145;
 			starty[5]=480-138-256;
 			endx[5]=145+256;
 			endy[5]=480-138;
-			movex[5]=40;
-			movey[5]=0;
 
 			startx[6]=254;
 			starty[6]=480-144-256;
 			endx[6]=254+256;
 			endy[6]=480-144;
-			movex[6]=20;
-			movey[6]=0;
-		}
-		if(anim==1){
-			startx[4]=180;
-			starty[4]=480-140-256;
-			endx[4]=180+256;
-			endy[4]=480-140;
-			movex[4]=80;
-			movey[4]=0;
-
-			startx[5]=500;
-			starty[5]=480-138-256;
-			endx[5]=500+256;
-			endy[5]=480-138;
-			movex[5]=40;
-			movey[5]=0;
-
-			startx[6]=340;
-			starty[6]=480-144-256;
-			endx[6]=340+256;
-			endy[6]=480-144;
-			movex[6]=20;
-			movey[6]=0;
-		}
-		if(anim==2){
-			startx[4]=460;
-			starty[4]=480-140-256;
-			endx[4]=460+256;
-			endy[4]=480-140;
-			movex[4]=50;
-			movey[4]=0;
-
-			startx[5]=295;
-			starty[5]=480-150-256;
-			endx[5]=295+256;
-			endy[5]=480-138;
-			movex[5]=-10;
-			movey[5]=0;
-
-			startx[6]=204;
-			starty[6]=480-144-256;
-			endx[6]=204+256;
-			endy[6]=480-144;
-			movex[6]=-30;
-			movey[6]=0;
-		}
-		if(anim==3){
-			startx[4]=150;
-			starty[4]=480-140-256;
-			endx[4]=200+256;
-			endy[4]=480-140;
-			movex[4]=80;
-			movey[4]=0;
-
-			startx[5]=350;
-			starty[5]=480-150-256;
-			endx[5]=350+256;
-			endy[5]=480-138;
-			movex[5]=5;
-			movey[5]=0;
-
-			startx[6]=500;
-			starty[6]=480-144-256;
-			endx[6]=500+256;
-			endy[6]=480-144;
-			movex[6]=-10;
-			movey[6]=0;
-		}
-		if(anim==4){
-			startx[4]=190;
-			starty[4]=480-100-256;
-			endx[4]=190+256;
-			endy[4]=480-100;
-			movex[4]=-30;
-			movey[4]=0;
-
-			startx[5]=185;
-			starty[5]=480-120-256;
-			endx[5]=185+256;
-			endy[5]=480-120;
-			movex[5]=-5;
-			movey[5]=0;
-
-			startx[6]=400;
-			starty[6]=480-144-256;
-			endx[6]=400+256;
-			endy[6]=480-144;
-			movex[6]=20;
-			movey[6]=0;
-		}
+		}*/
 	}
 
 	selected=-1;
@@ -2927,8 +2707,8 @@ void Game::DrawMenu()
 		offsety[i]=0;
 		if(i>=4&&(mainmenu==1||mainmenu==2)){
 			selectedlong[i]=0;
-			offsetx[i]=(startx[i]+endx[i]+movex[i]*transition)/2-(640+190)/2;
-			offsety[i]=(starty[i]+endy[i]+movey[i]*transition)/2-(336+150)/2;
+			offsetx[i]=(startx[i]+endx[i])/2-(640+190)/2;
+			offsety[i]=(starty[i]+endy[i])/2-(336+150)/2;
 			offsetx[i]*=.06f;
 			offsety[i]*=.06f;
 		}
@@ -3042,13 +2822,13 @@ void Game::DrawMenu()
 			glPushMatrix();
 				glBegin(GL_QUADS);
 				glTexCoord2f(0,0);
-				glVertex3f(startx[j]+movex[j]*transition,	starty[j]+movey[j]*transition, 	 0.0f);
+				glVertex3f(startx[j],	starty[j], 	 0.0f);
 				glTexCoord2f(1,0);
-				glVertex3f(endx[j]+movex[j]*transition,		starty[j]+movey[j]*transition, 	 0.0f);
+				glVertex3f(endx[j],		starty[j], 	 0.0f);
 				glTexCoord2f(1,1);
-				glVertex3f(endx[j]+movex[j]*transition,		endy[j]+movey[j]*transition, 0.0f);
+				glVertex3f(endx[j],		endy[j], 0.0f);
 				glTexCoord2f(0,1);
-				glVertex3f(startx[j]+movex[j]*transition, 	endy[j]+movey[j]*transition, 0.0f);
+				glVertex3f(startx[j], 	endy[j], 0.0f);
 				glEnd();
 			glPopMatrix();
 			glEnable(GL_BLEND);
@@ -3063,13 +2843,13 @@ void Game::DrawMenu()
 					glPushMatrix();
 						glBegin(GL_QUADS);
 						glTexCoord2f(0,0);
-						glVertex3f(startx[j]-((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	starty[j]-((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 	 0.0f);
+						glVertex3f(startx[j]-((float)i)*1/2+offsetx[j]*((float)i)/2,	starty[j]-((float)i)*1/2+offsety[j]*((float)i)/2, 	 0.0f);
 						glTexCoord2f(1,0);
-						glVertex3f(endx[j]+((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	starty[j]-((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 	 0.0f);
+						glVertex3f(endx[j]+((float)i)*1/2+offsetx[j]*((float)i)/2,	starty[j]-((float)i)*1/2+offsety[j]*((float)i)/2, 	 0.0f);
 						glTexCoord2f(1,1);
-						glVertex3f(endx[j]+((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	endy[j]+((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 0.0f);
+						glVertex3f(endx[j]+((float)i)*1/2+offsetx[j]*((float)i)/2,	endy[j]+((float)i)*1/2+offsety[j]*((float)i)/2, 0.0f);
 						glTexCoord2f(0,1);
-						glVertex3f(startx[j]-((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition, endy[j]+((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 0.0f);
+						glVertex3f(startx[j]-((float)i)*1/2+offsetx[j]*((float)i)/2, endy[j]+((float)i)*1/2+offsety[j]*((float)i)/2, 0.0f);
 						glEnd();
 					glPopMatrix();
 				}
@@ -3220,13 +3000,13 @@ void Game::DrawMenu()
 								glPushMatrix();
 									glBegin(GL_QUADS);
 									glTexCoord2f(0,0);
-									glVertex3f(midpoint.x-itemsize+movex[j]*transition,	midpoint.y-itemsize+movey[j]*transition, 	 0.0f);
+									glVertex3f(midpoint.x-itemsize,	midpoint.y-itemsize, 	 0.0f);
 									glTexCoord2f(1,0);
-									glVertex3f(midpoint.x+itemsize+movex[j]*transition,		midpoint.y-itemsize+movey[j]*transition, 	 0.0f);
+									glVertex3f(midpoint.x+itemsize,		midpoint.y-itemsize, 	 0.0f);
 									glTexCoord2f(1,1);
-									glVertex3f(midpoint.x+itemsize+movex[j]*transition,		midpoint.y+itemsize+movey[j]*transition, 0.0f);
+									glVertex3f(midpoint.x+itemsize,		midpoint.y+itemsize, 0.0f);
 									glTexCoord2f(0,1);
-									glVertex3f(midpoint.x-itemsize+movex[j]*transition, 	midpoint.y+itemsize+movey[j]*transition, 0.0f);
+									glVertex3f(midpoint.x-itemsize, 	midpoint.y+itemsize, 0.0f);
 									glEnd();
 								glPopMatrix();
 								glEnable(GL_BLEND);
@@ -3241,13 +3021,13 @@ void Game::DrawMenu()
 										glPushMatrix();
 											glBegin(GL_QUADS);
 											glTexCoord2f(0,0);
-											glVertex3f(midpoint.x-itemsize-((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	midpoint.y-itemsize-((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 	 0.0f);
+											glVertex3f(midpoint.x-itemsize-((float)i)*1/2+offsetx[j]*((float)i)/2,	midpoint.y-itemsize-((float)i)*1/2+offsety[j]*((float)i)/2, 	 0.0f);
 											glTexCoord2f(1,0);
-											glVertex3f(midpoint.x+itemsize+((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	midpoint.y-itemsize-((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 	 0.0f);
+											glVertex3f(midpoint.x+itemsize+((float)i)*1/2+offsetx[j]*((float)i)/2,	midpoint.y-itemsize-((float)i)*1/2+offsety[j]*((float)i)/2, 	 0.0f);
 											glTexCoord2f(1,1);
-											glVertex3f(midpoint.x+itemsize+((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition,	midpoint.y+itemsize+((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 0.0f);
+											glVertex3f(midpoint.x+itemsize+((float)i)*1/2+offsetx[j]*((float)i)/2,	midpoint.y+itemsize+((float)i)*1/2+offsety[j]*((float)i)/2, 0.0f);
 											glTexCoord2f(0,1);
-											glVertex3f(midpoint.x-itemsize-((float)i)*1/2+offsetx[j]*((float)i)/2+movex[j]*transition, midpoint.y+itemsize+((float)i)*1/2+offsety[j]*((float)i)/2+movey[j]*transition, 0.0f);
+											glVertex3f(midpoint.x-itemsize-((float)i)*1/2+offsetx[j]*((float)i)/2, midpoint.y+itemsize+((float)i)*1/2+offsety[j]*((float)i)/2, 0.0f);
 											glEnd();
 										glPopMatrix();
 									}
@@ -3272,7 +3052,7 @@ void Game::DrawMenu()
 	glPopMatrix();
 
 		if(mainmenu==1||mainmenu==2)
-			if(transition<.1||transition>.9){
+			//if(transition<.1||transition>.9){
 				glClear(GL_DEPTH_BUFFER_BIT);
 				glEnable(GL_ALPHA_TEST);
 				glAlphaFunc(GL_GREATER, 0.001f);
@@ -3290,15 +3070,16 @@ void Game::DrawMenu()
 						glLoadIdentity();								// Reset The Modelview Matrix
 						glPushMatrix();
 							glDisable(GL_TEXTURE_2D);
-							if(transition<.1)
-								glColor4f(1,0,0,1-(transition*10));
-							if(transition>.9)
-								glColor4f(1,0,0,1-((1-transition)*10));
+							//if(transition<.1)
+								//glColor4f(1,0,0,1-(transition*10));
+							//if(transition>.9)
+								//glColor4f(1,0,0,1-((1-transition)*10));
+                            glColor4f(1,0,0,1);
 						glPopMatrix();
 					glPopMatrix();
 					glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
 				glPopMatrix();
-			}
+			//}
 
 		glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
 		glPushMatrix();										// Store The Projection Matrix

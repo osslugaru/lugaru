@@ -89,13 +89,8 @@ class Game
 		float selectedlong[100];
 		float offsetx[100];
 		float offsety[100];
-		float movex[100];
-		float movey[100];
-		float transition;
-		int anim;
 		int selected;
 		int keyselect;
-		int loaddistrib;
 		int indemo;
 
 		bool won;

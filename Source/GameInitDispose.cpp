@@ -858,9 +858,6 @@ void Game::InitGame()
 	//LoadTexture(":Data:Textures:Eye.jpg",&Mainmenuitems[5],0,1);
 	texdetail=temptexdetail;
 
-	loaddistrib=0;
-	anim=0;
-
 	FadeLoadingScreen(95);
 
 

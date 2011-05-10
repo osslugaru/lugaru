@@ -54,14 +54,8 @@ Game::Game()
 	memset(selectedlong, 0, sizeof(selectedlong));
 	memset(offsetx, 0, sizeof(offsetx));
 	memset(offsety, 0, sizeof(offsety));
-	memset(movex, 0, sizeof(movex));
-	memset(movey, 0, sizeof(movey));
-	memset(endy, 0, sizeof(endy));
 
-	transition = 0;
-	anim = 0;
 	selected = 0;
-	loaddistrib = 0;
 	keyselect = 0;
 	indemo = 0;
 

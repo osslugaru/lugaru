@@ -2471,16 +2471,6 @@ void Game::MenuTick(){
         }
     }
 
-    if(mainmenu==1||mainmenu==2){
-        if(loaddistrib>4)
-			transition+=multiplier/8;
-        if(transition>1){
-            transition=0;
-            anim++;
-            if(anim>4) anim=0;
-            loaddistrib=0;
-        }
-    }
     OPENAL_SetFrequency(channels[stream_menutheme], 22050);
 
     if(entername) {
