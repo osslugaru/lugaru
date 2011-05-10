@@ -1,6 +1,6 @@
 /*
 Copyright (C) 2003, 2010 - Wolfire Games
-Copyright (C) 2010 - MCMic
+Copyright (C) 2010 - Côme <MCMic> BERNIGAUD
 
 This file is part of Lugaru.
 
