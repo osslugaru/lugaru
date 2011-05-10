@@ -1130,8 +1130,6 @@ void Screenshot	(void)
 	save_image(temp);
 }
 
-
-
 void Game::SetUpLighting(){
 	if(environment==snowyenvironment)
         light.setColors(.65,.65,.7,.4,.4,.44);
@@ -1263,7 +1261,7 @@ int Game::checkcollide(XYZ startpoint,XYZ endpoint,int what){
 	return -1;
 }
 
-void	Game::Setenvironment(int which)
+void Game::Setenvironment(int which)
 {
 	LOGFUNC;
 
@@ -1317,8 +1315,7 @@ void	Game::Setenvironment(int which)
 
 
 		texdetail=temptexdetail;
-	}
-	if(environment==desertenvironment){
+	} else if(environment==desertenvironment){
 		windvector=0;
 		windvector.z=2;
 		LoadTexture(":Data:Textures:deserttree.png",&objects.treetextureptr,0,1);
@@ -1356,8 +1353,7 @@ void	Game::Setenvironment(int which)
 
 
 		texdetail=temptexdetail;
-	}
-	if(environment==grassyenvironment){
+	} else if(environment==grassyenvironment){
 		windvector=0;
 		windvector.z=2;
 		LoadTexture(":Data:Textures:tree.png",&objects.treetextureptr,0,1);
@@ -1400,7 +1396,6 @@ void	Game::Setenvironment(int which)
 
 	texdetail=temptexdetail;
 }
-
 
 void Game::Loadlevel(int which){
 	stealthloading=0;
@@ -2127,8 +2122,6 @@ void Game::Loadlevel(const char *name){
 	visibleloading=0;
 }
 
-
-
 /*
 Values of mainmenu :
 1 Main menu
@@ -2280,12 +2273,7 @@ void Game::MenuTick(){
 						break;
 					case 8:
 						flash();
-
-						if(newdetail>2) newdetail=detail;
-						if(newdetail<0) newdetail=detail;
-						if(newscreenwidth<0) newscreenwidth=screenwidth;
-						if(newscreenheight<0) newscreenheight=screenheight;
-
+						
 						SaveSettings(*this);
 						mainmenu=gameon?2:1;
 						break;
@@ -2324,13 +2312,6 @@ void Game::MenuTick(){
 						flash();
 
 						mainmenu=3;
-
-						if(newdetail>2) newdetail=detail;
-						if(newdetail<0) newdetail=detail;
-						if(newscreenwidth>3000) newscreenwidth=screenwidth;
-						if(newscreenwidth<0) newscreenwidth=screenwidth;
-						if(newscreenheight>3000) newscreenheight=screenheight;
-						if(newscreenheight<0) newscreenheight=screenheight;
 					}
 				}
 				break;
@@ -2485,12 +2466,7 @@ void Game::MenuTick(){
 
     if(Input::isKeyDown(SDLK_q) && Input::isKeyDown(SDLK_LMETA)){
         tryquit=1;
-        if(mainmenu==3){
-            if(newdetail>2) newdetail=detail;
-            if(newdetail<0) newdetail=detail;
-            if(newscreenwidth<0) newscreenwidth=screenwidth;
-            if(newscreenheight<0) newscreenheight=screenheight;
-
+        if(mainmenu==3) {
             SaveSettings(*this);
         }
     }
@@ -2931,8 +2907,6 @@ void Game::doTutorial(){
         player[1].velocity=0;
     }
 }
-
-
 
 void Game::doDebugKeys(){
 	float headprop,bodyprop,armprop,legprop;
@@ -3726,8 +3700,6 @@ void Game::doDebugKeys(){
         }
     }
 }
-
-
 
 void Game::doJumpReversals(){
     for(int k=0;k<numplayers;k++)
@@ -4937,8 +4909,6 @@ void Game::doPlayerCollisions(){
             }
 }
 
-
-
 void Game::doAI(int i){
     static bool connected;
     if(player[i].aitype!=playercontrolled&&indialogue==-1){
@@ -5914,8 +5884,6 @@ void Game::doAI(int i){
     }
 }
 
-
-
 void Game::Tick(){
 	static XYZ facing,flatfacing;
 	static int target;
@@ -6010,14 +5978,6 @@ void Game::Tick(){
             }
             //finished with settings menu
 			if(mainmenu==3){
-				if(newdetail>2)
-                    newdetail=detail;
-				if(newdetail<0)
-                    newdetail=detail;
-				if(newscreenwidth<0)
-                    newscreenwidth=screenwidth;
-				if(newscreenheight<0)
-                    newscreenheight=screenheight;
 				SaveSettings(*this);
 			}
             //effects
@@ -6120,12 +6080,7 @@ void Game::Tick(){
 
 		if(Input::isKeyDown(SDLK_q)&&Input::isKeyDown(SDLK_LMETA)){
 			tryquit=1;
-			if(mainmenu==3){
-				if(newdetail>2)newdetail=detail;
-				if(newdetail<0)newdetail=detail;
-				if(newscreenwidth<0)newscreenwidth=screenwidth;
-				if(newscreenheight<0)newscreenheight=screenheight;
-
+			if(mainmenu==3) {
 				SaveSettings(*this);
 			}
 		}
@@ -7581,9 +7536,7 @@ void Game::Tick(){
 		Screenshot();
 }
 
-
-
-void	Game::TickOnce(){
+void Game::TickOnce(){
 	if(mainmenu)
 		rotation+=multiplier*5;
 	else
@@ -7600,7 +7553,7 @@ void	Game::TickOnce(){
 		}
 }
 
-void	Game::TickOnceAfter(){
+void Game::TickOnceAfter(){
 	static XYZ colviewer;
 	static XYZ coltarget;
 	static XYZ target;

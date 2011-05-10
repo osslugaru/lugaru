@@ -44,6 +44,12 @@ void DefaultSettings(Game &game) {
 }
 
 void SaveSettings(Game &game) {
+	if(game.newdetail<0) game.newdetail=0;
+	if(game.newdetail>2) game.newdetail=2;
+	if(game.newscreenwidth>3000) game.newscreenwidth=screenwidth;
+	if(game.newscreenwidth<0) game.newscreenwidth=screenwidth;
+	if(game.newscreenheight>3000) game.newscreenheight=screenheight;
+	if(game.newscreenheight<0) game.newscreenheight=screenheight;
 	ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
 	opstream << "Screenwidth:\n";
 	opstream << game.newscreenwidth;
