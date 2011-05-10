@@ -2129,185 +2129,47 @@ void Game::Loadlevel(const char *name){
 
 
 
+/*
+Values of mainmenu :
+1 Main menu
+2 Menu pause (resume/end game)
+3 Option menu
+4 Controls configuration menu
+5 Main game menu (choose level or challenge)
+6 Deleting user menu
+7 User managment menu (select/add)
+8 Choose difficulty menu
+9 Challenge level selection menu
+10 End of the campaign congratulation (is that really a menu?)
+11 Same that 9 ??? => unused
+18 stereo configuration
+*/
+    
 void Game::MenuTick(){
     //menu buttons
-    if(mainmenu==1||mainmenu==2){
-        if(Input::MouseClicked()&&selected==1){
-            if(!gameon){
-                fireSound(firestartsound);
-                flash();
-                //new game
-                if(accountactive) {
-                    mainmenu=5;
-                } else {
-                    mainmenu=7;
-                }
-                selected=-1;
-            }else{
-                //resume
-                mainmenu=0;
-                pause_sound(stream_music3);
-                resume_stream(music1);
-            }
-        }
-
-        if(Input::MouseClicked()&&selected==2){
-            fireSound();
-            flash();
-            //options
-            mainmenu=3;
-            if(newdetail>2)newdetail=detail;
-            if(newdetail<0)newdetail=detail;
-            if(newscreenwidth>3000)newscreenwidth=screenwidth;
-            if(newscreenwidth<0)newscreenwidth=screenwidth;
-            if(newscreenheight>3000)newscreenheight=screenheight;
-            if(newscreenheight<0)newscreenheight=screenheight;
-        }
-
-        if(Input::MouseClicked()&&selected==3){
-            fireSound();
-            flash();
-            if(!gameon){
-                //quit
-                tryquit=1;
-                pause_sound(stream_music3);
-            }else{
-                //end game
-                gameon=0;
-                mainmenu=1;
-            }
-        }
-    }else if(mainmenu==3){
-        if(Input::MouseClicked()){
-
-            if(selected!=-1)
-                fireSound();
-
-            switch(selected){
-                case 0: {
-                    extern SDL_Rect **resolutions;
-                    bool isCustomResolution = true;
-                    bool found = false;
-                    for(int i = 0; (!found) && (resolutions[i]); i++){
-                        if((resolutions[i]->w == screenwidth) && (resolutions[i]->h == screenwidth))
-                            isCustomResolution = false;
-
-                        if((resolutions[i]->w == newscreenwidth) && (resolutions[i]->h == newscreenheight)){
-                            i++;
-                            if(resolutions[i] != NULL){
-                                newscreenwidth = (int) resolutions[i]->w;
-                                newscreenheight = (int) resolutions[i]->h;
-                            }else if(isCustomResolution){
-                                if((screenwidth == newscreenwidth) && (screenheight == newscreenheight)){
-                                    newscreenwidth = (int) resolutions[0]->w;
-                                    newscreenheight = (int) resolutions[0]->h;
-                                }else{
-                                    newscreenwidth = screenwidth;
-                                    newscreenheight = screenheight;
-                                }
-                            }else{
-                                newscreenwidth = (int) resolutions[0]->w;
-                                newscreenheight = (int) resolutions[0]->h;
-                            }
-                            found = true;
-                        }
-                    }
-
-                    if(!found){
-                        newscreenwidth = (int) resolutions[0]->w;
-                        newscreenheight = (int) resolutions[0]->h;
-                    }
-                    } break;
-                case 1:
-                    newdetail++;
-                    if(newdetail>2)newdetail=0;
-                    break;
-                case 2:
-                    bloodtoggle++;
-                    if(bloodtoggle>2)bloodtoggle=0;
-                    break;
-                case 3:
-                    difficulty++;
-                    if(difficulty>2)difficulty=0;
-                    break;
-                case 4:
-                    ismotionblur=1-ismotionblur;
-                    break;
-                case 5:
-                    decals=1-decals;
-                    break;
-                case 6:
-                    musictoggle=1-musictoggle;
-
-                    if(!musictoggle){
-                        pause_sound(music1);
-                        pause_sound(stream_music2);
-                        pause_sound(stream_music3);
-
-                        for(int i=0;i<4;i++){
-                            oldmusicvolume[i]=0;
-                            musicvolume[i]=0;
-                        }
-                    }
-
-                    if(musictoggle)
-                      emit_stream_np(stream_music3);
-                    break;
-                case 7:
+    switch(mainmenu){
+        case 1:
+        case 2:
+            if(Input::MouseClicked()&&selected==1){
+                if(!gameon){
+                    fireSound(firestartsound);
                     flash();
-                    //options
-                    mainmenu=4;
+                    //new game
+                    mainmenu=accountactive?5:7;
                     selected=-1;
-                    keyselect=-1;
-                    break;
-                case 8:
-                    flash();
-
-                    if(newdetail>2)newdetail=detail;
-                    if(newdetail<0)newdetail=detail;
-                    if(newscreenwidth<0)newscreenwidth=screenwidth;
-                    if(newscreenheight<0)newscreenheight=screenheight;
-
-                    SaveSettings(*this);
-                    if(mainmenu==3&&gameon)mainmenu=2;
-                    if(mainmenu==3&&!gameon)mainmenu=1;
-                    break;
-                case 9:
-                    invertmouse=1-invertmouse;
-                    break;
-                case 10:
-                    usermousesensitivity+=.2;
-                    if(usermousesensitivity>2)usermousesensitivity=.2;
-                    break;
-                case 11:
-                    volume+=.1f;
-                    if(volume>1.0001f)volume=0;
-                    OPENAL_SetSFXMasterVolume((int)(volume*255));
-                    break;
-                case 12:
-                    flash();
-                    
-                    newstereomode = stereomode;
-                    mainmenu=18;
-                    keyselect=-1;
-                    break;
-                case 13:
-                    showdamagebar=!showdamagebar;
-                    break;
+                }else{
+                    //resume
+                    mainmenu=0;
+                    pause_sound(stream_music3);
+                    resume_stream(music1);
+                }
             }
-        }
-    }else if(mainmenu==4){
-        if(Input::MouseClicked()&&selected!=-1&&!waiting){
-            fireSound();
-            if(selected<9&&keyselect==-1)
-                keyselect=selected;
-            if(keyselect!=-1)
-                setKeySelected();
-            if(selected==9){
+
+            if(Input::MouseClicked()&&selected==2){
+                fireSound();
                 flash();
-
+                //options
                 mainmenu=3;
-
                 if(newdetail>2)newdetail=detail;
                 if(newdetail<0)newdetail=detail;
                 if(newscreenwidth>3000)newscreenwidth=screenwidth;
@@ -2315,179 +2177,331 @@ void Game::MenuTick(){
                 if(newscreenheight>3000)newscreenheight=screenheight;
                 if(newscreenheight<0)newscreenheight=screenheight;
             }
-        }
-    }else if(mainmenu==5){
 
-        if(endgame==2){
-            accountactive->endGame();
-            endgame=0;
-        }
-
-        if(Input::MouseClicked()){
-            if((selected-7>=accountactive->getCampaignChoicesMade())){
+            if(Input::MouseClicked()&&selected==3){
                 fireSound();
                 flash();
-                startbonustotal=0;
+                if(gameon){
+                    //end game
+                    gameon=0;
+                    mainmenu=1;
+                }else{
+                    //quit
+                    tryquit=1;
+                    pause_sound(stream_music3);
+                }
+            }
+            break;
+        case 3:
+            if(Input::MouseClicked()){
 
-                loading=2;
-                loadtime=0;
-                targetlevel=7;
-                if(firstload) TickOnceAfter();
-                else LoadStuff();
-                whichchoice=selected-7-accountactive->getCampaignChoicesMade();
-                visibleloading=1;
-                stillloading=1;
-                Loadlevel(campaignmapname[campaignchoicewhich[selected-7-accountactive->getCampaignChoicesMade()]]);
-                //Loadlevel(campaignmapname[levelorder[selected-7]]);
-                campaign=1;
-                mainmenu=0;
-                gameon=1;
-                pause_sound(stream_music3);
+                if(selected!=-1)
+                    fireSound();
+
+                switch(selected){
+                    case 0: {
+                        extern SDL_Rect **resolutions;
+                        bool isCustomResolution = true;
+                        bool found = false;
+                        for(int i = 0; (!found) && (resolutions[i]); i++){
+                            if((resolutions[i]->w == screenwidth) && (resolutions[i]->h == screenwidth))
+                                isCustomResolution = false;
+
+                            if((resolutions[i]->w == newscreenwidth) && (resolutions[i]->h == newscreenheight)){
+                                i++;
+                                if(resolutions[i] != NULL){
+                                    newscreenwidth = (int) resolutions[i]->w;
+                                    newscreenheight = (int) resolutions[i]->h;
+                                }else if(isCustomResolution){
+                                    if((screenwidth == newscreenwidth) && (screenheight == newscreenheight)){
+                                        newscreenwidth = (int) resolutions[0]->w;
+                                        newscreenheight = (int) resolutions[0]->h;
+                                    }else{
+                                        newscreenwidth = screenwidth;
+                                        newscreenheight = screenheight;
+                                    }
+                                }else{
+                                    newscreenwidth = (int) resolutions[0]->w;
+                                    newscreenheight = (int) resolutions[0]->h;
+                                }
+                                found = true;
+                            }
+                        }
+
+                        if(!found){
+                            newscreenwidth = (int) resolutions[0]->w;
+                            newscreenheight = (int) resolutions[0]->h;
+                        }
+                        } break;
+                    case 1:
+                        newdetail++;
+                        if(newdetail>2)newdetail=0;
+                        break;
+                    case 2:
+                        bloodtoggle++;
+                        if(bloodtoggle>2)bloodtoggle=0;
+                        break;
+                    case 3:
+                        difficulty++;
+                        if(difficulty>2)difficulty=0;
+                        break;
+                    case 4:
+                        ismotionblur=1-ismotionblur;
+                        break;
+                    case 5:
+                        decals=1-decals;
+                        break;
+                    case 6:
+                        musictoggle=1-musictoggle;
+
+                        if(!musictoggle){
+                            pause_sound(music1);
+                            pause_sound(stream_music2);
+                            pause_sound(stream_music3);
+
+                            for(int i=0;i<4;i++){
+                                oldmusicvolume[i]=0;
+                                musicvolume[i]=0;
+                            }
+                        }
+
+                        if(musictoggle)
+                          emit_stream_np(stream_music3);
+                        break;
+                    case 7:
+                        flash();
+                        //options
+                        mainmenu=4;
+                        selected=-1;
+                        keyselect=-1;
+                        break;
+                    case 8:
+                        flash();
+
+                        if(newdetail>2)newdetail=detail;
+                        if(newdetail<0)newdetail=detail;
+                        if(newscreenwidth<0)newscreenwidth=screenwidth;
+                        if(newscreenheight<0)newscreenheight=screenheight;
+
+                        SaveSettings(*this);
+                        mainmenu=gameon?2:1;
+                        break;
+                    case 9:
+                        invertmouse=1-invertmouse;
+                        break;
+                    case 10:
+                        usermousesensitivity+=.2;
+                        if(usermousesensitivity>2)usermousesensitivity=.2;
+                        break;
+                    case 11:
+                        volume+=.1f;
+                        if(volume>1.0001f)volume=0;
+                        OPENAL_SetSFXMasterVolume((int)(volume*255));
+                        break;
+                    case 12:
+                        flash();
+                        
+                        newstereomode = stereomode;
+                        mainmenu=18;
+                        keyselect=-1;
+                        break;
+                    case 13:
+                        showdamagebar=!showdamagebar;
+                        break;
+                }
             }
-            if(selected>=1 && selected<=5){
+            break;
+        case 4:
+            if(Input::MouseClicked()&&selected!=-1&&!waiting){
                 fireSound();
-                flash();
+                if(selected<9&&keyselect==-1)
+                    keyselect=selected;
+                if(keyselect!=-1)
+                    setKeySelected();
+                if(selected==9){
+                    flash();
+
+                    mainmenu=3;
+
+                    if(newdetail>2)newdetail=detail;
+                    if(newdetail<0)newdetail=detail;
+                    if(newscreenwidth>3000)newscreenwidth=screenwidth;
+                    if(newscreenwidth<0)newscreenwidth=screenwidth;
+                    if(newscreenheight>3000)newscreenheight=screenheight;
+                    if(newscreenheight<0)newscreenheight=screenheight;
+                }
             }
-            switch(selected){
-                case 1:
+            break;
+        case 5:
+            if(endgame==2){
+                accountactive->endGame();
+                endgame=0;
+            }
+
+            if(Input::MouseClicked()){
+                if((selected-7>=accountactive->getCampaignChoicesMade())){
+                    fireSound();
+                    flash();
                     startbonustotal=0;
 
                     loading=2;
                     loadtime=0;
-                    targetlevel=-1;
-                    if(firstload)TickOnceAfter();
-                    if(!firstload)LoadStuff();
-                    else {
-                        Loadlevel(-1);
-                    }
-
+                    targetlevel=7;
+                    if(firstload) TickOnceAfter();
+                    else LoadStuff();
+                    whichchoice=selected-7-accountactive->getCampaignChoicesMade();
+                    visibleloading=1;
+                    stillloading=1;
+                    Loadlevel(campaignmapname[campaignchoicewhich[selected-7-accountactive->getCampaignChoicesMade()]]);
+                    //Loadlevel(campaignmapname[levelorder[selected-7]]);
+                    campaign=1;
                     mainmenu=0;
                     gameon=1;
                     pause_sound(stream_music3);
-                    break;
-                case 2:
-                    mainmenu=9;
-                    break;
-                case 3:
-                    mainmenu=6;
-                    break;
-                case 4:
-                    if(mainmenu==5&&gameon)mainmenu=2;
-                    if(mainmenu==5&&!gameon)mainmenu=1;
-                    break;
-                case 5:
-                    mainmenu=7;
-                    break;
-            }
-        }
-    }else if(mainmenu==9){
-        if(Input::MouseClicked()&&selected<numchallengelevels&&selected>=0&&selected<=accountactive->getProgress()){
-            fireSound();
-            flash();
-
-            startbonustotal=0;
-
-            loading=2;
-            loadtime=0;
-            targetlevel=selected;
-            if(firstload)TickOnceAfter();
-            if(!firstload)LoadStuff();
-            else {
-                Loadlevel(selected);
-            }
-            campaign=0;
-
-            mainmenu=0;
-            gameon=1;
-            pause_sound(stream_music3);
-        }
-        if(Input::MouseClicked()&&selected==numchallengelevels){
-            fireSound();
-            flash();
-            mainmenu=5;
-        }
-    }else if(mainmenu==10){
-        endgame=2;
-        if(Input::MouseClicked()&&selected==3){
-            fireSound();
-            flash();
-            mainmenu=5;
-        }
-    }else if(mainmenu==6){
-        if(Input::MouseClicked()) {
-            if(selected>-1){
-                fireSound();
-                if(selected==1) {
+                }
+                if(selected>=1 && selected<=5){
+                    fireSound();
                     flash();
-                    accountactive = Account::destroy(accountactive);
-                    mainmenu=7;
-                } else if(selected==2) {
-                    flash();
-                    mainmenu=5;
+                }
+                switch(selected){
+                    case 1:
+                        startbonustotal=0;
+
+                        loading=2;
+                        loadtime=0;
+                        targetlevel=-1;
+                        if(firstload)TickOnceAfter();
+                        if(!firstload)LoadStuff();
+                        else {
+                            Loadlevel(-1);
+                        }
+
+                        mainmenu=0;
+                        gameon=1;
+                        pause_sound(stream_music3);
+                        break;
+                    case 2:
+                        mainmenu=9;
+                        break;
+                    case 3:
+                        mainmenu=6;
+                        break;
+                    case 4:
+                        mainmenu=gameon?2:1;
+                        break;
+                    case 5:
+                        mainmenu=7;
+                        break;
                 }
             }
-        }
-    }else if(mainmenu==7){
-        if(Input::MouseClicked()) {
-            if(selected!=-1){
-                fireSound();
-                if(selected==0&&Account::getNbAccounts()<8){
-                    entername=1;
-                } else if (selected<Account::getNbAccounts()+1) {
-                    accountactive=Account::get(selected-1);
-                    mainmenu=5;
-                    flash();
-                } else if (selected==Account::getNbAccounts()+1) {
-                    flash();
-
-                    mainmenu=1;
-
-                    for(int j=0;j<255;j++){
-                        displaytext[0][j]=0;
+            break;
+        case 6:
+            if(Input::MouseClicked()) {
+                if(selected>-1){
+                    fireSound();
+                    if(selected==1) {
+                        flash();
+                        accountactive = Account::destroy(accountactive);
+                        mainmenu=7;
+                    } else if(selected==2) {
+                        flash();
+                        mainmenu=5;
                     }
-                    displaychars[0]=0;
-                    displayselected=0;
-                    entername=0;
                 }
             }
-        }
-    }else if(mainmenu==8){
-        if(Input::MouseClicked()&&selected>-1){
-            fireSound();
-            flash();
-            if(selected<=2)
-                accountactive->setDifficulty(selected);
-            mainmenu=5;
-        }
-    }else if(mainmenu==18){			
-        if(Input::MouseClicked()&&selected==0) {
-            newstereomode = (StereoMode)(newstereomode + 1);
-            while(!CanInitStereo(newstereomode)) {
-                printf("Failed to initialize mode %s (%i)\n", StereoModeName(newstereomode), newstereomode);
-                newstereomode = (StereoMode)(newstereomode + 1);
-                if ( newstereomode >= stereoCount ) {
-                    newstereomode = stereoNone;
+            break;
+        case 7:
+            if(Input::MouseClicked()) {
+                if(selected!=-1){
+                    fireSound();
+                    if(selected==0&&Account::getNbAccounts()<8){
+                        entername=1;
+                    } else if (selected<Account::getNbAccounts()+1) {
+                        flash();
+                        mainmenu=5;
+                        accountactive=Account::get(selected-1);
+                    } else if (selected==Account::getNbAccounts()+1) {
+                        flash();
+                        mainmenu=5;
+                        for(int j=0;j<255;j++){
+                            displaytext[0][j]=0;
+                        }
+                        displaychars[0]=0;
+                        displayselected=0;
+                        entername=0;
+                    }
                 }
             }
-        }
-        
-        if(Input::isKeyPressed(MOUSEBUTTON1)&&selected==1)
-            stereoseparation+=0.001;
-        if(Input::isKeyPressed(MOUSEBUTTON2)&&selected==1)
-            stereoseparation-=0.001;
+            break;
+        case 8:
+            if(Input::MouseClicked()&&selected>-1){
+                fireSound();
+                flash();
+                if(selected<=2)
+                    accountactive->setDifficulty(selected);
+                mainmenu=5;
+            }
+            break;
+        case 9:
+            if(Input::MouseClicked()&&selected<numchallengelevels&&selected>=0&&selected<=accountactive->getProgress()){
+                fireSound();
+                flash();
 
-        if(Input::MouseClicked()&&selected==2) {
-            stereoreverse =! stereoreverse;
-        }
-        
-        if(Input::MouseClicked()&&selected==3) {
-            flash();
+                startbonustotal=0;
 
-            stereomode = newstereomode;
-            InitStereo(stereomode);
-            
-            mainmenu=3;
-        }
+                loading=2;
+                loadtime=0;
+                targetlevel=selected;
+                if(firstload)TickOnceAfter();
+                if(!firstload)LoadStuff();
+                else Loadlevel(selected);
+                campaign=0;
+
+                mainmenu=0;
+                gameon=1;
+                pause_sound(stream_music3);
+            }
+            if(Input::MouseClicked()&&selected==numchallengelevels){
+                fireSound();
+                flash();
+                mainmenu=5;
+            }
+            break;
+        case 10:
+            endgame=2;
+            if(Input::MouseClicked()&&selected==3){
+                fireSound();
+                flash();
+                mainmenu=5;
+            }
+            break;
+        case 18:
+            if(Input::isKeyPressed(MOUSEBUTTON1)&&selected==1)
+                stereoseparation+=0.001;
+            else if(Input::isKeyPressed(MOUSEBUTTON2)&&selected==1)
+                stereoseparation-=0.001;
+            else if(Input::MouseClicked()&&selected>-1){
+                fireSound();
+                if(selected==0){
+                    newstereomode = (StereoMode)(newstereomode + 1);
+                    while(!CanInitStereo(newstereomode)){
+                        printf("Failed to initialize mode %s (%i)\n", StereoModeName(newstereomode), newstereomode);
+                        newstereomode = (StereoMode)(newstereomode + 1);
+                        if(newstereomode >= stereoCount)
+                            newstereomode = stereoNone;
+                    }
+                }
+                if(selected==2)
+                    stereoreverse =! stereoreverse;
+                if(selected==3){
+                    flash();
+                    mainmenu=3;
+
+                    stereomode = newstereomode;
+                    InitStereo(stereomode);
+                }
+            }
+            break;
     }
 
     if(Input::isKeyDown(SDLK_q)&&Input::isKeyDown(SDLK_LMETA)){
@@ -5970,60 +5984,76 @@ void Game::Tick(){
 		emit_sound_np(consolefailsound, 128.);
 	}
 
+    /*
+    Values of mainmenu :
+    1 Main menu
+    2 Menu pause (resume/end game)
+    3 Option menu
+    4 Controls configuration menu
+    5 Main game menu (choose level or challenge)
+    6 Deleting user menu
+    7 User managment menu (select/add)
+    8 Choose difficulty menu
+    9 Challenge level selection menu
+    10 End of the campaign congratulation (is that really a menu?)
+    11 Same that 9 ??? => unused
+    18 stereo configuration
+    */
+        
 	if(!console){
-		if(mainmenu&&endgame==1)mainmenu=10;
-        // menu back
-		if( (Input::isKeyPressed(SDLK_ESCAPE)
-                    ||(mainmenu==0
-                        &&((Input::isKeyPressed(jumpkey)
-                                ||Input::isKeyPressed(SDLK_SPACE)
-                                ||(campaign)))
-                        &&campaign
-                        &&winfreeze))
-                && (!mainmenu||gameon||mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||(mainmenu==7&&!entername)||mainmenu==9||mainmenu==10)){
+        //campaign over?
+		if(mainmenu&&endgame==1)
+            mainmenu=10;
+        //escape key pressed
+        //TODO: there must be code somewhere else that handles clicking the Back button, merge it with this
+		if(Input::isKeyPressed(SDLK_ESCAPE)&&
+                (gameon||mainmenu==0||(mainmenu>=3&&mainmenu!=8&&!(mainmenu==7&&entername)))){
 			selected=-1;
-			if(mainmenu==1||mainmenu==2||mainmenu==0){
-				if(mainmenu==0&&!winfreeze)mainmenu=2;
-				else if(mainmenu==0&&winfreeze&&(campaignchoosenext[campaignchoicewhich[whichchoice]])==1)mainmenu=100;
-				else if(mainmenu==0&&winfreeze){ }
-				else if(mainmenu==1||mainmenu==2)mainmenu=0;
-				if(mainmenu&&musictoggle){
-					if(mainmenu==1||mainmenu==2||mainmenu==100){
-						OPENAL_SetFrequency(OPENAL_ALL, 0.001);
-						emit_stream_np(stream_music3);
-						pause_sound(music1);
-					}
-				}
-				if(!mainmenu){
-					pause_sound(stream_music3);
-					resume_stream(music1);
-				}
-			}
+            if(mainmenu==0&&!winfreeze)
+                mainmenu=2; //pause
+            else if(mainmenu==0&&winfreeze&&campaignchoosenext[campaignchoicewhich[whichchoice]]==1){
+                mainmenu=100;
+                gameon=0;
+                winfreeze=0;
+            }else if(mainmenu==1||mainmenu==2)
+                mainmenu=0; //unpause
+            //play menu theme
+            if(musictoggle&&(mainmenu==1||mainmenu==2||mainmenu==100)){
+                OPENAL_SetFrequency(OPENAL_ALL, 0.001);
+                emit_stream_np(stream_music3);
+                pause_sound(music1);
+            }
+            //on resume, play level music
+            if(!mainmenu){
+                pause_sound(stream_music3);
+                resume_stream(music1);
+            }
+            //finished with settings menu
 			if(mainmenu==3){
-				if(newdetail>2)newdetail=detail;
-				if(newdetail<0)newdetail=detail;
-				if(newscreenwidth<0)newscreenwidth=screenwidth;
-				if(newscreenheight<0)newscreenheight=screenheight;
+				if(newdetail>2)
+                    newdetail=detail;
+				if(newdetail<0)
+                    newdetail=detail;
+				if(newscreenwidth<0)
+                    newscreenwidth=screenwidth;
+				if(newscreenheight<0)
+                    newscreenheight=screenheight;
 				SaveSettings(*this);
 			}
-			if((mainmenu>=3 && mainmenu<=7)||mainmenu==9||mainmenu==10||mainmenu==100){
+            //effects
+			if(mainmenu>=3&&mainmenu!=8){
 				fireSound();
 				flash();
 			}
-			if(mainmenu==3&&gameon)mainmenu=2;
-			if(mainmenu==3&&!gameon)mainmenu=1;
-			if(mainmenu==5&&gameon)mainmenu=2;
-			if(mainmenu==5&&!gameon)mainmenu=1;
-			if(mainmenu==4)mainmenu=3;
-			if(mainmenu==6)mainmenu=5;
-			if(mainmenu==7)mainmenu=1;
-			if(mainmenu==9)mainmenu=5;
-			if(mainmenu==10)mainmenu=5;
-			if(mainmenu==100){
-				mainmenu=5;
-				gameon=0;
-				winfreeze=0;
-			}
+            //go back
+            switch(mainmenu){
+                case 3: case 5:
+                    mainmenu=gameon?2:1; break;
+                case 4: case 18:
+                    mainmenu=3; break;
+                case 6: case 7: case 9: case 10: case 100:
+                    mainmenu=5; break;
+            }
 		}
 	}
 
