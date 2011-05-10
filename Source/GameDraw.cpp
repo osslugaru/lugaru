@@ -1998,6 +1998,67 @@ int Game::DrawGLScene(StereoSide side)
 	return 0;
 }
 
+void Game::LoadCampaign() {
+	ifstream ipstream(ConvertFileName(":Data:Campaigns:main.txt"));
+	ipstream.ignore(256,':');
+	ipstream >> campaignnumlevels;
+	for(int i=0;i<campaignnumlevels;i++){
+		ipstream.ignore(256,':');
+		ipstream.ignore(256,':');
+		ipstream.ignore(256,' ');
+		ipstream >> campaignmapname[i];
+		ipstream.ignore(256,':');
+		ipstream >> campaigndescription[i];
+		for(int j=0;j<256;j++){
+			if(campaigndescription[i][j]=='_')campaigndescription[i][j]=' ';
+		}
+		ipstream.ignore(256,':');
+		ipstream >> campaignchoosenext[i];
+		ipstream.ignore(256,':');
+		ipstream >> campaignnumnext[i];
+		for(int j=0;j<campaignnumnext[i];j++){
+			ipstream.ignore(256,':');
+			ipstream >> campaignnextlevel[i][j];
+			campaignnextlevel[i][j]-=1;
+		}
+		ipstream.ignore(256,':');
+		ipstream >> campaignlocationx[i];
+		ipstream.ignore(256,':');
+		ipstream >> campaignlocationy[i];
+	}
+	ipstream.close();
+
+	for(int i=0;i<campaignnumlevels;i++){
+		levelvisible[i]=0;
+		levelhighlight[i]=0;
+	}
+
+	levelorder[0]=0;
+	levelvisible[0]=1;
+	for(int i=0;i<accountactive->getCampaignChoicesMade();i++){
+		levelorder[i+1]=campaignnextlevel[levelorder[i]][accountactive->getCampaignChoice(i)];
+		levelvisible[levelorder[i+1]]=1;
+	}
+	int whichlevelstart = (accountactive?accountactive->getCampaignChoicesMade():0)-1;
+	if(whichlevelstart<0){
+		if(accountactive) {
+			accountactive->setCampaignScore(0);
+			accountactive->resetFasttime();
+		}
+		campaignchoicenum=1;
+		campaignchoicewhich[0]=0;
+	}
+	else
+	{
+		campaignchoicenum=campaignnumnext[levelorder[whichlevelstart]];
+		for(int i=0;i<campaignchoicenum;i++){
+			campaignchoicewhich[i]=campaignnextlevel[levelorder[whichlevelstart]][i];
+			levelvisible[campaignnextlevel[levelorder[whichlevelstart]][i]]=1;
+			levelhighlight[campaignnextlevel[levelorder[whichlevelstart]][i]]=1;
+		}
+	}
+}
+
 void Game::DrawMenu()
 {
 	int i,j;
@@ -2028,62 +2089,7 @@ void Game::DrawMenu()
 	}
 	if(lastcheck>.5||oldmainmenu!=mainmenu){
 		if(mainmenu==5){
-			ifstream ipstream(ConvertFileName(":Data:Campaigns:main.txt"));
-			ipstream.ignore(256,':');
-			ipstream >> campaignnumlevels;
-			for(i=0;i<campaignnumlevels;i++){
-				ipstream.ignore(256,':');
-				ipstream.ignore(256,':');
-				ipstream.ignore(256,' ');
-				ipstream >> campaignmapname[i];
-				ipstream.ignore(256,':');
-				ipstream >> campaigndescription[i];
-				for(j=0;j<256;j++){
-					if(campaigndescription[i][j]=='_')campaigndescription[i][j]=' ';
-				}
-				ipstream.ignore(256,':');
-				ipstream >> campaignchoosenext[i];
-				ipstream.ignore(256,':');
-				ipstream >> campaignnumnext[i];
-				for(j=0;j<campaignnumnext[i];j++){
-					ipstream.ignore(256,':');
-					ipstream >> campaignnextlevel[i][j];
-					campaignnextlevel[i][j]-=1;
-				}
-				ipstream.ignore(256,':');
-				ipstream >> campaignlocationx[i];
-				ipstream.ignore(256,':');
-				ipstream >> campaignlocationy[i];
-			}
-			ipstream.close();
-
-			for(i=0;i<campaignnumlevels;i++){
-				levelvisible[i]=0;
-				levelhighlight[i]=0;
-			}
-
-			levelorder[0]=0;
-			levelvisible[0]=1;
-			for(i=0;i<(accountactive?accountactive->getCampaignChoicesMade():0);i++){
-				levelorder[i+1]=campaignnextlevel[levelorder[i]][accountactive->getCampaignChoice(i)];
-				levelvisible[levelorder[i+1]]=1;
-			}
-			int whichlevelstart = (accountactive?accountactive->getCampaignChoicesMade():0)-1;
-			if(whichlevelstart<0){
-				accountactive->setCampaignScore(0);
-				accountactive->resetFasttime();
-				campaignchoicenum=1;
-				campaignchoicewhich[0]=0;
-			}
-			else
-			{
-				campaignchoicenum=campaignnumnext[levelorder[whichlevelstart]];
-				for(i=0;i<campaignchoicenum;i++){
-					campaignchoicewhich[i]=campaignnextlevel[levelorder[whichlevelstart]][i];
-					levelvisible[campaignnextlevel[levelorder[whichlevelstart]][i]]=1;
-					levelhighlight[campaignnextlevel[levelorder[whichlevelstart]][i]]=1;
-				}
-			}
+			LoadCampaign();
 		}
 	}
 	if(mainmenu==5){

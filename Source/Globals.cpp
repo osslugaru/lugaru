@@ -40,14 +40,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 bool visibleloading = 0;
 
 float volume = 0;
-bool ismotionblur = 0;
+bool ismotionblur = false;
 float usermousesensitivity = 0;
-bool floatjump = 0;
-bool cellophane = 0;
-bool autoslomo = 0;
-bool decals = 0;
-bool invertmouse = 0;
-bool texttoggle = 0;
+bool floatjump = false;
+bool cellophane = false;
+bool autoslomo = false;
+bool decals = false;
+bool invertmouse = false;
+bool texttoggle = false;
 float blurness = 0;
 float targetblurness = 0;
 float windvar = 0;
@@ -89,32 +89,32 @@ GLubyte bloodText[512*512*3] = {0};
 GLubyte wolfbloodText[512*512*3] = {0};
 float colors[3] = {0};
 int bloodtoggle = 0;
-bool osx = 0;
+bool osx = false;
 float camerashake = 0;
 float woozy = 0;
 float blackout = 0;
-bool foliage = 0;
-bool musictoggle = 0;
+bool foliage = false;
+bool musictoggle = false;
 bool trilinear;
 Weapons weapons;
-bool damageeffects = 0;
+bool damageeffects = false;
 int numplayers = 0;
-bool ambientsound = 0;
-bool mousejump = 0;
-bool freeze = 0;
-bool winfreeze = 0;
+bool ambientsound = false;
+bool mousejump = false;
+bool freeze = false;
+bool winfreeze = false;
 float flashamount = 0,flashr = 0,flashg = 0,flashb = 0;
 int flashdelay = 0;
-bool vblsync = 0;
+bool vblsync = false;
 float motionbluramount = 0;
-bool keyboardfrozen = 0;
-bool loadingstuff = 0;
-bool stillloading = 0;
-bool showpoints = 0;
-bool showdamagebar = 0;
-bool alwaysblur = 0;
-bool immediate = 0;
-bool velocityblur = 0;
+bool keyboardfrozen = false;
+bool loadingstuff = false;
+bool stillloading = false;
+bool showpoints = false;
+bool showdamagebar = false;
+bool alwaysblur = false;
+bool immediate = false;
+bool velocityblur = false;
 int test = 0;
 XYZ windvector;
 short vRefNum = 0;
@@ -148,7 +148,7 @@ float tutorialstagetime = 0;
 float tutorialmaxtime = 0;
 float tutorialsuccess = 0;
 
-bool againbonus = 0;
+bool againbonus = false;
 
 float damagedealt = 0;
 
@@ -157,11 +157,11 @@ int maptype = 0;
 int editoractive = 0;
 int editorpathtype = 0;
 
-bool reversaltrain = 0;
-bool cananger = 0;
-bool canattack = 0;
+bool reversaltrain = false;
+bool cananger = false;
+bool canattack = false;
 
-bool skyboxtexture = 0;
+bool skyboxtexture = false;
 float skyboxr = 0;
 float skyboxg = 0;
 float skyboxb = 0;
@@ -178,20 +178,20 @@ float envsoundlife[30] = {0};
 int numenvsounds;
 
 
-bool tilt2weird = 0;
-bool tiltweird = 0;
-bool midweird = 0;
-bool proportionweird = 0;
+bool tilt2weird = false;
+bool tiltweird = false;
+bool midweird = false;
+bool proportionweird = false;
 bool vertexweird[6] = {0};
 TGAImageRec texture;
-bool debugmode = 0;
+bool debugmode = false;
 
-bool won = 0;
+bool won = false;
 
 
-bool campaign = 0;
+bool campaign = false;
 
-bool gamestarted = 0;
+bool gamestarted = false;
 
 //TextureList textures;
 

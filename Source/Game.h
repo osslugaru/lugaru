@@ -144,8 +144,6 @@ class Game
 		int campaignchoosenext[50];
 		int campaignnumnext[50];
 		int campaignnextlevel[50][10];
-		int campaignchoicesmade;
-		int campaignchoices[5000];
 		int campaignlocationx[50];
 		int campaignlocationy[50];
 		int campaignchoicenum;
@@ -227,6 +225,7 @@ class Game
 		void LoadScreenTexture();
 		void LoadStuff();
 		void LoadingScreen();
+		void LoadCampaign();
 		void FadeLoadingScreen(float howmuch);
 		void Dispose();
 		int DrawGLScene(StereoSide side);

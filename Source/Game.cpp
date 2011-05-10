@@ -116,8 +116,6 @@ Game::Game()
 	memset(campaignchoosenext, 0, sizeof(campaignchoosenext));
 	memset(campaignnumnext, 0, sizeof(campaignnumnext));
 	memset(campaignnextlevel, 0, sizeof(campaignnextlevel));
-	int campaignchoicesmade;
-	memset(campaignchoices, 0, sizeof(campaignchoices));
 	memset(campaignlocationx, 0, sizeof(campaignlocationx));
 	memset(campaignlocationy, 0, sizeof(campaignlocationy));
 	memset(campaignlocationy, 0, sizeof(campaignlocationy));

@@ -2243,17 +2243,17 @@ void Game::MenuTick(){
 						if(difficulty>2) difficulty=0;
 						break;
 					case 4:
-						ismotionblur = 1-ismotionblur;
+						ismotionblur = !ismotionblur;
 						break;
 					case 5:
-						decals = 1-decals;
+						decals = !decals;
 						break;
 					case 6:
-						musictoggle = 1-musictoggle;
+						musictoggle = !musictoggle;
 
-						if(musictoggle)
+						if(musictoggle) {
 						  emit_stream_np(stream_menutheme);
-						else {
+						} else {
 							pause_sound(leveltheme);
 							pause_sound(stream_fighttheme);
 							pause_sound(stream_menutheme);
@@ -2278,7 +2278,7 @@ void Game::MenuTick(){
 						mainmenu=gameon?2:1;
 						break;
 					case 9:
-						invertmouse = 1-invertmouse;
+						invertmouse = !invertmouse;
 						break;
 					case 10:
 						usermousesensitivity+=.2;
@@ -7729,12 +7729,12 @@ void Game::TickOnceAfter(){
 				if(targetlevel>numchallengelevels-1)targetlevel=0;
 			}
 
-			if(changedelay>0&&!player[0].dead&&!won){
+			if(changedelay>0&&!player[0].dead&&!won) {
 				//high scores, awards, win
-				if(campaign){
+				if(campaign) {
 					accountactive->winCampaignLevel(whichchoice, bonustotal, leveltime);
 					scoreadded=1;
-				}else{
+				} else {
 					accountactive->winLevel(whichlevel,bonustotal-startbonustotal,leveltime);
 				}
 				won=1;
@@ -7828,67 +7828,7 @@ void Game::TickOnceAfter(){
 
 					startbonustotal=0;
 
-					ifstream ipstream(ConvertFileName(":Data:Campaigns:main.txt"));
-					ipstream.ignore(256,':');
-					ipstream >> campaignnumlevels;
-					for(int i=0;i<campaignnumlevels;i++){
-						ipstream.ignore(256,':');
-						ipstream.ignore(256,':');
-						ipstream.ignore(256,' ');
-						ipstream >> campaignmapname[i];
-						ipstream.ignore(256,':');
-						ipstream >> campaigndescription[i];
-						for(int j=0;j<256;j++){
-							if(campaigndescription[i][j]=='_')campaigndescription[i][j]=' ';
-						}
-						ipstream.ignore(256,':');
-						ipstream >> campaignchoosenext[i];
-						ipstream.ignore(256,':');
-						ipstream >> campaignnumnext[i];
-						for(int j=0;j<campaignnumnext[i];j++){
-							ipstream.ignore(256,':');
-							ipstream >> campaignnextlevel[i][j];
-							campaignnextlevel[i][j]-=1;
-						}
-						ipstream.ignore(256,':');
-						ipstream >> campaignlocationx[i];
-						ipstream.ignore(256,':');
-						ipstream >> campaignlocationy[i];
-					}
-					ipstream.close();
-
-					for(int i=0;i<campaignnumlevels;i++){
-						levelvisible[i]=0;
-						levelhighlight[i]=0;
-					}
-
-
-					for(int i=0;i<campaignnumlevels;i++){
-						levelvisible[i]=0;
-						levelhighlight[i]=0;
-					}
-
-					levelorder[0]=0;
-					levelvisible[0]=1;
-					for(int i=0;i<accountactive->getCampaignChoicesMade();i++){
-						levelorder[i+1]=campaignnextlevel[levelorder[i]][accountactive->getCampaignChoice(i)];
-						levelvisible[levelorder[i+1]]=1;
-					}
-					int whichlevelstart;
-					whichlevelstart=accountactive->getCampaignChoicesMade()-1;
-					if(whichlevelstart<0){
-						campaignchoicenum=1;
-						campaignchoicewhich[0]=0;
-					}
-					else
-					{
-						campaignchoicenum=campaignnumnext[levelorder[whichlevelstart]];
-						for(int i=0;i<campaignchoicenum;i++){
-							campaignchoicewhich[i]=campaignnextlevel[levelorder[whichlevelstart]][i];
-							levelvisible[campaignnextlevel[levelorder[whichlevelstart]][i]]=1;
-							levelhighlight[campaignnextlevel[levelorder[whichlevelstart]][i]]=1;
-						}
-					}
+					LoadCampaign();
 
 					loading=2;
 					loadtime=0;
