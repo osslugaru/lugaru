@@ -1433,11 +1433,11 @@ int Game::DrawGLScene(StereoSide side)
 
 			float maxdistance=0;
 			float tempdist;
-			int whichclosest;
+			//~ int whichclosest;
 			for(i=0;i<objects.numobjects;i++){
 				tempdist=findDistancefast(&center,&objects.position[i]);
 				if(tempdist>maxdistance){
-					whichclosest=i;
+					//~ whichclosest=i;
 					maxdistance=tempdist;
 				}
 			}
@@ -1445,7 +1445,7 @@ int Game::DrawGLScene(StereoSide side)
 				if(!player[i].dead){
 					tempdist=findDistancefast(&center,&player[i].coords);
 					if(tempdist>maxdistance){
-						whichclosest=i;
+						//~ whichclosest=i;
 						maxdistance=tempdist;
 					}
 				}

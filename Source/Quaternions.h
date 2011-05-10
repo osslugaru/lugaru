@@ -370,8 +370,8 @@ inline bool sphere_line_intersection (
 	// This function returns a pointer array which first index indicates
 	// the number of intersection point, followed by coordinate pairs.
 
-	static float x , y , z;
-	static float a, b, c, mu, i ;
+	//~ static float x , y , z;
+	static float a, b, c, /*mu,*/ i ;
 
 	if(x1>x3+r&&x2>x3+r)return(0);
 	if(x1<x3-r&&x2<x3-r)return(0);
@@ -409,8 +409,8 @@ inline bool sphere_line_intersection (
 	// This function returns a pointer array which first index indicates
 	// the number of intersection point, followed by coordinate pairs.
 
-	static float x , y , z;
-	static float a, b, c, mu, i ;
+	//~ static float x , y , z;
+	static float a, b, c, /*mu,*/ i ;
 
 	if(p1->x>p3->x+*r&&p2->x>p3->x+*r)return(0);
 	if(p1->x<p3->x-*r&&p2->x<p3->x-*r)return(0);

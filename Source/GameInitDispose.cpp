@@ -101,8 +101,6 @@ void LOG(const std::string &fmt, ...)
 
 void Game::Dispose()
 {
-	int i,j;
-
 	LOGFUNC;
 
 	if(endgame==2){
@@ -122,7 +120,7 @@ void Game::Dispose()
 //  later in the shutdown process.  --ryan.
 #if !PLATFORM_LINUX
 
-	for (i=0; i < sounds_count; ++i)
+	for (int i=0; i < sounds_count; ++i)
 	{
 		OPENAL_Sample_Free(samp[i]);
 	}
@@ -366,7 +364,7 @@ GLvoid Game::ReSizeGLScene(float fov, float pnear)
 
 void Game::LoadingScreen()
 {
-	static float loadprogress,minprogress,maxprogress;
+	static float loadprogress;
 	static AbsoluteTime time = {0,0};
 	static AbsoluteTime frametime = {0,0};
 	AbsoluteTime currTime = UpTime ();
@@ -383,7 +381,6 @@ void Game::LoadingScreen()
 	if(multiplier>.05){
 		frametime = currTime;	// reset for next time interval
 
-		float size=1;
 		glLoadIdentity();
 		//Clear to black
 		glClearColor(0,0,0,1);
@@ -538,15 +535,6 @@ void Game::LoadingScreen()
 		glDepthMask(1);
 
 		//Text
-		/*
-		glEnable(GL_TEXTURE_2D);
-		static char string[256]="";
-		sprintf (string, "LOADING... %d%",(int)loadprogress);
-		glColor4f(1,1,1,.2);
-		text.glPrint(280-280*loadprogress/100/2/4,125-125*loadprogress/100/2/4,string,1,1+loadprogress/100,640,480);
-		glColor4f(1.2-loadprogress/100,1.2-loadprogress/100,1.2-loadprogress/100,1);
-		text.glPrint(280,125,string,1,1,640,480);
-		*/
 
 		if(flashamount>0){
 			if(flashamount>1)flashamount=1;
@@ -591,9 +579,8 @@ void Game::LoadingScreen()
 
 void Game::FadeLoadingScreen(float howmuch)
 {
-	static float loadprogress,minprogress,maxprogress;
+	static float loadprogress;
 
-	float size=1;
 	glLoadIdentity();
 	//Clear to black
 	glClearColor(0,0,0,1);
@@ -647,15 +634,6 @@ void Game::FadeLoadingScreen(float howmuch)
 	glDisable(GL_BLEND);
 	glDepthMask(1);
 	//Text
-	/*
-	glEnable(GL_TEXTURE_2D);
-	static char string[256]="";
-	sprintf (string, "LOADING... %d%",(int)loadprogress);
-	glColor4f(1,1,1,.2);
-	text.glPrint(280-280*loadprogress/100/2/4,125-125*loadprogress/100/2/4,string,1,1+loadprogress/100,640,480);
-	glColor4f(1.2-loadprogress/100,1.2-loadprogress/100,1.2-loadprogress/100,1);
-	text.glPrint(280,125,string,1,1,640,480);
-	*/
 	swap_gl_buffers();
 }
 
@@ -685,8 +663,6 @@ void Game::InitGame()
 	LOGFUNC;
 
 	autocam=0;
-
-	int i,j;
 
 	numchallengelevels=14;
 
@@ -894,7 +870,7 @@ void Game::LoadStuff()
 {
 	static float temptexdetail;
 	static float viewdistdetail;
-	static int i,j,texsize;
+	static int i,j;
 	float megascale =1;
 
 	LOGFUNC;
@@ -1189,13 +1165,7 @@ void Game::LoadStuff()
 			animation[swordsneakattackedanim].position[i][j]+=moveamount;
 		}
 	}
-	/*
-	for(i=0;i<player[0].skeleton.num_joints;i++){
-	for(j=0;j<animation[sleepanim].numframes;j++){
-	animation[sleepanim].position[i][j]=DoRotation(animation[sleepanim].position[i][j],0,180,0);
-	}
-	}
-	*/
+	
 	LoadingScreen();
 	temptexdetail=texdetail;
 	texdetail=1;
