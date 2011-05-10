@@ -129,8 +129,6 @@ int Game::DrawGLScene(StereoSide side)
 	static float texviewwidth, texviewheight;
 	static int i,j,k,l;
 	static GLubyte color;
-	static float newbrightness;
-	static float changespeed;
 	static XYZ checkpoint;
 	static float tempmult;
 	float tutorialopac;
@@ -2499,7 +2497,6 @@ void Game::DrawMenu()
 			endy[2]=starty[2]+20;
 		}
 		if(mainmenu==9){			
-			int tempncl;
 			nummenuitems=2+numchallengelevels;
 			char temp[255];
 
