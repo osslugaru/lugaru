@@ -5928,21 +5928,32 @@ void Game::Tick(){
         //campaign over?
 		if(mainmenu&&endgame==1)
             mainmenu=10;
+        //go to level select after completing a campaign level
+        if(campaign&&winfreeze&&mainmenu==0&&campaignchoosenext[campaignchoicewhich[whichchoice]]==1) {
+            mainmenu=5;
+            gameon=0;
+            winfreeze=0;
+            fireSound();
+            flash();
+            if(musictoggle){
+                OPENAL_SetFrequency(OPENAL_ALL, 0.001);
+                emit_stream_np(stream_menutheme);
+                pause_sound(leveltheme);
+            }
+			LoadCampaign();
+        }
         //escape key pressed
         //TODO: there must be code somewhere else that handles clicking the Back button, merge it with this
 		if(Input::isKeyPressed(SDLK_ESCAPE)&&
-                (gameon||mainmenu==0||(mainmenu>=3&&mainmenu!=8&&!(mainmenu==7&&entername)))){
+                (gameon||mainmenu==0||(mainmenu>=3&&mainmenu!=8&&!(mainmenu==7&&entername)))) {
 			selected=-1;
             if(mainmenu==0&&!winfreeze)
                 mainmenu=2; //pause
-            else if(mainmenu==0&&winfreeze&&campaignchoosenext[campaignchoicewhich[whichchoice]]==1){
-                mainmenu=100; // play menu sound and go to menu 5.
-                gameon=0;
-                winfreeze=0;
-            } else if(mainmenu==1||mainmenu==2)
+            else if(mainmenu==1||mainmenu==2){
                 mainmenu=0; //unpause
+            }
             //play menu theme
-            if(musictoggle&&(mainmenu==1||mainmenu==2||mainmenu==100)){
+            if(musictoggle&&(mainmenu==1||mainmenu==2)){
                 OPENAL_SetFrequency(OPENAL_ALL, 0.001);
                 emit_stream_np(stream_menutheme);
                 pause_sound(leveltheme);
@@ -5967,7 +5978,7 @@ void Game::Tick(){
                     mainmenu=gameon?2:1; break;
                 case 4: case 18:
                     mainmenu=3; break;
-                case 6: case 7: case 9: case 10: case 100:
+                case 6: case 7: case 9: case 10:
                     mainmenu=5; break;
             }
 		}
@@ -7776,8 +7787,12 @@ void Game::TickOnceAfter(){
 				}
 			}
 
-			if(campaign)
-				if(mainmenu==0&&winfreeze&&(campaignchoosenext[campaignchoicewhich[whichchoice]]==1)) {
+			if(campaign) {
+                // campaignchoosenext determines what to do when the level is complete:
+                // 0 = load next level
+                // 1 = go back to level select screen
+                // 2 = stealthload next level
+				if(mainmenu==0&&winfreeze&&(campaignchoosenext[campaignchoicewhich[whichchoice]])==1){
 					if(campaignnumnext[campaignchoicewhich[whichchoice]]==0)
 						endgame=1;
 				} else if(mainmenu==0&&winfreeze) {
@@ -7809,6 +7824,7 @@ void Game::TickOnceAfter(){
 
 					stealthloading=0;
 				}
+            }
 
             if(loading==3)
                 loading=0;
