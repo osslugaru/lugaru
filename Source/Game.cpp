@@ -166,7 +166,7 @@ Game::Game()
 	scoreadded = 0;
 	numchallengelevels = 0;
 
-	console = 0;
+	console = false;
 	archiveselected = 0;
 
 	memset(consoletext, 0, sizeof(consoletext));

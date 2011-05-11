@@ -43,7 +43,7 @@ void Input::Tick(){
 }
 
 bool Input::isKeyDown(int k) {
-	if(keyboardfrozen||k>=SDLK_LAST+6) // vraiment utile? à vérifier
+	if(keyboardfrozen||k>=SDLK_LAST+6) // really useful? check that.
         return false;
     return keyDown[k];
 }

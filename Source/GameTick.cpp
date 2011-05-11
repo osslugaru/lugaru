@@ -1524,7 +1524,7 @@ void Game::Loadlevel(const char *name){
 		if(console){
 			emit_sound_np(consolesuccesssound);
 			freeze=0;
-			console=0;
+			console=false;
 		}
 
 		if(!stealthloading){
@@ -5870,7 +5870,7 @@ void Game::Tick(){
 		displaytime[i]+=multiplier;
 	}
 
-	keyboardfrozen=0;
+	keyboardfrozen=false;
     Input::Tick();
 
 	if(Input::isKeyPressed(SDLK_F6)){
@@ -6012,10 +6012,10 @@ void Game::Tick(){
 			}
 		}
 		if(chatting)
-            keyboardfrozen=1;
+            keyboardfrozen=true;
 
 		if(Input::isKeyPressed(SDLK_BACKQUOTE)&&debugmode){
-			console=1-console;
+			console=!console;
 			if(console){
 				OPENAL_SetFrequency(OPENAL_ALL, 0.001);
 			} else {
@@ -6076,9 +6076,9 @@ void Game::Tick(){
                 winfreeze=0;
 		if((Input::isKeyDown(SDLK_ESCAPE))&&!campaign&&gameon){
             if(console){
-                console=0;
+                console=false;
                 freeze=0;
-            }else if(winfreeze){
+            } else if(winfreeze) {
 				mainmenu=9;
 				gameon=0;
 			}
@@ -7720,7 +7720,7 @@ void Game::TickOnceAfter(){
 				killhotspot=0;
 			}
 
-			if(!editorenabled&&gameon&&!mainmenu){
+			if(!editorenabled&&gameon&&!mainmenu) {
 				if(changedelay!=-999)
                     changedelay-=multiplier/7;
 				if(player[0].dead)
@@ -7759,17 +7759,16 @@ void Game::TickOnceAfter(){
                         (player[0].dead||
                          (alldead&&maptype==mapkilleveryone)||
                          (winhotspot)||
-                         (killhotspot))&&
-                        !winfreeze)
+                         (killhotspot)))
                     loading=1;
 				if((player[0].dead||
                             (alldead&&maptype==mapkilleveryone)||
                             (winhotspot)||
                             (windialogue)||
                             (killhotspot))&&
-                        changedelay<=0){
-                    if(whichlevel!=-2&&!loading&&!player[0].dead){
-                        winfreeze=1;
+                        changedelay<=0) {
+                    if(whichlevel!=-2&&!loading&&!player[0].dead) {
+                        winfreeze=true;
                         changedelay=-999;
                     }
                     if(player[0].dead)
@@ -7778,14 +7777,11 @@ void Game::TickOnceAfter(){
 			}
 
 			if(campaign)
-				if(mainmenu==0&&winfreeze&&(campaignchoosenext[campaignchoicewhich[whichchoice]])==1)
+				if(mainmenu==0&&winfreeze&&(campaignchoosenext[campaignchoicewhich[whichchoice]]==1)) {
 					if(campaignnumnext[campaignchoicewhich[whichchoice]]==0)
 						endgame=1;
-				else if(mainmenu==0&&winfreeze){
-					if(campaignchoosenext[campaignchoicewhich[whichchoice]]==2)
-						stealthloading=1;
-					else
-                        stealthloading=0;
+				} else if(mainmenu==0&&winfreeze) {
+					stealthloading = (campaignchoosenext[campaignchoicewhich[whichchoice]]==2);
 
 					if(!stealthloading){
 						fireSound(firestartsound);
