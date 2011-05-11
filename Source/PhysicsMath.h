@@ -714,7 +714,7 @@ inline	Quaternion	MakeQFromEulerAngles(float x, float y, float z)
 
 inline	Vector	MakeEulerAnglesFromQ(Quaternion q)
 {
-	double	r11, r21, r31, r32, r33, r12, r13;
+	double	r11, r21, r31, r32, r33;
 	double	q00, q11, q22, q33;
 	double	tmp;
 	Vector	u;
@@ -733,8 +733,8 @@ inline	Vector	MakeEulerAnglesFromQ(Quaternion q)
 	tmp = fabs(r31);
 	if(tmp > 0.999999)
 	{
-		r12 = 2 * (q.v.x*q.v.y - q.n*q.v.z);
-		r13 = 2 * (q.v.x*q.v.z + q.n*q.v.y);
+		double r12 = 2 * (q.v.x*q.v.y - q.n*q.v.z);
+		double r13 = 2 * (q.v.x*q.v.z + q.n*q.v.y);
 
 		u.x = RadiansToDegrees(0.0f); //roll
 		u.y = RadiansToDegrees((float) (-(pi/2) * r31/tmp)); // pitch

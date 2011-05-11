@@ -2674,17 +2674,16 @@ void Game::DrawMenu()
 
 	if(mainmenu==1||mainmenu==2)
 		for(i=1;i<4;i++){
-			if((mousecoordh/screenwidth*640)>startx[i]&&(mousecoordh/screenwidth*640)<endx[i]&&480-(mousecoordv/screenheight*480)>starty[i]&&480-(mousecoordv/screenheight*480)<endy[i]){
+			if((mousecoordh/screenwidth*640)>startx[i]&&(mousecoordh/screenwidth*640)<endx[i]&&480-(mousecoordv/screenheight*480)>starty[i]&&480-(mousecoordv/screenheight*480)<endy[i]) {
 				selected=i;
 			}
 		}
 
 	if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==18)
-		for(i=0;i<nummenuitems;i++){
-			if((mousecoordh/screenwidth*640)>startx[i]&&(mousecoordh/screenwidth*640)<endx[i]&&480-(mousecoordv/screenheight*480)>starty[i]&&480-(mousecoordv/screenheight*480)<endy[i]){
-				if(mainmenu!=5)selected=i;
-				if(mainmenu==5&&(i!=0&&i!=6))selected=i;
-				if(mainmenu==9&&(i!=numchallengelevels+1))selected=i; // seem useless, if mainmenu==9 then mainmenu!=5, so selected==i.
+		for(i=0;i<nummenuitems;i++) {
+			if((mousecoordh/screenwidth*640)>startx[i]&&(mousecoordh/screenwidth*640)<endx[i]&&480-(mousecoordv/screenheight*480)>starty[i]&&480-(mousecoordv/screenheight*480)<endy[i]) {
+				if(mainmenu!=5) selected=i;
+				else if( (i!=0) && (i!=6) ) selected=i;
 			}
 		}
 

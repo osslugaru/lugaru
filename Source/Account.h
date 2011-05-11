@@ -73,6 +73,7 @@ class Account {
 		float getHighScore(int i) { return highscore[i]; };
 		float getFastTime(int i) { return fasttime[i]; };
 		int getProgress() { return progress; };
+		void setCurrentCampaign(std::string name);
 		
 		static int getNbAccounts() { return accounts.size(); };
 	private:

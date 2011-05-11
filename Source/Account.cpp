@@ -32,7 +32,7 @@ extern bool debugmode;
 
 vector<Account*> Account::accounts = vector<Account*>();
 
-Account::Account(string n) {
+Account::Account(string n) : campaignProgress() {
 	name = string(n);
 	difficulty = 0;
 	progress = 0;
@@ -41,7 +41,15 @@ Account::Account(string n) {
 	memset(fasttime, 0, sizeof(fasttime));
 	memset(unlocked, 0, sizeof(unlocked));
 	
-	currentCampaign = "main";
+	setCurrentCampaign("main");
+}
+
+void Account::setCurrentCampaign(string name) {
+	currentCampaign = name;
+	campaignProgress[name].highscore = 0;
+	campaignProgress[name].fasttime = 0;
+	campaignProgress[name].score = 0;
+	campaignProgress[name].time = 0;
 }
 
 Account* Account::add(string name) {
@@ -102,7 +110,6 @@ Account* Account::loadFile(string filename) {
 	FILE *tfile;
 	int numaccounts;
 	int accountactive;
-	int j;
 	
 	tfile=fopen(ConvertFileName(filename.c_str()), "rb" );
 	
@@ -126,7 +133,7 @@ Account* Account::loadFile(string filename) {
 				int t;
 				char c;
 				funpackf(tfile, "Bi",  &t);
-				for(j=0;j<t;j++)
+				for(int j=0;j<t;j++)
 				{
 					funpackf(tfile, "Bb",  &c);
 					campaignName.append(1,c);
@@ -138,7 +145,7 @@ Account* Account::loadFile(string filename) {
 				funpackf(tfile, "Bf", &(acc->campaignProgress[campaignName].highscore));
 				int campaignchoicesmade,campaignchoice;
 				funpackf(tfile, "Bi", &campaignchoicesmade);
-				for(j=0;j<campaignchoicesmade;j++)
+				for(int j=0;j<campaignchoicesmade;j++)
 				{
 					funpackf(tfile, "Bi", &campaignchoice);
 					if (campaignchoice >= 10) // what is that for?
@@ -150,19 +157,19 @@ Account* Account::loadFile(string filename) {
 			}
 			
 			funpackf(tfile, "Bf", &(acc->points));
-			for(j=0;j<50;j++)
+			for(int i=0;i<50;i++)
 			{
-				funpackf(tfile, "Bf", &(acc->highscore[j]));
-				funpackf(tfile, "Bf", &(acc->fasttime[j]));
+				funpackf(tfile, "Bf", &(acc->highscore[i]));
+				funpackf(tfile, "Bf", &(acc->fasttime[i]));
 			}
-			for(j=0;j<60;j++)
+			for(int i=0;i<60;i++)
 			{
-				funpackf(tfile, "Bb",  &(acc->unlocked[j]));
+				funpackf(tfile, "Bb",  &(acc->unlocked[i]));
 			}
 			int temp;
 			char ctemp;
 			funpackf(tfile, "Bi",  &temp);
-			for(j=0;j<temp;j++)
+			for(int i=0;i<temp;i++)
 			{
 				funpackf(tfile, "Bb",  &ctemp);
 				acc->name.append(1,ctemp);
