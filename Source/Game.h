@@ -59,6 +59,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Account.h"
 #include "Sounds.h"
 
+#define NB_CAMPAIGN_MENU_ITEM 7
+
 extern GLuint rabbittexture;
 
 struct TextureInfo;
@@ -221,6 +223,7 @@ class Game
 		void LoadStuff();
 		void LoadingScreen();
 		void LoadCampaign();
+		static std::vector<std::string> ListCampaigns();
 		void FadeLoadingScreen(float howmuch);
 		void Dispose();
 		int DrawGLScene(StereoSide side);

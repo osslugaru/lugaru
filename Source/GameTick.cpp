@@ -36,6 +36,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Animation.h"
 #include "Awards.h"
 
+#include <algorithm>
+
 using namespace std;
 
 // Added more evilness needed for MSVC
@@ -2111,387 +2113,6 @@ void Game::Loadlevel(const char *name){
 	leveltime=0;
 	loadingstuff=0;
 	visibleloading=0;
-}
-
-/*
-Values of mainmenu :
-1 Main menu
-2 Menu pause (resume/end game)
-3 Option menu
-4 Controls configuration menu
-5 Main game menu (choose level or challenge)
-6 Deleting user menu
-7 User managment menu (select/add)
-8 Choose difficulty menu
-9 Challenge level selection menu
-10 End of the campaign congratulation (is that really a menu?)
-11 Same that 9 ??? => unused
-18 stereo configuration
-*/
-    
-void Game::MenuTick(){
-    //menu buttons
-    
-    // some specific case where we do something even if the left mouse button is not pressed.
-	if((mainmenu==5) && (endgame==2)) {
-		accountactive->endGame();
-		endgame=0;
-	}
-	if(mainmenu==10)
-		endgame=2;
-	if( (mainmenu==18) && Input::isKeyPressed(MOUSEBUTTON2) && (selected==1) )
-		stereoseparation-=0.001;
-		
-    if(Input::MouseClicked() && (selected >= 0)) { // handling of the left mouse clic in menus
-		switch(mainmenu) {
-			case 1:
-			case 2:
-				switch(selected) {
-					case 1:
-						if(gameon) { //resume
-							mainmenu=0;
-							pause_sound(stream_menutheme);
-							resume_stream(leveltheme);
-						} else { //new game
-							fireSound(firestartsound);
-							flash();
-							mainmenu=(accountactive?5:7);
-							selected=-1;
-						}
-						break;
-					case 2: //options
-						fireSound();
-						flash();
-						mainmenu=3;
-						if(newdetail>2) newdetail=detail;
-						if(newdetail<0) newdetail=detail;
-						if(newscreenwidth>3000) newscreenwidth=screenwidth;
-						if(newscreenwidth<0) newscreenwidth=screenwidth;
-						if(newscreenheight>3000) newscreenheight=screenheight;
-						if(newscreenheight<0) newscreenheight=screenheight;
-						break;
-					case 3:
-						fireSound();
-						flash();
-						if(gameon){ //end game
-							gameon=0;
-							mainmenu=1;
-						} else { //quit
-							tryquit=1;
-							pause_sound(stream_menutheme);
-						}
-						break;
-				}
-				break;
-			case 3:
-				fireSound();
-				bool isCustomResolution,found;
-				switch(selected){
-					case 0:
-						extern SDL_Rect **resolutions;
-						isCustomResolution = true;
-						found = false;
-						for(int i = 0; (!found) && (resolutions[i]); i++) {
-							if((resolutions[i]->w == screenwidth) && (resolutions[i]->h == screenwidth))
-								isCustomResolution = false;
-
-							if((resolutions[i]->w == newscreenwidth) && (resolutions[i]->h == newscreenheight)) {
-								i++;
-								if(resolutions[i] != NULL) {
-									newscreenwidth = (int) resolutions[i]->w;
-									newscreenheight = (int) resolutions[i]->h;
-								} else if(isCustomResolution){
-									if((screenwidth == newscreenwidth) && (screenheight == newscreenheight)) {
-										newscreenwidth = (int) resolutions[0]->w;
-										newscreenheight = (int) resolutions[0]->h;
-									} else {
-										newscreenwidth = screenwidth;
-										newscreenheight = screenheight;
-									}
-								} else {
-									newscreenwidth = (int) resolutions[0]->w;
-									newscreenheight = (int) resolutions[0]->h;
-								}
-								found = true;
-							}
-						}
-
-						if(!found) {
-							newscreenwidth = (int) resolutions[0]->w;
-							newscreenheight = (int) resolutions[0]->h;
-						}
-						break;
-					case 1:
-						newdetail++;
-						if(newdetail>2) newdetail=0;
-						break;
-					case 2:
-						bloodtoggle++;
-						if(bloodtoggle>2) bloodtoggle=0;
-						break;
-					case 3:
-						difficulty++;
-						if(difficulty>2) difficulty=0;
-						break;
-					case 4:
-						ismotionblur = !ismotionblur;
-						break;
-					case 5:
-						decals = !decals;
-						break;
-					case 6:
-						musictoggle = !musictoggle;
-
-						if(musictoggle) {
-						  emit_stream_np(stream_menutheme);
-						} else {
-							pause_sound(leveltheme);
-							pause_sound(stream_fighttheme);
-							pause_sound(stream_menutheme);
-
-							for(int i=0;i<4;i++){
-								oldmusicvolume[i]=0;
-								musicvolume[i]=0;
-							}
-						}
-
-						break;
-					case 7: // controls
-						flash();
-						mainmenu=4;
-						selected=-1;
-						keyselect=-1;
-						break;
-					case 8:
-						flash();
-						
-						SaveSettings(*this);
-						mainmenu=gameon?2:1;
-						break;
-					case 9:
-						invertmouse = !invertmouse;
-						break;
-					case 10:
-						usermousesensitivity+=.2;
-						if(usermousesensitivity>2) usermousesensitivity=.2;
-						break;
-					case 11:
-						volume+=.1f;
-						if(volume>1.0001f) volume=0;
-						OPENAL_SetSFXMasterVolume((int)(volume*255));
-						break;
-					case 12:
-						flash();
-						
-						newstereomode = stereomode;
-						mainmenu=18;
-						keyselect=-1;
-						break;
-					case 13:
-						showdamagebar = !showdamagebar;
-						break;
-				}
-				break;
-			case 4:
-				if(!waiting) {
-					fireSound();
-					if(selected<9 && keyselect==-1)
-						keyselect=selected;
-					if(keyselect!=-1)
-						setKeySelected();
-					if(selected==9){
-						flash();
-
-						mainmenu=3;
-					}
-				}
-				break;
-			case 5:
-				fireSound();
-				flash();
-				if((selected-7 >= accountactive->getCampaignChoicesMade())) {
-					startbonustotal=0;
-
-					loading=2;
-					loadtime=0;
-					targetlevel=7;
-					if(firstload)
-						TickOnceAfter();
-					else
-						LoadStuff();
-					whichchoice=selected-7-accountactive->getCampaignChoicesMade();
-					visibleloading=1;
-					stillloading=1;
-					Loadlevel(campaignmapname[campaignchoicewhich[selected-7-accountactive->getCampaignChoicesMade()]]);
-					campaign=1;
-					mainmenu=0;
-					gameon=1;
-					pause_sound(stream_menutheme);
-				}
-				switch(selected){
-					case 1:
-						startbonustotal=0;
-
-						loading=2;
-						loadtime=0;
-						targetlevel=-1;
-						if(firstload) {
-							TickOnceAfter();
-							Loadlevel(-1);
-						} else
-							LoadStuff();
-
-						mainmenu=0;
-						gameon=1;
-						pause_sound(stream_menutheme);
-						break;
-					case 2:
-						mainmenu=9;
-						break;
-					case 3:
-						mainmenu=6;
-						break;
-					case 4:
-						mainmenu=(gameon?2:1);
-						break;
-					case 5:
-						mainmenu=7;
-						break;
-				}
-				break;
-			case 6:
-				fireSound();
-				if(selected==1) {
-					flash();
-					accountactive = Account::destroy(accountactive);
-					mainmenu=7;
-				} else if(selected==2) {
-					flash();
-					mainmenu=5;
-				}
-				break;
-			case 7:
-				fireSound();
-				if(selected==0 && Account::getNbAccounts()<8){
-					entername=1;
-				} else if (selected < Account::getNbAccounts()+1) {
-					flash();
-					mainmenu=5;
-					accountactive=Account::get(selected-1);
-				} else if (selected == Account::getNbAccounts()+1) {
-					flash();
-					mainmenu=5;
-					for(int j=0;j<255;j++){
-						displaytext[0][j]=0;
-					}
-					displaychars[0]=0;
-					displayselected=0;
-					entername=0;
-				}
-				break;
-			case 8:
-				fireSound();
-				flash();
-				if(selected<=2)
-					accountactive->setDifficulty(selected);
-				mainmenu=5;
-				break;
-			case 9:
-				if(selected<numchallengelevels && selected<=accountactive->getProgress()){
-					fireSound();
-					flash();
-
-					startbonustotal=0;
-
-					loading=2;
-					loadtime=0;
-					targetlevel=selected;
-					if(firstload)TickOnceAfter();
-					if(!firstload)LoadStuff();
-					else Loadlevel(selected);
-					campaign=0;
-
-					mainmenu=0;
-					gameon=1;
-					pause_sound(stream_menutheme);
-				}
-				if(selected==numchallengelevels){
-					fireSound();
-					flash();
-					mainmenu=5;
-				}
-				break;
-			case 10:
-				if(selected==3){
-					fireSound();
-					flash();
-					mainmenu=5;
-				}
-				break;
-			case 18:
-				if(selected==1)
-					stereoseparation+=0.001;
-				else {
-					fireSound();
-					if(selected==0){
-						newstereomode = (StereoMode)(newstereomode + 1);
-						while(!CanInitStereo(newstereomode)){
-							printf("Failed to initialize mode %s (%i)\n", StereoModeName(newstereomode), newstereomode);
-							newstereomode = (StereoMode)(newstereomode + 1);
-							if(newstereomode >= stereoCount)
-								newstereomode = stereoNone;
-						}
-					} else if(selected==2) {
-						stereoreverse = !stereoreverse;
-					} else if(selected==3) {
-						flash();
-						mainmenu=3;
-
-						stereomode = newstereomode;
-						InitStereo(stereomode);
-					}
-				}
-				break;
-		}
-	}
-
-    if(Input::isKeyDown(SDLK_q) && Input::isKeyDown(SDLK_LMETA)){
-        tryquit=1;
-        if(mainmenu==3) {
-            SaveSettings(*this);
-        }
-    }
-
-    OPENAL_SetFrequency(channels[stream_menutheme], 22050);
-
-    if(entername) {
-        inputText(displaytext[0],&displayselected,&displaychars[0]);
-        if(!waiting) { // the input as finished
-            if(displaychars[0]){ // with enter
-                accountactive = Account::add(string(displaytext[0]));
-
-                mainmenu=8;
-
-                flash();
-
-                fireSound(firestartsound);
-
-                for(int i=0;i<255;i++){
-                    displaytext[0][i]=0;
-                }
-                displaychars[0]=0;
-
-                displayselected=0;
-            }
-            entername=0;
-        }
-        
-        displayblinkdelay-=multiplier;
-        if(displayblinkdelay<=0){
-            displayblinkdelay=.3;
-            displayblink=1-displayblink;
-        }
-    }
 }
 
 void Game::doTutorial(){
@@ -5858,6 +5479,401 @@ void Game::doAI(int i){
             }
             player[i].targetheadrotation=180-roughDirectionTo(player[i].coords,player[i].headtarget);
             player[i].targetheadrotation2=pitchTo(player[i].coords,player[i].headtarget);
+        }
+    }
+}
+
+/*
+Values of mainmenu :
+1 Main menu
+2 Menu pause (resume/end game)
+3 Option menu
+4 Controls configuration menu
+5 Main game menu (choose level or challenge)
+6 Deleting user menu
+7 User managment menu (select/add)
+8 Choose difficulty menu
+9 Challenge level selection menu
+10 End of the campaign congratulation (is that really a menu?)
+11 Same that 9 ??? => unused
+18 stereo configuration
+*/
+    
+void Game::MenuTick(){
+    //menu buttons
+    
+    // some specific case where we do something even if the left mouse button is not pressed.
+	if((mainmenu==5) && (endgame==2)) {
+		accountactive->endGame();
+		endgame=0;
+	}
+	if(mainmenu==10)
+		endgame=2;
+	if( (mainmenu==18) && Input::isKeyPressed(MOUSEBUTTON2) && (selected==1) )
+		stereoseparation-=0.001;
+		
+    if(Input::MouseClicked() && (selected >= 0)) { // handling of the left mouse clic in menus
+		switch(mainmenu) {
+			case 1:
+			case 2:
+				switch(selected) {
+					case 1:
+						if(gameon) { //resume
+							mainmenu=0;
+							pause_sound(stream_menutheme);
+							resume_stream(leveltheme);
+						} else { //new game
+							fireSound(firestartsound);
+							flash();
+							mainmenu=(accountactive?5:7);
+							selected=-1;
+						}
+						break;
+					case 2: //options
+						fireSound();
+						flash();
+						mainmenu=3;
+						if(newdetail>2) newdetail=detail;
+						if(newdetail<0) newdetail=detail;
+						if(newscreenwidth>3000) newscreenwidth=screenwidth;
+						if(newscreenwidth<0) newscreenwidth=screenwidth;
+						if(newscreenheight>3000) newscreenheight=screenheight;
+						if(newscreenheight<0) newscreenheight=screenheight;
+						break;
+					case 3:
+						fireSound();
+						flash();
+						if(gameon){ //end game
+							gameon=0;
+							mainmenu=1;
+						} else { //quit
+							tryquit=1;
+							pause_sound(stream_menutheme);
+						}
+						break;
+				}
+				break;
+			case 3:
+				fireSound();
+				bool isCustomResolution,found;
+				switch(selected){
+					case 0:
+						extern SDL_Rect **resolutions;
+						isCustomResolution = true;
+						found = false;
+						for(int i = 0; (!found) && (resolutions[i]); i++) {
+							if((resolutions[i]->w == screenwidth) && (resolutions[i]->h == screenwidth))
+								isCustomResolution = false;
+
+							if((resolutions[i]->w == newscreenwidth) && (resolutions[i]->h == newscreenheight)) {
+								i++;
+								if(resolutions[i] != NULL) {
+									newscreenwidth = (int) resolutions[i]->w;
+									newscreenheight = (int) resolutions[i]->h;
+								} else if(isCustomResolution){
+									if((screenwidth == newscreenwidth) && (screenheight == newscreenheight)) {
+										newscreenwidth = (int) resolutions[0]->w;
+										newscreenheight = (int) resolutions[0]->h;
+									} else {
+										newscreenwidth = screenwidth;
+										newscreenheight = screenheight;
+									}
+								} else {
+									newscreenwidth = (int) resolutions[0]->w;
+									newscreenheight = (int) resolutions[0]->h;
+								}
+								found = true;
+							}
+						}
+
+						if(!found) {
+							newscreenwidth = (int) resolutions[0]->w;
+							newscreenheight = (int) resolutions[0]->h;
+						}
+						break;
+					case 1:
+						newdetail++;
+						if(newdetail>2) newdetail=0;
+						break;
+					case 2:
+						bloodtoggle++;
+						if(bloodtoggle>2) bloodtoggle=0;
+						break;
+					case 3:
+						difficulty++;
+						if(difficulty>2) difficulty=0;
+						break;
+					case 4:
+						ismotionblur = !ismotionblur;
+						break;
+					case 5:
+						decals = !decals;
+						break;
+					case 6:
+						musictoggle = !musictoggle;
+
+						if(musictoggle) {
+						  emit_stream_np(stream_menutheme);
+						} else {
+							pause_sound(leveltheme);
+							pause_sound(stream_fighttheme);
+							pause_sound(stream_menutheme);
+
+							for(int i=0;i<4;i++){
+								oldmusicvolume[i]=0;
+								musicvolume[i]=0;
+							}
+						}
+
+						break;
+					case 7: // controls
+						flash();
+						mainmenu=4;
+						selected=-1;
+						keyselect=-1;
+						break;
+					case 8:
+						flash();
+						
+						SaveSettings(*this);
+						mainmenu=gameon?2:1;
+						break;
+					case 9:
+						invertmouse = !invertmouse;
+						break;
+					case 10:
+						usermousesensitivity+=.2;
+						if(usermousesensitivity>2) usermousesensitivity=.2;
+						break;
+					case 11:
+						volume+=.1f;
+						if(volume>1.0001f) volume=0;
+						OPENAL_SetSFXMasterVolume((int)(volume*255));
+						break;
+					case 12:
+						flash();
+						
+						newstereomode = stereomode;
+						mainmenu=18;
+						keyselect=-1;
+						break;
+					case 13:
+						showdamagebar = !showdamagebar;
+						break;
+				}
+				break;
+			case 4:
+				if(!waiting) {
+					fireSound();
+					if(selected<9 && keyselect==-1)
+						keyselect=selected;
+					if(keyselect!=-1)
+						setKeySelected();
+					if(selected==9){
+						flash();
+
+						mainmenu=3;
+					}
+				}
+				break;
+			case 5:
+				fireSound();
+				flash();
+				if((selected-NB_CAMPAIGN_MENU_ITEM-1 >= accountactive->getCampaignChoicesMade())) {
+					startbonustotal=0;
+
+					loading=2;
+					loadtime=0;
+					targetlevel=7;
+					if(firstload)
+						TickOnceAfter();
+					else
+						LoadStuff();
+					whichchoice=selected-NB_CAMPAIGN_MENU_ITEM-1-accountactive->getCampaignChoicesMade();
+					visibleloading=1;
+					stillloading=1;
+					Loadlevel(campaignmapname[campaignchoicewhich[whichchoice]]);
+					campaign=1;
+					mainmenu=0;
+					gameon=1;
+					pause_sound(stream_menutheme);
+				}
+				switch(selected){
+					case 1:
+						startbonustotal=0;
+
+						loading=2;
+						loadtime=0;
+						targetlevel=-1;
+						if(firstload) {
+							TickOnceAfter();
+							Loadlevel(-1);
+						} else
+							LoadStuff();
+
+						mainmenu=0;
+						gameon=1;
+						pause_sound(stream_menutheme);
+						break;
+					case 2:
+						mainmenu=9;
+						break;
+					case 3:
+						mainmenu=6;
+						break;
+					case 4:
+						mainmenu=(gameon?2:1);
+						break;
+					case 5:
+						mainmenu=7;
+						break;
+					case 6:
+						vector<string> campaigns = ListCampaigns();
+						vector<string>::iterator c;
+						if ((c = find(campaigns.begin(),campaigns.end(),accountactive->getCurrentCampaign()))==campaigns.end()) {
+							if(!campaigns.empty())
+								accountactive->setCurrentCampaign(campaigns.front());
+						} else {
+							c++;
+							if(c==campaigns.end())
+								c=campaigns.begin();
+							accountactive->setCurrentCampaign(*c);
+						}
+						LoadCampaign();
+						break;
+				}
+				break;
+			case 6:
+				fireSound();
+				if(selected==1) {
+					flash();
+					accountactive = Account::destroy(accountactive);
+					mainmenu=7;
+				} else if(selected==2) {
+					flash();
+					mainmenu=5;
+				}
+				break;
+			case 7:
+				fireSound();
+				if(selected==0 && Account::getNbAccounts()<8){
+					entername=1;
+				} else if (selected < Account::getNbAccounts()+1) {
+					flash();
+					mainmenu=5;
+					accountactive=Account::get(selected-1);
+				} else if (selected == Account::getNbAccounts()+1) {
+					flash();
+					mainmenu=5;
+					for(int j=0;j<255;j++){
+						displaytext[0][j]=0;
+					}
+					displaychars[0]=0;
+					displayselected=0;
+					entername=0;
+				}
+				break;
+			case 8:
+				fireSound();
+				flash();
+				if(selected<=2)
+					accountactive->setDifficulty(selected);
+				mainmenu=5;
+				break;
+			case 9:
+				if(selected<numchallengelevels && selected<=accountactive->getProgress()){
+					fireSound();
+					flash();
+
+					startbonustotal=0;
+
+					loading=2;
+					loadtime=0;
+					targetlevel=selected;
+					if(firstload)TickOnceAfter();
+					if(!firstload)LoadStuff();
+					else Loadlevel(selected);
+					campaign=0;
+
+					mainmenu=0;
+					gameon=1;
+					pause_sound(stream_menutheme);
+				}
+				if(selected==numchallengelevels){
+					fireSound();
+					flash();
+					mainmenu=5;
+				}
+				break;
+			case 10:
+				if(selected==3){
+					fireSound();
+					flash();
+					mainmenu=5;
+				}
+				break;
+			case 18:
+				if(selected==1)
+					stereoseparation+=0.001;
+				else {
+					fireSound();
+					if(selected==0){
+						newstereomode = (StereoMode)(newstereomode + 1);
+						while(!CanInitStereo(newstereomode)){
+							printf("Failed to initialize mode %s (%i)\n", StereoModeName(newstereomode), newstereomode);
+							newstereomode = (StereoMode)(newstereomode + 1);
+							if(newstereomode >= stereoCount)
+								newstereomode = stereoNone;
+						}
+					} else if(selected==2) {
+						stereoreverse = !stereoreverse;
+					} else if(selected==3) {
+						flash();
+						mainmenu=3;
+
+						stereomode = newstereomode;
+						InitStereo(stereomode);
+					}
+				}
+				break;
+		}
+	}
+
+    if(Input::isKeyDown(SDLK_q) && Input::isKeyDown(SDLK_LMETA)){
+        tryquit=1;
+        if(mainmenu==3) {
+            SaveSettings(*this);
+        }
+    }
+
+    OPENAL_SetFrequency(channels[stream_menutheme], 22050);
+
+    if(entername) {
+        inputText(displaytext[0],&displayselected,&displaychars[0]);
+        if(!waiting) { // the input as finished
+            if(displaychars[0]){ // with enter
+                accountactive = Account::add(string(displaytext[0]));
+
+                mainmenu=8;
+
+                flash();
+
+                fireSound(firestartsound);
+
+                for(int i=0;i<255;i++){
+                    displaytext[0][i]=0;
+                }
+                displaychars[0]=0;
+
+                displayselected=0;
+            }
+            entername=0;
+        }
+        
+        displayblinkdelay-=multiplier;
+        if(displayblinkdelay<=0){
+            displayblinkdelay=.3;
+            displayblink=1-displayblink;
         }
     }
 }
