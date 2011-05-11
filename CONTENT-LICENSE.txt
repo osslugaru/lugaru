@@ -1,4 +1,49 @@
- The following game assets are under CC-BY-SA 3.0 Unported ( http://creativecommons.org/licenses/by-sa/3.0/ ) :
+http://forums.wolfire.com/viewtopic.php?f=7&t=1066&start=270#p109473
+These map are from Temple by Slib under CC-BY-SA : 
+Data/Maps/sventhrone
+Data/Maps/sventemple2
+Data/Maps/sventemple
+Data/Maps/svensthwrong
+Data/Maps/svenskip
+Data/Maps/svenshan
+Data/Maps/svenruins
+Data/Maps/svenroad
+Data/Maps/svenredbwafter
+Data/Maps/svenredbw5
+Data/Maps/svenredbw4
+Data/Maps/svenredbw3
+Data/Maps/svenredbw2
+Data/Maps/svenredbw
+Data/Maps/svenninjabefore
+Data/Maps/svenninja
+Data/Maps/svenmeeting
+Data/Maps/svenheaven
+Data/Maps/svengrotto
+Data/Maps/svenfort
+Data/Maps/svenforest
+Data/Maps/svenfireice
+Data/Maps/svenearl
+Data/Maps/svendoor
+Data/Maps/svendefend
+Data/Maps/svendecoy
+Data/Maps/svendawn
+Data/Maps/svencouncil
+Data/Maps/svenclimb
+Data/Maps/svenchasm
+Data/Maps/svencanyon
+Data/Maps/svenalpha
+
+These textures are from Temple by Slib under CC-BY-SA : 
+mask.png
+GiTop.png
+GiTeared.png
+GiBottom.png
+Desertcl.png
+
+This campaign is from Temple by Slib under CC-BY-SA : 
+Data/Campaign/temple.txt
+
+The following game assets are under CC-BY-SA 3.0 Unported ( http://creativecommons.org/licenses/by-sa/3.0/ ) :
  
  Data/Animations/Wolfstop
  Data/Animations/Wolfslap

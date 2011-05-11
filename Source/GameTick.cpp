@@ -5740,6 +5740,14 @@ void Game::MenuTick(){
 							accountactive->setCurrentCampaign(*c);
 						}
 						LoadCampaign();
+						if(Mainmenuitems[7])
+							glDeleteTextures(1,&Mainmenuitems[7]);
+						ifstream test(ConvertFileName((":Data:Textures:"+accountactive->getCurrentCampaign()+":World.png").c_str()));
+						if(test.good()) {
+							LoadTexture((":Data:Textures:"+accountactive->getCurrentCampaign()+":World.png").c_str(),&Mainmenuitems[7],0,0);
+						} else {
+							LoadTexture(":Data:Textures:World.png",&Mainmenuitems[7],0,0);
+						}
 						break;
 				}
 				break;

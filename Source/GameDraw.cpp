@@ -2396,7 +2396,7 @@ void Game::DrawMenu()
 			endy[5]=starty[5]+20;
 			
 			sprintf (menustring[6], "Campaign : %s", accountactive->getCurrentCampaign().c_str());
-			startx[6]=100;
+			startx[6]=200;
 			endx[6]=startx[6]+strlen(menustring[6])*10;
 			starty[6]=420;
 			endy[6]=starty[6]+20;
