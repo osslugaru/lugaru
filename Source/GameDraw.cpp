@@ -1997,10 +1997,12 @@ int Game::DrawGLScene(StereoSide side)
 }
 
 void Game::LoadCampaign() {
-	ifstream ipstream(ConvertFileName(":Data:Campaigns:main.txt"));
+	if(!accountactive)
+		return;
+	ifstream ipstream(ConvertFileName((":Data:Campaigns:"+accountactive->getCurrentCampaign()+".txt").c_str()));
 	ipstream.ignore(256,':');
 	ipstream >> campaignnumlevels;
-	for(int i=0;i<campaignnumlevels;i++){
+	for(int i=0;i<campaignnumlevels;i++) {
 		ipstream.ignore(256,':');
 		ipstream.ignore(256,':');
 		ipstream.ignore(256,' ');
@@ -2037,12 +2039,10 @@ void Game::LoadCampaign() {
 		levelorder[i+1]=campaignnextlevel[levelorder[i]][accountactive->getCampaignChoice(i)];
 		levelvisible[levelorder[i+1]]=1;
 	}
-	int whichlevelstart = (accountactive?accountactive->getCampaignChoicesMade():0)-1;
+	int whichlevelstart = accountactive->getCampaignChoicesMade()-1;
 	if(whichlevelstart<0){
-		if(accountactive) {
-			accountactive->setCampaignScore(0);
-			accountactive->resetFasttime();
-		}
+		accountactive->setCampaignScore(0);
+		accountactive->resetFasttime();
 		campaignchoicenum=1;
 		campaignchoicewhich[0]=0;
 	}
@@ -2333,6 +2333,7 @@ void Game::DrawMenu()
 			starty[9]=10;
 			endy[9]=starty[9]+20;
 		}
+		
 		if(mainmenu==5){			
 			nummenuitems=7+(accountactive?accountactive->getCampaignChoicesMade():0)+campaignchoicenum;
 
@@ -2617,7 +2618,7 @@ void Game::DrawMenu()
 	}
 
 	if(mainmenu==1||mainmenu==2){
-		nummenuitems=7;
+		nummenuitems=4;
 		startx[0]=150;
 		starty[0]=480-128;
 		endx[0]=150+256;
@@ -2647,45 +2648,16 @@ void Game::DrawMenu()
 			endy[3]=480-306;
 		}
 
-		/*startx[4]=150;
-		starty[4]=480-256;
-		endx[4]=150+256;
-		endy[4]=480;
-		*/
-		/*if(anim==0){
-			startx[4]=380;
-			starty[4]=480-140-256;
-			endx[4]=380+256;
-			endy[4]=480-140;
-
-			startx[5]=145;
-			starty[5]=480-138-256;
-			endx[5]=145+256;
-			endy[5]=480-138;
-
-			startx[6]=254;
-			starty[6]=480-144-256;
-			endx[6]=254+256;
-			endy[6]=480-144;
-		}*/
 	}
 
 	selected=-1;
 
-	if(mainmenu==1||mainmenu==2)
-		for(i=1;i<4;i++){
-			if((mousecoordh/screenwidth*640)>startx[i]&&(mousecoordh/screenwidth*640)<endx[i]&&480-(mousecoordv/screenheight*480)>starty[i]&&480-(mousecoordv/screenheight*480)<endy[i]) {
-				selected=i;
-			}
+	for(i=0;i<nummenuitems;i++) {
+		if((mousecoordh/screenwidth*640)>startx[i]&&(mousecoordh/screenwidth*640)<endx[i]&&480-(mousecoordv/screenheight*480)>starty[i]&&480-(mousecoordv/screenheight*480)<endy[i]) {
+			if(mainmenu!=5) selected=i;
+			else if( (i!=0) && (i!=6) ) selected=i;
 		}
-
-	if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==18)
-		for(i=0;i<nummenuitems;i++) {
-			if((mousecoordh/screenwidth*640)>startx[i]&&(mousecoordh/screenwidth*640)<endx[i]&&480-(mousecoordv/screenheight*480)>starty[i]&&480-(mousecoordv/screenheight*480)<endy[i]) {
-				if(mainmenu!=5) selected=i;
-				else if( (i!=0) && (i!=6) ) selected=i;
-			}
-		}
+	}
 
 	for(i=0;i<nummenuitems;i++){
 		if(selected==i) {
@@ -2701,13 +2673,6 @@ void Game::DrawMenu()
 		offsety[i]*=.06f;
 		offsetx[i]=0;
 		offsety[i]=0;
-		if(i>=4&&(mainmenu==1||mainmenu==2)){
-			selectedlong[i]=0;
-			offsetx[i]=(startx[i]+endx[i])/2-(640+190)/2;
-			offsety[i]=(starty[i]+endy[i])/2-(336+150)/2;
-			offsetx[i]*=.06f;
-			offsety[i]*=.06f;
-		}
 	}
 
 	if(mainmenu==1||mainmenu==2){
@@ -2800,8 +2765,6 @@ void Game::DrawMenu()
 	glEnable(GL_TEXTURE_2D);
 	for(j=0;j<nummenuitems;j++)
 	{
-		if(j>3 && (mainmenu==1||mainmenu==2))
-			continue;
 		//glDisable(GL_BLEND);
 		glEnable(GL_ALPHA_TEST);
 		glEnable(GL_BLEND);
@@ -2829,7 +2792,7 @@ void Game::DrawMenu()
 			glPopMatrix();
 			glEnable(GL_BLEND);
 			//glDisable(GL_ALPHA_TEST);
-			if(j<4)glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+			glBlendFunc(GL_SRC_ALPHA,GL_ONE);
 			for(i=0;i<10;i++)
 			{
 				if(1-((float)i)/10-(1-selectedlong[j])>0)
@@ -2898,6 +2861,11 @@ void Game::DrawMenu()
 			}
 			else
 			{
+                if(j==6) {
+					//glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA); // black background for the map
+					glBlendFunc(GL_SRC_ALPHA,GL_ONE); // no background
+				}
+
 				glClear(GL_DEPTH_BUFFER_BIT);
 				glEnable(GL_ALPHA_TEST);
 				glAlphaFunc(GL_GREATER, 0.001f);
@@ -2905,8 +2873,8 @@ void Game::DrawMenu()
 				glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
 				glDisable(GL_CULL_FACE);
 				glDisable(GL_LIGHTING);
-				if(j==6)glColor4f(1,1,1,1);
-				else glColor4f(1,0,0,1);
+				if(j==6) glColor4f(1,1,1,1);
+				else glColor4f(1,0,0,1);ss
 
 				glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
 				glPushMatrix();										// Store The Projection Matrix
@@ -2976,13 +2944,13 @@ void Game::DrawMenu()
 							}
 
 
-							if(j==6)glBindTexture( GL_TEXTURE_2D, Mainmenuitems[7]);
+							if(j==6) glBindTexture( GL_TEXTURE_2D, Mainmenuitems[7]);
 							else glBindTexture( GL_TEXTURE_2D, Mapcircletexture);
 							glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 							glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-							if(j-7<(accountactive?accountactive->getCampaignChoicesMade():0))glColor4f(0.5,0,0,1);
-							if(j-7>=(accountactive?accountactive->getCampaignChoicesMade():0))glColor4f(1,0,0,1);
-							if(j==6)glColor4f(1,1,1,1);
+							if(j-7<(accountactive?accountactive->getCampaignChoicesMade():0)) glColor4f(0.5,0,0,1);
+							if(j-7>=(accountactive?accountactive->getCampaignChoicesMade():0)) glColor4f(1,0,0,1);
+							if(j==6) glColor4f(1,1,1,1);
 							XYZ midpoint;
 							float itemsize;
 							itemsize=abs(startx[j]-endx[j])/2;

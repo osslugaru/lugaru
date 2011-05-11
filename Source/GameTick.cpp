@@ -5924,7 +5924,7 @@ void Game::Tick(){
     18 stereo configuration
     */
         
-	if(!console){
+	if(!console) {
         //campaign over?
 		if(mainmenu&&endgame==1)
             mainmenu=10;
@@ -5984,11 +5984,11 @@ void Game::Tick(){
 		}
 	}
 
-	if(mainmenu){
+	if(mainmenu) {
         MenuTick();
 	}
 
-	if(!mainmenu){
+	if(!mainmenu) {
 		if(hostile==1)hostiletime+=multiplier;
 		else hostiletime=0;
 		if(!winfreeze)leveltime+=multiplier;

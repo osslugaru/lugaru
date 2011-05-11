@@ -46,10 +46,12 @@ Account::Account(string n) : campaignProgress() {
 
 void Account::setCurrentCampaign(string name) {
 	currentCampaign = name;
-	campaignProgress[name].highscore = 0;
-	campaignProgress[name].fasttime = 0;
-	campaignProgress[name].score = 0;
-	campaignProgress[name].time = 0;
+	if(campaignProgress.find(name)==campaignProgress.end()) {
+		campaignProgress[name].highscore = 0;
+		campaignProgress[name].fasttime = 0;
+		campaignProgress[name].score = 0;
+		campaignProgress[name].time = 0;
+	}
 }
 
 Account* Account::add(string name) {
