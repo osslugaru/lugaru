@@ -1415,7 +1415,6 @@ void Game::Loadlevel(int which){
 }
 
 void Game::Loadlevel(const char *name){
-	cout << "loading level " << name << "…" << endl;
 	int templength;
 	float lamefloat;
 	static const char *pfx = ":Data:Maps:";
