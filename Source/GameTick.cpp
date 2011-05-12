@@ -1408,13 +1408,14 @@ void Game::Loadlevel(int which){
 	    Loadlevel("tutorial");
 	}else if(which >= 0 && which <= 15){
 	    char buf[32];
-	    snprintf(buf, 32, "map%d", which + 1);
+	    snprintf(buf, 32, "map%d", which + 1); // challenges
 	    Loadlevel(buf);
 	}else
 	    Loadlevel("mapsave");
 }
 
 void Game::Loadlevel(const char *name){
+	cout << "loading level " << name << "…" << endl;
 	int templength;
 	float lamefloat;
 	static const char *pfx = ":Data:Maps:";
