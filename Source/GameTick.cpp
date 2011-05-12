@@ -5740,15 +5740,10 @@ void Game::MenuTick(){
 								c=campaigns.begin();
 							accountactive->setCurrentCampaign(*c);
 						}
-						LoadCampaign();
 						if(Mainmenuitems[7])
-							glDeleteTextures(1,&Mainmenuitems[7]);
-						ifstream test(ConvertFileName((":Data:Textures:"+accountactive->getCurrentCampaign()+":World.png").c_str()));
-						if(test.good()) {
-							LoadTexture((":Data:Textures:"+accountactive->getCurrentCampaign()+":World.png").c_str(),&Mainmenuitems[7],0,0);
-						} else {
-							LoadTexture(":Data:Textures:World.png",&Mainmenuitems[7],0,0);
-						}
+							glDeleteTextures(1,&Mainmenuitems[7]); // we delete the world texture so load campaign will reload it
+						Mainmenuitems[7] = 0;
+						LoadCampaign();
 						break;
 				}
 				break;

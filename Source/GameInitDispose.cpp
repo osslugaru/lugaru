@@ -831,7 +831,7 @@ void Game::InitGame()
 	LoadTexture(":Data:Textures:Quit.png",&Mainmenuitems[3],0,0);
 	LoadTexture(":Data:Textures:Eyelid.png",&Mainmenuitems[4],0,1);
 	//LoadTexture(":Data:Textures:Eye.jpg",&Mainmenuitems[5],0,1);
-	LoadTexture(":Data:Textures:World.png",&Mainmenuitems[7],0,0);
+	//~ LoadTexture(":Data:Textures:World.png",&Mainmenuitems[7],0,0); // LoadCampaign will take care of that
 	texdetail=temptexdetail;
 
 	FadeLoadingScreen(95);

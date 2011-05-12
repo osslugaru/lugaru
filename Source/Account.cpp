@@ -77,7 +77,7 @@ Account* Account::destroy(Account* a) {
 			return NULL;
 		}
 	}
-	printf("Unexpected error : User %s not found %d\n",a->getName(),a);
+	printf("Unexpected error : User %s not found\n",a->getName());
 	return accounts.front();
 }
 
@@ -158,6 +158,16 @@ Account* Account::loadFile(string filename) {
 				}
 			}
 			
+			acc->currentCampaign = "";
+			int t;
+			char c;
+			funpackf(tfile, "Bi",  &t);
+			for(int i=0;i<t;i++)
+			{
+				funpackf(tfile, "Bb",  &c);
+				acc->currentCampaign.append(1,c);
+			}
+			
 			funpackf(tfile, "Bf", &(acc->points));
 			for(int i=0;i<50;i++)
 			{
@@ -224,6 +234,12 @@ void Account::saveFile(string filename, Account* accountactive) {
 				{
 					fpackf(tfile, "Bi", it->second.choices[j]);
 				}
+			}
+			
+			fpackf(tfile, "Bi", a->getCurrentCampaign().size());
+			for(j=0;j<a->getCurrentCampaign().size();j++)
+			{
+				fpackf(tfile, "Bb", a->getCurrentCampaign()[j]);
 			}
 			
 			fpackf(tfile, "Bf", a->points);
