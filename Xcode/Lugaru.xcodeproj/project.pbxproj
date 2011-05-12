@@ -18,22 +18,17 @@
 		565AD01411990D7600DF867A /* Objects.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565ACFF911990D7600DF867A /* Objects.cpp */; };
 		565AD01511990D7600DF867A /* openal_wrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565ACFFA11990D7600DF867A /* openal_wrapper.cpp */; };
 		565AD01611990D7600DF867A /* OpenGL_Windows.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565ACFFB11990D7600DF867A /* OpenGL_Windows.cpp */; };
-		565AD01711990D7600DF867A /* pack_private.c in Sources */ = {isa = PBXBuildFile; fileRef = 565ACFFC11990D7600DF867A /* pack_private.c */; };
 		565AD01811990D7600DF867A /* pack.c in Sources */ = {isa = PBXBuildFile; fileRef = 565ACFFD11990D7600DF867A /* pack.c */; };
 		565AD01911990D7600DF867A /* Person.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565ACFFE11990D7600DF867A /* Person.cpp */; };
 		565AD01A11990D7600DF867A /* private.c in Sources */ = {isa = PBXBuildFile; fileRef = 565ACFFF11990D7600DF867A /* private.c */; };
 		565AD01B11990D7600DF867A /* Quaternions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565AD00011990D7600DF867A /* Quaternions.cpp */; };
-		565AD01C11990D7600DF867A /* Random.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD00111990D7600DF867A /* Random.c */; };
 		565AD01D11990D7600DF867A /* Skeleton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565AD00211990D7600DF867A /* Skeleton.cpp */; };
 		565AD01E11990D7600DF867A /* Skybox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565AD00311990D7600DF867A /* Skybox.cpp */; };
-		565AD01F11990D7600DF867A /* Sprites.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565AD00411990D7600DF867A /* Sprites.cpp */; };
 		565AD02011990D7600DF867A /* Terrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565AD00511990D7600DF867A /* Terrain.cpp */; };
 		565AD02111990D7600DF867A /* Text.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565AD00611990D7600DF867A /* Text.cpp */; };
 		565AD02211990D7600DF867A /* TGALoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565AD00711990D7600DF867A /* TGALoader.cpp */; };
-		565AD02311990D7600DF867A /* unpack_private.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD00811990D7600DF867A /* unpack_private.c */; };
 		565AD02411990D7600DF867A /* unpack.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD00911990D7600DF867A /* unpack.c */; };
 		565AD02511990D7600DF867A /* Weapons.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565AD00A11990D7600DF867A /* Weapons.cpp */; };
-		565AD02611990D7600DF867A /* WinInput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565AD00B11990D7600DF867A /* WinInput.cpp */; };
 		565AD04A11990E2A00DF867A /* analysis.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD03611990E2A00DF867A /* analysis.c */; };
 		565AD04B11990E2A00DF867A /* bitrate.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD03711990E2A00DF867A /* bitrate.c */; };
 		565AD04C11990E2A00DF867A /* block.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD03811990E2A00DF867A /* block.c */; };
@@ -148,6 +143,15 @@
 		56A5C960119BB09D00822AF6 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = 56A5C95D119BB09D00822AF6 /* jaricom.c */; };
 		56A5C961119BB09D00822AF6 /* jcarith.c in Sources */ = {isa = PBXBuildFile; fileRef = 56A5C95E119BB09D00822AF6 /* jcarith.c */; };
 		56A5C962119BB09D00822AF6 /* jdarith.c in Sources */ = {isa = PBXBuildFile; fileRef = 56A5C95F119BB09D00822AF6 /* jdarith.c */; };
+		E1DC1D26137BD90700E6FD6F /* Sprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1DC1D24137BD90700E6FD6F /* Sprite.cpp */; };
+		E1DC1D32137BD9FE00E6FD6F /* Sounds.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1DC1D30137BD9FE00E6FD6F /* Sounds.cpp */; };
+		E1DC1D38137BDA1200E6FD6F /* Stereo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1DC1D36137BDA1200E6FD6F /* Stereo.cpp */; };
+		E1DC1D40137BDA7900E6FD6F /* Account.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1DC1D3E137BDA7900E6FD6F /* Account.cpp */; };
+		E1DC1D45137BDA9400E6FD6F /* Game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1DC1D43137BDA9400E6FD6F /* Game.cpp */; };
+		E1DC1D49137BDB1900E6FD6F /* Awards.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1DC1D48137BDB1900E6FD6F /* Awards.cpp */; };
+		E1DC1D4D137BDB3400E6FD6F /* Input.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1DC1D4C137BDB3400E6FD6F /* Input.cpp */; };
+		E1DC1D51137BDB4600E6FD6F /* Animation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1DC1D50137BDB4600E6FD6F /* Animation.cpp */; };
+		E1DC1D55137BDB5900E6FD6F /* Settings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1DC1D54137BDB5900E6FD6F /* Settings.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -162,22 +166,17 @@
 		565ACFF911990D7600DF867A /* Objects.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Objects.cpp; path = ../Source/Objects.cpp; sourceTree = SOURCE_ROOT; };
 		565ACFFA11990D7600DF867A /* openal_wrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = openal_wrapper.cpp; path = ../Source/openal_wrapper.cpp; sourceTree = SOURCE_ROOT; };
 		565ACFFB11990D7600DF867A /* OpenGL_Windows.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OpenGL_Windows.cpp; path = ../Source/OpenGL_Windows.cpp; sourceTree = SOURCE_ROOT; };
-		565ACFFC11990D7600DF867A /* pack_private.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pack_private.c; path = ../Source/pack_private.c; sourceTree = SOURCE_ROOT; };
 		565ACFFD11990D7600DF867A /* pack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pack.c; path = ../Source/pack.c; sourceTree = SOURCE_ROOT; };
 		565ACFFE11990D7600DF867A /* Person.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Person.cpp; path = ../Source/Person.cpp; sourceTree = SOURCE_ROOT; };
 		565ACFFF11990D7600DF867A /* private.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = private.c; path = ../Source/private.c; sourceTree = SOURCE_ROOT; };
 		565AD00011990D7600DF867A /* Quaternions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Quaternions.cpp; path = ../Source/Quaternions.cpp; sourceTree = SOURCE_ROOT; };
-		565AD00111990D7600DF867A /* Random.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Random.c; path = ../Source/Random.c; sourceTree = SOURCE_ROOT; };
 		565AD00211990D7600DF867A /* Skeleton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Skeleton.cpp; path = ../Source/Skeleton.cpp; sourceTree = SOURCE_ROOT; };
 		565AD00311990D7600DF867A /* Skybox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Skybox.cpp; path = ../Source/Skybox.cpp; sourceTree = SOURCE_ROOT; };
-		565AD00411990D7600DF867A /* Sprites.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Sprites.cpp; path = ../Source/Sprites.cpp; sourceTree = SOURCE_ROOT; };
 		565AD00511990D7600DF867A /* Terrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Terrain.cpp; path = ../Source/Terrain.cpp; sourceTree = SOURCE_ROOT; };
 		565AD00611990D7600DF867A /* Text.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Text.cpp; path = ../Source/Text.cpp; sourceTree = SOURCE_ROOT; };
 		565AD00711990D7600DF867A /* TGALoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TGALoader.cpp; path = ../Source/TGALoader.cpp; sourceTree = SOURCE_ROOT; };
-		565AD00811990D7600DF867A /* unpack_private.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = unpack_private.c; path = ../Source/unpack_private.c; sourceTree = SOURCE_ROOT; };
 		565AD00911990D7600DF867A /* unpack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = unpack.c; path = ../Source/unpack.c; sourceTree = SOURCE_ROOT; };
 		565AD00A11990D7600DF867A /* Weapons.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Weapons.cpp; path = ../Source/Weapons.cpp; sourceTree = SOURCE_ROOT; };
-		565AD00B11990D7600DF867A /* WinInput.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = WinInput.cpp; path = ../Source/WinInput.cpp; sourceTree = SOURCE_ROOT; };
 		565AD03611990E2A00DF867A /* analysis.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = analysis.c; path = ../Dependencies/libvorbis/lib/analysis.c; sourceTree = SOURCE_ROOT; };
 		565AD03711990E2A00DF867A /* bitrate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bitrate.c; path = ../Dependencies/libvorbis/lib/bitrate.c; sourceTree = SOURCE_ROOT; };
 		565AD03811990E2A00DF867A /* block.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = block.c; path = ../Dependencies/libvorbis/lib/block.c; sourceTree = SOURCE_ROOT; };
@@ -294,6 +293,15 @@
 		56A5C95F119BB09D00822AF6 /* jdarith.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jdarith.c; path = ../Dependencies/libjpeg/jdarith.c; sourceTree = SOURCE_ROOT; };
 		8D1107310486CEB800E47090 /* Lugaru-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Lugaru-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Lugaru.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lugaru.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E1DC1D24137BD90700E6FD6F /* Sprite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Sprite.cpp; path = ../Source/Sprite.cpp; sourceTree = SOURCE_ROOT; };
+		E1DC1D30137BD9FE00E6FD6F /* Sounds.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Sounds.cpp; path = ../Source/Sounds.cpp; sourceTree = SOURCE_ROOT; };
+		E1DC1D36137BDA1200E6FD6F /* Stereo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Stereo.cpp; path = ../Source/Stereo.cpp; sourceTree = SOURCE_ROOT; };
+		E1DC1D3E137BDA7900E6FD6F /* Account.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Account.cpp; path = ../Source/Account.cpp; sourceTree = SOURCE_ROOT; };
+		E1DC1D43137BDA9400E6FD6F /* Game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Game.cpp; path = ../Source/Game.cpp; sourceTree = SOURCE_ROOT; };
+		E1DC1D48137BDB1900E6FD6F /* Awards.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Awards.cpp; path = ../Source/Awards.cpp; sourceTree = SOURCE_ROOT; };
+		E1DC1D4C137BDB3400E6FD6F /* Input.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Input.cpp; path = ../Source/Input.cpp; sourceTree = SOURCE_ROOT; };
+		E1DC1D50137BDB4600E6FD6F /* Animation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Animation.cpp; path = ../Source/Animation.cpp; sourceTree = SOURCE_ROOT; };
+		E1DC1D54137BDB5900E6FD6F /* Settings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Settings.cpp; path = ../Source/Settings.cpp; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -538,6 +546,15 @@
 		56B7BBB311990A5900D910BE /* Lugaru Sources */ = {
 			isa = PBXGroup;
 			children = (
+				E1DC1D54137BDB5900E6FD6F /* Settings.cpp */,
+				E1DC1D50137BDB4600E6FD6F /* Animation.cpp */,
+				E1DC1D4C137BDB3400E6FD6F /* Input.cpp */,
+				E1DC1D48137BDB1900E6FD6F /* Awards.cpp */,
+				E1DC1D43137BDA9400E6FD6F /* Game.cpp */,
+				E1DC1D3E137BDA7900E6FD6F /* Account.cpp */,
+				E1DC1D36137BDA1200E6FD6F /* Stereo.cpp */,
+				E1DC1D30137BD9FE00E6FD6F /* Sounds.cpp */,
+				E1DC1D24137BD90700E6FD6F /* Sprite.cpp */,
 				565ACFF111990D7600DF867A /* Frustum.cpp */,
 				565ACFF211990D7600DF867A /* GameDraw.cpp */,
 				565ACFF311990D7600DF867A /* GameInitDispose.cpp */,
@@ -549,22 +566,17 @@
 				565ACFF911990D7600DF867A /* Objects.cpp */,
 				565ACFFA11990D7600DF867A /* openal_wrapper.cpp */,
 				565ACFFB11990D7600DF867A /* OpenGL_Windows.cpp */,
-				565ACFFC11990D7600DF867A /* pack_private.c */,
 				565ACFFD11990D7600DF867A /* pack.c */,
 				565ACFFE11990D7600DF867A /* Person.cpp */,
 				565ACFFF11990D7600DF867A /* private.c */,
 				565AD00011990D7600DF867A /* Quaternions.cpp */,
-				565AD00111990D7600DF867A /* Random.c */,
 				565AD00211990D7600DF867A /* Skeleton.cpp */,
 				565AD00311990D7600DF867A /* Skybox.cpp */,
-				565AD00411990D7600DF867A /* Sprites.cpp */,
 				565AD00511990D7600DF867A /* Terrain.cpp */,
 				565AD00611990D7600DF867A /* Text.cpp */,
 				565AD00711990D7600DF867A /* TGALoader.cpp */,
-				565AD00811990D7600DF867A /* unpack_private.c */,
 				565AD00911990D7600DF867A /* unpack.c */,
 				565AD00A11990D7600DF867A /* Weapons.cpp */,
-				565AD00B11990D7600DF867A /* WinInput.cpp */,
 			);
 			name = "Lugaru Sources";
 			sourceTree = "<group>";
@@ -601,7 +613,14 @@
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Lugaru" */;
 			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* Lugaru */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -655,22 +674,17 @@
 				565AD01411990D7600DF867A /* Objects.cpp in Sources */,
 				565AD01511990D7600DF867A /* openal_wrapper.cpp in Sources */,
 				565AD01611990D7600DF867A /* OpenGL_Windows.cpp in Sources */,
-				565AD01711990D7600DF867A /* pack_private.c in Sources */,
 				565AD01811990D7600DF867A /* pack.c in Sources */,
 				565AD01911990D7600DF867A /* Person.cpp in Sources */,
 				565AD01A11990D7600DF867A /* private.c in Sources */,
 				565AD01B11990D7600DF867A /* Quaternions.cpp in Sources */,
-				565AD01C11990D7600DF867A /* Random.c in Sources */,
 				565AD01D11990D7600DF867A /* Skeleton.cpp in Sources */,
 				565AD01E11990D7600DF867A /* Skybox.cpp in Sources */,
-				565AD01F11990D7600DF867A /* Sprites.cpp in Sources */,
 				565AD02011990D7600DF867A /* Terrain.cpp in Sources */,
 				565AD02111990D7600DF867A /* Text.cpp in Sources */,
 				565AD02211990D7600DF867A /* TGALoader.cpp in Sources */,
-				565AD02311990D7600DF867A /* unpack_private.c in Sources */,
 				565AD02411990D7600DF867A /* unpack.c in Sources */,
 				565AD02511990D7600DF867A /* Weapons.cpp in Sources */,
-				565AD02611990D7600DF867A /* WinInput.cpp in Sources */,
 				565AD04A11990E2A00DF867A /* analysis.c in Sources */,
 				565AD04B11990E2A00DF867A /* bitrate.c in Sources */,
 				565AD04C11990E2A00DF867A /* block.c in Sources */,
@@ -776,6 +790,15 @@
 				56A5C960119BB09D00822AF6 /* jaricom.c in Sources */,
 				56A5C961119BB09D00822AF6 /* jcarith.c in Sources */,
 				56A5C962119BB09D00822AF6 /* jdarith.c in Sources */,
+				E1DC1D26137BD90700E6FD6F /* Sprite.cpp in Sources */,
+				E1DC1D32137BD9FE00E6FD6F /* Sounds.cpp in Sources */,
+				E1DC1D38137BDA1200E6FD6F /* Stereo.cpp in Sources */,
+				E1DC1D40137BDA7900E6FD6F /* Account.cpp in Sources */,
+				E1DC1D45137BDA9400E6FD6F /* Game.cpp in Sources */,
+				E1DC1D49137BDB1900E6FD6F /* Awards.cpp in Sources */,
+				E1DC1D4D137BDB3400E6FD6F /* Input.cpp in Sources */,
+				E1DC1D51137BDB4600E6FD6F /* Animation.cpp in Sources */,
+				E1DC1D55137BDB5900E6FD6F /* Settings.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
