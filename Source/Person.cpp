@@ -296,7 +296,6 @@ void Person::DoBlood(float howmuch,int which){
 			bleeding=howmuch+(float)abs(Random()%100)/200-.25;
 			bleedxint=0;
 			bleedyint=0;
-			int texdetailint=realtexdetail;
 			if(creature==rabbittype)
 				while(bloodText[bleedxint*512*3+bleedyint*3+0]>which+4||bloodText[bleedxint*512*3+bleedyint*3+0]<which-4||bleedxint<10||bleedyint<10||bleedxint>500||bleedyint>500){
 					bleedxint=abs(Random()%512);
@@ -519,7 +518,7 @@ void Person::DoBloodBig(float howmuch,int which){
 }
 
 bool Person::DoBloodBigWhere(float howmuch,int which, XYZ where){
-	static int bleedxint,bleedyint,i,j;
+	static int i,j;
 	static XYZ bloodvel;
 	static XYZ startpoint,endpoint,colpoint,movepoint;
 	static float rotationpoint;
@@ -1670,10 +1669,9 @@ void	Person::DoAnimations(){
 								}
 							}
 
-							static bool willwork;
 							if(targetanimation==crouchremoveknifeanim&&animation[targetanimation].label[currentframe]==5){
 								for(i=0;i<weapons.size();i++){
-									bool willwork=1;
+									bool willwork=true;
 									if(weapons[i].owner!=-1)
 										if(player[weapons[i].owner].weaponstuck!=-1)
 											if(player[weapons[i].owner].weaponids[player[weapons[i].owner].weaponstuck]==i)
@@ -1681,20 +1679,19 @@ void	Person::DoAnimations(){
 									if((weapons[i].owner==-1)||(hasvictim&&weapons[i].owner==victim->id&&victim->skeleton.free))
 										if(willwork&&findDistancefastflat(&coords,&weapons[i].position)<3&&weaponactive==-1){
 											if(findDistancefast(&coords,&weapons[i].position)<1||hasvictim){
-												bool fleshstuck=0;
+												bool fleshstuck=false;
 												if(weapons[i].owner!=-1)
 													if(victim->weaponstuck!=-1){
 														if(victim->weaponids[victim->weaponstuck]==i){
-															fleshstuck=1;
-														}
-													}
-													if(!fleshstuck){
-														if(weapons[i].getType()!=staff){
-															emit_sound_at(knifedrawsound, coords, 128.);
+															fleshstuck=true;
 														}
 													}
 													if(fleshstuck){
 														emit_sound_at(fleshstabremovesound, coords, 128.);
+													} else {
+														if(weapons[i].getType()!=staff){
+															emit_sound_at(knifedrawsound, coords, 128.);
+														}
 													}
 													weaponactive=0;
 													if(weapons[i].owner!=-1){
@@ -3411,7 +3408,6 @@ void	Person::DoAnimations(){
 									  resume_stream(whooshsound);
 								}
 								if(targetanimation==sneakattackanim){
-									float ycoords=oldcoords.y;
 									currentanimation=getCrouch();
 									targetanimation=getCrouch();
 									targetframe=1;
@@ -3428,7 +3424,6 @@ void	Person::DoAnimations(){
 									lastfeint=0;
 								}
 								if(targetanimation==knifesneakattackanim||targetanimation==swordsneakattackanim){
-									float ycoords=oldcoords.y;
 									targetanimation=getIdle();
 									targetframe=0;
 									if(onterrain)coords.y=terrain.getHeight(coords.x,coords.z);
@@ -3748,7 +3743,6 @@ void	Person::DoStuff(){
 	static int howmany;
 	static int bloodsize;
 	static int startx,starty,endx,endy;
-	static int texdetailint;
 	static GLubyte color;
 	static XYZ bloodvel;
 
@@ -3960,7 +3954,6 @@ void	Person::DoStuff(){
 
 		startx=0;
 		starty=0;
-		texdetailint=realtexdetail;
 		startx=bleedy;//abs(Random()%(skeleton.skinsize-bloodsize-1));
 		starty=bleedx;//abs(Random()%(skeleton.skinsize-bloodsize-1));
 		endx=startx+bloodsize;
@@ -4466,15 +4459,6 @@ void	Person::DoStuff(){
 			velocity=0;
 		}
 
-		float gLoc[3];
-		float vel[3];
-		gLoc[0]=coords.x;
-		gLoc[1]=coords.y;
-		gLoc[2]=coords.z;
-		vel[0]=velocity.x;
-		vel[1]=velocity.y;
-		vel[2]=velocity.z;
-
 		if(findLength(&average)<10&&dead&&skeleton.free){
 			skeleton.longdead+=(2000-findLength(&average))*multiplier+multiplier;
 			if(skeleton.longdead>2000){
@@ -4614,21 +4598,7 @@ void	Person::DoStuff(){
 				if(terrainnormal.z<0)targetrotation=180-targetrotation;
 				rotation=targetrotation;
 
-				/*if(onterrain){
-				terrainnormal=terrain.getNormal(coords.x,coords.z);
 				targettilt2=asin(terrainnormal.y)*180/3.14*-1;
-				}
-				else*/
-
-				/*XYZ otherterrainnormal;
-				otherterrainnormal=terrain.getNormal(coords.x,coords.y);
-				otherterrainnormal.y=fast_sqrt(otherterrainnormal.x*otherterrainnormal.x+otherterrainnormal.z*otherterrainnormal.z)*-1;
-				if(abs(terrainnormal.y)<abs(otherterrainnormal.y))terrainnormal.y=fast_sqrt(otherterrainnormal.x*otherterrainnormal.x+otherterrainnormal.z*otherterrainnormal.z)*-1;
-				targettilt2=asin(otherterrainnormal.y)*180/3.14;
-				*/
-
-				targettilt2=asin(terrainnormal.y)*180/3.14*-1;
-
 
 
 				if(skeleton.forward.y<0){
@@ -4724,9 +4694,6 @@ void	Person::DoStuff(){
 		}
 		if(skeleton.freefall==0)freefall=0;
 
-		if(!isnormal(velocity.x)&&velocity.x){
-			int xy=1;
-		}
 	}
 
 	if(aitype!=passivetype||skeleton.free==1)
@@ -5449,7 +5416,7 @@ int Person::DrawSkeleton(){
 		static float M[16];
 		static int i,j,k;
 		static int weaponattachmuscle;
-		static int weaponrotatemuscle,weaponrotatemuscle2;
+		static int weaponrotatemuscle;
 		static XYZ weaponpoint;
 		static int start,endthing;
 		if((dead!=2||skeleton.free!=2)&&updatedelay<=0){

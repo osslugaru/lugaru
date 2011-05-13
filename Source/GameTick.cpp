@@ -6940,13 +6940,13 @@ void Game::Tick(){
                         player[i].drawtogglekeydown=0;
 
                     XYZ absflatfacing;
-                    if(i==0){
+                    if(i==0) {
                         absflatfacing=0;
                         absflatfacing.z=-1;
 
                         absflatfacing=DoRotation(absflatfacing,0,-rotation,0);
-                    }
-                    else absflatfacing=flatfacing;
+                    } else
+						absflatfacing=flatfacing;
 
                     if(indialogue!=-1){
                         player[i].forwardkeydown=0;

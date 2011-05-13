@@ -108,15 +108,12 @@ void Weapon::DoStuff() {
 	static float elasticity=.4;
 	static XYZ bounceness;
 	static float frictionness;
-	static float moveamount;
-	int closestline;
 	static float closestdistance;
 	static float distance;
 	static XYZ point[3];
 	static XYZ closestpoint;
 	static XYZ closestswordpoint;
 	static XYZ extramove;
-	static float proportion;
 	static float tempmult;
 	
 	if(owner!=-1){
@@ -218,7 +215,6 @@ void Weapon::DoStuff() {
 					footpoint=DoRotation((player[j].skeleton.joints[player[j].skeleton.jointlabels[abdomen]].position+player[j].skeleton.joints[player[j].skeleton.jointlabels[neck]].position)/2,0,player[j].rotation,0)*player[j].scale+player[j].coords;
 					if(owner==-1&&findDistancefastflat(&position,&player[j].coords)<1.5&&findDistancefast(&position,&player[j].coords)<4&&player[j].weaponstuck==-1&&!player[j].skeleton.free&&j!=oldowner){
 						if((player[j].aitype!=attacktypecutoff||abs(Random()%6)==0||(player[j].targetanimation!=backhandspringanim&&player[j].targetanimation!=rollanim&&player[j].targetanimation!=flipanim&&Random()%2==0))&&!missed){
-							bool caught=0;
 							if((player[j].creature==wolftype&&Random()%3!=0&&player[j].weaponactive==-1&&(player[j].isIdle()||player[j].isRun()||player[j].targetanimation==walkanim))||(player[j].creature==rabbittype&&Random()%2==0&&player[j].aitype==attacktypecutoff&&player[j].weaponactive==-1)){
 								emit_sound_at(knifedrawsound, player[j].coords, 128.);
 
@@ -310,7 +306,6 @@ void Weapon::DoStuff() {
 						glPopMatrix();
 						position-=tippoint*.15;
 						XYZ temppoint1,temppoint2,tempforward;
-						float distance;
 
 						rotation3=0;
 						smallrotation=90;
@@ -566,19 +561,16 @@ void Weapon::DoStuff() {
 									if(distance<closestdistance||closestdistance==-1){
 										closestpoint=colpoint;
 										closestdistance=distance;
-										closestline=0;
 									}
 									if(DistancePointLine(&closestswordpoint, &point[1], &point[2], &distance,&colpoint ))
 										if(distance<closestdistance||closestdistance==-1){
 											closestpoint=colpoint;
 											closestdistance=distance;
-											closestline=1;
 										}
 										if(DistancePointLine(&closestswordpoint, &point[2], &point[0], &distance,&colpoint ))
 											if(distance<closestdistance||closestdistance==-1){
 												closestpoint=colpoint;
 												closestdistance=distance;
-												closestline=2;
 											}
 											if(closestdistance!=-1&&isnormal(closestdistance)){
 												if(DistancePointLine(&closestpoint, &position, &tippoint, &distance,&colpoint )){
@@ -865,7 +857,7 @@ void Weapons::DoStuff() {
 }
 
 void Weapon::Draw() {
-	static int i,j;
+	static int j;
 	static XYZ terrainlight;
 	static GLfloat M[16];
 	static bool draw;
