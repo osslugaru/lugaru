@@ -303,7 +303,7 @@ static void ch_save(Game *game, const char *args){
             player[0].rotation, player[0].targetrotation, player[0].num_weapons);
     if(player[0].num_weapons>0&&player[0].num_weapons<5)
         for(int j=0;j<player[0].num_weapons;j++)
-          fpackf(tfile, "Bi", weapons.type[player[0].weaponids[j]]);
+          fpackf(tfile, "Bi", weapons[player[0].weaponids[j]].getType());
 
     fpackf(tfile, "Bf Bf Bf", player[0].armorhead, player[0].armorhigh, player[0].armorlow);
     fpackf(tfile, "Bf Bf Bf", player[0].protectionhead, player[0].protectionhigh, player[0].protectionlow);
@@ -390,7 +390,7 @@ static void ch_save(Game *game, const char *args){
                     player[j].num_weapons, player[j].howactive, player[j].scale, player[j].immobile, player[j].rotation);
             if(player[j].num_weapons<5)
                 for(int k=0;k<player[j].num_weapons;k++)
-                    fpackf(tfile, "Bi", weapons.type[player[j].weaponids[k]]);
+                    fpackf(tfile, "Bi", weapons[player[j].weaponids[k]].getType());
             if(player[j].numwaypoints<30){
                 fpackf(tfile, "Bi", player[j].numwaypoints);
                 for(int k=0;k<player[j].numwaypoints;k++){
@@ -1549,7 +1549,7 @@ void Game::Loadlevel(const char *name){
                 LoadingScreen();
 		}
 
-		weapons.numweapons=0;
+		weapons.clear();
 
 		funpackf(tfile, "Bi", &mapvers);
 		if(mapvers>=15)
@@ -1592,10 +1592,10 @@ void Game::Loadlevel(const char *name){
 		player[0].originalcoords=player[0].coords;
 		if(player[0].num_weapons>0&&player[0].num_weapons<5)
 			for(int j=0;j<player[0].num_weapons;j++){
-				player[0].weaponids[j]=weapons.numweapons;
-				funpackf(tfile, "Bi", &weapons.type[weapons.numweapons]);
-				weapons.owner[weapons.numweapons]=0;
-				weapons.numweapons++;
+				player[0].weaponids[j]=weapons.size();
+				int type;
+				funpackf(tfile, "Bi", &type);
+				weapons.push_back(Weapon(type,0));
 			}
 
 		if(visibleloading)
@@ -1765,10 +1765,10 @@ void Game::Loadlevel(const char *name){
 				if(!removeanother){
 					if(player[i-howmanyremoved].num_weapons>0&&player[i-howmanyremoved].num_weapons<5){
 						for(int j=0;j<player[i-howmanyremoved].num_weapons;j++){
-							player[i-howmanyremoved].weaponids[j]=weapons.numweapons;
-							funpackf(tfile, "Bi", &weapons.type[player[i-howmanyremoved].weaponids[j]]);
-							weapons.owner[player[i-howmanyremoved].weaponids[j]]=i;
-							weapons.numweapons++;
+							player[i-howmanyremoved].weaponids[j]=weapons.size();
+							int type;
+							funpackf(tfile, "Bi", &type);
+							weapons.push_back(Weapon(type,i));
 						}
 					}
 					funpackf(tfile, "Bi", &player[i-howmanyremoved].numwaypoints);
@@ -2063,31 +2063,8 @@ void Game::Loadlevel(const char *name){
 
 		if(visibleloading)
             LoadingScreen();
-		for(int i=0;i<weapons.numweapons;i++){
-			weapons.bloody[i]=0;
-			weapons.blooddrip[i]=0;
-			weapons.blooddripdelay[i]=0;
-			weapons.onfire[i]=0;
-			weapons.flamedelay[i]=0;
-			weapons.damage[i]=0;
-			if(weapons.type[i]==sword){
-				weapons.mass[i]=1.5;
-				weapons.tipmass[i]=1;
-				weapons.length[i]=.8;
-			}
-			if(weapons.type[i]==staff){
-				weapons.mass[i]=2;
-				weapons.tipmass[i]=1;
-				weapons.length[i]=1.5;
-			}
-			if(weapons.type[i]==knife){
-				weapons.mass[i]=1;
-				weapons.tipmass[i]=1.2;
-				weapons.length[i]=.25;
-			}
-			weapons.position[i]=-1000;
-			weapons.tippoint[i]=-1000;
-		}
+		//~ for(int i=0;i<weapons.size();i++){
+		//~ }
 		
 		LOG("Starting background music...");
 
@@ -2262,25 +2239,19 @@ void Game::doTutorial(){
                 temp2.y=75;
                 temp2.z=447;
 
+				Weapon w(knife,-1);
+                w.position=(temp+temp2)/2;
+                w.tippoint=(temp+temp2)/2;
 
-                weapons.owner[weapons.numweapons]=-1;
-                weapons.type[weapons.numweapons]=knife;
-                weapons.damage[weapons.numweapons]=0;
-                weapons.mass[weapons.numweapons]=1;
-                weapons.tipmass[weapons.numweapons]=1.2;
-                weapons.length[weapons.numweapons]=.25;
-                weapons.position[weapons.numweapons]=(temp+temp2)/2;
-                weapons.tippoint[weapons.numweapons]=(temp+temp2)/2;
+                w.velocity=0.1;
+                w.tipvelocity=0.1;
+                w.missed=1;
+                w.hitsomething=0;
+                w.freetime=0;
+                w.firstfree=1;
+                w.physics=1;
 
-                weapons.velocity[weapons.numweapons]=0.1;
-                weapons.tipvelocity[weapons.numweapons]=0.1;
-                weapons.missed[weapons.numweapons]=1;
-                weapons.hitsomething[weapons.numweapons]=0;
-                weapons.freetime[weapons.numweapons]=0;
-                weapons.firstfree[weapons.numweapons]=1;
-                weapons.physics[weapons.numweapons]=1;
-
-                weapons.numweapons++;
+                weapons.push_back(w);
             }
             break; case 40:
                 tutorialmaxtime=300;
@@ -2291,7 +2262,7 @@ void Game::doTutorial(){
             break; case 43:
                 tutorialmaxtime=300;
             break; case 44:
-                weapons.owner[0]=1;
+                weapons[0].owner=1;
                 player[0].weaponactive=-1;
                 player[0].num_weapons=0;
                 player[1].weaponactive=0;
@@ -2304,7 +2275,7 @@ void Game::doTutorial(){
 
                 tutorialmaxtime=300;
             break; case 45:
-                weapons.owner[0]=1;
+                weapons[0].owner=1;
                 player[0].weaponactive=-1;
                 player[0].num_weapons=0;
                 player[1].weaponactive=0;
@@ -2313,14 +2284,14 @@ void Game::doTutorial(){
 
                 tutorialmaxtime=300;
             break; case 46:
-                weapons.owner[0]=1;
+                weapons[0].owner=1;
                 player[0].weaponactive=-1;
                 player[0].num_weapons=0;
                 player[1].weaponactive=0;
                 player[1].num_weapons=1;
                 player[1].weaponids[0]=0;
 
-                weapons.type[0]=sword;
+                weapons[0].setType(sword);
 
                 tutorialmaxtime=300;
             break; case 47: {
@@ -2335,25 +2306,22 @@ void Game::doTutorial(){
                 temp2.y=75;
                 temp2.z=447;
 
-                weapons.owner[weapons.numweapons]=-1;
-                weapons.type[weapons.numweapons]=sword;
-                weapons.damage[weapons.numweapons]=0;
-                weapons.mass[weapons.numweapons]=1;
-                weapons.tipmass[weapons.numweapons]=1.2;
-                weapons.length[weapons.numweapons]=.25;
-                weapons.position[weapons.numweapons]=(temp+temp2)/2;
-                weapons.tippoint[weapons.numweapons]=(temp+temp2)/2;
+				Weapon w(sword,-1);
+                w.position=(temp+temp2)/2;
+                w.tippoint=(temp+temp2)/2;
 
-                weapons.velocity[weapons.numweapons]=0.1;
-                weapons.tipvelocity[weapons.numweapons]=0.1;
-                weapons.missed[weapons.numweapons]=1;
-                weapons.hitsomething[weapons.numweapons]=0;
-                weapons.freetime[weapons.numweapons]=0;
-                weapons.firstfree[weapons.numweapons]=1;
-                weapons.physics[weapons.numweapons]=1;
+                w.velocity=0.1;
+                w.tipvelocity=0.1;
+                w.missed=1;
+                w.hitsomething=0;
+                w.freetime=0;
+                w.firstfree=1;
+                w.physics=1;
+                
+                weapons.push_back(w);
 
-                weapons.owner[0]=1;
-                weapons.owner[1]=0;
+                weapons[0].owner=1;
+                weapons[1].owner=0;
                 player[0].weaponactive=0;
                 player[0].num_weapons=1;
                 player[0].weaponids[0]=1;
@@ -2361,7 +2329,6 @@ void Game::doTutorial(){
                 player[1].num_weapons=1;
                 player[1].weaponids[0]=0;
 
-                weapons.numweapons++;
             }
             break; case 48:
                 canattack=0;
@@ -2370,8 +2337,8 @@ void Game::doTutorial(){
 
                 tutorialmaxtime=15;
 
-                weapons.owner[0]=1;
-                weapons.owner[1]=0;
+                weapons[0].owner=1;
+                weapons[1].owner=0;
                 player[0].weaponactive=0;
                 player[0].num_weapons=1;
                 player[0].weaponids[0]=1;
@@ -2379,10 +2346,12 @@ void Game::doTutorial(){
                 player[1].num_weapons=1;
                 player[1].weaponids[0]=0;
 
-                if(player[0].weaponactive!=-1)weapons.type[player[0].weaponids[player[0].weaponactive]]=staff;
-                else weapons.type[0]=staff;
+                if(player[0].weaponactive!=-1)
+					weapons[player[0].weaponids[player[0].weaponactive]].setType(staff);
+                else 
+					weapons[0].setType(staff);
 
-                weapons.numweapons++;
+                //~ weapons.size()++;
             break; case 49:
                 canattack=0;
                 cananger=0;
@@ -2390,20 +2359,20 @@ void Game::doTutorial(){
 
                 tutorialmaxtime=200;
 
-                weapons.position[1]=1000;
-                weapons.tippoint[1]=1000;
+                weapons[1].position=1000;
+                weapons[1].tippoint=1000;
 
-                weapons.numweapons=1;
-                weapons.owner[0]=0;
+                //~ weapons.size()=1;
+                weapons[0].setType(knife);
+
+                //~ weapons.size()++;
+                weapons[0].owner=0;
                 player[1].weaponactive=-1;
                 player[1].num_weapons=0;
                 player[0].weaponactive=0;
                 player[0].num_weapons=1;
                 player[0].weaponids[0]=0;
 
-                weapons.type[0]=knife;
-
-                weapons.numweapons++;
             break; case 50: {
                 tutorialmaxtime=8;
 
@@ -2424,16 +2393,7 @@ void Game::doTutorial(){
                 player[1].weaponstuck=-1;
                 player[1].weaponactive=-1;
 
-                weapons.numweapons=0;
-
-                weapons.owner[0]=-1;
-                weapons.velocity[0]=0.1;
-                weapons.tipvelocity[0]=-0.1;
-                weapons.missed[0]=1;
-                weapons.hitsomething[0]=0;
-                weapons.freetime[0]=0;
-                weapons.firstfree[0]=1;
-                weapons.physics[0]=1;
+                weapons.clear();
             }
             break; case 51:
                 tutorialmaxtime=80000;
@@ -2534,25 +2494,12 @@ void Game::doDebugKeys(){
 
         if(Input::isKeyPressed(SDLK_x)&&!Input::isKeyDown(SDLK_LSHIFT)){
             if(player[0].num_weapons>0){
-                if(weapons.type[player[0].weaponids[0]]==sword)weapons.type[player[0].weaponids[0]]=staff;
-                else if(weapons.type[player[0].weaponids[0]]==staff)weapons.type[player[0].weaponids[0]]=knife;
-                else weapons.type[player[0].weaponids[0]]=sword;
-                if(weapons.type[player[0].weaponids[0]]==sword){
-                    weapons.mass[player[0].weaponids[0]]=1.5;
-                    weapons.tipmass[player[0].weaponids[0]]=1;
-                    weapons.length[player[0].weaponids[0]]=.8;
-                }
-                if(weapons.type[player[0].weaponids[0]]==staff){
-                    weapons.mass[player[0].weaponids[0]]=2;
-                    weapons.tipmass[player[0].weaponids[0]]=1;
-                    weapons.length[player[0].weaponids[0]]=1.5;
-                }
-
-                if(weapons.type[player[0].weaponids[0]]==knife){
-                    weapons.mass[player[0].weaponids[0]]=1;
-                    weapons.tipmass[player[0].weaponids[0]]=1.2;
-                    weapons.length[player[0].weaponids[0]]=.25;
-                }
+                if(weapons[player[0].weaponids[0]].getType()==sword)
+					weapons[player[0].weaponids[0]].setType(staff);
+                else if(weapons[player[0].weaponids[0]].getType()==staff)
+					weapons[player[0].weaponids[0]].setType(knife);
+                else
+					weapons[player[0].weaponids[0]].setType(sword);
             }
         }
 
@@ -2570,44 +2517,19 @@ void Game::doDebugKeys(){
                 }
             if(closest!=-1){
                 if(player[closest].num_weapons){
-                    if(weapons.type[player[closest].weaponids[0]]==sword)
-                        weapons.type[player[closest].weaponids[0]]=staff;
-                    else if(weapons.type[player[closest].weaponids[0]]==staff)
-                        weapons.type[player[closest].weaponids[0]]=knife;
-                    else weapons.type[player[closest].weaponids[0]]=sword;
-                    if(weapons.type[player[closest].weaponids[0]]==sword){
-                        weapons.mass[player[closest].weaponids[0]]=1.5;
-                        weapons.tipmass[player[closest].weaponids[0]]=1;
-                        weapons.length[player[closest].weaponids[0]]=.8;
-                    }
-                    if(weapons.type[player[0].weaponids[0]]==staff){
-                        weapons.mass[player[0].weaponids[0]]=2;
-                        weapons.tipmass[player[0].weaponids[0]]=1;
-                        weapons.length[player[0].weaponids[0]]=1.5;
-                    }
-                    if(weapons.type[player[closest].weaponids[0]]==knife){
-                        weapons.mass[player[closest].weaponids[0]]=1;
-                        weapons.tipmass[player[closest].weaponids[0]]=1.2;
-                        weapons.length[player[closest].weaponids[0]]=.25;
-                    }
+                    if(weapons[player[closest].weaponids[0]].getType()==sword)
+                        weapons[player[closest].weaponids[0]].setType(staff);
+                    else if(weapons[player[closest].weaponids[0]].getType()==staff)
+                        weapons[player[closest].weaponids[0]].setType(knife);
+                    else
+						weapons[player[closest].weaponids[0]].setType(sword);
                 }
                 if(!player[closest].num_weapons){
-                    player[closest].weaponids[0]=weapons.numweapons;
-                    weapons.owner[weapons.numweapons]=closest;
-                    weapons.type[weapons.numweapons]=knife;
-                    weapons.damage[weapons.numweapons]=0;
-                    weapons.numweapons++;
+                    player[closest].weaponids[0]=weapons.size();
+                    
+                    weapons.push_back(Weapon(knife,closest));
+                    
                     player[closest].num_weapons=1;
-                    if(weapons.type[player[closest].weaponids[0]]==sword){
-                        weapons.mass[player[closest].weaponids[0]]=1.5;
-                        weapons.tipmass[player[closest].weaponids[0]]=1;
-                        weapons.length[player[closest].weaponids[0]]=.8;
-                    }
-                    if(weapons.type[player[closest].weaponids[0]]==knife){
-                        weapons.mass[player[closest].weaponids[0]]=1;
-                        weapons.tipmass[player[closest].weaponids[0]]=1.2;
-                        weapons.length[player[closest].weaponids[0]]=.25;
-                    }
                 }
             }
         }
@@ -3860,7 +3782,7 @@ void Game::doAttacks(){
                          player[k].targetanimation==walkanim||
                          player[k].targetanimation==sneakanim||
                          player[k].isCrouch())){
-                    const int attackweapon=player[k].weaponactive==-1?0:weapons.type[player[k].weaponids[player[k].weaponactive]];
+                    const int attackweapon=player[k].weaponactive==-1?0:weapons[player[k].weaponids[player[k].weaponactive]].getType();
                     //normal attacks (?)
                     player[k].hasvictim=0;
                     if(numplayers>1)
@@ -4794,10 +4716,10 @@ void Game::doAI(int i){
                         if(j==0||(player[j].dead&&player[j].bloodloss>0)){
                             float smelldistance=50;
                             if(j==0&&player[j].num_weapons>0){
-                                if(weapons.bloody[player[j].weaponids[0]])
+                                if(weapons[player[j].weaponids[0]].bloody)
                                     smelldistance=100;
                                 if(player[j].num_weapons==2)
-                                    if(weapons.bloody[player[j].weaponids[1]])
+                                    if(weapons[player[j].weaponids[1]].bloody)
                                         smelldistance=100;
                             }
                             if(j!=0)
@@ -5100,9 +5022,9 @@ void Game::doAI(int i){
                 if(player[i].ally<0){
                     int closest=-1;
                     float closestdist=-1;
-                    for(int k=0;k<weapons.numweapons;k++)
-                        if(weapons.owner[k]==-1){
-                            float distance=findDistancefast(&player[i].coords,&weapons.position[k]);
+                    for(int k=0;k<weapons.size();k++)
+                        if(weapons[k].owner==-1){
+                            float distance=findDistancefast(&player[i].coords,&weapons[k].position);
                             if(closestdist==-1||distance<closestdist){
                                 closestdist=distance;
                                 closest=k;
@@ -5124,13 +5046,13 @@ void Game::doAI(int i){
                     }
                 if(!player[0].dead)
                     if(player[i].ally>=0){
-                        if(weapons.owner[player[i].ally]!=-1||
-                                findDistancefast(&player[i].coords,&weapons.position[player[i].ally])>16){
+                        if(weapons[player[i].ally].owner!=-1||
+                                findDistancefast(&player[i].coords,&weapons[player[i].ally].position)>16){
                             player[i].aitype=attacktypecutoff;
                             player[i].lastseentime=1;
                         }
                         //TODO: factor these out as moveToward()
-                        player[i].targetrotation=roughDirectionTo(player[i].coords,weapons.position[player[i].ally]);
+                        player[i].targetrotation=roughDirectionTo(player[i].coords,weapons[player[i].ally].position);
                         player[i].lookrotation=player[i].targetrotation;
                         player[i].aiupdatedelay=.05;
                         player[i].forwardkeydown=1;
@@ -5185,7 +5107,7 @@ void Game::doAI(int i){
                     if(player[i].isIdle())
                         player[i].crouchkeydown=1;
                     if(player[0].targetanimation!=rabbitkickanim&&player[0].weaponactive!=-1){
-                        if(weapons.type[player[0].weaponids[0]]==knife){
+                        if(weapons[player[0].weaponids[0]].getType()==knife){
                             if(player[i].isIdle()||player[i].isCrouch()||player[i].isRun()||player[i].isFlip()){
                                 if(abs(Random()%2==0))
                                     setAnimation(i,backhandspringanim);
@@ -5212,14 +5134,14 @@ void Game::doAI(int i){
             }
             //go for weapon on the ground
             if(player[i].wentforweapon<3)
-                for(int k=0;k<weapons.numweapons;k++)
+                for(int k=0;k<weapons.size();k++)
                     if(player[i].creature!=wolftype)
                         if(player[i].num_weapons==0&&
-                                weapons.owner[k]==-1&&
-                                weapons.velocity[i].x==0&&
-                                weapons.velocity[i].z==0&&
-                                weapons.velocity[i].y==0){
-                            if(findDistancefast(&player[i].coords,&weapons.position[k])<16){
+                                weapons[k].owner==-1&&
+                                weapons[i].velocity.x==0&&
+                                weapons[i].velocity.z==0&&
+                                weapons[i].velocity.y==0){
+                            if(findDistancefast(&player[i].coords,&weapons[k].position)<16){
                                 player[i].wentforweapon++;
                                 player[i].lastchecktime=6;
                                 player[i].aitype=getweapontype;
@@ -6706,13 +6628,13 @@ void Game::Tick(){
                                  player[i].isFlip()||
                                  player[i].isFlip()||
                                  player[i].aitype!=playercontrolled)){
-                            for(int j=0;j<weapons.numweapons;j++){
-                                if((weapons.velocity[j].x==0&&weapons.velocity[j].y==0&&weapons.velocity[j].z==0||
+                            for(int j=0;j<weapons.size();j++){
+                                if((weapons[j].velocity.x==0&&weapons[j].velocity.y==0&&weapons[j].velocity.z==0||
                                             player[i].aitype==playercontrolled)&&
-                                        weapons.owner[j]==-1&&
+                                        weapons[j].owner==-1&&
                                         player[i].weaponactive==-1)
-                                    if(findDistancefastflat(&player[i].coords,&weapons.position[j])<2){
-                                        if(findDistancefast(&player[i].coords,&weapons.position[j])<2){
+                                    if(findDistancefastflat(&player[i].coords,&weapons[j].position)<2){
+                                        if(findDistancefast(&player[i].coords,&weapons[j].position)<2){
                                             if(player[i].isCrouch()||
                                                     player[i].targetanimation==sneakanim||
                                                     player[i].isRun()||
@@ -6720,25 +6642,25 @@ void Game::Tick(){
                                                     player[i].aitype!=playercontrolled){
                                                 player[i].throwtogglekeydown=1;
                                                 setAnimation(i,crouchremoveknifeanim);
-                                                player[i].targetrotation=roughDirectionTo(player[i].coords,weapons.position[j]);
+                                                player[i].targetrotation=roughDirectionTo(player[i].coords,weapons[j].position);
                                                 player[i].hasvictim=0;
                                             }
                                             if(player[i].targetanimation==rollanim||player[i].targetanimation==backhandspringanim){
                                                 player[i].throwtogglekeydown=1;
                                                 player[i].hasvictim=0;
 
-                                                if((weapons.velocity[j].x==0&&weapons.velocity[j].y==0&&weapons.velocity[j].z==0||
+                                                if((weapons[j].velocity.x==0&&weapons[j].velocity.y==0&&weapons[j].velocity.z==0||
                                                                 player[i].aitype==playercontrolled)&&
-                                                            weapons.owner[j]==-1||
+                                                            weapons[j].owner==-1||
                                                         player[i].victim&&
-                                                        weapons.owner[j]==player[i].victim->id)
-                                                    if(findDistancefastflat(&player[i].coords,&weapons.position[j])<2&&player[i].weaponactive==-1)
-                                                        if(findDistancefast(&player[i].coords,&weapons.position[j])<1||player[i].victim){
-                                                            if(weapons.type[j]!=staff)
+                                                        weapons[j].owner==player[i].victim->id)
+                                                    if(findDistancefastflat(&player[i].coords,&weapons[j].position)<2&&player[i].weaponactive==-1)
+                                                        if(findDistancefast(&player[i].coords,&weapons[j].position)<1||player[i].victim){
+                                                            if(weapons[j].getType()!=staff)
                                                                 emit_sound_at(knifedrawsound, player[i].coords, 128.);
 
                                                             player[i].weaponactive=0;
-                                                            weapons.owner[j]=player[i].id;
+                                                            weapons[j].owner=player[i].id;
                                                             if(player[i].num_weapons>0)
                                                                 player[i].weaponids[player[i].num_weapons]=player[i].weaponids[0];
                                                             player[i].num_weapons++;
@@ -6748,31 +6670,31 @@ void Game::Tick(){
                                         }else if((player[i].isIdle()||
                                                     player[i].isFlip()||
                                                     player[i].aitype!=playercontrolled)&&
-                                                findDistancefast(&player[i].coords,&weapons.position[j])<5&&
-                                                player[i].coords.y<weapons.position[j].y){
+                                                findDistancefast(&player[i].coords,&weapons[j].position)<5&&
+                                                player[i].coords.y<weapons[j].position.y){
                                             if(!player[i].isFlip()){
                                                 player[i].throwtogglekeydown=1;
                                                 setAnimation(i,removeknifeanim);
-                                                player[i].targetrotation=roughDirectionTo(player[i].coords,weapons.position[j]);
+                                                player[i].targetrotation=roughDirectionTo(player[i].coords,weapons[j].position);
                                             }
                                             if(player[i].isFlip()){
                                                 player[i].throwtogglekeydown=1;
                                                 player[i].hasvictim=0;
 
-                                                for(int k=0;k<weapons.numweapons;k++){
+                                                for(int k=0;k<weapons.size();k++){
                                                     if(player[i].weaponactive==-1)
-                                                        if((weapons.velocity[k].x==0&&weapons.velocity[k].y==0&&weapons.velocity[k].z==0||
+                                                        if((weapons[k].velocity.x==0&&weapons[k].velocity.y==0&&weapons[k].velocity.z==0||
                                                                         player[i].aitype==playercontrolled)&&
-                                                                    weapons.owner[k]==-1||
+                                                                    weapons[k].owner==-1||
                                                                 player[i].victim&&
-                                                                 weapons.owner[k]==player[i].victim->id)
-                                                            if(findDistancefastflat(&player[i].coords,&weapons.position[k])<3&&
+                                                                 weapons[k].owner==player[i].victim->id)
+                                                            if(findDistancefastflat(&player[i].coords,&weapons[k].position)<3&&
                                                                     player[i].weaponactive==-1){
-                                                                if(weapons.type[k]!=staff)
+                                                                if(weapons[k].getType()!=staff)
                                                                     emit_sound_at(knifedrawsound, player[i].coords, 128.);
 
                                                                 player[i].weaponactive=0;
-                                                                weapons.owner[k]=player[i].id;
+                                                                weapons[k].owner=player[i].id;
                                                                 if(player[i].num_weapons>0)
                                                                     player[i].weaponids[player[i].num_weapons]=player[i].weaponids[0];
                                                                 player[i].num_weapons++;
@@ -6822,14 +6744,14 @@ void Game::Tick(){
                                                                 }
                                                             }
                                                             if(!fleshstuck){
-                                                                if(weapons.type[k]!=staff)
+                                                                if(weapons[k].getType()!=staff)
                                                                   emit_sound_at(knifedrawsound, player[i].coords, 128.);
                                                             }
                                                             if(fleshstuck)
                                                               emit_sound_at(fleshstabremovesound, player[i].coords, 128.);
 
                                                             player[i].weaponactive=0;
-                                                            if(weapons.owner[k]!=-1){
+                                                            if(weapons[k].owner!=-1){
                                                                 if(player[i].victim->num_weapons==1)player[i].victim->num_weapons=0;
                                                                 else player[i].victim->num_weapons=1;
 
@@ -6848,12 +6770,12 @@ void Game::Tick(){
                                                                 Normalise(&relative);
                                                                 XYZ footvel,footpoint;
                                                                 footvel=0;
-                                                                footpoint=weapons.position[k];
+                                                                footpoint=weapons[k].position;
                                                                 if(player[i].victim->weaponstuck!=-1){
                                                                     if(player[i].victim->weaponids[player[i].victim->weaponstuck]==k){
                                                                         if(bloodtoggle)Sprite::MakeSprite(cloudimpactsprite, footpoint,footvel, 1,0,0, .8, .3);
-                                                                        weapons.bloody[k]=2;
-                                                                        weapons.blooddrip[k]=5;
+                                                                        weapons[k].bloody=2;
+                                                                        weapons[k].blooddrip=5;
                                                                         player[i].victim->weaponstuck=-1;
                                                                         player[i].victim->bloodloss+=2000;
                                                                         player[i].victim->DoDamage(2000);
@@ -6872,7 +6794,7 @@ void Game::Tick(){
                                                                 playerJoint(player[i].victim,rightshoulder).velocity+=relative*6;
                                                                 playerJoint(player[i].victim,leftshoulder).velocity+=relative*6;
                                                             }
-                                                            weapons.owner[k]=i;
+                                                            weapons[k].owner=i;
                                                             if(player[i].num_weapons>0){
                                                                 player[i].weaponids[player[i].num_weapons]=player[i].weaponids[0];
                                                             }
@@ -6885,7 +6807,7 @@ void Game::Tick(){
                             }
                         }
                         if(player[i].weaponactive!=-1&&player[i].aitype==playercontrolled){
-                            if(weapons.type[player[i].weaponids[0]]==knife){
+                            if(weapons[player[i].weaponids[0]].getType()==knife){
                                 if(player[i].isIdle()||
                                         player[i].isRun()||
                                         player[i].isCrouch()||
@@ -6913,18 +6835,18 @@ void Game::Tick(){
                                                                     player[i].throwtogglekeydown=1;
                                                                     player[i].victim=&player[j];
                                                                     XYZ aim;
-                                                                    weapons.owner[player[i].weaponids[0]]=-1;
+                                                                    weapons[player[i].weaponids[0]].owner=-1;
                                                                     aim=player[i].victim->coords+DoRotation(playerJoint(player[i].victim,abdomen).position,0,player[i].victim->rotation,0)*player[i].victim->scale+player[i].victim->velocity*findDistance(&player[i].victim->coords,&player[i].coords)/50-(player[i].coords+DoRotation(playerJoint(i,righthand).position,0,player[i].rotation,0)*player[i].scale);
                                                                     Normalise(&aim);
 
                                                                     aim=DoRotation(aim,(float)abs(Random()%30)-15,(float)abs(Random()%30)-15,0);
 
-                                                                    weapons.velocity[player[i].weaponids[0]]=aim*50;
-                                                                    weapons.tipvelocity[player[i].weaponids[0]]=aim*50;
-                                                                    weapons.missed[player[i].weaponids[0]]=0;
-                                                                    weapons.freetime[player[i].weaponids[0]]=0;
-                                                                    weapons.firstfree[player[i].weaponids[0]]=1;
-                                                                    weapons.physics[player[i].weaponids[0]]=0;
+                                                                    weapons[player[i].weaponids[0]].velocity=aim*50;
+                                                                    weapons[player[i].weaponids[0]].tipvelocity=aim*50;
+                                                                    weapons[player[i].weaponids[0]].missed=0;
+                                                                    weapons[player[i].weaponids[0]].freetime=0;
+                                                                    weapons[player[i].weaponids[0]].firstfree=1;
+                                                                    weapons[player[i].weaponids[0]].physics=0;
                                                                     player[i].num_weapons--;
                                                                     if(player[i].num_weapons){
                                                                         player[i].weaponids[0]=player[i].weaponids[player[i].num_weapons];
@@ -6939,14 +6861,14 @@ void Game::Tick(){
                         if(player[i].weaponactive!=-1&&player[i].aitype==playercontrolled){
                             if(player[i].isCrouch()||player[i].targetanimation==sneakanim){
                                 player[i].throwtogglekeydown=1;
-                                weapons.owner[player[i].weaponids[0]]=-1;
-                                weapons.velocity[player[i].weaponids[0]]=player[i].velocity*.2;
-                                if(weapons.velocity[player[i].weaponids[0]].x==0)weapons.velocity[player[i].weaponids[0]].x=.1;
-                                weapons.tipvelocity[player[i].weaponids[0]]=weapons.velocity[player[i].weaponids[0]];
-                                weapons.missed[player[i].weaponids[0]]=1;
-                                weapons.freetime[player[i].weaponids[0]]=0;
-                                weapons.firstfree[player[i].weaponids[0]]=1;
-                                weapons.physics[player[i].weaponids[0]]=1;
+                                weapons[player[i].weaponids[0]].owner=-1;
+                                weapons[player[i].weaponids[0]].velocity=player[i].velocity*.2;
+                                if(weapons[player[i].weaponids[0]].velocity.x==0)weapons[player[i].weaponids[0]].velocity.x=.1;
+                                weapons[player[i].weaponids[0]].tipvelocity=weapons[player[i].weaponids[0]].velocity;
+                                weapons[player[i].weaponids[0]].missed=1;
+                                weapons[player[i].weaponids[0]].freetime=0;
+                                weapons[player[i].weaponids[0]].firstfree=1;
+                                weapons[player[i].weaponids[0]].physics=1;
                                 player[i].num_weapons--;
                                 if(player[i].num_weapons){
                                     player[i].weaponids[0]=player[i].weaponids[player[i].num_weapons];
@@ -6973,10 +6895,10 @@ void Game::Tick(){
                                 i!=0){
                             bool isgood=1;
                             if(player[i].weaponactive!=-1)
-                                if(weapons.type[player[i].weaponids[player[i].weaponactive]]==staff)
+                                if(weapons[player[i].weaponids[player[i].weaponactive]].getType()==staff)
                                     isgood=0;
                             if(isgood&&player[i].creature!=wolftype){
-                                if(player[i].isIdle()&&player[i].num_weapons&&weapons.type[player[i].weaponids[0]]==knife){
+                                if(player[i].isIdle()&&player[i].num_weapons&&weapons[player[i].weaponids[0]].getType()==knife){
                                     setAnimation(i,drawrightanim);
                                     player[i].drawtogglekeydown=1;
                                 }
@@ -6985,11 +6907,11 @@ void Game::Tick(){
                                              player[0].weaponactive!=-1&&
                                              player[i].isRun()))&&
                                         player[i].num_weapons&&
-                                        weapons.type[player[i].weaponids[0]]==sword){
+                                        weapons[player[i].weaponids[0]].getType()==sword){
                                     setAnimation(i,drawleftanim);
                                     player[i].drawtogglekeydown=1;
                                 }
-                                if(player[i].isCrouch()&&player[i].num_weapons&&weapons.type[player[i].weaponids[0]]==knife){
+                                if(player[i].isCrouch()&&player[i].num_weapons&&weapons[player[i].weaponids[0]].getType()==knife){
                                     setAnimation(i,crouchdrawrightanim);
                                     player[i].drawtogglekeydown=1;
                                 }
@@ -6997,22 +6919,18 @@ void Game::Tick(){
                         }
                     //clean weapon
                     if(player[i].isCrouch()&&
-                            weapons.bloody[player[i].weaponids[player[i].weaponactive]]&&
+                            weapons[player[i].weaponids[player[i].weaponactive]].bloody&&
                             bloodtoggle&&
                             player[i].onterrain&&
                             player[i].num_weapons&&
                             player[i].weaponactive!=-1&&
-                            player[i].attackkeydown){
-                        if(weapons.bloody[player[i].weaponids[player[i].weaponactive]]&&
-                                player[i].onterrain&&
-                                bloodtoggle&&musictype!=stream_fighttheme){
-                            if(weapons.type[player[i].weaponids[player[i].weaponactive]]==knife)
+                            player[i].attackkeydown&&
+                            bloodtoggle&&musictype!=stream_fighttheme) {
+                            if(weapons[player[i].weaponids[player[i].weaponactive]].getType()==knife)
                                 setAnimation(i,crouchstabanim);
-                            if(weapons.type[player[i].weaponids[player[i].weaponactive]]==sword)
+                            if(weapons[player[i].weaponids[player[i].weaponactive]].getType()==sword)
                                 setAnimation(i,swordgroundstabanim);
                             player[i].hasvictim=0;
-                            //player[i].attacktogglekeydown=1;
-                        }
                     }
 
                     if(!player[i].drawkeydown)

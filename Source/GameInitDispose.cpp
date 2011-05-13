@@ -943,42 +943,42 @@ void Game::LoadStuff()
 
 	LOG("Loading weapon data...");
 
-	LoadTexture(":Data:Textures:knife.png",&weapons.knifetextureptr,0,1);
-	LoadTexture(":Data:Textures:bloodknife.png",&weapons.bloodknifetextureptr,0,1);
-	LoadTexture(":Data:Textures:lightbloodknife.png",&weapons.lightbloodknifetextureptr,0,1);
-	LoadTexture(":Data:Textures:sword.jpg",&weapons.swordtextureptr,1,0);
-	LoadTexture(":Data:Textures:Swordblood.jpg",&weapons.bloodswordtextureptr,1,0);
-	LoadTexture(":Data:Textures:Swordbloodlight.jpg",&weapons.lightbloodswordtextureptr,1,0);
-	LoadTexture(":Data:Textures:Staff.jpg",&weapons.stafftextureptr,1,0);
+	LoadTexture(":Data:Textures:knife.png",&Weapon::knifetextureptr,0,1);
+	LoadTexture(":Data:Textures:bloodknife.png",&Weapon::bloodknifetextureptr,0,1);
+	LoadTexture(":Data:Textures:lightbloodknife.png",&Weapon::lightbloodknifetextureptr,0,1);
+	LoadTexture(":Data:Textures:sword.jpg",&Weapon::swordtextureptr,1,0);
+	LoadTexture(":Data:Textures:Swordblood.jpg",&Weapon::bloodswordtextureptr,1,0);
+	LoadTexture(":Data:Textures:Swordbloodlight.jpg",&Weapon::lightbloodswordtextureptr,1,0);
+	LoadTexture(":Data:Textures:Staff.jpg",&Weapon::stafftextureptr,1,0);
 
-	weapons.throwingknifemodel.load((char *)":Data:Models:throwingknife.solid",1);
-	weapons.throwingknifemodel.Scale(.001,.001,.001);
-	//weapons.throwingknifemodel.Rotate(0,0,-90);
-	weapons.throwingknifemodel.Rotate(90,0,0);
-	weapons.throwingknifemodel.Rotate(0,90,0);
-	weapons.throwingknifemodel.flat=0;
-	weapons.throwingknifemodel.CalculateNormals(1);
-	//weapons.throwingknifemodel.ScaleNormals(-1,-1,-1);
+	Weapon::throwingknifemodel.load((char *)":Data:Models:throwingknife.solid",1);
+	Weapon::throwingknifemodel.Scale(.001,.001,.001);
+	//Weapon::throwingknifemodel.Rotate(0,0,-90);
+	Weapon::throwingknifemodel.Rotate(90,0,0);
+	Weapon::throwingknifemodel.Rotate(0,90,0);
+	Weapon::throwingknifemodel.flat=0;
+	Weapon::throwingknifemodel.CalculateNormals(1);
+	//Weapon::throwingknifemodel.ScaleNormals(-1,-1,-1);
 
-	weapons.swordmodel.load((char *)":Data:Models:sword.solid",1);
-	weapons.swordmodel.Scale(.001,.001,.001);
-	//weapons.swordmodel.Rotate(0,0,-90);
-	weapons.swordmodel.Rotate(90,0,0);
-	weapons.swordmodel.Rotate(0,90,0);
-	weapons.swordmodel.Rotate(0,0,90);
-	weapons.swordmodel.flat=1;
-	weapons.swordmodel.CalculateNormals(1);
-	//weapons.swordmodel.ScaleNormals(-1,-1,-1);
+	Weapon::swordmodel.load((char *)":Data:Models:sword.solid",1);
+	Weapon::swordmodel.Scale(.001,.001,.001);
+	//Weapon::swordmodel.Rotate(0,0,-90);
+	Weapon::swordmodel.Rotate(90,0,0);
+	Weapon::swordmodel.Rotate(0,90,0);
+	Weapon::swordmodel.Rotate(0,0,90);
+	Weapon::swordmodel.flat=1;
+	Weapon::swordmodel.CalculateNormals(1);
+	//Weapon::swordmodel.ScaleNormals(-1,-1,-1);
 
-	weapons.staffmodel.load((char *)":Data:Models:staff.solid",1);
-	weapons.staffmodel.Scale(.005,.005,.005);
-	//weapons.staffmodel.Rotate(0,0,-90);
-	weapons.staffmodel.Rotate(90,0,0);
-	weapons.staffmodel.Rotate(0,90,0);
-	weapons.staffmodel.Rotate(0,0,90);
-	weapons.staffmodel.flat=1;
-	weapons.staffmodel.CalculateNormals(1);
-	//weapons.staffmodel.ScaleNormals(-1,-1,-1);
+	Weapon::staffmodel.load((char *)":Data:Models:staff.solid",1);
+	Weapon::staffmodel.Scale(.005,.005,.005);
+	//Weapon::staffmodel.Rotate(0,0,-90);
+	Weapon::staffmodel.Rotate(90,0,0);
+	Weapon::staffmodel.Rotate(0,90,0);
+	Weapon::staffmodel.Rotate(0,0,90);
+	Weapon::staffmodel.flat=1;
+	Weapon::staffmodel.CalculateNormals(1);
+	//Weapon::staffmodel.ScaleNormals(-1,-1,-1);
 
 	//temptexdetail=texdetail;
 	//if(texdetail>4)texdetail=4;

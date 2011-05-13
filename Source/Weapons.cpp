@@ -53,7 +53,51 @@ extern bool freeze;
 extern int tutoriallevel;
 extern int numthrowkill;
 
-void	Weapons::DoStuff(){
+Model Weapon::throwingknifemodel;
+GLuint Weapon::knifetextureptr = 0;
+GLuint Weapon::lightbloodknifetextureptr = 0;
+GLuint Weapon::bloodknifetextureptr = 0;
+
+Model Weapon::swordmodel;
+GLuint Weapon::swordtextureptr = 0;
+GLuint Weapon::lightbloodswordtextureptr = 0;
+GLuint Weapon::bloodswordtextureptr = 0;
+
+Model Weapon::staffmodel;
+GLuint Weapon::stafftextureptr = 0;
+
+Weapon::Weapon(int t, int o) : owner(o) {
+	setType(t);
+	bloody=0;
+	blooddrip=0;
+	blooddripdelay=0;
+	onfire=0;
+	flamedelay=0;
+	damage=0;
+	position=-1000;
+	tippoint=-1000;
+}
+
+void Weapon::setType(int t) {
+	type = t;
+	if(type==sword){
+		mass=1.5;
+		tipmass=1;
+		length=.8;
+	}
+	if(type==staff){
+		mass=2;
+		tipmass=1;
+		length=1.5;
+	}
+	if(type==knife){
+		mass=1;
+		tipmass=1.2;
+		length=.25;
+	}
+}
+
+void Weapon::DoStuff() {
 	static int i,whichpatchx,whichpatchz,j,k,whichhit,m;
 	static XYZ start,end,colpoint,normalrot,footvel,footpoint;
 	static XYZ terrainnormal;
@@ -74,939 +118,920 @@ void	Weapons::DoStuff(){
 	static XYZ extramove;
 	static float proportion;
 	static float tempmult;
-
-	//Move
-
-	for(i=0;i<numweapons;i++){
-		if(owner[i]!=-1){
-			oldowner[i]=owner[i];
+	
+	if(owner!=-1){
+		oldowner=owner;
+	}
+	if(damage>=2&&type==staff&&owner!=-1){
+		emit_sound_at(staffbreaksound, tippoint);
+		XYZ tempvel;
+		XYZ speed;
+		//speed=(tippoint-oldtippoint)/multiplier/6;
+		speed=0;
+		for(j=0;j<40;j++){
+			tempvel.x=float(abs(Random()%100)-50)/20;
+			tempvel.y=float(abs(Random()%100)-50)/20;
+			tempvel.z=float(abs(Random()%100)-50)/20;
+			tempvel+=speed;
+			Sprite::MakeSprite(splintersprite, position+(tippoint-position)*((float)j-8)/32,tempvel*.5, 115/255,73/255,12/255, .1, 1);
 		}
-		if(damage[i]>=2&&type[i]==staff&&owner[i]!=-1){
-			emit_sound_at(staffbreaksound, tippoint[i]);
-			XYZ tempvel;
-			XYZ speed;
-			//speed=(tippoint[i]-oldtippoint[i])/multiplier/6;
-			speed=0;
-			for(j=0;j<40;j++){
-				tempvel.x=float(abs(Random()%100)-50)/20;
-				tempvel.y=float(abs(Random()%100)-50)/20;
-				tempvel.z=float(abs(Random()%100)-50)/20;
-				tempvel+=speed;
-				Sprite::MakeSprite(splintersprite, position[i]+(tippoint[i]-position[i])*((float)j-8)/32,tempvel*.5, 115/255,73/255,12/255, .1, 1);
+		int tempowner;
+		tempowner=owner;
+		owner=-1;
+		hitsomething=0;
+		missed=1;
+		freetime=0;
+		firstfree=1;
+		position=0;
+		physics=0;
+		if(tempowner!=-1){
+			player[tempowner].num_weapons--;
+			if(player[tempowner].num_weapons){
+				player[tempowner].weaponids[0]=player[tempowner].weaponids[player[tempowner].num_weapons];
+				if(player[tempowner].weaponstuck==player[tempowner].num_weapons)player[tempowner].weaponstuck=0;
 			}
-			int tempowner;
-			tempowner=owner[i];
-			owner[i]=-1;
-			hitsomething[i]=0;
-			missed[i]=1;
-			freetime[i]=0;
-			firstfree[i]=1;
-			position[i]=0;
-			physics[i]=0;
-			if(tempowner!=-1){
-				player[tempowner].num_weapons--;
-				if(player[tempowner].num_weapons){
-					player[tempowner].weaponids[0]=player[tempowner].weaponids[player[tempowner].num_weapons];
-					if(player[tempowner].weaponstuck==player[tempowner].num_weapons)player[tempowner].weaponstuck=0;
+			player[tempowner].weaponactive=-1;
+		}
+	}
+	oldposition=position;
+	oldtippoint=tippoint;
+	if(owner==-1&&(velocity.x||velocity.y||velocity.z)&&!physics){
+		position+=velocity*multiplier;
+		tippoint+=velocity*multiplier;
+		whichpatchx=position.x/(terrain.size/subdivision*terrain.scale);
+		whichpatchz=position.z/(terrain.size/subdivision*terrain.scale);
+		if(whichpatchx>0&&whichpatchz>0&&whichpatchx<subdivision&&whichpatchz<subdivision)
+			if(terrain.patchobjectnum[whichpatchx][whichpatchz]){
+				for(j=0;j<terrain.patchobjectnum[whichpatchx][whichpatchz];j++){
+					k=terrain.patchobjects[whichpatchx][whichpatchz][j];
+					start=oldtippoint;
+					end=tippoint;
+					whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
+					if(whichhit!=-1){
+						if(objects.type[k]==treetrunktype){
+							objects.model[k].MakeDecal(breakdecal,DoRotation(colpoint-objects.position[k],0,-objects.rotation[k],0),.1,1,Random()%360);
+							normalrot=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0);
+							velocity=0;
+							if(type==knife)position=colpoint-normalrot*.1;
+							if(type==sword)position=colpoint-normalrot*.2;
+							if(type==staff)position=colpoint-normalrot*.2;
+							XYZ temppoint1,temppoint2,tempforward;
+							float distance;
+
+							temppoint1=0;
+							temppoint2=normalrot;
+							distance=findDistance(&temppoint1,&temppoint2);
+							rotation2=asin((temppoint1.y-temppoint2.y)/distance);
+							rotation2*=360/6.28;
+							temppoint1.y=0;
+							temppoint2.y=0;
+							rotation1=acos((temppoint1.z-temppoint2.z)/findDistance(&temppoint1,&temppoint2));
+							rotation1*=360/6.28;
+							if(temppoint1.x>temppoint2.x)rotation1=360-rotation1;
+
+							rotation3=0;
+							smallrotation=90;
+							smallrotation2=0;
+							bigtilt=0;
+							bigtilt2=0;
+							bigrotation=0;
+
+							emit_sound_at(knifesheathesound, position, 128.);
+
+							bloody=0;
+
+							Sprite::MakeSprite(cloudimpactsprite, position,velocity, 1,1,1, .8, .3);
+						}
+						else {
+							physics=1;
+							firstfree=1;
+							position-=velocity*multiplier;
+							tippoint-=velocity*multiplier;
+							tipvelocity=velocity;
+						}
+					}
 				}
-				player[tempowner].weaponactive=-1;
 			}
-		}
-		oldposition[i]=position[i];
-		oldtippoint[i]=tippoint[i];
-		if(owner[i]==-1&&(velocity[i].x||velocity[i].y||velocity[i].z)&&!physics[i]){
-			position[i]+=velocity[i]*multiplier;
-			tippoint[i]+=velocity[i]*multiplier;
-			whichpatchx=position[i].x/(terrain.size/subdivision*terrain.scale);
-			whichpatchz=position[i].z/(terrain.size/subdivision*terrain.scale);
+			if(velocity.x||velocity.y||velocity.z)
+				for(j=0;j<numplayers;j++){
+					footvel=0;
+					footpoint=DoRotation((player[j].skeleton.joints[player[j].skeleton.jointlabels[abdomen]].position+player[j].skeleton.joints[player[j].skeleton.jointlabels[neck]].position)/2,0,player[j].rotation,0)*player[j].scale+player[j].coords;
+					if(owner==-1&&findDistancefastflat(&position,&player[j].coords)<1.5&&findDistancefast(&position,&player[j].coords)<4&&player[j].weaponstuck==-1&&!player[j].skeleton.free&&j!=oldowner){
+						if((player[j].aitype!=attacktypecutoff||abs(Random()%6)==0||(player[j].targetanimation!=backhandspringanim&&player[j].targetanimation!=rollanim&&player[j].targetanimation!=flipanim&&Random()%2==0))&&!missed){
+							bool caught=0;
+							if((player[j].creature==wolftype&&Random()%3!=0&&player[j].weaponactive==-1&&(player[j].isIdle()||player[j].isRun()||player[j].targetanimation==walkanim))||(player[j].creature==rabbittype&&Random()%2==0&&player[j].aitype==attacktypecutoff&&player[j].weaponactive==-1)){
+								emit_sound_at(knifedrawsound, player[j].coords, 128.);
+
+								player[j].weaponactive=0;
+								player[j].targetanimation=removeknifeanim;
+								player[j].targetframe=1;
+								player[j].target=1;
+								owner=player[j].id;
+								if(player[j].num_weapons>0){
+									player[j].weaponids[player[j].num_weapons]=player[j].weaponids[0];
+								}
+								player[j].num_weapons++;
+								player[j].weaponids[0]=i;
+
+								player[j].aitype=attacktypecutoff;
+							}
+							else {
+								if(j!=0)numthrowkill++;
+								player[j].num_weapons++;
+								player[j].weaponstuck=player[j].num_weapons-1;
+								if(normaldotproduct(player[j].facing,velocity)>0)player[j].weaponstuckwhere=1;
+								else player[j].weaponstuckwhere=0;
+
+								player[j].weaponids[player[j].num_weapons-1]=i;
+
+								player[j].RagDoll(0);
+								player[j].skeleton.joints[player[j].skeleton.jointlabels[abdomen]].velocity+=velocity*2;
+								player[j].skeleton.joints[player[j].skeleton.jointlabels[neck]].velocity+=velocity*2;
+								player[j].skeleton.joints[player[j].skeleton.jointlabels[rightshoulder]].velocity+=velocity*2;
+								player[j].skeleton.joints[player[j].skeleton.jointlabels[leftshoulder]].velocity+=velocity*2;
+								//player[j].Puff(abdomen);
+								if(bloodtoggle&&tutoriallevel!=1)Sprite::MakeSprite(cloudimpactsprite, footpoint,footvel, 1,0,0, .8, .3);
+								if(tutoriallevel==1)Sprite::MakeSprite(cloudimpactsprite, footpoint,footvel, 1,1,1, .8, .3);
+								footvel=tippoint-position;
+								Normalise(&footvel);
+								if(bloodtoggle&&tutoriallevel!=1)Sprite::MakeSprite(bloodflamesprite, footpoint,footvel*-1, 1,0,0, .6, 1);
+
+								if(tutoriallevel!=1){
+									if(player[j].weaponstuckwhere==0)player[j].DoBloodBig(2,205);
+									if(player[j].weaponstuckwhere==1)player[j].DoBloodBig(2,200);
+									player[j].damage+=200/player[j].armorhigh;
+									player[j].deathbleeding=1;
+									player[j].bloodloss+=(200+abs((float)(Random()%40))-20)/player[j].armorhigh;
+									owner=j;
+									bloody=2;
+									blooddrip=5;
+								}
+
+								emit_sound_at(fleshstabsound, position, 128.);
+
+								if(animation[player[0].targetanimation].height==highheight)
+								  award_bonus(0, ninja);
+								else
+								  award_bonus(0, Bullseyebonus);
+							}
+						}
+						else missed=1;
+					}
+				}
+				if(position.y<terrain.getHeight(position.x,position.z)){
+					if(terrain.getOpacity(position.x,position.z)<.2){
+						velocity=0;
+						if(terrain.lineTerrain(oldposition,position,&colpoint)!=-1){
+							position=colpoint*terrain.scale;
+						}
+						else position.y=terrain.getHeight(position.x,position.z);
+
+						terrain.MakeDecal(shadowdecalpermanent,position,.06,.5,0);
+						normalrot=terrain.getNormal(position.x,position.z)*-1;
+						velocity=0;
+						//position-=normalrot*.1;
+						glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+						glPushMatrix();
+							GLfloat M[16];
+							glLoadIdentity();
+							glRotatef(bigrotation,0,1,0);
+							glRotatef(bigtilt2,1,0,0);
+							glRotatef(bigtilt,0,0,1);
+							glRotatef(-rotation1+90,0,1,0);
+							glRotatef(-rotation2+90,0,0,1);
+							glRotatef(-rotation3,0,1,0);
+							glRotatef(smallrotation,1,0,0);
+							glRotatef(smallrotation2,0,1,0);
+							glTranslatef(0,0,1);
+							glGetFloatv(GL_MODELVIEW_MATRIX,M);
+							tippoint.x=M[12];
+							tippoint.y=M[13];
+							tippoint.z=M[14];
+						glPopMatrix();
+						position-=tippoint*.15;
+						XYZ temppoint1,temppoint2,tempforward;
+						float distance;
+
+						rotation3=0;
+						smallrotation=90;
+						smallrotation2=0;
+						bigtilt=0;
+						bigtilt2=0;
+						bigrotation=0;
+
+						emit_sound_at(knifesheathesound, position, 128.);
+
+						XYZ terrainlight;
+						terrainlight=terrain.getLighting(position.x,position.z);
+						if(environment==snowyenvironment){
+							if(findDistancefast(&position,&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, position,velocity, terrainlight.x,terrainlight.y,terrainlight.z, .5, .7);
+						}
+						else if(environment==grassyenvironment){
+							if(findDistancefast(&position,&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, position,velocity, terrainlight.x*90/255,terrainlight.y*70/255,terrainlight.z*8/255, .5, .5);
+						}
+						else if(environment==desertenvironment){
+							if(findDistancefast(&position,&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, position,velocity, terrainlight.x*190/255,terrainlight.y*170/255,terrainlight.z*108/255, .5, .7);
+						}
+
+						bloody=0;
+					}
+					else {
+						physics=1;
+						firstfree=1;
+						position-=velocity*multiplier;
+						tippoint-=velocity*multiplier;
+						tipvelocity=velocity;
+					}
+				}
+				if(velocity.x!=0||velocity.z!=0||velocity.y!=0){
+					velocity.y+=gravity*multiplier;
+
+					XYZ temppoint1,temppoint2,tempforward;
+					float distance;
+
+					temppoint1=0;
+					temppoint2=velocity;
+					distance=findDistance(&temppoint1,&temppoint2);
+					rotation2=asin((temppoint1.y-temppoint2.y)/distance);
+					rotation2*=360/6.28;
+					temppoint1.y=0;
+					temppoint2.y=0;
+					rotation1=acos((temppoint1.z-temppoint2.z)/findDistance(&temppoint1,&temppoint2));
+					rotation1*=360/6.28;
+					rotation3=0;
+					smallrotation=90;
+					smallrotation2=0;
+					bigtilt=0;
+					bigtilt2=0;
+					bigrotation=0;
+					if(temppoint1.x>temppoint2.x)rotation1=360-rotation1;
+				}
+	}
+	//Sword physics
+	XYZ mid;
+	XYZ oldmid;
+	XYZ oldmid2;
+
+	tempmult=multiplier;
+	multiplier/=10;
+	for(int l=0;l<10;l++){
+		if(owner==-1&&(velocity.x||velocity.y||velocity.z)&&physics){
+			//move
+			position+=velocity*multiplier;
+			tippoint+=tipvelocity*multiplier;
+
+			//Length constrain
+			midp=(position*mass+tippoint*tipmass)/(mass+tipmass);
+			vel=tippoint-midp;
+			Normalise(&vel);
+			newpoint1=midp-vel*length*(tipmass/(mass+tipmass));
+			newpoint2=midp+vel*length*(mass/(mass+tipmass));
+			if(!freeze){
+				if(freetime>.04)velocity=velocity+(newpoint1-position)/multiplier;
+				if(freetime>.04)tipvelocity=tipvelocity+(newpoint2-tippoint)/multiplier;
+			}
+			position=newpoint1;
+			tippoint=newpoint2;
+
+
+			//Object collisions
+			whichpatchx=(position.x)/(terrain.size/subdivision*terrain.scale);
+			whichpatchz=(position.z)/(terrain.size/subdivision*terrain.scale);
 			if(whichpatchx>0&&whichpatchz>0&&whichpatchx<subdivision&&whichpatchz<subdivision)
 				if(terrain.patchobjectnum[whichpatchx][whichpatchz]){
 					for(j=0;j<terrain.patchobjectnum[whichpatchx][whichpatchz];j++){
 						k=terrain.patchobjects[whichpatchx][whichpatchz][j];
-						start=oldtippoint[i];
-						end=tippoint[i];
-						whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
-						if(whichhit!=-1){
-							if(objects.type[k]==treetrunktype){
-								objects.model[k].MakeDecal(breakdecal,DoRotation(colpoint-objects.position[k],0,-objects.rotation[k],0),.1,1,Random()%360);
-								normalrot=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0);
-								velocity[i]=0;
-								if(type[i]==knife)position[i]=colpoint-normalrot*.1;
-								if(type[i]==sword)position[i]=colpoint-normalrot*.2;
-								if(type[i]==staff)position[i]=colpoint-normalrot*.2;
-								XYZ temppoint1,temppoint2,tempforward;
-								float distance;
 
-								temppoint1=0;
-								temppoint2=normalrot;
-								distance=findDistance(&temppoint1,&temppoint2);
-								rotation2[i]=asin((temppoint1.y-temppoint2.y)/distance);
-								rotation2[i]*=360/6.28;
-								temppoint1.y=0;
-								temppoint2.y=0;
-								rotation1[i]=acos((temppoint1.z-temppoint2.z)/findDistance(&temppoint1,&temppoint2));
-								rotation1[i]*=360/6.28;
-								if(temppoint1.x>temppoint2.x)rotation1[i]=360-rotation1[i];
-
-								rotation3[i]=0;
-								smallrotation[i]=90;
-								smallrotation2[i]=0;
-								bigtilt[i]=0;
-								bigtilt2[i]=0;
-								bigrotation[i]=0;
-
-								emit_sound_at(knifesheathesound, position[i], 128.);
-
-								bloody[i]=0;
-
-								Sprite::MakeSprite(cloudimpactsprite, position[i],velocity[i], 1,1,1, .8, .3);
-							}
-							else {
-								physics[i]=1;
-								firstfree[i]=1;
-								position[i]-=velocity[i]*multiplier;
-								tippoint[i]-=velocity[i]*multiplier;
-								tipvelocity[i]=velocity[i];
-							}
-						}
-					}
-				}
-				if(velocity[i].x||velocity[i].y||velocity[i].z)
-					for(j=0;j<numplayers;j++){
-						footvel=0;
-						footpoint=DoRotation((player[j].skeleton.joints[player[j].skeleton.jointlabels[abdomen]].position+player[j].skeleton.joints[player[j].skeleton.jointlabels[neck]].position)/2,0,player[j].rotation,0)*player[j].scale+player[j].coords;
-						if(owner[i]==-1&&findDistancefastflat(&position[i],&player[j].coords)<1.5&&findDistancefast(&position[i],&player[j].coords)<4&&player[j].weaponstuck==-1&&!player[j].skeleton.free&&j!=oldowner[i]){
-							if((player[j].aitype!=attacktypecutoff||abs(Random()%6)==0||(player[j].targetanimation!=backhandspringanim&&player[j].targetanimation!=rollanim&&player[j].targetanimation!=flipanim&&Random()%2==0))&&!missed[i]){
-								bool caught=0;
-								if((player[j].creature==wolftype&&Random()%3!=0&&player[j].weaponactive==-1&&(player[j].isIdle()||player[j].isRun()||player[j].targetanimation==walkanim))||(player[j].creature==rabbittype&&Random()%2==0&&player[j].aitype==attacktypecutoff&&player[j].weaponactive==-1)){
-									emit_sound_at(knifedrawsound, player[j].coords, 128.);
-
-									player[j].weaponactive=0;
-									player[j].targetanimation=removeknifeanim;
-									player[j].targetframe=1;
-									player[j].target=1;
-									owner[i]=player[j].id;
-									if(player[j].num_weapons>0){
-										player[j].weaponids[player[j].num_weapons]=player[j].weaponids[0];
-									}
-									player[j].num_weapons++;
-									player[j].weaponids[0]=i;
-
-									player[j].aitype=attacktypecutoff;
-								}
-								else {
-									if(j!=0)numthrowkill++;
-									player[j].num_weapons++;
-									player[j].weaponstuck=player[j].num_weapons-1;
-									if(normaldotproduct(player[j].facing,velocity[i])>0)player[j].weaponstuckwhere=1;
-									else player[j].weaponstuckwhere=0;
-
-									player[j].weaponids[player[j].num_weapons-1]=i;
-
-									player[j].RagDoll(0);
-									player[j].skeleton.joints[player[j].skeleton.jointlabels[abdomen]].velocity+=velocity[i]*2;
-									player[j].skeleton.joints[player[j].skeleton.jointlabels[neck]].velocity+=velocity[i]*2;
-									player[j].skeleton.joints[player[j].skeleton.jointlabels[rightshoulder]].velocity+=velocity[i]*2;
-									player[j].skeleton.joints[player[j].skeleton.jointlabels[leftshoulder]].velocity+=velocity[i]*2;
-									//player[j].Puff(abdomen);
-									if(bloodtoggle&&tutoriallevel!=1)Sprite::MakeSprite(cloudimpactsprite, footpoint,footvel, 1,0,0, .8, .3);
-									if(tutoriallevel==1)Sprite::MakeSprite(cloudimpactsprite, footpoint,footvel, 1,1,1, .8, .3);
-									footvel=tippoint[i]-position[i];
-									Normalise(&footvel);
-									if(bloodtoggle&&tutoriallevel!=1)Sprite::MakeSprite(bloodflamesprite, footpoint,footvel*-1, 1,0,0, .6, 1);
-
-									if(tutoriallevel!=1){
-										if(player[j].weaponstuckwhere==0)player[j].DoBloodBig(2,205);
-										if(player[j].weaponstuckwhere==1)player[j].DoBloodBig(2,200);
-										player[j].damage+=200/player[j].armorhigh;
-										player[j].deathbleeding=1;
-										player[j].bloodloss+=(200+abs((float)(Random()%40))-20)/player[j].armorhigh;
-										owner[i]=j;
-										bloody[i]=2;
-										blooddrip[i]=5;
-									}
-
-									emit_sound_at(fleshstabsound, position[i], 128.);
-
-									if(animation[player[0].targetanimation].height==highheight)
-									  award_bonus(0, ninja);
-									else
-									  award_bonus(0, Bullseyebonus);
-								}
-							}
-							else missed[i]=1;
-						}
-					}
-					if(position[i].y<terrain.getHeight(position[i].x,position[i].z)){
-						if(terrain.getOpacity(position[i].x,position[i].z)<.2){
-							velocity[i]=0;
-							if(terrain.lineTerrain(oldposition[i],position[i],&colpoint)!=-1){
-								position[i]=colpoint*terrain.scale;
-							}
-							else position[i].y=terrain.getHeight(position[i].x,position[i].z);
-
-							terrain.MakeDecal(shadowdecalpermanent,position[i],.06,.5,0);
-							normalrot=terrain.getNormal(position[i].x,position[i].z)*-1;
-							velocity[i]=0;
-							//position[i]-=normalrot*.1;
-							glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-							glPushMatrix();
-								GLfloat M[16];
-								glLoadIdentity();
-								glRotatef(bigrotation[i],0,1,0);
-								glRotatef(bigtilt2[i],1,0,0);
-								glRotatef(bigtilt[i],0,0,1);
-								glRotatef(-rotation1[i]+90,0,1,0);
-								glRotatef(-rotation2[i]+90,0,0,1);
-								glRotatef(-rotation3[i],0,1,0);
-								glRotatef(smallrotation[i],1,0,0);
-								glRotatef(smallrotation2[i],0,1,0);
-								glTranslatef(0,0,1);
-								glGetFloatv(GL_MODELVIEW_MATRIX,M);
-								tippoint[i].x=M[12];
-								tippoint[i].y=M[13];
-								tippoint[i].z=M[14];
-							glPopMatrix();
-							position[i]-=tippoint[i]*.15;
-							XYZ temppoint1,temppoint2,tempforward;
-							float distance;
-
-							rotation3[i]=0;
-							smallrotation[i]=90;
-							smallrotation2[i]=0;
-							bigtilt[i]=0;
-							bigtilt2[i]=0;
-							bigrotation[i]=0;
-
-							emit_sound_at(knifesheathesound, position[i], 128.);
-
-							XYZ terrainlight;
-							terrainlight=terrain.getLighting(position[i].x,position[i].z);
-							if(environment==snowyenvironment){
-								if(findDistancefast(&position[i],&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, position[i],velocity[i], terrainlight.x,terrainlight.y,terrainlight.z, .5, .7);
-							}
-							else if(environment==grassyenvironment){
-								if(findDistancefast(&position[i],&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, position[i],velocity[i], terrainlight.x*90/255,terrainlight.y*70/255,terrainlight.z*8/255, .5, .5);
-							}
-							else if(environment==desertenvironment){
-								if(findDistancefast(&position[i],&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, position[i],velocity[i], terrainlight.x*190/255,terrainlight.y*170/255,terrainlight.z*108/255, .5, .7);
-							}
-
-							bloody[i]=0;
-						}
-						else {
-							physics[i]=1;
-							firstfree[i]=1;
-							position[i]-=velocity[i]*multiplier;
-							tippoint[i]-=velocity[i]*multiplier;
-							tipvelocity[i]=velocity[i];
-						}
-					}
-					if(velocity[i].x!=0||velocity[i].z!=0||velocity[i].y!=0){
-						velocity[i].y+=gravity*multiplier;
-
-						XYZ temppoint1,temppoint2,tempforward;
-						float distance;
-
-						temppoint1=0;
-						temppoint2=velocity[i];
-						distance=findDistance(&temppoint1,&temppoint2);
-						rotation2[i]=asin((temppoint1.y-temppoint2.y)/distance);
-						rotation2[i]*=360/6.28;
-						temppoint1.y=0;
-						temppoint2.y=0;
-						rotation1[i]=acos((temppoint1.z-temppoint2.z)/findDistance(&temppoint1,&temppoint2));
-						rotation1[i]*=360/6.28;
-						rotation3[i]=0;
-						smallrotation[i]=90;
-						smallrotation2[i]=0;
-						bigtilt[i]=0;
-						bigtilt2[i]=0;
-						bigrotation[i]=0;
-						if(temppoint1.x>temppoint2.x)rotation1[i]=360-rotation1[i];
-					}
-		}
-		//Sword physics
-		XYZ mid;
-		XYZ oldmid;
-		XYZ oldmid2;
-
-		tempmult=multiplier;
-		multiplier/=10;
-		for(int l=0;l<10;l++){
-			if(owner[i]==-1&&(velocity[i].x||velocity[i].y||velocity[i].z)&&physics[i]){
-				//move
-				position[i]+=velocity[i]*multiplier;
-				tippoint[i]+=tipvelocity[i]*multiplier;
-
-				//Length constrain
-				midp=(position[i]*mass[i]+tippoint[i]*tipmass[i])/(mass[i]+tipmass[i]);
-				vel=tippoint[i]-midp;
-				Normalise(&vel);
-				newpoint1=midp-vel*length[i]*(tipmass[i]/(mass[i]+tipmass[i]));
-				newpoint2=midp+vel*length[i]*(mass[i]/(mass[i]+tipmass[i]));
-				if(!freeze){
-					if(freetime[i]>.04)velocity[i]=velocity[i]+(newpoint1-position[i])/multiplier;
-					if(freetime[i]>.04)tipvelocity[i]=tipvelocity[i]+(newpoint2-tippoint[i])/multiplier;
-				}
-				position[i]=newpoint1;
-				tippoint[i]=newpoint2;
-
-
-				//Object collisions
-				whichpatchx=(position[i].x)/(terrain.size/subdivision*terrain.scale);
-				whichpatchz=(position[i].z)/(terrain.size/subdivision*terrain.scale);
-				if(whichpatchx>0&&whichpatchz>0&&whichpatchx<subdivision&&whichpatchz<subdivision)
-					if(terrain.patchobjectnum[whichpatchx][whichpatchz]){
-						for(j=0;j<terrain.patchobjectnum[whichpatchx][whichpatchz];j++){
-							k=terrain.patchobjects[whichpatchx][whichpatchz][j];
-
-							if(firstfree[i]){
-								if(type[i]!=staff){
-									start=position[i]-(tippoint[i]-position[i])/5;
-									end=tippoint[i]+(tippoint[i]-position[i])/30;
-									whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
-									if(whichhit!=-1){
-										XYZ diff;
-										diff=(colpoint-tippoint[i]);
-										Normalise(&diff);
-										hitsomething[i]=1;
-
-										position[i]+=(colpoint-tippoint[i])+diff*.05;
-										tippoint[i]=colpoint+diff*.05;
-										oldposition[i]=position[i];
-										oldtippoint[i]=tippoint[i];
-									}
-								}
-								if(type[i]==staff){
-									start=tippoint[i]-(position[i]-tippoint[i])/5;
-									end=position[i]+(position[i]-tippoint[i])/30;
-									whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
-									if(whichhit!=-1){
-										XYZ diff;
-										diff=(colpoint-position[i]);
-										Normalise(&diff);
-										hitsomething[i]=1;
-
-										tippoint[i]+=(colpoint-position[i])+diff*.05;
-										position[i]=colpoint+diff*.05;
-										oldtippoint[i]=tippoint[i];
-										oldposition[i]=tippoint[i];
-									}
-								}
-							}
-
-							start=oldposition[i];
-							end=position[i];
-							whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
-							if(whichhit!=-1){
-								hitsomething[i]=1;
-								position[i]=colpoint;
-								terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
-								ReflectVector(&velocity[i],&terrainnormal);
-								position[i]+=terrainnormal*.002;
-
-								bounceness=terrainnormal*findLength(&velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
-								if(findLengthfast(&velocity[i])<findLengthfast(&bounceness))bounceness=0;
-								frictionness=abs(normaldotproduct(velocity[i],terrainnormal));
-								velocity[i]-=bounceness;
-								if(1-friction*frictionness>0)velocity[i]*=1-friction*frictionness;
-								else velocity[i]=0;
-								velocity[i]+=bounceness*elasticity;
-
-								if(findLengthfast(&bounceness)>1){
-									int whichsound;
-									if(type[i]==staff)whichsound=footstepsound3+abs(Random()%2);
-									if(type[i]!=staff)whichsound=clank1sound+abs(Random()%4);
-									emit_sound_at(whichsound, position[i], 128*findLengthfast(&bounceness));
-								}
-							}
-							start=oldtippoint[i];
-							end=tippoint[i];
-							whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
-							if(whichhit!=-1){
-								hitsomething[i]=1;
-								tippoint[i]=colpoint;
-								terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
-								ReflectVector(&tipvelocity[i],&terrainnormal);
-								tippoint[i]+=terrainnormal*.002;
-
-								bounceness=terrainnormal*findLength(&tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
-								if(findLengthfast(&tipvelocity[i])<findLengthfast(&bounceness))bounceness=0;
-								frictionness=abs(normaldotproduct(tipvelocity[i],terrainnormal));
-								tipvelocity[i]-=bounceness;
-								if(1-friction*frictionness>0)tipvelocity[i]*=1-friction*frictionness;
-								else tipvelocity[i]=0;
-								tipvelocity[i]+=bounceness*elasticity;
-
-								if(findLengthfast(&bounceness)>1){
-									int whichsound;
-									if(type[i]==staff)whichsound=footstepsound3+abs(Random()%2);
-									if(type[i]!=staff)whichsound=clank1sound+abs(Random()%4);
-									emit_sound_at(whichsound, position[i], 128*findLengthfast(&bounceness));
-								}
-							}
-
-							if((objects.type[k]!=boxtype&&objects.type[k]!=platformtype&&objects.type[k]!=walltype&&objects.type[k]!=weirdtype)||objects.rotation2[k]!=0)
-								for(m=0;m<2;m++){
-									mid=(position[i]*(21+(float)m*10)+tippoint[i]*(19-(float)m*10))/40;
-									oldmid2=mid;
-									oldmid=(oldposition[i]*(21+(float)m*10)+oldtippoint[i]*(19-(float)m*10))/40;
-
-									start=oldmid;
-									end=mid;
-									whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
-									if(whichhit!=-1){
-										hitsomething[i]=1;
-										mid=colpoint;
-										terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
-										ReflectVector(&velocity[i],&terrainnormal);
-
-										bounceness=terrainnormal*findLength(&velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
-										if(findLengthfast(&velocity[i])<findLengthfast(&bounceness))bounceness=0;
-										frictionness=abs(normaldotproduct(velocity[i],terrainnormal));
-										velocity[i]-=bounceness;
-										if(1-friction*frictionness>0)velocity[i]*=1-friction*frictionness;
-										else velocity[i]=0;
-										velocity[i]+=bounceness*elasticity;
-
-										if(findLengthfast(&bounceness)>1){
-											int whichsound;
-											if(type[i]==staff)whichsound=footstepsound3+abs(Random()%2);
-											if(type[i]!=staff)whichsound=clank1sound+abs(Random()%4);
-											emit_sound_at(whichsound, mid, 128*findLengthfast(&bounceness));
-										}
-										position[i]+=(mid-oldmid2)*(20/(1+(float)m*10));
-									}
-
-									mid=(position[i]*(19-(float)m*10)+tippoint[i]*(21+(float)m*10))/40;
-									oldmid2=mid;
-									oldmid=(oldposition[i]*(19-(float)m*10)+oldtippoint[i]*(21+(float)m*10))/40;
-
-									start=oldmid;
-									end=mid;
-									whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
-									if(whichhit!=-1){
-										hitsomething[i]=1;
-										mid=colpoint;
-										terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
-										ReflectVector(&tipvelocity[i],&terrainnormal);
-
-										bounceness=terrainnormal*findLength(&tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
-										if(findLengthfast(&tipvelocity[i])<findLengthfast(&bounceness))bounceness=0;
-										frictionness=abs(normaldotproduct(tipvelocity[i],terrainnormal));
-										tipvelocity[i]-=bounceness;
-										if(1-friction*frictionness>0)tipvelocity[i]*=1-friction*frictionness;
-										else tipvelocity[i]=0;
-										tipvelocity[i]+=bounceness*elasticity;
-
-										if(findLengthfast(&bounceness)>1){
-											int whichsound;
-											if(type[i]==staff)whichsound=footstepsound3+abs(Random()%2);
-											if(type[i]!=staff)whichsound=clank1sound+abs(Random()%4);
-											emit_sound_at(whichsound, mid, 128*findLengthfast(&bounceness));
-										}
-										tippoint[i]+=(mid-oldmid2)*(20/(1+(float)m*10));
-									}
-								}
-							else
-							{
-								start=position[i];
-								end=tippoint[i];
+						if(firstfree){
+							if(type!=staff){
+								start=position-(tippoint-position)/5;
+								end=tippoint+(tippoint-position)/30;
 								whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
 								if(whichhit!=-1){
-									hitsomething[i]=1;
-									closestdistance=-1;
-									closestswordpoint=colpoint;//(position[i]+tippoint[i])/2;
-									point[0]=DoRotation(objects.model[k].vertex[objects.model[k].Triangles[whichhit].vertex[0]],0,objects.rotation[k],0)+objects.position[k];
-									point[1]=DoRotation(objects.model[k].vertex[objects.model[k].Triangles[whichhit].vertex[1]],0,objects.rotation[k],0)+objects.position[k];
-									point[2]=DoRotation(objects.model[k].vertex[objects.model[k].Triangles[whichhit].vertex[2]],0,objects.rotation[k],0)+objects.position[k];
-									if(DistancePointLine(&closestswordpoint, &point[0], &point[1], &distance,&colpoint ))
+									XYZ diff;
+									diff=(colpoint-tippoint);
+									Normalise(&diff);
+									hitsomething=1;
+
+									position+=(colpoint-tippoint)+diff*.05;
+									tippoint=colpoint+diff*.05;
+									oldposition=position;
+									oldtippoint=tippoint;
+								}
+							}
+							if(type==staff){
+								start=tippoint-(position-tippoint)/5;
+								end=position+(position-tippoint)/30;
+								whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
+								if(whichhit!=-1){
+									XYZ diff;
+									diff=(colpoint-position);
+									Normalise(&diff);
+									hitsomething=1;
+
+									tippoint+=(colpoint-position)+diff*.05;
+									position=colpoint+diff*.05;
+									oldtippoint=tippoint;
+									oldposition=tippoint;
+								}
+							}
+						}
+
+						start=oldposition;
+						end=position;
+						whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
+						if(whichhit!=-1){
+							hitsomething=1;
+							position=colpoint;
+							terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
+							ReflectVector(&velocity,&terrainnormal);
+							position+=terrainnormal*.002;
+
+							bounceness=terrainnormal*findLength(&velocity)*(abs(normaldotproduct(velocity,terrainnormal)));
+							if(findLengthfast(&velocity)<findLengthfast(&bounceness))bounceness=0;
+							frictionness=abs(normaldotproduct(velocity,terrainnormal));
+							velocity-=bounceness;
+							if(1-friction*frictionness>0)velocity*=1-friction*frictionness;
+							else velocity=0;
+							velocity+=bounceness*elasticity;
+
+							if(findLengthfast(&bounceness)>1){
+								int whichsound;
+								if(type==staff)whichsound=footstepsound3+abs(Random()%2);
+								if(type!=staff)whichsound=clank1sound+abs(Random()%4);
+								emit_sound_at(whichsound, position, 128*findLengthfast(&bounceness));
+							}
+						}
+						start=oldtippoint;
+						end=tippoint;
+						whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
+						if(whichhit!=-1){
+							hitsomething=1;
+							tippoint=colpoint;
+							terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
+							ReflectVector(&tipvelocity,&terrainnormal);
+							tippoint+=terrainnormal*.002;
+
+							bounceness=terrainnormal*findLength(&tipvelocity)*(abs(normaldotproduct(tipvelocity,terrainnormal)));
+							if(findLengthfast(&tipvelocity)<findLengthfast(&bounceness))bounceness=0;
+							frictionness=abs(normaldotproduct(tipvelocity,terrainnormal));
+							tipvelocity-=bounceness;
+							if(1-friction*frictionness>0)tipvelocity*=1-friction*frictionness;
+							else tipvelocity=0;
+							tipvelocity+=bounceness*elasticity;
+
+							if(findLengthfast(&bounceness)>1){
+								int whichsound;
+								if(type==staff)whichsound=footstepsound3+abs(Random()%2);
+								if(type!=staff)whichsound=clank1sound+abs(Random()%4);
+								emit_sound_at(whichsound, position, 128*findLengthfast(&bounceness));
+							}
+						}
+
+						if((objects.type[k]!=boxtype&&objects.type[k]!=platformtype&&objects.type[k]!=walltype&&objects.type[k]!=weirdtype)||objects.rotation2[k]!=0)
+							for(m=0;m<2;m++){
+								mid=(position*(21+(float)m*10)+tippoint*(19-(float)m*10))/40;
+								oldmid2=mid;
+								oldmid=(oldposition*(21+(float)m*10)+oldtippoint*(19-(float)m*10))/40;
+
+								start=oldmid;
+								end=mid;
+								whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
+								if(whichhit!=-1){
+									hitsomething=1;
+									mid=colpoint;
+									terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
+									ReflectVector(&velocity,&terrainnormal);
+
+									bounceness=terrainnormal*findLength(&velocity)*(abs(normaldotproduct(velocity,terrainnormal)));
+									if(findLengthfast(&velocity)<findLengthfast(&bounceness))bounceness=0;
+									frictionness=abs(normaldotproduct(velocity,terrainnormal));
+									velocity-=bounceness;
+									if(1-friction*frictionness>0)velocity*=1-friction*frictionness;
+									else velocity=0;
+									velocity+=bounceness*elasticity;
+
+									if(findLengthfast(&bounceness)>1){
+										int whichsound;
+										if(type==staff)whichsound=footstepsound3+abs(Random()%2);
+										if(type!=staff)whichsound=clank1sound+abs(Random()%4);
+										emit_sound_at(whichsound, mid, 128*findLengthfast(&bounceness));
+									}
+									position+=(mid-oldmid2)*(20/(1+(float)m*10));
+								}
+
+								mid=(position*(19-(float)m*10)+tippoint*(21+(float)m*10))/40;
+								oldmid2=mid;
+								oldmid=(oldposition*(19-(float)m*10)+oldtippoint*(21+(float)m*10))/40;
+
+								start=oldmid;
+								end=mid;
+								whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
+								if(whichhit!=-1){
+									hitsomething=1;
+									mid=colpoint;
+									terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
+									ReflectVector(&tipvelocity,&terrainnormal);
+
+									bounceness=terrainnormal*findLength(&tipvelocity)*(abs(normaldotproduct(tipvelocity,terrainnormal)));
+									if(findLengthfast(&tipvelocity)<findLengthfast(&bounceness))bounceness=0;
+									frictionness=abs(normaldotproduct(tipvelocity,terrainnormal));
+									tipvelocity-=bounceness;
+									if(1-friction*frictionness>0)tipvelocity*=1-friction*frictionness;
+									else tipvelocity=0;
+									tipvelocity+=bounceness*elasticity;
+
+									if(findLengthfast(&bounceness)>1){
+										int whichsound;
+										if(type==staff)whichsound=footstepsound3+abs(Random()%2);
+										if(type!=staff)whichsound=clank1sound+abs(Random()%4);
+										emit_sound_at(whichsound, mid, 128*findLengthfast(&bounceness));
+									}
+									tippoint+=(mid-oldmid2)*(20/(1+(float)m*10));
+								}
+							}
+						else
+						{
+							start=position;
+							end=tippoint;
+							whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
+							if(whichhit!=-1){
+								hitsomething=1;
+								closestdistance=-1;
+								closestswordpoint=colpoint;//(position+tippoint)/2;
+								point[0]=DoRotation(objects.model[k].vertex[objects.model[k].Triangles[whichhit].vertex[0]],0,objects.rotation[k],0)+objects.position[k];
+								point[1]=DoRotation(objects.model[k].vertex[objects.model[k].Triangles[whichhit].vertex[1]],0,objects.rotation[k],0)+objects.position[k];
+								point[2]=DoRotation(objects.model[k].vertex[objects.model[k].Triangles[whichhit].vertex[2]],0,objects.rotation[k],0)+objects.position[k];
+								if(DistancePointLine(&closestswordpoint, &point[0], &point[1], &distance,&colpoint ))
+									if(distance<closestdistance||closestdistance==-1){
+										closestpoint=colpoint;
+										closestdistance=distance;
+										closestline=0;
+									}
+									if(DistancePointLine(&closestswordpoint, &point[1], &point[2], &distance,&colpoint ))
 										if(distance<closestdistance||closestdistance==-1){
 											closestpoint=colpoint;
 											closestdistance=distance;
-											closestline=0;
+											closestline=1;
 										}
-										if(DistancePointLine(&closestswordpoint, &point[1], &point[2], &distance,&colpoint ))
+										if(DistancePointLine(&closestswordpoint, &point[2], &point[0], &distance,&colpoint ))
 											if(distance<closestdistance||closestdistance==-1){
 												closestpoint=colpoint;
 												closestdistance=distance;
-												closestline=1;
+												closestline=2;
 											}
-											if(DistancePointLine(&closestswordpoint, &point[2], &point[0], &distance,&colpoint ))
-												if(distance<closestdistance||closestdistance==-1){
-													closestpoint=colpoint;
-													closestdistance=distance;
-													closestline=2;
+											if(closestdistance!=-1&&isnormal(closestdistance)){
+												if(DistancePointLine(&closestpoint, &position, &tippoint, &distance,&colpoint )){
+													closestswordpoint=colpoint;
+													velocity+=(closestpoint-closestswordpoint);
+													tipvelocity+=(closestpoint-closestswordpoint);
+													position+=(closestpoint-closestswordpoint);
+													tippoint+=(closestpoint-closestswordpoint);
 												}
-												if(closestdistance!=-1&&isnormal(closestdistance)){
-													if(DistancePointLine(&closestpoint, &position[i], &tippoint[i], &distance,&colpoint )){
-														closestswordpoint=colpoint;
-														velocity[i]+=(closestpoint-closestswordpoint);
-														tipvelocity[i]+=(closestpoint-closestswordpoint);
-														position[i]+=(closestpoint-closestswordpoint);
-														tippoint[i]+=(closestpoint-closestswordpoint);
-													}
-												}
-								}
+											}
 							}
-
 						}
+
 					}
-					//Terrain collisions
-					whichhit=terrain.lineTerrain(oldposition[i],position[i],&colpoint);
-					if(whichhit!=-1||position[i].y<terrain.getHeight(position[i].x,position[i].z)){
-						hitsomething[i]=1;
-						if(whichhit!=-1)position[i]=colpoint*terrain.scale;
-						else position[i].y=terrain.getHeight(position[i].x,position[i].z);
+				}
+				//Terrain collisions
+				whichhit=terrain.lineTerrain(oldposition,position,&colpoint);
+				if(whichhit!=-1||position.y<terrain.getHeight(position.x,position.z)){
+					hitsomething=1;
+					if(whichhit!=-1)position=colpoint*terrain.scale;
+					else position.y=terrain.getHeight(position.x,position.z);
 
-						terrainnormal=terrain.getNormal(position[i].x,position[i].z);
-						ReflectVector(&velocity[i],&terrainnormal);
-						position[i]+=terrainnormal*.002;
-						bounceness=terrainnormal*findLength(&velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
-						if(findLengthfast(&velocity[i])<findLengthfast(&bounceness))bounceness=0;
-						frictionness=abs(normaldotproduct(velocity[i],terrainnormal));
-						velocity[i]-=bounceness;
-						if(1-friction*frictionness>0)velocity[i]*=1-friction*frictionness;
-						else velocity[i]=0;
-						if(terrain.getOpacity(position[i].x,position[i].z)<.2)velocity[i]+=bounceness*elasticity*.3;
-						else velocity[i]+=bounceness*elasticity;
-//if (type[i]==knife) printf("velocity of knife %d now %f,%f,%f.\n", i, velocity[i].x, velocity[i].y, velocity[i].z);
-						if(findLengthfast(&bounceness)>1){
-							int whichsound;
-							if(terrain.getOpacity(position[i].x,position[i].z)>.2){
-								if(type[i]==staff)whichsound=footstepsound3+abs(Random()%2);
-								if(type[i]!=staff)whichsound=clank1sound+abs(Random()%4);
+					terrainnormal=terrain.getNormal(position.x,position.z);
+					ReflectVector(&velocity,&terrainnormal);
+					position+=terrainnormal*.002;
+					bounceness=terrainnormal*findLength(&velocity)*(abs(normaldotproduct(velocity,terrainnormal)));
+					if(findLengthfast(&velocity)<findLengthfast(&bounceness))bounceness=0;
+					frictionness=abs(normaldotproduct(velocity,terrainnormal));
+					velocity-=bounceness;
+					if(1-friction*frictionness>0)velocity*=1-friction*frictionness;
+					else velocity=0;
+					if(terrain.getOpacity(position.x,position.z)<.2)velocity+=bounceness*elasticity*.3;
+					else velocity+=bounceness*elasticity;
+//if (type==knife) printf("velocity of knife %d now %f,%f,%f.\n", i, velocity.x, velocity.y, velocity.z);
+					if(findLengthfast(&bounceness)>1){
+						int whichsound;
+						if(terrain.getOpacity(position.x,position.z)>.2){
+							if(type==staff)whichsound=footstepsound3+abs(Random()%2);
+							if(type!=staff)whichsound=clank1sound+abs(Random()%4);
+						}
+						else whichsound=footstepsound+abs(Random()%2);
+						emit_sound_at(whichsound, position,
+								  findLengthfast(&bounceness)
+								  * (terrain.getOpacity(position.x,position.z) > .2
+								 ? 128.
+								 : 32.));
+
+						if(terrain.getOpacity(position.x,position.z)<.2){
+							XYZ terrainlight;
+							terrainlight=terrain.getLighting(position.x,position.z);
+							if(environment==snowyenvironment){
+								if(findDistancefast(&position,&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, position,velocity, terrainlight.x,terrainlight.y,terrainlight.z, .5, .7);
 							}
-							else whichsound=footstepsound+abs(Random()%2);
-							emit_sound_at(whichsound, position[i],
-								      findLengthfast(&bounceness)
-								      * (terrain.getOpacity(position[i].x,position[i].z) > .2
-									 ? 128.
-									 : 32.));
-
-							if(terrain.getOpacity(position[i].x,position[i].z)<.2){
-								XYZ terrainlight;
-								terrainlight=terrain.getLighting(position[i].x,position[i].z);
-								if(environment==snowyenvironment){
-									if(findDistancefast(&position[i],&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, position[i],velocity[i], terrainlight.x,terrainlight.y,terrainlight.z, .5, .7);
-								}
-								else if(environment==grassyenvironment){
-									if(findDistancefast(&position[i],&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, position[i],velocity[i], terrainlight.x*90/255,terrainlight.y*70/255,terrainlight.z*8/255, .5, .5);
-								}
-								else if(environment==desertenvironment){
-									if(findDistancefast(&position[i],&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, position[i],velocity[i], terrainlight.x*190/255,terrainlight.y*170/255,terrainlight.z*108/255, .5, .7);
-								}
+							else if(environment==grassyenvironment){
+								if(findDistancefast(&position,&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, position,velocity, terrainlight.x*90/255,terrainlight.y*70/255,terrainlight.z*8/255, .5, .5);
+							}
+							else if(environment==desertenvironment){
+								if(findDistancefast(&position,&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, position,velocity, terrainlight.x*190/255,terrainlight.y*170/255,terrainlight.z*108/255, .5, .7);
 							}
 						}
 					}
-					whichhit=terrain.lineTerrain(oldtippoint[i],tippoint[i],&colpoint);
-					if(whichhit!=-1||tippoint[i].y<terrain.getHeight(tippoint[i].x,tippoint[i].z)){
-						if(whichhit!=-1)tippoint[i]=colpoint*terrain.scale;
-						else tippoint[i].y=terrain.getHeight(tippoint[i].x,tippoint[i].z);
+				}
+				whichhit=terrain.lineTerrain(oldtippoint,tippoint,&colpoint);
+				if(whichhit!=-1||tippoint.y<terrain.getHeight(tippoint.x,tippoint.z)){
+					if(whichhit!=-1)tippoint=colpoint*terrain.scale;
+					else tippoint.y=terrain.getHeight(tippoint.x,tippoint.z);
 
-						terrainnormal=terrain.getNormal(tippoint[i].x,tippoint[i].z);
-						ReflectVector(&tipvelocity[i],&terrainnormal);
-						tippoint[i]+=terrainnormal*.002;
-						bounceness=terrainnormal*findLength(&tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
-						if(findLengthfast(&tipvelocity[i])<findLengthfast(&bounceness))bounceness=0;
-						frictionness=abs(normaldotproduct(tipvelocity[i],terrainnormal));
-						tipvelocity[i]-=bounceness;
-						if(1-friction*frictionness>0)tipvelocity[i]*=1-friction*frictionness;
-						else tipvelocity[i]=0;
-						if(terrain.getOpacity(tippoint[i].x,tippoint[i].z)<.2)tipvelocity[i]+=bounceness*elasticity*.3;
-						else tipvelocity[i]+=bounceness*elasticity;
-//if (type[i]==knife) printf("tipvelocity of knife %d now %f,%f,%f.\n", i, tipvelocity[i].x, tipvelocity[i].y, tipvelocity[i].z);
+					terrainnormal=terrain.getNormal(tippoint.x,tippoint.z);
+					ReflectVector(&tipvelocity,&terrainnormal);
+					tippoint+=terrainnormal*.002;
+					bounceness=terrainnormal*findLength(&tipvelocity)*(abs(normaldotproduct(tipvelocity,terrainnormal)));
+					if(findLengthfast(&tipvelocity)<findLengthfast(&bounceness))bounceness=0;
+					frictionness=abs(normaldotproduct(tipvelocity,terrainnormal));
+					tipvelocity-=bounceness;
+					if(1-friction*frictionness>0)tipvelocity*=1-friction*frictionness;
+					else tipvelocity=0;
+					if(terrain.getOpacity(tippoint.x,tippoint.z)<.2)tipvelocity+=bounceness*elasticity*.3;
+					else tipvelocity+=bounceness*elasticity;
+//if (type==knife) printf("tipvelocity of knife %d now %f,%f,%f.\n", i, tipvelocity.x, tipvelocity.y, tipvelocity.z);
 
-						if(findLengthfast(&bounceness)>1){
-							int whichsound;
-							if(terrain.getOpacity(tippoint[i].x,tippoint[i].z)>.2){
-								if(type[i]==staff)whichsound=footstepsound3+abs(Random()%2);
-								if(type[i]!=staff)whichsound=clank1sound+abs(Random()%4);
+					if(findLengthfast(&bounceness)>1){
+						int whichsound;
+						if(terrain.getOpacity(tippoint.x,tippoint.z)>.2){
+							if(type==staff)whichsound=footstepsound3+abs(Random()%2);
+							if(type!=staff)whichsound=clank1sound+abs(Random()%4);
+						}
+						else whichsound=footstepsound+abs(Random()%2);
+						emit_sound_at(whichsound, tippoint,
+								  findLengthfast(&bounceness)
+								  * (terrain.getOpacity(tippoint.x,tippoint.z) > .2
+								 ? 128.
+								 : 32.));
+
+						if(terrain.getOpacity(tippoint.x,tippoint.z)<.2){
+							XYZ terrainlight;
+							terrainlight=terrain.getLighting(tippoint.x,tippoint.z);
+							if(environment==snowyenvironment){
+								if(findDistancefast(&tippoint,&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, tippoint,tipvelocity, terrainlight.x,terrainlight.y,terrainlight.z, .5, .7);
 							}
-							else whichsound=footstepsound+abs(Random()%2);
-							emit_sound_at(whichsound, tippoint[i],
-								      findLengthfast(&bounceness)
-								      * (terrain.getOpacity(tippoint[i].x,tippoint[i].z) > .2
-									 ? 128.
-									 : 32.));
-
-							if(terrain.getOpacity(tippoint[i].x,tippoint[i].z)<.2){
-								XYZ terrainlight;
-								terrainlight=terrain.getLighting(tippoint[i].x,tippoint[i].z);
-								if(environment==snowyenvironment){
-									if(findDistancefast(&tippoint[i],&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, tippoint[i],tipvelocity[i], terrainlight.x,terrainlight.y,terrainlight.z, .5, .7);
-								}
-								else if(environment==grassyenvironment){
-									if(findDistancefast(&tippoint[i],&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, tippoint[i],tipvelocity[i], terrainlight.x*90/255,terrainlight.y*70/255,terrainlight.z*8/255, .5, .5);
-								}
-								else if(environment==desertenvironment){
-									if(findDistancefast(&tippoint[i],&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, tippoint[i],tipvelocity[i], terrainlight.x*190/255,terrainlight.y*170/255,terrainlight.z*108/255, .5, .7);
-								}
+							else if(environment==grassyenvironment){
+								if(findDistancefast(&tippoint,&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, tippoint,tipvelocity, terrainlight.x*90/255,terrainlight.y*70/255,terrainlight.z*8/255, .5, .5);
+							}
+							else if(environment==desertenvironment){
+								if(findDistancefast(&tippoint,&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, tippoint,tipvelocity, terrainlight.x*190/255,terrainlight.y*170/255,terrainlight.z*108/255, .5, .7);
 							}
 						}
 					}
+				}
 
-					//Edges
-					mid=position[i]+tippoint[i];
-					mid/=2;
-					mid+=(position[i]-mid)/20;
-					oldmid=mid;
-					if(mid.y<terrain.getHeight(mid.x,mid.z)){
-						hitsomething[i]=1;
-						mid.y=terrain.getHeight(mid.x,mid.z);
+				//Edges
+				mid=position+tippoint;
+				mid/=2;
+				mid+=(position-mid)/20;
+				oldmid=mid;
+				if(mid.y<terrain.getHeight(mid.x,mid.z)){
+					hitsomething=1;
+					mid.y=terrain.getHeight(mid.x,mid.z);
 
-						terrainnormal=terrain.getNormal(mid.x,mid.z);
-						ReflectVector(&velocity[i],&terrainnormal);
-						//mid+=terrainnormal*.002;
-						bounceness=terrainnormal*findLength(&velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
-						if(findLengthfast(&velocity[i])<findLengthfast(&bounceness))bounceness=0;
-						frictionness=abs(normaldotproduct(velocity[i],terrainnormal));
-						velocity[i]-=bounceness;
-						if(1-friction*frictionness>0)velocity[i]*=1-friction*frictionness;
-						else velocity[i]=0;
-						if(terrain.getOpacity(mid.x,mid.z)<.2)velocity[i]+=bounceness*elasticity*.3;
-						else velocity[i]+=bounceness*elasticity;
+					terrainnormal=terrain.getNormal(mid.x,mid.z);
+					ReflectVector(&velocity,&terrainnormal);
+					//mid+=terrainnormal*.002;
+					bounceness=terrainnormal*findLength(&velocity)*(abs(normaldotproduct(velocity,terrainnormal)));
+					if(findLengthfast(&velocity)<findLengthfast(&bounceness))bounceness=0;
+					frictionness=abs(normaldotproduct(velocity,terrainnormal));
+					velocity-=bounceness;
+					if(1-friction*frictionness>0)velocity*=1-friction*frictionness;
+					else velocity=0;
+					if(terrain.getOpacity(mid.x,mid.z)<.2)velocity+=bounceness*elasticity*.3;
+					else velocity+=bounceness*elasticity;
 
-						if(findLengthfast(&bounceness)>1){
-							int whichsound;
-							if(terrain.getOpacity(mid.x,mid.z)>.2){
-								if(type[i]==staff)whichsound=footstepsound3+abs(Random()%2);
-								if(type[i]!=staff)whichsound=clank1sound+abs(Random()%4);
-							}
-							else whichsound=footstepsound+abs(Random()%2);
-							emit_sound_at(whichsound, mid,
-								      findLengthfast(&bounceness)
-								      * (terrain.getOpacity(position[i].x,position[i].z) > .2
-									 ? 128.
-									 : 32.));
+					if(findLengthfast(&bounceness)>1){
+						int whichsound;
+						if(terrain.getOpacity(mid.x,mid.z)>.2){
+							if(type==staff)whichsound=footstepsound3+abs(Random()%2);
+							if(type!=staff)whichsound=clank1sound+abs(Random()%4);
 						}
-						position[i]+=(mid-oldmid)*20;
+						else whichsound=footstepsound+abs(Random()%2);
+						emit_sound_at(whichsound, mid,
+								  findLengthfast(&bounceness)
+								  * (terrain.getOpacity(position.x,position.z) > .2
+								 ? 128.
+								 : 32.));
 					}
+					position+=(mid-oldmid)*20;
+				}
 
-					mid=position[i]+tippoint[i];
-					mid/=2;
-					mid+=(tippoint[i]-mid)/20;
-					oldmid=mid;
-					if(mid.y<terrain.getHeight(mid.x,mid.z)){
-						hitsomething[i]=1;
-						mid.y=terrain.getHeight(mid.x,mid.z);
+				mid=position+tippoint;
+				mid/=2;
+				mid+=(tippoint-mid)/20;
+				oldmid=mid;
+				if(mid.y<terrain.getHeight(mid.x,mid.z)){
+					hitsomething=1;
+					mid.y=terrain.getHeight(mid.x,mid.z);
 
-						terrainnormal=terrain.getNormal(mid.x,mid.z);
-						ReflectVector(&tipvelocity[i],&terrainnormal);
-						//mid+=terrainnormal*.002;
-						bounceness=terrainnormal*findLength(&tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
-						if(findLengthfast(&tipvelocity[i])<findLengthfast(&bounceness))bounceness=0;
-						frictionness=abs(normaldotproduct(tipvelocity[i],terrainnormal));
-						tipvelocity[i]-=bounceness;
-						if(1-friction*frictionness>0)tipvelocity[i]*=1-friction*frictionness;
-						else tipvelocity[i]=0;
-						if(terrain.getOpacity(mid.x,mid.z)<.2)tipvelocity[i]+=bounceness*elasticity*.3;
-						else tipvelocity[i]+=bounceness*elasticity;
+					terrainnormal=terrain.getNormal(mid.x,mid.z);
+					ReflectVector(&tipvelocity,&terrainnormal);
+					//mid+=terrainnormal*.002;
+					bounceness=terrainnormal*findLength(&tipvelocity)*(abs(normaldotproduct(tipvelocity,terrainnormal)));
+					if(findLengthfast(&tipvelocity)<findLengthfast(&bounceness))bounceness=0;
+					frictionness=abs(normaldotproduct(tipvelocity,terrainnormal));
+					tipvelocity-=bounceness;
+					if(1-friction*frictionness>0)tipvelocity*=1-friction*frictionness;
+					else tipvelocity=0;
+					if(terrain.getOpacity(mid.x,mid.z)<.2)tipvelocity+=bounceness*elasticity*.3;
+					else tipvelocity+=bounceness*elasticity;
 
-						if(findLengthfast(&bounceness)>1){
-							int whichsound;
-							if(terrain.getOpacity(mid.x,mid.z)>.2){
-								if(type[i]==staff)whichsound=footstepsound3+abs(Random()%2);
-								if(type[i]!=staff)whichsound=clank1sound+abs(Random()%4);
-							}
-							else whichsound=footstepsound+abs(Random()%2);
-							emit_sound_at(whichsound, mid,
-								      findLengthfast(&bounceness)
-								      * (terrain.getOpacity(position[i].x,position[i].z) > .2
-									 ? 128.
-									 : 32.));
+					if(findLengthfast(&bounceness)>1){
+						int whichsound;
+						if(terrain.getOpacity(mid.x,mid.z)>.2){
+							if(type==staff)whichsound=footstepsound3+abs(Random()%2);
+							if(type!=staff)whichsound=clank1sound+abs(Random()%4);
 						}
-						tippoint[i]+=(mid-oldmid)*20;
+						else whichsound=footstepsound+abs(Random()%2);
+						emit_sound_at(whichsound, mid,
+								  findLengthfast(&bounceness)
+								  * (terrain.getOpacity(position.x,position.z) > .2
+								 ? 128.
+								 : 32.));
 					}
-					//Gravity
-					velocity[i].y+=gravity*multiplier;
-					tipvelocity[i].y+=gravity*multiplier;
-					//position[i].y+=gravity*multiplier*multiplier;
-					//tippoint[i].y+=gravity*multiplier*multiplier;
+					tippoint+=(mid-oldmid)*20;
+				}
+				//Gravity
+				velocity.y+=gravity*multiplier;
+				tipvelocity.y+=gravity*multiplier;
+				//position.y+=gravity*multiplier*multiplier;
+				//tippoint.y+=gravity*multiplier*multiplier;
 
-					//Rotation
-					XYZ temppoint1,temppoint2,tempforward;
-					float distance;
+				//Rotation
+				XYZ temppoint1,temppoint2,tempforward;
+				float distance;
 
-					temppoint1=position[i];
-					temppoint2=tippoint[i];
-					distance=findDistance(&temppoint1,&temppoint2);
-					rotation2[i]=asin((temppoint1.y-temppoint2.y)/distance);
-					rotation2[i]*=360/6.28;
-					temppoint1.y=0;
-					temppoint2.y=0;
-					rotation1[i]=acos((temppoint1.z-temppoint2.z)/findDistance(&temppoint1,&temppoint2));
-					rotation1[i]*=360/6.28;
-					rotation3[i]=0;
-					smallrotation[i]=90;
-					smallrotation2[i]=0;
-					bigtilt[i]=0;
-					bigtilt2[i]=0;
-					bigrotation[i]=0;
-					if(temppoint1.x>temppoint2.x)rotation1[i]=360-rotation1[i];
+				temppoint1=position;
+				temppoint2=tippoint;
+				distance=findDistance(&temppoint1,&temppoint2);
+				rotation2=asin((temppoint1.y-temppoint2.y)/distance);
+				rotation2*=360/6.28;
+				temppoint1.y=0;
+				temppoint2.y=0;
+				rotation1=acos((temppoint1.z-temppoint2.z)/findDistance(&temppoint1,&temppoint2));
+				rotation1*=360/6.28;
+				rotation3=0;
+				smallrotation=90;
+				smallrotation2=0;
+				bigtilt=0;
+				bigtilt2=0;
+				bigrotation=0;
+				if(temppoint1.x>temppoint2.x)rotation1=360-rotation1;
 
-					//Stop moving
-					if(findLengthfast(&velocity[i])<.3&&findLengthfast(&tipvelocity[i])<.3&&hitsomething[i]){
-						freetime[i]+=multiplier;
-					}
+				//Stop moving
+				if(findLengthfast(&velocity)<.3&&findLengthfast(&tipvelocity)<.3&&hitsomething){
+					freetime+=multiplier;
+				}
 
-					//velocity[i]=(position[i]-oldposition[i])/multiplier;
-					//tipvelocity[i]==(tippoint[i-+oldtippoint[i])/multiplier;
-					if(freetime[i]>.4){
-						velocity[i]=0;
-						tipvelocity[i]=0;
-					}
-					firstfree[i]=0;
+				//velocity=(position-oldposition)/multiplier;
+				//tipvelocity==(tippoint[i-+oldtippoint)/multiplier;
+				if(freetime>.4){
+					velocity=0;
+					tipvelocity=0;
+				}
+				firstfree=0;
+		}
+	}
+	multiplier=tempmult;
+	if(blooddrip&&bloody){
+		blooddripdelay-=blooddrip*multiplier/2;
+		blooddrip-=multiplier;
+		if(blooddrip<0)blooddrip=0;
+		if(blooddrip>5)blooddrip=5;
+		if(blooddripdelay<0&&bloodtoggle){
+			blooddripdelay=1;
+			XYZ bloodvel;
+			XYZ bloodloc;
+			bloodloc=position+(tippoint-position)*.7;
+			bloodloc.y-=.05;
+			if(bloodtoggle){
+				bloodvel=0;
+				Sprite::MakeSprite(bloodsprite, bloodloc,bloodvel, 1,1,1, .03, 1);
 			}
 		}
-		multiplier=tempmult;
-		if(blooddrip[i]&&bloody[i]){
-			blooddripdelay[i]-=blooddrip[i]*multiplier/2;
-			blooddrip[i]-=multiplier;
-			if(blooddrip[i]<0)blooddrip[i]=0;
-			if(blooddrip[i]>5)blooddrip[i]=5;
-			if(blooddripdelay[i]<0&&bloodtoggle){
-				blooddripdelay[i]=1;
-				XYZ bloodvel;
-				XYZ bloodloc;
-				bloodloc=position[i]+(tippoint[i]-position[i])*.7;
-				bloodloc.y-=.05;
-				if(bloodtoggle){
-					bloodvel=0;
-					Sprite::MakeSprite(bloodsprite, bloodloc,bloodvel, 1,1,1, .03, 1);
+	}
+	if(onfire){
+		flamedelay-=multiplier;
+		if(onfire&&flamedelay<=0){
+			flamedelay=.020;
+			flamedelay-=multiplier;
+			normalrot=0;
+			if(owner!=-1){
+				normalrot=player[owner].velocity;
+			}
+			normalrot.y+=1;
+			if(owner!=-1){
+				if(player[owner].onterrain){
+					normalrot.y=1;
 				}
 			}
+			Sprite::MakeSprite(weaponflamesprite, position+tippoint*(((float)abs(Random()%100))/600+.05),normalrot, 1,1,1, (.6+(float)abs(Random()%100)/200-.25)*1/3, 1);
+			Sprite::setLastSpriteSpeed(4);
+			Sprite::setLastSpriteAlivetime(.3);
 		}
-		if(onfire[i]){
-			flamedelay[i]-=multiplier;
-			if(onfire[i]&&flamedelay[i]<=0){
-				flamedelay[i]=.020;
-				flamedelay[i]-=multiplier;
-				normalrot=0;
-				if(owner[i]!=-1){
-					normalrot=player[owner[i]].velocity;
-				}
-				normalrot.y+=1;
-				if(owner[i]!=-1){
-					if(player[owner[i]].onterrain){
-						normalrot.y=1;
-					}
-				}
-				Sprite::MakeSprite(weaponflamesprite, position[i]+tippoint[i]*(((float)abs(Random()%100))/600+.05),normalrot, 1,1,1, (.6+(float)abs(Random()%100)/200-.25)*1/3, 1);
+	}
+
+	if(!onfire&&owner==-1&&type!=staff){
+		flamedelay-=multiplier;
+		if(flamedelay<=0){
+			flamedelay=.020;
+			flamedelay-=multiplier;
+			normalrot=0;
+			if(Random()%50==0&&findDistancefast(&position,&viewer)>80){
+				XYZ shinepoint;
+				shinepoint=position+(tippoint-position)*(((float)abs(Random()%100))/100);
+				Sprite::MakeSprite(weaponshinesprite, shinepoint,normalrot, 1,1,1, (.1+(float)abs(Random()%100)/200-.25)*1/3*fast_sqrt(findDistance(&shinepoint,&viewer)), 1);
 				Sprite::setLastSpriteSpeed(4);
 				Sprite::setLastSpriteAlivetime(.3);
 			}
 		}
+	}
+}
 
-		if(!onfire[i]&&owner[i]==-1&&type[i]!=staff){
-			flamedelay[i]-=multiplier;
-			if(flamedelay[i]<=0){
-				flamedelay[i]=.020;
-				flamedelay[i]-=multiplier;
-				normalrot=0;
-				if(Random()%50==0&&findDistancefast(&position[i],&viewer)>80){
-					XYZ shinepoint;
-					shinepoint=position[i]+(tippoint[i]-position[i])*(((float)abs(Random()%100))/100);
-					Sprite::MakeSprite(weaponshinesprite, shinepoint,normalrot, 1,1,1, (.1+(float)abs(Random()%100)/200-.25)*1/3*fast_sqrt(findDistance(&shinepoint,&viewer)), 1);
-					Sprite::setLastSpriteSpeed(4);
-					Sprite::setLastSpriteAlivetime(.3);
-				}
+void Weapons::DoStuff() {
+	//Move
+	for(std::vector<Weapon>::iterator weapon = begin(); weapon != end(); ++weapon) {
+		weapon->DoStuff();
+	}
+}
+
+void Weapon::Draw() {
+	static int i,j;
+	static XYZ terrainlight;
+	static GLfloat M[16];
+	static bool draw;
+	
+	if((frustum.SphereInFrustum(position.x,position.y,position.z,1)&&findDistancefast(&viewer,&position)<viewdistance*viewdistance))
+	{
+		draw=0;
+		if(owner==-1)
+		{
+			draw=1;
+			if(velocity.x&&!physics)drawhowmany=10;
+			else drawhowmany=1;
+		}
+		if(owner!=-1)
+		{
+			if(player[owner].occluded<25)
+				if((frustum.SphereInFrustum(player[owner].coords.x,player[owner].coords.y+player[owner].scale*3,player[owner].coords.z,player[owner].scale*8)&&findDistancefast(&viewer,&player[owner].coords)<viewdistance*viewdistance)||player[owner].skeleton.free==3)
+					draw=1;
+			if((player[owner].targetanimation==knifeslashstartanim||player[owner].targetanimation==swordsneakattackanim||(player[owner].currentanimation==staffhitanim&&player[owner].currentframe>1)||(player[owner].currentanimation==staffhitreversedanim&&player[owner].currentframe>1)||(player[owner].currentanimation==staffspinhitanim&&player[owner].currentframe>1)||(player[owner].currentanimation==staffspinhitreversedanim&&player[owner].currentframe>1)||(player[owner].currentanimation==staffgroundsmashanim&&player[owner].currentframe>1)||(player[owner].targetanimation==swordslashanim&&player[owner].targetframe<7)||player[owner].targetanimation==crouchstabanim||player[owner].targetanimation==swordslashreversalanim||player[owner].targetanimation==swordslashreversedanim||player[owner].targetanimation==knifefollowanim||player[owner].targetanimation==swordgroundstabanim||player[owner].targetanimation==knifethrowanim)&&player[owner].targetanimation==lastdrawnanim&&!player[owner].skeleton.free)
+			{
+				drawhowmany=10;
 			}
+			else drawhowmany=1;
+			if(player[owner].targetanimation==swordgroundstabanim)
+			{
+				lastdrawnrotation1=rotation1;
+				lastdrawnrotation2=rotation2;
+				lastdrawnrotation3=rotation3;
+				lastdrawnbigrotation=bigrotation;
+				lastdrawnbigtilt=bigtilt;
+				lastdrawnbigtilt2=bigtilt2;
+				lastdrawnsmallrotation=smallrotation;
+				lastdrawnsmallrotation2=smallrotation2;
+			}
+		}
+		if(draw)
+		{
+			terrainlight=terrain.getLighting(position.x,position.z);
+			if(drawhowmany>0)
+			{
+				glAlphaFunc(GL_GREATER, 0.01);
+			}
+			for(j=drawhowmany;j>0;j--)
+			{
+				glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+				glPushMatrix();
+					glColor4f(terrainlight.x,terrainlight.y,terrainlight.z,j/drawhowmany);
+					if(owner!=-1)glTranslatef(position.x*(((float)(j))/drawhowmany)+lastdrawnposition.x*(1-((float)(j))/drawhowmany),position.y*(((float)(j))/drawhowmany)-.02+lastdrawnposition.y*(1-((float)(j))/drawhowmany),position.z*(((float)(j))/drawhowmany)+lastdrawnposition.z*(1-((float)(j))/drawhowmany));
+					if(owner==-1)glTranslatef(position.x*(((float)(j))/drawhowmany)+lastdrawnposition.x*(1-((float)(j))/drawhowmany),position.y*(((float)(j))/drawhowmany)+lastdrawnposition.y*(1-((float)(j))/drawhowmany),position.z*(((float)(j))/drawhowmany)+lastdrawnposition.z*(1-((float)(j))/drawhowmany));
+					//glTranslatef(position.x,position.y-.02,position.z);
+					glRotatef(bigrotation*(((float)(j))/drawhowmany)+lastdrawnbigrotation*(1-((float)(j))/drawhowmany),0,1,0);
+					glRotatef(bigtilt2*(((float)(j))/drawhowmany)+lastdrawnbigtilt2*(1-((float)(j))/drawhowmany),1,0,0);
+					glRotatef(bigtilt*(((float)(j))/drawhowmany)+lastdrawnbigtilt*(1-((float)(j))/drawhowmany),0,0,1);
+					glRotatef(-rotation1*(((float)(j))/drawhowmany)-lastdrawnrotation1*(1-((float)(j))/drawhowmany)+90,0,1,0);
+					glRotatef(-rotation2*(((float)(j))/drawhowmany)-lastdrawnrotation2*(1-((float)(j))/drawhowmany)+90,0,0,1);
+					glRotatef(-rotation3*(((float)(j))/drawhowmany)-lastdrawnrotation3*(1-((float)(j))/drawhowmany),0,1,0);
+					glRotatef(smallrotation*(((float)(j))/drawhowmany)+lastdrawnsmallrotation*(1-((float)(j))/drawhowmany),1,0,0);
+					glRotatef(smallrotation2*(((float)(j))/drawhowmany)+lastdrawnsmallrotation2*(1-((float)(j))/drawhowmany),0,1,0);
+
+					if(owner!=-1)
+					{
+						if(player[owner].targetanimation==staffhitanim||player[owner].currentanimation==staffhitanim||player[owner].targetanimation==staffhitreversedanim||player[owner].currentanimation==staffhitreversedanim)
+						{
+							glTranslatef(0,0,-.3);
+						}
+						if(player[owner].targetanimation==staffgroundsmashanim||player[owner].currentanimation==staffgroundsmashanim||player[owner].targetanimation==staffspinhitreversedanim||player[owner].currentanimation==staffspinhitreversedanim||player[owner].targetanimation==staffspinhitanim||player[owner].currentanimation==staffspinhitanim)
+						{
+							glTranslatef(0,0,-.1);
+						}
+					}
+
+					glEnable(GL_LIGHTING);
+					switch(type) {
+						case knife:
+							if(!bloody||!bloodtoggle)
+								throwingknifemodel.drawdifftex(knifetextureptr);
+							if(bloodtoggle)
+							{
+								if(bloody==1)
+									throwingknifemodel.drawdifftex(lightbloodknifetextureptr);
+								if(bloody==2)
+									throwingknifemodel.drawdifftex(bloodknifetextureptr);
+							}
+							break;
+						case sword:
+							if(!bloody||!bloodtoggle)
+								swordmodel.drawdifftex(swordtextureptr);
+							if(bloodtoggle)
+							{
+								if(bloody==1)
+									swordmodel.drawdifftex(lightbloodswordtextureptr);
+								if(bloody==2)
+									swordmodel.drawdifftex(bloodswordtextureptr);
+							}
+							break;
+						case staff:
+							staffmodel.drawdifftex(stafftextureptr);
+							break;
+					}
+
+				glPopMatrix();
+			}
+
+			lastdrawnposition=position;
+			lastdrawntippoint=tippoint;
+			lastdrawnrotation1=rotation1;
+			lastdrawnrotation2=rotation2;
+			lastdrawnrotation3=rotation3;
+			lastdrawnbigrotation=bigrotation;
+			lastdrawnbigtilt=bigtilt;
+			lastdrawnbigtilt2=bigtilt2;
+			lastdrawnsmallrotation=smallrotation;
+			lastdrawnsmallrotation2=smallrotation2;
+			if(owner!=-1)lastdrawnanim=player[owner].currentanimation;
+		}
+		if(owner!=-1)
+		{
+			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+			glPushMatrix();
+				glLoadIdentity();
+				glTranslatef(position.x,position.y-.02,position.z);
+				glRotatef(bigrotation,0,1,0);
+				glRotatef(bigtilt2,1,0,0);
+				glRotatef(bigtilt,0,0,1);
+				glRotatef(-rotation1+90,0,1,0);
+				glRotatef(-rotation2+90,0,0,1);
+				glRotatef(-rotation3,0,1,0);
+				glRotatef(smallrotation,1,0,0);
+				glRotatef(smallrotation2,0,1,0);
+				glTranslatef(0,0,length);
+				glGetFloatv(GL_MODELVIEW_MATRIX,M);
+				tippoint.x=M[12];
+				tippoint.y=M[13];
+				tippoint.z=M[14];
+			glPopMatrix();
 		}
 	}
 }
 
 int Weapons::Draw()
 {
-	static int i,j;
-	static XYZ terrainlight;
-	static GLfloat M[16];
-	static bool draw;
 	glAlphaFunc(GL_GREATER, 0.9);
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
 	glDepthMask(1);
-	for(i=0;i<numweapons;i++)
-	{
-		if((frustum.SphereInFrustum(position[i].x,position[i].y,position[i].z,1)&&findDistancefast(&viewer,&position[i])<viewdistance*viewdistance))
-		{
-			draw=0;
-			if(owner[i]==-1)
-			{
-				draw=1;
-				if(velocity[i].x&&!physics[i])drawhowmany[i]=10;
-				else drawhowmany[i]=1;
-			}
-			if(owner[i]!=-1)
-			{
-				if(player[owner[i]].occluded<25)
-					if((frustum.SphereInFrustum(player[owner[i]].coords.x,player[owner[i]].coords.y+player[owner[i]].scale*3,player[owner[i]].coords.z,player[owner[i]].scale*8)&&findDistancefast(&viewer,&player[owner[i]].coords)<viewdistance*viewdistance)||player[owner[i]].skeleton.free==3)
-						draw=1;
-				if((player[owner[i]].targetanimation==knifeslashstartanim||player[owner[i]].targetanimation==swordsneakattackanim||(player[owner[i]].currentanimation==staffhitanim&&player[owner[i]].currentframe>1)||(player[owner[i]].currentanimation==staffhitreversedanim&&player[owner[i]].currentframe>1)||(player[owner[i]].currentanimation==staffspinhitanim&&player[owner[i]].currentframe>1)||(player[owner[i]].currentanimation==staffspinhitreversedanim&&player[owner[i]].currentframe>1)||(player[owner[i]].currentanimation==staffgroundsmashanim&&player[owner[i]].currentframe>1)||(player[owner[i]].targetanimation==swordslashanim&&player[owner[i]].targetframe<7)||player[owner[i]].targetanimation==crouchstabanim||player[owner[i]].targetanimation==swordslashreversalanim||player[owner[i]].targetanimation==swordslashreversedanim||player[owner[i]].targetanimation==knifefollowanim||player[owner[i]].targetanimation==swordgroundstabanim||player[owner[i]].targetanimation==knifethrowanim)&&player[owner[i]].targetanimation==lastdrawnanim[i]&&!player[owner[i]].skeleton.free)
-				{
-					drawhowmany[i]=10;
-				}
-				else drawhowmany[i]=1;
-				if(player[owner[i]].targetanimation==swordgroundstabanim)
-				{
-					lastdrawnrotation1[i]=rotation1[i];
-					lastdrawnrotation2[i]=rotation2[i];
-					lastdrawnrotation3[i]=rotation3[i];
-					lastdrawnbigrotation[i]=bigrotation[i];
-					lastdrawnbigtilt[i]=bigtilt[i];
-					lastdrawnbigtilt2[i]=bigtilt2[i];
-					lastdrawnsmallrotation[i]=smallrotation[i];
-					lastdrawnsmallrotation2[i]=smallrotation2[i];
-				}
-			}
-			if(draw)
-			{
-				terrainlight=terrain.getLighting(position[i].x,position[i].z);
-				if(drawhowmany[i]>0)
-				{
-					glAlphaFunc(GL_GREATER, 0.01);
-				}
-				for(j=drawhowmany[i];j>0;j--)
-				{
-					glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-					glPushMatrix();
-						glColor4f(terrainlight.x,terrainlight.y,terrainlight.z,j/drawhowmany[i]);
-						if(owner[i]!=-1)glTranslatef(position[i].x*(((float)(j))/drawhowmany[i])+lastdrawnposition[i].x*(1-((float)(j))/drawhowmany[i]),position[i].y*(((float)(j))/drawhowmany[i])-.02+lastdrawnposition[i].y*(1-((float)(j))/drawhowmany[i]),position[i].z*(((float)(j))/drawhowmany[i])+lastdrawnposition[i].z*(1-((float)(j))/drawhowmany[i]));
-						if(owner[i]==-1)glTranslatef(position[i].x*(((float)(j))/drawhowmany[i])+lastdrawnposition[i].x*(1-((float)(j))/drawhowmany[i]),position[i].y*(((float)(j))/drawhowmany[i])+lastdrawnposition[i].y*(1-((float)(j))/drawhowmany[i]),position[i].z*(((float)(j))/drawhowmany[i])+lastdrawnposition[i].z*(1-((float)(j))/drawhowmany[i]));
-						//glTranslatef(position[i].x,position[i].y-.02,position[i].z);
-						glRotatef(bigrotation[i]*(((float)(j))/drawhowmany[i])+lastdrawnbigrotation[i]*(1-((float)(j))/drawhowmany[i]),0,1,0);
-						glRotatef(bigtilt2[i]*(((float)(j))/drawhowmany[i])+lastdrawnbigtilt2[i]*(1-((float)(j))/drawhowmany[i]),1,0,0);
-						glRotatef(bigtilt[i]*(((float)(j))/drawhowmany[i])+lastdrawnbigtilt[i]*(1-((float)(j))/drawhowmany[i]),0,0,1);
-						glRotatef(-rotation1[i]*(((float)(j))/drawhowmany[i])-lastdrawnrotation1[i]*(1-((float)(j))/drawhowmany[i])+90,0,1,0);
-						glRotatef(-rotation2[i]*(((float)(j))/drawhowmany[i])-lastdrawnrotation2[i]*(1-((float)(j))/drawhowmany[i])+90,0,0,1);
-						glRotatef(-rotation3[i]*(((float)(j))/drawhowmany[i])-lastdrawnrotation3[i]*(1-((float)(j))/drawhowmany[i]),0,1,0);
-						glRotatef(smallrotation[i]*(((float)(j))/drawhowmany[i])+lastdrawnsmallrotation[i]*(1-((float)(j))/drawhowmany[i]),1,0,0);
-						glRotatef(smallrotation2[i]*(((float)(j))/drawhowmany[i])+lastdrawnsmallrotation2[i]*(1-((float)(j))/drawhowmany[i]),0,1,0);
-
-						if(owner[i]!=-1)
-						{
-							if(player[owner[i]].targetanimation==staffhitanim||player[owner[i]].currentanimation==staffhitanim||player[owner[i]].targetanimation==staffhitreversedanim||player[owner[i]].currentanimation==staffhitreversedanim)
-							{
-								glTranslatef(0,0,-.3);
-							}
-							if(player[owner[i]].targetanimation==staffgroundsmashanim||player[owner[i]].currentanimation==staffgroundsmashanim||player[owner[i]].targetanimation==staffspinhitreversedanim||player[owner[i]].currentanimation==staffspinhitreversedanim||player[owner[i]].targetanimation==staffspinhitanim||player[owner[i]].currentanimation==staffspinhitanim)
-							{
-								glTranslatef(0,0,-.1);
-							}
-						}
-						/*if(type[i]==knife){
-						if(owner[i]==-1){
-						if(!physics[i]&&findDistance(&position[i],&oldposition[i])*5>1)glScalef(1,1,findDistance(&position[i],&oldposition[i])*5);
-						}
-						}*/
-
-						if(type[i]==knife)
-						{
-							glEnable(GL_LIGHTING);
-							if(!bloody[i]||!bloodtoggle)throwingknifemodel.drawdifftex(knifetextureptr);
-							if(bloodtoggle)
-							{
-								if(bloody[i]==1)throwingknifemodel.drawdifftex(lightbloodknifetextureptr);
-								if(bloody[i]==2)throwingknifemodel.drawdifftex(bloodknifetextureptr);
-							}
-						}
-						if(type[i]==sword)
-						{
-							glEnable(GL_LIGHTING);
-							if(!bloody[i]||!bloodtoggle)swordmodel.drawdifftex(swordtextureptr);
-							if(bloodtoggle)
-							{
-								if(bloody[i]==1)swordmodel.drawdifftex(lightbloodswordtextureptr);
-								if(bloody[i]==2)swordmodel.drawdifftex(bloodswordtextureptr);
-							}
-						}
-						if(type[i]==staff)
-						{
-							glEnable(GL_LIGHTING);
-							staffmodel.drawdifftex(stafftextureptr);
-						}
-
-					glPopMatrix();
-				}
-
-				lastdrawnposition[i]=position[i];
-				lastdrawntippoint[i]=tippoint[i];
-				lastdrawnrotation1[i]=rotation1[i];
-				lastdrawnrotation2[i]=rotation2[i];
-				lastdrawnrotation3[i]=rotation3[i];
-				lastdrawnbigrotation[i]=bigrotation[i];
-				lastdrawnbigtilt[i]=bigtilt[i];
-				lastdrawnbigtilt2[i]=bigtilt2[i];
-				lastdrawnsmallrotation[i]=smallrotation[i];
-				lastdrawnsmallrotation2[i]=smallrotation2[i];
-				if(owner[i]!=-1)lastdrawnanim[i]=player[owner[i]].currentanimation;
-			}
-			if(owner[i]!=-1)
-			{
-				glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-				glPushMatrix();
-					glLoadIdentity();
-					glTranslatef(position[i].x,position[i].y-.02,position[i].z);
-					glRotatef(bigrotation[i],0,1,0);
-					glRotatef(bigtilt2[i],1,0,0);
-					glRotatef(bigtilt[i],0,0,1);
-					glRotatef(-rotation1[i]+90,0,1,0);
-					glRotatef(-rotation2[i]+90,0,0,1);
-					glRotatef(-rotation3[i],0,1,0);
-					glRotatef(smallrotation[i],1,0,0);
-					glRotatef(smallrotation2[i],0,1,0);
-					glTranslatef(0,0,length[i]);
-					glGetFloatv(GL_MODELVIEW_MATRIX,M);
-					tippoint[i].x=M[12];
-					tippoint[i].y=M[13];
-					tippoint[i].z=M[14];
-				glPopMatrix();
-			}
-			/*XYZ shinepoint;
-			XYZ nothingpoint;
-			nothingpoint=0;
-			shinepoint=position[i];
-			Sprite::MakeSprite(weaponshinesprite, shinepoint,nothingpoint, 1,1,1,multiplier*2, 1);
-			Sprite::speed[Sprite::numsprites-1]=4;
-			Sprite::alivetime[Sprite::numsprites-1]=.3;
-			shinepoint=tippoint[i];
-			Sprite::MakeSprite(weaponshinesprite, shinepoint,nothingpoint, 1,1,1,multiplier*2, 1);
-			Sprite::speed[Sprite::numsprites-1]=4;
-			Sprite::alivetime[Sprite::numsprites-1]=.3;*/
-		}
+	
+	for(std::vector<Weapon>::iterator weapon = begin(); weapon != end(); ++weapon) {
+		weapon->Draw();
 	}
 	return 0;
 }
 
 Weapons::Weapons()
 {
-	numweapons = 0;
-
-	//		Model throwingknifemodel;
-	knifetextureptr = 0;
-	lightbloodknifetextureptr = 0;
-	bloodknifetextureptr = 0;
-
-	//		Model swordmodel;
-	swordtextureptr = 0;
-	lightbloodswordtextureptr = 0;
-	bloodswordtextureptr = 0;
-
-	//		Model staffmodel;
-	stafftextureptr = 0;
 }
 
 Weapons::~Weapons()
 {
-	if (stafftextureptr) glDeleteTextures( 1, &stafftextureptr );
-	if (knifetextureptr) glDeleteTextures( 1, &knifetextureptr );
-	if (lightbloodknifetextureptr) glDeleteTextures( 1, &lightbloodknifetextureptr );
-	if (bloodknifetextureptr) glDeleteTextures( 1, &bloodknifetextureptr );
-	if (swordtextureptr) glDeleteTextures( 1, &swordtextureptr );
-	if (lightbloodswordtextureptr) glDeleteTextures( 1, &lightbloodswordtextureptr );
-	if (bloodswordtextureptr) glDeleteTextures( 1, &bloodswordtextureptr );
+	if (Weapon::stafftextureptr) glDeleteTextures( 1, &Weapon::stafftextureptr );
+	if (Weapon::knifetextureptr) glDeleteTextures( 1, &Weapon::knifetextureptr );
+	if (Weapon::lightbloodknifetextureptr) glDeleteTextures( 1, &Weapon::lightbloodknifetextureptr );
+	if (Weapon::bloodknifetextureptr) glDeleteTextures( 1, &Weapon::bloodknifetextureptr );
+	if (Weapon::swordtextureptr) glDeleteTextures( 1, &Weapon::swordtextureptr );
+	if (Weapon::lightbloodswordtextureptr) glDeleteTextures( 1, &Weapon::lightbloodswordtextureptr );
+	if (Weapon::bloodswordtextureptr) glDeleteTextures( 1, &Weapon::bloodswordtextureptr );
 }
 

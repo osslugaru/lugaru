@@ -40,77 +40,88 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define sword 2
 #define staff 3
 
-class Weapons
+class Weapon {
+	public:
+		Weapon(int type, int owner);
+			
+		static Model throwingknifemodel;
+		static GLuint knifetextureptr;
+		static GLuint lightbloodknifetextureptr;
+		static GLuint bloodknifetextureptr;
+
+		static Model swordmodel;
+		static GLuint swordtextureptr;
+		static GLuint lightbloodswordtextureptr;
+		static GLuint bloodswordtextureptr;
+
+		static Model staffmodel;
+		static GLuint stafftextureptr;
+	
+		void Draw();
+		void DoStuff();
+		
+		int getType() { return type; }
+		void setType(int);
+		
+		int owner;
+		XYZ position;
+		XYZ tippoint;
+		XYZ velocity;
+		XYZ tipvelocity;
+		bool missed;
+		bool hitsomething;
+		float freetime;
+		bool firstfree;
+		bool physics;
+		
+		float damage;
+		int bloody;
+		float blooddrip;
+		float blooddripdelay;
+		
+		float rotation1;
+		float rotation2;
+		float rotation3;
+		float bigrotation;
+		float bigtilt;
+		float bigtilt2;
+		float smallrotation;
+		float smallrotation2;
+	private:
+		int type;
+		
+		XYZ oldtippoint;
+		float lastmult;
+		XYZ oldposition;
+		int oldowner;
+		bool onfire;
+		float flamedelay;
+		float mass;
+		float tipmass;
+		float length;
+		float drawhowmany;
+
+		XYZ lastdrawnposition;
+		XYZ lastdrawntippoint;
+		float lastdrawnrotation1;
+		float lastdrawnrotation2;
+		float lastdrawnrotation3;
+		float lastdrawnbigrotation;
+		float lastdrawnbigtilt;
+		float lastdrawnbigtilt2;
+		float lastdrawnsmallrotation;
+		float lastdrawnsmallrotation2;
+		int lastdrawnanim;
+};
+
+class Weapons : public std::vector<Weapon>
 {
 public:
-
-	float rotation1[max_weaponinstances];
-	float rotation2[max_weaponinstances];
-	float rotation3[max_weaponinstances];
-	float bigrotation[max_weaponinstances];
-	float bigtilt[max_weaponinstances];
-	float bigtilt2[max_weaponinstances];
-	float smallrotation[max_weaponinstances];
-	float smallrotation2[max_weaponinstances];
-
-	int numweapons;
-	float damage[max_weaponinstances];
-	XYZ tippoint[max_weaponinstances];
-	XYZ oldtippoint[max_weaponinstances];
-	XYZ position[max_weaponinstances];
-	float lastmult[max_weaponinstances];
-	XYZ oldposition[max_weaponinstances];
-	XYZ velocity[max_weaponinstances];
-	XYZ tipvelocity[max_weaponinstances];
-	int type[max_weaponinstances];
-	int oldowner[max_weaponinstances];
-	int owner[max_weaponinstances];
-	int bloody[max_weaponinstances];
-	float blooddrip[max_weaponinstances];
-	float blooddripdelay[max_weaponinstances];
-	bool onfire[max_weaponinstances];
-	float flamedelay[max_weaponinstances];
-	bool missed[max_weaponinstances];
-	float mass[max_weaponinstances];
-	float tipmass[max_weaponinstances];
-	float length[max_weaponinstances];
-	float freetime[max_weaponinstances];
-	bool firstfree[max_weaponinstances];
-	bool physics[max_weaponinstances];
-	float drawhowmany[max_weaponinstances];
-	bool hitsomething[max_weaponinstances];
-
-	XYZ lastdrawnposition[max_weaponinstances];
-	XYZ lastdrawntippoint[max_weaponinstances];
-	float lastdrawnrotation1[max_weaponinstances];
-	float lastdrawnrotation2[max_weaponinstances];
-	float lastdrawnrotation3[max_weaponinstances];
-	float lastdrawnbigrotation[max_weaponinstances];
-	float lastdrawnbigtilt[max_weaponinstances];
-	float lastdrawnbigtilt2[max_weaponinstances];
-	float lastdrawnsmallrotation[max_weaponinstances];
-	float lastdrawnsmallrotation2[max_weaponinstances];
-	int lastdrawnanim[max_weaponinstances];
-
-	Model throwingknifemodel;
-	GLuint knifetextureptr;
-	GLuint lightbloodknifetextureptr;
-	GLuint bloodknifetextureptr;
-
-	Model swordmodel;
-	GLuint swordtextureptr;
-	GLuint lightbloodswordtextureptr;
-	GLuint bloodswordtextureptr;
-
-	Model staffmodel;
-	GLuint stafftextureptr;
-
+	Weapons();
+	~Weapons();
+	
 	int Draw();
 	void DoStuff();
-
-	Weapons();
-
-	~Weapons();
 };
 
 extern Weapons weapons;
