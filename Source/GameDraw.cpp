@@ -2024,9 +2024,9 @@ void Game::LoadCampaign() {
 	if(!Mainmenuitems[7]) {
 		ifstream test(ConvertFileName((":Data:Textures:"+accountactive->getCurrentCampaign()+":World.png").c_str()));
 		if(test.good()) {
-			LoadTexture((":Data:Textures:"+accountactive->getCurrentCampaign()+":World.png").c_str(),&Mainmenuitems[7],0,0);
+			LoadTextureData((":Data:Textures:"+accountactive->getCurrentCampaign()+":World.png").c_str(),&Mainmenuitems[7],0,0);
 		} else {
-			LoadTexture(":Data:Textures:World.png",&Mainmenuitems[7],0,0);
+			LoadTextureData(":Data:Textures:World.png",&Mainmenuitems[7],0,0);
 		}
 	}
 	ifstream ipstream(ConvertFileName((":Data:Campaigns:"+accountactive->getCurrentCampaign()+".txt").c_str()));
@@ -2087,8 +2087,7 @@ void Game::LoadCampaign() {
 	}
 }
 
-void Game::DrawMenu()
-{
+void Game::DrawMenu() {
 	int i,j;
 	static float lastcheck;
 

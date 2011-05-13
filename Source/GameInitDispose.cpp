@@ -135,12 +135,12 @@ void Game::Dispose()
 }
 
 
-void Game::LoadTexture(const char *fileName, GLuint *textureid,int mipmap, bool hasalpha){
+void Game::LoadTexture(const char *fileName, GLuint *textureid,int mipmap, bool hasalpha) {
     textures.push_back(TextureInfo(fileName,textureid,mipmap,hasalpha));
     textures.back().load();
 }
 
-void Game::LoadTextureSave(const char *fileName, GLuint *textureid,int mipmap,GLubyte *array, int *skinsize){
+void Game::LoadTextureSave(const char *fileName, GLuint *textureid,int mipmap,GLubyte *array, int *skinsize) {
     textures.push_back(TextureInfo(fileName,textureid,mipmap,array,skinsize));
     textures.back().load();
 }
