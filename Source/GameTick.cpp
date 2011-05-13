@@ -6885,18 +6885,18 @@ void Game::Tick(){
                     }
 
                     //draw weapon
-                    if(i==0||!player[0].dead||player[i].weaponactive!=-1)
+                    if(i==0||!player[0].dead||player[i].weaponactive!=-1) {
                         if(player[i].drawkeydown&&!player[i].drawtogglekeydown||
                                 player[i].num_weapons==2&&
                                 player[i].weaponactive==-1&&
                                 player[i].isIdle()||
                                 player[0].dead&&
                                 player[i].weaponactive!=-1&&
-                                i!=0){
-                            bool isgood=1;
+                                i!=0) {
+                            bool isgood=true;
                             if(player[i].weaponactive!=-1)
                                 if(weapons[player[i].weaponids[player[i].weaponactive]].getType()==staff)
-                                    isgood=0;
+                                    isgood=false;
                             if(isgood&&player[i].creature!=wolftype){
                                 if(player[i].isIdle()&&player[i].num_weapons&&weapons[player[i].weaponids[0]].getType()==knife){
                                     setAnimation(i,drawrightanim);
@@ -6917,21 +6917,24 @@ void Game::Tick(){
                                 }
                             }
                         }
-                    //clean weapon
-                    if(player[i].isCrouch()&&
-                            weapons[player[i].weaponids[player[i].weaponactive]].bloody&&
-                            bloodtoggle&&
-                            player[i].onterrain&&
-                            player[i].num_weapons&&
-                            player[i].weaponactive!=-1&&
-                            player[i].attackkeydown&&
-                            bloodtoggle&&musictype!=stream_fighttheme) {
-                            if(weapons[player[i].weaponids[player[i].weaponactive]].getType()==knife)
-                                setAnimation(i,crouchstabanim);
-                            if(weapons[player[i].weaponids[player[i].weaponactive]].getType()==sword)
-                                setAnimation(i,swordgroundstabanim);
-                            player[i].hasvictim=0;
                     }
+                    
+                    //clean weapon
+                    if(player[i].weaponactive!=-1) {
+						if (player[i].isCrouch()&&
+							weapons[player[i].weaponids[player[i].weaponactive]].bloody&&
+							bloodtoggle&&
+							player[i].onterrain&&
+							player[i].num_weapons&&
+							player[i].attackkeydown&&
+							musictype!=stream_fighttheme) {
+								if(weapons[player[i].weaponids[player[i].weaponactive]].getType()==knife)
+									setAnimation(i,crouchstabanim);
+								if(weapons[player[i].weaponids[player[i].weaponactive]].getType()==sword)
+									setAnimation(i,swordgroundstabanim);
+								player[i].hasvictim=0;
+						}
+					}
 
                     if(!player[i].drawkeydown)
                         player[i].drawtogglekeydown=0;
