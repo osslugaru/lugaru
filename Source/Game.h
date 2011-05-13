@@ -300,7 +300,7 @@ class Game
 
 //keeps track of which textures are loaded
 //TODO: delete them properly
-struct TextureInfo{
+struct TextureInfo {
     bool isLoaded;
     bool isSkin;
     const char* fileName;
@@ -310,7 +310,7 @@ struct TextureInfo{
     GLubyte* array;
     int* skinsize;
 
-    void load(){
+    void load() {
         if(isSkin)
             Game::LoadTextureSaveData(fileName,ptextureid,mipmap,array,skinsize,isLoaded);
         else

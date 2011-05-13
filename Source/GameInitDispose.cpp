@@ -850,7 +850,7 @@ void Game::InitGame()
 }
 
 
-void Game::LoadScreenTexture(){
+void Game::LoadScreenTexture() {
     glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 
     if(!screentexture)

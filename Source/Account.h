@@ -28,13 +28,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <map>
 #include <fstream>
 
-typedef struct {
+struct CampaignProgress {
 	float highscore;
 	float fasttime;
 	float score;
 	float time;
 	std::vector<int> choices;
-} campaign_progress_t;
+	CampaignProgress() {
+		highscore = 0;
+		fasttime = 0;
+		score = 0;
+		time = 0;
+	}
+};
 
 class Account {
 	public:
@@ -88,7 +94,7 @@ class Account {
 		std::string name;
 		
 		std::string currentCampaign;
-		std::map<std::string,campaign_progress_t> campaignProgress;
+		std::map<std::string,CampaignProgress> campaignProgress;
 	
 	//statics
 		static std::vector<Account*> accounts;

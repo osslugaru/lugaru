@@ -2692,12 +2692,12 @@ void Game::DrawMenu()
 
 	for(i=0;i<nummenuitems;i++) {
 		if((mousecoordh/screenwidth*640)>startx[i]&&(mousecoordh/screenwidth*640)<endx[i]&&480-(mousecoordv/screenheight*480)>starty[i]&&480-(mousecoordv/screenheight*480)<endy[i]) {
-			if(mainmenu!=5) selected=i;
+			if((mainmenu!=5) && (mainmenu!=1) && (mainmenu!=2)) selected=i; // username in menu 5 and game title in menu 1&2 can't be selected
 			else if( (i>0) && (i!=NB_CAMPAIGN_MENU_ITEM) ) selected=i;
 		}
 	}
 
-	for(i=0;i<nummenuitems;i++){
+	for(i=0;i<nummenuitems;i++) {
 		if(selected==i) {
 			selectedlong[i]+=multiplier*5;
 			if(selectedlong[i]>1) selectedlong[i]=1;

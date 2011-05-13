@@ -248,7 +248,7 @@ static void toggleFullscreen(){
         exit(1);
     //reload opengl state
     initGL();
-    for(std::vector<TextureInfo>::iterator it=Game::textures.begin(); it!=Game::textures.end(); it++){
+    for(std::vector<TextureInfo>::iterator it=Game::textures.begin(); it!=Game::textures.end(); it++) {
         it->load();
     }
     pgame->text.BuildFont();
@@ -362,9 +362,9 @@ Boolean SetUp (Game & game)
 	}
 
     Uint32 sdlflags = SDL_OPENGL;
-    //TODO: commented out temporarily
-    //if (!cmdline("windowed"))
-        //sdlflags |= SDL_FULLSCREEN;
+    
+    if (!cmdline("windowed"))
+        sdlflags |= SDL_FULLSCREEN;
 
     SDL_WM_SetCaption("Lugaru", "Lugaru");
 

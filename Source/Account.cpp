@@ -46,12 +46,6 @@ Account::Account(string n) : campaignProgress() {
 
 void Account::setCurrentCampaign(string name) {
 	currentCampaign = name;
-	if(campaignProgress.find(name)==campaignProgress.end()) {
-		campaignProgress[name].highscore = 0;
-		campaignProgress[name].fasttime = 0;
-		campaignProgress[name].score = 0;
-		campaignProgress[name].time = 0;
-	}
 }
 
 Account* Account::add(string name) {
@@ -218,7 +212,7 @@ void Account::saveFile(string filename, Account* accountactive) {
 			fpackf(tfile, "Bi", a->progress);
 			fpackf(tfile, "Bi", a->campaignProgress.size());
 			
-			map<string,campaign_progress_t>::const_iterator it;
+			map<string,CampaignProgress>::const_iterator it;
 			for( it=a->campaignProgress.begin(); it!= a->campaignProgress.end(); ++it) {
 				fpackf(tfile, "Bi",  it->first.size());
 				for(j=0;j<it->first.size();j++)
