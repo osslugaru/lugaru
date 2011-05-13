@@ -2938,10 +2938,10 @@ void Game::DrawMenu()
 								//float linestartx,lineendx,linestarty,lineendy,offsetx,offsety;
 								linestart.x=(startx[j]+endx[j])/2;
 								linestart.y=(starty[j]+endy[j])/2;
-								if(j>=NB_CAMPAIGN_MENU_ITEM+(accountactive?accountactive->getCampaignChoicesMade():0)){
-									linestart.x=(startx[6+(accountactive?accountactive->getCampaignChoicesMade():0)]+endx[6+(accountactive?accountactive->getCampaignChoicesMade():0)])/2;
-									linestart.y=(starty[6+(accountactive?accountactive->getCampaignChoicesMade():0)]+endy[6+(accountactive?accountactive->getCampaignChoicesMade():0)])/2;
-								}
+								//~ if(j>=NB_CAMPAIGN_MENU_ITEM-1+(accountactive?accountactive->getCampaignChoicesMade():0)){
+									//~ linestart.x=(startx[NB_CAMPAIGN_MENU_ITEM-1+(accountactive?accountactive->getCampaignChoicesMade():0)]+endx[NB_CAMPAIGN_MENU_ITEM-1+(accountactive?accountactive->getCampaignChoicesMade():0)])/2;
+									//~ linestart.y=(starty[NB_CAMPAIGN_MENU_ITEM-1+(accountactive?accountactive->getCampaignChoicesMade():0)]+endy[NB_CAMPAIGN_MENU_ITEM-1+(accountactive?accountactive->getCampaignChoicesMade():0)])/2;
+								//~ } // what was this if for?
 								lineend.x=(startx[j+1]+endx[j+1])/2;
 								lineend.y=(starty[j+1]+endy[j+1])/2;
 								offset=lineend-linestart;
