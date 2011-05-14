@@ -114,17 +114,8 @@ Game::Game()
 	memset(campaignlocationy, 0, sizeof(campaignlocationy));
 	memset(campaignlocationy, 0, sizeof(campaignlocationy));
 
-	campaignchoicenum = 0;
-
-	memset(campaignchoicewhich, 0, sizeof(campaignchoicewhich));
-
 	whichchoice = 0;
-
-	numlevelspassed = 0;
-
-	memset(levelorder, 0, sizeof(levelorder));
-	memset(levelvisible, 0, sizeof(levelvisible));
-	memset(levelhighlight, 0, sizeof(levelhighlight));
+	actuallevel = 0;
 
 	minimap = 0;
 

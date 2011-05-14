@@ -139,18 +139,12 @@ class Game
 		char campaignmapname[50][256];
 		char campaigndescription[50][256];
 		int campaignchoosenext[50];
-		int campaignnumnext[50]; // Set this to 0 on final level. As David said: he meant to add story branching, but he eventually hadn't. 
+		int campaignnumnext[50]; // 0 on final level. As David said: he meant to add story branching, but he eventually hadn't. 
 		int campaignnextlevel[50][10];
 		int campaignlocationx[50];
 		int campaignlocationy[50];
-		int campaignchoicenum;
-		int campaignchoicewhich[10];
 		int whichchoice;
-
-		int numlevelspassed;
-		int levelorder[5000];
-		int levelvisible[50];
-		int levelhighlight[50];
+		int actuallevel;
 
 		bool minimap;
 

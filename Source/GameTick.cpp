@@ -5612,9 +5612,10 @@ void Game::MenuTick(){
 					else
 						LoadStuff();
 					whichchoice=selected-NB_CAMPAIGN_MENU_ITEM-1-accountactive->getCampaignChoicesMade();
+					actuallevel=(accountactive->getCampaignChoicesMade()>0?campaignnextlevel[accountactive->getCampaignChoicesMade()-1][whichchoice]:0);
 					visibleloading=1;
 					stillloading=1;
-					Loadlevel(campaignmapname[campaignchoicewhich[whichchoice]]);
+					Loadlevel(campaignmapname[actuallevel]);
 					campaign=1;
 					mainmenu=0;
 					gameon=1;
@@ -5870,13 +5871,13 @@ void Game::Tick(){
 		if(mainmenu&&endgame==1)
             mainmenu=10;
         //go to level select after completing a campaign level
-        if(campaign&&winfreeze&&mainmenu==0&&campaignchoosenext[campaignchoicewhich[whichchoice]]==1) {
+        if(campaign&&winfreeze&&mainmenu==0&&campaignchoosenext[actuallevel]==1) {
             mainmenu=5;
             gameon=0;
             winfreeze=0;
             fireSound();
             flash();
-            if(musictoggle){
+            if(musictoggle) {
                 OPENAL_SetFrequency(OPENAL_ALL, 0.001);
                 emit_stream_np(stream_menutheme);
                 pause_sound(leveltheme);
@@ -7698,7 +7699,7 @@ void Game::TickOnceAfter(){
 
 					fireSound(firestartsound);
 
-					Loadlevel(campaignmapname[levelorder[accountactive->getCampaignChoicesMade()]]);
+					Loadlevel(campaignmapname[accountactive->getCampaignChoicesMade()]);
 
 					fireSound();
 
@@ -7732,11 +7733,11 @@ void Game::TickOnceAfter(){
                 // 0 = load next level
                 // 1 = go back to level select screen
                 // 2 = stealthload next level
-				if(mainmenu==0&&winfreeze&&(campaignchoosenext[campaignchoicewhich[whichchoice]])==1){
-					if(campaignnumnext[campaignchoicewhich[whichchoice]]==0)
+				if(mainmenu==0&&winfreeze&&(campaignchoosenext[actuallevel])==1){
+					if(campaignnumnext[actuallevel]==0)
 						endgame=1;
 				} else if(mainmenu==0&&winfreeze) {
-					stealthloading = (campaignchoosenext[campaignchoicewhich[whichchoice]]==2);
+					stealthloading = (campaignchoosenext[actuallevel]==2);
 
 					if(!stealthloading){
 						fireSound(firestartsound);
@@ -7754,9 +7755,10 @@ void Game::TickOnceAfter(){
 					if(!firstload)
 						LoadStuff();
 					whichchoice=0;
+					actuallevel=campaignnextlevel[actuallevel][0];
 					visibleloading=1;
 					stillloading=1;
-					Loadlevel(campaignmapname[campaignchoicewhich[0]]);
+					Loadlevel(campaignmapname[actuallevel]);
 					campaign=1;
 					mainmenu=0;
 					gameon=1;

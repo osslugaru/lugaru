@@ -2021,14 +2021,6 @@ vector<string> Game::ListCampaigns() {
 void Game::LoadCampaign() {
 	if(!accountactive)
 		return;
-	if(!Mainmenuitems[7]) {
-		ifstream test(ConvertFileName((":Data:Textures:"+accountactive->getCurrentCampaign()+":World.png").c_str()));
-		if(test.good()) {
-			LoadTextureData((":Data:Textures:"+accountactive->getCurrentCampaign()+":World.png").c_str(),&Mainmenuitems[7],0,0);
-		} else {
-			LoadTextureData(":Data:Textures:World.png",&Mainmenuitems[7],0,0);
-		}
-	}
 	ifstream ipstream(ConvertFileName((":Data:Campaigns:"+accountactive->getCurrentCampaign()+".txt").c_str()));
 	ipstream.ignore(256,':');
 	ipstream >> campaignnumlevels;
@@ -2058,32 +2050,18 @@ void Game::LoadCampaign() {
 	}
 	ipstream.close();
 
-	for(int i=0;i<campaignnumlevels;i++){
-		levelvisible[i]=0;
-		levelhighlight[i]=0;
+	if(!Mainmenuitems[7]) {
+		ifstream test(ConvertFileName((":Data:Textures:"+accountactive->getCurrentCampaign()+":World.png").c_str()));
+		if(test.good()) {
+			LoadTextureData((":Data:Textures:"+accountactive->getCurrentCampaign()+":World.png").c_str(),&Mainmenuitems[7],0,0);
+		} else {
+			LoadTextureData(":Data:Textures:World.png",&Mainmenuitems[7],0,0);
+		}
 	}
 
-	levelorder[0]=0;
-	levelvisible[0]=1;
-	for(int i=0;i<accountactive->getCampaignChoicesMade();i++){
-		levelorder[i+1]=campaignnextlevel[levelorder[i]][accountactive->getCampaignChoice(i)];
-		levelvisible[levelorder[i+1]]=1;
-	}
-	int whichlevelstart = accountactive->getCampaignChoicesMade()-1;
-	if(whichlevelstart<0){
+	if(accountactive->getCampaignChoicesMade()==0) {
 		accountactive->setCampaignScore(0);
 		accountactive->resetFasttime();
-		campaignchoicenum=1;
-		campaignchoicewhich[0]=0;
-	}
-	else
-	{
-		campaignchoicenum=campaignnumnext[levelorder[whichlevelstart]];
-		for(int i=0;i<campaignchoicenum;i++){
-			campaignchoicewhich[i]=campaignnextlevel[levelorder[whichlevelstart]][i];
-			levelvisible[campaignnextlevel[levelorder[whichlevelstart]][i]]=1;
-			levelhighlight[campaignnextlevel[levelorder[whichlevelstart]][i]]=1;
-		}
 	}
 }
 
@@ -2364,7 +2342,7 @@ void Game::DrawMenu() {
 		}
 		
 		if(mainmenu==5){			
-			nummenuitems=NB_CAMPAIGN_MENU_ITEM+1+(accountactive?accountactive->getCampaignChoicesMade():0)+campaignchoicenum;
+			nummenuitems=NB_CAMPAIGN_MENU_ITEM+1+accountactive->getCampaignChoicesMade()+(accountactive->getCampaignChoicesMade()>0?campaignnumnext[accountactive->getCampaignChoicesMade()-1]:1);
 
 			sprintf (menustring[0], "%s",accountactive->getName());
 			startx[0]=5;
@@ -2416,24 +2394,28 @@ void Game::DrawMenu() {
 			endx[NB_CAMPAIGN_MENU_ITEM]=startx[NB_CAMPAIGN_MENU_ITEM]+400;
 			endy[NB_CAMPAIGN_MENU_ITEM]=30+480-50;
 
-			if((accountactive?accountactive->getCampaignChoicesMade():0)) {
-				for(i=0;i<(accountactive?accountactive->getCampaignChoicesMade():0);i++) {
-					sprintf (menustring[NB_CAMPAIGN_MENU_ITEM+1+i], "%s", campaigndescription[levelorder[i]]);
-					startx[NB_CAMPAIGN_MENU_ITEM+1+i]=30+120+campaignlocationx[levelorder[i]]*400/512;
-					starty[NB_CAMPAIGN_MENU_ITEM+1+i]=30+30+(512-campaignlocationy[levelorder[i]])*400/512;
+			if(accountactive->getCampaignChoicesMade()) {
+				for(i=0;i<accountactive->getCampaignChoicesMade();i++) {
+					sprintf (menustring[NB_CAMPAIGN_MENU_ITEM+1+i], "%s", campaigndescription[i]);
+					startx[NB_CAMPAIGN_MENU_ITEM+1+i]=30+120+campaignlocationx[i]*400/512;
+					starty[NB_CAMPAIGN_MENU_ITEM+1+i]=30+30+(512-campaignlocationy[i])*400/512;
 					endx[NB_CAMPAIGN_MENU_ITEM+1+i]=startx[NB_CAMPAIGN_MENU_ITEM+1+i]+10;
 					endy[NB_CAMPAIGN_MENU_ITEM+1+i]=starty[NB_CAMPAIGN_MENU_ITEM+1+i]+10;
 				}
-			}
-
-			if(campaignchoicenum>0) {
-				for(i=(accountactive?accountactive->getCampaignChoicesMade():0);i<(accountactive?accountactive->getCampaignChoicesMade():0)+campaignchoicenum;i++){
-					sprintf (menustring[NB_CAMPAIGN_MENU_ITEM+1+i], "%s", campaigndescription[levelorder[i]]);
-					startx[NB_CAMPAIGN_MENU_ITEM+1+i]=30+120+campaignlocationx[campaignchoicewhich[i-((accountactive?accountactive->getCampaignChoicesMade():0))]]*400/512;
-					starty[NB_CAMPAIGN_MENU_ITEM+1+i]=30+30+(512-campaignlocationy[campaignchoicewhich[i-((accountactive?accountactive->getCampaignChoicesMade():0))]])*400/512;
-					endx[NB_CAMPAIGN_MENU_ITEM+1+i]=startx[NB_CAMPAIGN_MENU_ITEM+1+i]+10;
-					endy[NB_CAMPAIGN_MENU_ITEM+1+i]=starty[NB_CAMPAIGN_MENU_ITEM+1+i]+10;
+				for(i=0;i<campaignnumnext[accountactive->getCampaignChoicesMade()-1];i++) {
+					int j = campaignnextlevel[accountactive->getCampaignChoicesMade()-1][i];
+					sprintf (menustring[NB_CAMPAIGN_MENU_ITEM+1+j], "%s", campaigndescription[j]);
+					startx[NB_CAMPAIGN_MENU_ITEM+1+j]=30+120+campaignlocationx[j]*400/512;
+					starty[NB_CAMPAIGN_MENU_ITEM+1+j]=30+30+(512-campaignlocationy[j])*400/512;
+					endx[NB_CAMPAIGN_MENU_ITEM+1+j]=startx[NB_CAMPAIGN_MENU_ITEM+1+j]+10;
+					endy[NB_CAMPAIGN_MENU_ITEM+1+j]=starty[NB_CAMPAIGN_MENU_ITEM+1+j]+10;
 				}
+			} else {
+				sprintf (menustring[NB_CAMPAIGN_MENU_ITEM+1], "%s", campaigndescription[0]);
+				startx[NB_CAMPAIGN_MENU_ITEM+1]=30+120+campaignlocationx[0]*400/512;
+				starty[NB_CAMPAIGN_MENU_ITEM+1]=30+30+(512-campaignlocationy[0])*400/512;
+				endx[NB_CAMPAIGN_MENU_ITEM+1]=startx[NB_CAMPAIGN_MENU_ITEM+1]+10;
+				endy[NB_CAMPAIGN_MENU_ITEM+1]=starty[NB_CAMPAIGN_MENU_ITEM+1]+10;
 			}
 			
 		}
@@ -2950,7 +2932,7 @@ void Game::DrawMenu() {
 								Normalise(&offset);
 								glDisable(GL_TEXTURE_2D);							
 
-								if(j<NB_CAMPAIGN_MENU_ITEM+(accountactive?accountactive->getCampaignChoicesMade():0)){
+								if(j<NB_CAMPAIGN_MENU_ITEM+accountactive->getCampaignChoicesMade()){
 									glColor4f(0.5,0,0,1);
 									endsize=.5;
 								} else {
@@ -2962,7 +2944,7 @@ void Game::DrawMenu() {
 								linestart+=fac*4*startsize;
 								lineend-=fac*4*endsize;
 
-								if(!(j>NB_CAMPAIGN_MENU_ITEM+1+(accountactive?accountactive->getCampaignChoicesMade():0)+campaignchoicenum)){
+								//~ if(!(j>NB_CAMPAIGN_MENU_ITEM+1+accountactive->getCampaignChoicesMade()+campaignchoicenum)){
 									glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 									glPushMatrix();
 										glBegin(GL_QUADS);
@@ -2976,7 +2958,7 @@ void Game::DrawMenu() {
 										glVertex3f(lineend.x-offset.x*endsize, 		lineend.y-offset.y*endsize, 0.0f);
 										glEnd();
 									glPopMatrix();
-								}
+								//~ }
 								glEnable(GL_TEXTURE_2D);
 							}
 
@@ -2995,11 +2977,11 @@ void Game::DrawMenu() {
 							midpoint.x=(startx[j]+endx[j])/2;
 							midpoint.y=(starty[j]+endy[j])/2;
 							if	(j>NB_CAMPAIGN_MENU_ITEM &&
-								(j-NB_CAMPAIGN_MENU_ITEM-1 < (accountactive?accountactive->getCampaignChoicesMade():0))) {
+								(j-NB_CAMPAIGN_MENU_ITEM-1 < accountactive->getCampaignChoicesMade())) {
 									itemsize*=.5;
 							}
-							if(!(j-NB_CAMPAIGN_MENU_ITEM-1 > (accountactive?accountactive->getCampaignChoicesMade():0)+campaignchoicenum))
-							{
+							//~ if(!(j-NB_CAMPAIGN_MENU_ITEM-1 > accountactive->getCampaignChoicesMade()+campaignnumnext[accountactive->getCampaignChoicesMade()]))
+							//~ {
 								glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 								glPushMatrix();
 									glBegin(GL_QUADS);
@@ -3036,7 +3018,7 @@ void Game::DrawMenu() {
 										glPopMatrix();
 									}
 								}
-							}
+							//~ }
 						glPopMatrix();
 					glPopMatrix();
 					glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
