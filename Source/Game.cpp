@@ -52,8 +52,6 @@ Game::Game()
 	memset(endy, 0, sizeof(endy));
 
 	memset(selectedlong, 0, sizeof(selectedlong));
-	memset(offsetx, 0, sizeof(offsetx));
-	memset(offsety, 0, sizeof(offsety));
 
 	selected = 0;
 	keyselect = 0;

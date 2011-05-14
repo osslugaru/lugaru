@@ -400,9 +400,7 @@ void Person::DoBloodBig(float howmuch,int which){
 				offsetx=Random()%20;
 			}
 			if(which==220||which==215){
-				//offsety=Random()%20;
 				offsetx=20;
-				//offsetx=abs(Random()%80);
 			}
 
 

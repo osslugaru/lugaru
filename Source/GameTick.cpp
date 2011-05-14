@@ -5601,7 +5601,7 @@ void Game::MenuTick(){
 			case 5:
 				fireSound();
 				flash();
-				if((selected-NB_CAMPAIGN_MENU_ITEM-1 >= accountactive->getCampaignChoicesMade())) {
+				if((selected-NB_CAMPAIGN_MENU_ITEM >= accountactive->getCampaignChoicesMade())) {
 					startbonustotal=0;
 
 					loading=2;
@@ -5611,7 +5611,7 @@ void Game::MenuTick(){
 						TickOnceAfter();
 					else
 						LoadStuff();
-					whichchoice=selected-NB_CAMPAIGN_MENU_ITEM-1-accountactive->getCampaignChoicesMade();
+					whichchoice=selected-NB_CAMPAIGN_MENU_ITEM-accountactive->getCampaignChoicesMade();
 					actuallevel=(accountactive->getCampaignChoicesMade()>0?campaignlevels[accountactive->getCampaignChoicesMade()-1].nextlevel[whichchoice]:0);
 					visibleloading=1;
 					stillloading=1;

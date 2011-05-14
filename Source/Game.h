@@ -68,6 +68,7 @@ struct TextureInfo;
 class CampaignLevel
 {
 private:
+	int width;
 	struct Position
 	{
 		int x;
@@ -86,10 +87,37 @@ public:
 	std::vector<int> nextlevel;
 	Position location;
 	
-	CampaignLevel() {
+	CampaignLevel() : width(10) {
 		choosenext = 1;
 		location.x = 0;
 		location.y = 0;
+	}
+	
+	int getStartX() {
+		return 30+120+location.x*400/512;
+	}
+	
+	int getStartY() {
+		return 30+30+(512-location.y)*400/512;
+	}
+	
+	int getEndX() {
+		return getStartX()+width;
+	}
+	
+	int getEndY() {
+		return getStartY()+width;
+	}
+	
+	XYZ getCenter() {
+		XYZ center;
+		center.x=getStartX()+width/2;
+		center.y=getStartY()+width/2;
+		return center;
+	}
+	
+	int getWidth() {
+		return width;
 	}
 	
 	istream& operator<< (istream& is) {
@@ -148,8 +176,6 @@ class Game
 		int endx[100];
 		int endy[100];
 		float selectedlong[100];
-		float offsetx[100];
-		float offsety[100];
 		int selected;
 		int keyselect;
 		int indemo;
