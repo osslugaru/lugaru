@@ -776,9 +776,9 @@ void Game::InitGame()
 
 	LOG("Initializing sound system...");
 
-    int output = -1;
-
     #if PLATFORM_LINUX
+    int output = -1;
+    
     extern bool cmdline(const char *cmd);
     unsigned char rc = 0;
     output = OPENAL_OUTPUT_ALSA;  // Try alsa first...

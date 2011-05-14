@@ -2023,30 +2023,13 @@ void Game::LoadCampaign() {
 		return;
 	ifstream ipstream(ConvertFileName((":Data:Campaigns:"+accountactive->getCurrentCampaign()+".txt").c_str()));
 	ipstream.ignore(256,':');
-	ipstream >> campaignnumlevels;
-	for(int i=0;i<campaignnumlevels;i++) {
-		ipstream.ignore(256,':');
-		ipstream.ignore(256,':');
-		ipstream.ignore(256,' ');
-		ipstream >> campaignmapname[i];
-		ipstream.ignore(256,':');
-		ipstream >> campaigndescription[i];
-		for(int j=0;j<256;j++){
-			if(campaigndescription[i][j]=='_')campaigndescription[i][j]=' ';
-		}
-		ipstream.ignore(256,':');
-		ipstream >> campaignchoosenext[i];
-		ipstream.ignore(256,':');
-		ipstream >> campaignnumnext[i];
-		for(int j=0;j<campaignnumnext[i];j++){
-			ipstream.ignore(256,':');
-			ipstream >> campaignnextlevel[i][j];
-			campaignnextlevel[i][j]-=1;
-		}
-		ipstream.ignore(256,':');
-		ipstream >> campaignlocationx[i];
-		ipstream.ignore(256,':');
-		ipstream >> campaignlocationy[i];
+	int numlevels;
+	ipstream >> numlevels;
+	campaignlevels.clear();
+	for(int i=0;i<numlevels;i++) {
+		CampaignLevel cl;
+		ipstream >> cl;
+		campaignlevels.push_back(cl);
 	}
 	ipstream.close();
 
@@ -2066,7 +2049,6 @@ void Game::LoadCampaign() {
 }
 
 void Game::DrawMenu() {
-	int i,j;
 	static float lastcheck;
 
 	lastcheck+=multiplier;
@@ -2342,49 +2324,40 @@ void Game::DrawMenu() {
 		}
 		
 		if(mainmenu==5){			
-			nummenuitems=NB_CAMPAIGN_MENU_ITEM+1+accountactive->getCampaignChoicesMade()+(accountactive->getCampaignChoicesMade()>0?campaignnumnext[accountactive->getCampaignChoicesMade()-1]:1);
+			nummenuitems=NB_CAMPAIGN_MENU_ITEM+1+accountactive->getCampaignChoicesMade()+(accountactive->getCampaignChoicesMade()>0?campaignlevels[accountactive->getCampaignChoicesMade()-1].nextlevel.size():1);
 
 			sprintf (menustring[0], "%s",accountactive->getName());
 			startx[0]=5;
 			starty[0]=400;
-			endx[0]=startx[0]+strlen(menustring[0])*10;
-			endy[0]=starty[0]+20;
 
 			sprintf (menustring[1], "Tutorial");
 			startx[1]=5;
 			starty[1]=300;
-			endx[1]=startx[1]+strlen(menustring[1])*10;
-			endy[1]=starty[1]+20;
 
 			sprintf (menustring[2], "Challenge");
 			startx[2]=5;
 			starty[2]=240;
-			endx[2]=startx[2]+strlen(menustring[2])*10;
-			endy[2]=starty[2]+20;
 
 			sprintf (menustring[3], "Delete User");
 			startx[3]=400;
 			starty[3]=10;
-			endx[3]=startx[3]+strlen(menustring[3])*10;
-			endy[3]=starty[3]+20;
 
 			sprintf (menustring[4], "Main Menu");
 			startx[4]=5;
 			starty[4]=10;
-			endx[4]=startx[4]+strlen(menustring[4])*10;
-			endy[4]=starty[4]+20;
 
 			sprintf (menustring[5], "Change User");
 			startx[5]=5;
-			endx[5]=startx[5]+strlen(menustring[5])*10;
 			starty[5]=180;
-			endy[5]=starty[5]+20;
 			
 			sprintf (menustring[6], "Campaign : %s", accountactive->getCurrentCampaign().c_str());
 			startx[6]=200;
-			endx[6]=startx[6]+strlen(menustring[6])*10;
 			starty[6]=420;
-			endy[6]=starty[6]+20;
+
+			for(int i=0;i<NB_CAMPAIGN_MENU_ITEM;++i) {
+				endx[i]=startx[i]+strlen(menustring[i])*10;
+				endy[i]=starty[i]+20;
+			}
 
 			//World
 
@@ -2395,28 +2368,36 @@ void Game::DrawMenu() {
 			endy[NB_CAMPAIGN_MENU_ITEM]=30+480-50;
 
 			if(accountactive->getCampaignChoicesMade()) {
-				for(i=0;i<accountactive->getCampaignChoicesMade();i++) {
-					sprintf (menustring[NB_CAMPAIGN_MENU_ITEM+1+i], "%s", campaigndescription[i]);
-					startx[NB_CAMPAIGN_MENU_ITEM+1+i]=30+120+campaignlocationx[i]*400/512;
-					starty[NB_CAMPAIGN_MENU_ITEM+1+i]=30+30+(512-campaignlocationy[i])*400/512;
+				cout << "niveaux passés" << endl;
+				for(int i=0;i<accountactive->getCampaignChoicesMade();i++) {
+					cout << campaignlevels[i].location.x << "x" << campaignlevels[i].location.y << endl;
+					sprintf (menustring[NB_CAMPAIGN_MENU_ITEM+1+i], "%s", campaignlevels[i].description.c_str());
+					startx[NB_CAMPAIGN_MENU_ITEM+1+i]=30+120+campaignlevels[i].location.x*400/512;
+					starty[NB_CAMPAIGN_MENU_ITEM+1+i]=30+30+(512-campaignlevels[i].location.y)*400/512;
 					endx[NB_CAMPAIGN_MENU_ITEM+1+i]=startx[NB_CAMPAIGN_MENU_ITEM+1+i]+10;
 					endy[NB_CAMPAIGN_MENU_ITEM+1+i]=starty[NB_CAMPAIGN_MENU_ITEM+1+i]+10;
+					cout << "-->" << startx[NB_CAMPAIGN_MENU_ITEM+1+i] << "x" << starty[NB_CAMPAIGN_MENU_ITEM+1+i] << endl;
 				}
-				for(i=0;i<campaignnumnext[accountactive->getCampaignChoicesMade()-1];i++) {
-					int j = campaignnextlevel[accountactive->getCampaignChoicesMade()-1][i];
-					sprintf (menustring[NB_CAMPAIGN_MENU_ITEM+1+j], "%s", campaigndescription[j]);
-					startx[NB_CAMPAIGN_MENU_ITEM+1+j]=30+120+campaignlocationx[j]*400/512;
-					starty[NB_CAMPAIGN_MENU_ITEM+1+j]=30+30+(512-campaignlocationy[j])*400/512;
+				cout << "niveaux à choisir" << endl;
+				for(int i=0;i<campaignlevels[accountactive->getCampaignChoicesMade()-1].nextlevel.size();i++) {
+					int j = campaignlevels[accountactive->getCampaignChoicesMade()-1].nextlevel[i];
+					cout << campaignlevels[j].location.x << "x" << campaignlevels[j].location.y << endl;
+					sprintf (menustring[NB_CAMPAIGN_MENU_ITEM+1+j], "%s", campaignlevels[j].description.c_str());
+					startx[NB_CAMPAIGN_MENU_ITEM+1+j]=30+120+campaignlevels[j].location.x*400/512;
+					starty[NB_CAMPAIGN_MENU_ITEM+1+j]=30+30+(512-campaignlevels[j].location.y)*400/512;
 					endx[NB_CAMPAIGN_MENU_ITEM+1+j]=startx[NB_CAMPAIGN_MENU_ITEM+1+j]+10;
 					endy[NB_CAMPAIGN_MENU_ITEM+1+j]=starty[NB_CAMPAIGN_MENU_ITEM+1+j]+10;
+					cout << "-->" << startx[NB_CAMPAIGN_MENU_ITEM+1+j] << "x" << starty[NB_CAMPAIGN_MENU_ITEM+1+j] << endl;
 				}
 			} else {
-				sprintf (menustring[NB_CAMPAIGN_MENU_ITEM+1], "%s", campaigndescription[0]);
-				startx[NB_CAMPAIGN_MENU_ITEM+1]=30+120+campaignlocationx[0]*400/512;
-				starty[NB_CAMPAIGN_MENU_ITEM+1]=30+30+(512-campaignlocationy[0])*400/512;
+				cout << "premier niveau" << endl;
+				sprintf (menustring[NB_CAMPAIGN_MENU_ITEM+1], "%s", campaignlevels[0].description.c_str());
+				startx[NB_CAMPAIGN_MENU_ITEM+1]=30+120+campaignlevels[0].location.x*400/512;
+				starty[NB_CAMPAIGN_MENU_ITEM+1]=30+30+(512-campaignlevels[0].location.y)*400/512;
 				endx[NB_CAMPAIGN_MENU_ITEM+1]=startx[NB_CAMPAIGN_MENU_ITEM+1]+10;
 				endy[NB_CAMPAIGN_MENU_ITEM+1]=starty[NB_CAMPAIGN_MENU_ITEM+1]+10;
 			}
+			cout << nummenuitems << " items" << endl;
 			
 		}
 
@@ -2479,7 +2460,7 @@ void Game::DrawMenu() {
 
 
 			num=1;
-			for(i=0;i<Account::getNbAccounts();i++){
+			for(int i=0;i<Account::getNbAccounts();i++){
 				sprintf (menustring[num], "%s",Account::get(i)->getName());
 				startx[num]=10;
 				starty[num]=360-20-20*num;
@@ -2491,8 +2472,8 @@ void Game::DrawMenu() {
 
 			sprintf (menustring[num], "Back");
 			startx[num]=10;
-			endx[num]=startx[num]+strlen(menustring[num])*10;
 			starty[num]=10;
+			endx[num]=startx[num]+strlen(menustring[num])*10;
 			endy[num]=starty[num]+20;
 		}
 		if(mainmenu==8){			
@@ -2520,26 +2501,28 @@ void Game::DrawMenu() {
 			nummenuitems=2+numchallengelevels;
 			char temp[255];
 
-			for(j=0;j<numchallengelevels;j++){
-				for(i=0;i<255;i++)menustring[j][i]='\0';
-				sprintf (temp, "Level %d",j+1);
-				strcpy(menustring[j],temp);
-				for(i=0;i<17;i++)if(menustring[j][i]=='\0')menustring[j][i]=' ';
-				menustring[j][17]='\0';
-				sprintf (temp, "%d",(int)accountactive->getHighScore(j));
-				strcat(menustring[j],temp);
-				for(i=18;i<32;i++)if(menustring[j][i]=='\0')menustring[j][i]=' ';
-				menustring[j][32]='\0';
-				sprintf (temp, "%d:",(int)(((int)accountactive->getFastTime(j)-(int)(accountactive->getFastTime(j))%60)/60));
-				strcat(menustring[j],temp);
-				if((int)(accountactive->getFastTime(j))%60<10)strcat(menustring[j],"0");
-				sprintf (temp, "%d",(int)(accountactive->getFastTime(j))%60);
-				strcat(menustring[j],temp);
+			for(int i=0;i<numchallengelevels;i++){
+                string name="";
+                sprintf (temp, "Level %d",i+1);
+                for(int j=strlen(temp);j<17;j++)
+                        strcat(temp," ");
+                name+=temp;
+                sprintf (temp, "%d",(int)accountactive->getHighScore(i));
+                for(int j=strlen(temp);j<(32-17);j++)
+                        strcat(temp," ");
+                name+=temp;
+                sprintf (temp, "%d:",(int)(((int)accountactive->getFastTime(i)-(int)(accountactive->getFastTime(i))%60)/60));
+                if((int)(accountactive->getFastTime(i))%60<10)strcat(temp,"0");
+                name+=temp;
+                sprintf (temp, "%d",(int)(accountactive->getFastTime(i))%60);
+                name+=temp;
 
-				startx[j]=10;
-				starty[j]=400-j*25;
-				endx[j]=startx[j]+strlen(menustring[j])*10;
-				endy[j]=starty[j]+20;
+				sprintf(menustring[i],"%s",name.c_str());
+
+				startx[i]=10;
+				starty[i]=400-i*25;
+				endx[i]=startx[i]+strlen(menustring[i])*10;
+				endy[i]=starty[i]+20;
 			}
 
 			sprintf (menustring[numchallengelevels], "Back");
@@ -2585,10 +2568,13 @@ void Game::DrawMenu() {
 			starty[3]=10;
 			endy[3]=starty[3]+20;
 
-			for(i=0;i<255;i++)menustring[4][i]='\0';
+			for(int i=0;i<255;i++)
+				menustring[4][i]='\0';
 			sprintf (temp, "Your score:");
 			strcpy(menustring[4],temp);
-			for(i=0;i<20;i++)if(menustring[4][i]=='\0')menustring[4][i]=' ';
+			for(int i=0;i<20;i++)
+				if(menustring[4][i]=='\0')
+					menustring[4][i]=' ';
 			menustring[4][20]='\0';
 			sprintf (temp, "%d",(int)accountactive->getCampaignScore());
 			strcat(menustring[4],temp);
@@ -2596,10 +2582,12 @@ void Game::DrawMenu() {
 			endx[4]=startx[4]+strlen(menustring[4])*10;
 			starty[4]=200;
 			endy[4]=starty[4]+20;
-			for(i=0;i<255;i++)menustring[5][i]='\0';
+			for(int i=0;i<255;i++)
+				menustring[5][i]='\0';
 			sprintf (temp, "Highest score:");
 			strcpy(menustring[5],temp);
-			for(i=0;i<20;i++)if(menustring[5][i]=='\0')menustring[5][i]=' ';
+			for(int i=0;i<20;i++)
+				if(menustring[5][i]=='\0')menustring[5][i]=' ';
 			menustring[5][20]='\0';
 			sprintf (temp, "%d",(int)accountactive->getCampaignHighScore());
 			strcat(menustring[5],temp);
@@ -2671,14 +2659,14 @@ void Game::DrawMenu() {
 
 	selected=-1;
 
-	for(i=0;i<nummenuitems;i++) {
+	for(int i=0;i<nummenuitems;i++) {
 		if((mousecoordh/screenwidth*640)>startx[i]&&(mousecoordh/screenwidth*640)<endx[i]&&480-(mousecoordv/screenheight*480)>starty[i]&&480-(mousecoordv/screenheight*480)<endy[i]) {
 			if((mainmenu!=5) && (mainmenu!=1) && (mainmenu!=2)) selected=i; // username in menu 5 and game title in menu 1&2 can't be selected
 			else if( (i>0) && (i!=NB_CAMPAIGN_MENU_ITEM) ) selected=i;
 		}
 	}
 
-	for(i=0;i<nummenuitems;i++) {
+	for(int i=0;i<nummenuitems;i++) {
 		if(selected==i) {
 			selectedlong[i]+=multiplier*5;
 			if(selectedlong[i]>1) selectedlong[i]=1;
@@ -2782,7 +2770,7 @@ void Game::DrawMenu() {
 	glPushMatrix();										// Store The Modelview Matrix
 	glLoadIdentity();								// Reset The Modelview Matrix
 	glEnable(GL_TEXTURE_2D);
-	for(j=0;j<nummenuitems;j++)
+	for(int j=0;j<nummenuitems;j++)
 	{
 		//glDisable(GL_BLEND);
 		glEnable(GL_ALPHA_TEST);
@@ -2812,7 +2800,7 @@ void Game::DrawMenu() {
 			glEnable(GL_BLEND);
 			//glDisable(GL_ALPHA_TEST);
 			glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-			for(i=0;i<10;i++)
+			for(int i=0;i<10;i++)
 			{
 				if(1-((float)i)/10-(1-selectedlong[j])>0)
 				{
@@ -2859,7 +2847,7 @@ void Game::DrawMenu() {
 				glPopMatrix();
 				glEnable(GL_BLEND);
 				glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-				for(i=0;i<15;i++)
+				for(int i=0;i<15;i++)
 				{
 					if(1-((float)i)/15-(1-selectedlong[j])>0)
 					{
@@ -2998,7 +2986,7 @@ void Game::DrawMenu() {
 								glEnable(GL_BLEND);
 								//glDisable(GL_ALPHA_TEST);
 								if(j<4) glBlendFunc(GL_SRC_ALPHA,GL_ONE); // Black is transparent
-								for(i=0;i<10;i++)
+								for(int i=0;i<10;i++)
 								{
 									if(1-((float)i)/10-(1-selectedlong[j])>0)
 									{

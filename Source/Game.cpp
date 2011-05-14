@@ -103,17 +103,6 @@ Game::Game()
 */
 	stealthloading = 0;
 
-	campaignnumlevels = 0;
-
-	memset(campaignmapname, 0, sizeof(campaignmapname));
-	memset(campaigndescription, 0, sizeof(campaigndescription));
-	memset(campaignchoosenext, 0, sizeof(campaignchoosenext));
-	memset(campaignnumnext, 0, sizeof(campaignnumnext));
-	memset(campaignnextlevel, 0, sizeof(campaignnextlevel));
-	memset(campaignlocationx, 0, sizeof(campaignlocationx));
-	memset(campaignlocationy, 0, sizeof(campaignlocationy));
-	memset(campaignlocationy, 0, sizeof(campaignlocationy));
-
 	whichchoice = 0;
 	actuallevel = 0;
 

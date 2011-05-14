@@ -65,6 +65,65 @@ extern GLuint rabbittexture;
 
 struct TextureInfo;
 
+class CampaignLevel
+{
+private:
+	struct Position
+	{
+		int x;
+		int y;
+	};
+public: 
+	std::string mapname;
+	std::string description;
+	int choosenext;
+		/*	
+	  	0 = Immediately load next level at the end of this one.
+		1 = Go back to the world map.
+		2 = Don't bring up the Fiery loading screen. Maybe other things, I've not investigated.
+		*/
+	//int numnext; // 0 on final level. As David said: he meant to add story branching, but he eventually hadn't. 
+	std::vector<int> nextlevel;
+	Position location;
+	
+	CampaignLevel() {
+		choosenext = 1;
+		location.x = 0;
+		location.y = 0;
+	}
+	
+	istream& operator<< (istream& is) {
+		is.ignore(256,':');
+		is.ignore(256,':');
+		is.ignore(256,' ');
+		is >> mapname;
+		is.ignore(256,':');
+		is >> description;
+		for(int pos = description.find('_');pos!=string::npos;pos = description.find('_',pos)) {
+			description.replace(pos,1,1,' ');
+		}
+		is.ignore(256,':');
+		is >> choosenext;
+		is.ignore(256,':');
+		int numnext,next;
+		is >> numnext;
+		for(int j=0;j<numnext;j++) {
+			is.ignore(256,':');
+			is >> next;
+			nextlevel.push_back(next-1);
+		}
+		is.ignore(256,':');
+		is >> location.x;
+		is.ignore(256,':');
+		is >> location.y;
+		return is;
+	}
+	
+	friend istream& operator>> (istream& is, CampaignLevel& cl) {
+		return cl << is;
+	}
+};
+
 class Game
 {
 	public:
@@ -135,14 +194,7 @@ class Game
 
 		bool stealthloading;
 
-		int campaignnumlevels;
-		char campaignmapname[50][256];
-		char campaigndescription[50][256];
-		int campaignchoosenext[50];
-		int campaignnumnext[50]; // 0 on final level. As David said: he meant to add story branching, but he eventually hadn't. 
-		int campaignnextlevel[50][10];
-		int campaignlocationx[50];
-		int campaignlocationy[50];
+		std::vector<CampaignLevel> campaignlevels;
 		int whichchoice;
 		int actuallevel;
 
