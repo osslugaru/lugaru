@@ -1,0 +1,6 @@
+With GNU/Linux :
+cmake . && make
+
+With Mac OS :
+Use the XCode project.
+You need to first build the debug and then the release or it won't work.
