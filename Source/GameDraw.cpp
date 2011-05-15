@@ -2567,7 +2567,11 @@ void Game::DrawMenu() {
 		{
 			glColor4f(1,1,1,1);
 			glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-			glBindTexture( GL_TEXTURE_2D, Mainmenuitems[j]);
+			if(mainmenu==2 && (j==1 || j == 3)) {
+				glBindTexture( GL_TEXTURE_2D, Mainmenuitems[(j==1?5:6)]);
+			} else {
+				glBindTexture( GL_TEXTURE_2D, Mainmenuitems[j]);
+			}
 			glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 			glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
@@ -2871,13 +2875,13 @@ void Game::DrawMenu() {
 							//glScalef(.25,.25,.25);
 							glBegin(GL_QUADS);
 							glTexCoord2f(0,0);
-							glVertex3f(-1,		-1, 	 0.0f);
+							glVertex3f(-1, -1, 0.0f);
 							glTexCoord2f(1,0);
-							glVertex3f(1,	-1, 	 0.0f);
+							glVertex3f(1, -1, 0.0f);
 							glTexCoord2f(1,1);
-							glVertex3f(1,	1, 0.0f);
+							glVertex3f(1, 1, 0.0f);
 							glTexCoord2f(0,1);
-							glVertex3f(-1, 	1, 0.0f);
+							glVertex3f(-1, 1, 0.0f);
 							glEnd();
 						glPopMatrix();
 					glPopMatrix();
