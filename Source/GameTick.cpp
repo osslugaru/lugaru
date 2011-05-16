@@ -2350,8 +2350,6 @@ void Game::doTutorial(){
 					weapons[player[0].weaponids[player[0].weaponactive]].setType(staff);
                 else 
 					weapons[0].setType(staff);
-
-                //~ weapons.size()++;
             break; case 49:
                 canattack=0;
                 cananger=0;
@@ -2362,10 +2360,8 @@ void Game::doTutorial(){
                 weapons[1].position=1000;
                 weapons[1].tippoint=1000;
 
-                //~ weapons.size()=1;
                 weapons[0].setType(knife);
 
-                //~ weapons.size()++;
                 weapons[0].owner=0;
                 player[1].weaponactive=-1;
                 player[1].num_weapons=0;
@@ -2427,7 +2423,7 @@ void Game::doTutorial(){
             break; case 25: if(player[0].targetanimation==backhandspringanim)tutorialsuccess=1;
             break; case 28: if(animation[player[0].targetanimation].attack==reversed&&player[0].feint)tutorialsuccess=1;
             break; case 29:
-                if(player[0].escapednum==2){
+                if(player[0].escapednum==2) {
                     tutorialsuccess=1;
                     reversaltrain=0;
                     cananger=0;
@@ -4554,7 +4550,7 @@ void Game::doAI(int i){
             if(     findDistancefastflat(&player[i].coords,&player[i].finalfinaltarget)<
                     findDistancefastflat(&player[i].coords,&player[i].finaltarget)||
                     findDistancefastflat(&player[i].coords,&player[i].finaltarget)<.6*sq(player[i].scale*5)||
-                    player[i].lastpathfindpoint==player[i].finalpathfindpoint){
+                    player[i].lastpathfindpoint==player[i].finalpathfindpoint) {
                 player[i].aitype=passivetype;
             }
 
@@ -4566,7 +4562,7 @@ void Game::doAI(int i){
             player[i].attackkeydown=0;
             player[i].throwkeydown=0;
 
-            if(player[i].avoidcollided>.8&&!player[i].jumpkeydown&&player[i].collided<.8)
+            if(player[i].avoidcollided>.8 && !player[i].jumpkeydown && player[i].collided<.8)
                 player[i].targetrotation+=90*(player[i].whichdirection*2-1);
 
             if(player[i].collided<1||player[i].targetanimation!=jumpupanim)
@@ -5141,7 +5137,7 @@ void Game::doAI(int i){
                                 weapons[i].velocity.x==0&&
                                 weapons[i].velocity.z==0&&
                                 weapons[i].velocity.y==0){
-                            if(findDistancefast(&player[i].coords,&weapons[k].position)<16){
+                            if(findDistancefast(&player[i].coords,&weapons[k].position)<16) {
                                 player[i].wentforweapon++;
                                 player[i].lastchecktime=6;
                                 player[i].aitype=getweapontype;
@@ -5170,7 +5166,7 @@ void Game::doAI(int i){
                     j=checkcollide(test2,test,player[i].laststanding);
                     if(j==-1)
                         j=checkcollide(test2,test);
-                    if(j==-1){
+                    if(j==-1) {
                         player[i].velocity=0;
                         setAnimation(i,player[i].getStop());
                         player[i].targetrotation+=180;
@@ -5183,7 +5179,7 @@ void Game::doAI(int i){
                         player[i].lastpathfindpoint2=-1;
                         player[i].lastpathfindpoint3=-1;
                         player[i].lastpathfindpoint4=-1;
-                    }else
+                    } else
                         player[i].laststanding=j;
                 }
             //lose sight of player in the air (?)
@@ -7755,7 +7751,9 @@ void Game::TickOnceAfter(){
 					if(!firstload)
 						LoadStuff();
 					whichchoice=0;
+					cout << "from " << campaignlevels[actuallevel].mapname.c_str() << "(" << actuallevel << ")" << endl;
 					actuallevel=campaignlevels[actuallevel].nextlevel.front();
+					cout << "to " << campaignlevels[actuallevel].mapname.c_str() << "(" << actuallevel << ")" << endl;
 					visibleloading=1;
 					stillloading=1;
 					Loadlevel(campaignlevels[actuallevel].mapname.c_str());

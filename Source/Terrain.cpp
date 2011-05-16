@@ -978,7 +978,7 @@ void Terrain::draw(int layer)
 	endz=(viewer.z+viewdistance)/(patch_size)+1;
 	if(endz>subdivision)endz=subdivision;
 
-	if(!layer)
+	if(!layer) {
 		for(i=beginx;i<endx;i++){	
 			for(j=beginz;j<endz;j++){	
 				terrainpoint.x=i*patch_size+(patch_size)/2;
@@ -987,35 +987,48 @@ void Terrain::draw(int layer)
 				distance[i][j]=findDistancefast(&viewer,&terrainpoint);
 			}
 		}
-
-		for(i=beginx;i<endx;i++){	
-			for(j=beginz;j<endz;j++){	
-				if(distance[i][j]<(viewdistance+patch_size)*(viewdistance+patch_size)){
-					opacity=1;
-					if(distance[i][j]>viewdistsquared*fadestart-viewdistsquared)opacity=0;
-					if(opacity==1&&i!=subdivision)if(distance[i+1][j]>viewdistsquared*fadestart-viewdistsquared)opacity=0;
-					if(opacity==1&&j!=subdivision)if(distance[i][j+1]>viewdistsquared*fadestart-viewdistsquared)opacity=0;
-					if(opacity==1&&j!=subdivision&&i!=subdivision)if(distance[i+1][j+1]>viewdistsquared*fadestart-viewdistsquared)opacity=0;
-					glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-					glPushMatrix();
-						if(frustum.CubeInFrustum(i*patch_size+patch_size*.5,avgypatch[i][j],j*patch_size+patch_size*.5,heightypatch[i][j]/2))
-						{   
-							if(environment==desertenvironment&&distance[i][j]>viewdistsquared/4)glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, blurness);
-							else if(environment==desertenvironment)glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, 0 );
-							if(!layer&&textureness[i][j]!=allsecond)drawpatch(i,j,opacity);
-							if(layer==1&&textureness[i][j]!=allfirst)drawpatchother(i,j,opacity);
-							if(layer==2&&textureness[i][j]!=allfirst)drawpatchotherother(i,j,opacity);
-						}
-					glPopMatrix();
-				}
+	}
+	for(i=beginx;i<endx;i++){
+		for(j=beginz;j<endz;j++){	
+			if(distance[i][j]<(viewdistance+patch_size)*(viewdistance+patch_size)){
+				opacity=1;
+				if(distance[i][j]>viewdistsquared*fadestart-viewdistsquared)
+					opacity=0;
+				if(opacity==1&&i!=subdivision)
+					if(distance[i+1][j]>viewdistsquared*fadestart-viewdistsquared)
+						opacity=0;
+				if(opacity==1&&j!=subdivision)
+					if(distance[i][j+1]>viewdistsquared*fadestart-viewdistsquared)
+						opacity=0;
+				if(opacity==1&&j!=subdivision&&i!=subdivision)
+					if(distance[i+1][j+1]>viewdistsquared*fadestart-viewdistsquared)
+						opacity=0;
+				glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+				glPushMatrix();
+					if(frustum.CubeInFrustum(i*patch_size+patch_size*.5,avgypatch[i][j],j*patch_size+patch_size*.5,heightypatch[i][j]/2))
+					{   
+						if(environment==desertenvironment&&distance[i][j]>viewdistsquared/4)
+							glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, blurness);
+						else if(environment==desertenvironment)
+							glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, 0 );
+						if(!layer&&textureness[i][j]!=allsecond)
+							drawpatch(i,j,opacity);
+						if(layer==1&&textureness[i][j]!=allfirst)
+							drawpatchother(i,j,opacity);
+						if(layer==2&&textureness[i][j]!=allfirst)
+							drawpatchotherother(i,j,opacity);
+					}
+				glPopMatrix();
 			}
 		}
-		if(environment==desertenvironment)glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, 0 );
+	}
+	if(environment==desertenvironment)
+		glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, 0 );
 }
 
 void Terrain::drawdecals()
 {
-	if(decals){
+	if(decals) {
 		static int i,j;
 		static float distancemult;
 		static int lasttype;
@@ -1186,8 +1199,8 @@ void Terrain::DeleteDecal(int which)
 }
 
 void Terrain::MakeDecal(int type, XYZ where, float size, float opacity, float rotation){
-	if(decals){
-		if(opacity>0&&size>0){
+	if(decals) {
+		if(opacity>0&&size>0) {
 			static int patchx[4];
 			static int patchy[4];
 
@@ -1237,11 +1250,9 @@ void Terrain::MakeDecalLock(int type, XYZ where,int whichx, int whichy, float si
 		decalbrightness[numdecals]=(rot.x+rot.y+rot.z)/3;
 		if(decalbrightness[numdecals]<.4)decalbrightness[numdecals]=.4;
 
-		//if(type==blooddecal||type==blooddecalfast||type==blooddecalslow){
 		if(environment==grassyenvironment){
 			decalbrightness[numdecals]*=.6;
 		}
-		//}
 
 		if(decalbrightness[numdecals]>1)decalbrightness[numdecals]=1;
 		decalbright=decalbrightness[numdecals];

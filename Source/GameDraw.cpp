@@ -2058,26 +2058,11 @@ void Game::DrawMenu() {
 	glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 	ReSizeGLScene(90,.1f);
 
-	int temptexdetail;
-	temptexdetail=texdetail;
-	if(texdetail>2)texdetail=2;
-	//~ if(mainmenu!=oldmainmenu&&oldmainmenu!=0){
-		//~ if(mainmenu==1){
-			//~ LoadTexture(":Data:Textures:Newgame.png",&Mainmenuitems[1],0,0);
-			//~ LoadTexture(":Data:Textures:Quit.png",&Mainmenuitems[3],0,0);
-		//~ }
-		//~ if(mainmenu==2){
-			//~ LoadTexture(":Data:Textures:Resume.png",&Mainmenuitems[1],0,0);
-			//~ LoadTexture(":Data:Textures:Endgame.png",&Mainmenuitems[3],0,0);
-		//~ }
-	//~ }
 	if(oldmainmenu!=mainmenu){
 		if(mainmenu==5){
 			LoadCampaign();
 		}
 	}
-
-	texdetail=temptexdetail;
 
 	oldmainmenu=mainmenu;
 
@@ -2185,41 +2170,41 @@ void Game::DrawMenu() {
 			startx[0]=10+20;
 			starty[0]=440;
 
-			if(newdetail==2)sprintf (menustring[1], "Detail: High");
-			else if(newdetail==1)sprintf (menustring[1], "Detail: Medium");
-			else sprintf (menustring[1], "Detail: Low");
+			if(newdetail==2)		sprintf (menustring[1], "Detail: High");
+			else if(newdetail==1)	sprintf (menustring[1], "Detail: Medium");
+			else 					sprintf (menustring[1], "Detail: Low");
 			startx[1]=10+60;
 			starty[1]=405;
 
-			if(bloodtoggle==2)sprintf (menustring[2], "Blood: On, high detail (slower)");
-			if(bloodtoggle==1)sprintf (menustring[2], "Blood: On, low detail");
-			if(bloodtoggle==0)sprintf (menustring[2], "Blood: Off");
+			if(bloodtoggle==2) sprintf (menustring[2], "Blood: On, high detail (slower)");
+			if(bloodtoggle==1) sprintf (menustring[2], "Blood: On, low detail");
+			if(bloodtoggle==0) sprintf (menustring[2], "Blood: Off");
 			startx[2]=10+70;
 			starty[2]=370;
 
-			if(difficulty==2)sprintf (menustring[3], "Difficulty: Insane");
-			if(difficulty==1)sprintf (menustring[3], "Difficulty: Difficult");
-			if(difficulty==0)sprintf (menustring[3], "Difficulty: Easier");
+			if(difficulty==2) sprintf (menustring[3], "Difficulty: Insane");
+			if(difficulty==1) sprintf (menustring[3], "Difficulty: Difficult");
+			if(difficulty==0) sprintf (menustring[3], "Difficulty: Easier");
 			startx[3]=10+20-1000;
 			starty[3]=335-1000;
 
-			if(ismotionblur==1)sprintf (menustring[4], "Blur Effects: Enabled (less compatible)");
-			if(ismotionblur==0)sprintf (menustring[4], "Blur Effects: Disabled (more compatible)");
+			if(ismotionblur==1) sprintf (menustring[4], "Blur Effects: Enabled (less compatible)");
+			if(ismotionblur==0) sprintf (menustring[4], "Blur Effects: Disabled (more compatible)");
 			startx[4]=10;
 			starty[4]=335;
 
-			if(decals==1)sprintf (menustring[5], "Decals: Enabled (slower)");
-			if(decals==0)sprintf (menustring[5], "Decals: Disabled");
+			if(decals==1) sprintf (menustring[5], "Decals: Enabled (slower)");
+			if(decals==0) sprintf (menustring[5], "Decals: Disabled");
 			startx[5]=10+60;
 			starty[5]=300;
 
-			if(musictoggle==1)sprintf (menustring[6], "Music: Enabled");
-			if(musictoggle==0)sprintf (menustring[6], "Music: Disabled");
+			if(musictoggle==1) sprintf (menustring[6], "Music: Enabled");
+			if(musictoggle==0) sprintf (menustring[6], "Music: Disabled");
 			startx[6]=10+70;
 			starty[6]=265;
 
-			if(invertmouse==1)sprintf (menustring[9], "Invert mouse: Yes");
-			if(invertmouse==0)sprintf (menustring[9], "Invert mouse: No");
+			if(invertmouse==1) sprintf (menustring[9], "Invert mouse: Yes");
+			if(invertmouse==0) sprintf (menustring[9], "Invert mouse: No");
 			startx[9]=10;
 			starty[9]=230;
 
@@ -2347,18 +2332,6 @@ void Game::DrawMenu() {
 			sprintf (menustring[2], "No");
 			startx[2]=10;
 			starty[2]=320;
-
-			sprintf (menustring[3], "Extra 4");
-			startx[3]=10;
-			starty[3]=280;
-
-			sprintf (menustring[4], "Extra 5");
-			startx[4]=10;
-			starty[4]=240;
-
-			sprintf (menustring[5], "Back");
-			startx[5]=10;
-			starty[5]=10;
 		}
 		break;
 		case 7: {	
