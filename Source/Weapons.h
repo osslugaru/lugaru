@@ -58,7 +58,7 @@ class Weapon {
 		static GLuint stafftextureptr;
 	
 		void Draw();
-		void DoStuff();
+		void DoStuff(int);
 		
 		int getType() { return type; }
 		void setType(int);

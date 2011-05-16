@@ -97,8 +97,8 @@ void Weapon::setType(int t) {
 	}
 }
 
-void Weapon::DoStuff() {
-	static int i,whichpatchx,whichpatchz,j,k,whichhit,m;
+void Weapon::DoStuff(int i) {
+	static int whichpatchx,whichpatchz,whichhit,m;
 	static XYZ start,end,colpoint,normalrot,footvel,footpoint;
 	static XYZ terrainnormal;
 	static XYZ vel;
@@ -119,17 +119,13 @@ void Weapon::DoStuff() {
 	if(owner!=-1){
 		oldowner=owner;
 	}
-	if(damage>=2&&type==staff&&owner!=-1){
+	if(damage>=2 && type==staff && owner!=-1){
 		emit_sound_at(staffbreaksound, tippoint);
 		XYZ tempvel;
-		XYZ speed;
-		//speed=(tippoint-oldtippoint)/multiplier/6;
-		speed=0;
-		for(j=0;j<40;j++){
+		for(int j=0;j<40;j++){
 			tempvel.x=float(abs(Random()%100)-50)/20;
 			tempvel.y=float(abs(Random()%100)-50)/20;
 			tempvel.z=float(abs(Random()%100)-50)/20;
-			tempvel+=speed;
 			Sprite::MakeSprite(splintersprite, position+(tippoint-position)*((float)j-8)/32,tempvel*.5, 115/255,73/255,12/255, .1, 1);
 		}
 		int tempowner;
@@ -141,11 +137,12 @@ void Weapon::DoStuff() {
 		firstfree=1;
 		position=0;
 		physics=0;
-		if(tempowner!=-1){
+		if(tempowner!=-1) {
 			player[tempowner].num_weapons--;
-			if(player[tempowner].num_weapons){
+			if(player[tempowner].num_weapons) {
 				player[tempowner].weaponids[0]=player[tempowner].weaponids[player[tempowner].num_weapons];
-				if(player[tempowner].weaponstuck==player[tempowner].num_weapons)player[tempowner].weaponstuck=0;
+				if(player[tempowner].weaponstuck==player[tempowner].num_weapons)
+					player[tempowner].weaponstuck=0;
 			}
 			player[tempowner].weaponactive=-1;
 		}
@@ -157,10 +154,10 @@ void Weapon::DoStuff() {
 		tippoint+=velocity*multiplier;
 		whichpatchx=position.x/(terrain.size/subdivision*terrain.scale);
 		whichpatchz=position.z/(terrain.size/subdivision*terrain.scale);
-		if(whichpatchx>0&&whichpatchz>0&&whichpatchx<subdivision&&whichpatchz<subdivision)
-			if(terrain.patchobjectnum[whichpatchx][whichpatchz]){
-				for(j=0;j<terrain.patchobjectnum[whichpatchx][whichpatchz];j++){
-					k=terrain.patchobjects[whichpatchx][whichpatchz][j];
+		if(whichpatchx>0 && whichpatchz>0 && whichpatchx<subdivision && whichpatchz<subdivision)
+			if(terrain.patchobjectnum[whichpatchx][whichpatchz]) {
+				for(int j=0;j<terrain.patchobjectnum[whichpatchx][whichpatchz];j++){
+					int k=terrain.patchobjects[whichpatchx][whichpatchz][j];
 					start=oldtippoint;
 					end=tippoint;
 					whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
@@ -210,10 +207,12 @@ void Weapon::DoStuff() {
 				}
 			}
 			if(velocity.x||velocity.y||velocity.z)
-				for(j=0;j<numplayers;j++){
+				for(int j=0;j<numplayers;j++){
 					footvel=0;
 					footpoint=DoRotation((player[j].skeleton.joints[player[j].skeleton.jointlabels[abdomen]].position+player[j].skeleton.joints[player[j].skeleton.jointlabels[neck]].position)/2,0,player[j].rotation,0)*player[j].scale+player[j].coords;
-					if(owner==-1&&findDistancefastflat(&position,&player[j].coords)<1.5&&findDistancefast(&position,&player[j].coords)<4&&player[j].weaponstuck==-1&&!player[j].skeleton.free&&j!=oldowner){
+					if(owner==-1 && findDistancefastflat(&position,&player[j].coords)<1.5 && 
+					findDistancefast(&position,&player[j].coords)<4&&player[j].weaponstuck==-1&&
+					!player[j].skeleton.free&&j!=oldowner) {
 						if((player[j].aitype!=attacktypecutoff||abs(Random()%6)==0||(player[j].targetanimation!=backhandspringanim&&player[j].targetanimation!=rollanim&&player[j].targetanimation!=flipanim&&Random()%2==0))&&!missed){
 							if((player[j].creature==wolftype&&Random()%3!=0&&player[j].weaponactive==-1&&(player[j].isIdle()||player[j].isRun()||player[j].targetanimation==walkanim))||(player[j].creature==rabbittype&&Random()%2==0&&player[j].aitype==attacktypecutoff&&player[j].weaponactive==-1)){
 								emit_sound_at(knifedrawsound, player[j].coords, 128.);
@@ -245,16 +244,20 @@ void Weapon::DoStuff() {
 								player[j].skeleton.joints[player[j].skeleton.jointlabels[neck]].velocity+=velocity*2;
 								player[j].skeleton.joints[player[j].skeleton.jointlabels[rightshoulder]].velocity+=velocity*2;
 								player[j].skeleton.joints[player[j].skeleton.jointlabels[leftshoulder]].velocity+=velocity*2;
-								//player[j].Puff(abdomen);
-								if(bloodtoggle&&tutoriallevel!=1)Sprite::MakeSprite(cloudimpactsprite, footpoint,footvel, 1,0,0, .8, .3);
-								if(tutoriallevel==1)Sprite::MakeSprite(cloudimpactsprite, footpoint,footvel, 1,1,1, .8, .3);
+								if(bloodtoggle&&tutoriallevel!=1)
+									Sprite::MakeSprite(cloudimpactsprite, footpoint,footvel, 1,0,0, .8, .3);
+								if(tutoriallevel==1)
+									Sprite::MakeSprite(cloudimpactsprite, footpoint,footvel, 1,1,1, .8, .3);
 								footvel=tippoint-position;
 								Normalise(&footvel);
-								if(bloodtoggle&&tutoriallevel!=1)Sprite::MakeSprite(bloodflamesprite, footpoint,footvel*-1, 1,0,0, .6, 1);
+								if(bloodtoggle&&tutoriallevel!=1)
+									Sprite::MakeSprite(bloodflamesprite, footpoint,footvel*-1, 1,0,0, .6, 1);
 
-								if(tutoriallevel!=1){
-									if(player[j].weaponstuckwhere==0)player[j].DoBloodBig(2,205);
-									if(player[j].weaponstuckwhere==1)player[j].DoBloodBig(2,200);
+								if(tutoriallevel!=1) {
+									if(player[j].weaponstuckwhere==0)
+										player[j].DoBloodBig(2,205);
+									if(player[j].weaponstuckwhere==1)
+										player[j].DoBloodBig(2,200);
 									player[j].damage+=200/player[j].armorhigh;
 									player[j].deathbleeding=1;
 									player[j].bloodloss+=(200+abs((float)(Random()%40))-20)/player[j].armorhigh;
@@ -285,7 +288,6 @@ void Weapon::DoStuff() {
 						terrain.MakeDecal(shadowdecalpermanent,position,.06,.5,0);
 						normalrot=terrain.getNormal(position.x,position.z)*-1;
 						velocity=0;
-						//position-=normalrot*.1;
 						glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 						glPushMatrix();
 							GLfloat M[16];
@@ -359,7 +361,7 @@ void Weapon::DoStuff() {
 					bigtilt=0;
 					bigtilt2=0;
 					bigrotation=0;
-					if(temppoint1.x>temppoint2.x)rotation1=360-rotation1;
+					if(temppoint1.x>temppoint2.x) rotation1=360-rotation1;
 				}
 	}
 	//Sword physics
@@ -369,8 +371,8 @@ void Weapon::DoStuff() {
 
 	tempmult=multiplier;
 	multiplier/=10;
-	for(int l=0;l<10;l++){
-		if(owner==-1&&(velocity.x||velocity.y||velocity.z)&&physics){
+	for(int l=0;l<10;l++) {
+		if(owner==-1&&(velocity.x||velocity.y||velocity.z)&&physics) {
 			//move
 			position+=velocity*multiplier;
 			tippoint+=tipvelocity*multiplier;
@@ -394,8 +396,8 @@ void Weapon::DoStuff() {
 			whichpatchz=(position.z)/(terrain.size/subdivision*terrain.scale);
 			if(whichpatchx>0&&whichpatchz>0&&whichpatchx<subdivision&&whichpatchz<subdivision)
 				if(terrain.patchobjectnum[whichpatchx][whichpatchz]){
-					for(j=0;j<terrain.patchobjectnum[whichpatchx][whichpatchz];j++){
-						k=terrain.patchobjects[whichpatchx][whichpatchz][j];
+					for(int j=0;j<terrain.patchobjectnum[whichpatchx][whichpatchz];j++){
+						int k=terrain.patchobjects[whichpatchx][whichpatchz][j];
 
 						if(firstfree){
 							if(type!=staff){
@@ -851,8 +853,9 @@ void Weapon::DoStuff() {
 
 void Weapons::DoStuff() {
 	//Move
+	int i = 0;
 	for(std::vector<Weapon>::iterator weapon = begin(); weapon != end(); ++weapon) {
-		weapon->DoStuff();
+		weapon->DoStuff(i++);
 	}
 }
 
