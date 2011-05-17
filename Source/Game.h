@@ -155,8 +155,6 @@ public:
 class Game
 {
 	public:
-		static std::vector<TextureInfo> textures;
-
 		GLuint terraintexture;
 		GLuint terraintexture2;
 		GLuint terraintexture3;
@@ -284,10 +282,8 @@ class Game
 		unsigned short crouchkey,jumpkey,forwardkey,chatkey,backkey,leftkey,rightkey,drawkey,throwkey,attackkey;
 		bool oldattackkey;
 
-		static void LoadTexture(const char *fileName, GLuint *textureid,int mipmap, bool hasalpha);
-		static void LoadTextureSave(const char *fileName, GLuint *textureid,int mipmap,GLubyte *array, int *skinsize);
-		static void LoadTextureData(const char *fileName, GLuint *textureid,int mipmap, bool hasalpha);
-		static void LoadTextureSaveData(const char *fileName, GLuint *textureid,int mipmap,GLubyte *array, int *skinsize, bool reload);
+		static void LoadTexture(const string fileName, GLuint *textureid,int mipmap, bool hasalpha);
+		static void LoadTextureSave(const string fileName, GLuint *textureid,int mipmap,GLubyte *array, int *skinsize);
 		void LoadSave(const char *fileName, GLuint *textureid,bool mipmap,GLubyte *array, int *skinsize);
         bool AddClothes(const char *fileName, GLubyte *array);
 		void InitGame();
@@ -368,33 +364,6 @@ class Game
 		bool waiting;
 		//int mainmenu;
 		Account* accountactive;
-};
-
-//keeps track of which textures are loaded
-//TODO: delete them properly
-struct TextureInfo {
-    bool isLoaded;
-    bool isSkin;
-    const char* fileName;
-    GLuint* ptextureid;
-    int mipmap;
-    bool hasalpha;
-    GLubyte* array;
-    int* skinsize;
-
-    void load() {
-        if(isSkin)
-            Game::LoadTextureSaveData(fileName,ptextureid,mipmap,array,skinsize,isLoaded);
-        else
-            Game::LoadTextureData(fileName,ptextureid,mipmap,hasalpha);
-        isLoaded=true;
-    }
-    TextureInfo(const char *_fileName, GLuint *_ptextureid,int _mipmap, bool _hasalpha):
-        isLoaded(false), isSkin(false), array(NULL), skinsize(NULL),
-        fileName(_fileName), ptextureid(_ptextureid), mipmap(_mipmap), hasalpha(_hasalpha) { }
-    TextureInfo(const char *_fileName, GLuint *_ptextureid, int _mipmap, GLubyte *_array, int *_skinsize):
-        isLoaded(false), isSkin(true), hasalpha(false),
-        fileName(_fileName), ptextureid(_ptextureid), mipmap(_mipmap), array(_array), skinsize(_skinsize) { }
 };
 
 #ifndef __forceinline

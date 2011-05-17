@@ -40,7 +40,7 @@ bool upload_image(const unsigned char* filePath, bool hasalpha)
 #if !PLATFORM_MACOSX
 
 	// for Windows, just use TGA loader for now
-	char fileName[ 256];
+	char fileName[256];
 	CopyPascalStringToC( filePath, fileName);
 /*
 	// change extension to .TGA
@@ -84,7 +84,7 @@ bool upload_image(const unsigned char* filePath, bool hasalpha)
 	Rect natbounds;
 	cr = GraphicsImportGetNaturalBounds(gi, &natbounds);
 
-	size_t buffersize = 4 * natbounds.bottom * natbounds.right;
+	//~ size_t buffersize = 4 * natbounds.bottom * natbounds.right;
 	//void* buf = malloc(buffersize);
 	texture.sizeX=natbounds.right;
 	texture.sizeY=natbounds.bottom;
@@ -121,7 +121,7 @@ bool upload_image(const unsigned char* filePath, bool hasalpha)
 	GLuint			bytesPerPixel;										// Temporary Variable
 	bytesPerPixel=texture.bpp/8;
 	imageSize = texture.sizeX * texture.sizeY * bytesPerPixel;
-	int alltrans=10;
+	//~ int alltrans=10;
 
 	for( GLuint i = 0; i < int( imageSize ); i += 4 )
 	{
@@ -133,8 +133,8 @@ bool upload_image(const unsigned char* filePath, bool hasalpha)
 		texture.data[i + 3] = temp;
 	}
 
-	int tempplace;
-	tempplace=0;
+	//~ int tempplace;
+	//~ tempplace=0;
 	if(!hasalpha){
 		for( GLuint i = 0; i < int( imageSize ); i += 4 )
 		{

@@ -239,50 +239,43 @@ void initGL(){
 }
 
 static void toggleFullscreen(){
-    SDL_Surface* screen=SDL_GetVideoSurface();
-    Uint32 flags=screen->flags;
-    screen=SDL_SetVideoMode(0,0,0,flags^SDL_FULLSCREEN);
-    if(!screen)
-        screen=SDL_SetVideoMode(0,0,0,flags);
-    if(!screen)
-        exit(1);
-    //reload opengl state
-    initGL();
-    for(std::vector<TextureInfo>::iterator it=Game::textures.begin(); it!=Game::textures.end(); it++) {
-        it->load();
-    }
-    pgame->text.BuildFont();
-    pgame->LoadScreenTexture();
+	SDL_WM_ToggleFullScreen(SDL_GetVideoSurface());
+    //~ SDL_Surface* screen=SDL_GetVideoSurface();
+    //~ Uint32 flags=screen->flags;
+    //~ screen=SDL_SetVideoMode(0,0,0,flags^SDL_FULLSCREEN);
+    //~ if(!screen)
+        //~ screen=SDL_SetVideoMode(0,0,0,flags);
+    //~ if(!screen)
+        //~ exit(1);
+    //~ //reload opengl state
+    //~ initGL();
+    //~ for(std::vector<TextureInfo>::iterator it=Game::textures.begin(); it!=Game::textures.end(); it++) {
+        //~ it->load();
+    //~ }
+    //~ pgame->text.BuildFont();
+    //~ pgame->LoadScreenTexture();
 }
 
-static void sdlEventProc(const SDL_Event &e, Game &game){
-    switch(e.type){
+static void sdlEventProc(const SDL_Event &e, Game &game)
+{
+    switch(e.type) {
         case SDL_MOUSEMOTION:
             game.deltah += e.motion.xrel;
             game.deltav += e.motion.yrel;
             break;
+
         case SDL_KEYDOWN:
             if ((e.key.keysym.sym == SDLK_g) &&
-				(e.key.keysym.mod & KMOD_CTRL) &&
-				!(SDL_GetVideoSurface()->flags & SDL_FULLSCREEN) ) {
-				SDL_WM_GrabInput( ((SDL_WM_GrabInput(SDL_GRAB_QUERY)==SDL_GRAB_ON) ? SDL_GRAB_OFF:SDL_GRAB_ON) );
-			} else if ( (e.key.keysym.sym == SDLK_RETURN) && (e.key.keysym.mod & KMOD_ALT) ) {
-                toggleFullscreen();
-            }
-            break;
-        case SDL_ACTIVEEVENT:
-            if(e.active.state&SDL_APPINPUTFOCUS){
-                if(e.active.gain){
-                    SDL_WM_GrabInput(SDL_GRAB_ON);
-                    gameFocused=true;
-                }else{
-                    SDL_WM_GrabInput(SDL_GRAB_OFF);
-                    gameFocused=false;
-                }
+                                (e.key.keysym.mod & KMOD_CTRL) &&
+                                !(SDL_GetVideoSurface()->flags & SDL_FULLSCREEN) ) {
+                                SDL_WM_GrabInput( ((SDL_WM_GrabInput(SDL_GRAB_QUERY)==SDL_GRAB_ON) ? SDL_GRAB_OFF:SDL_GRAB_ON) );
+            } else if ( (e.key.keysym.sym == SDLK_RETURN) && (e.key.keysym.mod & KMOD_ALT) ) {
+                                toggleFullscreen();
             }
             break;
     }
 }
+
 
 
 // --------------------------------------------------------------------------
@@ -719,51 +712,50 @@ int main(int argc, char **argv)
 
 			while (!gDone&&!game.quit&&(!game.tryquit))
 			{
-				//if (IsFocused()) {
-					//gameFocused = true;
-
-					// check windows messages
-			
-					game.deltah = 0;
-					game.deltav = 0;
-					SDL_Event e;
-					if(!game.isWaiting()) {
-						// message pump
-						while( SDL_PollEvent( &e ) ){
-                            switch(e.type){
-                            case SDL_QUIT:
-                                gDone=true;
-                                break;
-                            default:
-                                sdlEventProc(e, game);
-                                break;
-							}
-						}
-					}
-
-					// game
-					DoUpdate(game);
-				/*
-                }
-                else
-                {
-					if (gameFocused)
+					if (IsFocused())
 					{
-						// allow game chance to pause
-						gameFocused = false;
-						DoUpdate(game);
-					}
+							gameFocused = true;
 
-					// game is not in focus, give CPU time to other apps by waiting for messages instead of 'peeking'
-					SDL_ActiveEvent evt;
-					SDL_WaitEvent((SDL_Event*)&evt);
-					if (evt.type == SDL_ACTIVEEVENT && evt.gain == 1)
-						gameFocused = true;
-					else if (evt.type == SDL_QUIT)
-						gDone = true;
-				}
-                */
+							// check windows messages
+			
+							game.deltah = 0;
+							game.deltav = 0;
+							SDL_Event e;
+							if(!game.isWaiting()) {
+									// message pump
+									while( SDL_PollEvent( &e ) )
+									{
+											if( e.type == SDL_QUIT )
+											{
+													gDone=true;
+													break;
+											}
+											sdlEventProc(e, game);
+									}
+							}
+
+							// game
+							DoUpdate(game);
+					}
+					else
+					{
+							if (gameFocused)
+							{
+									// allow game chance to pause
+									gameFocused = false;
+									DoUpdate(game);
+							}
+
+							// game is not in focus, give CPU time to other apps by waiting for messages instead of 'peeking'
+							SDL_ActiveEvent evt;
+							SDL_WaitEvent((SDL_Event*)&evt);
+							if (evt.type == SDL_ACTIVEEVENT && evt.gain == 1)
+									gameFocused = true;
+							else if (evt.type == SDL_QUIT)
+									gDone = true;
+					}
 			}
+
 
 		}
 		pgame = 0;

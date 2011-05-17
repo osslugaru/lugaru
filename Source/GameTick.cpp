@@ -225,7 +225,7 @@ inline Joint& playerJoint(int playerid, int bodypart){
 inline Joint& playerJoint(Person* pplayer, int bodypart){
     return pplayer->skeleton.joints[pplayer->skeleton.jointlabels[bodypart]]; }
 
-inline float sq(float n){ return n*n; }
+inline float sq(float n) { return n*n; }
 
 inline float stepTowardf(float from, float to, float by){
     if(fabs(from-to)<by) return to;
@@ -1425,6 +1425,7 @@ void Game::Loadlevel(const char *name){
 	LOGFUNC;
 
 	LOG(std::string("Loading level...") + name);
+	cout << "Loading level..." << name << endl;
 
 	if(!gameon)
         visibleloading=1;
@@ -1435,7 +1436,7 @@ void Game::Loadlevel(const char *name){
 	gamestarted=1;
 
 	numenvsounds=0;
-	//visibleloading=1;
+
 	if(tutoriallevel!=-1)
         tutoriallevel=0;
 	else
@@ -1443,7 +1444,7 @@ void Game::Loadlevel(const char *name){
 
 	if(tutoriallevel==1)
         tutorialstage=0;
-	if(tutorialstage==0){
+	if(tutorialstage==0) {
 		tutorialstagetime=0;
 		tutorialmaxtime=1;
 	}
@@ -1458,8 +1459,12 @@ void Game::Loadlevel(const char *name){
 
 	int mapvers;
 	FILE *tfile;
+	char* buff=getcwd(NULL,0);
+	cout << buff << " " << FixedFN << endl;
+	free(buff);
 	tfile=fopen( FixedFN, "rb" );
-	if(tfile){
+	if(tfile) {
+		cout << "existe" << endl;
 		pause_sound(stream_firesound);
 		scoreadded=0;
 		windialogue=0;
@@ -1527,6 +1532,7 @@ void Game::Loadlevel(const char *name){
 			emit_sound_np(consolesuccesssound);
 			freeze=0;
 			console=false;
+			cout << "console contente" << endl;
 		}
 
 		if(!stealthloading){
@@ -2086,6 +2092,8 @@ void Game::Loadlevel(const char *name){
 
 		if(!firstload)
 			firstload=1;
+	} else {
+		perror("Soucis");
 	}
 	leveltime=0;
 	loadingstuff=0;
@@ -5626,9 +5634,9 @@ void Game::MenuTick(){
 						targetlevel=-1;
 						if(firstload) {
 							TickOnceAfter();
-							Loadlevel(-1);
 						} else
 							LoadStuff();
+						Loadlevel(-1);
 
 						mainmenu=0;
 						gameon=1;
@@ -5658,9 +5666,6 @@ void Game::MenuTick(){
 								c=campaigns.begin();
 							accountactive->setCurrentCampaign(*c);
 						}
-						if(Mainmenuitems[7])
-							glDeleteTextures(1,&Mainmenuitems[7]); // we delete the world texture so load campaign will reload it
-						Mainmenuitems[7] = 0;
 						LoadCampaign();
 						break;
 				}
@@ -5712,9 +5717,11 @@ void Game::MenuTick(){
 					loading=2;
 					loadtime=0;
 					targetlevel=selected;
-					if(firstload)TickOnceAfter();
-					if(!firstload)LoadStuff();
-					else Loadlevel(selected);
+					if(firstload)
+						TickOnceAfter();
+					else
+						LoadStuff();
+					Loadlevel(selected);
 					campaign=0;
 
 					mainmenu=0;
@@ -7729,7 +7736,7 @@ void Game::TickOnceAfter(){
                 // 0 = load next level
                 // 1 = go back to level select screen
                 // 2 = stealthload next level
-				if(mainmenu==0&&winfreeze&&(campaignlevels[actuallevel].choosenext)==1){
+				if(mainmenu==0&&winfreeze&&(campaignlevels[actuallevel].choosenext)==1) {
 					if(campaignlevels[actuallevel].nextlevel.empty())
 						endgame=1;
 				} else if(mainmenu==0&&winfreeze) {

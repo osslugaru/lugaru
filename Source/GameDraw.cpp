@@ -2034,13 +2034,11 @@ void Game::LoadCampaign() {
 	}
 	ipstream.close();
 
-	if(!Mainmenuitems[7]) {
-		ifstream test(ConvertFileName((":Data:Textures:"+accountactive->getCurrentCampaign()+":World.png").c_str()));
-		if(test.good()) {
-			LoadTextureData((":Data:Textures:"+accountactive->getCurrentCampaign()+":World.png").c_str(),&Mainmenuitems[7],0,0);
-		} else {
-			LoadTextureData(":Data:Textures:World.png",&Mainmenuitems[7],0,0);
-		}
+	ifstream test(ConvertFileName((":Data:Textures:"+accountactive->getCurrentCampaign()+":World.png").c_str()));
+	if(test.good()) {
+		LoadTexture((":Data:Textures:"+accountactive->getCurrentCampaign()+":World.png").c_str(),&Mainmenuitems[7],0,0);
+	} else {
+		LoadTexture(":Data:Textures:World.png",&Mainmenuitems[7],0,0);
 	}
 
 	if(accountactive->getCampaignChoicesMade()==0) {

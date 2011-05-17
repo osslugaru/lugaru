@@ -69,6 +69,7 @@ set(LUGARU_SRCS
 	${SRCDIR}/Skybox.cpp
 	${SRCDIR}/Sprite.cpp
 	${SRCDIR}/Terrain.cpp
+	${SRCDIR}/Texture.cpp
 	${SRCDIR}/Text.cpp
 	${SRCDIR}/TGALoader.cpp
 	${SRCDIR}/unpack.c
@@ -99,6 +100,7 @@ set(LUGARU_H
 	${SRCDIR}/Sprite.h
 	${SRCDIR}/TGALoader.h
 	${SRCDIR}/Terrain.h
+	${SRCDIR}/Texture.h
 	${SRCDIR}/Text.h
 	${SRCDIR}/Weapons.h
 	${SRCDIR}/Input.h

@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Game.h"
 #include "openal_wrapper.h"
 #include "Animation.h"
+#include "Texture.h"
 
 extern float screenwidth,screenheight;
 extern float viewdistance;
@@ -98,7 +99,6 @@ void LOG(const std::string &fmt, ...)
     // !!! FIXME: write me.
 }
 
-
 void Game::Dispose()
 {
 	LOGFUNC;
@@ -135,124 +135,12 @@ void Game::Dispose()
 }
 
 
-void Game::LoadTexture(const char *fileName, GLuint *textureid,int mipmap, bool hasalpha) {
-    textures.push_back(TextureInfo(fileName,textureid,mipmap,hasalpha));
-    textures.back().load();
+void Game::LoadTexture(const string fileName, GLuint *textureid,int mipmap, bool hasalpha) {
+	*textureid = Texture::Load(fileName,mipmap,hasalpha);
 }
 
-void Game::LoadTextureSave(const char *fileName, GLuint *textureid,int mipmap,GLubyte *array, int *skinsize) {
-    textures.push_back(TextureInfo(fileName,textureid,mipmap,array,skinsize));
-    textures.back().load();
-}
-
-void Game::LoadTextureData(const char *fileName, GLuint *textureid,int mipmap, bool hasalpha)
-{
-	GLuint		type;
-
-	LOGFUNC;
-
-	LOG(std::string("Loading texture...") + fileName);
-
-	// Fix filename so that is os appropreate
-	char * fixedFN = ConvertFileName(fileName);
-
-	unsigned char fileNamep[256];
-	CopyCStringToPascal(fixedFN, fileNamep);
-	//Load Image
-	upload_image( fileNamep ,hasalpha);
-
-//	std::string fname(fileName);
-//	std::transform(fname.begin(), fname.end(), tolower);
-//	TexIter it = textures.find(fname);
-
-	//Is it valid?
-	if(1==1)
-	//if(textures.end() == it)
-	{
-		//Alpha channel?
-		if ( texture.bpp == 24 )
-			type = GL_RGB;
-		else
-			type = GL_RGBA;
-
-		glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-
-		if(!*textureid)
-			glGenTextures( 1, textureid );
-		glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-
-		glBindTexture( GL_TEXTURE_2D, *textureid);
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-		if(trilinear)if(mipmap)glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
-		if(!trilinear)if(mipmap)glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST );
-		if(!mipmap)glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-		
-		gluBuild2DMipmaps( GL_TEXTURE_2D, type, texture.sizeX, texture.sizeY, type, GL_UNSIGNED_BYTE, texture.data );
-	}
-}
-
-void Game::LoadTextureSaveData(const char *fileName, GLuint *textureid,int mipmap,GLubyte *array, int *skinsize, bool reload)
-{
-	GLuint		type;
-	int i;
-	int bytesPerPixel;
-
-	LOGFUNC;
-
-	LOG(std::string("Loading texture (S)...") + fileName);
-
-	//Load Image
-	unsigned char fileNamep[256];
-	CopyCStringToPascal(ConvertFileName(fileName), fileNamep);
-	//Load Image
-	upload_image( fileNamep ,0);
-	//LoadTGA( fileName );
-
-//	std::string fname(fileName);
-//	std::transform(fname.begin(), fname.end(), tolower);
-//	TexIter it = textures.find(fname);
-
-	//Is it valid?
-	if(1==1)
-	//if(textures.end() == it)
-	{
-		bytesPerPixel=texture.bpp/8;
-
-		//Alpha channel?
-		if ( texture.bpp == 24 )
-			type = GL_RGB;
-		else
-			type = GL_RGBA;
-
-		glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-
-		if(!*textureid)glGenTextures( 1, textureid );
-		glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-
-		glBindTexture( GL_TEXTURE_2D, *textureid);
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-		if(trilinear)if(mipmap)glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
-		if(!trilinear)if(mipmap)glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST );
-		if(!mipmap)glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-
-		int tempnum=0;
-        if(!reload)
-            for(i=0;i<(int)(texture.sizeY*texture.sizeX*bytesPerPixel);i++)
-                if((i+1)%4||type==GL_RGB){
-                    array[tempnum]=texture.data[i];
-                    tempnum++;
-                }
-
-		*skinsize=texture.sizeX;
-
-		gluBuild2DMipmaps( GL_TEXTURE_2D, type, texture.sizeX, texture.sizeY, GL_RGB, GL_UNSIGNED_BYTE, array );
-
-//		textures.insert(std::make_pair(fname, *textureid));
-	}
-//	else
-//	{
-//		*textureid = it->second;
-//	}
+void Game::LoadTextureSave(const string fileName, GLuint *textureid,int mipmap,GLubyte *array, int *skinsize) {
+	*textureid = Texture::Load(fileName,mipmap,false,array,skinsize);
 }
 
 void Game::LoadSave(const char *fileName, GLuint *textureid,bool mipmap,GLubyte *array, int *skinsize)
@@ -884,8 +772,6 @@ void Game::LoadStuff()
 
 	stillloading=1;
 
-	//texture.data = ( GLubyte* )malloc( 1024*1024*4 );
-
 	for(i=0;i<maxplayers;i++)
 	{
 		if (glIsTexture(player[i].skeleton.drawmodel.textureptr))
@@ -895,11 +781,8 @@ void Game::LoadStuff()
 		player[i].skeleton.drawmodel.textureptr=0;;
 	}
 
-	//temptexdetail=texdetail;
-	//texdetail=1;
 	i=abs(Random()%4);
 	LoadTexture(":Data:Textures:fire.jpg",&loadscreentexture,1,0);
-	//texdetail=temptexdetail;
 
 	temptexdetail=texdetail;
 	texdetail=1;
@@ -914,8 +797,6 @@ void Game::LoadStuff()
 
 	brightness=100;
 
-
-
 	if(detail==2){
 		texdetail=1;
 	}
@@ -928,20 +809,7 @@ void Game::LoadStuff()
 
 	realtexdetail=texdetail;
 
-	/*texdetail/=4;
-	if(texdetail<1)texdetail=1;
-	realtexdetail=texdetail*4;
-	*/
 	numplayers=1;
-
-
-
-	/*LoadTexture(":Data:Textures:snow.png",&terraintexture,1);
-
-	LoadTexture(":Data:Textures:rock.png",&terraintexture2,1);
-
-	LoadTexture(":Data:Textures:detail.png",&terraintexture3,1);
-	*/
 
 
 	LOG("Loading weapon data...");
@@ -983,8 +851,6 @@ void Game::LoadStuff()
 	Weapon::staffmodel.CalculateNormals(1);
 	//Weapon::staffmodel.ScaleNormals(-1,-1,-1);
 
-	//temptexdetail=texdetail;
-	//if(texdetail>4)texdetail=4;
 	LoadTexture(":Data:Textures:shadow.png",&terrain.shadowtexture,0,1);
 
 	LoadTexture(":Data:Textures:blood.png",&terrain.bloodtexture,0,1);
@@ -998,28 +864,9 @@ void Game::LoadStuff()
 
 	LoadTexture(":Data:Textures:bodyprint.png",&terrain.bodyprinttexture,0,1);
 
-	/*LoadTexture(":Data:Textures:cloud.png",&Sprite::cloudtexture,1);
-
-	LoadTexture(":Data:Textures:cloudimpact.png",&Sprite::cloudimpacttexture,1);
-
-	LoadTexture(":Data:Textures:bloodparticle.png",&Sprite::bloodtexture,1);
-
-	LoadTexture(":Data:Textures:snowflake.png",&Sprite::snowflaketexture,1);
-
-	LoadTexture(":Data:Textures:flame.png",&Sprite::flametexture,1);
-
-	LoadTexture(":Data:Textures:smoke.png",&Sprite::smoketexture,1);
-	//texdetail=temptexdetail;
-	LoadTexture(":Data:Textures:shine.png",&Sprite::shinetexture,1);*/
-
-
-
 	LoadTexture(":Data:Textures:hawk.png",&hawktexture,0,1);
 
 	LoadTexture(":Data:Textures:logo.png",&logotexture,0,1);
-
-
-	//LoadTexture(":Data:Textures:box.jpg",&objects.boxtextureptr,1,0);
 
 
 	LoadTexture(":Data:Textures:cloud.png",&Sprite::cloudtexture,1,1);
@@ -1041,15 +888,10 @@ void Game::LoadStuff()
 	viewer=0;
 
 
-
-
 	if(detail)kTextureSize=1024;
 	if(detail==1)kTextureSize=512;
 	if(detail==0)kTextureSize=256;
-
-
-	//drawmode=motionblurmode;
-
+	
 	//Set up distant light
 	light.color[0]=.95;
 	light.color[1]=.95;
@@ -1085,7 +927,6 @@ void Game::LoadStuff()
 	hawkcoords.z=terrain.size/2*terrain.scale-5-7;
 	hawkcoords.y=terrain.getHeight(hawkcoords.x,hawkcoords.z)+25;
 
-
 	eye.load((char *)":Data:Models:eye.solid",1);
 	eye.Scale(.03,.03,.03);
 	eye.CalculateNormals(0);
@@ -1107,9 +948,6 @@ void Game::LoadStuff()
 	mainmenu=0;
 
 	firstload=0;
-	//if(targetlevel!=7)
-		Loadlevel(targetlevel);
-
 
 	rabbitcoords=player[0].coords;
 	rabbitcoords.y=terrain.getHeight(rabbitcoords.x,rabbitcoords.z);
@@ -1176,7 +1014,6 @@ void Game::LoadStuff()
 
 	LoadingScreen();
 
-	//if(ismotionblur){
 	if(!screentexture){
         LoadScreenTexture();
 	}
