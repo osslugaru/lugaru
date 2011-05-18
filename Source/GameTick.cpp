@@ -1425,7 +1425,6 @@ void Game::Loadlevel(const char *name) {
 	LOGFUNC;
 
 	LOG(std::string("Loading level...") + name);
-	cout << "Loading level..." << name << endl;
 
 	if(!gameon)
         visibleloading=1;
@@ -1459,12 +1458,11 @@ void Game::Loadlevel(const char *name) {
 
 	int mapvers;
 	FILE *tfile;
-	char* buff=getcwd(NULL,0);
-	cout << buff << " " << FixedFN << endl;
-	free(buff);
+	//~ char* buff=getcwd(NULL,0);
+	//~ cout << buff << " " << FixedFN << endl;
+	//~ free(buff);
 	tfile=fopen( FixedFN, "rb" );
 	if(tfile) {
-		cout << "existe" << endl;
 		pause_sound(stream_firesound);
 		scoreadded=0;
 		windialogue=0;
@@ -1532,7 +1530,6 @@ void Game::Loadlevel(const char *name) {
 			emit_sound_np(consolesuccesssound);
 			freeze=0;
 			console=false;
-			cout << "console contente" << endl;
 		}
 
 		if(!stealthloading){
@@ -2093,7 +2090,7 @@ void Game::Loadlevel(const char *name) {
 		if(!firstload)
 			firstload=1;
 	} else {
-		perror("Soucis");
+		perror("Problem");
 	}
 	leveltime=0;
 	loadingstuff=0;
@@ -7758,9 +7755,7 @@ void Game::TickOnceAfter(){
 					if(!firstload)
 						LoadStuff();
 					whichchoice=0;
-					cout << "from " << campaignlevels[actuallevel].mapname.c_str() << "(" << actuallevel << ")" << endl;
 					actuallevel=campaignlevels[actuallevel].nextlevel.front();
-					cout << "to " << campaignlevels[actuallevel].mapname.c_str() << "(" << actuallevel << ")" << endl;
 					visibleloading=1;
 					stillloading=1;
 					Loadlevel(campaignlevels[actuallevel].mapname.c_str());

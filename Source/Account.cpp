@@ -122,7 +122,7 @@ Account* Account::loadFile(string filename) {
 			funpackf(tfile, "Bi", &(acc->progress));
 			int nbCampaigns;
 			funpackf(tfile, "Bi", &nbCampaigns);
-			printf("loading %d campaign progress info\n",nbCampaigns);
+			//~ printf("loading %d campaign progress info\n",nbCampaigns);
 			
 			for(int k=0;k<nbCampaigns;++k) {
 				string campaignName = "";
@@ -134,7 +134,7 @@ Account* Account::loadFile(string filename) {
 					funpackf(tfile, "Bb",  &c);
 					campaignName.append(1,c);
 				}
-				printf("loading %s campaign progress info\n",campaignName.c_str());
+				//~ printf("loading %s campaign progress info\n",campaignName.c_str());
 				funpackf(tfile, "Bf", &(acc->campaignProgress[campaignName].time));
 				funpackf(tfile, "Bf", &(acc->campaignProgress[campaignName].score));
 				funpackf(tfile, "Bf", &(acc->campaignProgress[campaignName].fasttime));
