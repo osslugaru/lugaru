@@ -131,8 +131,6 @@ int hotspottype[40] = {0};
 float hotspotsize[40] = {0};
 char hotspottext[40][256] = {0};
 int currenthotspot = 0;	
-int winhotspot = 0;
-int windialogue = 0;
 int killhotspot = 0;
 
 float menupulse = 0;

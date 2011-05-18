@@ -221,6 +221,8 @@ class Game
 		std::vector<CampaignLevel> campaignlevels;
 		int whichchoice;
 		int actuallevel;
+		bool winhotspot;
+		bool windialogue;
 
 		bool minimap;
 

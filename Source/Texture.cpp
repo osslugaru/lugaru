@@ -9,6 +9,12 @@ map<string,Texture> Texture::textures;
 extern TGAImageRec texture;
 extern bool trilinear;
 
+Texture::~Texture()  {
+	free(array);
+	if(id)
+		glDeleteTextures(1,&id);
+}
+
 void Texture::load()  {
 	GLuint type;
 

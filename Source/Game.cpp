@@ -101,6 +101,8 @@ Game::Game()
 
 	whichchoice = 0;
 	actuallevel = 0;
+	winhotspot = false;
+	windialogue = false;
 
 	minimap = 0;
 

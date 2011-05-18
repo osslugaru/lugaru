@@ -22,9 +22,7 @@ class Texture {
 		Texture():
 			isSkin(false), skinsize(0), arraySize(0),
 			fileName(""), id(0), mipmap(false), hasalpha(false), array(NULL) { }
-		~Texture() {
-			free(array);
-		}
+		~Texture();
 		Texture (const std::string& _fileName, bool _mipmap, bool _hasalpha):
 			isSkin(false), skinsize(0), arraySize(0), array(NULL),
 			fileName(_fileName), id(0), mipmap(_mipmap), hasalpha(_hasalpha) { }

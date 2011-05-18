@@ -122,8 +122,6 @@ extern float hostiletime;
 extern bool gamestarted;
 
 extern int numhotspots;
-extern int winhotspot;
-extern int windialogue;
 extern int killhotspot;
 extern XYZ hotspot[40];
 extern int hotspottype[40];
@@ -190,13 +188,6 @@ static console_handler cmd_handlers[] = {
 
 // added utility functions -sf17k =============================================================
 
-//TODO: try to hide these variables completely with a better interface
-inline void setAnimation(int playerid,int animation){
-    player[playerid].targetanimation=animation;
-    player[playerid].targetframe=0;
-    player[playerid].target=0;
-}
-
 //TODO: this is incorrect but I'm afraid to change it and break something,
 //probably causes quirky behavior that I might want to preserve
 inline float roughDirection(XYZ vec){
@@ -218,12 +209,6 @@ inline float pitch(XYZ vec){
 inline float pitchTo(XYZ start, XYZ end){
     return pitch(end-start);
 }
-
-//change these to a Person method
-inline Joint& playerJoint(int playerid, int bodypart){
-    return player[playerid].skeleton.joints[player[playerid].skeleton.jointlabels[bodypart]]; }
-inline Joint& playerJoint(Person* pplayer, int bodypart){
-    return pplayer->skeleton.joints[pplayer->skeleton.jointlabels[bodypart]]; }
 
 inline float sq(float n) { return n*n; }
 
@@ -1466,7 +1451,7 @@ void Game::Loadlevel(const char *name) {
 	if(tfile) {
 		pause_sound(stream_firesound);
 		scoreadded=0;
-		windialogue=0;
+		windialogue=false;
 		hostiletime=0;
 		won=0;
 
@@ -2695,7 +2680,7 @@ void Game::doDebugKeys(){
             if(closest!=-1){
                 XYZ headspurtdirection;
                 //int i = player[closest].skeleton.jointlabels[head];
-                Joint& headjoint=playerJoint(closest,head);
+                Joint& headjoint= player[closest].getJointFor(head);
                 for(int k=0;k<player[closest].skeleton.num_joints; k++){
                     if(!player[closest].skeleton.free)
                         flatvelocity2=player[closest].velocity;
@@ -2708,7 +2693,7 @@ void Game::doDebugKeys(){
                     flatvelocity2.x+=(float)(abs(Random()%100)-50)/10;
                     flatvelocity2.y+=(float)(abs(Random()%100)-50)/10;
                     flatvelocity2.z+=(float)(abs(Random()%100)-50)/10;
-                    headspurtdirection=headjoint.position-playerJoint(closest,neck).position;
+                    headspurtdirection=headjoint.position-player[closest].getJointFor(neck).position;
                     Normalise(&headspurtdirection);
                     Sprite::MakeSprite(bloodflamesprite, flatfacing2,flatvelocity2, 1,1,1, .6, 1);
                     flatvelocity2+=headspurtdirection*8;
@@ -3415,7 +3400,7 @@ void Game::doAerialAcrobatics(){
                             XYZ tempcoords1=lowpoint;
                             whichhit=objects.model[i].LineCheck(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.rotation[i]);
                             if(whichhit!=-1&&fabs(objects.model[i].facenormals[whichhit].y)<.3){
-                                setAnimation(k,walljumpleftanim);
+                                player[k].setAnimation(walljumpleftanim);
                                 emit_sound_at(movewhooshsound, player[k].coords);
                                 if(k==0)
                                     pause_sound(whooshsound);
@@ -3435,7 +3420,7 @@ void Game::doAerialAcrobatics(){
                                 lowpointtarget=lowpoint+DoRotation(player[k].facing,0,90,0)*1.5;
                                 whichhit=objects.model[i].LineCheck(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.rotation[i]);
                                 if(whichhit!=-1&&fabs(objects.model[i].facenormals[whichhit].y)<.3){
-                                    setAnimation(k,walljumprightanim);
+                                    player[k].setAnimation(walljumprightanim);
                                     emit_sound_at(movewhooshsound, player[k].coords);
                                     if(k==0)pause_sound(whooshsound);
 
@@ -3452,7 +3437,7 @@ void Game::doAerialAcrobatics(){
                                     lowpointtarget=lowpoint+player[k].facing*2;
                                     whichhit=objects.model[i].LineCheck(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.rotation[i]);
                                     if(whichhit!=-1&&fabs(objects.model[i].facenormals[whichhit].y)<.3){
-                                        setAnimation(k,walljumpbackanim);
+                                        player[k].setAnimation(walljumpbackanim);
                                         emit_sound_at(movewhooshsound, player[k].coords);
                                         if(k==0)pause_sound(whooshsound);
 
@@ -3469,7 +3454,7 @@ void Game::doAerialAcrobatics(){
                                         lowpointtarget=lowpoint-player[k].facing*2;
                                         whichhit=objects.model[i].LineCheck(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.rotation[i]);
                                         if(whichhit!=-1&&fabs(objects.model[i].facenormals[whichhit].y)<.3){
-                                            setAnimation(k,walljumpfrontanim);
+                                            player[k].setAnimation(walljumpfrontanim);
                                             emit_sound_at(movewhooshsound, player[k].coords);
                                             if(k==0)pause_sound(whooshsound);
 
@@ -3652,7 +3637,7 @@ void Game::doAerialAcrobatics(){
                                                                         player[k].targetframe=1;
                                                                         //hang ledge (?)
                                                                         if(j>25){
-                                                                            setAnimation(k,hanganim);
+                                                                            player[k].setAnimation(hanganim);
                                                                             player[k].jumppower=0;
                                                                         }
                                                                     }
@@ -3683,7 +3668,7 @@ void Game::doAerialAcrobatics(){
                         //stagger off ledge (?)
                         if(player[k].targetanimation==staggerbackhighanim||player[k].targetanimation==staggerbackhardanim)
                             player[k].RagDoll(0);
-                        setAnimation(k,jumpdownanim);
+                        player[k].setAnimation(jumpdownanim);
 
                         if(!k)
                           emit_sound_at(whooshsound, player[k].coords, 128.);
@@ -3758,14 +3743,14 @@ void Game::doAttacks(){
                                     player[i].targetanimation==staffhitanim||
                                     player[i].targetanimation==staffspinhitanim)
                                 if(findDistancefast(&player[k].coords,&player[i].coords)<6.5&&!player[i].skeleton.free){
-                                    setAnimation(k,dodgebackanim);
+                                    player[k].setAnimation(dodgebackanim);
                                     player[k].targetrotation=roughDirectionTo(player[k].coords,player[i].coords);
                                     player[k].targettilt2=pitchTo(player[k].coords,player[i].coords);
                                 }
                         }
                         if(player[k].targetanimation!=dodgebackanim){
                             if(k==0)numflipped++;
-                            setAnimation(k,backhandspringanim);
+                            player[k].setAnimation(backhandspringanim);
                             player[k].targetrotation=-rotation+180;
                             if(player[k].leftkeydown)
                                 player[k].targetrotation-=45;
@@ -4156,8 +4141,8 @@ void Game::doAttacks(){
                                     if(player[k].targetanimation==crouchstabanim||
                                             player[k].targetanimation==swordgroundstabanim||
                                             player[k].targetanimation==staffgroundsmashanim){
-                                        targetpoint+=(playerJoint(i,abdomen).position+
-                                                 playerJoint(i,neck).position)/2*
+                                        targetpoint+=(player[i].getJointFor(abdomen).position+
+                                                 player[i].getJointFor(neck).position)/2*
                                                 player[i].scale;
                                     }
                                     player[k].targetrotation=roughDirectionTo(player[k].coords,targetpoint);
@@ -4213,7 +4198,7 @@ void Game::doAttacks(){
                                   player[k].rabbitkickenabled)||
                                  player[k].jumpkeydown)){
                             oldattackkey=1;
-                            setAnimation(k,rabbitkickanim);
+                            player[k].setAnimation(rabbitkickanim);
                         }
                     //update counts
                     if(animation[player[k].targetanimation].attack&&k==0){
@@ -4277,9 +4262,9 @@ void Game::doPlayerCollisions(){
                     XYZ tempcoords1=player[i].coords;
                     XYZ tempcoords2=player[k].coords;
                     if(!player[i].skeleton.oldfree)
-                        tempcoords1.y+=playerJoint(i,abdomen).position.y*player[i].scale;
+                        tempcoords1.y+=player[i].getJointFor(abdomen).position.y*player[i].scale;
                     if(!player[k].skeleton.oldfree)
-                        tempcoords2.y+=playerJoint(k,abdomen).position.y*player[k].scale;
+                        tempcoords2.y+=player[k].getJointFor(abdomen).position.y*player[k].scale;
                     collisionradius=1.2*sq((player[i].scale+player[k].scale)*2.5);
                     if(player[0].hasvictim)
                         if(player[0].targetanimation==rabbitkickanim&&(k==0||i==0)&&!player[0].victim->skeleton.free)
@@ -4373,18 +4358,18 @@ void Game::doPlayerCollisions(){
                                         if(player[k].howactive==typeactive||hostile)
                                             if(player[k].isIdle()){
                                                 if(player[k].howactive<typesleeping)
-                                                    setAnimation(k,player[k].getStop());
+                                                    player[k].setAnimation(player[k].getStop());
                                                 else if(player[k].howactive==typesleeping)
-                                                    setAnimation(k,getupfromfrontanim);
+                                                    player[k].setAnimation(getupfromfrontanim);
                                                 if(!editorenabled)
                                                     player[k].howactive=typeactive;
                                             }
                                         if(player[i].howactive==typeactive||hostile)
                                             if(player[i].isIdle()){
                                                 if(player[i].howactive<typesleeping)
-                                                    setAnimation(i,player[k].getStop());
+                                                    player[i].setAnimation(player[k].getStop());
                                                 else
-                                                    setAnimation(i,getupfromfrontanim);
+                                                    player[i].setAnimation(getupfromfrontanim);
                                                 if(!editorenabled)
                                                     player[i].howactive=typeactive;
                                             }
@@ -4600,9 +4585,9 @@ void Game::doAI(int i){
                                     if(normaldotproduct(player[i].facing,player[j].coords-player[i].coords)>0)
                                         if(player[j].coords.y<player[i].coords.y+5||player[j].onterrain)
                                             if(!player[j].isWallJump()&&-1==checkcollide(
-                                                            DoRotation(playerJoint(i,head).position,0,player[i].rotation,0)
+                                                            DoRotation(player[i].getJointFor(head).position,0,player[i].rotation,0)
                                                                 *player[i].scale+player[i].coords,
-                                                            DoRotation(playerJoint(j,head).position,0,player[j].rotation,0)
+                                                            DoRotation(player[j].getJointFor(head).position,0,player[j].rotation,0)
                                                                 *player[j].scale+player[j].coords)||
                                                     (player[j].targetanimation==hanganim&&
                                                      normaldotproduct(player[j].facing,player[i].coords-player[j].coords)<0)){
@@ -4694,7 +4679,7 @@ void Game::doAI(int i){
 
                 if(player[i].aitype!=passivetype){
                     if(player[i].howactive==typesleeping)
-                        setAnimation(i,getupfromfrontanim);
+                        player[i].setAnimation(getupfromfrontanim);
                     player[i].howactive=typeactive;
                 }
             }
@@ -4743,9 +4728,9 @@ void Game::doAI(int i){
                                 if(findDistancefast(&player[i].coords,&player[j].coords)<400)
                                     if(normaldotproduct(player[i].facing,player[j].coords-player[i].coords)>0)
                                         if((-1==checkcollide(
-                                                        DoRotation(playerJoint(i,head).position,0,player[i].rotation,0)*
+                                                        DoRotation(player[i].getJointFor(head).position,0,player[i].rotation,0)*
                                                             player[i].scale+player[i].coords,
-                                                        DoRotation(playerJoint(j,head).position,0,player[j].rotation,0)*
+                                                        DoRotation(player[j].getJointFor(head).position,0,player[j].rotation,0)*
                                                             player[j].scale+player[j].coords)&&
                                                     !player[j].isWallJump())||
                                                 (player[j].targetanimation==hanganim&&
@@ -4800,7 +4785,7 @@ void Game::doAI(int i){
                         j=checkcollide(test2,test);
                     if(j==-1){
                         player[i].velocity=0;
-                        setAnimation(i,player[i].getStop());
+                        player[i].setAnimation(player[i].getStop());
                         player[i].targetrotation+=180;
                         player[i].stunned=.5;
                         //player[i].aitype=passivetype;
@@ -4879,9 +4864,9 @@ void Game::doAI(int i){
                     if(findDistancefast(&player[i].coords,&player[0].coords)<400)
                         if(normaldotproduct(player[i].facing,player[0].coords-player[i].coords)>0)
                             if((checkcollide(
-                                        DoRotation(playerJoint(i,head).position,0,player[i].rotation,0)*
+                                        DoRotation(player[i].getJointFor(head).position,0,player[i].rotation,0)*
                                             player[i].scale+player[i].coords,
-                                        DoRotation(playerJoint(0,head).position,0,player[0].rotation,0)*
+                                        DoRotation(player[0].getJointFor(head).position,0,player[0].rotation,0)*
                                             player[0].scale+player[0].coords)==-1)||
                                     (player[0].targetanimation==hanganim&&normaldotproduct(
                                         player[0].facing,player[i].coords-player[0].coords)<0)){
@@ -4912,25 +4897,25 @@ void Game::doAI(int i){
             player[i].runninghowlong=0;
 
         //get help from buddies
-        if(player[i].aitype==gethelptype){
+        if(player[i].aitype==gethelptype) {
             player[i].runninghowlong+=multiplier;
             player[i].aiupdatedelay-=multiplier;
 
-            if(player[i].aiupdatedelay<0||player[i].ally==0){
+            if(player[i].aiupdatedelay<0||player[i].ally==0) {
                 player[i].aiupdatedelay=.2;
 
                 //find closest ally
                 //TODO: factor out closest search somehow
-                if(!player[i].ally){
+                if(!player[i].ally) {
                     int closest=-1;
                     float closestdist=-1;
-                    for(int k=0;k<numplayers;k++){
+                    for(int k=0;k<numplayers;k++) {
                         if(k!=i&&k!=0&&!player[k].dead&&
                                 player[k].howactive<typedead1&&
                                 !player[k].skeleton.free&&
-                                player[k].aitype==passivetype){
+                                player[k].aitype==passivetype) {
                             float distance=findDistancefast(&player[i].coords,&player[k].coords);
-                            if(closestdist==-1||distance<closestdist){
+                            if(closestdist==-1||distance<closestdist) {
                                 closestdist=distance;
                                 closest=k;
                             }
@@ -4950,8 +4935,8 @@ void Game::doAI(int i){
 
                 XYZ facing=player[i].coords;
                 XYZ flatfacing=player[player[i].ally].coords;
-                facing.y+=playerJoint(i,head).position.y*player[i].scale;
-                flatfacing.y+=playerJoint(player[i].ally,head).position.y*player[player[i].ally].scale;
+                facing.y+=player[i].getJointFor(head).position.y*player[i].scale;
+                flatfacing.y+=player[player[i].ally].getJointFor(head).position.y*player[player[i].ally].scale;
                 if(-1!=checkcollide(facing,flatfacing))
                     player[i].lastseentime-=.1;
 
@@ -5112,14 +5097,14 @@ void Game::doAI(int i){
                         if(weapons[player[0].weaponids[0]].getType()==knife){
                             if(player[i].isIdle()||player[i].isCrouch()||player[i].isRun()||player[i].isFlip()){
                                 if(abs(Random()%2==0))
-                                    setAnimation(i,backhandspringanim);
+                                    player[i].setAnimation(backhandspringanim);
                                 else
-                                    setAnimation(i,rollanim);
+                                    player[i].setAnimation(rollanim);
                                 player[i].targetrotation+=90*(abs(Random()%2)*2-1);
                                 player[i].wentforweapon=0;
                             }
                             if(player[i].targetanimation==jumpupanim||player[i].targetanimation==jumpdownanim)
-                                setAnimation(i,flipanim);
+                                player[i].setAnimation(flipanim);
                         }
                     }
                     player[i].forwardkeydown=0;
@@ -5174,7 +5159,7 @@ void Game::doAI(int i){
                         j=checkcollide(test2,test);
                     if(j==-1) {
                         player[i].velocity=0;
-                        setAnimation(i,player[i].getStop());
+                        player[i].setAnimation(player[i].getStop());
                         player[i].targetrotation+=180;
                         player[i].stunned=.5;
                         player[i].aitype=pathfindtype;
@@ -5334,8 +5319,8 @@ void Game::doAI(int i){
 
                 XYZ facing=player[i].coords;
                 XYZ flatfacing=player[0].coords;
-                facing.y+=playerJoint(i,head).position.y*player[i].scale;
-                flatfacing.y+=playerJoint(0,head).position.y*player[0].scale;
+                facing.y+=player[i].getJointFor(head).position.y*player[i].scale;
+                flatfacing.y+=player[0].getJointFor(head).position.y*player[0].scale;
                 if(player[i].occluded>=2)
                     if(-1!=checkcollide(facing,flatfacing)){
                         if(!player[i].pause)
@@ -6378,7 +6363,7 @@ void Game::Tick(){
                             hostile=1;
                         }
                         if(dialoguetype[whichdialogue]>29&&dialoguetype[whichdialogue]<40){
-                            windialogue=1;
+                            windialogue=true;
                         }
                         if(dialoguetype[whichdialogue]>49&&dialoguetype[whichdialogue]<60){
                             hostile=1;
@@ -6643,7 +6628,7 @@ void Game::Tick(){
                                                     player[i].isIdle()||
                                                     player[i].aitype!=playercontrolled){
                                                 player[i].throwtogglekeydown=1;
-                                                setAnimation(i,crouchremoveknifeanim);
+                                                player[i].setAnimation(crouchremoveknifeanim);
                                                 player[i].targetrotation=roughDirectionTo(player[i].coords,weapons[j].position);
                                                 player[i].hasvictim=0;
                                             }
@@ -6676,7 +6661,7 @@ void Game::Tick(){
                                                 player[i].coords.y<weapons[j].position.y){
                                             if(!player[i].isFlip()){
                                                 player[i].throwtogglekeydown=1;
-                                                setAnimation(i,removeknifeanim);
+                                                player[i].setAnimation(removeknifeanim);
                                                 player[i].targetrotation=roughDirectionTo(player[i].coords,weapons[j].position);
                                             }
                                             if(player[i].isFlip()){
@@ -6729,7 +6714,7 @@ void Game::Tick(){
                                                         player[i].throwtogglekeydown=1;
                                                         player[i].victim=&player[j];
                                                         player[i].hasvictim=1;
-                                                        setAnimation(i,crouchremoveknifeanim);
+                                                        player[i].setAnimation(crouchremoveknifeanim);
                                                         player[i].targetrotation=roughDirectionTo(player[i].coords,player[j].coords);
                                                     }
                                                     if(player[i].targetanimation==rollanim||player[i].targetanimation==backhandspringanim){
@@ -6791,10 +6776,10 @@ void Game::Tick(){
 
                                                                 player[i].victim->weaponactive=-1;
 
-                                                                playerJoint(player[i].victim,abdomen).velocity+=relative*6;
-                                                                playerJoint(player[i].victim,neck).velocity+=relative*6;
-                                                                playerJoint(player[i].victim,rightshoulder).velocity+=relative*6;
-                                                                playerJoint(player[i].victim,leftshoulder).velocity+=relative*6;
+                                                                player[i].victim->getJointFor(abdomen).velocity+=relative*6;
+                                                                player[i].victim->getJointFor(neck).velocity+=relative*6;
+                                                                player[i].victim->getJointFor(rightshoulder).velocity+=relative*6;
+                                                                player[i].victim->getJointFor(leftshoulder).velocity+=relative*6;
                                                             }
                                                             weapons[k].owner=i;
                                                             if(player[i].num_weapons>0){
@@ -6824,11 +6809,11 @@ void Game::Tick(){
                                                                 findDistancefast(&player[i].coords,&player[j].coords)<100&&
                                                                 findDistancefast(&player[i].coords,&player[j].coords)>1.5&&
                                                                 !player[j].skeleton.free&&
-                                                                -1==checkcollide(DoRotation(playerJoint(j,head).position,0,player[j].rotation,0)*player[j].scale+player[j].coords,DoRotation(playerJoint(i,head).position,0,player[i].rotation,0)*player[i].scale+player[i].coords)){
+                                                                -1==checkcollide(DoRotation(player[j].getJointFor(head).position,0,player[j].rotation,0)*player[j].scale+player[j].coords,DoRotation(player[i].getJointFor(head).position,0,player[i].rotation,0)*player[i].scale+player[i].coords)){
                                                             if(!player[i].isFlip()){
                                                                 player[i].throwtogglekeydown=1;
                                                                 player[i].victim=&player[j];
-                                                                setAnimation(i,knifethrowanim);
+                                                                player[i].setAnimation(knifethrowanim);
                                                                 player[i].targetrotation=roughDirectionTo(player[i].coords,player[j].coords);
                                                                 player[i].targettilt2=pitchTo(player[i].coords,player[j].coords);
                                                             }
@@ -6838,7 +6823,7 @@ void Game::Tick(){
                                                                     player[i].victim=&player[j];
                                                                     XYZ aim;
                                                                     weapons[player[i].weaponids[0]].owner=-1;
-                                                                    aim=player[i].victim->coords+DoRotation(playerJoint(player[i].victim,abdomen).position,0,player[i].victim->rotation,0)*player[i].victim->scale+player[i].victim->velocity*findDistance(&player[i].victim->coords,&player[i].coords)/50-(player[i].coords+DoRotation(playerJoint(i,righthand).position,0,player[i].rotation,0)*player[i].scale);
+                                                                    aim=player[i].victim->coords+DoRotation(player[i].victim->getJointFor(abdomen).position,0,player[i].victim->rotation,0)*player[i].victim->scale+player[i].victim->velocity*findDistance(&player[i].victim->coords,&player[i].coords)/50-(player[i].coords+DoRotation(player[i].getJointFor(righthand).position,0,player[i].rotation,0)*player[i].scale);
                                                                     Normalise(&aim);
 
                                                                     aim=DoRotation(aim,(float)abs(Random()%30)-15,(float)abs(Random()%30)-15,0);
@@ -6901,7 +6886,7 @@ void Game::Tick(){
                                     isgood=false;
                             if(isgood&&player[i].creature!=wolftype){
                                 if(player[i].isIdle()&&player[i].num_weapons&&weapons[player[i].weaponids[0]].getType()==knife){
-                                    setAnimation(i,drawrightanim);
+                                    player[i].setAnimation(drawrightanim);
                                     player[i].drawtogglekeydown=1;
                                 }
                                 if((player[i].isIdle()||
@@ -6910,11 +6895,11 @@ void Game::Tick(){
                                              player[i].isRun()))&&
                                         player[i].num_weapons&&
                                         weapons[player[i].weaponids[0]].getType()==sword){
-                                    setAnimation(i,drawleftanim);
+                                    player[i].setAnimation(drawleftanim);
                                     player[i].drawtogglekeydown=1;
                                 }
                                 if(player[i].isCrouch()&&player[i].num_weapons&&weapons[player[i].weaponids[0]].getType()==knife){
-                                    setAnimation(i,crouchdrawrightanim);
+                                    player[i].setAnimation(crouchdrawrightanim);
                                     player[i].drawtogglekeydown=1;
                                 }
                             }
@@ -6931,9 +6916,9 @@ void Game::Tick(){
 							player[i].attackkeydown&&
 							musictype!=stream_fighttheme) {
 								if(weapons[player[i].weaponids[player[i].weaponactive]].getType()==knife)
-									setAnimation(i,crouchstabanim);
+									player[i].setAnimation(crouchstabanim);
 								if(weapons[player[i].weaponids[player[i].weaponactive]].getType()==sword)
-									setAnimation(i,swordgroundstabanim);
+									player[i].setAnimation(swordgroundstabanim);
 								player[i].hasvictim=0;
 						}
 					}
@@ -7006,7 +6991,7 @@ void Game::Tick(){
                             player[i].lowreversaldelay=.5;
 
                             if(player[i].isIdle()){
-                                setAnimation(i,player[i].getCrouch());
+                                player[i].setAnimation(player[i].getCrouch());
                                 player[i].transspeed=10;
                             }
                             if(player[i].isRun()||
@@ -7015,7 +7000,7 @@ void Game::Tick(){
                                       player[i].rightkeydown||
                                       player[i].forwardkeydown||
                                       player[i].backkeydown))){
-                                setAnimation(i,rollanim);
+                                player[i].setAnimation(rollanim);
                                 player[i].transspeed=20;
                             }
                         }
@@ -7050,12 +7035,12 @@ void Game::Tick(){
                                         player[i].currentanimation=player[i].getCrouch();
                                         player[i].currentframe=0;
                                     }
-                                    setAnimation(i,player[i].getIdle());
+                                    player[i].setAnimation(player[i].getIdle());
                                     player[i].transspeed=10;
                                 }
                             }
                             if(player[i].targetanimation==sneakanim){
-                                setAnimation(i,player[i].getIdle());
+                                player[i].setAnimation(player[i].getIdle());
                                 player[i].transspeed=10;
                             }
                         }
@@ -7071,9 +7056,9 @@ void Game::Tick(){
                                      !player[i].jumpkeydown&&
                                      player[i].crouchkeydown)){
                                 if(player[i].aitype==passivetype)
-                                    setAnimation(i,walkanim);
+                                    player[i].setAnimation(walkanim);
                                 else
-                                    setAnimation(i,player[i].getRun());
+                                    player[i].setAnimation(player[i].getRun());
                             }
                             if(player[i].isCrouch()){
                                 player[i].targetanimation=sneakanim;
@@ -7082,7 +7067,7 @@ void Game::Tick(){
                                 player[i].targetframe=0;
                             }
                             if(player[i].targetanimation==hanganim/*&&(!player[i].forwardstogglekeydown||player[i].aitype!=playercontrolled)*/){
-                                setAnimation(i,climbanim);
+                                player[i].setAnimation(climbanim);
                                 player[i].targetframe=1;
                                 player[i].jumpclimb=1;
                             }
@@ -7103,7 +7088,7 @@ void Game::Tick(){
                                      player[i].targetframe>0&&
                                      !player[i].jumpkeydown&&
                                      player[i].crouchkeydown)){
-                                setAnimation(i,player[i].getRun());
+                                player[i].setAnimation(player[i].getRun());
                             }
                             if(player[i].isCrouch()){
                                 player[i].targetanimation=sneakanim;
@@ -7130,7 +7115,7 @@ void Game::Tick(){
                                      player[i].targetframe>0&&
                                      !player[i].jumpkeydown&&
                                      player[i].crouchkeydown)){
-                                setAnimation(i,player[i].getRun());
+                                player[i].setAnimation(player[i].getRun());
                             }
                             if(player[i].isCrouch()){
                                 player[i].targetanimation=sneakanim;
@@ -7157,7 +7142,7 @@ void Game::Tick(){
                                      player[i].targetframe>0&&
                                      !player[i].jumpkeydown&&
                                      player[i].crouchkeydown)){
-                                setAnimation(i,player[i].getRun());
+                                player[i].setAnimation(player[i].getRun());
                             }
                             if(player[i].isCrouch()){
                                 player[i].targetanimation=sneakanim;
@@ -7193,7 +7178,7 @@ void Game::Tick(){
                                     ((player[i].targetanimation!=rabbitrunninganim&&
                                       player[i].targetanimation!=wolfrunninganim)||i!=0)){
                                 player[i].jumpstart=0;
-                                setAnimation(i,jumpupanim);
+                                player[i].setAnimation(jumpupanim);
                                 player[i].rotation=player[i].targetrotation;
                                 player[i].transspeed=20;
                                 player[i].FootLand(0,1);
@@ -7240,7 +7225,7 @@ void Game::Tick(){
                                     emit_sound_at(jumpsound, player[i].coords, 128.);
                             }
                             if((player[i].isIdle())&&player[i].jumppower>1){
-                                setAnimation(i,player[i].getLanding());
+                                player[i].setAnimation(player[i].getLanding());
                                 player[i].targetframe=2;
                                 player[i].landhard=0;
                                 player[i].jumpstart=1;
@@ -7265,7 +7250,7 @@ void Game::Tick(){
 
                         if(!movekey){
                             if(player[i].isRun()||player[i].targetanimation==walkanim)
-                                setAnimation(i,player[i].getStop());
+                                player[i].setAnimation(player[i].getStop());
                             if(player[i].targetanimation==sneakanim){
                                 player[i].targetanimation=player[i].getCrouch();
                                 if(player[i].currentanimation==sneakanim)
@@ -7278,9 +7263,9 @@ void Game::Tick(){
                                  player[i].aitype==searchtype||
                                  (player[i].aitype==passivetype&&
                                   player[i].numwaypoints<=1)))
-                            setAnimation(i,player[i].getStop());
+                            player[i].setAnimation(player[i].getStop());
                         if(player[i].isRun()&&(player[i].aitype==passivetype))
-                            setAnimation(i,player[i].getStop());
+                            player[i].setAnimation(player[i].getStop());
                     }
                 }
                 if(player[i].targetanimation==rollanim)
@@ -7298,7 +7283,7 @@ void Game::Tick(){
 
                 //stop to turn in right direction
                 if(fabs(player[k].rotation-player[k].targetrotation)>90&&(player[k].isRun()||player[k].targetanimation==walkanim))
-                    setAnimation(k,player[k].getStop());
+                    player[k].setAnimation(player[k].getStop());
 
                 if(player[k].targetanimation==backhandspringanim||player[k].targetanimation==dodgebackanim)
                     player[k].targettilt=0;
@@ -7609,11 +7594,11 @@ void Game::TickOnceAfter(){
             killhotspot=0;
 
 
-		winhotspot=0;
+		winhotspot=false;
 		for(int i=0;i<numhotspots;i++)
 			if(hotspottype[i]==-1)
 				if(findDistancefast(&player[0].coords,&hotspot[i])<hotspotsize[i])
-					winhotspot=1;
+					winhotspot=true;
 
 		int numalarmed=0;
 		for(int i=1;i<numplayers;i++)
@@ -7627,18 +7612,21 @@ void Game::TickOnceAfter(){
 				changedelay=1;
 				targetlevel=whichlevel;
 			}
-			alldead=1;
-			for(int i=1;i<numplayers;i++)
-				if(!player[i].dead&&player[i].howactive<typedead1)
-                    alldead=0;
+			alldead=true;
+			for(int i=1;i<numplayers;i++) {
+				if(!player[i].dead&&player[i].howactive<typedead1) {
+                    alldead=false;
+                    break;
+				}
+			}
 
 
-			if(alldead&&!player[0].dead&&maptype==mapkilleveryone){
+			if(alldead&&!player[0].dead&&maptype==mapkilleveryone) {
 				changedelay=1;
 				targetlevel=whichlevel+1;
 				if(targetlevel>numchallengelevels-1)targetlevel=0;
 			}
-			if(winhotspot||windialogue){
+			if(winhotspot||windialogue) {
 				changedelay=0.1;
 				targetlevel=whichlevel+1;
 				if(targetlevel>numchallengelevels-1)targetlevel=0;
@@ -7668,8 +7656,8 @@ void Game::TickOnceAfter(){
 			if(leveltime<1){
 				loading=0;
 				changedelay=.1;
-				alldead=0;
-				winhotspot=0;
+				alldead=false;
+				winhotspot=false;
 				killhotspot=0;
 			}
 

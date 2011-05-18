@@ -93,7 +93,6 @@ extern float damagedealt;
 extern bool invertmouse;
 
 extern int numhotspots;
-extern int winhotspot;
 extern int killhotspot;
 extern XYZ hotspot[40];
 extern int hotspottype[40];

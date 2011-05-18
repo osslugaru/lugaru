@@ -1441,6 +1441,15 @@ void Person::Puff(int whichlabel){
 	Sprite::MakeSprite(cloudimpactsprite, footpoint,footvel, 1,1,1, .9, .3);
 }
 
+Joint& Person::getJointFor(int bodypart) {
+    return skeleton.joints[skeleton.jointlabels[bodypart]]; 
+}
+
+void Person::setAnimation(int animation) {
+    targetanimation=animation;
+    targetframe=0;
+    target=0;
+}
 
 void	Person::DoAnimations(){
 	if(!skeleton.free){

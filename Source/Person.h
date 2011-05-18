@@ -47,8 +47,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define rabbittype 0
 #define wolftype 1
 
-struct Person
+class Person
 {
+	public:	
 		int whichpatchx;
 		int whichpatchz;
 		
@@ -424,6 +425,8 @@ struct Person
 		void Puff(int whichlabel);
 		void FootLand(int which, float opacity);
 		void DoStuff();
+		Joint& getJointFor(int);
+		void setAnimation(int);
 		void DoAnimations();
 		void RagDoll(bool checkcollision);
 };
