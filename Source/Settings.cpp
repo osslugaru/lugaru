@@ -40,6 +40,7 @@ void DefaultSettings(Game &game) {
 	game.drawkey=SDLK_e;
 	game.throwkey=SDLK_q;
 	game.attackkey=MOUSEBUTTON1;
+	game.consolekey=SDLK_BACKQUOTE;
 	game.chatkey=SDLK_t;
 }
 
@@ -122,6 +123,8 @@ void SaveSettings(Game &game) {
 	opstream << Input::keyToChar(game.throwkey);
 	opstream << "\nAttack key:\n";
 	opstream << Input::keyToChar(game.attackkey);
+	opstream << "\nConsole key:\n";
+	opstream << Input::keyToChar(game.consolekey);
 	opstream << "\nChat key:\n";
 	opstream << Input::keyToChar(game.chatkey);
 	opstream << "\nDamage bar:\n";
@@ -246,6 +249,9 @@ bool LoadSettings(Game &game) {
 		} else if ( !strncmp(setting, "Attack key", 10) ) {
 			ipstream.getline( string, sizeof(string) );
 			game.attackkey = Input::CharToKey(string);
+		} else if ( !strncmp(setting, "Console key", 11) ) {
+			ipstream.getline( string, sizeof(string) );
+			game.consolekey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Chat key", 8) ) {
 			ipstream.getline( string, sizeof(string) );
 			game.chatkey = Input::CharToKey(string);

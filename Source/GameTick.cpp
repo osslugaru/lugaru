@@ -5591,11 +5591,11 @@ void Game::MenuTick(){
 			case 4:
 				if(!waiting) {
 					fireSound();
-					if(selected<9 && keyselect==-1)
+					if(selected<nummenuitems-1 && keyselect==-1)
 						keyselect=selected;
 					if(keyselect!=-1)
 						setKeySelected();
-					if(selected==9){
+					if(selected==nummenuitems-1){
 						flash();
 
 						mainmenu=3;
@@ -5970,7 +5970,7 @@ void Game::Tick(){
 		if(chatting)
             keyboardfrozen=true;
 
-		if(Input::isKeyPressed(SDLK_BACKQUOTE)&&debugmode){
+		if(Input::isKeyPressed(consolekey)&&debugmode){
 			console=!console;
 			if(console){
 				OPENAL_SetFrequency(OPENAL_ALL, 0.001);

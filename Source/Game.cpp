@@ -161,6 +161,7 @@ Game::Game()
 	autocam = 0;
 
 	crouchkey = 0,jumpkey = 0,forwardkey = 0,chatkey = 0,backkey = 0,leftkey = 0,rightkey = 0,drawkey = 0,throwkey = 0,attackkey = 0;
+	consolekey = 0;
 	oldattackkey = 0;
 
 	loading = 0;
@@ -309,6 +310,8 @@ void Game::setKeySelected_thread() {
 			case 7: throwkey=keycode;
 			break;
 			case 8: attackkey=keycode;
+			break;
+			case 9: consolekey=keycode;
 			break;
 			default:
 			break;

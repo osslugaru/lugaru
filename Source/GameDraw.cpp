@@ -2278,10 +2278,18 @@ void Game::DrawMenu() {
 			else sprintf (menustring[8], "Attack: _");
 			startx[8]=10+20;
 			starty[8]=80;
-
-			sprintf (menustring[9], "Back");
-			startx[9]=10;
-			starty[9]=10;
+			
+			if(debugmode) {
+				if(keyselect!=9)sprintf (menustring[9], "Console: %s",Input::keyToChar(consolekey));
+				else sprintf (menustring[9], "Console: _");
+				startx[9]=10+10;
+				starty[9]=40;
+				nummenuitems++;
+			}
+			
+			sprintf (menustring[nummenuitems-1], "Back");
+			startx[nummenuitems-1]=10;
+			starty[nummenuitems-1]=10;
 		}
 		break;
 		case 5: {			

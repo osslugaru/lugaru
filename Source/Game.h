@@ -280,6 +280,7 @@ class Game
 		bool autocam;
 
 		unsigned short crouchkey,jumpkey,forwardkey,chatkey,backkey,leftkey,rightkey,drawkey,throwkey,attackkey;
+		unsigned short consolekey;
 		bool oldattackkey;
 
 		static void LoadTexture(const string fileName, GLuint *textureid,int mipmap, bool hasalpha);
