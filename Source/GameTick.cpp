@@ -169,7 +169,7 @@ static bool stripfx(const char *str, const char *pfx)
 }
 
 static const char *cmd_names[] = {
-#define DECLARE_COMMAND(cmd) #cmd " ",
+#define DECLARE_COMMAND(cmd) #cmd,
 #include "ConsoleCmds.h"
 #undef  DECLARE_COMMAND
 };
@@ -1108,8 +1108,8 @@ static void cmd_dispatch(Game *game, const char *cmd)
   for (i = 0; i < n_cmds; i++)
     if (stripfx(cmd, cmd_names[i]))
       {
-	cmd_handlers[i](game, cmd + strlen(cmd_names[i]));
-	break;
+		cmd_handlers[i](game, cmd + strlen(cmd_names[i])+1);
+		break;
       }
   emit_sound_np(i < n_cmds ? consolesuccesssound : consolefailsound);
 }
@@ -1399,22 +1399,22 @@ void Game::Setenvironment(int which)
 	texdetail=temptexdetail;
 }
 
-void Game::Loadlevel(int which){
+void Game::Loadlevel(int which) {
 	stealthloading=0;
 	whichlevel=which;
 
-	if(which == -1){
+	if(which == -1) {
 	    tutoriallevel = -1;
 	    Loadlevel("tutorial");
-	}else if(which >= 0 && which <= 15){
+	} else if(which >= 0 && which <= 15) {
 	    char buf[32];
 	    snprintf(buf, 32, "map%d", which + 1); // challenges
 	    Loadlevel(buf);
-	}else
+	} else
 	    Loadlevel("mapsave");
 }
 
-void Game::Loadlevel(const char *name){
+void Game::Loadlevel(const char *name) {
 	int templength;
 	float lamefloat;
 	static const char *pfx = ":Data:Maps:";
@@ -5970,9 +5970,9 @@ void Game::Tick(){
 		if(chatting)
             keyboardfrozen=true;
 
-		if(Input::isKeyPressed(consolekey)&&debugmode){
+		if(Input::isKeyPressed(consolekey)&&debugmode) {
 			console=!console;
-			if(console){
+			if(console) {
 				OPENAL_SetFrequency(OPENAL_ALL, 0.001);
 			} else {
 				freeze=0;
@@ -5982,14 +5982,14 @@ void Game::Tick(){
 
 		if(console)
             freeze=1;
-		if(console&&!Input::isKeyDown(SDLK_LMETA)){
+		if(console&&!Input::isKeyDown(SDLK_LMETA)) {
 			inputText(consoletext[0],&consoleselected,&consolechars[0]);
 			if(!waiting) {
 				archiveselected=0;
-				if(consolechars[0]>0){
-                    consoletext[0][consolechars[0]]=' ';
+				if(consolechars[0]>0) {
+                    consoletext[0][consolechars[0]]='\0';
                     cmd_dispatch(this, consoletext[0]);
-					for(int k=14;k>=1;k--){
+					for(int k=14;k>=1;k--) {
 						for(int j=0;j<255;j++)
 							consoletext[k][j]=consoletext[k-1][j];
 						consolechars[k]=consolechars[k-1];
@@ -6002,7 +6002,7 @@ void Game::Tick(){
 			}
 
 			consoleblinkdelay-=multiplier;
-			if(consoleblinkdelay<=0){
+			if(consoleblinkdelay<=0) {
 				consoleblinkdelay=.3;
 				consoleblink=1-consoleblink;
 			}

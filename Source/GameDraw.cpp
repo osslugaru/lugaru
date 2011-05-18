@@ -549,7 +549,7 @@ int Game::DrawGLScene(StereoSide side)
 
 		glEnable(GL_TEXTURE_2D);
 		glColor4f(.5,.5,.5,1);
-		if(!console){
+		if(!console) {
 			sprintf (string, " ",(int)(fps));
 			text.glPrint(10,30,string,0,.8,screenwidth,screenheight);
 
@@ -1322,7 +1322,7 @@ int Game::DrawGLScene(StereoSide side)
 			glDepthMask(1);
 		}
 
-		if(flashamount>0&&damageeffects){
+		if(flashamount>0&&damageeffects) {
 			if(flashamount>1)flashamount=1;
 			if(flashdelay<=0)flashamount-=multiplier;
 			flashdelay--;
@@ -1358,7 +1358,7 @@ int Game::DrawGLScene(StereoSide side)
 			glDepthMask(1);
 		}	
 
-		if(!console){
+		if(!console) {
 			displaytime[0]=0;
 			glEnable(GL_TEXTURE_2D);
 			glColor4f(1,1,1,1);
@@ -1370,11 +1370,11 @@ int Game::DrawGLScene(StereoSide side)
 					text.glPrint(30+(float)(displayselected)*10,30+(screenheight-330),string,0,1,screenwidth,screenheight);
 				}
 			}
-			for(i=0;i<15;i++){
+			for(i=0;i<15;i++) {
 				if((i!=0||chatting)&&displaytime[i]<4)
-					for(j=0;j<displaychars[i];j++){
+					for(j=0;j<displaychars[i];j++) {
 						glColor4f(1,1,1,4-displaytime[i]);
-						if(j<displaychars[i]){
+						if(j<displaychars[i]) {
 							sprintf (string, "%c",displaytext[i][j]);
 							text.glPrint(30+j*10,30+i*20+(screenheight-330),string,0,1,screenwidth,screenheight);
 						}
