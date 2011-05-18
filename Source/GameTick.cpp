@@ -1101,14 +1101,15 @@ static void ch_skybox(Game *game, const char *args)
   objects.DoShadows();
 }
 
-static void cmd_dispatch(Game *game, const char *cmd)
+static void cmd_dispatch(Game *game, const string cmd)
 {
   int i, n_cmds = sizeof(cmd_names) / sizeof(cmd_names[0]);
 
   for (i = 0; i < n_cmds; i++)
-    if (stripfx(cmd, cmd_names[i]))
+    if (cmd.substr(0,cmd.find(' '))==string(cmd_names[i]))
       {
-		cmd_handlers[i](game, cmd + strlen(cmd_names[i])+1);
+		  cout << "|" << cmd.substr(cmd.find(' ')+1) << "|" << endl;
+		cmd_handlers[i](game, cmd.substr(cmd.find(' ')+1).c_str());
 		break;
       }
   emit_sound_np(i < n_cmds ? consolesuccesssound : consolefailsound);

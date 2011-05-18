@@ -199,7 +199,6 @@ void Game::fireSound(int sound) {
 
 void Game::inputText(char* str, int* charselected, int* nb_chars) {
 	SDL_Event evenement;
-	int i;
 	
 	if(!waiting) {
 		waiting=true;
@@ -207,51 +206,52 @@ void Game::inputText(char* str, int* charselected, int* nb_chars) {
 		SDL_EnableUNICODE(true);
 	}
 
-	SDL_PollEvent(&evenement);
+	while(SDL_PollEvent(&evenement)) {
 	
-	switch(evenement.type) {
-		case SDL_KEYDOWN:
-			if(evenement.key.keysym.sym == SDLK_ESCAPE) {
-				for(i=0;i<255;i++)
-					str[i]=0;
-				*nb_chars=0;
-				*charselected=0;
-				waiting=false;
-			} else if(evenement.key.keysym.sym==SDLK_BACKSPACE){
-				if((*charselected)!=0) {
-					for(i=(*charselected)-1;i<255;i++)
-						str[i]=str[i+1];
-					str[255]=0;
-					(*charselected)--;
-					(*nb_chars)--;
-				}
-			} else if(evenement.key.keysym.sym==SDLK_DELETE){
-				if((*charselected)<(*nb_chars)){
-                    for(i=(*charselected);i<255;i++)
-                        str[i]=str[i+1];
-                    str[255]=0;
-                    (*nb_chars)--;
-                }
-			} else if(evenement.key.keysym.sym==SDLK_HOME){
-                (*charselected)=0;
-			} else if(evenement.key.keysym.sym==SDLK_END){
-                (*charselected)=(*nb_chars);
-			} else if(evenement.key.keysym.sym==SDLK_LEFT){
-				if((*charselected)!=0)
-					(*charselected)--;
-			} else if(evenement.key.keysym.sym==SDLK_RIGHT){
-				if((*charselected)<(*nb_chars))
+		switch(evenement.type) {
+			case SDL_KEYDOWN:
+				if(evenement.key.keysym.sym == SDLK_ESCAPE) {
+					for(int i=0;i<255;i++)
+						str[i]=0;
+					*nb_chars=0;
+					*charselected=0;
+					waiting=false;
+				} else if(evenement.key.keysym.sym==SDLK_BACKSPACE){
+					if((*charselected)!=0) {
+						for(int i=(*charselected)-1;i<255;i++)
+							str[i]=str[i+1];
+						str[255]=0;
+						(*charselected)--;
+						(*nb_chars)--;
+					}
+				} else if(evenement.key.keysym.sym==SDLK_DELETE){
+					if((*charselected)<(*nb_chars)){
+						for(int i=(*charselected);i<255;i++)
+							str[i]=str[i+1];
+						str[255]=0;
+						(*nb_chars)--;
+					}
+				} else if(evenement.key.keysym.sym==SDLK_HOME){
+					(*charselected)=0;
+				} else if(evenement.key.keysym.sym==SDLK_END){
+					(*charselected)=(*nb_chars);
+				} else if(evenement.key.keysym.sym==SDLK_LEFT){
+					if((*charselected)!=0)
+						(*charselected)--;
+				} else if(evenement.key.keysym.sym==SDLK_RIGHT){
+					if((*charselected)<(*nb_chars))
+						(*charselected)++;
+				} else if(evenement.key.keysym.sym==SDLK_RETURN) {
+					waiting=false;
+				} else if(evenement.key.keysym.unicode>=32&&evenement.key.keysym.unicode<127&&(*nb_chars)<60){
+					for(int i=255;i>=(*charselected)+1;i--)
+						str[i]=str[i-1];
+					str[*charselected]=evenement.key.keysym.unicode;
 					(*charselected)++;
-			} else if(evenement.key.keysym.sym==SDLK_RETURN) {
-				waiting=false;
-			} else if(evenement.key.keysym.unicode>=32&&evenement.key.keysym.unicode<127&&(*nb_chars)<60){
-				for(i=255;i>=(*charselected)+1;i--)
-					str[i]=str[i-1];
-				str[*charselected]=evenement.key.keysym.unicode;
-				(*charselected)++;
-				(*nb_chars)++;
-			}
-		break;
+					(*nb_chars)++;
+				}
+			break;
+		}
 	}
 	
 	if(!waiting) {
