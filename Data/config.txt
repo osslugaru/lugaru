@@ -39,7 +39,7 @@ Text:
 Debug:
 0
 VBL Sync:
-0
+1
 Show Points:
 0
 Always Blur:
@@ -61,7 +61,7 @@ d
 Jump key:
 space
 Crouch key:
-shift
+left shift
 Draw key:
 e
 Throw key:
