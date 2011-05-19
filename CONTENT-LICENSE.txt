@@ -1,5 +1,140 @@
-All game assets and demo data (should all be in "Data" folder 
-in the root of the source tree) are not under the same license 
-as the engine code. Wolfire has allowed the data to be freely redistributed
+The following game assets are under CC-BY-SA 3.0 Unported ( http://creativecommons.org/licenses/by-sa/3.0/ ) :
+
+Data/Animations/Wolfstop
+Data/Animations/Wolfslap
+Data/Animations/Wolfrunning
+Data/Animations/Wolfrun
+Data/Animations/Wolflanding
+Data/Animations/Wolflandhard
+Data/Animations/Wolfidle
+Data/Animations/Wolfcrouch
+Data/Animations/Winduppunchblocked
+Data/Animations/Winduppunch
+Data/Animations/Walljumprightkick
+Data/Animations/Walljumpright
+Data/Animations/Walljumpleftkick
+Data/Animations/Walljumpleft
+Data/Animations/Walljumpfront
+Data/Animations/Walljumpback
+Data/Animations/Walk
+Data/Animations/upunchcaught
+Data/Animations/upunchcatch
+Data/Animations/upunch
+Data/Animations/Tempanim
+Data/Animations/TalkIdle
+Data/Animations/Sworduprightparry
+Data/Animations/Swordsneakattacked
+Data/Animations/Swordsneakattack
+Data/Animations/Swordslashparried
+Data/Animations/Swordslashcaught
+Data/Animations/Swordslashcatch
+Data/Animations/Swordslash
+Data/Animations/Swordgroundstab
+Data/Animations/Swordfightidleboth
+Data/Animations/Swordfightidle
+Data/Animations/Sweepcaught
+Data/Animations/Sweepcatch
+Data/Animations/Sweep
+Data/Animations/Stop
+Data/Animations/Staggerbackhigh
+Data/Animations/Staggerbackhard
+Data/Animations/Staffhitcaught
+Data/Animations/Staffhitcatch
+Data/Animations/StaffHit
+Data/Animations/StaffGroundSmash
+Data/Animations/Spinwhackcaught
+Data/Animations/Spinwhackcatch
+Data/Animations/Spinwhack
+Data/Animations/Spinkickcaught
+Data/Animations/Spinkickcatch
+Data/Animations/Spinkick
+Data/Animations/Sneakattacked
+Data/Animations/Sneakattack
+Data/Animations/Sneak
+Data/Animations/Sleep
+Data/Animations/Slashstart
+Data/Animations/Slashfollowed
+Data/Animations/Slashfollow
+Data/Animations/Sit
+Data/Animations/Run
+Data/Animations/Roll
+Data/Animations/Rightflip
+Data/Animations/Removeknife
+Data/Animations/Rabbittackling
+Data/Animations/Rabbittackledfront
+Data/Animations/Rabbittackledback
+Data/Animations/Rabbittackle
+Data/Animations/Rabbitrunning
+Data/Animations/Rabbitkickcaught
+Data/Animations/Rabbitkickcatch
+Data/Animations/Rabbitkick
+Data/Animations/Lowkick
+Data/Animations/Leftflip
+Data/Animations/Landing
+Data/Animations/Landhard
+Data/Animations/Knifethrow
+Data/Animations/Knifesneakattacked
+Data/Animations/Knifesneakattack
+Data/Animations/Knifeslashcaught
+Data/Animations/Knifeslashcatch
+Data/Animations/Knifefightidle
+Data/Animations/Kill
+Data/Animations/JumpUp
+Data/Animations/JumpDown
+Data/Animations/Jumpcaught
+Data/Animations/Jumpcatch
+Data/Animations/Idle
+Data/Animations/Hurtidle
+Data/Animations/Hangon
+Data/Animations/Getupfromfront
+Data/Animations/Getupfromback
+Data/Animations/Flip
+Data/Animations/Fightsidestep
+Data/Animations/Fightidle
+Data/Animations/Dying
+Data/Animations/Dropkickold
+Data/Animations/Dropkick
+Data/Animations/Drawright
+Data/Animations/Drawleft
+Data/Animations/Dodgeback
+Data/Animations/Dead4
+Data/Animations/Dead3
+Data/Animations/Dead2
+Data/Animations/Dead1
+Data/Animations/Crouchstab
+Data/Animations/Crouchremoveknife
+Data/Animations/Crouchdrawright
+Data/Animations/Crouch
+Data/Animations/Climb
+Data/Animations/Blockhighleftstrike
+Data/Animations/Blockhighleft
+Data/Animations/Backhandspring
+Data/Animations/Backflip
+
+Data/Skeleton/Rabbitbelt
+Data/Skeleton/Basic Figurelow
+Data/Skeleton/Basic Figure wolf low
+Data/Skeleton/Basic Figure wolf
+Data/Skeleton/Basic Figure
+
+Data/Maps/tutorial
+Data/Maps/start8
+Data/Maps/start7
+Data/Maps/start6
+Data/Maps/start5
+Data/Maps/start4
+Data/Maps/start3
+Data/Maps/start2
+Data/Maps/start1
+Data/Maps/raidercamp
+Data/Maps/map3
+Data/Maps/map2
+Data/Maps/map1
+
+Attribution to Wolfire : http://www.wolfire.com
+
+All other game assets and demo data (should all be in "Data" folder 
+in the root of the source tree) are not under the same license.
+Wolfire has allowed the other data to be freely redistributed
 for non commercial purposes, but it is forbidden to use in any revenue
 generating works.
