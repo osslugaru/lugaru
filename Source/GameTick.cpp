@@ -2372,7 +2372,7 @@ void	Game::Tick()
 				}
 			}
 		}
-		if(mainmenu==3){
+		else if(mainmenu==3){
 			if(Input::Button()&&!oldbutton&&selected!=-1){
 				fireSound();
 			}
@@ -2508,7 +2508,7 @@ void	Game::Tick()
 				if(mainmenu==3&&!gameon)mainmenu=1;
 			}
 		}
-		if(mainmenu==4){
+		else if(mainmenu==4){
 			if(Input::Button()&&!oldbutton&&selected!=-1&&!waiting){
 				fireSound();
 				if(selected<9&&keyselect==-1)
@@ -2530,7 +2530,7 @@ void	Game::Tick()
 			}
 		}
 
-		if(mainmenu==5){
+		else if(mainmenu==5){
 
 			if(endgame==2){
 				accountactive->endGame();
@@ -2639,7 +2639,7 @@ void	Game::Tick()
 				mainmenu=5;
 			}
 		}
-		if(mainmenu==10){
+		else if(mainmenu==10){
 			endgame=2;
 			if(Input::Button()&&!oldbutton&&selected==3){
 				fireSound();
@@ -2650,7 +2650,7 @@ void	Game::Tick()
 			}
 		}
 
-		if(mainmenu==6){
+		else if(mainmenu==6){
 			if(Input::Button()&&!oldbutton) {
 				if(selected>-1){
 					fireSound();
@@ -2665,7 +2665,7 @@ void	Game::Tick()
 				}
 			}
 		}
-		if(mainmenu==7){
+		else if(mainmenu==7){
 			if(Input::Button()&&!oldbutton) {
 				if(selected!=-1){
 					fireSound();
@@ -2690,7 +2690,7 @@ void	Game::Tick()
 				}
 			}
 		}
-		if(mainmenu==8){
+		else if(mainmenu==8){
 			if(Input::Button()&&!oldbutton&&selected>-1){
 				fireSound();
 
@@ -2703,7 +2703,7 @@ void	Game::Tick()
 
 			}
 		}
-		if (mainmenu==18) {			
+		else if (mainmenu==18) {			
 			if(Input::Button()&&!oldbutton&&selected==0) {
 				newstereomode = (StereoMode)(newstereomode + 1);
 				while(!CanInitStereo(newstereomode)) {
