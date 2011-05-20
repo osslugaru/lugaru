@@ -2,7 +2,6 @@
 #include <string>
 
 //keeps track of which textures are loaded
-//TODO: delete them properly
 class Texture {
 	private:
 		static std::map<std::string,Texture> textures;
