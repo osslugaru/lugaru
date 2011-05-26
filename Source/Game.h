@@ -168,12 +168,6 @@ class Game
 		GLuint cursortexture;
 		GLuint Mainmenuitems[10];
 
-		int nummenuitems;
-		int startx[100];
-		int starty[100];
-		int endx[100];
-		int endy[100];
-		float selectedlong[100];
 		int selected;
 		int keyselect;
 		int indemo;

@@ -5574,13 +5574,12 @@ void Game::MenuTick(){
 			case 4:
 				if(!waiting) {
 					fireSound();
-					if(selected<nummenuitems-1 && keyselect==-1)
+					if(selected<(debugmode?10:9) && keyselect==-1)
 						keyselect=selected;
 					if(keyselect!=-1)
 						setKeySelected();
-					if(selected==nummenuitems-1){
+					if(selected==(debugmode?10:9)){
 						flash();
-
 						mainmenu=3;
 					}
 				}

@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "openal_wrapper.h"
 #include "Input.h"
 #include "Awards.h"
+#include "Menu.h"
 
 #include <dirent.h>
 
@@ -189,23 +190,29 @@ int Game::DrawGLScene(StereoSide side)
 				drawmode=motionblurmode;
 			motionbluramount=.2;
 			slomodelay-=multiplier;
-			if(slomodelay<0)slomo=0;
+			if(slomodelay<0)
+                slomo=0;
 			camerashake=0;
 			changed=1;
 		}
 		if((!changed&&!slomo)||loading){
 			drawmode=normalmode;
 			if(ismotionblur&&(/*fps>100||*/alwaysblur)){
-				if(olddrawmode!=realmotionblurmode)change=1;
-				else change=0;
+				if(olddrawmode!=realmotionblurmode)
+                    change=1;
+				else
+                    change=0;
 				drawmode=realmotionblurmode;
-			}
-			else if(olddrawmode==realmotionblurmode)change=2;
-			else change=0;
+			}else if(olddrawmode==realmotionblurmode)
+                change=2;
+			else
+                change=0;
 		}
 
-		if(freeze||winfreeze||(mainmenu&&gameon)||(!gameon&&gamestarted))drawmode=normalmode;
-		if((freeze||winfreeze)&&ismotionblur&&!mainmenu)drawmode=radialzoommode;
+		if(freeze||winfreeze||(mainmenu&&gameon)||(!gameon&&gamestarted))
+            drawmode=normalmode;
+		if((freeze||winfreeze)&&ismotionblur&&!mainmenu)
+            drawmode=radialzoommode;
 
 		if(winfreeze||mainmenu)drawmode=normalmode;
 
@@ -219,38 +226,35 @@ int Game::DrawGLScene(StereoSide side)
 		}
 #endif
 
-		if(drawtoggle!=2)drawtoggle=1-drawtoggle;
+		if(drawtoggle!=2)
+            drawtoggle=1-drawtoggle;
 
 		if(!texcoordwidth){
-
 			texviewwidth=kTextureSize;
-			if(texviewwidth>screenwidth)texviewwidth=screenwidth;
+			if(texviewwidth>screenwidth)
+                texviewwidth=screenwidth;
 			texviewheight=kTextureSize;
-			if(texviewheight>screenheight)texviewheight=screenheight;
+			if(texviewheight>screenheight)
+                texviewheight=screenheight;
 
 			texcoordwidth=screenwidth/kTextureSize;
 			texcoordheight=screenheight/kTextureSize;
-			if(texcoordwidth>1)texcoordwidth=1;
-			if(texcoordheight>1)texcoordheight=1;
+			if(texcoordwidth>1)
+                texcoordwidth=1;
+			if(texcoordheight>1)
+                texcoordheight=1;
 		}
 
 		glDrawBuffer(GL_BACK);
 		glReadBuffer(GL_BACK);
 
-		if(abs(blurness-targetblurness)<multiplier*10||abs(blurness-targetblurness)>2){
-			blurness=targetblurness;
-			targetblurness=(float)(abs(Random()%100))/40;
-		}
-		if(blurness<targetblurness) 
-			blurness+=multiplier*5;
-		else
-			blurness-=multiplier*5;
-
 		//glFinish();
 		static XYZ terrainlight;
 		static float distance;
-		if(drawmode==normalmode)ReSizeGLScene(90,.1f);
-		if(drawmode!=normalmode)glViewport(0,0,texviewwidth,texviewheight);	
+		if(drawmode==normalmode)
+            ReSizeGLScene(90,.1f);
+		if(drawmode!=normalmode)
+            glViewport(0,0,texviewwidth,texviewheight);	
 		glDepthFunc(GL_LEQUAL);
 		glDepthMask(1);
 		glAlphaFunc(GL_GREATER, 0.0001f);
@@ -266,8 +270,11 @@ int Game::DrawGLScene(StereoSide side)
 		// Reverse the movement if we're reversing stereo
 		glTranslatef((stereoseparation/2) * side * (stereoreverse  ? -1 : 1), 0, 0);
 		
+        //camera effects
 		if(!cameramode&&!freeze&&!winfreeze){
+            //shake
 			glRotatef(float(Random()%100)/10*camerashake/*+(woozy*woozy)/10*/,0,0,1);
+            //sway
 			glRotatef(rotation2+sin(woozy/2)*(player[0].damage/player[0].damagetolerance)*5,1,0,0);
 			glRotatef(rotation+sin(woozy)*(player[0].damage/player[0].damagetolerance)*5,0,1,0);
 		}
@@ -282,7 +289,19 @@ int Game::DrawGLScene(StereoSide side)
 		}
 		SetUpLight(&light,0);
 		glPushMatrix();
-		if(environment==desertenvironment&&detail==2)glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, blurness+.4 );
+
+        //heat blur effect in desert
+		if(abs(blurness-targetblurness)<multiplier*10||abs(blurness-targetblurness)>2){
+			blurness=targetblurness;
+			targetblurness=(float)(abs(Random()%100))/40;
+		}
+		if(blurness<targetblurness) 
+			blurness+=multiplier*5;
+		else
+			blurness-=multiplier*5;
+
+		if(environment==desertenvironment&&detail==2)
+            glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, blurness+.4 );
 		if(environment==desertenvironment){
 			glRotatef((float)(abs(Random()%100))/1000,1,0,0);
 			glRotatef((float)(abs(Random()%100))/1000,0,1,0);
@@ -293,7 +312,7 @@ int Game::DrawGLScene(StereoSide side)
 		glTranslatef(-viewer.x,-viewer.y,-viewer.z);
 		frustum.GetFrustum();
 
-		//Make Shadow
+		//make shadow decals on terrain and objects
 		static XYZ point;
 		static float size,opacity,rotation;
 		rotation=0;
@@ -323,49 +342,50 @@ int Game::DrawGLScene(StereoSide side)
 							}
 						}
 					}
-					if((player[k].skeleton.free||player[k].howactive>=typesleeping)&&player[k].playerdetail)
-						if(frustum.SphereInFrustum(player[k].coords.x,player[k].coords.y,player[k].coords.z,player[k].scale*5)&&player[k].occluded<25)
-							for(i=0;i<player[k].skeleton.num_joints;i++){
-								if(player[k].skeleton.joints[i].label==leftknee||player[k].skeleton.joints[i].label==rightknee||player[k].skeleton.joints[i].label==groin||player[k].skeleton.joints[i].label==leftelbow||player[k].skeleton.joints[i].label==rightelbow||player[k].skeleton.joints[i].label==neck){
-									if(player[k].skeleton.free)point=player[k].skeleton.joints[i].position*player[k].scale+player[k].coords;
-									else point=DoRotation(player[k].skeleton.joints[i].position,0,player[k].rotation,0)*player[k].scale+player[k].coords;
-									size=.4f;
-									opacity=.4-player[k].skeleton.joints[i].position.y*player[k].scale/5-(player[k].coords.y-terrain.getHeight(player[k].coords.x,player[k].coords.z))/5;
-									if(k!=0&&tutoriallevel==1){
-										opacity=.2+.2*sin(smoketex*6+i)-player[k].skeleton.joints[i].position.y*player[k].scale/5-(player[k].coords.y-terrain.getHeight(player[k].coords.x,player[k].coords.z))/10;
-									}
-									terrain.MakeDecal(shadowdecal,point,size,opacity*.7,rotation);
-									for(l=0;l<terrain.patchobjectnum[player[k].whichpatchx][player[k].whichpatchz];l++){
-										j=terrain.patchobjects[player[k].whichpatchx][player[k].whichpatchz][l];
-										if(objects.position[j].y<player[k].coords.y||objects.type[j]==tunneltype||objects.type[j]==weirdtype){
-											if(player[k].skeleton.free)point=DoRotation(player[k].skeleton.joints[i].position*player[k].scale+player[k].coords-objects.position[j],0,-objects.rotation[j],0);
-											else point=DoRotation(DoRotation(player[k].skeleton.joints[i].position,0,player[k].rotation,0)*player[k].scale+player[k].coords-objects.position[j],0,-objects.rotation[j],0);
-											size=.4f;
-											opacity=.4f;
-											if(k!=0&&tutoriallevel==1){
-												opacity=.2+.2*sin(smoketex*6+i);
-											}
-											objects.model[j].MakeDecal(shadowdecal,&point,&size,&opacity,&rotation);
-										}
-									}
-								}
-							}
+            if((player[k].skeleton.free||player[k].howactive>=typesleeping)&&player[k].playerdetail)
+                if(frustum.SphereInFrustum(player[k].coords.x,player[k].coords.y,player[k].coords.z,player[k].scale*5)&&player[k].occluded<25)
+                    for(i=0;i<player[k].skeleton.num_joints;i++){
+                        if(player[k].skeleton.joints[i].label==leftknee||player[k].skeleton.joints[i].label==rightknee||player[k].skeleton.joints[i].label==groin||player[k].skeleton.joints[i].label==leftelbow||player[k].skeleton.joints[i].label==rightelbow||player[k].skeleton.joints[i].label==neck){
+                            if(player[k].skeleton.free)
+                                point=player[k].skeleton.joints[i].position*player[k].scale+player[k].coords;
+                            else
+                                point=DoRotation(player[k].skeleton.joints[i].position,0,player[k].rotation,0)*player[k].scale+player[k].coords;
+                            size=.4f;
+                            opacity=.4-player[k].skeleton.joints[i].position.y*player[k].scale/5-(player[k].coords.y-terrain.getHeight(player[k].coords.x,player[k].coords.z))/5;
+                            if(k!=0&&tutoriallevel==1){
+                                opacity=.2+.2*sin(smoketex*6+i)-player[k].skeleton.joints[i].position.y*player[k].scale/5-(player[k].coords.y-terrain.getHeight(player[k].coords.x,player[k].coords.z))/10;
+                            }
+                            terrain.MakeDecal(shadowdecal,point,size,opacity*.7,rotation);
+                            for(l=0;l<terrain.patchobjectnum[player[k].whichpatchx][player[k].whichpatchz];l++){
+                                j=terrain.patchobjects[player[k].whichpatchx][player[k].whichpatchz][l];
+                                if(objects.position[j].y<player[k].coords.y||objects.type[j]==tunneltype||objects.type[j]==weirdtype){
+                                    if(player[k].skeleton.free)point=DoRotation(player[k].skeleton.joints[i].position*player[k].scale+player[k].coords-objects.position[j],0,-objects.rotation[j],0);
+                                    else point=DoRotation(DoRotation(player[k].skeleton.joints[i].position,0,player[k].rotation,0)*player[k].scale+player[k].coords-objects.position[j],0,-objects.rotation[j],0);
+                                    size=.4f;
+                                    opacity=.4f;
+                                    if(k!=0&&tutoriallevel==1){
+                                        opacity=.2+.2*sin(smoketex*6+i);
+                                    }
+                                    objects.model[j].MakeDecal(shadowdecal,&point,&size,&opacity,&rotation);
+                                }
+                            }
+                        }
+                    }
 
-							if(!player[k].playerdetail)
-								if(frustum.SphereInFrustum(player[k].coords.x,player[k].coords.y,player[k].coords.z,player[k].scale*5))
-								{
-									point=player[k].coords;
-									size=.7;
-									opacity=.4-(player[k].coords.y-terrain.getHeight(player[k].coords.x,player[k].coords.z))/5;
-									terrain.MakeDecal(shadowdecal,point,size,opacity*.7,rotation);
-									for(l=0;l<terrain.patchobjectnum[player[k].whichpatchx][player[k].whichpatchz];l++){
-										j=terrain.patchobjects[player[k].whichpatchx][player[k].whichpatchz][l];
-										point=DoRotation(player[k].coords-objects.position[j],0,-objects.rotation[j],0);
-										size=.7;
-										opacity=.4f;
-										objects.model[j].MakeDecal(shadowdecal,&point,&size,&opacity,&rotation);
-									}
-								}
+            if(!player[k].playerdetail)
+                if(frustum.SphereInFrustum(player[k].coords.x,player[k].coords.y,player[k].coords.z,player[k].scale*5)){
+                    point=player[k].coords;
+                    size=.7;
+                    opacity=.4-(player[k].coords.y-terrain.getHeight(player[k].coords.x,player[k].coords.z))/5;
+                    terrain.MakeDecal(shadowdecal,point,size,opacity*.7,rotation);
+                    for(l=0;l<terrain.patchobjectnum[player[k].whichpatchx][player[k].whichpatchz];l++){
+                        j=terrain.patchobjects[player[k].whichpatchx][player[k].whichpatchz][l];
+                        point=DoRotation(player[k].coords-objects.position[j],0,-objects.rotation[j],0);
+                        size=.7;
+                        opacity=.4f;
+                        objects.model[j].MakeDecal(shadowdecal,&point,&size,&opacity,&rotation);
+                    }
+                }
 		}
 
 		//Terrain
@@ -420,31 +440,38 @@ int Game::DrawGLScene(StereoSide side)
 					distance=findDistancefast(&viewer,&player[k].coords);
 					distance=(viewdistance*viewdistance-(distance-(viewdistance*viewdistance*fadestart))*(1/(1-fadestart)))/viewdistance/viewdistance;
 					glColor4f(terrainlight.x,terrainlight.y,terrainlight.z,distance);
-					if(distance>=1)glDisable(GL_BLEND);
+					if(distance>=1)
+                        glDisable(GL_BLEND);
 					if(distance>=.5){
 						checkpoint=DoRotation(player[k].skeleton.joints[abs(Random()%player[k].skeleton.num_joints)].position,0,player[k].rotation,0)*player[k].scale+player[k].coords;
 						checkpoint.y+=1;
-						if(!player[k].occluded==0)i=checkcollide(viewer,checkpoint,player[k].lastoccluded);
-						if(i==-1||player[k].occluded==0)i=checkcollide(viewer,checkpoint);
+						if(!player[k].occluded==0)
+                            i=checkcollide(viewer,checkpoint,player[k].lastoccluded);
+						if(i==-1||player[k].occluded==0)
+                            i=checkcollide(viewer,checkpoint);
 						if(i!=-1){
 							player[k].occluded+=1;
 							player[k].lastoccluded=i;
-						}
-						else player[k].occluded=0;
-						if(player[k].occluded<25)player[k].DrawSkeleton();
+						}else
+                            player[k].occluded=0;
+						if(player[k].occluded<25)
+                            player[k].DrawSkeleton();
 					}
 				}
 			}
 		}
 
-		if(!cameramode&&musictype==stream_fighttheme)playerdist=findDistancefastflat(&player[0].coords,&viewer);
-		else playerdist=-100;
+		if(!cameramode&&musictype==stream_fighttheme)
+            playerdist=findDistancefastflat(&player[0].coords,&viewer);
+		else
+            playerdist=-100;
 		glPushMatrix();
 		glCullFace(GL_BACK);
 		glEnable(GL_TEXTURE_2D);
 		objects.Draw();
 		glPopMatrix();
 
+        //draw hawk
 		glPushMatrix();
 		if(frustum.SphereInFrustum(realhawkcoords.x+hawk.boundingspherecenter.x,realhawkcoords.y+hawk.boundingspherecenter.y,realhawkcoords.z+hawk.boundingspherecenter.z,2)){   
 			glAlphaFunc(GL_GREATER, 0.0001f);
@@ -457,7 +484,8 @@ int Game::DrawGLScene(StereoSide side)
 			glTranslatef(25,0,0);
 			distance=findDistancefast(&viewer,&realhawkcoords)*1.2;
 			glColor4f(light.color[0],light.color[1],light.color[2],(viewdistance*viewdistance-(distance-(viewdistance*viewdistance*fadestart))*(1/(1-fadestart)))/viewdistance/viewdistance);
-			if((viewdistance*viewdistance-(distance-(viewdistance*viewdistance*fadestart))*(1/(1-fadestart)))/viewdistance/viewdistance>1)glColor4f(light.color[0],light.color[1],light.color[2],1);
+			if((viewdistance*viewdistance-(distance-(viewdistance*viewdistance*fadestart))*(1/(1-fadestart)))/viewdistance/viewdistance>1)
+                glColor4f(light.color[0],light.color[1],light.color[2],1);
 			if((viewdistance*viewdistance-(distance-(viewdistance*viewdistance*fadestart))*(1/(1-fadestart)))/viewdistance/viewdistance>0)
 				hawk.drawdifftex(hawktexture);
 		}
@@ -475,18 +503,22 @@ int Game::DrawGLScene(StereoSide side)
 				distance=findDistancefast(&viewer,&player[k].coords);
 				distance=(viewdistance*viewdistance-(distance-(viewdistance*viewdistance*fadestart))*(1/(1-fadestart)))/viewdistance/viewdistance;
 				glColor4f(terrainlight.x,terrainlight.y,terrainlight.z,distance);
-				if(distance>=1)glDisable(GL_BLEND);
+				if(distance>=1)
+                    glDisable(GL_BLEND);
 				if(distance>=.5){
 					checkpoint=DoRotation(player[k].skeleton.joints[abs(Random()%player[k].skeleton.num_joints)].position,0,player[k].rotation,0)*player[k].scale+player[k].coords;
 					checkpoint.y+=1;
-					if(!player[k].occluded==0)i=checkcollide(viewer,checkpoint,player[k].lastoccluded);
-					if(i==-1||player[k].occluded==0)i=checkcollide(viewer,checkpoint);
+					if(!player[k].occluded==0)
+                        i=checkcollide(viewer,checkpoint,player[k].lastoccluded);
+					if(i==-1||player[k].occluded==0)
+                        i=checkcollide(viewer,checkpoint);
 					if(i!=-1){
 						player[k].occluded+=1;
 						player[k].lastoccluded=i;
-					}
-					else player[k].occluded=0;
-					if(player[k].occluded<25)player[k].DrawSkeleton();
+					}else
+                        player[k].occluded=0;
+					if(player[k].occluded<25)
+                        player[k].DrawSkeleton();
 				}
 			}
 		}
@@ -506,6 +538,7 @@ int Game::DrawGLScene(StereoSide side)
 
 		Sprite::Draw();
 
+        //waypoints, pathpoints in editor
 		if(editorenabled){
 			glEnable(GL_BLEND);
 			glDisable(GL_LIGHTING);
@@ -573,672 +606,673 @@ int Game::DrawGLScene(StereoSide side)
 					glColor4f(.5,.5,.5,1);
 				}
 
-				if(tutoriallevel==1){
-					tutorialopac=tutorialmaxtime-tutorialstagetime;
-					if(tutorialopac>1)tutorialopac=1;
-					if(tutorialopac<0)tutorialopac=0;
+            if(tutoriallevel==1){
+                tutorialopac=tutorialmaxtime-tutorialstagetime;
+                if(tutorialopac>1)tutorialopac=1;
+                if(tutorialopac<0)tutorialopac=0;
 
-					sprintf (string, " ");
-					sprintf (string2, " ");
-					sprintf (string3, " ");
-					if(tutorialstage==0){
-						sprintf (string, " ");
-						sprintf (string2, " ");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==1){
-						sprintf (string, "Welcome to the Lugaru training level!");
-						sprintf (string2, " ");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==2){
-						sprintf (string, "BASIC MOVEMENT:");
-						sprintf (string2, " ");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==3){
-						sprintf (string, "You can move the mouse to rotate the camera.");
-						sprintf (string2, " ");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==4){
-						sprintf (string, "Try using the %s, %s, %s and %s keys to move around.",Input::keyToChar(forwardkey),Input::keyToChar(leftkey),Input::keyToChar(backkey),Input::keyToChar(rightkey));
-						sprintf (string2, "All movement is relative to the camera.");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==5){
-						sprintf (string, "Please press %s to jump.",Input::keyToChar(jumpkey));
-						sprintf (string2, "You can hold it longer to jump higher.");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==6){
-						sprintf (string, "You can press %s to crouch.",Input::keyToChar(crouchkey));
-						sprintf (string2, "You can jump higher from a crouching position.");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==7){
-						sprintf (string, "While running, you can press %s to roll.",Input::keyToChar(crouchkey));
-						sprintf (string2, " ");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==8){
-						sprintf (string, "While crouching, you can sneak around silently");
-						sprintf (string2, "using the movement keys.");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==9){
-						sprintf (string, "Release the crouch key while sneaking and hold the movement keys");
-						sprintf (string2, "to run animal-style.");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==10){
-						sprintf (string, "ADVANCED MOVEMENT:");
-						sprintf (string2, " ");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==11){
-						sprintf (string, "When you jump at a wall, you can hold %s again",Input::keyToChar(jumpkey));
-						sprintf (string2, "during impact to perform a walljump.");
-						sprintf (string3, "Be sure to use the movement keys to press against the wall");
-					}
-					if(tutorialstage==12){
-						sprintf (string, "While in the air, you can press crouch to flip.",Input::keyToChar(jumpkey));
-						sprintf (string2, "Walljumps and flips confuse enemies and give you more control.");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==13){
-						sprintf (string, "BASIC COMBAT:");
-						sprintf (string2, " ");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==14){
-						sprintf (string, "There is now an imaginary enemy");
-						sprintf (string2, "in the middle of the training area.");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==15){
-						if(attackkey==MOUSEBUTTON1)sprintf (string, "Click to attack when you are near an enemy.");
-						else sprintf (string, "Press %s to attack when you are near an enemy.",Input::keyToChar(attackkey));
-						sprintf (string2, "You can punch by standing still near an enemy and attacking.");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==16){
-						sprintf (string, "If you are close, you will perform a weak punch.");
-						sprintf (string2, "The weak punch is excellent for starting attack combinations.");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==17){
-						sprintf (string, "Attacking while running results in a spin kick.");
-						sprintf (string2, "This is one of your most powerful ground attacks.");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==18){
-						sprintf (string, "Sweep the enemy's legs out by attacking while crouched.");
-						sprintf (string2, "This is a very fast attack, and easy to follow up.");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==19){
-						sprintf (string, "When an enemy is on the ground, you can deal some extra");
-						sprintf (string2, "damage by running up and drop-kicking him.");
-						sprintf (string3, "(Try knocking them down with a sweep first)");
-					}
-					if(tutorialstage==20){
-						sprintf (string, "Your most powerful individual attack is the rabbit kick.");
-						if(attackkey==MOUSEBUTTON1)sprintf (string2, "Run at the enemy while holding the mouse button, and press");
-						else sprintf (string2, "Run at the enemy while holding %s, and press", Input::keyToChar(attackkey));
-						sprintf (string3, "the jump key (%s) to attack.",Input::keyToChar(jumpkey));
-					}
-					if(tutorialstage==21){
-						sprintf (string, "This attack is devastating if timed correctly.");
-						sprintf (string2, "Even if timed incorrectly, it will knock the enemy over.");
-						if(againbonus)sprintf (string3, "Try rabbit-kicking the imaginary enemy again.");
-						else sprintf (string3, "Try rabbit-kicking the imaginary enemy.");
-					}
-					if(tutorialstage==22){
-						sprintf (string, "If you sneak behind an enemy unnoticed, you can kill");
-						sprintf (string2, "him instantly. Move close behind this enemy");
-						sprintf (string3, "and attack.");
-					}
-					if(tutorialstage==23){
-						sprintf (string, "Another important attack is the wall kick. When an enemy");
-						sprintf (string2, "is near a wall, perform a walljump nearby and hold");
-						sprintf (string3, "the attack key during impact with the wall.");
-					}
-					if(tutorialstage==24){
-						sprintf (string, "You can tackle enemies by running at them animal-style");
-						if(attackkey==MOUSEBUTTON1)sprintf (string2, "and pressing jump (%s) or attack(mouse button).",Input::keyToChar(jumpkey));
-						else sprintf (string2, "and pressing jump (%s) or attack(%s).",Input::keyToChar(jumpkey),Input::keyToChar(attackkey));
-						sprintf (string3, "This is especially useful when they are running away.");
-					}
-					if(tutorialstage==25){
-						sprintf (string, "Dodge by pressing back and attack. Dodging is essential");
-						sprintf (string2, "against enemies with swords or other long weapons.");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==26){
-						sprintf (string, "REVERSALS AND COUNTER-REVERSALS");
-						sprintf (string2, " ");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==27){
-						sprintf (string, "The enemy can now reverse your attacks.");
-						sprintf (string2, " ");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==28){
-						sprintf (string, "If you attack, you will notice that the enemy now sometimes");
-						sprintf (string2, "catches your attack and uses it against you. Hold");
-						sprintf (string3, "crouch (%s) after attacking to escape from reversals.",Input::keyToChar(crouchkey));
-					}
-					if(tutorialstage==29){
-						sprintf (string, "Try escaping from two more reversals in a row.");
-						sprintf (string2, " ");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==30){
-						sprintf (string, "Good!");
-						sprintf (string2, " ");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==31){
-						sprintf (string, "To reverse an attack, you must tap crouch (%s) during the",Input::keyToChar(crouchkey));
-						sprintf (string2, "enemy's attack. You must also be close to the enemy;");
-						sprintf (string3, "this is especially important against armed opponents.");
-					}
-					if(tutorialstage==32){
-						sprintf (string, "The enemy can attack in %d seconds.", (int)(tutorialmaxtime-tutorialstagetime));
-						sprintf (string2, "This imaginary opponents attacks will be highlighted");
-						sprintf (string3, "to make this easier.");
-					}
-					if(tutorialstage==33){
-						sprintf (string, "Reverse three enemy attacks!");
-						sprintf (string2, " ");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==34){
-						sprintf (string, "Reverse two more enemy attacks!");
-						sprintf (string2, " ");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==35){
-						sprintf (string, "Reverse one more enemy attack!");
-						sprintf (string2, " ");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==36){
-						sprintf (string, "Excellent!");
-						sprintf (string2, " ");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==37){
-						sprintf (string, "Now spar with the enemy for %d more seconds.", (int)(tutorialmaxtime-tutorialstagetime));
-						sprintf (string2, "Damage dealt: %d",(int)damagedealt);
-						sprintf (string3, "Damage taken: %d.",(int)damagetaken);
-					}
-					if(tutorialstage==38){
-						sprintf (string, "WEAPONS:");
-						sprintf (string2, " ");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==39){
-						sprintf (string, "There is now an imaginary knife");
-						sprintf (string2, "in the center of the training area.");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==40){
-						sprintf (string, "Stand, roll or handspring over the knife");
-						sprintf (string2, "while pressing %s to pick it up.",Input::keyToChar(throwkey));
-						sprintf (string3, "You can crouch and press the same key to drop it again.");
-					}
-					if(tutorialstage==41){
-						sprintf (string, "You can equip and unequip weapons using the %s key.",Input::keyToChar(drawkey));
-						sprintf (string2, "Sometimes it is best to keep them unequipped to");
-						sprintf (string3, "prevent enemies from taking them. ");
-					}
-					if(tutorialstage==42){
-						sprintf (string, "The knife is the smallest weapon and the least encumbering.");
-						sprintf (string2, "You can equip or unequip it while standing, crouching,");
-						sprintf (string3, "running or flipping.");
-					}
-					if(tutorialstage==43){
-						sprintf (string, "You perform weapon attacks the same way as unarmed attacks,");
-						sprintf (string2, "but sharp weapons cause permanent damage, instead of the");
-						sprintf (string3, "temporary trauma from blunt weapons, fists and feet.");
-					}
-					if(tutorialstage==44){
-						sprintf (string, "The enemy now has your knife!");
-						sprintf (string2, "Please reverse two of his knife attacks.");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==45){
-						sprintf (string, "Please reverse one more of his knife attacks.");
-						sprintf (string2, " ");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==46){
-						sprintf (string, "Now he has a sword!");
-						sprintf (string2, "The sword has longer reach than your arms, so you");
-						sprintf (string3, "must move close to reverse the sword slash.");
-					}
-					if(tutorialstage==47){
-						sprintf (string, "Long weapons like the sword and staff are also useful for defense;");
-						sprintf (string2, "you can parry enemy weapon attacks by pressing the attack key");
-						sprintf (string3, "at the right time. Please try parrying the enemy's attacks!");
-					}
-					if(tutorialstage==48){
-						sprintf (string, "The staff is like the sword, but has two main attacks.");
-						sprintf (string2, "The standing smash is fast and effective, and the running");
-						sprintf (string3, "spin smash is slower and more powerful.");
-					}
-					if(tutorialstage==49){
-						sprintf (string, "When facing an enemy, you can throw the knife with %s.",Input::keyToChar(throwkey));
-						sprintf (string2, "It is possible to throw the knife while flipping,");
-						sprintf (string3, "but it is very inaccurate.");
-					}
-					if(tutorialstage==50){
-						sprintf (string, "You now know everything you can learn from training.");
-						sprintf (string2, "Everything else you must learn from experience!");
-						sprintf (string3, " ");
-					}
-					if(tutorialstage==51){
-						sprintf (string, "Walk out of the training area to return to the main menu.");
-						sprintf (string2, " ");
-						sprintf (string3, " ");
-					}
+                sprintf (string, " ");
+                sprintf (string2, " ");
+                sprintf (string3, " ");
+                if(tutorialstage==0){
+                    sprintf (string, " ");
+                    sprintf (string2, " ");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==1){
+                    sprintf (string, "Welcome to the Lugaru training level!");
+                    sprintf (string2, " ");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==2){
+                    sprintf (string, "BASIC MOVEMENT:");
+                    sprintf (string2, " ");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==3){
+                    sprintf (string, "You can move the mouse to rotate the camera.");
+                    sprintf (string2, " ");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==4){
+                    sprintf (string, "Try using the %s, %s, %s and %s keys to move around.",Input::keyToChar(forwardkey),Input::keyToChar(leftkey),Input::keyToChar(backkey),Input::keyToChar(rightkey));
+                    sprintf (string2, "All movement is relative to the camera.");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==5){
+                    sprintf (string, "Please press %s to jump.",Input::keyToChar(jumpkey));
+                    sprintf (string2, "You can hold it longer to jump higher.");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==6){
+                    sprintf (string, "You can press %s to crouch.",Input::keyToChar(crouchkey));
+                    sprintf (string2, "You can jump higher from a crouching position.");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==7){
+                    sprintf (string, "While running, you can press %s to roll.",Input::keyToChar(crouchkey));
+                    sprintf (string2, " ");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==8){
+                    sprintf (string, "While crouching, you can sneak around silently");
+                    sprintf (string2, "using the movement keys.");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==9){
+                    sprintf (string, "Release the crouch key while sneaking and hold the movement keys");
+                    sprintf (string2, "to run animal-style.");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==10){
+                    sprintf (string, "ADVANCED MOVEMENT:");
+                    sprintf (string2, " ");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==11){
+                    sprintf (string, "When you jump at a wall, you can hold %s again",Input::keyToChar(jumpkey));
+                    sprintf (string2, "during impact to perform a walljump.");
+                    sprintf (string3, "Be sure to use the movement keys to press against the wall");
+                }
+                if(tutorialstage==12){
+                    sprintf (string, "While in the air, you can press crouch to flip.",Input::keyToChar(jumpkey));
+                    sprintf (string2, "Walljumps and flips confuse enemies and give you more control.");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==13){
+                    sprintf (string, "BASIC COMBAT:");
+                    sprintf (string2, " ");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==14){
+                    sprintf (string, "There is now an imaginary enemy");
+                    sprintf (string2, "in the middle of the training area.");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==15){
+                    if(attackkey==MOUSEBUTTON1)sprintf (string, "Click to attack when you are near an enemy.");
+                    else sprintf (string, "Press %s to attack when you are near an enemy.",Input::keyToChar(attackkey));
+                    sprintf (string2, "You can punch by standing still near an enemy and attacking.");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==16){
+                    sprintf (string, "If you are close, you will perform a weak punch.");
+                    sprintf (string2, "The weak punch is excellent for starting attack combinations.");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==17){
+                    sprintf (string, "Attacking while running results in a spin kick.");
+                    sprintf (string2, "This is one of your most powerful ground attacks.");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==18){
+                    sprintf (string, "Sweep the enemy's legs out by attacking while crouched.");
+                    sprintf (string2, "This is a very fast attack, and easy to follow up.");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==19){
+                    sprintf (string, "When an enemy is on the ground, you can deal some extra");
+                    sprintf (string2, "damage by running up and drop-kicking him.");
+                    sprintf (string3, "(Try knocking them down with a sweep first)");
+                }
+                if(tutorialstage==20){
+                    sprintf (string, "Your most powerful individual attack is the rabbit kick.");
+                    if(attackkey==MOUSEBUTTON1)sprintf (string2, "Run at the enemy while holding the mouse button, and press");
+                    else sprintf (string2, "Run at the enemy while holding %s, and press", Input::keyToChar(attackkey));
+                    sprintf (string3, "the jump key (%s) to attack.",Input::keyToChar(jumpkey));
+                }
+                if(tutorialstage==21){
+                    sprintf (string, "This attack is devastating if timed correctly.");
+                    sprintf (string2, "Even if timed incorrectly, it will knock the enemy over.");
+                    if(againbonus)sprintf (string3, "Try rabbit-kicking the imaginary enemy again.");
+                    else sprintf (string3, "Try rabbit-kicking the imaginary enemy.");
+                }
+                if(tutorialstage==22){
+                    sprintf (string, "If you sneak behind an enemy unnoticed, you can kill");
+                    sprintf (string2, "him instantly. Move close behind this enemy");
+                    sprintf (string3, "and attack.");
+                }
+                if(tutorialstage==23){
+                    sprintf (string, "Another important attack is the wall kick. When an enemy");
+                    sprintf (string2, "is near a wall, perform a walljump nearby and hold");
+                    sprintf (string3, "the attack key during impact with the wall.");
+                }
+                if(tutorialstage==24){
+                    sprintf (string, "You can tackle enemies by running at them animal-style");
+                    if(attackkey==MOUSEBUTTON1)sprintf (string2, "and pressing jump (%s) or attack(mouse button).",Input::keyToChar(jumpkey));
+                    else sprintf (string2, "and pressing jump (%s) or attack(%s).",Input::keyToChar(jumpkey),Input::keyToChar(attackkey));
+                    sprintf (string3, "This is especially useful when they are running away.");
+                }
+                if(tutorialstage==25){
+                    sprintf (string, "Dodge by pressing back and attack. Dodging is essential");
+                    sprintf (string2, "against enemies with swords or other long weapons.");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==26){
+                    sprintf (string, "REVERSALS AND COUNTER-REVERSALS");
+                    sprintf (string2, " ");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==27){
+                    sprintf (string, "The enemy can now reverse your attacks.");
+                    sprintf (string2, " ");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==28){
+                    sprintf (string, "If you attack, you will notice that the enemy now sometimes");
+                    sprintf (string2, "catches your attack and uses it against you. Hold");
+                    sprintf (string3, "crouch (%s) after attacking to escape from reversals.",Input::keyToChar(crouchkey));
+                }
+                if(tutorialstage==29){
+                    sprintf (string, "Try escaping from two more reversals in a row.");
+                    sprintf (string2, " ");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==30){
+                    sprintf (string, "Good!");
+                    sprintf (string2, " ");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==31){
+                    sprintf (string, "To reverse an attack, you must tap crouch (%s) during the",Input::keyToChar(crouchkey));
+                    sprintf (string2, "enemy's attack. You must also be close to the enemy;");
+                    sprintf (string3, "this is especially important against armed opponents.");
+                }
+                if(tutorialstage==32){
+                    sprintf (string, "The enemy can attack in %d seconds.", (int)(tutorialmaxtime-tutorialstagetime));
+                    sprintf (string2, "This imaginary opponents attacks will be highlighted");
+                    sprintf (string3, "to make this easier.");
+                }
+                if(tutorialstage==33){
+                    sprintf (string, "Reverse three enemy attacks!");
+                    sprintf (string2, " ");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==34){
+                    sprintf (string, "Reverse two more enemy attacks!");
+                    sprintf (string2, " ");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==35){
+                    sprintf (string, "Reverse one more enemy attack!");
+                    sprintf (string2, " ");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==36){
+                    sprintf (string, "Excellent!");
+                    sprintf (string2, " ");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==37){
+                    sprintf (string, "Now spar with the enemy for %d more seconds.", (int)(tutorialmaxtime-tutorialstagetime));
+                    sprintf (string2, "Damage dealt: %d",(int)damagedealt);
+                    sprintf (string3, "Damage taken: %d.",(int)damagetaken);
+                }
+                if(tutorialstage==38){
+                    sprintf (string, "WEAPONS:");
+                    sprintf (string2, " ");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==39){
+                    sprintf (string, "There is now an imaginary knife");
+                    sprintf (string2, "in the center of the training area.");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==40){
+                    sprintf (string, "Stand, roll or handspring over the knife");
+                    sprintf (string2, "while pressing %s to pick it up.",Input::keyToChar(throwkey));
+                    sprintf (string3, "You can crouch and press the same key to drop it again.");
+                }
+                if(tutorialstage==41){
+                    sprintf (string, "You can equip and unequip weapons using the %s key.",Input::keyToChar(drawkey));
+                    sprintf (string2, "Sometimes it is best to keep them unequipped to");
+                    sprintf (string3, "prevent enemies from taking them. ");
+                }
+                if(tutorialstage==42){
+                    sprintf (string, "The knife is the smallest weapon and the least encumbering.");
+                    sprintf (string2, "You can equip or unequip it while standing, crouching,");
+                    sprintf (string3, "running or flipping.");
+                }
+                if(tutorialstage==43){
+                    sprintf (string, "You perform weapon attacks the same way as unarmed attacks,");
+                    sprintf (string2, "but sharp weapons cause permanent damage, instead of the");
+                    sprintf (string3, "temporary trauma from blunt weapons, fists and feet.");
+                }
+                if(tutorialstage==44){
+                    sprintf (string, "The enemy now has your knife!");
+                    sprintf (string2, "Please reverse two of his knife attacks.");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==45){
+                    sprintf (string, "Please reverse one more of his knife attacks.");
+                    sprintf (string2, " ");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==46){
+                    sprintf (string, "Now he has a sword!");
+                    sprintf (string2, "The sword has longer reach than your arms, so you");
+                    sprintf (string3, "must move close to reverse the sword slash.");
+                }
+                if(tutorialstage==47){
+                    sprintf (string, "Long weapons like the sword and staff are also useful for defense;");
+                    sprintf (string2, "you can parry enemy weapon attacks by pressing the attack key");
+                    sprintf (string3, "at the right time. Please try parrying the enemy's attacks!");
+                }
+                if(tutorialstage==48){
+                    sprintf (string, "The staff is like the sword, but has two main attacks.");
+                    sprintf (string2, "The standing smash is fast and effective, and the running");
+                    sprintf (string3, "spin smash is slower and more powerful.");
+                }
+                if(tutorialstage==49){
+                    sprintf (string, "When facing an enemy, you can throw the knife with %s.",Input::keyToChar(throwkey));
+                    sprintf (string2, "It is possible to throw the knife while flipping,");
+                    sprintf (string3, "but it is very inaccurate.");
+                }
+                if(tutorialstage==50){
+                    sprintf (string, "You now know everything you can learn from training.");
+                    sprintf (string2, "Everything else you must learn from experience!");
+                    sprintf (string3, " ");
+                }
+                if(tutorialstage==51){
+                    sprintf (string, "Walk out of the training area to return to the main menu.");
+                    sprintf (string2, " ");
+                    sprintf (string3, " ");
+                }
 
-					glColor4f(0,0,0,tutorialopac);
-					text.glPrintOutline(screenwidth/2-7.6*strlen(string)*screenwidth/1024-4,screenheight/16-4+screenheight*4/5,string,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight);
-					text.glPrintOutline(screenwidth/2-7.6*strlen(string2)*screenwidth/1024-4,screenheight/16-4+screenheight*4/5-20*screenwidth/1024,string2,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight);
-					text.glPrintOutline(screenwidth/2-7.6*strlen(string3)*screenwidth/1024-4,screenheight/16-4+screenheight*4/5-40*screenwidth/1024,string3,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight);
-					glColor4f(1,1,1,tutorialopac);
-					text.glPrint(screenwidth/2-7.6*strlen(string)*screenwidth/1024,screenheight/16+screenheight*4/5,string,1,1.5*screenwidth/1024,screenwidth,screenheight);
-					text.glPrint(screenwidth/2-7.6*strlen(string2)*screenwidth/1024,screenheight/16+screenheight*4/5-20*screenwidth/1024,string2,1,1.5*screenwidth/1024,screenwidth,screenheight);
-					text.glPrint(screenwidth/2-7.6*strlen(string3)*screenwidth/1024,screenheight/16+screenheight*4/5-40*screenwidth/1024,string3,1,1.5*screenwidth/1024,screenwidth,screenheight);
+                glColor4f(0,0,0,tutorialopac);
+                text.glPrintOutline(screenwidth/2-7.6*strlen(string)*screenwidth/1024-4,screenheight/16-4+screenheight*4/5,string,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight);
+                text.glPrintOutline(screenwidth/2-7.6*strlen(string2)*screenwidth/1024-4,screenheight/16-4+screenheight*4/5-20*screenwidth/1024,string2,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight);
+                text.glPrintOutline(screenwidth/2-7.6*strlen(string3)*screenwidth/1024-4,screenheight/16-4+screenheight*4/5-40*screenwidth/1024,string3,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight);
+                glColor4f(1,1,1,tutorialopac);
+                text.glPrint(screenwidth/2-7.6*strlen(string)*screenwidth/1024,screenheight/16+screenheight*4/5,string,1,1.5*screenwidth/1024,screenwidth,screenheight);
+                text.glPrint(screenwidth/2-7.6*strlen(string2)*screenwidth/1024,screenheight/16+screenheight*4/5-20*screenwidth/1024,string2,1,1.5*screenwidth/1024,screenwidth,screenheight);
+                text.glPrint(screenwidth/2-7.6*strlen(string3)*screenwidth/1024,screenheight/16+screenheight*4/5-40*screenwidth/1024,string3,1,1.5*screenwidth/1024,screenwidth,screenheight);
 
-					sprintf (string, "Press 'tab' to skip to the next item.",Input::keyToChar(jumpkey));
-					sprintf (string2, "Press escape at any time to");
-					sprintf (string3, "pause or exit the tutorial.");
+                sprintf (string, "Press 'tab' to skip to the next item.",Input::keyToChar(jumpkey));
+                sprintf (string2, "Press escape at any time to");
+                sprintf (string3, "pause or exit the tutorial.");
 
-					glColor4f(0,0,0,1);
-					text.glPrintOutline(screenwidth/2-7.6*strlen(string)*screenwidth/1024*.8-4,0-4+screenheight*1/10,string,1,1.5*1.25*screenwidth/1024*.8,screenwidth,screenheight);
-					text.glPrintOutline(screenwidth/2-7.6*strlen(string2)*screenwidth/1024*.8-4,0-4+screenheight*1/10-20*.8*screenwidth/1024,string2,1,1.5*1.25*screenwidth/1024*.8,screenwidth,screenheight);
-					text.glPrintOutline(screenwidth/2-7.6*strlen(string3)*screenwidth/1024*.8-4,0-4+screenheight*1/10-40*.8*screenwidth/1024,string3,1,1.5*1.25*screenwidth/1024*.8,screenwidth,screenheight);
-					glColor4f(0.5,0.5,0.5,1);
-					text.glPrint(screenwidth/2-7.6*strlen(string)*screenwidth/1024*.8,0+screenheight*1/10,string,1,1.5*screenwidth/1024*.8,screenwidth,screenheight);
-					text.glPrint(screenwidth/2-7.6*strlen(string2)*screenwidth/1024*.8,0+screenheight*1/10-20*.8*screenwidth/1024,string2,1,1.5*screenwidth/1024*.8,screenwidth,screenheight);
-					text.glPrint(screenwidth/2-7.6*strlen(string3)*screenwidth/1024*.8,0+screenheight*1/10-40*.8*screenwidth/1024,string3,1,1.5*screenwidth/1024*.8,screenwidth,screenheight);
-				}
-				//Hot spots	
+                glColor4f(0,0,0,1);
+                text.glPrintOutline(screenwidth/2-7.6*strlen(string)*screenwidth/1024*.8-4,0-4+screenheight*1/10,string,1,1.5*1.25*screenwidth/1024*.8,screenwidth,screenheight);
+                text.glPrintOutline(screenwidth/2-7.6*strlen(string2)*screenwidth/1024*.8-4,0-4+screenheight*1/10-20*.8*screenwidth/1024,string2,1,1.5*1.25*screenwidth/1024*.8,screenwidth,screenheight);
+                text.glPrintOutline(screenwidth/2-7.6*strlen(string3)*screenwidth/1024*.8-4,0-4+screenheight*1/10-40*.8*screenwidth/1024,string3,1,1.5*1.25*screenwidth/1024*.8,screenwidth,screenheight);
+                glColor4f(0.5,0.5,0.5,1);
+                text.glPrint(screenwidth/2-7.6*strlen(string)*screenwidth/1024*.8,0+screenheight*1/10,string,1,1.5*screenwidth/1024*.8,screenwidth,screenheight);
+                text.glPrint(screenwidth/2-7.6*strlen(string2)*screenwidth/1024*.8,0+screenheight*1/10-20*.8*screenwidth/1024,string2,1,1.5*screenwidth/1024*.8,screenwidth,screenheight);
+                text.glPrint(screenwidth/2-7.6*strlen(string3)*screenwidth/1024*.8,0+screenheight*1/10-40*.8*screenwidth/1024,string3,1,1.5*screenwidth/1024*.8,screenwidth,screenheight);
+            }
+            //Hot spots	
 
-				if(numhotspots&&(bonustime>=1||bonus<=0||bonustime<0)&&!tutoriallevel){
-					int closest=-1;
-					float closestdist=-1;
-					float distance=0;
-					closest=currenthotspot;
-					for(i=0;i<numhotspots;i++){
-						distance=findDistancefast(&player[0].coords,&hotspot[i]);
-						if(closestdist==-1||distance<closestdist){
-							if(findDistancefast(&player[0].coords,&hotspot[i])<hotspotsize[i]&&((hotspottype[i]<=10&&hotspottype[i]>=0)||(hotspottype[i]<=40&&hotspottype[i]>=20))){
-								closestdist=distance;
-								closest=i;
-							}
-						}
-					}
-					if(closest!=-1)
-						currenthotspot=closest;
-					if(currenthotspot!=-1){
-						if(hotspottype[closest]<=10){
-							if(findDistancefast(&player[0].coords,&hotspot[closest])<hotspotsize[closest])
-								tutorialstagetime=0;
-							tutorialmaxtime=1;
-							tutorialopac=tutorialmaxtime-tutorialstagetime;
-							if(tutorialopac>1)tutorialopac=1;
-							if(tutorialopac<0)tutorialopac=0;
+            if(numhotspots&&(bonustime>=1||bonus<=0||bonustime<0)&&!tutoriallevel){
+                int closest=-1;
+                float closestdist=-1;
+                float distance=0;
+                closest=currenthotspot;
+                for(i=0;i<numhotspots;i++){
+                    distance=findDistancefast(&player[0].coords,&hotspot[i]);
+                    if(closestdist==-1||distance<closestdist){
+                        if(findDistancefast(&player[0].coords,&hotspot[i])<hotspotsize[i]&&((hotspottype[i]<=10&&hotspottype[i]>=0)||(hotspottype[i]<=40&&hotspottype[i]>=20))){
+                            closestdist=distance;
+                            closest=i;
+                        }
+                    }
+                }
+                if(closest!=-1)
+                    currenthotspot=closest;
+                if(currenthotspot!=-1){
+                    if(hotspottype[closest]<=10){
+                        if(findDistancefast(&player[0].coords,&hotspot[closest])<hotspotsize[closest])
+                            tutorialstagetime=0;
+                        tutorialmaxtime=1;
+                        tutorialopac=tutorialmaxtime-tutorialstagetime;
+                        if(tutorialopac>1)tutorialopac=1;
+                        if(tutorialopac<0)tutorialopac=0;
 
-							sprintf (string, "%s", hotspottext[closest]);
+                        sprintf (string, "%s", hotspottext[closest]);
 
-							int lastline = 0;
-							int line = 0;
-							bool done = false;
-							i=0;
-							while(!done){
-								if(string[i]=='\n'||string[i]>'z'||string[i]<' '||string[i]=='\0'){
-									glColor4f(0,0,0,tutorialopac);
-									text.glPrintOutline(screenwidth/2-7.6*(i-lastline)*screenwidth/1024-4,screenheight/16-4+screenheight*4/5-20*screenwidth/1024*line,string,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight,lastline,i);
-									glColor4f(1,1,1,tutorialopac);
-									text.glPrint(screenwidth/2-7.6*(i-lastline)*screenwidth/1024,screenheight/16+screenheight*4/5-20*screenwidth/1024*line,string,1,1.5*screenwidth/1024,screenwidth,screenheight,lastline,i);
-									lastline=i+1;
-									line++;
-									if(string[i]=='\0')done=1;
-								}
-								if(i>=255)done=1;
-								i++;
-							}
-						}
-						else if (hotspottype[closest]>=20&&dialoguegonethrough[hotspottype[closest]-20]==0){
-							whichdialogue=hotspottype[closest]-20;
-							for(j=0;j<numdialogueboxes[whichdialogue];j++){
-								player[participantfocus[whichdialogue][j]].coords=participantlocation[whichdialogue][participantfocus[whichdialogue][j]];
-								player[participantfocus[whichdialogue][j]].rotation=participantrotation[whichdialogue][participantfocus[whichdialogue][j]];
-								player[participantfocus[whichdialogue][j]].targetrotation=participantrotation[whichdialogue][participantfocus[whichdialogue][j]];
-								player[participantfocus[whichdialogue][j]].velocity=0;
-								player[participantfocus[whichdialogue][j]].targetanimation=player[participantfocus[whichdialogue][j]].getIdle();
-								player[participantfocus[whichdialogue][j]].targetframe=0;
-							}
-							directing=0;
-							indialogue=0;
-							dialoguegonethrough[whichdialogue]++;
-							if(dialogueboxsound[whichdialogue][indialogue]!=0){
-								int whichsoundplay;
-								if(dialogueboxsound[whichdialogue][indialogue]==1)whichsoundplay=rabbitchitter;
-								if(dialogueboxsound[whichdialogue][indialogue]==2)whichsoundplay=rabbitchitter2;
-								if(dialogueboxsound[whichdialogue][indialogue]==3)whichsoundplay=rabbitpainsound;
-								if(dialogueboxsound[whichdialogue][indialogue]==4)whichsoundplay=rabbitpain1sound;
-								if(dialogueboxsound[whichdialogue][indialogue]==5)whichsoundplay=rabbitattacksound;
-								if(dialogueboxsound[whichdialogue][indialogue]==6)whichsoundplay=rabbitattack2sound;
-								if(dialogueboxsound[whichdialogue][indialogue]==7)whichsoundplay=rabbitattack3sound;
-								if(dialogueboxsound[whichdialogue][indialogue]==8)whichsoundplay=rabbitattack4sound;
-								if(dialogueboxsound[whichdialogue][indialogue]==9)whichsoundplay=growlsound;
-								if(dialogueboxsound[whichdialogue][indialogue]==10)whichsoundplay=growl2sound;
-								if(dialogueboxsound[whichdialogue][indialogue]==11)whichsoundplay=snarlsound;
-								if(dialogueboxsound[whichdialogue][indialogue]==12)whichsoundplay=snarl2sound;
-								if(dialogueboxsound[whichdialogue][indialogue]==13)whichsoundplay=barksound;
-								if(dialogueboxsound[whichdialogue][indialogue]==14)whichsoundplay=bark2sound;
-								if(dialogueboxsound[whichdialogue][indialogue]==15)whichsoundplay=bark3sound;
-								if(dialogueboxsound[whichdialogue][indialogue]==16)whichsoundplay=barkgrowlsound;
-								if(dialogueboxsound[whichdialogue][indialogue]==-1)whichsoundplay=fireendsound;
-								if(dialogueboxsound[whichdialogue][indialogue]==-2)whichsoundplay=firestartsound;
-								if(dialogueboxsound[whichdialogue][indialogue]==-3)whichsoundplay=consolesuccesssound;
-								if(dialogueboxsound[whichdialogue][indialogue]==-4)whichsoundplay=consolefailsound;
-								emit_sound_at(whichsoundplay, player[participantfocus[whichdialogue][indialogue]].coords);
-							}
-						}
-					}
-				}
+                        int lastline = 0;
+                        int line = 0;
+                        bool done = false;
+                        i=0;
+                        while(!done){
+                            if(string[i]=='\n'||string[i]>'z'||string[i]<' '||string[i]=='\0'){
+                                glColor4f(0,0,0,tutorialopac);
+                                text.glPrintOutline(screenwidth/2-7.6*(i-lastline)*screenwidth/1024-4,screenheight/16-4+screenheight*4/5-20*screenwidth/1024*line,string,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight,lastline,i);
+                                glColor4f(1,1,1,tutorialopac);
+                                text.glPrint(screenwidth/2-7.6*(i-lastline)*screenwidth/1024,screenheight/16+screenheight*4/5-20*screenwidth/1024*line,string,1,1.5*screenwidth/1024,screenwidth,screenheight,lastline,i);
+                                lastline=i+1;
+                                line++;
+                                if(string[i]=='\0')done=1;
+                            }
+                            if(i>=255)done=1;
+                            i++;
+                        }
+                    } else if (hotspottype[closest]>=20&&dialoguegonethrough[hotspottype[closest]-20]==0){
+                        whichdialogue=hotspottype[closest]-20;
+                        for(j=0;j<numdialogueboxes[whichdialogue];j++){
+                            player[participantfocus[whichdialogue][j]].coords=participantlocation[whichdialogue][participantfocus[whichdialogue][j]];
+                            player[participantfocus[whichdialogue][j]].rotation=participantrotation[whichdialogue][participantfocus[whichdialogue][j]];
+                            player[participantfocus[whichdialogue][j]].targetrotation=participantrotation[whichdialogue][participantfocus[whichdialogue][j]];
+                            player[participantfocus[whichdialogue][j]].velocity=0;
+                            player[participantfocus[whichdialogue][j]].targetanimation=player[participantfocus[whichdialogue][j]].getIdle();
+                            player[participantfocus[whichdialogue][j]].targetframe=0;
+                        }
+                        directing=0;
+                        indialogue=0;
+                        dialoguegonethrough[whichdialogue]++;
+                        if(dialogueboxsound[whichdialogue][indialogue]!=0){
+                            int whichsoundplay;
+                            if(dialogueboxsound[whichdialogue][indialogue]==1)whichsoundplay=rabbitchitter;
+                            if(dialogueboxsound[whichdialogue][indialogue]==2)whichsoundplay=rabbitchitter2;
+                            if(dialogueboxsound[whichdialogue][indialogue]==3)whichsoundplay=rabbitpainsound;
+                            if(dialogueboxsound[whichdialogue][indialogue]==4)whichsoundplay=rabbitpain1sound;
+                            if(dialogueboxsound[whichdialogue][indialogue]==5)whichsoundplay=rabbitattacksound;
+                            if(dialogueboxsound[whichdialogue][indialogue]==6)whichsoundplay=rabbitattack2sound;
+                            if(dialogueboxsound[whichdialogue][indialogue]==7)whichsoundplay=rabbitattack3sound;
+                            if(dialogueboxsound[whichdialogue][indialogue]==8)whichsoundplay=rabbitattack4sound;
+                            if(dialogueboxsound[whichdialogue][indialogue]==9)whichsoundplay=growlsound;
+                            if(dialogueboxsound[whichdialogue][indialogue]==10)whichsoundplay=growl2sound;
+                            if(dialogueboxsound[whichdialogue][indialogue]==11)whichsoundplay=snarlsound;
+                            if(dialogueboxsound[whichdialogue][indialogue]==12)whichsoundplay=snarl2sound;
+                            if(dialogueboxsound[whichdialogue][indialogue]==13)whichsoundplay=barksound;
+                            if(dialogueboxsound[whichdialogue][indialogue]==14)whichsoundplay=bark2sound;
+                            if(dialogueboxsound[whichdialogue][indialogue]==15)whichsoundplay=bark3sound;
+                            if(dialogueboxsound[whichdialogue][indialogue]==16)whichsoundplay=barkgrowlsound;
+                            if(dialogueboxsound[whichdialogue][indialogue]==-1)whichsoundplay=fireendsound;
+                            if(dialogueboxsound[whichdialogue][indialogue]==-2)whichsoundplay=firestartsound;
+                            if(dialogueboxsound[whichdialogue][indialogue]==-3)whichsoundplay=consolesuccesssound;
+                            if(dialogueboxsound[whichdialogue][indialogue]==-4)whichsoundplay=consolefailsound;
+                            emit_sound_at(whichsoundplay, player[participantfocus[whichdialogue][indialogue]].coords);
+                        }
+                    }
+                }
+            }
 
-				if(indialogue!=-1&&!mainmenu){
-					glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
-					glDisable(GL_CULL_FACE);
-					glDisable(GL_LIGHTING);
-					glDisable(GL_TEXTURE_2D);
-					glDepthMask(0);
-					glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-					glPushMatrix();										// Store The Projection Matrix
-					glLoadIdentity();									// Reset The Projection Matrix
-					glOrtho(0,screenwidth,0,screenheight,-100,100);						// Set Up An Ortho Screen
-					glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-					glPushMatrix();										// Store The Modelview Matrix
-					glLoadIdentity();								// Reset The Modelview Matrix
-					if(dialogueboxlocation[whichdialogue][indialogue]==1)glTranslatef(0,screenheight*3/4,0);
-					glScalef(screenwidth,screenheight/4,1);
-					glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-					glEnable(GL_BLEND);
+            if(indialogue!=-1&&!mainmenu){
+                glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
+                glDisable(GL_CULL_FACE);
+                glDisable(GL_LIGHTING);
+                glDisable(GL_TEXTURE_2D);
+                glDepthMask(0);
+                glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+                glPushMatrix();										// Store The Projection Matrix
+                glLoadIdentity();									// Reset The Projection Matrix
+                glOrtho(0,screenwidth,0,screenheight,-100,100);						// Set Up An Ortho Screen
+                glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+                glPushMatrix();										// Store The Modelview Matrix
+                glLoadIdentity();								// Reset The Modelview Matrix
+                if(dialogueboxlocation[whichdialogue][indialogue]==1)glTranslatef(0,screenheight*3/4,0);
+                glScalef(screenwidth,screenheight/4,1);
+                glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+                glEnable(GL_BLEND);
 
-					glColor4f(dialogueboxcolor[whichdialogue][indialogue][0],dialogueboxcolor[whichdialogue][indialogue][1],dialogueboxcolor[whichdialogue][indialogue][2],0.7);
-					glBegin(GL_QUADS);
-					glVertex3f(0,		0, 	 0.0f);
-					glVertex3f(1,	0, 	 0.0f);
-					glVertex3f(1,	1, 0.0f);
-					glVertex3f(0, 	1, 0.0f);
-					glEnd();
-					glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-					glPopMatrix();										// Restore The Old Projection Matrix
-					glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-					glPopMatrix();										// Restore The Old Projection Matrix
-					glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
-					glEnable(GL_CULL_FACE);
-					glDisable(GL_BLEND);
-					glDepthMask(1);
-					glEnable(GL_TEXTURE_2D);
+                glColor4f(dialogueboxcolor[whichdialogue][indialogue][0],dialogueboxcolor[whichdialogue][indialogue][1],dialogueboxcolor[whichdialogue][indialogue][2],0.7);
+                glBegin(GL_QUADS);
+                glVertex3f(0,		0, 	 0.0f);
+                glVertex3f(1,	0, 	 0.0f);
+                glVertex3f(1,	1, 0.0f);
+                glVertex3f(0, 	1, 0.0f);
+                glEnd();
+                glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+                glPopMatrix();										// Restore The Old Projection Matrix
+                glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+                glPopMatrix();										// Restore The Old Projection Matrix
+                glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
+                glEnable(GL_CULL_FACE);
+                glDisable(GL_BLEND);
+                glDepthMask(1);
+                glEnable(GL_TEXTURE_2D);
 
-					tutorialopac=1;
+                tutorialopac=1;
 
-					float startx;
-					float starty;
+                float startx;
+                float starty;
 
-					startx=screenwidth*1/5;
-					if(dialogueboxlocation[whichdialogue][indialogue]==1)starty=screenheight/16+screenheight*4/5;
-					if(dialogueboxlocation[whichdialogue][indialogue]==2)starty=screenheight*1/5-screenheight/16;
+                startx=screenwidth*1/5;
+                if(dialogueboxlocation[whichdialogue][indialogue]==1)
+                    starty=screenheight/16+screenheight*4/5;
+                if(dialogueboxlocation[whichdialogue][indialogue]==2)
+                    starty=screenheight*1/5-screenheight/16;
 
-					char tempname[264];
-					bool goodchar;
-					int tempnum=0;
-					for(i=0;i<264;i++){
-						tempname[i]='\0';
-					}
+                char tempname[264];
+                bool goodchar;
+                int tempnum=0;
+                for(i=0;i<264;i++){
+                    tempname[i]='\0';
+                }
 
-					for(i=0;i<(int)strlen(dialoguename[whichdialogue][indialogue]);i++){
-						tempname[tempnum]=dialoguename[whichdialogue][indialogue][i];
-						goodchar=1;
-						if(dialoguename[whichdialogue][indialogue][i]=='#'||dialoguename[whichdialogue][indialogue][i]=='\0')goodchar=0;
-						if(goodchar)
-							tempnum++;
-						else
-							tempname[tempnum]='\0';
-					}
+                for(i=0;i<(int)strlen(dialoguename[whichdialogue][indialogue]);i++){
+                    tempname[tempnum]=dialoguename[whichdialogue][indialogue][i];
+                    goodchar=1;
+                    if(dialoguename[whichdialogue][indialogue][i]=='#'||dialoguename[whichdialogue][indialogue][i]=='\0')goodchar=0;
+                    if(goodchar)
+                        tempnum++;
+                    else
+                        tempname[tempnum]='\0';
+                }
 
-					sprintf (string, "%s: ", tempname);
+                sprintf (string, "%s: ", tempname);
 
-					if(dialogueboxcolor[whichdialogue][indialogue][0]+dialogueboxcolor[whichdialogue][indialogue][1]+dialogueboxcolor[whichdialogue][indialogue][2]<1.5){
-						glColor4f(0,0,0,tutorialopac);
-						text.glPrintOutline(startx-2*7.6*strlen(string)*screenwidth/1024-4,starty-4,string,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight);
-						glColor4f(0.7,0.7,0.7,tutorialopac);
-						text.glPrint(startx-2*7.6*strlen(string)*screenwidth/1024,starty,string,1,1.5*screenwidth/1024,screenwidth,screenheight);
-					}
-					else
-					{
-						glColor4f(0,0,0,tutorialopac);
-						text.glPrintOutline(startx-2*7.6*strlen(string)*screenwidth/1024-4,starty-4,string,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight);
-					}
+                if(dialogueboxcolor[whichdialogue][indialogue][0]+dialogueboxcolor[whichdialogue][indialogue][1]+dialogueboxcolor[whichdialogue][indialogue][2]<1.5){
+                    glColor4f(0,0,0,tutorialopac);
+                    text.glPrintOutline(startx-2*7.6*strlen(string)*screenwidth/1024-4,starty-4,string,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight);
+                    glColor4f(0.7,0.7,0.7,tutorialopac);
+                    text.glPrint(startx-2*7.6*strlen(string)*screenwidth/1024,starty,string,1,1.5*screenwidth/1024,screenwidth,screenheight);
+                }
+                else
+                {
+                    glColor4f(0,0,0,tutorialopac);
+                    text.glPrintOutline(startx-2*7.6*strlen(string)*screenwidth/1024-4,starty-4,string,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight);
+                }
 
-					tempnum=0;
-					for(i=0;i<(int)strlen(dialoguetext[whichdialogue][indialogue])+1;i++){
-						tempname[tempnum]=dialoguetext[whichdialogue][indialogue][i];
-						if(dialoguetext[whichdialogue][indialogue][i]!='#')tempnum++;
-					}
+                tempnum=0;
+                for(i=0;i<(int)strlen(dialoguetext[whichdialogue][indialogue])+1;i++){
+                    tempname[tempnum]=dialoguetext[whichdialogue][indialogue][i];
+                    if(dialoguetext[whichdialogue][indialogue][i]!='#')tempnum++;
+                }
 
-					sprintf (string, "%s", tempname);
+                sprintf (string, "%s", tempname);
 
-					int lastline = 0;
-					int line = 0;
-					bool done = false;
-					i=0;
-					while(!done){
-						if(string[i]=='\n'||string[i]>'z'||string[i]<' '||string[i]=='\0'){
-							if(dialogueboxcolor[whichdialogue][indialogue][0]+dialogueboxcolor[whichdialogue][indialogue][1]+dialogueboxcolor[whichdialogue][indialogue][2]<1.5){
-								glColor4f(0,0,0,tutorialopac);
-								text.glPrintOutline(startx/*-7.6*(i-lastline)*screenwidth/1024*/-4,starty-4-20*screenwidth/1024*line,string,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight,lastline,i);
-								glColor4f(1,1,1,tutorialopac);
-								text.glPrint(startx/*-7.6*(i-lastline)*screenwidth/1024*/,starty-20*screenwidth/1024*line,string,1,1.5*screenwidth/1024,screenwidth,screenheight,lastline,i);
-							}
-							else
-							{
-								glColor4f(0,0,0,tutorialopac);
-								text.glPrint(startx/*-7.6*(i-lastline)*screenwidth/1024*/,starty-20*screenwidth/1024*line,string,1,1.5*screenwidth/1024,screenwidth,screenheight,lastline,i);
-							}
-							lastline=i+1;
-							line++;
-							if(string[i]=='\0')done=1;
-						}
-						if(i>=255)done=1;
-						i++;
-					}
-				}	
+                int lastline = 0;
+                int line = 0;
+                bool done = false;
+                i=0;
+                while(!done){
+                    if(string[i]=='\n'||string[i]>'z'||string[i]<' '||string[i]=='\0'){
+                        if(dialogueboxcolor[whichdialogue][indialogue][0]+dialogueboxcolor[whichdialogue][indialogue][1]+dialogueboxcolor[whichdialogue][indialogue][2]<1.5){
+                            glColor4f(0,0,0,tutorialopac);
+                            text.glPrintOutline(startx/*-7.6*(i-lastline)*screenwidth/1024*/-4,starty-4-20*screenwidth/1024*line,string,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight,lastline,i);
+                            glColor4f(1,1,1,tutorialopac);
+                            text.glPrint(startx/*-7.6*(i-lastline)*screenwidth/1024*/,starty-20*screenwidth/1024*line,string,1,1.5*screenwidth/1024,screenwidth,screenheight,lastline,i);
+                        }
+                        else
+                        {
+                            glColor4f(0,0,0,tutorialopac);
+                            text.glPrint(startx/*-7.6*(i-lastline)*screenwidth/1024*/,starty-20*screenwidth/1024*line,string,1,1.5*screenwidth/1024,screenwidth,screenheight,lastline,i);
+                        }
+                        lastline=i+1;
+                        line++;
+                        if(string[i]=='\0')done=1;
+                    }
+                    if(i>=255)done=1;
+                    i++;
+                }
+            }
 
-				if(!tutoriallevel&&!winfreeze&&indialogue==-1&&!mainmenu){
-					if(campaign){
-						if(scoreadded)
-							sprintf (string, "Score: %d", (int)accountactive->getCampaignScore());
-						else
-							sprintf (string, "Score: %d", (int)accountactive->getCampaignScore()+(int)bonustotal);
-					}
-					if(!campaign)sprintf (string, "Score: %d", (int)bonustotal);
-					glColor4f(0,0,0,1);
-					text.glPrintOutline(1024/40-4,768/16-4+768*14/16,string,1,1.5*1.25,1024,768);
-					glColor4f(1,0,0,1);
-					text.glPrint(1024/40,768/16+768*14/16,string,1,1.5,1024,768);
-					if(showdamagebar) {
-						glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
-						glDisable(GL_CULL_FACE);
-						glDisable(GL_LIGHTING);
-						glDisable(GL_TEXTURE_2D);
-						glDepthMask(0);
-						glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-						glPushMatrix();										// Store The Projection Matrix
-						glLoadIdentity();									// Reset The Projection Matrix
-						glOrtho(0,screenwidth,0,screenheight,-100,100);		// Set Up An Ortho Screen
-						glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-						glPushMatrix();										// Store The Modelview Matrix
-						glLoadIdentity();									// Reset The Modelview Matrix
-						glTranslatef(15,screenheight*17.5/20,0);
-						glScalef(screenwidth/3+20,screenheight/20,1);
-						glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-						glEnable(GL_BLEND);
-						glColor4f(0.0,0.4,0.0,0.7);
-						float bar=((float)player[0].damage)/player[0].damagetolerance;
-						glBegin(GL_QUADS);
-						glVertex3f((bar<1?bar:1),0,0.0f);
-						glVertex3f(1,0,0.0f);
-						glVertex3f(1,1,0.0f);
-						glVertex3f((bar<1?bar:1),1,0.0f);
-						glEnd();
-						glColor4f(0.1,0.0,0.0,1);
-						bar = ((float)player[0].bloodloss)/player[0].damagetolerance;
-						glBegin(GL_QUADS);
-						glVertex3f(0,0,0.0f);
-						glVertex3f((bar<1?bar:1),0,0.0f);
-						glVertex3f((bar<1?bar:1),1,0.0f);
-						glVertex3f(0,1,0.0f);
-						glEnd();
-						glColor4f(0.4,0.0,0.0,0.7);
-						bar = ((float)player[0].damage)/player[0].damagetolerance;
-						glBegin(GL_QUADS);
-						glVertex3f(0,0,0.0f);
-						glVertex3f((bar<1?bar:1),0,0.0f);
-						glVertex3f((bar<1?bar:1),1,0.0f);
-						glVertex3f(0,1,0.0f);
-						glEnd();
-						glColor4f(0.4,0.0,0.0,0.7);
-						bar = ((float)player[0].permanentdamage)/player[0].damagetolerance;
-						glBegin(GL_QUADS);
-						glVertex3f(0,0,0.0f);
-						glVertex3f((bar<1?bar:1),0,0.0f);
-						glVertex3f((bar<1?bar:1),1,0.0f);
-						glVertex3f(0,1,0.0f);
-						glEnd();
-						glColor4f(0.4,0.0,0.0,0.7);
-						bar = ((float)player[0].superpermanentdamage)/player[0].damagetolerance;
-						glBegin(GL_QUADS);
-						glVertex3f(0,0,0.0f);
-						glVertex3f((bar<1?bar:1),0,0.0f);
-						glVertex3f((bar<1?bar:1),1,0.0f);
-						glVertex3f(0,1,0.0f);
-						glEnd();
-						glColor4f(0.0,0.0,0.0,0.7);
-						glLineWidth(2.0);
-						glBegin(GL_LINE_STRIP);
-						glVertex3f(0,0,0.0f);
-						glVertex3f(1,0,0.0f);
-						glVertex3f(1,1,0.0f);
-						glVertex3f(0,1,0.0f);
-						glVertex3f(0,0,0.0f);
-						glEnd();
-						
-						glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-						glPopMatrix();										// Restore The Old Projection Matrix
-						glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-						glPopMatrix();										// Restore The Old Projection Matrix
-						glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
-						glEnable(GL_CULL_FACE);
-						glDisable(GL_BLEND);
-						glDepthMask(1);
-						glEnable(GL_TEXTURE_2D);
-						
-						// writing the numbers : 
-						sprintf (string, "Damages : %d/%d (%d)",(int)(player[0].damage),(int)(player[0].damagetolerance),(int)(player[0].bloodloss));
-						glColor4f(0,0,0,1);
-						text.glPrintOutline(1024/40-4,768/16-4+768*14/16-40,string,1,1.5*1.25,1024,768);
-						glColor4f(1,0,0,1);
-						text.glPrint(1024/40,768/16+768*14/16-40,string,1,1.5,1024,768);
-					}
-				}
+            if(!tutoriallevel&&!winfreeze&&indialogue==-1&&!mainmenu){
+                if(campaign){
+                    if(scoreadded)
+                        sprintf (string, "Score: %d", (int)accountactive->getCampaignScore());
+                    else
+                        sprintf (string, "Score: %d", (int)accountactive->getCampaignScore()+(int)bonustotal);
+                }
+                if(!campaign)sprintf (string, "Score: %d", (int)bonustotal);
+                glColor4f(0,0,0,1);
+                text.glPrintOutline(1024/40-4,768/16-4+768*14/16,string,1,1.5*1.25,1024,768);
+                glColor4f(1,0,0,1);
+                text.glPrint(1024/40,768/16+768*14/16,string,1,1.5,1024,768);
+                if(showdamagebar) {
+                    glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
+                    glDisable(GL_CULL_FACE);
+                    glDisable(GL_LIGHTING);
+                    glDisable(GL_TEXTURE_2D);
+                    glDepthMask(0);
+                    glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+                    glPushMatrix();										// Store The Projection Matrix
+                    glLoadIdentity();									// Reset The Projection Matrix
+                    glOrtho(0,screenwidth,0,screenheight,-100,100);		// Set Up An Ortho Screen
+                    glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+                    glPushMatrix();										// Store The Modelview Matrix
+                    glLoadIdentity();									// Reset The Modelview Matrix
+                    glTranslatef(15,screenheight*17.5/20,0);
+                    glScalef(screenwidth/3+20,screenheight/20,1);
+                    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+                    glEnable(GL_BLEND);
+                    glColor4f(0.0,0.4,0.0,0.7);
+                    float bar=((float)player[0].damage)/player[0].damagetolerance;
+                    glBegin(GL_QUADS);
+                    glVertex3f((bar<1?bar:1),0,0.0f);
+                    glVertex3f(1,0,0.0f);
+                    glVertex3f(1,1,0.0f);
+                    glVertex3f((bar<1?bar:1),1,0.0f);
+                    glEnd();
+                    glColor4f(0.1,0.0,0.0,1);
+                    bar = ((float)player[0].bloodloss)/player[0].damagetolerance;
+                    glBegin(GL_QUADS);
+                    glVertex3f(0,0,0.0f);
+                    glVertex3f((bar<1?bar:1),0,0.0f);
+                    glVertex3f((bar<1?bar:1),1,0.0f);
+                    glVertex3f(0,1,0.0f);
+                    glEnd();
+                    glColor4f(0.4,0.0,0.0,0.7);
+                    bar = ((float)player[0].damage)/player[0].damagetolerance;
+                    glBegin(GL_QUADS);
+                    glVertex3f(0,0,0.0f);
+                    glVertex3f((bar<1?bar:1),0,0.0f);
+                    glVertex3f((bar<1?bar:1),1,0.0f);
+                    glVertex3f(0,1,0.0f);
+                    glEnd();
+                    glColor4f(0.4,0.0,0.0,0.7);
+                    bar = ((float)player[0].permanentdamage)/player[0].damagetolerance;
+                    glBegin(GL_QUADS);
+                    glVertex3f(0,0,0.0f);
+                    glVertex3f((bar<1?bar:1),0,0.0f);
+                    glVertex3f((bar<1?bar:1),1,0.0f);
+                    glVertex3f(0,1,0.0f);
+                    glEnd();
+                    glColor4f(0.4,0.0,0.0,0.7);
+                    bar = ((float)player[0].superpermanentdamage)/player[0].damagetolerance;
+                    glBegin(GL_QUADS);
+                    glVertex3f(0,0,0.0f);
+                    glVertex3f((bar<1?bar:1),0,0.0f);
+                    glVertex3f((bar<1?bar:1),1,0.0f);
+                    glVertex3f(0,1,0.0f);
+                    glEnd();
+                    glColor4f(0.0,0.0,0.0,0.7);
+                    glLineWidth(2.0);
+                    glBegin(GL_LINE_STRIP);
+                    glVertex3f(0,0,0.0f);
+                    glVertex3f(1,0,0.0f);
+                    glVertex3f(1,1,0.0f);
+                    glVertex3f(0,1,0.0f);
+                    glVertex3f(0,0,0.0f);
+                    glEnd();
+                    
+                    glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+                    glPopMatrix();										// Restore The Old Projection Matrix
+                    glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+                    glPopMatrix();										// Restore The Old Projection Matrix
+                    glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
+                    glEnable(GL_CULL_FACE);
+                    glDisable(GL_BLEND);
+                    glDepthMask(1);
+                    glEnable(GL_TEXTURE_2D);
+                    
+                    // writing the numbers : 
+                    sprintf (string, "Damages : %d/%d (%d)",(int)(player[0].damage),(int)(player[0].damagetolerance),(int)(player[0].bloodloss));
+                    glColor4f(0,0,0,1);
+                    text.glPrintOutline(1024/40-4,768/16-4+768*14/16-40,string,1,1.5*1.25,1024,768);
+                    glColor4f(1,0,0,1);
+                    text.glPrint(1024/40,768/16+768*14/16-40,string,1,1.5,1024,768);
+                }
+            }
 
-				glColor4f(.5,.5,.5,1);
-
-
-				if((texttoggle||editorenabled)&&debugmode&&!mainmenu){
-					sprintf (string, "The framespersecond is %d.",(int)(fps));
-					text.glPrint(10,30,string,0,.8,1024,768);
-
-					sprintf (string, "Name: %s", registrationname);
-					text.glPrint(10,260,string,0,.8,1024,768);
+            glColor4f(.5,.5,.5,1);
 
 
-					if(editorenabled)
-						sprintf (string, "Map editor enabled.");
-					else
-						sprintf (string, "Map editor disabled.");
-					text.glPrint(10,60,string,0,.8,1024,768);
-					if(editorenabled){
-						sprintf (string, "Object size: %f",editorsize);
-						text.glPrint(10,75,string,0,.8,1024,768);
-						if(editorrotation>=0)sprintf (string, "Object rotation: %f",editorrotation);
-						else sprintf (string, "Object rotation: Random");
-						text.glPrint(10,90,string,0,.8,1024,768);
-						if(editorrotation2>=0)sprintf (string, "Object rotation2: %f",editorrotation2);
-						else sprintf (string, "Object rotation2: Random");
-						text.glPrint(10,105,string,0,.8,1024,768);
-						sprintf (string, "Object type: %d",editortype);
-						text.glPrint(10,120,string,0,.8,1024,768);
-						switch(editortype) {
-							case boxtype: 
-								sprintf (string, "(box)");
-								break;
-							case treetrunktype: 
-								sprintf (string, "(tree)");
-								break;
-							case walltype: 
-								sprintf (string, "(wall)");
-								break;
-							case weirdtype: 
-								sprintf (string, "(weird)");
-								break;
-							case spiketype: 
-								sprintf (string, "(spike)");
-								break;
-							case rocktype: 
-								sprintf (string, "(rock)");
-								break;
-							case bushtype: 
-								sprintf (string, "(bush)");
-								break;
-							case tunneltype: 
-								sprintf (string, "(tunnel)");
-								break;
-							case chimneytype: 
-								sprintf (string, "(chimney)");
-								break;
-							case platformtype: 
-								sprintf (string, "(platform)");
-								break;
-							case cooltype: 
-								sprintf (string, "(cool)");
-								break;
-							case firetype: 
-								sprintf (string, "(fire)");
-								break;
-						}
-						text.glPrint(130,120,string,0,.8,1024,768);
+            if((texttoggle||editorenabled)&&debugmode&&!mainmenu){
+                sprintf (string, "The framespersecond is %d.",(int)(fps));
+                text.glPrint(10,30,string,0,.8,1024,768);
 
-						sprintf (string, "Numplayers: %d",numplayers);
-						text.glPrint(10,155,string,0,.8,1024,768);
-						sprintf (string, "Player %d: numwaypoints: %d",numplayers,player[numplayers-1].numwaypoints);
-						text.glPrint(10,140,string,0,.8,1024,768);
-					}
-					sprintf (string, "Difficulty: %d",difficulty);
-					text.glPrint(10,240,string,0,.8,1024,768);
+                sprintf (string, "Name: %s", registrationname);
+                text.glPrint(10,260,string,0,.8,1024,768);
 
-				}
+
+                if(editorenabled)
+                    sprintf (string, "Map editor enabled.");
+                else
+                    sprintf (string, "Map editor disabled.");
+                text.glPrint(10,60,string,0,.8,1024,768);
+                if(editorenabled){
+                    sprintf (string, "Object size: %f",editorsize);
+                    text.glPrint(10,75,string,0,.8,1024,768);
+                    if(editorrotation>=0)sprintf (string, "Object rotation: %f",editorrotation);
+                    else sprintf (string, "Object rotation: Random");
+                    text.glPrint(10,90,string,0,.8,1024,768);
+                    if(editorrotation2>=0)sprintf (string, "Object rotation2: %f",editorrotation2);
+                    else sprintf (string, "Object rotation2: Random");
+                    text.glPrint(10,105,string,0,.8,1024,768);
+                    sprintf (string, "Object type: %d",editortype);
+                    text.glPrint(10,120,string,0,.8,1024,768);
+                    switch(editortype) {
+                        case boxtype: 
+                            sprintf (string, "(box)");
+                            break;
+                        case treetrunktype: 
+                            sprintf (string, "(tree)");
+                            break;
+                        case walltype: 
+                            sprintf (string, "(wall)");
+                            break;
+                        case weirdtype: 
+                            sprintf (string, "(weird)");
+                            break;
+                        case spiketype: 
+                            sprintf (string, "(spike)");
+                            break;
+                        case rocktype: 
+                            sprintf (string, "(rock)");
+                            break;
+                        case bushtype: 
+                            sprintf (string, "(bush)");
+                            break;
+                        case tunneltype: 
+                            sprintf (string, "(tunnel)");
+                            break;
+                        case chimneytype: 
+                            sprintf (string, "(chimney)");
+                            break;
+                        case platformtype: 
+                            sprintf (string, "(platform)");
+                            break;
+                        case cooltype: 
+                            sprintf (string, "(cool)");
+                            break;
+                        case firetype: 
+                            sprintf (string, "(fire)");
+                            break;
+                    }
+                    text.glPrint(130,120,string,0,.8,1024,768);
+
+                    sprintf (string, "Numplayers: %d",numplayers);
+                    text.glPrint(10,155,string,0,.8,1024,768);
+                    sprintf (string, "Player %d: numwaypoints: %d",numplayers,player[numplayers-1].numwaypoints);
+                    text.glPrint(10,140,string,0,.8,1024,768);
+                }
+                sprintf (string, "Difficulty: %d",difficulty);
+                text.glPrint(10,240,string,0,.8,1024,768);
+
+            }
 		}
 
 		if(drawmode==glowmode){
@@ -1369,7 +1403,7 @@ int Game::DrawGLScene(StereoSide side)
 					text.glPrint(30+(float)(displayselected)*10,30+(screenheight-330),string,0,1,screenwidth,screenheight);
 				}
 			}
-			for(i=0;i<15;i++) {
+			for(i=0;i<15;i++)
 				if((i!=0||chatting)&&displaytime[i]<4)
 					for(j=0;j<displaychars[i];j++) {
 						glColor4f(1,1,1,4-displaytime[i]);
@@ -1378,7 +1412,6 @@ int Game::DrawGLScene(StereoSide side)
 							text.glPrint(30+j*10,30+i*20+(screenheight-330),string,0,1,screenwidth,screenheight);
 						}
 					}
-			}
 		}
 
 		if(minimap&&indialogue==-1){
@@ -1949,7 +1982,7 @@ int Game::DrawGLScene(StereoSide side)
 				sprintf (string, "_");
 				text.glPrint(30+(float)(consoleselected)*10-offset*10,30,string,0,1,1024,768);
 			}
-			for(i=0;i<15;i++){
+			for(i=0;i<15;i++)
 				for(j=0;j<consolechars[i];j++){
 					glColor4f(1,1,1,1-(float)(i)/16);
 					if(j<consolechars[i]){
@@ -1957,7 +1990,6 @@ int Game::DrawGLScene(StereoSide side)
 						text.glPrint(30+j*10-offset*10,30+i*20,string,0,1,1024,768);
 					}
 				}
-			}
 		}
 	}
 
@@ -2044,6 +2076,7 @@ void Game::LoadCampaign() {
 		accountactive->setCampaignScore(0);
 		accountactive->resetFasttime();
 	}
+    oldmainmenu=0; //reload menu
 }
 
 void Game::DrawMenu() {
@@ -2061,8 +2094,7 @@ void Game::DrawMenu() {
 		}
 	}
 
-	oldmainmenu=mainmenu;
-
+    //draw menu background
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.001f);
@@ -2087,444 +2119,284 @@ void Game::DrawMenu() {
 				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
 				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
 				glDisable(GL_TEXTURE_2D);
-				glPushMatrix();
-					//glScalef(.25,.25,.25);
 					glBegin(GL_QUADS);
-					glTexCoord2f(0,0);
-					glVertex3f(-1,		-1, 	 0.0f);
-					glTexCoord2f(1,0);
-					glVertex3f(1,	-1, 	 0.0f);
-					glTexCoord2f(1,1);
-					glVertex3f(1,	1, 0.0f);
-					glTexCoord2f(0,1);
-					glVertex3f(-1, 	1, 0.0f);
+					glVertex3f(-1,-1,0);
+					glVertex3f(+1,-1,0);
+					glVertex3f(+1,+1,0);
+					glVertex3f(-1,+1,0);
 					glEnd();
-				glPopMatrix();
 				glEnable(GL_BLEND);
 				glColor4f(0.4,0.4,0.4,1.0);
 				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
 				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
 				glEnable(GL_TEXTURE_2D);
 				glBindTexture( GL_TEXTURE_2D, Mainmenuitems[4]);
-				glPushMatrix();
-					//glScalef(.25,.25,.25);
 					glBegin(GL_QUADS);
 					glTexCoord2f(0,0);
-					glVertex3f(-1,		-1, 	 0.0f);
+					glVertex3f(-1,-1,0);
 					glTexCoord2f(1,0);
-					glVertex3f(1,	-1, 	 0.0f);
+					glVertex3f(+1,-1,0);
 					glTexCoord2f(1,1);
-					glVertex3f(1,	1, 0.0f);
+					glVertex3f(+1,+1,0);
 					glTexCoord2f(0,1);
-					glVertex3f(-1, 	1, 0.0f);
+					glVertex3f(-1,+1,0);
 					glEnd();
-				glPopMatrix();
 			glPopMatrix();
 		glPopMatrix();
 		glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 
-	switch(mainmenu) {
+    /*
+    Values of mainmenu :
+    1 Main menu
+    2 Menu pause (resume/end game)
+    3 Option menu
+    4 Controls configuration menu
+    5 Main game menu (choose level or challenge)
+    6 Deleting user menu
+    7 User managment menu (select/add)
+    8 Choose difficulty menu
+    9 Challenge level selection menu
+    10 End of the campaign congratulation (is that really a menu?)
+    11 Same that 9 ??? => unused
+    18 stereo configuration
+    */
+
+    if(oldmainmenu!=mainmenu)
+        Menu::clearMenu();
+
+    switch(mainmenu) {
 		case 1:
 		case 2:{
-			nummenuitems=4;
-			startx[0]=150;
-			starty[0]=480-128;
-			endx[0]=150+256;
-			endy[0]=480;
-
-			startx[1]=18;
-			starty[1]=480-152-32;
-			endx[1]=18+128;
-			endy[1]=480-152;
-
-			startx[2]=18;
-			starty[2]=480-228-32;
-			endx[2]=2+128;
-			endy[2]=480-228;
-
-			if(mainmenu==1){
-				startx[3]=18;
-				starty[3]=480-306-32;
-				endx[3]=22+64;
-				endy[3]=480-306;
-			}
-
-			if(mainmenu==2){
-				startx[3]=18;
-				starty[3]=480-306-32;
-				endx[3]=22+128;
-				endy[3]=480-306;
-			}
-
+            if(oldmainmenu!=mainmenu){
+                Menu::addImage(0,Mainmenuitems[0],150,480-128,256,128);
+                Menu::addImageButton(1,Mainmenuitems[mainmenu==1?1:5],NULL,18,480-152-32,128,32);
+                Menu::addImageButton(2,Mainmenuitems[2],NULL,18,480-228-32,112,32);
+                Menu::addImageButton(3,Mainmenuitems[mainmenu==1?3:6],NULL,18,480-306-32,mainmenu==1?68:132,32);
+            }
 		}
 		break;
 		case 3: {
-			nummenuitems=14;
-			if((float)newscreenwidth>(float)newscreenheight*1.61||(float)newscreenwidth<(float)newscreenheight*1.59)sprintf (menustring[0], "Resolution: %d*%d",(int)newscreenwidth,(int)newscreenheight);
-			else sprintf (menustring[0], "Resolution: %d*%d (widescreen)",(int)newscreenwidth,(int)newscreenheight);
-			startx[0]=10+20;
-			starty[0]=440;
+            if(oldmainmenu!=mainmenu){
+                Menu::addButton( 0,"",NULL,10+20,440,-1,-1);
+                Menu::addButton( 1,"",NULL,10+60,405,-1,-1);
+                Menu::addButton( 2,"",NULL,10+70,370,-1,-1);
+                Menu::addButton( 3,"",NULL,10+20-1000,335-1000,-1,-1);
+                Menu::addButton( 4,"",NULL,10   ,335,-1,-1);
+                Menu::addButton( 5,"",NULL,10+60,300,-1,-1);
+                Menu::addButton( 6,"",NULL,10+70,265,-1,-1);
+                Menu::addButton( 9,"",NULL,10   ,230,-1,-1);
+                Menu::addButton(10,"",NULL,20   ,195,-1,-1);
+                Menu::addButton(11,"",NULL,10+60,160,-1,-1);
+                Menu::addButton(13,"",NULL,30   ,125,-1,-1);
+                Menu::addButton( 7,"",NULL,10+15, 90,-1,-1);
+                Menu::addButton(12,"",NULL,10+15, 55,-1,-1);
+                Menu::addButton(8,"Back",NULL,10,10,-1,-1);
+            }
+			if((float)newscreenwidth>(float)newscreenheight*1.61||(float)newscreenwidth<(float)newscreenheight*1.59)
+                sprintf (menustring[0], "Resolution: %d*%d",(int)newscreenwidth,(int)newscreenheight);
+			else
+                sprintf (menustring[0], "Resolution: %d*%d (widescreen)",(int)newscreenwidth,(int)newscreenheight);
 
 			if(newdetail==2)		sprintf (menustring[1], "Detail: High");
 			else if(newdetail==1)	sprintf (menustring[1], "Detail: Medium");
 			else 					sprintf (menustring[1], "Detail: Low");
-			startx[1]=10+60;
-			starty[1]=405;
 
 			if(bloodtoggle==2) sprintf (menustring[2], "Blood: On, high detail (slower)");
 			if(bloodtoggle==1) sprintf (menustring[2], "Blood: On, low detail");
 			if(bloodtoggle==0) sprintf (menustring[2], "Blood: Off");
-			startx[2]=10+70;
-			starty[2]=370;
 
 			if(difficulty==2) sprintf (menustring[3], "Difficulty: Insane");
 			if(difficulty==1) sprintf (menustring[3], "Difficulty: Difficult");
 			if(difficulty==0) sprintf (menustring[3], "Difficulty: Easier");
-			startx[3]=10+20-1000;
-			starty[3]=335-1000;
 
 			if(ismotionblur==1) sprintf (menustring[4], "Blur Effects: Enabled (less compatible)");
 			if(ismotionblur==0) sprintf (menustring[4], "Blur Effects: Disabled (more compatible)");
-			startx[4]=10;
-			starty[4]=335;
 
 			if(decals==1) sprintf (menustring[5], "Decals: Enabled (slower)");
 			if(decals==0) sprintf (menustring[5], "Decals: Disabled");
-			startx[5]=10+60;
-			starty[5]=300;
 
 			if(musictoggle==1) sprintf (menustring[6], "Music: Enabled");
 			if(musictoggle==0) sprintf (menustring[6], "Music: Disabled");
-			startx[6]=10+70;
-			starty[6]=265;
 
 			if(invertmouse==1) sprintf (menustring[9], "Invert mouse: Yes");
 			if(invertmouse==0) sprintf (menustring[9], "Invert mouse: No");
-			startx[9]=10;
-			starty[9]=230;
 
 			sprintf (menustring[10], "Mouse Speed: %d", (int)(usermousesensitivity*5));
-			startx[10]=20;
-			starty[10]=195;
 			
 			sprintf (menustring[11], "Volume: %d%%", (int)(volume*100));
-			startx[11]=10+60;
-			starty[11]=160;
 			
 			sprintf (menustring[13], "Damage Bar: %s",(showdamagebar?"on":"off"));
-			startx[13]=30;
-			starty[13]=125;
 			
 			sprintf (menustring[7], "-Configure Controls-");
-			startx[7]=10+15;
-			starty[7]=90;
 
 			sprintf (menustring[12], "-Configure Stereo -");
-			startx[12]=10+15;
-			starty[12]=55;
 			
 			if(newdetail==detail&&newscreenheight==(int)screenheight&&newscreenwidth==(int)screenwidth)sprintf (menustring[8], "Back");
 			else sprintf (menustring[8], "Back (some changes take effect next time Lugaru is opened)");
-			startx[8]=10;
-			starty[8]=10;
+
+            for(int i=0;i<=13;i++)
+                Menu::setButtonText(i,menustring[i]);
 		}
 		break;
-		case 4: {			
-			nummenuitems=10;
-			if(keyselect!=0)sprintf (menustring[0], "Forwards: %s",Input::keyToChar(forwardkey));
-			else sprintf (menustring[0], "Forwards: _");
-			startx[0]=10;
-			starty[0]=400;
-
-			if(keyselect!=1)sprintf (menustring[1], "Back: %s",Input::keyToChar(backkey));
-			else sprintf (menustring[1], "Back: _");
-			startx[1]=10+40;
-			starty[1]=360;
-
-			if(keyselect!=2)sprintf (menustring[2], "Left: %s",Input::keyToChar(leftkey));
-			else sprintf (menustring[2], "Left: _");
-			startx[2]=10+40;
-			starty[2]=320;
-
-			if(keyselect!=3)sprintf (menustring[3], "Right: %s",Input::keyToChar(rightkey));
-			else sprintf (menustring[3], "Right: _");
-			startx[3]=10+30;
-			starty[3]=280;
-
-			if(keyselect!=4)sprintf (menustring[4], "Crouch: %s",Input::keyToChar(crouchkey));
-			else sprintf (menustring[4], "Crouch: _");
-			startx[4]=10+20;
-			starty[4]=240;
-
-			if(keyselect!=5)sprintf (menustring[5], "Jump: %s",Input::keyToChar(jumpkey));
-			else sprintf (menustring[5], "Jump: _");
-			startx[5]=10+40;
-			starty[5]=200;
-
-			if(keyselect!=6)sprintf (menustring[6], "Draw: %s",Input::keyToChar(drawkey));
-			else sprintf (menustring[6], "Draw: _");
-			startx[6]=10+40;
-			starty[6]=160;
-
-			if(keyselect!=7)sprintf (menustring[7], "Throw: %s",Input::keyToChar(throwkey));
-			else sprintf (menustring[7], "Throw: _");
-			startx[7]=10+30;
-			starty[7]=120;
-
-			if(keyselect!=8)sprintf (menustring[8], "Attack: %s",Input::keyToChar(attackkey));
-			else sprintf (menustring[8], "Attack: _");
-			startx[8]=10+20;
-			starty[8]=80;
-			
-			if(debugmode) {
-				if(keyselect!=9)sprintf (menustring[9], "Console: %s",Input::keyToChar(consolekey));
-				else sprintf (menustring[9], "Console: _");
-				startx[9]=10+10;
-				starty[9]=40;
-				nummenuitems++;
-			}
-			
-			sprintf (menustring[nummenuitems-1], "Back");
-			startx[nummenuitems-1]=10;
-			starty[nummenuitems-1]=10;
+		case 4: {
+            if(oldmainmenu!=mainmenu){
+                Menu::addButton(0,"",NULL,10   ,400,-1,-1);
+                Menu::addButton(1,"",NULL,10+40,360,-1,-1);
+                Menu::addButton(2,"",NULL,10+40,320,-1,-1);
+                Menu::addButton(3,"",NULL,10+30,280,-1,-1);
+                Menu::addButton(4,"",NULL,10+20,240,-1,-1);
+                Menu::addButton(5,"",NULL,10+40,200,-1,-1);
+                Menu::addButton(6,"",NULL,10+40,160,-1,-1);
+                Menu::addButton(7,"",NULL,10+30,120,-1,-1);
+                Menu::addButton(8,"",NULL,10+20,80,-1,-1);
+                if(debugmode)
+                    Menu::addButton(9,"",NULL,10+10,40,-1,-1);
+                Menu::addButton(debugmode?10:9,"Back",NULL,10,10,-1,-1);
+            }
+            Menu::setButtonText(0,(string)"Forwards: "+(keyselect==0?"_":Input::keyToChar(forwardkey)));
+            Menu::setButtonText(1,(string)"Back: "    +(keyselect==1?"_":Input::keyToChar(backkey)));
+            Menu::setButtonText(2,(string)"Left: "    +(keyselect==2?"_":Input::keyToChar(leftkey)));
+            Menu::setButtonText(3,(string)"Right: "   +(keyselect==3?"_":Input::keyToChar(rightkey)));
+            Menu::setButtonText(4,(string)"Crouch: "  +(keyselect==4?"_":Input::keyToChar(crouchkey)));
+            Menu::setButtonText(5,(string)"Jump: "    +(keyselect==5?"_":Input::keyToChar(jumpkey)));
+            Menu::setButtonText(6,(string)"Draw: "    +(keyselect==6?"_":Input::keyToChar(drawkey)));
+            Menu::setButtonText(7,(string)"Throw: "   +(keyselect==7?"_":Input::keyToChar(throwkey)));
+            Menu::setButtonText(8,(string)"Attack: "  +(keyselect==8?"_":Input::keyToChar(attackkey)));
+            if(debugmode)
+                Menu::setButtonText(9,(string)"Console: "+(keyselect==9?"_":Input::keyToChar(consolekey)));
 		}
 		break;
 		case 5: {			
-			nummenuitems=NB_CAMPAIGN_MENU_ITEM;
+            if(oldmainmenu!=mainmenu){
+                Menu::addLabel(-1,accountactive->getName(),5,400);
+                Menu::addButton(1,"Tutorial",NULL,5,300,-1,-1);
+                Menu::addButton(2,"Challenge",NULL,5,240,-1,-1);
+                Menu::addButton(3,"Delete User",NULL,400,10,-1,-1);
+                Menu::addButton(4,"Main Menu",NULL,5,10,-1,-1);
+                Menu::addButton(5,"Change User",NULL,5,180,-1,-1);
+                Menu::addButton(6,"",NULL,200,420,-1,-1);
 
-			sprintf (menustring[0], "%s",accountactive->getName());
-			startx[0]=5;
-			starty[0]=400;
+                //show campaign map
+                //with (2,-5) offset from old code
+                Menu::addImage(-1,Mainmenuitems[7],150+2,60-5,400,400);
+                //show levels
+                int numlevels = accountactive->getCampaignChoicesMade();
+                numlevels += numlevels>0 ? campaignlevels[numlevels-1].nextlevel.size() : 1;
+                for(int i=0;i<numlevels;i++){
+					XYZ midpoint=campaignlevels[i].getCenter();
+                    float itemsize=campaignlevels[i].getWidth();
+                    const bool active=i>=accountactive->getCampaignChoicesMade();
+                    if(!active)
+                        itemsize/=2;
 
-			sprintf (menustring[1], "Tutorial");
-			startx[1]=5;
-			starty[1]=300;
+                    if(i>=1)
+                        Menu::addMapLine(campaignlevels[i-1].getCenter(),midpoint,0.5,active?1:0.5,active?1:0.5,0,0);
+                    Menu::addMapMarker(NB_CAMPAIGN_MENU_ITEM+i, Mapcircletexture, NULL,
+                            midpoint.x-itemsize/2, midpoint.y-itemsize/2, itemsize, itemsize, active?1:0.5, 0, 0);
 
-			sprintf (menustring[2], "Challenge");
-			startx[2]=5;
-			starty[2]=240;
-
-			sprintf (menustring[3], "Delete User");
-			startx[3]=400;
-			starty[3]=10;
-
-			sprintf (menustring[4], "Main Menu");
-			startx[4]=5;
-			starty[4]=10;
-
-			sprintf (menustring[5], "Change User");
-			startx[5]=5;
-			starty[5]=180;
-			
-			sprintf (menustring[6], "Campaign : %s", accountactive->getCurrentCampaign().c_str());
-			startx[6]=200;
-			starty[6]=420;
+                    if(active){
+                        Menu::addLabel(-2,campaignlevels[i].description,
+                                campaignlevels[i].getStartX()+10,
+                                campaignlevels[i].getStartY()-4);
+                        Menu::setMapItem(-2);
+                    }
+                }
+            }
+            Menu::setButtonText(6,"Campaign : "+accountactive->getCurrentCampaign());
 		}
 		break;
 		case 6: {			
-			nummenuitems=3;
-
-			sprintf (menustring[0], "Are you sure you want to delete this user?");
-			startx[0]=10;
-			starty[0]=400;
-
-			sprintf (menustring[1], "Yes");
-			startx[1]=10;
-			starty[1]=360;
-
-			sprintf (menustring[2], "No");
-			startx[2]=10;
-			starty[2]=320;
+            if(oldmainmenu!=mainmenu){
+                Menu::addLabel(-1,"Are you sure you want to delete this user?",10,400);
+                Menu::addButton(1,"Yes",NULL,10,360,-1,-1);
+                Menu::addButton(2,"No",NULL,10,320,-1,-1);
+            }
 		}
 		break;
 		case 7: {	
-			nummenuitems=Account::getNbAccounts()+2;
-
-			int num;
-
-			if(Account::getNbAccounts()<8)
-				sprintf (menustring[0], "New User");
-			else
-				sprintf (menustring[0], "No More Users");
-			startx[0]=10;
-			starty[0]=400;
-
-			if(entername)
-				startx[0]+=10;
-
-			num=1;
-			for(int i=0;i<Account::getNbAccounts();i++){
-				sprintf (menustring[num], "%s",Account::get(i)->getName());
-				startx[num]=10;
-				starty[num]=360-20-20*num;
-
-				num++;
-			}
-
-			sprintf (menustring[num], "Back");
-			startx[num]=10;
-			starty[num]=10;
+            if(oldmainmenu!=mainmenu){
+                Menu::addButton(0,Account::getNbAccounts()<8?"New User":"No More Users",NULL,10,400,-1,-1);
+                Menu::addLabel(-2,"",20,400);
+                Menu::addButton(Account::getNbAccounts()+1,"Back",NULL,10,10,-1,-1);
+                for(int i=0;i<Account::getNbAccounts();i++)
+                    Menu::addButton(i+1,Account::get(i)->getName(),NULL,10,340-20*(i+1),-1,-1);
+            }
+            if(entername){
+                Menu::setButtonText(0,displaytext[0],20,400,-1,-1);
+                Menu::setButtonText(-2,displayblink?"_":"",20+displayselected*10,400,-1,-1);
+            }
 		}
 		break;
 		case 8: {			
-			nummenuitems=3;
-
-			sprintf (menustring[0], "Easier");
-			startx[0]=10;
-			starty[0]=400;
-
-			sprintf (menustring[1], "Difficult");
-			startx[1]=10;
-			starty[1]=360;
-
-			sprintf (menustring[2], "Insane");
-			startx[2]=10;
-			starty[2]=320;
+            if(oldmainmenu!=mainmenu){
+                Menu::addButton(0,"Easier",NULL,10,400,-1,-1);
+                Menu::addButton(1,"Difficult",NULL,10,360,-1,-1);
+                Menu::addButton(2,"Insane",NULL,10,320,-1,-1);
+            }
 		}
 		break;
 		case 9: {			
-			nummenuitems=2+numchallengelevels;
-			char temp[255];
+            if(oldmainmenu!=mainmenu){
+                for(int i=0;i<numchallengelevels;i++){
+                    char temp[255];
+                    string name="";
+                    sprintf (temp, "Level %d",i+1);
+                    for(int j=strlen(temp);j<17;j++)
+                            strcat(temp," ");
+                    name+=temp;
+                    sprintf (temp, "%d",(int)accountactive->getHighScore(i));
+                    for(int j=strlen(temp);j<(32-17);j++)
+                            strcat(temp," ");
+                    name+=temp;
+                    sprintf (temp, "%d:",(int)(((int)accountactive->getFastTime(i)-(int)(accountactive->getFastTime(i))%60)/60));
+                    if((int)(accountactive->getFastTime(i))%60<10)strcat(temp,"0");
+                    name+=temp;
+                    sprintf (temp, "%d",(int)(accountactive->getFastTime(i))%60);
+                    name+=temp;
 
-			for(int i=0;i<numchallengelevels;i++){
-                string name="";
-                sprintf (temp, "Level %d",i+1);
-                for(int j=strlen(temp);j<17;j++)
-                        strcat(temp," ");
-                name+=temp;
-                sprintf (temp, "%d",(int)accountactive->getHighScore(i));
-                for(int j=strlen(temp);j<(32-17);j++)
-                        strcat(temp," ");
-                name+=temp;
-                sprintf (temp, "%d:",(int)(((int)accountactive->getFastTime(i)-(int)(accountactive->getFastTime(i))%60)/60));
-                if((int)(accountactive->getFastTime(i))%60<10)strcat(temp,"0");
-                name+=temp;
-                sprintf (temp, "%d",(int)(accountactive->getFastTime(i))%60);
-                name+=temp;
+                    Menu::addButton(i,name,NULL,10,400-i*25,-1,-1,i>accountactive->getProgress()?0.5:1,0,0);
+                }
 
-				sprintf(menustring[i],"%s",name.c_str());
-
-				startx[i]=10;
-				starty[i]=400-i*25;
-			}
-
-			sprintf (menustring[numchallengelevels], "Back");
-			startx[numchallengelevels]=10;
-			starty[numchallengelevels]=10;
-
-			sprintf (menustring[numchallengelevels+1], "             High Score      Best Time");
-			startx[numchallengelevels+1]=10;
-			starty[numchallengelevels+1]=440;
-
-			//numchallengelevels=tempncl;
-
+                Menu::addButton(-1,"             High Score      Best Time",NULL,10,440,-1,-1);
+                Menu::addButton(numchallengelevels,"Back",NULL,10,10,-1,-1);
+            }
 		}
 		break;
 		case 10: {			
-			nummenuitems=6;
-			char temp[255];
-
-			sprintf (menustring[0], "Congratulations!");
-			startx[0]=220;
-			starty[0]=330;
-
-			sprintf (menustring[1], "You have avenged your family and");
-			startx[1]=140;
-			starty[1]=300;
-
-			sprintf (menustring[2], "restored peace to the island of Lugaru.");
-			startx[2]=110;
-			starty[2]=270;
-
-			sprintf (menustring[3], "Back");
-			startx[3]=10;
-			starty[3]=10;
-
-			for(int i=0;i<255;i++)
-				menustring[4][i]='\0';
-			sprintf (temp, "Your score:");
-			strcpy(menustring[4],temp);
-			for(int i=0;i<20;i++)
-				if(menustring[4][i]=='\0')
-					menustring[4][i]=' ';
-			menustring[4][20]='\0';
-			sprintf (temp, "%d",(int)accountactive->getCampaignScore());
-			strcat(menustring[4],temp);
-			startx[4]=190;
-			starty[4]=200;
-			for(int i=0;i<255;i++)
-				menustring[5][i]='\0';
-			sprintf (temp, "Highest score:");
-			strcpy(menustring[5],temp);
-			for(int i=0;i<20;i++)
-				if(menustring[5][i]=='\0')menustring[5][i]=' ';
-			menustring[5][20]='\0';
-			sprintf (temp, "%d",(int)accountactive->getCampaignHighScore());
-			strcat(menustring[5],temp);
-			startx[5]=190;
-			starty[5]=180;
+            if(oldmainmenu!=mainmenu){
+                Menu::addLabel(0,"Congratulations!",220,330);
+                Menu::addLabel(1,"You have avenged your family and",140,300);
+                Menu::addLabel(2,"restored peace to the island of Lugaru.",110,270);
+                Menu::addButton(3,"Back",NULL,10,10,-1,-1);
+                sprintf(menustring[4],"Your score:         %d",(int)accountactive->getCampaignScore());
+                sprintf(menustring[5],"Highest score:      %d",(int)accountactive->getCampaignHighScore());
+                Menu::addLabel(4,menustring[4],190,200);
+                Menu::addLabel(5,menustring[5],190,180);
+            }
 		}
 		break;
 		case 18: {
-			nummenuitems=4;
-			sprintf (menustring[0], "Stereo mode: %s", StereoModeName(newstereomode));
-			startx[0]=70;
-			starty[0]=400;
-			
-			sprintf (menustring[1], "Stereo separation: %.3f", stereoseparation);
-			startx[1]=10;
-			starty[1]=360;
-
-			sprintf (menustring[2], "Reverse stereo: %s", stereoreverse ? "Yes" : "No");
-			startx[2]=40;
-			starty[2]=320;
-			
-			sprintf (menustring[3], "Back");
-			startx[3]=10;
-			starty[3]=10;
-		}
-	}
-	if(mainmenu!=1 && mainmenu!=2) {
-		for(int i=0;i<nummenuitems;++i) {
-			endx[i]=startx[i]+strlen(menustring[i])*10;
-			endy[i]=starty[i]+20;
+            if(oldmainmenu!=mainmenu){
+                Menu::addButton(0,"",NULL,70,400,-1,-1);
+                Menu::addButton(1,"",NULL,10,360,-1,-1);
+                Menu::addButton(2,"",NULL,40,320,-1,-1);
+                Menu::addButton(3,"Back",NULL,10,10,-1,-1);
+            }
+			sprintf(menustring[0], "Stereo mode: %s", StereoModeName(newstereomode));
+			sprintf(menustring[1], "Stereo separation: %.3f", stereoseparation);
+			sprintf(menustring[2], "Reverse stereo: %s", stereoreverse ? "Yes" : "No");
+            Menu::setButtonText(0,menustring[0]);
+            Menu::setButtonText(1,menustring[1]);
+            Menu::setButtonText(2,menustring[2]);
 		}
 	}
 
-	selected=-1;
+	oldmainmenu=mainmenu;
 
-	for(int i=0;i<nummenuitems;i++) {
-		if((mousecoordh/screenwidth*640)>startx[i]&&(mousecoordh/screenwidth*640)<endx[i]&&480-(mousecoordv/screenheight*480)>starty[i]&&480-(mousecoordv/screenheight*480)<endy[i]) {
-			if((mainmenu!=5) && (mainmenu!=1) && (mainmenu!=2)) selected=i; // username in menu 5 and game title in menu 1&2 can't be selected
-			else if (i>0) selected=i;
-		}
-	}
-	int numlevelsonmap;
-	if(mainmenu == 5) {
-		numlevelsonmap = accountactive->getCampaignChoicesMade()+(accountactive->getCampaignChoicesMade()>0?campaignlevels[accountactive->getCampaignChoicesMade()-1].nextlevel.size():1);
-		for (int i=0;i<numlevelsonmap;i++) {
-			if ((mousecoordh/screenwidth*640)>campaignlevels[i].getStartX()&&
-				(mousecoordh/screenwidth*640)<campaignlevels[i].getEndX()&&
-				480-(mousecoordv/screenheight*480)>campaignlevels[i].getStartY()&&
-				480-(mousecoordv/screenheight*480)<campaignlevels[i].getEndY()) {
-				selected=nummenuitems+i;
-			}
-		}
-	} else {
-		numlevelsonmap=0;
-	}
-
-	for(int i=0;i<nummenuitems+numlevelsonmap;i++) {
-		if(selected==i) {
-			selectedlong[i]+=multiplier*5;
-			if(selectedlong[i]>1) selectedlong[i]=1;
-		} else {
-			selectedlong[i]-=multiplier*5;
-			if(selectedlong[i]<0) selectedlong[i]=0;	
-		}
-	}
+    selected=Menu::getSelected(mousecoordh*640/screenwidth,480-mousecoordv*480/screenheight);
+    Menu::GUITick(this);
 
 	glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
 	glPushMatrix();										// Store The Projection Matrix
@@ -2534,291 +2406,10 @@ void Game::DrawMenu() {
 	glPushMatrix();										// Store The Modelview Matrix
 	glLoadIdentity();								// Reset The Modelview Matrix
 	glEnable(GL_TEXTURE_2D);
-	for(int j=0;j<nummenuitems;j++)
-	{
-		//glDisable(GL_BLEND);
-		glEnable(GL_ALPHA_TEST);
-		glEnable(GL_BLEND);
-		//glDisable(GL_ALPHA_TEST);
-		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-		if(mainmenu==1||mainmenu==2)
-		{
-			glColor4f(1,1,1,1);
-			glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-			if(mainmenu==2 && (j==1 || j == 3)) {
-				glBindTexture( GL_TEXTURE_2D, Mainmenuitems[(j==1?5:6)]);
-			} else {
-				glBindTexture( GL_TEXTURE_2D, Mainmenuitems[j]);
-			}
-			glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-			glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-			glPushMatrix();
-				glBegin(GL_QUADS);
-				glTexCoord2f(0,0);
-				glVertex3f(startx[j],	starty[j], 	 0.0f);
-				glTexCoord2f(1,0);
-				glVertex3f(endx[j],		starty[j], 	 0.0f);
-				glTexCoord2f(1,1);
-				glVertex3f(endx[j],		endy[j], 0.0f);
-				glTexCoord2f(0,1);
-				glVertex3f(startx[j], 	endy[j], 0.0f);
-				glEnd();
-			glPopMatrix();
-			glEnable(GL_BLEND);
-			//glDisable(GL_ALPHA_TEST);
-			glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-			for(int i=0;i<10;i++)
-			{
-				if(1-((float)i)/10-(1-selectedlong[j])>0)
-				{
-					glColor4f(1,1,1,(1-((float)i)/10-(1-selectedlong[j]))*.25);
-					glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-					glPushMatrix();
-						glBegin(GL_QUADS);
-						glTexCoord2f(0,0);
-						glVertex3f(startx[j]-((float)i)*1/2, starty[j]-((float)i)*1/2, 0.0f);
-						glTexCoord2f(1,0);
-						glVertex3f(endx[j]+((float)i)*1/2, starty[j]-((float)i)*1/2, 0.0f);
-						glTexCoord2f(1,1);
-						glVertex3f(endx[j]+((float)i)*1/2, endy[j]+((float)i)*1/2, 0.0f);
-						glTexCoord2f(0,1);
-						glVertex3f(startx[j]-((float)i)*1/2, endy[j]+((float)i)*1/2, 0.0f);
-						glEnd();
-					glPopMatrix();
-				}
-			}
-		}
-		if(mainmenu==3||mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==8||mainmenu==9||mainmenu==10||mainmenu==18)
-		{
-			glColor4f(1,0,0,1);
-			if( (mainmenu==9) && j>accountactive->getProgress() && (j<numchallengelevels) )
-				glColor4f(0.5,0,0,1);
-			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-			glPushMatrix();
-				if(mainmenu!=7||j!=0||!entername)
-					text.glPrint(startx[j],starty[j],menustring[j],0,1,640,480);
-				else
-				{
-					char string[2]="_";
-					if(displayblink) {
-						text.glPrint(startx[j]+(float)(displayselected)*10,starty[j],string,0,1,640,480);
-					}
-					for(int l=0;l<displaychars[0];l++) {
-						sprintf (string, "%c",displaytext[0][l]);
-						text.glPrint(startx[j]+l*10,starty[j],string,0,1,640,480);
-					}
-				}
-			glPopMatrix();
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-			for(int i=0;i<15;i++)
-			{
-				if(1-((float)i)/15-(1-selectedlong[j])>0)
-				{
-					glColor4f(1,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
-					if(mainmenu==9&&j>accountactive->getProgress()&&j<numchallengelevels)glColor4f(0.5,0,0,(1-((float)i)/10-(1-selectedlong[j]))*.25);
-					if(mainmenu==3)text.glPrint(startx[j]-((float)i)-((((float)i)/70)*strlen(menustring[j]))*3,starty[j],menustring[j],0,1+((float)i)/70,640,480);
-					if(mainmenu==4)text.glPrint(startx[j]-((float)i),starty[j],menustring[j],0,1+((float)i)/70,640,480);
-					if(mainmenu==5)text.glPrint(startx[j]-((float)i),starty[j],menustring[j],0,1+((float)i)/70,640,480);
-					if(mainmenu==6)text.glPrint(startx[j]-((float)i),starty[j],menustring[j],0,1+((float)i)/70,640,480);
-					if(mainmenu==7&&(j!=0||!entername)) text.glPrint(startx[j]-((float)i),starty[j],menustring[j],0,1+((float)i)/70,640,480);
-					if(mainmenu==8)text.glPrint(startx[j]-((float)i),starty[j],menustring[j],0,1+((float)i)/70,640,480);
-					if(mainmenu==9)text.glPrint(startx[j]-((float)i),starty[j],menustring[j],0,1+((float)i)/70,640,480);
-					if(mainmenu==10)text.glPrint(startx[j]-((float)i),starty[j],menustring[j],0,1+((float)i)/70,640,480);
-					if(mainmenu==18)text.glPrint(startx[j]-((float)i),starty[j],menustring[j],0,1+((float)i)/70,640,480);
-				}
-			}
-		}
-	}
 	
-	if(mainmenu==5) { // show map
-		//glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA); // black background for the map
-		glBlendFunc(GL_SRC_ALPHA,GL_ONE); // no background
-		glClear(GL_DEPTH_BUFFER_BIT);
-		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_GREATER, 0.001f);
-		glEnable(GL_TEXTURE_2D);
-		glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
-		glDisable(GL_CULL_FACE);
-		glDisable(GL_LIGHTING);
-		glColor4f(1,1,1,1);
-		glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-		glPushMatrix();										// Store The Projection Matrix
-			glLoadIdentity();									// Reset The Projection Matrix
-			glOrtho(0,640,0,480,-100,100);						// Set Up An Ortho Screen
-			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-			glPushMatrix();										// Store The Modelview Matrix
-				glLoadIdentity();								// Reset The Modelview Matrix
-				glPushMatrix();
+    Menu::drawItems(this);
 
-					//Draw world, draw map
-					glTranslatef(2,-5,0);
-					glBindTexture( GL_TEXTURE_2D, Mainmenuitems[7]);
-					glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-					glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-					glColor4f(1,1,1,1);
-					XYZ midpoint;
-					float itemsize;
-					
-					itemsize=400/2;
-					midpoint=0;
-					midpoint.x=150+itemsize;
-					midpoint.y=60+itemsize;
-					glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-					glPushMatrix();
-						glBegin(GL_QUADS);
-						glTexCoord2f(0,0);
-						glVertex3f(midpoint.x-itemsize,	midpoint.y-itemsize, 0.0f);
-						glTexCoord2f(1,0);
-						glVertex3f(midpoint.x+itemsize,	midpoint.y-itemsize, 0.0f);
-						glTexCoord2f(1,1);
-						glVertex3f(midpoint.x+itemsize,	midpoint.y+itemsize, 0.0f);
-						glTexCoord2f(0,1);
-						glVertex3f(midpoint.x-itemsize, midpoint.y+itemsize, 0.0f);
-						glEnd();
-					glPopMatrix();
-					glEnable(GL_BLEND);
-				glPopMatrix();
-			glPopMatrix();
-			glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-		glPopMatrix();
-		glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-	}
-	
-	for(int i=0; i<numlevelsonmap;i++) { // show levels on the map
-		glEnable(GL_ALPHA_TEST);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-		glClear(GL_DEPTH_BUFFER_BIT);
-		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_GREATER, 0.001f);
-		glEnable(GL_TEXTURE_2D);
-		glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
-		glDisable(GL_CULL_FACE);
-		glDisable(GL_LIGHTING);
-		glColor4f(1,0,0,1);
-
-		glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-		glPushMatrix();										// Store The Projection Matrix
-			glLoadIdentity();									// Reset The Projection Matrix
-			glOrtho(0,640,0,480,-100,100);						// Set Up An Ortho Screen
-			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-			glPushMatrix();										// Store The Modelview Matrix
-				glLoadIdentity();								// Reset The Modelview Matrix
-				glPushMatrix();
-
-					//Draw world, draw map
-					glTranslatef(2,-5,0);
-
-					if(i<numlevelsonmap-1)
-					{
-						XYZ linestart,lineend,offset;
-						XYZ fac;
-						float startsize;
-						float endsize;
-						linestart=0;
-						lineend=0;
-						offset=0;
-						linestart=campaignlevels[i].getCenter();
-						lineend=campaignlevels[i+1].getCenter();
-						offset=lineend-linestart;
-						fac=offset;
-						Normalise(&fac);
-						offset=DoRotation(offset,0,0,90);
-						Normalise(&offset);
-						glDisable(GL_TEXTURE_2D);							
-
-						if(i+1<accountactive->getCampaignChoicesMade()){
-							glColor4f(0.5,0,0,1);
-							endsize=.5;
-						} else {
-							glColor4f(1,0,0,1);
-							endsize=1;
-						}
-						startsize=.5;
-
-						linestart+=fac*4*startsize;
-						lineend-=fac*4*endsize;
-
-							glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-							glPushMatrix();
-								glBegin(GL_QUADS);
-								glTexCoord2f(0,0);
-								glVertex3f(linestart.x-offset.x*startsize,	linestart.y-offset.y*startsize, 	 0.0f);
-								glTexCoord2f(1,0);
-								glVertex3f(linestart.x+offset.x*startsize,	linestart.y+offset.y*startsize, 	 0.0f);
-								glTexCoord2f(1,1);
-								glVertex3f(lineend.x+offset.x*endsize,		lineend.y+offset.y*endsize, 0.0f);
-								glTexCoord2f(0,1);
-								glVertex3f(lineend.x-offset.x*endsize, 		lineend.y-offset.y*endsize, 0.0f);
-								glEnd();
-							glPopMatrix();
-						glEnable(GL_TEXTURE_2D);
-					}
-
-					glBindTexture( GL_TEXTURE_2D, Mapcircletexture);
-					glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-					glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-					XYZ midpoint;
-					float itemsize;
-					itemsize=campaignlevels[i].getWidth()/2;
-					midpoint=campaignlevels[i].getCenter();
-					if(i < accountactive->getCampaignChoicesMade()) {
-						glColor4f(0.5,0,0,1);
-						itemsize*=.5;
-					} else {
-						glColor4f(1,0,0,1);
-					}
-						glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-						glPushMatrix();
-							glBegin(GL_QUADS);
-							glTexCoord2f(0,0);
-							glVertex3f(midpoint.x-itemsize,	midpoint.y-itemsize, 	 0.0f);
-							glTexCoord2f(1,0);
-							glVertex3f(midpoint.x+itemsize,		midpoint.y-itemsize, 	 0.0f);
-							glTexCoord2f(1,1);
-							glVertex3f(midpoint.x+itemsize,		midpoint.y+itemsize, 0.0f);
-							glTexCoord2f(0,1);
-							glVertex3f(midpoint.x-itemsize, 	midpoint.y+itemsize, 0.0f);
-							glEnd();
-						glPopMatrix();
-						glEnable(GL_BLEND);
-						for(int j=0;j<10;j++)
-						{
-							if(1-((float)j)/10-(1-selectedlong[NB_CAMPAIGN_MENU_ITEM+i])>0)
-							{
-								glColor4f(1,0,0,(1-((float)j)/10-(1-selectedlong[NB_CAMPAIGN_MENU_ITEM+i]))*.25);
-								glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-								glPushMatrix();
-									glBegin(GL_QUADS);
-									glTexCoord2f(0,0);
-									glVertex3f(midpoint.x-itemsize-((float)j)*1/2, midpoint.y-itemsize-((float)j)*1/2, 0.0f);
-									glTexCoord2f(1,0);
-									glVertex3f(midpoint.x+itemsize+((float)j)*1/2, midpoint.y-itemsize-((float)j)*1/2, 0.0f);
-									glTexCoord2f(1,1);
-									glVertex3f(midpoint.x+itemsize+((float)j)*1/2, midpoint.y+itemsize+((float)j)*1/2, 0.0f);
-									glTexCoord2f(0,1);
-									glVertex3f(midpoint.x-itemsize-((float)j)*1/2, midpoint.y+itemsize+((float)j)*1/2, 0.0f);
-									glEnd();
-								glPopMatrix();
-							}
-						}
-				glPopMatrix();
-			glPopMatrix();
-			glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-		glPopMatrix();
-		glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-
-		if(i>=accountactive->getCampaignChoicesMade()){
-			text.glPrintOutlined(0.9,0,0,campaignlevels[i].getStartX()+10,
-										 campaignlevels[i].getStartY()-4,
-										 campaignlevels[i].description.c_str(),0,0.6,640,480);
-			glDisable(GL_DEPTH_TEST);
-		}
-	}
-	
+    //draw mouse cursor
 	glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
@@ -2869,41 +2460,42 @@ void Game::DrawMenu() {
 		glPopMatrix();
 
 
-		if(flashamount>0)
-		{
-			if(flashamount>1)flashamount=1;
-			if(flashdelay<=0)flashamount-=multiplier;
-			flashdelay--;
-			if(flashamount<0)flashamount=0;
-			glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
-			glDisable(GL_CULL_FACE);
-			glDisable(GL_LIGHTING);
-			glDisable(GL_TEXTURE_2D);
-			glDepthMask(0);
-			glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-			glPushMatrix();										// Store The Projection Matrix
-				glLoadIdentity();									// Reset The Projection Matrix
-				glOrtho(0,screenwidth,0,screenheight,-100,100);						// Set Up An Ortho Screen
-				glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-				glPushMatrix();										// Store The Modelview Matrix
-					glLoadIdentity();								// Reset The Modelview Matrix
-					glScalef(screenwidth,screenheight,1);
-					glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-					glEnable(GL_BLEND);
-					glColor4f(flashr,flashg,flashb,flashamount);
-					glBegin(GL_QUADS);
-					glVertex3f(0,		0, 	 0.0f);
-					glVertex3f(256,	0, 	 0.0f);
-					glVertex3f(256,	256, 0.0f);
-					glVertex3f(0, 	256, 0.0f);
-					glEnd();
-					glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-				glPopMatrix();										// Restore The Old Projection Matrix
-			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-			glPopMatrix();										// Restore The Old Projection Matrix
-			glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
-			glEnable(GL_CULL_FACE);
-			glDisable(GL_BLEND);
-			glDepthMask(1);
-		}
+    //draw screen flash
+    if(flashamount>0)
+    {
+        if(flashamount>1)flashamount=1;
+        if(flashdelay<=0)flashamount-=multiplier;
+        flashdelay--;
+        if(flashamount<0)flashamount=0;
+        glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
+        glDisable(GL_CULL_FACE);
+        glDisable(GL_LIGHTING);
+        glDisable(GL_TEXTURE_2D);
+        glDepthMask(0);
+        glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+        glPushMatrix();										// Store The Projection Matrix
+            glLoadIdentity();									// Reset The Projection Matrix
+            glOrtho(0,screenwidth,0,screenheight,-100,100);						// Set Up An Ortho Screen
+            glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+            glPushMatrix();										// Store The Modelview Matrix
+                glLoadIdentity();								// Reset The Modelview Matrix
+                glScalef(screenwidth,screenheight,1);
+                glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+                glEnable(GL_BLEND);
+                glColor4f(flashr,flashg,flashb,flashamount);
+                glBegin(GL_QUADS);
+                glVertex3f(0,		0, 	 0.0f);
+                glVertex3f(256,	0, 	 0.0f);
+                glVertex3f(256,	256, 0.0f);
+                glVertex3f(0, 	256, 0.0f);
+                glEnd();
+                glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+            glPopMatrix();										// Restore The Old Projection Matrix
+        glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+        glPopMatrix();										// Restore The Old Projection Matrix
+        glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
+        glEnable(GL_CULL_FACE);
+        glDisable(GL_BLEND);
+        glDepthMask(1);
+    }
 }

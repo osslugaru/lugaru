@@ -59,6 +59,7 @@ set(LUGARU_SRCS
 	${SRCDIR}/GameTick.cpp
 	${SRCDIR}/Globals.cpp
 	${SRCDIR}/Lights.cpp
+	${SRCDIR}/Menu.cpp
 	${SRCDIR}/Models.cpp
 	${SRCDIR}/Objects.cpp
 	${SRCDIR}/pack.c
@@ -89,6 +90,7 @@ set(LUGARU_H
 	${SRCDIR}/Account.h
 	${SRCDIR}/Game.h
 	${SRCDIR}/Lights.h
+	${SRCDIR}/Menu.h
 	${SRCDIR}/Models.h
 	${SRCDIR}/Objects.h
 	${SRCDIR}/Person.h

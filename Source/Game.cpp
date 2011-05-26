@@ -42,15 +42,6 @@ Game::Game()
 
 	memset(Mainmenuitems, 0, sizeof(Mainmenuitems));
 
-	nummenuitems = 0;
-
-	memset(startx, 0, sizeof(startx));
-	memset(starty, 0, sizeof(starty));
-	memset(endx, 0, sizeof(endx));
-	memset(endy, 0, sizeof(endy));
-
-	memset(selectedlong, 0, sizeof(selectedlong));
-
 	selected = 0;
 	keyselect = 0;
 	indemo = 0;
