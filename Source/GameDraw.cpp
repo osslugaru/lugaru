@@ -2276,7 +2276,7 @@ void Game::DrawMenu() {
                 Menu::addButton(3,"Delete User",NULL,400,10,-1,-1);
                 Menu::addButton(4,"Main Menu",NULL,5,10,-1,-1);
                 Menu::addButton(5,"Change User",NULL,5,180,-1,-1);
-                Menu::addButton(6,"",NULL,200,420,-1,-1);
+                Menu::addButton(6,"Campaign : "+accountactive->getCurrentCampaign(),NULL,200,420,-1,-1);
 
                 //show campaign map
                 //with (2,-5) offset from old code
@@ -2291,8 +2291,10 @@ void Game::DrawMenu() {
                     if(!active)
                         itemsize/=2;
 
-                    if(i>=1)
-                        Menu::addMapLine(campaignlevels[i-1].getCenter(),midpoint,0.5,active?1:0.5,active?1:0.5,0,0);
+                    if(i>=1){
+                        XYZ start=campaignlevels[i-1].getCenter();
+                        Menu::addMapLine(start.x,start.y,midpoint.x-start.x,midpoint.y-start.y,0.5,active?1:0.5,active?1:0.5,0,0);
+                    }
                     Menu::addMapMarker(NB_CAMPAIGN_MENU_ITEM+i, Mapcircletexture, NULL,
                             midpoint.x-itemsize/2, midpoint.y-itemsize/2, itemsize, itemsize, active?1:0.5, 0, 0);
 
@@ -2304,7 +2306,6 @@ void Game::DrawMenu() {
                     }
                 }
             }
-            Menu::setButtonText(6,"Campaign : "+accountactive->getCurrentCampaign());
 		}
 		break;
 		case 6: {			

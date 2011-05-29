@@ -17,15 +17,22 @@ struct MenuItem {
     float r,g,b;
     float effectfade;
 
-    XYZ linestart;
-    XYZ lineend;
     float linestartsize;
     float lineendsize;
 
-    MenuItem(MenuItemType _type, int _id, const string& _label, int _texture, MBCallback _cb,
-            int _x, int _y, int _w, int _h, float _r, float _g, float _b):
-        type(_type),id(_id),label(_label),texture(_texture),cb(_cb),
-        x(_x),y(_y),w(_w),h(_h),r(_r),g(_g),b(_b),effectfade(0) {
+    void init(MenuItemType _type, int _id, const string& _label, int _texture, MBCallback _cb,
+            int _x, int _y, int _w, int _h, float _r, float _g, float _b,
+            float _linestartsize=1, float _lineendsize=1){
+        type=_type;
+        id=_id;
+        label=_label;
+        texture=_texture;
+        cb=_cb;
+        x=_x; y=_y; w=_w; h=_h;
+        r=_r; g=_g; b=_b;
+        effectfade=0;
+        linestartsize=_linestartsize;
+        lineendsize=_lineendsize;
         if(type==MenuItem::BUTTON){
             if(w==-1)
                 w=label.length()*10;
@@ -33,9 +40,6 @@ struct MenuItem {
                 h=20;
         }
     }
-    MenuItem(const XYZ& start, const XYZ& end, float startsize, float endsize, float _r, float _g, float _b):
-        type(MAPLINE),id(-1),label(""),r(_r),g(_g),b(_b),
-        linestart(start),lineend(end),linestartsize(startsize),lineendsize(endsize) { }
 };
 
 vector<MenuItem> items;
@@ -62,28 +66,28 @@ void Menu::clearMenu(){
 }
 
 void Menu::addLabel(int id,const string& label,int x,int y){
-    items.push_back(MenuItem(MenuItem::LABEL,id,label,0,NULL,x,y,-1,-1,1,0,0));
-}
-void Menu::addButton(int id,const string& label,MBCallback cb,int x,int y,int w,int h){
-    items.push_back(MenuItem(MenuItem::BUTTON,id,label,0,cb,x,y,w,h,1,0,0));
+    items.push_back(MenuItem());
+    items.back().init(MenuItem::LABEL,id,label,0,NULL,x,y,-1,-1,1,0,0);
 }
 void Menu::addButton(int id,const string& label,MBCallback cb,int x,int y,int w,int h,float r,float g,float b){
-    items.push_back(MenuItem(MenuItem::BUTTON,id,label,0,cb,x,y,w,h,r,g,b));
+    items.push_back(MenuItem());
+    items.back().init(MenuItem::BUTTON,id,label,0,cb,x,y,w,h,r,g,b);
 }
 void Menu::addImage(int id,int texture,int x,int y,int w,int h){
-    items.push_back(MenuItem(MenuItem::IMAGE,id,"",texture,NULL,x,y,w,h,1,1,1));
-}
-void Menu::addImageButton(int id,int texture,MBCallback cb,int x,int y,int w,int h){
-    items.push_back(MenuItem(MenuItem::IMAGEBUTTON,id,"",texture,cb,x,y,w,h,1,1,1));
+    items.push_back(MenuItem());
+    items.back().init(MenuItem::IMAGE,id,"",texture,NULL,x,y,w,h,1,1,1);
 }
 void Menu::addImageButton(int id,int texture,MBCallback cb,int x,int y,int w,int h,float r,float g,float b){
-    items.push_back(MenuItem(MenuItem::IMAGEBUTTON,id,"",texture,cb,x,y,w,h,r,g,b));
+    items.push_back(MenuItem());
+    items.back().init(MenuItem::IMAGEBUTTON,id,"",texture,cb,x,y,w,h,r,g,b);
 }
-void Menu::addMapLine(const XYZ& start, const XYZ& end, float startsize, float endsize, float r,float g,float b){
-    items.push_back(MenuItem(start,end,startsize,endsize,r,g,b));
+void Menu::addMapLine(int x, int y, int w, int h, float startsize, float endsize, float r,float g,float b){
+    items.push_back(MenuItem());
+    items.back().init(MenuItem::MAPLINE,-1,"",0,NULL,x,y,w,h,r,g,b,startsize,endsize);
 }
 void Menu::addMapMarker(int id,int texture,MBCallback cb,int x,int y,int w,int h,float r,float g,float b){
-    items.push_back(MenuItem(MenuItem::MAPMARKER,id,"",texture,cb,x,y,w,h,r,g,b));
+    items.push_back(MenuItem());
+    items.back().init(MenuItem::MAPMARKER,id,"",texture,cb,x,y,w,h,r,g,b);
 }
 
 void Menu::setMapItem(int id){
@@ -203,8 +207,14 @@ void Menu::drawItems(Game* game){
             game->text.glPrintOutlined(0.9,0,0,it->x,it->y,it->label.c_str(),0,0.6,640,480);
             break;
         case MenuItem::MAPLINE: {
-            XYZ linestart=it->linestart;
-            XYZ lineend=it->lineend;
+            XYZ linestart;
+            linestart.x=it->x;
+            linestart.y=it->y;
+            linestart.z=0;
+            XYZ lineend;
+            lineend.x=it->x+it->w;
+            lineend.y=it->y+it->h;
+            lineend.z=0;
             XYZ offset=lineend-linestart;
             XYZ fac=offset;
             Normalise(&fac);
