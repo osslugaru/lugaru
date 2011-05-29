@@ -26,8 +26,156 @@ int directing;
 float dialoguetime;
 int dialoguegonethrough[20];
 
-Game::Game()
+namespace Game{
+    GLuint terraintexture;
+    GLuint terraintexture2;
+    GLuint terraintexture3;
+    GLuint screentexture;
+    GLuint screentexture2;
+    GLuint logotexture;
+    GLuint loadscreentexture;
+    GLuint Maparrowtexture;
+    GLuint Mapboxtexture;
+    GLuint Mapcircletexture;
+    GLuint cursortexture;
+    GLuint Mainmenuitems[10];
+
+    int selected;
+    int keyselect;
+    int indemo;
+
+    bool won;
+
+    bool entername;
+
+    char menustring[100][256];
+    char registrationname[256];
+    float registrationnumber;
+
+    int newdetail;
+    int newscreenwidth;
+    int newscreenheight;
+
+    bool gameon;
+    float deltah,deltav;
+    int mousecoordh,mousecoordv;
+    int oldmousecoordh,oldmousecoordv;
+    float rotation,rotation2;
+    SkyBox skybox;
+    bool cameramode;
+    int olddrawmode;
+    int drawmode;
+    bool firstload;
+    bool oldbutton;
+
+    float leveltime;
+    float loadtime;
+
+    Model hawk;
+    XYZ hawkcoords;
+    XYZ realhawkcoords;
+    GLuint hawktexture;
+    float hawkrotation;
+    float hawkcalldelay;
+
+    Model eye;
+    Model iris;
+    Model cornea;
+
+    bool stealthloading;
+
+    std::vector<CampaignLevel> campaignlevels;
+    int whichchoice;
+    int actuallevel;
+    bool winhotspot;
+    bool windialogue;
+
+    bool minimap;
+
+    int musictype,oldmusictype,oldoldmusictype;
+    bool realthreat;
+
+    Model rabbit;
+    XYZ rabbitcoords;
+
+    XYZ mapcenter;
+    float mapradius;
+
+    Text* text;
+    float fps;
+
+    XYZ cameraloc;
+    float cameradist;
+
+    int drawtoggle;
+
+    bool editorenabled;
+    int editortype;
+    float editorsize;
+    float editorrotation;
+    float editorrotation2;
+
+    float brightness;
+
+    int quit;
+    int tryquit;
+
+    XYZ pathpoint[30];
+    int numpathpoints;
+    int numpathpointconnect[30];
+    int pathpointconnect[30][30];
+    int pathpointselected;
+
+    int endgame;
+    bool scoreadded;
+    int numchallengelevels;
+
+    bool console;
+    int archiveselected;
+    char consoletext[15][256];
+    int consolechars[15];
+    bool chatting;
+    char displaytext[15][256];
+    int displaychars[15];
+    float displaytime[15];
+    float displayblinkdelay;
+    bool displayblink;
+    int displayselected;
+    bool consolekeydown;
+    float consoleblinkdelay;
+    bool consoleblink;
+    int consoleselected;
+    bool autocam;
+
+    unsigned short crouchkey,jumpkey,forwardkey,chatkey,backkey,leftkey,rightkey,drawkey,throwkey,attackkey;
+    unsigned short consolekey;
+    bool oldattackkey;
+
+    int loading;
+    float talkdelay;
+    
+    int numboundaries;
+    XYZ boundary[360];
+
+    int whichlevel;
+    int oldenvironment;
+    int targetlevel;
+    float changedelay;
+
+    float musicvolume[4];
+    float oldmusicvolume[4];
+    int musicselected;
+    int change;
+
+    bool waiting;
+    Account* accountactive;
+}
+
+void Game::newGame()
 {
+    text=NULL;
+    text=new Text();
+
 	terraintexture = 0;
 	terraintexture2 = 0;
 	terraintexture3 = 0;
@@ -181,10 +329,26 @@ Game::Game()
 	accountactive = NULL;
 }
 
-typedef struct {
-	Game* game;
-	void (Game::*method)();
-} params_thread;
+void Game::deleteGame(){
+    if(text)
+        delete text;
+    for(int i=0;i<10;i++){
+        if(Mainmenuitems[i])glDeleteTextures( 1, &Mainmenuitems[i] );
+    }
+    glDeleteTextures( 1, &cursortexture );
+    glDeleteTextures( 1, &Maparrowtexture );
+    glDeleteTextures( 1, &Mapboxtexture );
+    glDeleteTextures( 1, &Mapcircletexture );
+    glDeleteTextures( 1, &terraintexture );
+    glDeleteTextures( 1, &terraintexture2 );
+    if(screentexture>0)glDeleteTextures( 1, &screentexture );
+    if(screentexture2>0)glDeleteTextures( 1, &screentexture2 );
+    glDeleteTextures( 1, &hawktexture );
+    glDeleteTextures( 1, &logotexture );
+    glDeleteTextures( 1, &loadscreentexture );
+
+    Dispose();
+}
 
 void Game::fireSound(int sound) {
 	emit_sound_at(sound);
@@ -255,11 +419,8 @@ void Game::inputText(char* str, int* charselected, int* nb_chars) {
 
 void Game::setKeySelected() {
 	waiting=true;
-	params_thread* data = new params_thread;
-    data->game = this;
-    data->method = &Game::setKeySelected_thread;
     printf("launch thread\n");
-	SDL_Thread* thread = SDL_CreateThread(Game::thread, data);
+	SDL_Thread* thread = SDL_CreateThread(Game::setKeySelected_thread,NULL);
     if ( thread == NULL ) {
         fprintf(stderr, "Unable to create thread: %s\n", SDL_GetError());
 		waiting=false;
@@ -267,7 +428,7 @@ void Game::setKeySelected() {
     }
 }
 
-void Game::setKeySelected_thread() {
+int Game::setKeySelected_thread(void* data) {
 	int keycode=-1;
 	SDL_Event evenement;
 	while(keycode==-1) {
@@ -312,13 +473,7 @@ void Game::setKeySelected_thread() {
 	}
 	keyselect=-1;
 	waiting=false;
-}
-
-int Game::thread(void *data) {
-	params_thread* pt = (params_thread*)data;
-    if(pt) {
-        (pt->game->*(pt->method))();
-    }
+    return 0;
 }
 
 void Game::DrawGL() {

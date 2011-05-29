@@ -29,7 +29,6 @@ extern float fadestart;
 extern float texdetail;
 extern bool decals;
 
-extern Game * pgame;
 extern bool visibleloading;
 
 int Model::LineCheck(XYZ *p1,XYZ *p2, XYZ *p, XYZ *move, float *rotate)
@@ -481,7 +480,7 @@ bool Model::load(const char *filename,bool texture )
 	LOG(std::string("Loading model...") + filename);
 
 	if(visibleloading)
-		pgame->LoadingScreen();
+		Game::LoadingScreen();
 
 	int oldvertexNum,oldTriangleNum;
 	oldvertexNum=vertexNum;
@@ -844,7 +843,7 @@ void Model::Rotate(float xang,float yang,float zang)
 void Model::CalculateNormals(bool facenormalise)
 {
 	if(visibleloading)
-		pgame->LoadingScreen();
+		Game::LoadingScreen();
 	static int i;
 	if(type!=normaltype&&type!=decalstype)return;
 

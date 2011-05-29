@@ -646,8 +646,8 @@ void Game::InitGame()
 
 	int temptexdetail=texdetail;
 	texdetail=1;
-	text.LoadFontTexture(":Data:Textures:Font.png");
-	text.BuildFont();
+	text->LoadFontTexture(":Data:Textures:Font.png");
+	text->BuildFont();
 	texdetail=temptexdetail;
 
 	FadeLoadingScreen(10);
@@ -786,8 +786,8 @@ void Game::LoadStuff()
 
 	temptexdetail=texdetail;
 	texdetail=1;
-	text.LoadFontTexture(":Data:Textures:Font.png");
-	text.BuildFont();
+	text->LoadFontTexture(":Data:Textures:Font.png");
+	text->BuildFont();
 	texdetail=temptexdetail;
 
 	numsounds=71;

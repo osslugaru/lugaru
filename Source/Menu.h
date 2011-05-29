@@ -6,7 +6,7 @@
 namespace Menu {
     typedef void(*MBCallback)(int id);
 
-    void GUITick(Game* game);
+    void GUITick();
     void clearMenu();
     void addLabel(int id,const string& label,int x,int y);
     void addButton(int id,const string& label,MBCallback cb,int x,int y,int w,int h,float r=1,float g=0,float b=0);
@@ -18,7 +18,7 @@ namespace Menu {
     void setButtonText(int id,const string& label);
     void setButtonText(int id,const string& label,int x,int y,int w,int h);
     int getSelected(int mousex, int mousey);
-    void drawItems(Game* game);
+    void drawItems();
 }
 
 #endif

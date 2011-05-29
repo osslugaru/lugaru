@@ -45,6 +45,8 @@ extern "C" {
 	#endif
 }
 
+using namespace Game;
+
 static bool load_image(const char * fname, TGAImageRec & tex);
 static bool load_png(const char * fname, TGAImageRec & tex);
 static bool load_jpg(const char * fname, TGAImageRec & tex);
@@ -99,10 +101,8 @@ static SDL_Rect *hardcoded_resolutions[] = {
     NULL
 };
 
-void DrawGL(Game & game);
-
-Boolean SetUp (Game & game);
-void DoUpdate (Game & game);
+Boolean SetUp ();
+void DoUpdate ();
 
 void CleanUp (void);
 
@@ -162,8 +162,6 @@ int kContextWidth;
 int kContextHeight;
 
 Boolean gDone = false;
-
-Game * pgame = 0;
 
 #ifndef __MINGW32__
 static int _argc = 0;
@@ -256,12 +254,12 @@ static void toggleFullscreen(){
     //~ pgame->LoadScreenTexture();
 }
 
-static void sdlEventProc(const SDL_Event &e, Game &game)
+static void sdlEventProc(const SDL_Event &e)
 {
     switch(e.type) {
         case SDL_MOUSEMOTION:
-            game.deltah += e.motion.xrel;
-            game.deltav += e.motion.yrel;
+            deltah += e.motion.xrel;
+            deltav += e.motion.yrel;
             break;
 
         case SDL_KEYDOWN:
@@ -282,7 +280,7 @@ static void sdlEventProc(const SDL_Event &e, Game &game)
 
 static Point gMidPoint;
 
-Boolean SetUp (Game & game)
+Boolean SetUp ()
 {
 	char string[10];
 
@@ -295,7 +293,7 @@ Boolean SetUp (Game & game)
 	slomofreq=8012;
 	numplayers=1;
 	
-	DefaultSettings(game);
+	DefaultSettings();
 
     if (!SDL_WasInit(SDL_INIT_VIDEO))
         if (SDL_Init(SDL_INIT_VIDEO) == -1)
@@ -303,9 +301,9 @@ Boolean SetUp (Game & game)
             fprintf(stderr, "SDL_Init() failed: %s\n", SDL_GetError());
             return false;
         }
-	if(!LoadSettings(game)) {
+	if(!LoadSettings()) {
 		fprintf(stderr, "Failed to load config, creating default\n");
-		SaveSettings(game);
+		SaveSettings();
 	}
 	if(kBitsPerPixel!=32&&kBitsPerPixel!=16){
 		kBitsPerPixel=16;
@@ -415,33 +413,33 @@ Boolean SetUp (Game & game)
 	screenwidth=width;
 	screenheight=height;
 
-	game.newdetail=detail;
-	game.newscreenwidth=screenwidth;
-	game.newscreenheight=screenheight;
+	newdetail=detail;
+	newscreenwidth=screenwidth;
+	newscreenheight=screenheight;
 
-	game.InitGame();
+	InitGame();
 
 	return true;
 }
 
 
-static void DoMouse(Game & game)
+static void DoMouse()
 {
 
-	if(mainmenu|| ( (abs(game.deltah)<10*realmultiplier*1000) && (abs(game.deltav)<10*realmultiplier*1000) ))
+	if(mainmenu|| ( (abs(deltah)<10*realmultiplier*1000) && (abs(deltav)<10*realmultiplier*1000) ))
 	{
-		game.deltah *= usermousesensitivity;
-		game.deltav *= usermousesensitivity;
-		game.mousecoordh += game.deltah;
-		game.mousecoordv += game.deltav;
-        if (game.mousecoordh < 0)
-            game.mousecoordh = 0;
-        else if (game.mousecoordh >= kContextWidth)
-            game.mousecoordh = kContextWidth - 1;
-        if (game.mousecoordv < 0)
-            game.mousecoordv = 0;
-        else if (game.mousecoordv >= kContextHeight)
-            game.mousecoordv = kContextHeight - 1;
+		deltah *= usermousesensitivity;
+		deltav *= usermousesensitivity;
+		mousecoordh += deltah;
+		mousecoordv += deltav;
+        if (mousecoordh < 0)
+            mousecoordh = 0;
+        else if (mousecoordh >= kContextWidth)
+            mousecoordh = kContextWidth - 1;
+        if (mousecoordv < 0)
+            mousecoordv = 0;
+        else if (mousecoordv >= kContextHeight)
+            mousecoordv = kContextHeight - 1;
 	}
 
 }
@@ -482,7 +480,7 @@ void DoFrameRate (int update)
 }
 
 
-void DoUpdate (Game & game)
+void DoUpdate ()
 {
 	static float sps=200;
 	static int count;
@@ -491,7 +489,7 @@ void DoUpdate (Game & game)
 	DoFrameRate(1);
 	if(multiplier>.6)multiplier=.6;
 
-	game.fps=1/multiplier;
+	fps=1/multiplier;
 
 	count = multiplier*sps;
 	if(count<2)count=2;
@@ -501,22 +499,22 @@ void DoUpdate (Game & game)
 	if(difficulty==1)multiplier*=.9;
 	if(difficulty==0)multiplier*=.8;
 
-	if(game.loading==4)multiplier*=.00001;
+	if(loading==4)multiplier*=.00001;
 	if(slomo&&!mainmenu)multiplier*=slomospeed;
 	oldmult=multiplier;
 	multiplier/=(float)count;
 
-	DoMouse(game);
+	DoMouse();
 
-	game.TickOnce();
+	TickOnce();
 
 	for(int i=0;i<count;i++)
 	{
-		game.Tick();
+		Tick();
 	}
 	multiplier=oldmult;
 
-	game.TickOnceAfter();
+	TickOnceAfter();
 /* - Debug code to test how many channels were active on average per frame
 	static long frames = 0;
 
@@ -551,7 +549,7 @@ void DoUpdate (Game & game)
 		num_channels = 0;
 	}
 */
-	game.DrawGL();
+	DrawGL();
 }
 
 // --------------------------------------------------------------------------
@@ -699,18 +697,17 @@ int main(int argc, char **argv)
 	try
 	{
 		{
-			Game game;
-			pgame = &game;
+			newGame();
 
 			//ofstream os("error.txt");
 			//os.close();
 			//ofstream os("log.txt");
 			//os.close();
 
-			if (!SetUp (game))
+			if (!SetUp ())
                 return 42;
 
-			while (!gDone&&!game.quit&&(!game.tryquit))
+			while (!gDone&&!quit&&(!tryquit))
 			{
 					if (IsFocused())
 					{
@@ -718,10 +715,10 @@ int main(int argc, char **argv)
 
 							// check windows messages
 			
-							game.deltah = 0;
-							game.deltav = 0;
+							deltah = 0;
+							deltav = 0;
 							SDL_Event e;
-							if(!game.isWaiting()) {
+							if(!waiting) {
 									// message pump
 									while( SDL_PollEvent( &e ) )
 									{
@@ -730,12 +727,12 @@ int main(int argc, char **argv)
 													gDone=true;
 													break;
 											}
-											sdlEventProc(e, game);
+											sdlEventProc(e);
 									}
 							}
 
 							// game
-							DoUpdate(game);
+							DoUpdate();
 					}
 					else
 					{
@@ -743,7 +740,7 @@ int main(int argc, char **argv)
 							{
 									// allow game chance to pause
 									gameFocused = false;
-									DoUpdate(game);
+									DoUpdate();
 							}
 
 							// game is not in focus, give CPU time to other apps by waiting for messages instead of 'peeking'
@@ -756,9 +753,8 @@ int main(int argc, char **argv)
 					}
 			}
 
-
+            deleteGame();
 		}
-		pgame = 0;
 
 		CleanUp ();
 

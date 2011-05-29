@@ -38,7 +38,6 @@ extern float blurness;
 extern float targetblurness;
 extern Objects objects;
 extern TGAImageRec texture;
-extern Game * pgame;
 extern bool visibleloading;
 extern bool skyboxtexture;
 extern int tutoriallevel;
@@ -401,7 +400,7 @@ bool Terrain::load(const char *fileName)
 		}
 	}
 	texture.bpp=24;
-	if(visibleloading)pgame->LoadingScreen();
+	if(visibleloading) Game::LoadingScreen();
 
 	texdetail=temptexdetail;
 
@@ -433,7 +432,7 @@ bool Terrain::load(const char *fileName)
 		}
 
 	}
-	if(visibleloading)pgame->LoadingScreen();
+	if(visibleloading) Game::LoadingScreen();
 
 	float slopeness;
 
@@ -442,7 +441,7 @@ bool Terrain::load(const char *fileName)
 			textureness[i][j]=-1;
 		}
 	}
-	if(visibleloading)pgame->LoadingScreen();
+	if(visibleloading) Game::LoadingScreen();
 
 
 	for(i=0;i<size;i++){
@@ -476,7 +475,7 @@ bool Terrain::load(const char *fileName)
 			}
 		}
 	}
-	if(visibleloading)pgame->LoadingScreen();
+	if(visibleloading) Game::LoadingScreen();
 
 	for(i=0;i<size;i++){
 		for(j=0;j<size;j++){
@@ -488,7 +487,7 @@ bool Terrain::load(const char *fileName)
 			}
 		}
 	}
-	if(visibleloading)pgame->LoadingScreen();
+	if(visibleloading) Game::LoadingScreen();
 
 	/*float total;
 	int todivide;
@@ -598,7 +597,7 @@ bool Terrain::load(const char *fileName)
 			}
 		}
 	}
-	if(visibleloading)pgame->LoadingScreen();
+	if(visibleloading) Game::LoadingScreen();
 
 	patch_size=size/subdivision;
 	patch_elements=(patch_size)*(patch_size)*54;
@@ -1465,7 +1464,7 @@ void Terrain::DoShadows()
 						}
 					}
 				}
-				if(visibleloading)pgame->LoadingScreen();
+				if(visibleloading) Game::LoadingScreen();
 			}
 			brightness=dotproduct(&lightloc,&normals[i][j]);
 			if(shadowed)brightness*=1-shadowed;
@@ -1486,7 +1485,7 @@ void Terrain::DoShadows()
 		}
 	}
 
-	if(visibleloading)pgame->LoadingScreen();
+	if(visibleloading) Game::LoadingScreen();
 
 	//Smooth shadows
 	for(i=0;i<size;i++){

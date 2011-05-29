@@ -38,7 +38,6 @@ class Input {
 		static bool isKeyDown(int k);
 		static bool isKeyPressed(int k);
 		static const char* keyToChar(unsigned short which);
-		static void setKeyFor(Game* g);
 		static unsigned short 	CharToKey(const char* which);
 		static Boolean MouseClicked();
 };

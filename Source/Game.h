@@ -152,216 +152,198 @@ public:
 	}
 };
 
-class Game
+namespace Game
 {
-	public:
-		GLuint terraintexture;
-		GLuint terraintexture2;
-		GLuint terraintexture3;
-		GLuint screentexture;
-		GLuint screentexture2;
-		GLuint logotexture;
-		GLuint loadscreentexture;
-		GLuint Maparrowtexture;
-		GLuint Mapboxtexture;
-		GLuint Mapcircletexture;
-		GLuint cursortexture;
-		GLuint Mainmenuitems[10];
+    //public:
+    extern GLuint terraintexture;
+    extern GLuint terraintexture2;
+    extern GLuint terraintexture3;
+    extern GLuint screentexture;
+    extern GLuint screentexture2;
+    extern GLuint logotexture;
+    extern GLuint loadscreentexture;
+    extern GLuint Maparrowtexture;
+    extern GLuint Mapboxtexture;
+    extern GLuint Mapcircletexture;
+    extern GLuint cursortexture;
+    extern GLuint Mainmenuitems[10];
 
-		int selected;
-		int keyselect;
-		int indemo;
+    extern int selected;
+    extern int keyselect;
+    extern int indemo;
 
-		bool won;
+    extern bool won;
 
-		bool entername;
+    extern bool entername;
 
-		char menustring[100][256];
-		char registrationname[256];
-		float registrationnumber;
+    extern char menustring[100][256];
+    extern char registrationname[256];
+    extern float registrationnumber;
 
-		int newdetail;
-		int newscreenwidth;
-		int newscreenheight;
+    extern int newdetail;
+    extern int newscreenwidth;
+    extern int newscreenheight;
 
-		bool gameon;
-		float deltah,deltav;
-		int mousecoordh,mousecoordv;
-		int oldmousecoordh,oldmousecoordv;
-		float rotation,rotation2;
-		SkyBox skybox;
-		bool cameramode;
-		int olddrawmode;
-		int drawmode;
-		bool firstload;
-		bool oldbutton;
+    extern bool gameon;
+    extern float deltah,deltav;
+    extern int mousecoordh,mousecoordv;
+    extern int oldmousecoordh,oldmousecoordv;
+    extern float rotation,rotation2;
+    extern SkyBox skybox;
+    extern bool cameramode;
+    extern int olddrawmode;
+    extern int drawmode;
+    extern bool firstload;
+    extern bool oldbutton;
 
-		float leveltime;
-		float loadtime;
+    extern float leveltime;
+    extern float loadtime;
 
-		Model hawk;
-		XYZ hawkcoords;
-		XYZ realhawkcoords;
-		GLuint hawktexture;
-		float hawkrotation;
-		float hawkcalldelay;
+    extern Model hawk;
+    extern XYZ hawkcoords;
+    extern XYZ realhawkcoords;
+    extern GLuint hawktexture;
+    extern float hawkrotation;
+    extern float hawkcalldelay;
 
-		Model eye;
-		Model iris;
-		Model cornea;
+    extern Model eye;
+    extern Model iris;
+    extern Model cornea;
 
-		bool stealthloading;
+    extern bool stealthloading;
 
-		std::vector<CampaignLevel> campaignlevels;
-		int whichchoice;
-		int actuallevel;
-		bool winhotspot;
-		bool windialogue;
+    extern std::vector<CampaignLevel> campaignlevels;
+    extern int whichchoice;
+    extern int actuallevel;
+    extern bool winhotspot;
+    extern bool windialogue;
 
-		bool minimap;
+    extern bool minimap;
 
-		int musictype,oldmusictype,oldoldmusictype;
-		bool realthreat;
+    extern int musictype,oldmusictype,oldoldmusictype;
+    extern bool realthreat;
 
-		Model rabbit;
-		XYZ rabbitcoords;
+    extern Model rabbit;
+    extern XYZ rabbitcoords;
 
-		XYZ mapcenter;
-		float mapradius;
+    extern XYZ mapcenter;
+    extern float mapradius;
 
-		Text text;
-		float fps;
+    extern Text* text;
+    extern float fps;
 
-		XYZ cameraloc;
-		float cameradist;
+    extern XYZ cameraloc;
+    extern float cameradist;
 
-		int drawtoggle;
+    extern int drawtoggle;
 
-		bool editorenabled;
-		int editortype;
-		float editorsize;
-		float editorrotation;
-		float editorrotation2;
+    extern bool editorenabled;
+    extern int editortype;
+    extern float editorsize;
+    extern float editorrotation;
+    extern float editorrotation2;
 
-		float brightness;
+    extern float brightness;
 
-		int quit;
-		int tryquit;
+    extern int quit;
+    extern int tryquit;
 
-		XYZ pathpoint[30];
-		int numpathpoints;
-		int numpathpointconnect[30];
-		int pathpointconnect[30][30];
-		int pathpointselected;
+    extern XYZ pathpoint[30];
+    extern int numpathpoints;
+    extern int numpathpointconnect[30];
+    extern int pathpointconnect[30][30];
+    extern int pathpointselected;
 
-		int endgame;
-		bool scoreadded;
-		int numchallengelevels;
+    extern int endgame;
+    extern bool scoreadded;
+    extern int numchallengelevels;
 
-		bool console;
-		int archiveselected;
-		char consoletext[15][256];
-		int consolechars[15];
-		bool chatting;
-		char displaytext[15][256];
-		int displaychars[15];
-		float displaytime[15];
-		float displayblinkdelay;
-		bool displayblink;
-		int displayselected;
-		bool consolekeydown;
-		float consoleblinkdelay;
-		bool consoleblink;
-		int consoleselected;
-		bool autocam;
+    extern bool console;
+    extern int archiveselected;
+    extern char consoletext[15][256];
+    extern int consolechars[15];
+    extern bool chatting;
+    extern char displaytext[15][256];
+    extern int displaychars[15];
+    extern float displaytime[15];
+    extern float displayblinkdelay;
+    extern bool displayblink;
+    extern int displayselected;
+    extern bool consolekeydown;
+    extern float consoleblinkdelay;
+    extern bool consoleblink;
+    extern int consoleselected;
+    extern bool autocam;
 
-		unsigned short crouchkey,jumpkey,forwardkey,chatkey,backkey,leftkey,rightkey,drawkey,throwkey,attackkey;
-		unsigned short consolekey;
-		bool oldattackkey;
+    extern unsigned short crouchkey,jumpkey,forwardkey,chatkey,backkey,leftkey,rightkey,drawkey,throwkey,attackkey;
+    extern unsigned short consolekey;
+    extern bool oldattackkey;
 
-		static void LoadTexture(const string fileName, GLuint *textureid,int mipmap, bool hasalpha);
-		static void LoadTextureSave(const string fileName, GLuint *textureid,int mipmap,GLubyte *array, int *skinsize);
-		void LoadSave(const char *fileName, GLuint *textureid,bool mipmap,GLubyte *array, int *skinsize);
-        bool AddClothes(const char *fileName, GLubyte *array);
-		void InitGame();
-		void LoadScreenTexture();
-		void LoadStuff();
-		void LoadingScreen();
-		void LoadCampaign();
-		static std::vector<std::string> ListCampaigns();
-		void FadeLoadingScreen(float howmuch);
-		void Dispose();
-		int DrawGLScene(StereoSide side);
-		void DrawMenu();
-		void DrawGL();
-        //factored from Tick() -sf17k
-		void MenuTick();
-        void doTutorial();
-        void doDebugKeys();
-		void doJumpReversals();
-		void doAerialAcrobatics();
-		void doAttacks();
-		void doPlayerCollisions();
-		void doAI(int i);
-        //end factored
-		void Tick();
-		void TickOnce();
-		void TickOnceAfter();
-		void SetUpLighting();
-		void Loadlevel(int which);
-		void Loadlevel(const char *name);
-		void Setenvironment(int which);
-		GLvoid ReSizeGLScene(float fov, float near);
-		int findPathDist(int start,int end);
-		int checkcollide(XYZ startpoint, XYZ endpoint);
-		int checkcollide(XYZ startpoint, XYZ endpoint, int what);
-		int loading;
-		float talkdelay;
-		
-		void fireSound(int sound=fireendsound);
-		void setKeySelected();
+    void LoadTexture(const string fileName, GLuint *textureid,int mipmap, bool hasalpha);
+    void LoadTextureSave(const string fileName, GLuint *textureid,int mipmap,GLubyte *array, int *skinsize);
+    void LoadSave(const char *fileName, GLuint *textureid,bool mipmap,GLubyte *array, int *skinsize);
+    bool AddClothes(const char *fileName, GLubyte *array);
+    void InitGame();
+    void LoadScreenTexture();
+    void LoadStuff();
+    void LoadingScreen();
+    void LoadCampaign();
+    std::vector<std::string> ListCampaigns();
+    void FadeLoadingScreen(float howmuch);
+    void Dispose();
+    int DrawGLScene(StereoSide side);
+    void DrawMenu();
+    void DrawGL();
+    //factored from Tick() -sf17k
+    void MenuTick();
+    void doTutorial();
+    void doDebugKeys();
+    void doJumpReversals();
+    void doAerialAcrobatics();
+    void doAttacks();
+    void doPlayerCollisions();
+    void doAI(int i);
+    //end factored
+    void Tick();
+    void TickOnce();
+    void TickOnceAfter();
+    void SetUpLighting();
+    void Loadlevel(int which);
+    void Loadlevel(const char *name);
+    void Setenvironment(int which);
+    GLvoid ReSizeGLScene(float fov, float near);
+    int findPathDist(int start,int end);
+    int checkcollide(XYZ startpoint, XYZ endpoint);
+    int checkcollide(XYZ startpoint, XYZ endpoint, int what);
+    extern int loading;
+    extern float talkdelay;
+    
+    void fireSound(int sound=fireendsound);
+    void setKeySelected();
 
-		int numboundaries;
-		XYZ boundary[360];
+    extern int numboundaries;
+    extern XYZ boundary[360];
 
-		int whichlevel;
-		int oldenvironment;
-		int targetlevel;
-		float changedelay;
+    extern int whichlevel;
+    extern int oldenvironment;
+    extern int targetlevel;
+    extern float changedelay;
 
-		float musicvolume[4];
-		float oldmusicvolume[4];
-		int musicselected;
-		int change;
-		Game();
-		~Game() {
-			for(int i=0;i<10;i++){
-				if(Mainmenuitems[i])glDeleteTextures( 1, &Mainmenuitems[i] );
-			}
-			glDeleteTextures( 1, &cursortexture );
-			glDeleteTextures( 1, &Maparrowtexture );
-			glDeleteTextures( 1, &Mapboxtexture );
-			glDeleteTextures( 1, &Mapcircletexture );
-			glDeleteTextures( 1, &terraintexture );
-			glDeleteTextures( 1, &terraintexture2 );
-			if(screentexture>0)glDeleteTextures( 1, &screentexture );
-			if(screentexture2>0)glDeleteTextures( 1, &screentexture2 );
-			glDeleteTextures( 1, &hawktexture );
-			glDeleteTextures( 1, &logotexture );
-			glDeleteTextures( 1, &loadscreentexture );
-
-			Dispose();
-		}
-		bool isWaiting() { return waiting; };
-	private:
-		void setKeySelected_thread();
-		static int thread(void *data);
-		void inputText(char* str, int* charselected, int* nb_chars);
-		void flash();
-		bool waiting;
-		//int mainmenu;
-		Account* accountactive;
-};
+    extern float musicvolume[4];
+    extern float oldmusicvolume[4];
+    extern int musicselected;
+    extern int change;
+    void newGame();
+    void deleteGame();
+    extern bool waiting;
+    //private:
+    int setKeySelected_thread(void*);
+    int thread(void *data);
+    void inputText(char* str, int* charselected, int* nb_chars);
+    void flash();
+    //bool waiting;
+    extern Account* accountactive;
+}
 
 #ifndef __forceinline
 #  ifdef __GNUC__

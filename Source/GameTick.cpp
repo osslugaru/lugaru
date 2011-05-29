@@ -39,6 +39,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <algorithm>
 
 using namespace std;
+using namespace Game;
 
 // Added more evilness needed for MSVC
 #ifdef _MSC_VER
@@ -172,9 +173,9 @@ static const char *cmd_names[] = {
 #undef  DECLARE_COMMAND
 };
 
-typedef void (*console_handler)(Game *game, const char *args);
+typedef void (*console_handler)(const char *args);
 
-#define DECLARE_COMMAND(cmd) static void ch_##cmd(Game *game, const char *args);
+#define DECLARE_COMMAND(cmd) static void ch_##cmd(const char *args);
 #include "ConsoleCmds.h"
 #undef  DECLARE_COMMAND
 
@@ -258,19 +259,19 @@ void playdialogueboxsound(){
 
 
 
-static void ch_quit(Game *game, const char *args)
+static void ch_quit(const char *args)
 {
-  game->tryquit = 1;
+  tryquit = 1;
 }
 
-static void ch_map(Game *game, const char *args)
+static void ch_map(const char *args)
 {
-  game->Loadlevel(args);
-  game->whichlevel = -2;
+  Loadlevel(args);
+  whichlevel = -2;
   campaign = 0;
 }
 
-static void ch_save(Game *game, const char *args){
+static void ch_save(const char *args){
     char buf[64];
     snprintf(buf, 63, ":Data:Maps:%s", args);
 
@@ -423,59 +424,59 @@ static void ch_save(Game *game, const char *args){
                 }
         }
 
-    fpackf(tfile, "Bi", game->numpathpoints);
-	for(int j=0;j<game->numpathpoints;j++){
-		fpackf(tfile, "Bf Bf Bf Bi", game->pathpoint[j].x, game->pathpoint[j].y, game->pathpoint[j].z, game->numpathpointconnect[j]);
-		for(int k=0;k<game->numpathpointconnect[j];k++)
-			fpackf(tfile, "Bi", game->pathpointconnect[j][k]);
+    fpackf(tfile, "Bi", numpathpoints);
+	for(int j=0;j<numpathpoints;j++){
+		fpackf(tfile, "Bf Bf Bf Bi", pathpoint[j].x, pathpoint[j].y, pathpoint[j].z, numpathpointconnect[j]);
+		for(int k=0;k<numpathpointconnect[j];k++)
+			fpackf(tfile, "Bi", pathpointconnect[j][k]);
 	}
 
-    fpackf(tfile, "Bf Bf Bf Bf", game->mapcenter.x, game->mapcenter.y, game->mapcenter.z, game->mapradius);
+    fpackf(tfile, "Bf Bf Bf Bf", mapcenter.x, mapcenter.y, mapcenter.z, mapradius);
 
     fclose(tfile);
 }
 
-static void ch_cellar(Game *game, const char *args)
+static void ch_cellar(const char *args)
 {
-  game->LoadTextureSave(":Data:Textures:Furdarko.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
+  LoadTextureSave(":Data:Textures:Furdarko.jpg",&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 }
 
-static void ch_tint(Game *game, const char *args)
+static void ch_tint(const char *args)
 {
   sscanf(args, "%f%f%f", &tintr, &tintg, &tintb);
 }
 
-static void ch_tintr(Game *game, const char *args)
+static void ch_tintr(const char *args)
 {
   tintr = atof(args);
 }
 
-static void ch_tintg(Game *game, const char *args)
+static void ch_tintg(const char *args)
 {
   tintg = atof(args);
 }
 
-static void ch_tintb(Game *game, const char *args)
+static void ch_tintb(const char *args)
 {
   tintb = atof(args);
 }
 
-static void ch_speed(Game *game, const char *args)
+static void ch_speed(const char *args)
 {
   player[0].speedmult = atof(args);
 }
 
-static void ch_strength(Game *game, const char *args)
+static void ch_strength(const char *args)
 {
   player[0].power = atof(args);
 }
 
-static void ch_power(Game *game, const char *args)
+static void ch_power(const char *args)
 {
   player[0].power = atof(args);
 }
 
-static void ch_size(Game *game, const char *args)
+static void ch_size(const char *args)
 {
   player[0].scale = atof(args) * .2;
 }
@@ -496,7 +497,7 @@ static int find_closest()
   return closest;
 }
 
-static void ch_sizenear(Game *game, const char *args)
+static void ch_sizenear(const char *args)
 {
   int closest = find_closest();
 
@@ -524,12 +525,12 @@ static void set_proportion(int pnum, const char *args)
   }
 }
 
-static void ch_proportion(Game *game, const char *args)
+static void ch_proportion(const char *args)
 {
   set_proportion(0, args);
 }
 
-static void ch_proportionnear(Game *game, const char *args)
+static void ch_proportionnear(const char *args)
 {
   int closest = find_closest();
   if (closest)
@@ -546,12 +547,12 @@ static void set_protection(int pnum, const char *args)
   player[pnum].protectionlow  = low;
 }
 
-static void ch_protection(Game *game, const char *args)
+static void ch_protection(const char *args)
 {
   set_protection(0, args);
 }
 
-static void ch_protectionnear(Game *game, const char *args)
+static void ch_protectionnear(const char *args)
 {
   int closest = find_closest();
   if (closest)
@@ -568,19 +569,19 @@ static void set_armor(int pnum, const char *args)
   player[pnum].armorlow  = low;
 }
 
-static void ch_armor(Game *game, const char *args)
+static void ch_armor(const char *args)
 {
   set_armor(0, args);
 }
 
-static void ch_armornear(Game *game, const char *args)
+static void ch_armornear(const char *args)
 {
   int closest = find_closest();
   if (closest)
     set_armor(closest, args);
 }
 
-static void ch_protectionreset(Game *game, const char *args)
+static void ch_protectionreset(const char *args)
 {
   set_protection(0, "1 1 1");
   set_armor(0, "1 1 1");
@@ -596,38 +597,38 @@ static void set_metal(int pnum, const char *args)
   player[pnum].metallow  = low;
 }
 
-static void ch_metal(Game *game, const char *args)
+static void ch_metal(const char *args)
 {
   set_metal(0, args);
 }
 
-static void set_noclothes(int pnum, Game *game, const char *args)
+static void set_noclothes(int pnum, const char *args)
 {
   player[pnum].numclothes = 0;
-  game->LoadTextureSave(creatureskin[player[pnum].creature][player[pnum].whichskin],
+  LoadTextureSave(creatureskin[player[pnum].creature][player[pnum].whichskin],
 			&player[pnum].skeleton.drawmodel.textureptr,1,
 			&player[pnum].skeleton.skinText[0],&player[pnum].skeleton.skinsize);
 }
 
-static void ch_noclothes(Game *game, const char *args)
+static void ch_noclothes(const char *args)
 {
-  set_noclothes(0, game, args);
+  set_noclothes(0, args);
 }
 
-static void ch_noclothesnear(Game *game, const char *args)
+static void ch_noclothesnear(const char *args)
 {
   int closest = find_closest();
   if (closest)
-    set_noclothes(closest, game, args);
+    set_noclothes(closest, args);
 }
 
 
-static void set_clothes(int pnum, Game *game, const char *args)
+static void set_clothes(int pnum, const char *args)
 {
   char buf[64];
   snprintf(buf, 63, ":Data:Textures:%s.png", args);
 
-  if (!game->AddClothes(buf,&player[pnum].skeleton.skinText[pnum]))
+  if (!AddClothes(buf,&player[pnum].skeleton.skinText[pnum]))
     return;
 
   player[pnum].DoMipmaps();
@@ -638,25 +639,25 @@ static void set_clothes(int pnum, Game *game, const char *args)
   player[pnum].numclothes++;
 }
 
-static void ch_clothes(Game *game, const char *args)
+static void ch_clothes(const char *args)
 {
-  set_clothes(0, game, args);
+  set_clothes(0, args);
 }
 
-static void ch_clothesnear(Game *game, const char *args)
+static void ch_clothesnear(const char *args)
 {
   int closest = find_closest();
   if (closest)
-    set_clothes(closest, game, args);
+    set_clothes(closest, args);
 }
 
-static void ch_belt(Game *game, const char *args)
+static void ch_belt(const char *args)
 {
   player[0].skeleton.clothes = !player[0].skeleton.clothes;
 }
 
 
-static void ch_cellophane(Game *game, const char *args)
+static void ch_cellophane(const char *args)
 {
   cellophane = !cellophane;
   float mul = cellophane ? 0 : 1;
@@ -669,7 +670,7 @@ static void ch_cellophane(Game *game, const char *args)
   }
 }
 
-static void ch_funnybunny(Game *game, const char *args)
+static void ch_funnybunny(const char *args)
 {
   player[0].skeleton.id=0;
   player[0].skeleton.Load(":Data:Skeleton:Basic Figure",":Data:Skeleton:Basic Figurelow",
@@ -678,7 +679,7 @@ static void ch_funnybunny(Game *game, const char *args)
 			  ":Data:Models:Body4.solid",":Data:Models:Body5.solid",
 			  ":Data:Models:Body6.solid",":Data:Models:Body7.solid",
 			  ":Data:Models:Bodylow.solid",":Data:Models:Belt.solid",1);
-  game->LoadTextureSave(":Data:Textures:fur3.jpg",&player[0].skeleton.drawmodel.textureptr,1,
+  LoadTextureSave(":Data:Textures:fur3.jpg",&player[0].skeleton.drawmodel.textureptr,1,
 			&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
   player[0].creature=rabbittype;
   player[0].scale=.2;
@@ -687,7 +688,7 @@ static void ch_funnybunny(Game *game, const char *args)
   set_proportion(0, "1 1 1 1");
 }
 
-static void ch_wolfie(Game *game, const char *args)
+static void ch_wolfie(const char *args)
 {
   player[0].skeleton.id=0;
   player[0].skeleton.Load(":Data:Skeleton:Basic Figure Wolf",":Data:Skeleton:Basic Figure Wolf Low",
@@ -696,80 +697,80 @@ static void ch_wolfie(Game *game, const char *args)
 			  ":Data:Models:Wolf4.solid",":Data:Models:Wolf5.solid",
 			  ":Data:Models:Wolf6.solid",":Data:Models:Wolf7.solid",
 			  ":Data:Models:Wolflow.solid",":Data:Models:Belt.solid",0);
-  game->LoadTextureSave(":Data:Textures:Wolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,
+  LoadTextureSave(":Data:Textures:Wolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,
 			&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
   player[0].creature=wolftype;
   player[0].damagetolerance=300;
   set_proportion(0, "1 1 1 1");
 }
 
-static void ch_wolfieisgod(Game *game, const char *args)
+static void ch_wolfieisgod(const char *args)
 {
-  ch_wolfie(game, args);
+  ch_wolfie(args);
 }
 
-static void ch_wolf(Game *game, const char *args)
+static void ch_wolf(const char *args)
 {
-  game->LoadTextureSave(":Data:Textures:Wolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,
+  LoadTextureSave(":Data:Textures:Wolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,
 			&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 }
 
-static void ch_snowwolf(Game *game, const char *args)
+static void ch_snowwolf(const char *args)
 {
-  game->LoadTextureSave(":Data:Textures:SnowWolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,
+  LoadTextureSave(":Data:Textures:SnowWolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,
 			&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 }
 
-static void ch_darkwolf(Game *game, const char *args)
+static void ch_darkwolf(const char *args)
 {
-  game->LoadTextureSave(":Data:Textures:DarkWolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,
+  LoadTextureSave(":Data:Textures:DarkWolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,
 			&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 }
 
-static void ch_lizardwolf(Game *game, const char *args)
+static void ch_lizardwolf(const char *args)
 {
-  game->LoadTextureSave(":Data:Textures:Lizardwolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,
+  LoadTextureSave(":Data:Textures:Lizardwolf.jpg",&player[0].skeleton.drawmodel.textureptr,1,
 			&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 }
 
-static void ch_white(Game *game, const char *args)
+static void ch_white(const char *args)
 {
-  game->LoadTextureSave(":Data:Textures:fur.jpg",&player[0].skeleton.drawmodel.textureptr,1,
+  LoadTextureSave(":Data:Textures:fur.jpg",&player[0].skeleton.drawmodel.textureptr,1,
 			&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 }
 
-static void ch_brown(Game *game, const char *args)
+static void ch_brown(const char *args)
 {
-  game->LoadTextureSave(":Data:Textures:fur3.jpg",&player[0].skeleton.drawmodel.textureptr,1,
+  LoadTextureSave(":Data:Textures:fur3.jpg",&player[0].skeleton.drawmodel.textureptr,1,
 			&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 }
 
-static void ch_black(Game *game, const char *args)
+static void ch_black(const char *args)
 {
-  game->LoadTextureSave(":Data:Textures:fur2.jpg",&player[0].skeleton.drawmodel.textureptr,1,
+  LoadTextureSave(":Data:Textures:fur2.jpg",&player[0].skeleton.drawmodel.textureptr,1,
 			&player[0].skeleton.skinText[0],&player[0].skeleton.skinsize);
 }
 
-static void ch_sizemin(Game *game, const char *args)
+static void ch_sizemin(const char *args)
 {
   for (int i = 1; i < numplayers; i++)
     if (player[i].scale < 0.8 * 0.2)
       player[i].scale = 0.8 * 0.2;
 }
 
-static void ch_tutorial(Game *game, const char *args)
+static void ch_tutorial(const char *args)
 {
   tutoriallevel = atoi(args);
 }
 
-static void ch_hostile(Game *game, const char *args)
+static void ch_hostile(const char *args)
 {
   hostile = atoi(args);
 }
 
-static void ch_indemo(Game *game, const char *args)
+static void ch_indemo(const char *args)
 {
-  game->indemo=1;
+  indemo=1;
   hotspot[numhotspots]=player[0].coords;
   hotspotsize[numhotspots]=0;
   hotspottype[numhotspots]=-111;
@@ -777,13 +778,13 @@ static void ch_indemo(Game *game, const char *args)
   numhotspots++;
 }
 
-static void ch_notindemo(Game *game, const char *args)
+static void ch_notindemo(const char *args)
 {
-  game->indemo=0;
+  indemo=0;
   numhotspots--;
 }
 
-static void ch_type(Game *game, const char *args)
+static void ch_type(const char *args)
 {
   int n = sizeof(editortypenames) / sizeof(editortypenames[0]);
 	for (int i = 0; i < n; i++)
@@ -793,7 +794,7 @@ static void ch_type(Game *game, const char *args)
 		}
 }
 
-static void ch_path(Game *game, const char *args)
+static void ch_path(const char *args)
 {
   int n = sizeof(pathtypenames) / sizeof(pathtypenames[0]);
   for (int i = 0; i < n; i++)
@@ -803,7 +804,7 @@ static void ch_path(Game *game, const char *args)
     }
 }
 
-static void ch_hs(Game *game, const char *args)
+static void ch_hs(const char *args)
 {
   hotspot[numhotspots]=player[0].coords;
 
@@ -820,7 +821,7 @@ static void ch_hs(Game *game, const char *args)
   numhotspots++;
 }
 
-static void ch_dialogue(Game *game, const char *args)
+static void ch_dialogue(const char *args)
 {
   int dlg;
   char buf1[32], buf2[64];
@@ -871,7 +872,7 @@ static void ch_dialogue(Game *game, const char *args)
   numdialogues++;
 }
 
-static void ch_fixdialogue(Game *game, const char *args)
+static void ch_fixdialogue(const char *args)
 {
   char buf1[32], buf2[64];
   int whichdi;
@@ -909,47 +910,47 @@ static void ch_fixdialogue(Game *game, const char *args)
   ipstream.close();
 }
 
-static void ch_fixtype(Game *game, const char *args)
+static void ch_fixtype(const char *args)
 {
   int dlg;
   sscanf(args, "%d", &dlg);
   dialoguetype[0] = dlg;
 }
 
-static void ch_fixrotation(Game *game, const char *args)
+static void ch_fixrotation(const char *args)
 {
   participantrotation[whichdialogue][participantfocus[whichdialogue][indialogue]]=player[participantfocus[whichdialogue][indialogue]].rotation;
 }
 
-static void ch_ddialogue(Game *game, const char *args)
+static void ch_ddialogue(const char *args)
 {
   if (numdialogues)
     numdialogues--;
 }
 
-static void ch_dhs(Game *game, const char *args)
+static void ch_dhs(const char *args)
 {
   if (numhotspots)
     numhotspots--;
 }
 
-static void ch_immobile(Game *game, const char *args)
+static void ch_immobile(const char *args)
 {
   player[0].immobile = 1;
 }
 
-static void ch_allimmobile(Game *game, const char *args)
+static void ch_allimmobile(const char *args)
 {
   for (int i = 1; i < numplayers; i++)
     player[i].immobile = 1;
 }
 
-static void ch_mobile(Game *game, const char *args)
+static void ch_mobile(const char *args)
 {
   player[0].immobile = 0;
 }
 
-static void ch_default(Game *game, const char *args)
+static void ch_default(const char *args)
 {
   player[0].armorhead=1;
   player[0].armorhigh=1;
@@ -978,7 +979,7 @@ static void ch_default(Game *game, const char *args)
   }
 
   player[0].numclothes=0;
-  game->LoadTextureSave(creatureskin[player[0].creature][player[0].whichskin],
+  LoadTextureSave(creatureskin[player[0].creature][player[0].whichskin],
 			&player[0].skeleton.drawmodel.textureptr,1,&player[0].skeleton.skinText[0],
 			&player[0].skeleton.skinsize);
 
@@ -986,7 +987,7 @@ static void ch_default(Game *game, const char *args)
   player[0].immobile=0;
 }
 
-static void ch_play(Game *game, const char *args)
+static void ch_play(const char *args)
 {
   int dlg;
   sscanf(args, "%d", &dlg);
@@ -1010,49 +1011,49 @@ static void ch_play(Game *game, const char *args)
   playdialogueboxsound();
 }
 
-static void ch_mapkilleveryone(Game *game, const char *args)
+static void ch_mapkilleveryone(const char *args)
 {
   maptype = mapkilleveryone;
 }
 
-static void ch_mapkillmost(Game *game, const char *args)
+static void ch_mapkillmost(const char *args)
 {
   maptype = mapkillmost;
 }
 
-static void ch_mapkillsomeone(Game *game, const char *args)
+static void ch_mapkillsomeone(const char *args)
 {
   maptype = mapkillsomeone;
 }
 
-static void ch_mapgosomewhere(Game *game, const char *args)
+static void ch_mapgosomewhere(const char *args)
 {
   maptype = mapgosomewhere;
 }
 
-static void ch_viewdistance(Game *game, const char *args)
+static void ch_viewdistance(const char *args)
 {
   viewdistance = atof(args)*100;
 }
 
-static void ch_fadestart(Game *game, const char *args)
+static void ch_fadestart(const char *args)
 {
   fadestart = atof(args);
 }
 
-static void ch_slomo(Game *game, const char *args)
+static void ch_slomo(const char *args)
 {
   slomospeed = atof(args);
   slomo = !slomo;
   slomodelay = 1000;
 }
 
-static void ch_slofreq(Game *game, const char *args)
+static void ch_slofreq(const char *args)
 {
   slomofreq = atof(args);
 }
 
-static void ch_skytint(Game *game, const char *args)
+static void ch_skytint(const char *args)
 {
   sscanf(args, "%f%f%f", &skyboxr, &skyboxg, &skyboxb);
 
@@ -1060,33 +1061,33 @@ static void ch_skytint(Game *game, const char *args)
   skyboxlightg=skyboxg;
   skyboxlightb=skyboxb;
 
-  game->SetUpLighting();
+  SetUpLighting();
 
   terrain.DoShadows();
   objects.DoShadows();
 }
 
-static void ch_skylight(Game *game, const char *args)
+static void ch_skylight(const char *args)
 {
   sscanf(args, "%f%f%f", &skyboxlightr, &skyboxlightg, &skyboxlightb);
 
-  game->SetUpLighting();
+  SetUpLighting();
 
   terrain.DoShadows();
   objects.DoShadows();
 }
 
-static void ch_skybox(Game *game, const char *args)
+static void ch_skybox(const char *args)
 {
   skyboxtexture = !skyboxtexture;
 
-  game->SetUpLighting();
+  SetUpLighting();
 
   terrain.DoShadows();
   objects.DoShadows();
 }
 
-static void cmd_dispatch(Game *game, const string cmd)
+static void cmd_dispatch(const string cmd)
 {
   int i, n_cmds = sizeof(cmd_names) / sizeof(cmd_names[0]);
 
@@ -1094,7 +1095,7 @@ static void cmd_dispatch(Game *game, const string cmd)
     if (cmd.substr(0,cmd.find(' '))==string(cmd_names[i]))
       {
 		  cout << "|" << cmd.substr(cmd.find(' ')+1) << "|" << endl;
-		cmd_handlers[i](game, cmd.substr(cmd.find(' ')+1).c_str());
+		cmd_handlers[i](cmd.substr(cmd.find(' ')+1).c_str());
 		break;
       }
   emit_sound_np(i < n_cmds ? consolesuccesssound : consolefailsound);
@@ -5544,7 +5545,7 @@ void Game::MenuTick(){
 					case 8:
 						flash();
 						
-						SaveSettings(*this);
+						SaveSettings();
 						mainmenu=gameon?2:1;
 						break;
 					case 9:
@@ -5753,7 +5754,7 @@ void Game::MenuTick(){
     if(Input::isKeyDown(SDLK_q) && Input::isKeyDown(SDLK_LMETA)){
         tryquit=1;
         if(mainmenu==3) {
-            SaveSettings(*this);
+            SaveSettings();
         }
     }
 
@@ -5892,7 +5893,7 @@ void Game::Tick(){
             }
             //finished with settings menu
 			if(mainmenu==3){
-				SaveSettings(*this);
+				SaveSettings();
 			}
             //effects
 			if(mainmenu>=3&&mainmenu!=8){
@@ -5970,7 +5971,7 @@ void Game::Tick(){
 				archiveselected=0;
 				if(consolechars[0]>0) {
                     consoletext[0][consolechars[0]]='\0';
-                    cmd_dispatch(this, consoletext[0]);
+                    cmd_dispatch(consoletext[0]);
 					for(int k=14;k>=1;k--) {
 						for(int j=0;j<255;j++)
 							consoletext[k][j]=consoletext[k-1][j];
@@ -5995,7 +5996,7 @@ void Game::Tick(){
 		if(Input::isKeyDown(SDLK_q)&&Input::isKeyDown(SDLK_LMETA)){
 			tryquit=1;
 			if(mainmenu==3) {
-				SaveSettings(*this);
+				SaveSettings();
 			}
 		}
 

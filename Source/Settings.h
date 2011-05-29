@@ -34,9 +34,9 @@ extern int kContextWidth;
 extern int kContextHeight;
 extern float screenwidth,screenheight;
 
-void DefaultSettings(Game &game);
-void SaveSettings(Game &game);
-bool LoadSettings(Game &game);
+void DefaultSettings();
+void SaveSettings();
+bool LoadSettings();
 
 
 #endif

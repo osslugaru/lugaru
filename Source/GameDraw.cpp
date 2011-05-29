@@ -583,7 +583,7 @@ int Game::DrawGLScene(StereoSide side)
 		glColor4f(.5,.5,.5,1);
 		if(!console) {
 			sprintf (string, " ",(int)(fps));
-			text.glPrint(10,30,string,0,.8,screenwidth,screenheight);
+			text->glPrint(10,30,string,0,.8,screenwidth,screenheight);
 
 			if(!tutoriallevel)
 				if(bonus>0&&bonustime<1&&!winfreeze&&indialogue==-1/*bonustime<4*/){
@@ -594,15 +594,15 @@ int Game::DrawGLScene(StereoSide side)
 					  bonus_name = "Excellent!"; // When does this happen?
 
 					glColor4f(0,0,0,1-bonustime);
-					text.glPrintOutline(1024/2-10*strlen(bonus_name)-4,768/16-4+768*4/5,bonus_name,1,2.5,1024,768);
+					text->glPrintOutline(1024/2-10*strlen(bonus_name)-4,768/16-4+768*4/5,bonus_name,1,2.5,1024,768);
 					glColor4f(1,0,0,1-bonustime);
-					text.glPrint(1024/2-10*strlen(bonus_name),768/16+768*4/5,bonus_name,1,2,1024,768);
+					text->glPrint(1024/2-10*strlen(bonus_name),768/16+768*4/5,bonus_name,1,2,1024,768);
 
 					sprintf (string, "%d",(int)bonusvalue);
 					glColor4f(0,0,0,1-bonustime);
-					text.glPrintOutline(1024/2-10*strlen(string)-4,768/16-4-20+768*4/5,string,1,2.5*.8,1024,768);
+					text->glPrintOutline(1024/2-10*strlen(string)-4,768/16-4-20+768*4/5,string,1,2.5*.8,1024,768);
 					glColor4f(1,0,0,1-bonustime);
-					text.glPrint(1024/2-10*strlen(string),768/16-20+768*4/5,string,1,2*.8,1024,768);
+					text->glPrint(1024/2-10*strlen(string),768/16-20+768*4/5,string,1,2*.8,1024,768);
 					glColor4f(.5,.5,.5,1);
 				}
 
@@ -880,26 +880,26 @@ int Game::DrawGLScene(StereoSide side)
                 }
 
                 glColor4f(0,0,0,tutorialopac);
-                text.glPrintOutline(screenwidth/2-7.6*strlen(string)*screenwidth/1024-4,screenheight/16-4+screenheight*4/5,string,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight);
-                text.glPrintOutline(screenwidth/2-7.6*strlen(string2)*screenwidth/1024-4,screenheight/16-4+screenheight*4/5-20*screenwidth/1024,string2,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight);
-                text.glPrintOutline(screenwidth/2-7.6*strlen(string3)*screenwidth/1024-4,screenheight/16-4+screenheight*4/5-40*screenwidth/1024,string3,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight);
+                text->glPrintOutline(screenwidth/2-7.6*strlen(string)*screenwidth/1024-4,screenheight/16-4+screenheight*4/5,string,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight);
+                text->glPrintOutline(screenwidth/2-7.6*strlen(string2)*screenwidth/1024-4,screenheight/16-4+screenheight*4/5-20*screenwidth/1024,string2,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight);
+                text->glPrintOutline(screenwidth/2-7.6*strlen(string3)*screenwidth/1024-4,screenheight/16-4+screenheight*4/5-40*screenwidth/1024,string3,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight);
                 glColor4f(1,1,1,tutorialopac);
-                text.glPrint(screenwidth/2-7.6*strlen(string)*screenwidth/1024,screenheight/16+screenheight*4/5,string,1,1.5*screenwidth/1024,screenwidth,screenheight);
-                text.glPrint(screenwidth/2-7.6*strlen(string2)*screenwidth/1024,screenheight/16+screenheight*4/5-20*screenwidth/1024,string2,1,1.5*screenwidth/1024,screenwidth,screenheight);
-                text.glPrint(screenwidth/2-7.6*strlen(string3)*screenwidth/1024,screenheight/16+screenheight*4/5-40*screenwidth/1024,string3,1,1.5*screenwidth/1024,screenwidth,screenheight);
+                text->glPrint(screenwidth/2-7.6*strlen(string)*screenwidth/1024,screenheight/16+screenheight*4/5,string,1,1.5*screenwidth/1024,screenwidth,screenheight);
+                text->glPrint(screenwidth/2-7.6*strlen(string2)*screenwidth/1024,screenheight/16+screenheight*4/5-20*screenwidth/1024,string2,1,1.5*screenwidth/1024,screenwidth,screenheight);
+                text->glPrint(screenwidth/2-7.6*strlen(string3)*screenwidth/1024,screenheight/16+screenheight*4/5-40*screenwidth/1024,string3,1,1.5*screenwidth/1024,screenwidth,screenheight);
 
                 sprintf (string, "Press 'tab' to skip to the next item.",Input::keyToChar(jumpkey));
                 sprintf (string2, "Press escape at any time to");
                 sprintf (string3, "pause or exit the tutorial.");
 
                 glColor4f(0,0,0,1);
-                text.glPrintOutline(screenwidth/2-7.6*strlen(string)*screenwidth/1024*.8-4,0-4+screenheight*1/10,string,1,1.5*1.25*screenwidth/1024*.8,screenwidth,screenheight);
-                text.glPrintOutline(screenwidth/2-7.6*strlen(string2)*screenwidth/1024*.8-4,0-4+screenheight*1/10-20*.8*screenwidth/1024,string2,1,1.5*1.25*screenwidth/1024*.8,screenwidth,screenheight);
-                text.glPrintOutline(screenwidth/2-7.6*strlen(string3)*screenwidth/1024*.8-4,0-4+screenheight*1/10-40*.8*screenwidth/1024,string3,1,1.5*1.25*screenwidth/1024*.8,screenwidth,screenheight);
+                text->glPrintOutline(screenwidth/2-7.6*strlen(string)*screenwidth/1024*.8-4,0-4+screenheight*1/10,string,1,1.5*1.25*screenwidth/1024*.8,screenwidth,screenheight);
+                text->glPrintOutline(screenwidth/2-7.6*strlen(string2)*screenwidth/1024*.8-4,0-4+screenheight*1/10-20*.8*screenwidth/1024,string2,1,1.5*1.25*screenwidth/1024*.8,screenwidth,screenheight);
+                text->glPrintOutline(screenwidth/2-7.6*strlen(string3)*screenwidth/1024*.8-4,0-4+screenheight*1/10-40*.8*screenwidth/1024,string3,1,1.5*1.25*screenwidth/1024*.8,screenwidth,screenheight);
                 glColor4f(0.5,0.5,0.5,1);
-                text.glPrint(screenwidth/2-7.6*strlen(string)*screenwidth/1024*.8,0+screenheight*1/10,string,1,1.5*screenwidth/1024*.8,screenwidth,screenheight);
-                text.glPrint(screenwidth/2-7.6*strlen(string2)*screenwidth/1024*.8,0+screenheight*1/10-20*.8*screenwidth/1024,string2,1,1.5*screenwidth/1024*.8,screenwidth,screenheight);
-                text.glPrint(screenwidth/2-7.6*strlen(string3)*screenwidth/1024*.8,0+screenheight*1/10-40*.8*screenwidth/1024,string3,1,1.5*screenwidth/1024*.8,screenwidth,screenheight);
+                text->glPrint(screenwidth/2-7.6*strlen(string)*screenwidth/1024*.8,0+screenheight*1/10,string,1,1.5*screenwidth/1024*.8,screenwidth,screenheight);
+                text->glPrint(screenwidth/2-7.6*strlen(string2)*screenwidth/1024*.8,0+screenheight*1/10-20*.8*screenwidth/1024,string2,1,1.5*screenwidth/1024*.8,screenwidth,screenheight);
+                text->glPrint(screenwidth/2-7.6*strlen(string3)*screenwidth/1024*.8,0+screenheight*1/10-40*.8*screenwidth/1024,string3,1,1.5*screenwidth/1024*.8,screenwidth,screenheight);
             }
             //Hot spots	
 
@@ -937,9 +937,9 @@ int Game::DrawGLScene(StereoSide side)
                         while(!done){
                             if(string[i]=='\n'||string[i]>'z'||string[i]<' '||string[i]=='\0'){
                                 glColor4f(0,0,0,tutorialopac);
-                                text.glPrintOutline(screenwidth/2-7.6*(i-lastline)*screenwidth/1024-4,screenheight/16-4+screenheight*4/5-20*screenwidth/1024*line,string,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight,lastline,i);
+                                text->glPrintOutline(screenwidth/2-7.6*(i-lastline)*screenwidth/1024-4,screenheight/16-4+screenheight*4/5-20*screenwidth/1024*line,string,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight,lastline,i);
                                 glColor4f(1,1,1,tutorialopac);
-                                text.glPrint(screenwidth/2-7.6*(i-lastline)*screenwidth/1024,screenheight/16+screenheight*4/5-20*screenwidth/1024*line,string,1,1.5*screenwidth/1024,screenwidth,screenheight,lastline,i);
+                                text->glPrint(screenwidth/2-7.6*(i-lastline)*screenwidth/1024,screenheight/16+screenheight*4/5-20*screenwidth/1024*line,string,1,1.5*screenwidth/1024,screenwidth,screenheight,lastline,i);
                                 lastline=i+1;
                                 line++;
                                 if(string[i]=='\0')done=1;
@@ -1055,14 +1055,14 @@ int Game::DrawGLScene(StereoSide side)
 
                 if(dialogueboxcolor[whichdialogue][indialogue][0]+dialogueboxcolor[whichdialogue][indialogue][1]+dialogueboxcolor[whichdialogue][indialogue][2]<1.5){
                     glColor4f(0,0,0,tutorialopac);
-                    text.glPrintOutline(startx-2*7.6*strlen(string)*screenwidth/1024-4,starty-4,string,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight);
+                    text->glPrintOutline(startx-2*7.6*strlen(string)*screenwidth/1024-4,starty-4,string,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight);
                     glColor4f(0.7,0.7,0.7,tutorialopac);
-                    text.glPrint(startx-2*7.6*strlen(string)*screenwidth/1024,starty,string,1,1.5*screenwidth/1024,screenwidth,screenheight);
+                    text->glPrint(startx-2*7.6*strlen(string)*screenwidth/1024,starty,string,1,1.5*screenwidth/1024,screenwidth,screenheight);
                 }
                 else
                 {
                     glColor4f(0,0,0,tutorialopac);
-                    text.glPrintOutline(startx-2*7.6*strlen(string)*screenwidth/1024-4,starty-4,string,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight);
+                    text->glPrintOutline(startx-2*7.6*strlen(string)*screenwidth/1024-4,starty-4,string,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight);
                 }
 
                 tempnum=0;
@@ -1081,14 +1081,14 @@ int Game::DrawGLScene(StereoSide side)
                     if(string[i]=='\n'||string[i]>'z'||string[i]<' '||string[i]=='\0'){
                         if(dialogueboxcolor[whichdialogue][indialogue][0]+dialogueboxcolor[whichdialogue][indialogue][1]+dialogueboxcolor[whichdialogue][indialogue][2]<1.5){
                             glColor4f(0,0,0,tutorialopac);
-                            text.glPrintOutline(startx/*-7.6*(i-lastline)*screenwidth/1024*/-4,starty-4-20*screenwidth/1024*line,string,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight,lastline,i);
+                            text->glPrintOutline(startx/*-7.6*(i-lastline)*screenwidth/1024*/-4,starty-4-20*screenwidth/1024*line,string,1,1.5*1.25*screenwidth/1024,screenwidth,screenheight,lastline,i);
                             glColor4f(1,1,1,tutorialopac);
-                            text.glPrint(startx/*-7.6*(i-lastline)*screenwidth/1024*/,starty-20*screenwidth/1024*line,string,1,1.5*screenwidth/1024,screenwidth,screenheight,lastline,i);
+                            text->glPrint(startx/*-7.6*(i-lastline)*screenwidth/1024*/,starty-20*screenwidth/1024*line,string,1,1.5*screenwidth/1024,screenwidth,screenheight,lastline,i);
                         }
                         else
                         {
                             glColor4f(0,0,0,tutorialopac);
-                            text.glPrint(startx/*-7.6*(i-lastline)*screenwidth/1024*/,starty-20*screenwidth/1024*line,string,1,1.5*screenwidth/1024,screenwidth,screenheight,lastline,i);
+                            text->glPrint(startx/*-7.6*(i-lastline)*screenwidth/1024*/,starty-20*screenwidth/1024*line,string,1,1.5*screenwidth/1024,screenwidth,screenheight,lastline,i);
                         }
                         lastline=i+1;
                         line++;
@@ -1108,9 +1108,9 @@ int Game::DrawGLScene(StereoSide side)
                 }
                 if(!campaign)sprintf (string, "Score: %d", (int)bonustotal);
                 glColor4f(0,0,0,1);
-                text.glPrintOutline(1024/40-4,768/16-4+768*14/16,string,1,1.5*1.25,1024,768);
+                text->glPrintOutline(1024/40-4,768/16-4+768*14/16,string,1,1.5*1.25,1024,768);
                 glColor4f(1,0,0,1);
-                text.glPrint(1024/40,768/16+768*14/16,string,1,1.5,1024,768);
+                text->glPrint(1024/40,768/16+768*14/16,string,1,1.5,1024,768);
                 if(showdamagebar) {
                     glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
                     glDisable(GL_CULL_FACE);
@@ -1191,9 +1191,9 @@ int Game::DrawGLScene(StereoSide side)
                     // writing the numbers : 
                     sprintf (string, "Damages : %d/%d (%d)",(int)(player[0].damage),(int)(player[0].damagetolerance),(int)(player[0].bloodloss));
                     glColor4f(0,0,0,1);
-                    text.glPrintOutline(1024/40-4,768/16-4+768*14/16-40,string,1,1.5*1.25,1024,768);
+                    text->glPrintOutline(1024/40-4,768/16-4+768*14/16-40,string,1,1.5*1.25,1024,768);
                     glColor4f(1,0,0,1);
-                    text.glPrint(1024/40,768/16+768*14/16-40,string,1,1.5,1024,768);
+                    text->glPrint(1024/40,768/16+768*14/16-40,string,1,1.5,1024,768);
                 }
             }
 
@@ -1202,28 +1202,28 @@ int Game::DrawGLScene(StereoSide side)
 
             if((texttoggle||editorenabled)&&debugmode&&!mainmenu){
                 sprintf (string, "The framespersecond is %d.",(int)(fps));
-                text.glPrint(10,30,string,0,.8,1024,768);
+                text->glPrint(10,30,string,0,.8,1024,768);
 
                 sprintf (string, "Name: %s", registrationname);
-                text.glPrint(10,260,string,0,.8,1024,768);
+                text->glPrint(10,260,string,0,.8,1024,768);
 
 
                 if(editorenabled)
                     sprintf (string, "Map editor enabled.");
                 else
                     sprintf (string, "Map editor disabled.");
-                text.glPrint(10,60,string,0,.8,1024,768);
+                text->glPrint(10,60,string,0,.8,1024,768);
                 if(editorenabled){
                     sprintf (string, "Object size: %f",editorsize);
-                    text.glPrint(10,75,string,0,.8,1024,768);
+                    text->glPrint(10,75,string,0,.8,1024,768);
                     if(editorrotation>=0)sprintf (string, "Object rotation: %f",editorrotation);
                     else sprintf (string, "Object rotation: Random");
-                    text.glPrint(10,90,string,0,.8,1024,768);
+                    text->glPrint(10,90,string,0,.8,1024,768);
                     if(editorrotation2>=0)sprintf (string, "Object rotation2: %f",editorrotation2);
                     else sprintf (string, "Object rotation2: Random");
-                    text.glPrint(10,105,string,0,.8,1024,768);
+                    text->glPrint(10,105,string,0,.8,1024,768);
                     sprintf (string, "Object type: %d",editortype);
-                    text.glPrint(10,120,string,0,.8,1024,768);
+                    text->glPrint(10,120,string,0,.8,1024,768);
                     switch(editortype) {
                         case boxtype: 
                             sprintf (string, "(box)");
@@ -1262,15 +1262,15 @@ int Game::DrawGLScene(StereoSide side)
                             sprintf (string, "(fire)");
                             break;
                     }
-                    text.glPrint(130,120,string,0,.8,1024,768);
+                    text->glPrint(130,120,string,0,.8,1024,768);
 
                     sprintf (string, "Numplayers: %d",numplayers);
-                    text.glPrint(10,155,string,0,.8,1024,768);
+                    text->glPrint(10,155,string,0,.8,1024,768);
                     sprintf (string, "Player %d: numwaypoints: %d",numplayers,player[numplayers-1].numwaypoints);
-                    text.glPrint(10,140,string,0,.8,1024,768);
+                    text->glPrint(10,140,string,0,.8,1024,768);
                 }
                 sprintf (string, "Difficulty: %d",difficulty);
-                text.glPrint(10,240,string,0,.8,1024,768);
+                text->glPrint(10,240,string,0,.8,1024,768);
 
             }
 		}
@@ -1397,10 +1397,10 @@ int Game::DrawGLScene(StereoSide side)
 			glColor4f(1,1,1,1);
 			if(chatting){
 				sprintf (string, " ]");
-				text.glPrint(10,30+screenheight-330,string,0,1,screenwidth,screenheight);
+				text->glPrint(10,30+screenheight-330,string,0,1,screenwidth,screenheight);
 				if(displayblink){
 					sprintf (string, "_");
-					text.glPrint(30+(float)(displayselected)*10,30+(screenheight-330),string,0,1,screenwidth,screenheight);
+					text->glPrint(30+(float)(displayselected)*10,30+(screenheight-330),string,0,1,screenwidth,screenheight);
 				}
 			}
 			for(i=0;i<15;i++)
@@ -1409,7 +1409,7 @@ int Game::DrawGLScene(StereoSide side)
 						glColor4f(1,1,1,4-displaytime[i]);
 						if(j<displaychars[i]) {
 							sprintf (string, "%c",displaytext[i][j]);
-							text.glPrint(30+j*10,30+i*20+(screenheight-330),string,0,1,screenwidth,screenheight);
+							text->glPrint(30+j*10,30+i*20+(screenheight-330),string,0,1,screenwidth,screenheight);
 						}
 					}
 		}
@@ -1643,7 +1643,7 @@ int Game::DrawGLScene(StereoSide side)
 				glEnable(GL_TEXTURE_2D);
 				glColor4f(1,1,1,1);
 				sprintf (string, "Loading...");
-				text.glPrint(1024/2-90,768/2,string,1,2,1024,768);
+				text->glPrint(1024/2-90,768/2,string,1,2,1024,768);
 			}
 			loading=2;
 			//if(ismotionblur)drawmode=motionblurmode;
@@ -1693,16 +1693,16 @@ int Game::DrawGLScene(StereoSide side)
 			glEnable(GL_TEXTURE_2D);
 			glColor4f(1,1,1,1);
 			sprintf (string, "Level Cleared!");
-			text.glPrintOutlined(1024/2-strlen(string)*10,768*7/8,string,1,2,1024,768);
+			text->glPrintOutlined(1024/2-strlen(string)*10,768*7/8,string,1,2,1024,768);
 
 			sprintf (string, "Score:     %d",(int)(bonustotal-startbonustotal));
-			text.glPrintOutlined(1024/30,768*6/8,string,1,2,1024,768);
+			text->glPrintOutlined(1024/30,768*6/8,string,1,2,1024,768);
 
 			if(campaign)
 				sprintf (string, "Press Escape or Space to continue");
 			else
 				sprintf (string, "Press Escape to return to menu or Space to continue");
-			text.glPrintOutlined(640/2-strlen(string)*5,480*1/16,string,1,1,640,480);
+			text->glPrintOutlined(640/2-strlen(string)*5,480*1/16,string,1,1,640,480);
 
 			char temp[255];
 
@@ -1712,14 +1712,14 @@ int Game::DrawGLScene(StereoSide side)
 			if((int)(leveltime)%60<10)strcat(string,"0");
 			sprintf (temp, "%d",(int)(leveltime)%60);
 			strcat(string,temp);
-			text.glPrintOutlined(1024/30,768*6/8-40,string,1,2,1024,768);
+			text->glPrintOutlined(1024/30,768*6/8-40,string,1,2,1024,768);
 
 			//Awards
 			int awards[award_count];
 			int numawards = award_awards(awards);
 
 			for (i = 0; i < numawards && i < 6; i++)
-			  text.glPrintOutlined(1024/30,768*6/8-90-40*i,award_names[awards[i]],1,2,1024,768);
+			  text->glPrintOutlined(1024/30,768*6/8-90-40*i,award_names[awards[i]],1,2,1024,768);
 		}
 
 		if(drawmode!=normalmode){
@@ -1977,17 +1977,17 @@ int Game::DrawGLScene(StereoSide side)
 			if(consoleselected>=60)
 				offset=consoleselected-60;
 			sprintf (string, " ]");
-			text.glPrint(10,30,string,0,1,1024,768);
+			text->glPrint(10,30,string,0,1,1024,768);
 			if(consoleblink){
 				sprintf (string, "_");
-				text.glPrint(30+(float)(consoleselected)*10-offset*10,30,string,0,1,1024,768);
+				text->glPrint(30+(float)(consoleselected)*10-offset*10,30,string,0,1,1024,768);
 			}
 			for(i=0;i<15;i++)
 				for(j=0;j<consolechars[i];j++){
 					glColor4f(1,1,1,1-(float)(i)/16);
 					if(j<consolechars[i]){
 						sprintf (string, "%c",consoletext[i][j]);
-						text.glPrint(30+j*10-offset*10,30+i*20,string,0,1,1024,768);
+						text->glPrint(30+j*10-offset*10,30+i*20,string,0,1,1024,768);
 					}
 				}
 		}
@@ -2397,7 +2397,7 @@ void Game::DrawMenu() {
 	oldmainmenu=mainmenu;
 
     selected=Menu::getSelected(mousecoordh*640/screenwidth,480-mousecoordv*480/screenheight);
-    Menu::GUITick(this);
+    Menu::GUITick();
 
 	glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
 	glPushMatrix();										// Store The Projection Matrix
@@ -2408,7 +2408,7 @@ void Game::DrawMenu() {
 	glLoadIdentity();								// Reset The Modelview Matrix
 	glEnable(GL_TEXTURE_2D);
 	
-    Menu::drawItems(this);
+    Menu::drawItems();
 
     //draw mouse cursor
 	glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix

@@ -43,7 +43,6 @@ extern int tutoriallevel;
 extern int whichjointstartarray[26];
 extern int whichjointendarray[26];
 
-extern Game * pgame;
 extern bool visibleloading;
 
 void dealloc2(void* param){
@@ -835,7 +834,7 @@ void Animation::Load(const char *filename, int aheight, int aattack)
 	height=aheight;
 	attack=aattack;
 
-	if(visibleloading)pgame->LoadingScreen();
+	if(visibleloading) Game::LoadingScreen();
 
 	tfile=fopen( fixedFN, "rb" );
 	if(tfile){

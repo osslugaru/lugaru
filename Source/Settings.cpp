@@ -2,7 +2,9 @@
 #include "Game.h"
 #include "Input.h"
 
-void DefaultSettings(Game &game) {
+using namespace Game;
+
+void DefaultSettings() {
 	detail=1;
 	ismotionblur=0;
 	usermousesensitivity=1;
@@ -31,37 +33,37 @@ void DefaultSettings(Game &game) {
 	vblsync=1;
 	debugmode=0;
 	
-	game.crouchkey=SDLK_LSHIFT;
-	game.jumpkey=SDLK_SPACE;
-	game.leftkey=SDLK_a;
-	game.forwardkey=SDLK_w;
-	game.backkey=SDLK_s;
-	game.rightkey=SDLK_d;
-	game.drawkey=SDLK_e;
-	game.throwkey=SDLK_q;
-	game.attackkey=MOUSEBUTTON1;
-	game.consolekey=SDLK_BACKQUOTE;
-	game.chatkey=SDLK_t;
+	crouchkey=SDLK_LSHIFT;
+	jumpkey=SDLK_SPACE;
+	leftkey=SDLK_a;
+	forwardkey=SDLK_w;
+	backkey=SDLK_s;
+	rightkey=SDLK_d;
+	drawkey=SDLK_e;
+	throwkey=SDLK_q;
+	attackkey=MOUSEBUTTON1;
+	consolekey=SDLK_BACKQUOTE;
+	chatkey=SDLK_t;
 }
 
-void SaveSettings(Game &game) {
-	if(game.newdetail<0) game.newdetail=0;
-	if(game.newdetail>2) game.newdetail=2;
-	if(game.newscreenwidth>3000) game.newscreenwidth=screenwidth;
-	if(game.newscreenwidth<0) game.newscreenwidth=screenwidth;
-	if(game.newscreenheight>3000) game.newscreenheight=screenheight;
-	if(game.newscreenheight<0) game.newscreenheight=screenheight;
+void SaveSettings() {
+	if(newdetail<0) newdetail=0;
+	if(newdetail>2) newdetail=2;
+	if(newscreenwidth>3000) newscreenwidth=screenwidth;
+	if(newscreenwidth<0) newscreenwidth=screenwidth;
+	if(newscreenheight>3000) newscreenheight=screenheight;
+	if(newscreenheight<0) newscreenheight=screenheight;
 	ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
 	opstream << "Screenwidth:\n";
-	opstream << game.newscreenwidth;
+	opstream << newscreenwidth;
 	opstream << "\nScreenheight:\n";
-	opstream << game.newscreenheight;
+	opstream << newscreenheight;
 	opstream << "\nMouse sensitivity:\n";
 	opstream << usermousesensitivity;
 	opstream << "\nBlur(0,1):\n";
 	opstream << ismotionblur;
 	opstream << "\nOverall Detail(0,1,2) higher=better:\n";
-	opstream << game.newdetail;
+	opstream << newdetail;
 	opstream << "\nFloating jump:\n";
 	opstream << floatjump;
 	opstream << "\nMouse jump:\n";
@@ -106,27 +108,27 @@ void SaveSettings(Game &game) {
 	opstream << "\nVolume:\n";
 	opstream << volume;
 	opstream << "\nForward key:\n";
-	opstream << Input::keyToChar(game.forwardkey);
+	opstream << Input::keyToChar(forwardkey);
 	opstream << "\nBack key:\n";
-	opstream << Input::keyToChar(game.backkey);
+	opstream << Input::keyToChar(backkey);
 	opstream << "\nLeft key:\n";
-	opstream << Input::keyToChar(game.leftkey);
+	opstream << Input::keyToChar(leftkey);
 	opstream << "\nRight key:\n";
-	opstream << Input::keyToChar(game.rightkey);
+	opstream << Input::keyToChar(rightkey);
 	opstream << "\nJump key:\n";
-	opstream << Input::keyToChar(game.jumpkey);
+	opstream << Input::keyToChar(jumpkey);
 	opstream << "\nCrouch key:\n";
-	opstream << Input::keyToChar(game.crouchkey);
+	opstream << Input::keyToChar(crouchkey);
 	opstream << "\nDraw key:\n";
-	opstream << Input::keyToChar(game.drawkey);
+	opstream << Input::keyToChar(drawkey);
 	opstream << "\nThrow key:\n";
-	opstream << Input::keyToChar(game.throwkey);
+	opstream << Input::keyToChar(throwkey);
 	opstream << "\nAttack key:\n";
-	opstream << Input::keyToChar(game.attackkey);
+	opstream << Input::keyToChar(attackkey);
 	opstream << "\nConsole key:\n";
-	opstream << Input::keyToChar(game.consolekey);
+	opstream << Input::keyToChar(consolekey);
 	opstream << "\nChat key:\n";
-	opstream << Input::keyToChar(game.chatkey);
+	opstream << Input::keyToChar(chatkey);
 	opstream << "\nDamage bar:\n";
 	opstream << showdamagebar;
 	opstream << "\nStereoMode:\n";
@@ -138,7 +140,7 @@ void SaveSettings(Game &game) {
 	opstream.close();
 }
 
-bool LoadSettings(Game &game) {
+bool LoadSettings() {
 	ifstream ipstream(ConvertFileName(":Data:config.txt"), std::ios::in);
 	if ( !ipstream || ipstream.fail() ) {
 		printf("Config file not found\n");
@@ -224,37 +226,37 @@ bool LoadSettings(Game &game) {
 			ipstream >> volume;
 		} else if ( !strncmp(setting, "Forward key", 11) ) {
 			ipstream.getline( string, sizeof(string) );
-			game.forwardkey = Input::CharToKey(string);
+			forwardkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Back key", 8) ) {
 			ipstream.getline( string, sizeof(string) );
-			game.backkey = Input::CharToKey(string);
+			backkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Left key", 8) ) {
 			ipstream.getline( string, sizeof(string) );
-			game.leftkey = Input::CharToKey(string);
+			leftkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Right key", 9) ) {
 			ipstream.getline( string, sizeof(string) );
-			game.rightkey = Input::CharToKey(string);
+			rightkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Jump key", 8) ) {
 			ipstream.getline( string, sizeof(string) );
-			game.jumpkey = Input::CharToKey(string);
+			jumpkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Crouch key", 10) ) {
 			ipstream.getline( string, sizeof(string) );
-			game.crouchkey = Input::CharToKey(string);
+			crouchkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Draw key", 8) ) {
 			ipstream.getline( string, sizeof(string) );
-			game.drawkey = Input::CharToKey(string);
+			drawkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Throw key", 9) ) {
 			ipstream.getline( string, sizeof(string) );
-			game.throwkey = Input::CharToKey(string);
+			throwkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Attack key", 10) ) {
 			ipstream.getline( string, sizeof(string) );
-			game.attackkey = Input::CharToKey(string);
+			attackkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Console key", 11) ) {
 			ipstream.getline( string, sizeof(string) );
-			game.consolekey = Input::CharToKey(string);
+			consolekey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Chat key", 8) ) {
 			ipstream.getline( string, sizeof(string) );
-			game.chatkey = Input::CharToKey(string);
+			chatkey = Input::CharToKey(string);
 		} else if ( !strncmp(setting, "Damage bar", 10) ) {
 			ipstream >> showdamagebar;
 		} else if ( !strncmp(setting, "StereoMode", 10) ) {

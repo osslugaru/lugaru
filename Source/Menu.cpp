@@ -47,9 +47,9 @@ vector<MenuItem> items;
 
 
 
-void Menu::GUITick(Game* game){
+void Menu::GUITick(){
     for(vector<MenuItem>::iterator it=items.begin();it!=items.end();it++){
-		if(it->id==game->selected){
+		if(it->id==Game::selected){
 			it->effectfade+=multiplier*5;
 			if(it->effectfade>1)
                 it->effectfade=1;
@@ -137,7 +137,7 @@ int Menu::getSelected(int mousex, int mousey){
     return -1;
 }
 
-void Menu::drawItems(Game* game){
+void Menu::drawItems(){
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_ALPHA_TEST);
     glEnable(GL_BLEND);
@@ -191,20 +191,20 @@ void Menu::drawItems(Game* game){
         case MenuItem::BUTTON:
             glColor4f(it->r,it->g,it->b,1);
             glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-            game->text.glPrint(it->x,it->y,it->label.c_str(),0,1,640,480);
+            Game::text->glPrint(it->x,it->y,it->label.c_str(),0,1,640,480);
             if(it->type!=MenuItem::LABEL){
                 //mouseover highlight
                 glBlendFunc(GL_SRC_ALPHA,GL_ONE);
                 for(int i=0;i<15;i++){
                     if(1-((float)i)/15-(1-it->effectfade)>0){
                         glColor4f(it->r,it->g,it->b,(1-((float)i)/10-(1-it->effectfade))*.25);
-                        game->text.glPrint(it->x-((float)i),it->y,it->label.c_str(),0,1+((float)i)/70,640,480);
+                        Game::text->glPrint(it->x-((float)i),it->y,it->label.c_str(),0,1+((float)i)/70,640,480);
                     }
                 }
             }
             break;
         case MenuItem::MAPLABEL:
-            game->text.glPrintOutlined(0.9,0,0,it->x,it->y,it->label.c_str(),0,0.6,640,480);
+            Game::text->glPrintOutlined(0.9,0,0,it->x,it->y,it->label.c_str(),0,0.6,640,480);
             break;
         case MenuItem::MAPLINE: {
             XYZ linestart;
