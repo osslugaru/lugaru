@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <limits>
 #include <ctime>
+#include <dirent.h>
 #include "Game.h"
 #include "openal_wrapper.h"
 #include "Settings.h"
@@ -119,6 +120,7 @@ extern float damagedealt;
 extern int maptype;
 extern int editoractive;
 extern int editorpathtype;
+extern TGAImageRec texture;
 
 extern float hostiletime;
 
@@ -138,6 +140,95 @@ extern bool stillloading;
 extern bool winfreeze;
 
 extern bool campaign;
+
+
+
+void Loadlevel(int which);
+void Loadlevel(const char *name);
+
+
+
+class CampaignLevel {
+private:
+	int width;
+	struct Position { int x,y; };
+public: 
+	std::string mapname;
+	std::string description;
+	int choosenext;
+		/*	
+	  	0 = Immediately load next level at the end of this one.
+		1 = Go back to the world map.
+		2 = Don't bring up the Fiery loading screen. Maybe other things, I've not investigated.
+		*/
+	//int numnext; // 0 on final level. As David said: he meant to add story branching, but he eventually hadn't. 
+	std::vector<int> nextlevel;
+	Position location;
+	CampaignLevel() : width(10) {
+		choosenext = 1;
+		location.x = 0;
+		location.y = 0;
+	}
+	int getStartX() { return 30+120+location.x*400/512; }
+	int getStartY() { return 30+30+(512-location.y)*400/512; }
+	int getEndX() { return getStartX()+width; }
+	int getEndY() { return getStartY()+width; }
+	XYZ getCenter() {
+		XYZ center;
+		center.x=getStartX()+width/2;
+		center.y=getStartY()+width/2;
+		return center;
+	}
+	int getWidth() { return width; }
+	istream& operator<< (istream& is) {
+		is.ignore(256,':');
+		is.ignore(256,':');
+		is.ignore(256,' ');
+		is >> mapname;
+		is.ignore(256,':');
+		is >> description;
+		for(int pos = description.find('_');pos!=string::npos;pos = description.find('_',pos)) {
+			description.replace(pos,1,1,' ');
+		}
+		is.ignore(256,':');
+		is >> choosenext;
+		is.ignore(256,':');
+		int numnext,next;
+		is >> numnext;
+		for(int j=0;j<numnext;j++) {
+			is.ignore(256,':');
+			is >> next;
+			nextlevel.push_back(next-1);
+		}
+		is.ignore(256,':');
+		is >> location.x;
+		is.ignore(256,':');
+		is >> location.y;
+		return is;
+	}
+	friend istream& operator>> (istream& is, CampaignLevel& cl) {
+		return cl << is;
+	}
+};
+
+int indemo = 0;
+bool won = false;
+int entername = 0;
+vector<CampaignLevel> campaignlevels;
+int whichchoice = 0;
+int actuallevel = 0;
+bool winhotspot = false;
+bool windialogue = false;
+bool realthreat = 0;
+XYZ cameraloc;
+float cameradist = 0;
+bool oldattackkey = 0;
+int whichlevel = 0;
+float musicvolume[4] = {};
+float oldmusicvolume[4] = {};
+int musicselected = 0;
+
+
 
 static const char *rabbitskin[] = {
 ":Data:Textures:Fur3.jpg",
@@ -189,10 +280,9 @@ static console_handler cmd_handlers[] = {
 
 
 
-// added utility functions -sf17k =============================================================
+// utility functions
 
-//TODO: this is incorrect but I'm afraid to change it and break something,
-//probably causes quirky behavior that I might want to preserve
+// TODO: this is slightly incorrect
 inline float roughDirection(XYZ vec){
     Normalise(&vec);
     float angle=-asin(-vec.x)*180/M_PI;
@@ -203,18 +293,14 @@ inline float roughDirection(XYZ vec){
 inline float roughDirectionTo(XYZ start, XYZ end){
     return roughDirection(end-start);
 }
-
-//TODO: gotta be a better way
-inline float pitch(XYZ vec){
+inline float pitchOf(XYZ vec){
     Normalise(&vec);
     return -asin(vec.y)*180/M_PI;
 }
 inline float pitchTo(XYZ start, XYZ end){
-    return pitch(end-start);
+    return pitchOf(end-start);
 }
-
 inline float sq(float n) { return n*n; }
-
 inline float stepTowardf(float from, float to, float by){
     if(fabs(from-to)<by) return to;
     else if(from>to) return from-by;
@@ -257,7 +343,47 @@ void playdialogueboxsound(){
         emit_sound_at(sound, temppos);
 }
 
-// end added utility functions ================================================================
+// ================================================================
+
+bool AddClothes(const char *fileName, GLubyte *array) {
+	LOGFUNC;
+	//Load Image
+	unsigned char fileNamep[256];
+	CopyCStringToPascal(fileName,fileNamep);
+	bool opened;
+	opened=upload_image( fileNamep ,1);
+
+	float alphanum;
+	//Is it valid?
+	if(opened){
+		if(tintr>1)tintr=1;
+		if(tintg>1)tintg=1;
+		if(tintb>1)tintb=1;
+
+		if(tintr<0)tintr=0;
+		if(tintg<0)tintg=0;
+		if(tintb<0)tintb=0;
+
+		int bytesPerPixel=texture.bpp/8;
+
+		int tempnum=0;
+		alphanum=255;
+		for(int i=0;i<(int)(texture.sizeY*texture.sizeX*bytesPerPixel);i++){
+			if(bytesPerPixel==3)alphanum=255;
+			else if((i+1)%4==0)alphanum=texture.data[i];
+			//alphanum/=2;
+			if((i+1)%4||bytesPerPixel==3){
+				if((i%4)==0)texture.data[i]*=tintr;
+				if((i%4)==1)texture.data[i]*=tintg;
+				if((i%4)==2)texture.data[i]*=tintb;
+				array[tempnum]=(float)array[tempnum]*(1-alphanum/255)+(float)texture.data[i]*(alphanum/255);
+				tempnum++;
+			}
+		}
+	}
+	else return 0;
+	return 1;
+}
 
 
 
@@ -288,7 +414,7 @@ static void ch_save(const char *args){
     fpackf(tfile, "Bb Bf Bf Bf", skyboxtexture, skyboxr, skyboxg, skyboxb);
     fpackf(tfile, "Bf Bf Bf", skyboxlightr, skyboxlightg, skyboxlightb);
     fpackf(tfile, "Bf Bf Bf Bf Bf Bi", player[0].coords.x, player[0].coords.y, player[0].coords.z,
-            player[0].rotation, player[0].targetrotation, player[0].num_weapons);
+            player[0].yaw, player[0].targetyaw, player[0].num_weapons);
     if(player[0].num_weapons>0&&player[0].num_weapons<5)
         for(int j=0;j<player[0].num_weapons;j++)
           fpackf(tfile, "Bi", weapons[player[0].weaponids[j]].getType());
@@ -309,7 +435,7 @@ static void ch_save(const char *args){
 		fpackf(tfile, "Bi", dialoguetype[k]);
 		for(int l=0;l<10;l++){
 			fpackf(tfile, "Bf Bf Bf", participantlocation[k][l].x, participantlocation[k][l].y, participantlocation[k][l].z);
-			fpackf(tfile, "Bf", participantrotation[k][l]);
+			fpackf(tfile, "Bf", participantyaw[k][l]);
 		}
 		for(int l=0;l<numdialogueboxes[k];l++){
 			fpackf(tfile, "Bi", dialogueboxlocation[k][l]);
@@ -341,7 +467,7 @@ static void ch_save(const char *args){
 			for(int m=0;m<10;m++)
 				fpackf(tfile, "Bf Bf Bf", participantfacing[k][l][m].x, participantfacing[k][l][m].y, participantfacing[k][l][m].z);
 
-			fpackf(tfile, "Bf Bf",dialoguecamerarotation[k][l],dialoguecamerarotation2[k][l]);
+			fpackf(tfile, "Bf Bf",dialoguecamerayaw[k][l],dialoguecamerapitch[k][l]);
 		}
 	}
 
@@ -358,7 +484,7 @@ static void ch_save(const char *args){
     fpackf(tfile, "Bi", objects.numobjects);
 
     for(int k=0;k<objects.numobjects;k++)
-        fpackf(tfile, "Bi Bf Bf Bf Bf Bf Bf", objects.type[k], objects.rotation[k], objects.rotation2[k],
+        fpackf(tfile, "Bi Bf Bf Bf Bf Bf Bf", objects.type[k], objects.yaw[k], objects.pitch[k],
             objects.position[k].x, objects.position[k].y, objects.position[k].z, objects.scale[k]);
 
     fpackf(tfile, "Bi", numhotspots);
@@ -375,7 +501,7 @@ static void ch_save(const char *args){
         for(int j=1;j<numplayers;j++){
             fpackf(tfile, "Bi Bi Bf Bf Bf Bi Bi Bf Bb Bf", player[j].whichskin, player[j].creature,
                     player[j].coords.x, player[j].coords.y, player[j].coords.z,
-                    player[j].num_weapons, player[j].howactive, player[j].scale, player[j].immobile, player[j].rotation);
+                    player[j].num_weapons, player[j].howactive, player[j].scale, player[j].immobile, player[j].yaw);
             if(player[j].num_weapons<5)
                 for(int k=0;k<player[j].num_weapons;k++)
                     fpackf(tfile, "Bi", weapons[player[j].weaponids[k]].getType());
@@ -921,7 +1047,7 @@ static void ch_fixtype(const char *args)
 
 static void ch_fixrotation(const char *args)
 {
-  participantrotation[whichdialogue][participantfocus[whichdialogue][indialogue]]=player[participantfocus[whichdialogue][indialogue]].rotation;
+  participantyaw[whichdialogue][participantfocus[whichdialogue][indialogue]]=player[participantfocus[whichdialogue][indialogue]].yaw;
 }
 
 static void ch_ddialogue(const char *args)
@@ -1000,8 +1126,8 @@ static void ch_play(const char *args)
 
   for(int i=0;i<numdialogueboxes[whichdialogue];i++){
     player[participantfocus[whichdialogue][i]].coords=participantlocation[whichdialogue][participantfocus[whichdialogue][i]];
-    player[participantfocus[whichdialogue][i]].rotation=participantrotation[whichdialogue][participantfocus[whichdialogue][i]];
-    player[participantfocus[whichdialogue][i]].targetrotation=participantrotation[whichdialogue][participantfocus[whichdialogue][i]];
+    player[participantfocus[whichdialogue][i]].yaw=participantyaw[whichdialogue][participantfocus[whichdialogue][i]];
+    player[participantfocus[whichdialogue][i]].targetyaw=participantyaw[whichdialogue][participantfocus[whichdialogue][i]];
     player[participantfocus[whichdialogue][i]].velocity=0;
     player[participantfocus[whichdialogue][i]].targetanimation=player[participantfocus[whichdialogue][i]].getIdle();
     player[participantfocus[whichdialogue][i]].targetframe=0;
@@ -1140,7 +1266,7 @@ void Game::SetUpLighting(){
 	light.ambient[2]*=(skyboxlightb+average)/2;
 }
 
-int Game::findPathDist(int start,int end){
+int findPathDist(int start,int end){
 	int smallestcount,count,connected;
 	int last,last2,last3,last4;
 	int closest;
@@ -1207,7 +1333,7 @@ int Game::checkcollide(XYZ startpoint,XYZ endpoint){
                     objects.type[i]!=firetype){
 				colviewer=startpoint;
 				coltarget=endpoint;
-				if(objects.model[i].LineCheck(&colviewer,&coltarget,&colpoint,&objects.position[i],&objects.rotation[i])!=-1)return i;
+				if(objects.model[i].LineCheck(&colviewer,&coltarget,&colpoint,&objects.position[i],&objects.yaw[i])!=-1)return i;
 			}
 		}
 	}
@@ -1242,7 +1368,7 @@ int Game::checkcollide(XYZ startpoint,XYZ endpoint,int what){
 				colviewer=startpoint;
 				coltarget=endpoint;
                 //FIXME: i/what
-				if(objects.model[what].LineCheck(&colviewer,&coltarget,&colpoint,&objects.position[what],&objects.rotation[what])!=-1)return i;
+				if(objects.model[what].LineCheck(&colviewer,&coltarget,&colpoint,&objects.position[what],&objects.yaw[what])!=-1)return i;
 			}
 		}
 	}
@@ -1252,7 +1378,7 @@ int Game::checkcollide(XYZ startpoint,XYZ endpoint,int what){
 	return -1;
 }
 
-void Game::Setenvironment(int which)
+void Setenvironment(int which)
 {
 	LOGFUNC;
 
@@ -1295,7 +1421,7 @@ void Game::Setenvironment(int which)
 
 		temptexdetail=texdetail;
 		if(texdetail>1)texdetail=4;
-		skybox.load(	":Data:Textures:Skybox(snow):Front.jpg",
+		skybox->load(	":Data:Textures:Skybox(snow):Front.jpg",
 			":Data:Textures:Skybox(snow):Left.jpg",
 			":Data:Textures:Skybox(snow):Back.jpg",
 			":Data:Textures:Skybox(snow):Right.jpg",
@@ -1333,7 +1459,7 @@ void Game::Setenvironment(int which)
 
 		temptexdetail=texdetail;
 		if(texdetail>1)texdetail=4;
-		skybox.load(	":Data:Textures:Skybox(sand):Front.jpg",
+		skybox->load(	":Data:Textures:Skybox(sand):Front.jpg",
 			":Data:Textures:Skybox(sand):Left.jpg",
 			":Data:Textures:Skybox(sand):Back.jpg",
 			":Data:Textures:Skybox(sand):Right.jpg",
@@ -1370,7 +1496,7 @@ void Game::Setenvironment(int which)
 
 		temptexdetail=texdetail;
 		if(texdetail>1)texdetail=4;
-		skybox.load(	":Data:Textures:Skybox(grass):Front.jpg",
+		skybox->load(	":Data:Textures:Skybox(grass):Front.jpg",
 			":Data:Textures:Skybox(grass):Left.jpg",
 			":Data:Textures:Skybox(grass):Back.jpg",
 			":Data:Textures:Skybox(grass):Right.jpg",
@@ -1388,7 +1514,56 @@ void Game::Setenvironment(int which)
 	texdetail=temptexdetail;
 }
 
-void Game::Loadlevel(int which) {
+void LoadCampaign() {
+	if(!accountactive)
+		return;
+	ifstream ipstream(ConvertFileName((":Data:Campaigns:"+accountactive->getCurrentCampaign()+".txt").c_str()));
+	ipstream.ignore(256,':');
+	int numlevels;
+	ipstream >> numlevels;
+	campaignlevels.clear();
+	for(int i=0;i<numlevels;i++) {
+		CampaignLevel cl;
+		ipstream >> cl;
+		campaignlevels.push_back(cl);
+	}
+	ipstream.close();
+
+	ifstream test(ConvertFileName((":Data:Textures:"+accountactive->getCurrentCampaign()+":World.png").c_str()));
+	if(test.good()) {
+		LoadTexture((":Data:Textures:"+accountactive->getCurrentCampaign()+":World.png").c_str(),&Mainmenuitems[7],0,0);
+	} else {
+		LoadTexture(":Data:Textures:World.png",&Mainmenuitems[7],0,0);
+	}
+
+	if(accountactive->getCampaignChoicesMade()==0) {
+		accountactive->setCampaignScore(0);
+		accountactive->resetFasttime();
+	}
+}
+
+vector<string> ListCampaigns() {
+	DIR *campaigns = opendir(ConvertFileName(":Data:Campaigns"));
+	struct dirent *campaign = NULL;
+	if(!campaigns) {
+		perror("Problem while loading campaigns");
+		cerr << "campaign folder was : " << ConvertFileName(":Data:Campaigns") << endl;
+		exit(EXIT_FAILURE);
+	}
+	vector<string> campaignNames;
+	while ((campaign = readdir(campaigns)) != NULL) {
+		string name(campaign->d_name);
+		if(name.length()<5)
+			continue;
+		if(!name.compare(name.length()-4,4,".txt")) {
+			campaignNames.push_back(name.substr(0,name.length()-4));
+		}
+	}
+	closedir(campaigns);
+	return campaignNames;
+}
+
+void Loadlevel(int which) {
 	stealthloading=0;
 	whichlevel=which;
 
@@ -1403,7 +1578,7 @@ void Game::Loadlevel(int which) {
 	    Loadlevel("mapsave");
 }
 
-void Game::Loadlevel(const char *name) {
+void Loadlevel(const char *name) {
 	int templength;
 	float lamefloat;
 	static const char *pfx = ":Data:Maps:";
@@ -1473,11 +1648,6 @@ void Game::Loadlevel(const char *name) {
 
 		if(accountactive)
             difficulty=accountactive->getDifficulty();
-
-		if(difficulty!=2)
-            minimap=1;
-		else
-            minimap=0;
 
 		numhotspots=0;
 		currenthotspot=-1;
@@ -1578,7 +1748,7 @@ void Game::Loadlevel(const char *name) {
 			skyboxlightb=skyboxb;
 		}
 		if(!stealthloading)
-            funpackf(tfile, "Bf Bf Bf Bf Bf Bi", &player[0].coords.x,&player[0].coords.y,&player[0].coords.z,&player[0].rotation,&player[0].targetrotation, &player[0].num_weapons);
+            funpackf(tfile, "Bf Bf Bf Bf Bf Bi", &player[0].coords.x,&player[0].coords.y,&player[0].coords.z,&player[0].yaw,&player[0].targetyaw, &player[0].num_weapons);
 		if(stealthloading)
             funpackf(tfile, "Bf Bf Bf Bf Bf Bi", &lamefloat,&lamefloat,&lamefloat,&lamefloat,&lamefloat, &player[0].num_weapons);
 		player[0].originalcoords=player[0].coords;
@@ -1619,7 +1789,7 @@ void Game::Loadlevel(const char *name) {
                 funpackf(tfile, "Bi", &dialoguetype[k]);
                 for(int l=0;l<10;l++){
                     funpackf(tfile, "Bf Bf Bf", &participantlocation[k][l].x, &participantlocation[k][l].y, &participantlocation[k][l].z);
-                    funpackf(tfile, "Bf", &participantrotation[k][l]);
+                    funpackf(tfile, "Bf", &participantyaw[k][l]);
                 }
                 for(int l=0;l<numdialogueboxes[k];l++){
                     funpackf(tfile, "Bi", &dialogueboxlocation[k][l]);
@@ -1654,7 +1824,7 @@ void Game::Loadlevel(const char *name) {
                     for(m=0;m<10;m++)
                         funpackf(tfile, "Bf Bf Bf", &participantfacing[k][l][m].x, &participantfacing[k][l][m].y, &participantfacing[k][l][m].z);
 
-                    funpackf(tfile, "Bf Bf",&dialoguecamerarotation[k][l],&dialoguecamerarotation2[k][l]);
+                    funpackf(tfile, "Bf Bf",&dialoguecamerayaw[k][l],&dialoguecamerapitch[k][l]);
                 }
             }
 		}else
@@ -1672,7 +1842,7 @@ void Game::Loadlevel(const char *name) {
 
 		funpackf(tfile, "Bi", &objects.numobjects);
         for(int i=0;i<objects.numobjects;i++){
-            funpackf(tfile, "Bi Bf Bf Bf Bf Bf Bf", &objects.type[i],&objects.rotation[i],&objects.rotation2[i], &objects.position[i].x, &objects.position[i].y, &objects.position[i].z,&objects.scale[i]);
+            funpackf(tfile, "Bi Bf Bf Bf Bf Bf Bf", &objects.type[i],&objects.yaw[i],&objects.pitch[i], &objects.position[i].x, &objects.position[i].y, &objects.position[i].z,&objects.scale[i]);
             if(objects.type[i]==treeleavestype)
                 objects.scale[i]=objects.scale[i-1];
         }
@@ -1746,10 +1916,10 @@ void Game::Loadlevel(const char *name) {
 				else
                     player[i-howmanyremoved].immobile=0;
 				if(mapvers>=12)
-                    funpackf(tfile, "Bf",&player[i-howmanyremoved].rotation);
+                    funpackf(tfile, "Bf",&player[i-howmanyremoved].yaw);
 				else
-                    player[i-howmanyremoved].rotation=0;
-				player[i-howmanyremoved].targetrotation=player[i-howmanyremoved].rotation;
+                    player[i-howmanyremoved].yaw=0;
+				player[i-howmanyremoved].targetyaw=player[i-howmanyremoved].yaw;
 				if(player[i-howmanyremoved].num_weapons<0||player[i-howmanyremoved].num_weapons>5){
 					removeanother=1;
 					howmanyremoved++;
@@ -1848,7 +2018,7 @@ void Game::Loadlevel(const char *name) {
 			int j=objects.numobjects;
 			objects.numobjects=0;
 			for(int i=0;i<j;i++){
-				objects.MakeObject(objects.type[i],objects.position[i],objects.rotation[i],objects.rotation2[i],objects.scale[i]);
+				objects.MakeObject(objects.type[i],objects.position[i],objects.yaw[i],objects.pitch[i],objects.scale[i]);
 				if(visibleloading)
                     LoadingScreen();
 			}
@@ -2048,7 +2218,7 @@ void Game::Loadlevel(const char *name) {
             player[0].armorlow*=1.5;
 		cameraloc=player[0].coords;
 		cameraloc.y+=5;
-		rotation=player[0].rotation;
+		yaw=player[0].yaw;
 
 		hawkcoords=player[0].coords;
 		hawkcoords.y+=30;
@@ -2086,7 +2256,7 @@ void Game::Loadlevel(const char *name) {
 	visibleloading=0;
 }
 
-void Game::doTutorial(){
+void doTutorial(){
     if(tutorialstagetime>tutorialmaxtime){
         tutorialstage++;
         tutorialsuccess=0;
@@ -2142,7 +2312,7 @@ void Game::doTutorial(){
                     if(Random()%2==0){
                         if(!player[1].skeleton.free)temp2=(player[1].coords-player[1].oldcoords)/multiplier/2;//velocity/2;
                         if(player[1].skeleton.free)temp2=player[1].skeleton.joints[i].velocity*player[1].scale/2;
-                        if(!player[1].skeleton.free)temp=DoRotation(DoRotation(DoRotation(player[1].skeleton.joints[i].position,0,0,player[1].tilt),player[1].tilt2,0,0),0,player[1].rotation,0)*player[1].scale+player[1].coords;
+                        if(!player[1].skeleton.free)temp=DoRotation(DoRotation(DoRotation(player[1].skeleton.joints[i].position,0,0,player[1].tilt),player[1].tilt2,0,0),0,player[1].yaw,0)*player[1].scale+player[1].coords;
                         if(player[1].skeleton.free)temp=player[1].skeleton.joints[i].position*player[1].scale+player[1].coords;
                         Sprite::MakeSprite(breathsprite, temp,temp2, 1,1,1, .6+(float)abs(Random()%100)/200-.25, 1);
                     }
@@ -2373,7 +2543,7 @@ void Game::doTutorial(){
                     if(Random()%2==0){
                         if(!player[1].skeleton.free)temp2=(player[1].coords-player[1].oldcoords)/multiplier/2;//velocity/2;
                         if(player[1].skeleton.free)temp2=player[1].skeleton.joints[i].velocity*player[1].scale/2;
-                        if(!player[1].skeleton.free)temp=DoRotation(DoRotation(DoRotation(player[1].skeleton.joints[i].position,0,0,player[1].tilt),player[1].tilt2,0,0),0,player[1].rotation,0)*player[1].scale+player[1].coords;
+                        if(!player[1].skeleton.free)temp=DoRotation(DoRotation(DoRotation(player[1].skeleton.joints[i].position,0,0,player[1].tilt),player[1].tilt2,0,0),0,player[1].yaw,0)*player[1].scale+player[1].coords;
                         if(player[1].skeleton.free)temp=player[1].skeleton.joints[i].position*player[1].scale+player[1].coords;
                         Sprite::MakeSprite(breathsprite, temp,temp2, 1,1,1, .6+(float)abs(Random()%100)/200-.25, 1);
                     }
@@ -2460,7 +2630,7 @@ void Game::doTutorial(){
     }
 }
 
-void Game::doDebugKeys(){
+void doDebugKeys(){
 	float headprop,bodyprop,armprop,legprop;
     if(debugmode){
         if(Input::isKeyPressed(SDLK_h)){
@@ -2536,8 +2706,8 @@ void Game::doDebugKeys(){
                         closest=i;
                     }
                 }
-            player[closest].rotation+=multiplier*50;
-            player[closest].targetrotation=player[closest].rotation;
+            player[closest].yaw+=multiplier*50;
+            player[closest].targetyaw=player[closest].yaw;
         }
 
 
@@ -2690,7 +2860,7 @@ void Game::doDebugKeys(){
                     if(player[closest].skeleton.free)
                         flatvelocity2=headjoint.velocity;
                     if(!player[closest].skeleton.free)
-                        flatfacing2=DoRotation(DoRotation(DoRotation(headjoint.position,0,0,player[closest].tilt),player[closest].tilt2,0,0),0,player[closest].rotation,0)*player[closest].scale+player[closest].coords;
+                        flatfacing2=DoRotation(DoRotation(DoRotation(headjoint.position,0,0,player[closest].tilt),player[closest].tilt2,0,0),0,player[closest].yaw,0)*player[closest].scale+player[closest].coords;
                     if(player[closest].skeleton.free)
                         flatfacing2=headjoint.position*player[closest].scale+player[closest].coords;
                     flatvelocity2.x+=(float)(abs(Random()%100)-50)/10;
@@ -2742,7 +2912,7 @@ void Game::doDebugKeys(){
                 for(int i=0;i<player[closest].skeleton.num_joints; i++){
                     if(!player[closest].skeleton.free)flatvelocity2=player[closest].velocity;
                     if(player[closest].skeleton.free)flatvelocity2=player[closest].skeleton.joints[i].velocity;
-                    if(!player[closest].skeleton.free)flatfacing2=DoRotation(DoRotation(DoRotation(player[closest].skeleton.joints[i].position,0,0,player[closest].tilt),player[closest].tilt2,0,0),0,player[closest].rotation,0)*player[closest].scale+player[closest].coords;
+                    if(!player[closest].skeleton.free)flatfacing2=DoRotation(DoRotation(DoRotation(player[closest].skeleton.joints[i].position,0,0,player[closest].tilt),player[closest].tilt2,0,0),0,player[closest].yaw,0)*player[closest].scale+player[closest].coords;
                     if(player[closest].skeleton.free)flatfacing2=player[closest].skeleton.joints[i].position*player[closest].scale+player[closest].coords;
                     flatvelocity2.x+=(float)(abs(Random()%100)-50)/10;
                     flatvelocity2.y+=(float)(abs(Random()%100)-50)/10;
@@ -2755,7 +2925,7 @@ void Game::doDebugKeys(){
                 for(int i=0;i<player[closest].skeleton.num_joints; i++){
                     if(!player[closest].skeleton.free)flatvelocity2=player[closest].velocity;
                     if(player[closest].skeleton.free)flatvelocity2=player[closest].skeleton.joints[i].velocity;
-                    if(!player[closest].skeleton.free)flatfacing2=DoRotation(DoRotation(DoRotation(player[closest].skeleton.joints[i].position,0,0,player[closest].tilt),player[closest].tilt2,0,0),0,player[closest].rotation,0)*player[closest].scale+player[closest].coords;
+                    if(!player[closest].skeleton.free)flatfacing2=DoRotation(DoRotation(DoRotation(player[closest].skeleton.joints[i].position,0,0,player[closest].tilt),player[closest].tilt2,0,0),0,player[closest].yaw,0)*player[closest].scale+player[closest].coords;
                     if(player[closest].skeleton.free)flatfacing2=player[closest].skeleton.joints[i].position*player[closest].scale+player[closest].coords;
                     flatvelocity2.x+=(float)(abs(Random()%100)-50)/10;
                     flatvelocity2.y+=(float)(abs(Random()%100)-50)/10;
@@ -2767,7 +2937,7 @@ void Game::doDebugKeys(){
                 for(int i=0;i<player[closest].skeleton.num_joints; i++){
                     if(!player[closest].skeleton.free)flatvelocity2=player[closest].velocity;
                     if(player[closest].skeleton.free)flatvelocity2=player[closest].skeleton.joints[i].velocity;
-                    if(!player[closest].skeleton.free)flatfacing2=DoRotation(DoRotation(DoRotation(player[closest].skeleton.joints[i].position,0,0,player[closest].tilt),player[closest].tilt2,0,0),0,player[closest].rotation,0)*player[closest].scale+player[closest].coords;
+                    if(!player[closest].skeleton.free)flatfacing2=DoRotation(DoRotation(DoRotation(player[closest].skeleton.joints[i].position,0,0,player[closest].tilt),player[closest].tilt2,0,0),0,player[closest].yaw,0)*player[closest].scale+player[closest].coords;
                     if(player[closest].skeleton.free)flatfacing2=player[closest].skeleton.joints[i].position*player[closest].scale+player[closest].coords;
                     flatvelocity2.x+=(float)(abs(Random()%100)-50)/10;
                     flatvelocity2.y+=(float)(abs(Random()%100)-50)/10;
@@ -2779,7 +2949,7 @@ void Game::doDebugKeys(){
                 for(int i=0;i<player[closest].skeleton.num_joints; i++){
                     if(!player[closest].skeleton.free)flatvelocity2=player[closest].velocity;
                     if(player[closest].skeleton.free)flatvelocity2=player[closest].skeleton.joints[i].velocity;
-                    if(!player[closest].skeleton.free)flatfacing2=DoRotation(DoRotation(DoRotation(player[closest].skeleton.joints[i].position,0,0,player[closest].tilt),player[closest].tilt2,0,0),0,player[closest].rotation,0)*player[closest].scale+player[closest].coords;
+                    if(!player[closest].skeleton.free)flatfacing2=DoRotation(DoRotation(DoRotation(player[closest].skeleton.joints[i].position,0,0,player[closest].tilt),player[closest].tilt2,0,0),0,player[closest].yaw,0)*player[closest].scale+player[closest].coords;
                     if(player[closest].skeleton.free)flatfacing2=player[closest].skeleton.joints[i].position*player[closest].scale+player[closest].coords;
                     flatvelocity2.x+=(float)(abs(Random()%100)-50)/10;
                     flatvelocity2.y+=(float)(abs(Random()%100)-50)/10;
@@ -2920,14 +3090,14 @@ void Game::doDebugKeys(){
                     if(editortype==firetype)boxcoords.y=player[0].coords.y-.5;
                     //objects.MakeObject(abs(Random()%3),boxcoords,Random()%360);
                     float temprotat,temprotat2;
-                    temprotat=editorrotation;
-                    temprotat2=editorrotation2;
+                    temprotat=editoryaw;
+                    temprotat2=editorpitch;
                     if(temprotat<0||editortype==bushtype)temprotat=Random()%360;
                     if(temprotat2<0)temprotat2=Random()%360;
 
                     objects.MakeObject(editortype,boxcoords,(int)temprotat-((int)temprotat)%30,(int)temprotat2,editorsize);
                     if(editortype==treetrunktype)
-                        objects.MakeObject(treeleavestype,boxcoords,Random()%360*(temprotat2<2)+(int)editorrotation-((int)editorrotation)%30,editorrotation2,editorsize);
+                        objects.MakeObject(treeleavestype,boxcoords,Random()%360*(temprotat2<2)+(int)editoryaw-((int)editoryaw)%30,editorpitch,editorsize);
                 }
             }
 
@@ -2968,8 +3138,8 @@ void Game::doDebugKeys(){
                     player[numplayers].bled=0;
                     player[numplayers].speed=1+(float)(Random()%100)/1000;
 
-                    player[numplayers].targetrotation=player[0].targetrotation;
-                    player[numplayers].rotation=player[0].rotation;
+                    player[numplayers].targetyaw=player[0].targetyaw;
+                    player[numplayers].yaw=player[0].yaw;
 
                     player[numplayers].velocity=0;
                     player[numplayers].coords=player[0].coords;
@@ -3162,12 +3332,12 @@ void Game::doDebugKeys(){
             }
 
             if(Input::isKeyDown(SDLK_LEFT)&&!Input::isKeyDown(SDLK_LSHIFT)&&!Input::isKeyDown(SDLK_LCTRL)){
-                editorrotation-=multiplier*100;
-                if(editorrotation<-.01)editorrotation=-.01;
+                editoryaw-=multiplier*100;
+                if(editoryaw<-.01)editoryaw=-.01;
             }
 
             if(Input::isKeyDown(SDLK_RIGHT)&&!Input::isKeyDown(SDLK_LSHIFT)&&!Input::isKeyDown(SDLK_LCTRL)){
-                editorrotation+=multiplier*100;
+                editoryaw+=multiplier*100;
             }
 
             if(Input::isKeyDown(SDLK_UP)&&!Input::isKeyDown(SDLK_LCTRL)){
@@ -3188,12 +3358,12 @@ void Game::doDebugKeys(){
                 mapradius+=multiplier*10;
             }
             if(Input::isKeyDown(SDLK_UP)&&Input::isKeyDown(SDLK_LCTRL)){
-                editorrotation2+=multiplier*100;
+                editorpitch+=multiplier*100;
             }
 
             if(Input::isKeyDown(SDLK_DOWN)&&Input::isKeyDown(SDLK_LCTRL)){
-                editorrotation2-=multiplier*100;
-                if(editorrotation2<-.01)editorrotation2=-.01;
+                editorpitch-=multiplier*100;
+                if(editorpitch<-.01)editorpitch=-.01;
             }
             if(Input::isKeyPressed(SDLK_DELETE)&&objects.numobjects&&Input::isKeyDown(SDLK_LSHIFT)){
                 int closest=-1;
@@ -3212,7 +3382,7 @@ void Game::doDebugKeys(){
     }
 }
 
-void Game::doJumpReversals(){
+void doJumpReversals(){
     for(int k=0;k<numplayers;k++)
         for(int i=k;i<numplayers;i++){
             if(i==k)continue;
@@ -3261,8 +3431,8 @@ void Game::doJumpReversals(){
                         player[i].target=0;
                         player[k].oldcoords=player[k].coords;
                         player[i].coords=player[k].coords;
-                        player[k].targetrotation=player[i].targetrotation;
-                        player[k].rotation=player[i].targetrotation;
+                        player[k].targetyaw=player[i].targetyaw;
+                        player[k].yaw=player[i].targetyaw;
                         if(player[k].aitype==attacktypecutoff)
                             player[k].stunned=.5;
                     }
@@ -3300,8 +3470,8 @@ void Game::doJumpReversals(){
                         player[k].target=0;
                         player[i].oldcoords=player[i].coords;
                         player[k].coords=player[i].coords;
-                        player[i].targetrotation=player[k].targetrotation;
-                        player[i].rotation=player[k].targetrotation;
+                        player[i].targetyaw=player[k].targetyaw;
+                        player[i].yaw=player[k].targetyaw;
                         if(player[i].aitype==attacktypecutoff)
                             player[i].stunned=.5;
                     }
@@ -3310,21 +3480,21 @@ void Game::doJumpReversals(){
         }
 }
 
-void Game::doAerialAcrobatics(){
+void doAerialAcrobatics(){
 	static XYZ facing,flatfacing;
     for(int k=0;k<numplayers;k++){
         player[k].turnspeed=500;
 
         if((player[k].isRun()&&
-                    ((player[k].targetrotation!=rabbitrunninganim&&
-                      player[k].targetrotation!=wolfrunninganim)||
+                    ((player[k].targetyaw!=rabbitrunninganim&&
+                      player[k].targetyaw!=wolfrunninganim)||
                      player[k].targetframe==4))||
                 player[k].targetanimation==removeknifeanim||
                 player[k].targetanimation==crouchremoveknifeanim||
                 player[k].targetanimation==flipanim||
                 player[k].targetanimation==fightsidestep||
                 player[k].targetanimation==walkanim){
-            player[k].rotation=stepTowardf(player[k].rotation, player[k].targetrotation, multiplier*player[k].turnspeed);
+            player[k].yaw=stepTowardf(player[k].yaw, player[k].targetyaw, multiplier*player[k].turnspeed);
         }
 
 
@@ -3340,11 +3510,11 @@ void Game::doAerialAcrobatics(){
                  player[k].targetanimation!=rabbitkickanim&&
                  (player[k].targetanimation!=crouchstabanim||player[k].hasvictim)&&
                  (player[k].targetanimation!=swordgroundstabanim||player[k].hasvictim))){
-            player[k].rotation=stepTowardf(player[k].rotation, player[k].targetrotation, multiplier*player[k].turnspeed*2);
+            player[k].yaw=stepTowardf(player[k].yaw, player[k].targetyaw, multiplier*player[k].turnspeed*2);
         }
 
         if(player[k].targetanimation==sneakanim&&player[k].currentanimation!=sneakanim){
-            player[k].rotation=stepTowardf(player[k].rotation, player[k].targetrotation, multiplier*player[k].turnspeed*4);
+            player[k].yaw=stepTowardf(player[k].yaw, player[k].targetyaw, multiplier*player[k].turnspeed*4);
         }
 
         /*if(player[k].aitype!=passivetype||(findDistancefast(&player[k].coords,&viewer)<viewdistance*viewdistance))*/
@@ -3385,7 +3555,7 @@ void Game::doAerialAcrobatics(){
                     if(     player[k].coords.y<terrain.getHeight(player[k].coords.x,player[k].coords.z)&&
                             player[k].coords.y>terrain.getHeight(player[k].coords.x,player[k].coords.z)-.1)
                         player[k].coords.y=terrain.getHeight(player[k].coords.x,player[k].coords.z);
-                    if(player[k].SphereCheck(&lowpoint, 1.3, &colpoint, &objects.position[i], &objects.rotation[i], &objects.model[i])!=-1){
+                    if(player[k].SphereCheck(&lowpoint, 1.3, &colpoint, &objects.position[i], &objects.yaw[i], &objects.model[i])!=-1){
                         flatfacing=lowpoint-player[k].coords;
                         player[k].coords=lowpoint;
                         player[k].coords.y-=1.3;
@@ -3401,19 +3571,19 @@ void Game::doAerialAcrobatics(){
                                 player[k].jumpkeydown){
                             lowpointtarget=lowpoint+DoRotation(player[k].facing,0,-90,0)*1.5;
                             XYZ tempcoords1=lowpoint;
-                            whichhit=objects.model[i].LineCheck(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.rotation[i]);
+                            whichhit=objects.model[i].LineCheck(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.yaw[i]);
                             if(whichhit!=-1&&fabs(objects.model[i].facenormals[whichhit].y)<.3){
                                 player[k].setAnimation(walljumpleftanim);
                                 emit_sound_at(movewhooshsound, player[k].coords);
                                 if(k==0)
                                     pause_sound(whooshsound);
 
-                                lowpointtarget=DoRotation(objects.model[i].facenormals[whichhit],0,objects.rotation[i],0);
-                                player[k].rotation=-asin(0-lowpointtarget.x)*180/M_PI;
+                                lowpointtarget=DoRotation(objects.model[i].facenormals[whichhit],0,objects.yaw[i],0);
+                                player[k].yaw=-asin(0-lowpointtarget.x)*180/M_PI;
                                 if(lowpointtarget.z<0)
-                                    player[k].rotation=180-player[k].rotation;
-                                player[k].targetrotation=player[k].rotation;
-                                player[k].lowrotation=player[k].rotation;
+                                    player[k].yaw=180-player[k].yaw;
+                                player[k].targetyaw=player[k].yaw;
+                                player[k].lowyaw=player[k].yaw;
                                 if(k==0)
                                     numwallflipped++;
                             }
@@ -3421,52 +3591,52 @@ void Game::doAerialAcrobatics(){
                             {
                                 lowpoint=tempcoords1;
                                 lowpointtarget=lowpoint+DoRotation(player[k].facing,0,90,0)*1.5;
-                                whichhit=objects.model[i].LineCheck(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.rotation[i]);
+                                whichhit=objects.model[i].LineCheck(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.yaw[i]);
                                 if(whichhit!=-1&&fabs(objects.model[i].facenormals[whichhit].y)<.3){
                                     player[k].setAnimation(walljumprightanim);
                                     emit_sound_at(movewhooshsound, player[k].coords);
                                     if(k==0)pause_sound(whooshsound);
 
-                                    lowpointtarget=DoRotation(objects.model[i].facenormals[whichhit],0,objects.rotation[i],0);
-                                    player[k].rotation=-asin(0-lowpointtarget.x)*180/M_PI;
-                                    if(lowpointtarget.z<0)player[k].rotation=180-player[k].rotation;
-                                    player[k].targetrotation=player[k].rotation;
-                                    player[k].lowrotation=player[k].rotation;
+                                    lowpointtarget=DoRotation(objects.model[i].facenormals[whichhit],0,objects.yaw[i],0);
+                                    player[k].yaw=-asin(0-lowpointtarget.x)*180/M_PI;
+                                    if(lowpointtarget.z<0)player[k].yaw=180-player[k].yaw;
+                                    player[k].targetyaw=player[k].yaw;
+                                    player[k].lowyaw=player[k].yaw;
                                     if(k==0)numwallflipped++;
                                 }
                                 else
                                 {
                                     lowpoint=tempcoords1;
                                     lowpointtarget=lowpoint+player[k].facing*2;
-                                    whichhit=objects.model[i].LineCheck(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.rotation[i]);
+                                    whichhit=objects.model[i].LineCheck(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.yaw[i]);
                                     if(whichhit!=-1&&fabs(objects.model[i].facenormals[whichhit].y)<.3){
                                         player[k].setAnimation(walljumpbackanim);
                                         emit_sound_at(movewhooshsound, player[k].coords);
                                         if(k==0)pause_sound(whooshsound);
 
-                                        lowpointtarget=DoRotation(objects.model[i].facenormals[whichhit],0,objects.rotation[i],0);
-                                        player[k].rotation=-asin(0-lowpointtarget.x)*180/M_PI;
-                                        if(lowpointtarget.z<0)player[k].rotation=180-player[k].rotation;
-                                        player[k].targetrotation=player[k].rotation;
-                                        player[k].lowrotation=player[k].rotation;
+                                        lowpointtarget=DoRotation(objects.model[i].facenormals[whichhit],0,objects.yaw[i],0);
+                                        player[k].yaw=-asin(0-lowpointtarget.x)*180/M_PI;
+                                        if(lowpointtarget.z<0)player[k].yaw=180-player[k].yaw;
+                                        player[k].targetyaw=player[k].yaw;
+                                        player[k].lowyaw=player[k].yaw;
                                         if(k==0)numwallflipped++;
                                     }
                                     else
                                     {
                                         lowpoint=tempcoords1;
                                         lowpointtarget=lowpoint-player[k].facing*2;
-                                        whichhit=objects.model[i].LineCheck(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.rotation[i]);
+                                        whichhit=objects.model[i].LineCheck(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.yaw[i]);
                                         if(whichhit!=-1&&fabs(objects.model[i].facenormals[whichhit].y)<.3){
                                             player[k].setAnimation(walljumpfrontanim);
                                             emit_sound_at(movewhooshsound, player[k].coords);
                                             if(k==0)pause_sound(whooshsound);
 
-                                            lowpointtarget=DoRotation(objects.model[i].facenormals[whichhit],0,objects.rotation[i],0);
-                                            player[k].rotation=-asin(0-lowpointtarget.x)*180/M_PI;
-                                            if(lowpointtarget.z<0)player[k].rotation=180-player[k].rotation;
-                                            player[k].rotation+=180;
-                                            player[k].targetrotation=player[k].rotation;
-                                            player[k].lowrotation=player[k].rotation;
+                                            lowpointtarget=DoRotation(objects.model[i].facenormals[whichhit],0,objects.yaw[i],0);
+                                            player[k].yaw=-asin(0-lowpointtarget.x)*180/M_PI;
+                                            if(lowpointtarget.z<0)player[k].yaw=180-player[k].yaw;
+                                            player[k].yaw+=180;
+                                            player[k].targetyaw=player[k].yaw;
+                                            player[k].lowyaw=player[k].yaw;
                                             if(k==0)numwallflipped++;
                                         }
                                     }
@@ -3479,7 +3649,7 @@ void Game::doAerialAcrobatics(){
                     lowpoint2=player[k].coords;
                     lowpoint=player[k].coords;
                     lowpoint.y+=2;
-                    if(objects.model[i].LineCheck(&lowpoint,&lowpoint2,&colpoint,&objects.position[i],&objects.rotation[i])!=-1){
+                    if(objects.model[i].LineCheck(&lowpoint,&lowpoint2,&colpoint,&objects.position[i],&objects.yaw[i])!=-1){
                         player[k].coords=colpoint;
                         player[k].collide=1;
                         tempcollide=1;
@@ -3527,7 +3697,7 @@ void Game::doAerialAcrobatics(){
                     lowpoint=player[k].coords;
                     lowpoint.y+=1.35;
                     if(objects.type[i]!=rocktype)
-                        if(player[k].SphereCheck(&lowpoint,1.33,&colpoint,&objects.position[i],&objects.rotation[i],&objects.model[i])!=-1){
+                        if(player[k].SphereCheck(&lowpoint,1.33,&colpoint,&objects.position[i],&objects.yaw[i],&objects.model[i])!=-1){
                             if(player[k].targetanimation!=jumpupanim&&
                                     player[k].targetanimation!=jumpdownanim&&
                                     player[k].onterrain)
@@ -3543,14 +3713,14 @@ void Game::doAerialAcrobatics(){
                                      player[k].targetanimation==jumpupanim||
                                      player[k].targetanimation==jumpdownanim)){
                                 lowpoint=player[k].coords;
-                                objects.model[i].SphereCheckPossible(&lowpoint, 1.5, &objects.position[i], &objects.rotation[i]);
+                                objects.model[i].SphereCheckPossible(&lowpoint, 1.5, &objects.position[i], &objects.yaw[i]);
                                 lowpoint=player[k].coords;
                                 lowpoint.y+=.05;
                                 facing=0;
                                 facing.z=-1;
-                                facing=DoRotation(facing,0,player[k].targetrotation+180,0);
+                                facing=DoRotation(facing,0,player[k].targetyaw+180,0);
                                 lowpointtarget=lowpoint+facing*1.4;
-                                whichhit=objects.model[i].LineCheckPossible(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.rotation[i]);
+                                whichhit=objects.model[i].LineCheckPossible(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.yaw[i]);
                                 if(whichhit!=-1){
                                     lowpoint=player[k].coords;
                                     lowpoint.y+=.1;
@@ -3579,7 +3749,7 @@ void Game::doAerialAcrobatics(){
                                     lowpointtarget6.y+=45/13;
                                     lowpointtarget6+=facing*.6;
                                     lowpointtarget7.y+=90/13;
-                                    whichhit=objects.model[i].LineCheckPossible(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.rotation[i]);
+                                    whichhit=objects.model[i].LineCheckPossible(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.yaw[i]);
                                     if(objects.friction[i]>.5)
                                         if(whichhit!=-1){
                                             if(whichhit!=-1&&player[k].targetanimation!=jumpupanim&&player[k].targetanimation!=jumpdownanim)
@@ -3587,28 +3757,28 @@ void Game::doAerialAcrobatics(){
                                             if(checkcollide(lowpoint7,lowpointtarget7)==-1)
                                                 if(checkcollide(lowpoint6,lowpointtarget6)==-1)
                                                     if(     objects.model[i].LineCheckPossible(&lowpoint2,&lowpointtarget2,
-                                                                &colpoint,&objects.position[i],&objects.rotation[i])!=-1&&
+                                                                &colpoint,&objects.position[i],&objects.yaw[i])!=-1&&
                                                             objects.model[i].LineCheckPossible(&lowpoint3,&lowpointtarget3,
-                                                                &colpoint,&objects.position[i],&objects.rotation[i])!=-1&&
+                                                                &colpoint,&objects.position[i],&objects.yaw[i])!=-1&&
                                                             objects.model[i].LineCheckPossible(&lowpoint4,&lowpointtarget4,
-                                                                &colpoint,&objects.position[i],&objects.rotation[i])!=-1&&
+                                                                &colpoint,&objects.position[i],&objects.yaw[i])!=-1&&
                                                             objects.model[i].LineCheckPossible(&lowpoint5,&lowpointtarget5,
-                                                                &colpoint,&objects.position[i],&objects.rotation[i])!=-1)
+                                                                &colpoint,&objects.position[i],&objects.yaw[i])!=-1)
                                                         for(int j=0;j<45;j++){
                                                             lowpoint=player[k].coords;
                                                             lowpoint.y+=(float)j/13;
                                                             lowpointtarget=lowpoint+facing*1.4;
                                                             if(objects.model[i].LineCheckPossible(&lowpoint,&lowpointtarget,
-                                                                        &colpoint2,&objects.position[i],&objects.rotation[i])==-1){
+                                                                        &colpoint2,&objects.position[i],&objects.yaw[i])==-1){
                                                                 if(j<=6||j<=25&&player[k].targetanimation==jumpdownanim)
                                                                     break;
                                                                 if(player[k].targetanimation==jumpupanim||player[k].targetanimation==jumpdownanim){
-                                                                    lowpoint=DoRotation(objects.model[i].facenormals[whichhit],0,objects.rotation[k],0);
+                                                                    lowpoint=DoRotation(objects.model[i].facenormals[whichhit],0,objects.yaw[k],0);
                                                                     lowpoint=player[k].coords;
                                                                     lowpoint.y+=(float)j/13;
                                                                     lowpointtarget=lowpoint+facing*1.3;
                                                                     flatfacing=player[k].coords;
-                                                                    player[k].coords=colpoint-DoRotation(objects.model[i].facenormals[whichhit],0,objects.rotation[k],0)*.01;
+                                                                    player[k].coords=colpoint-DoRotation(objects.model[i].facenormals[whichhit],0,objects.yaw[k],0)*.01;
                                                                     player[k].coords.y=lowpointtarget.y-.07;
                                                                     player[k].currentoffset=(flatfacing-player[k].coords)/player[k].scale;
 
@@ -3619,12 +3789,12 @@ void Game::doAerialAcrobatics(){
                                                                         }
                                                                         emit_sound_at(jumpsound, player[k].coords, 128.);
 
-                                                                        lowpointtarget=DoRotation(objects.model[i].facenormals[whichhit],0,objects.rotation[i],0);
-                                                                        player[k].rotation=-asin(0-lowpointtarget.x)*180/M_PI;
+                                                                        lowpointtarget=DoRotation(objects.model[i].facenormals[whichhit],0,objects.yaw[i],0);
+                                                                        player[k].yaw=-asin(0-lowpointtarget.x)*180/M_PI;
                                                                         if(lowpointtarget.z<0)
-                                                                            player[k].rotation=180-player[k].rotation;
-                                                                        player[k].targetrotation=player[k].rotation;
-                                                                        player[k].lowrotation=player[k].rotation;
+                                                                            player[k].yaw=180-player[k].yaw;
+                                                                        player[k].targetyaw=player[k].yaw;
+                                                                        player[k].lowyaw=player[k].yaw;
 
                                                                         //player[k].velocity=lowpointtarget*.03;
                                                                         player[k].velocity=0;
@@ -3685,7 +3855,7 @@ void Game::doAerialAcrobatics(){
     }
 }
 
-void Game::doAttacks(){
+void doAttacks(){
     static XYZ relative;
     static int randattack;
     static bool playerrealattackkeydown=0;
@@ -3747,19 +3917,19 @@ void Game::doAttacks(){
                                     player[i].targetanimation==staffspinhitanim)
                                 if(findDistancefast(&player[k].coords,&player[i].coords)<6.5&&!player[i].skeleton.free){
                                     player[k].setAnimation(dodgebackanim);
-                                    player[k].targetrotation=roughDirectionTo(player[k].coords,player[i].coords);
+                                    player[k].targetyaw=roughDirectionTo(player[k].coords,player[i].coords);
                                     player[k].targettilt2=pitchTo(player[k].coords,player[i].coords);
                                 }
                         }
                         if(player[k].targetanimation!=dodgebackanim){
                             if(k==0)numflipped++;
                             player[k].setAnimation(backhandspringanim);
-                            player[k].targetrotation=-rotation+180;
+                            player[k].targetyaw=-yaw+180;
                             if(player[k].leftkeydown)
-                                player[k].targetrotation-=45;
+                                player[k].targetyaw-=45;
                             if(player[k].rightkeydown)
-                                player[k].targetrotation+=45;
-                            player[k].rotation=player[k].targetrotation;
+                                player[k].targetyaw+=45;
+                            player[k].yaw=player[k].targetyaw;
                             player[k].jumppower-=2;
                         }
                     }
@@ -3995,9 +4165,9 @@ void Game::doAttacks(){
                                             player[k].targetframe=player[i].targetframe;
                                             player[k].target=player[i].target;
                                             player[k].velocity=0;
-                                            player[k].targetrotation=player[i].rotation;
-                                            player[k].rotation=player[i].rotation;
-                                            player[i].targetrotation=player[i].rotation;
+                                            player[k].targetyaw=player[i].yaw;
+                                            player[k].yaw=player[i].yaw;
+                                            player[i].targetyaw=player[i].yaw;
                                         }
                                     }
                                     if(animation[player[k].targetanimation].attack==normalattack&&
@@ -4007,7 +4177,7 @@ void Game::doAttacks(){
                                         player[k].targetframe=0;
                                         player[k].target=0;
 
-                                        player[k].targetrotation=roughDirectionTo(player[k].coords,player[i].coords);
+                                        player[k].targetyaw=roughDirectionTo(player[k].coords,player[i].coords);
                                         player[k].targettilt2=pitchTo(player[k].coords,player[i].coords);
                                         player[k].lastattack3=player[k].lastattack2;
                                         player[k].lastattack2=player[k].lastattack;
@@ -4016,7 +4186,7 @@ void Game::doAttacks(){
                                     if(player[k].targetanimation==knifefollowanim&&
                                             player[k].victim==&player[i]){
                                         oldattackkey=1;
-                                        player[k].targetrotation=roughDirectionTo(player[k].coords,player[i].coords);
+                                        player[k].targetyaw=roughDirectionTo(player[k].coords,player[i].coords);
                                         player[k].targettilt2=pitchTo(player[k].coords,player[i].coords);
                                         player[k].victim=&player[i];
                                         player[k].hasvictim=1;
@@ -4037,10 +4207,10 @@ void Game::doAttacks(){
                                         player[k].velocity=0;
                                         player[k].oldcoords=player[k].coords;
                                         player[i].coords=player[k].coords;
-                                        player[i].targetrotation=player[k].targetrotation;
-                                        player[i].rotation=player[k].targetrotation;
-                                        player[k].rotation=player[k].targetrotation;
-                                        player[i].rotation=player[k].targetrotation;
+                                        player[i].targetyaw=player[k].targetyaw;
+                                        player[i].yaw=player[k].targetyaw;
+                                        player[k].yaw=player[k].targetyaw;
+                                        player[i].yaw=player[k].targetyaw;
                                     }
                                 }
                         }
@@ -4148,11 +4318,11 @@ void Game::doAttacks(){
                                                  player[i].getJointFor(neck).position)/2*
                                                 player[i].scale;
                                     }
-                                    player[k].targetrotation=roughDirectionTo(player[k].coords,targetpoint);
+                                    player[k].targetyaw=roughDirectionTo(player[k].coords,targetpoint);
                                     player[k].targettilt2=pitchTo(player[k].coords,targetpoint);
 
                                     if(player[k].targetanimation==crouchstabanim||player[k].targetanimation==swordgroundstabanim){
-                                        player[k].targetrotation+=(float)(abs(Random()%100)-50)/4;
+                                        player[k].targetyaw+=(float)(abs(Random()%100)-50)/4;
                                     }
 
                                     if(player[k].targetanimation==staffgroundsmashanim)
@@ -4163,7 +4333,7 @@ void Game::doAttacks(){
                                     player[k].lastattack=player[k].targetanimation;
 
                                     if(player[k].targetanimation==swordgroundstabanim){
-                                        player[k].targetrotation+=30;
+                                        player[k].targetyaw+=30;
                                     }
                                 }
                             }
@@ -4219,7 +4389,7 @@ void Game::doAttacks(){
     }
 }
 
-void Game::doPlayerCollisions(){
+void doPlayerCollisions(){
 	static XYZ rotatetarget;
     static float collisionradius;
     if(numplayers>1)
@@ -4290,7 +4460,7 @@ void Game::doPlayerCollisions(){
                                 player[0].coords.y=player[l].coords.y;
                                 player[l].velocity=player[0].velocity;
                                 player[l].skeleton.free=0;
-                                player[l].rotation=0;
+                                player[l].yaw=0;
                                 player[l].RagDoll(0);
                                 player[l].DoDamage(20);
                                 camerashake+=.3;
@@ -4420,7 +4590,7 @@ void Game::doPlayerCollisions(){
             }
 }
 
-void Game::doAI(int i){
+void doAI(int i){
     static bool connected;
     if(player[i].aitype!=playercontrolled&&indialogue==-1){
         player[i].jumpclimb=0;
@@ -4524,8 +4694,8 @@ void Game::doAI(int i){
             }
             player[i].losupdatedelay-=multiplier;
 
-            player[i].targetrotation=roughDirectionTo(player[i].coords,pathpoint[player[i].targetpathfindpoint]);
-            player[i].lookrotation=player[i].targetrotation;
+            player[i].targetyaw=roughDirectionTo(player[i].coords,pathpoint[player[i].targetpathfindpoint]);
+            player[i].lookyaw=player[i].targetyaw;
 
             //reached target point
             if(findDistancefastflat(&player[i].coords,&pathpoint[player[i].targetpathfindpoint])<.6){
@@ -4557,7 +4727,7 @@ void Game::doAI(int i){
             player[i].throwkeydown=0;
 
             if(player[i].avoidcollided>.8 && !player[i].jumpkeydown && player[i].collided<.8)
-                player[i].targetrotation+=90*(player[i].whichdirection*2-1);
+                player[i].targetyaw+=90*(player[i].whichdirection*2-1);
 
             if(player[i].collided<1||player[i].targetanimation!=jumpupanim)
                 player[i].jumpkeydown=0;
@@ -4588,9 +4758,9 @@ void Game::doAI(int i){
                                     if(normaldotproduct(player[i].facing,player[j].coords-player[i].coords)>0)
                                         if(player[j].coords.y<player[i].coords.y+5||player[j].onterrain)
                                             if(!player[j].isWallJump()&&-1==checkcollide(
-                                                            DoRotation(player[i].getJointFor(head).position,0,player[i].rotation,0)
+                                                            DoRotation(player[i].getJointFor(head).position,0,player[i].yaw,0)
                                                                 *player[i].scale+player[i].coords,
-                                                            DoRotation(player[j].getJointFor(head).position,0,player[j].rotation,0)
+                                                            DoRotation(player[j].getJointFor(head).position,0,player[j].yaw,0)
                                                                 *player[j].scale+player[j].coords)||
                                                     (player[j].targetanimation==hanganim&&
                                                      normaldotproduct(player[j].facing,player[i].coords-player[j].coords)<0)){
@@ -4621,8 +4791,8 @@ void Game::doAI(int i){
 
             if(player[i].aiupdatedelay<0){
                 if(player[i].numwaypoints>1&&player[i].howactive==typeactive&&player[i].pausetime<=0){
-                    player[i].targetrotation=roughDirectionTo(player[i].coords,player[i].waypoints[player[i].waypoint]);
-                    player[i].lookrotation=player[i].targetrotation;
+                    player[i].targetyaw=roughDirectionTo(player[i].coords,player[i].waypoints[player[i].waypoint]);
+                    player[i].lookyaw=player[i].targetyaw;
                     player[i].aiupdatedelay=.05;
 
                     if(findDistancefastflat(&player[i].coords,&player[i].waypoints[player[i].waypoint])<1){
@@ -4648,7 +4818,7 @@ void Game::doAI(int i){
 
                 if(player[i].avoidcollided>.8&&!player[i].jumpkeydown&&player[i].collided<.8){
                     if(!player[i].avoidsomething)
-                        player[i].targetrotation+=90*(player[i].whichdirection*2-1);
+                        player[i].targetyaw+=90*(player[i].whichdirection*2-1);
                     else{
                         XYZ leftpos,rightpos;
                         float leftdist,rightdist;
@@ -4657,9 +4827,9 @@ void Game::doAI(int i){
                         leftdist = findDistancefast(&leftpos, &player[i].avoidwhere);
                         rightdist = findDistancefast(&rightpos, &player[i].avoidwhere);
                         if(leftdist<rightdist)
-                            player[i].targetrotation+=90;
+                            player[i].targetyaw+=90;
                         else
-                            player[i].targetrotation-=90;
+                            player[i].targetyaw-=90;
                     }
                 }
             }
@@ -4731,9 +4901,9 @@ void Game::doAI(int i){
                                 if(findDistancefast(&player[i].coords,&player[j].coords)<400)
                                     if(normaldotproduct(player[i].facing,player[j].coords-player[i].coords)>0)
                                         if((-1==checkcollide(
-                                                        DoRotation(player[i].getJointFor(head).position,0,player[i].rotation,0)*
+                                                        DoRotation(player[i].getJointFor(head).position,0,player[i].yaw,0)*
                                                             player[i].scale+player[i].coords,
-                                                        DoRotation(player[j].getJointFor(head).position,0,player[j].rotation,0)*
+                                                        DoRotation(player[j].getJointFor(head).position,0,player[j].yaw,0)*
                                                             player[j].scale+player[j].coords)&&
                                                     !player[j].isWallJump())||
                                                 (player[j].targetanimation==hanganim&&
@@ -4789,7 +4959,7 @@ void Game::doAI(int i){
                     if(j==-1){
                         player[i].velocity=0;
                         player[i].setAnimation(player[i].getStop());
-                        player[i].targetrotation+=180;
+                        player[i].targetyaw+=180;
                         player[i].stunned=.5;
                         //player[i].aitype=passivetype;
                         player[i].aitype=pathfindtype;
@@ -4806,8 +4976,8 @@ void Game::doAI(int i){
             }
             //check out last seen location
             if(player[i].aiupdatedelay<0){
-                player[i].targetrotation=roughDirectionTo(player[i].coords,player[i].lastseen);
-                player[i].lookrotation=player[i].targetrotation;
+                player[i].targetyaw=roughDirectionTo(player[i].coords,player[i].lastseen);
+                player[i].lookyaw=player[i].targetyaw;
                 player[i].aiupdatedelay=.05;
                 player[i].forwardkeydown=1;
 
@@ -4827,7 +4997,7 @@ void Game::doAI(int i){
                 player[i].throwkeydown=0;
 
                 if(player[i].avoidcollided>.8&&!player[i].jumpkeydown&&player[i].collided<.8){
-                    if(!player[i].avoidsomething)player[i].targetrotation+=90*(player[i].whichdirection*2-1);
+                    if(!player[i].avoidsomething)player[i].targetyaw+=90*(player[i].whichdirection*2-1);
                     else{
                         XYZ leftpos,rightpos;
                         float leftdist,rightdist;
@@ -4835,8 +5005,8 @@ void Game::doAI(int i){
                         rightpos = player[i].coords-DoRotation(player[i].facing,0,90,0);
                         leftdist = findDistancefast(&leftpos, &player[i].avoidwhere);
                         rightdist = findDistancefast(&rightpos, &player[i].avoidwhere);
-                        if(leftdist<rightdist)player[i].targetrotation+=90;
-                        else player[i].targetrotation-=90;
+                        if(leftdist<rightdist)player[i].targetyaw+=90;
+                        else player[i].targetyaw-=90;
                     }
                 }
             }
@@ -4867,9 +5037,9 @@ void Game::doAI(int i){
                     if(findDistancefast(&player[i].coords,&player[0].coords)<400)
                         if(normaldotproduct(player[i].facing,player[0].coords-player[i].coords)>0)
                             if((checkcollide(
-                                        DoRotation(player[i].getJointFor(head).position,0,player[i].rotation,0)*
+                                        DoRotation(player[i].getJointFor(head).position,0,player[i].yaw,0)*
                                             player[i].scale+player[i].coords,
-                                        DoRotation(player[0].getJointFor(head).position,0,player[0].rotation,0)*
+                                        DoRotation(player[0].getJointFor(head).position,0,player[0].yaw,0)*
                                             player[0].scale+player[0].coords)==-1)||
                                     (player[0].targetanimation==hanganim&&normaldotproduct(
                                         player[0].facing,player[i].coords-player[0].coords)<0)){
@@ -4954,8 +5124,8 @@ void Game::doAI(int i){
 
                 //seek out ally
                 if(player[i].ally>0){
-                    player[i].targetrotation=roughDirectionTo(player[i].coords,player[player[i].ally].coords);
-                    player[i].lookrotation=player[i].targetrotation;
+                    player[i].targetyaw=roughDirectionTo(player[i].coords,player[player[i].ally].coords);
+                    player[i].lookyaw=player[i].targetyaw;
                     player[i].aiupdatedelay=.05;
                     player[i].forwardkeydown=1;
 
@@ -4972,7 +5142,7 @@ void Game::doAI(int i){
 
                     if(player[i].avoidcollided>.8&&!player[i].jumpkeydown&&player[i].collided<.8){
                         if(!player[i].avoidsomething)
-                            player[i].targetrotation+=90*(player[i].whichdirection*2-1);
+                            player[i].targetyaw+=90*(player[i].whichdirection*2-1);
                         else{
                             XYZ leftpos,rightpos;
                             float leftdist,rightdist;
@@ -4981,9 +5151,9 @@ void Game::doAI(int i){
                             leftdist = findDistancefast(&leftpos, &player[i].avoidwhere);
                             rightdist = findDistancefast(&rightpos, &player[i].avoidwhere);
                             if(leftdist<rightdist)
-                                player[i].targetrotation+=90;
+                                player[i].targetyaw+=90;
                             else
-                                player[i].targetrotation-=90;
+                                player[i].targetyaw-=90;
                         }
                     }
                 }
@@ -5042,15 +5212,15 @@ void Game::doAI(int i){
                             player[i].lastseentime=1;
                         }
                         //TODO: factor these out as moveToward()
-                        player[i].targetrotation=roughDirectionTo(player[i].coords,weapons[player[i].ally].position);
-                        player[i].lookrotation=player[i].targetrotation;
+                        player[i].targetyaw=roughDirectionTo(player[i].coords,weapons[player[i].ally].position);
+                        player[i].lookyaw=player[i].targetyaw;
                         player[i].aiupdatedelay=.05;
                         player[i].forwardkeydown=1;
 
 
                         if(player[i].avoidcollided>.8&&!player[i].jumpkeydown&&player[i].collided<.8){
                             if(!player[i].avoidsomething)
-                                player[i].targetrotation+=90*(player[i].whichdirection*2-1);
+                                player[i].targetyaw+=90*(player[i].whichdirection*2-1);
                             else{
                                 XYZ leftpos,rightpos;
                                 float leftdist,rightdist;
@@ -5059,9 +5229,9 @@ void Game::doAI(int i){
                                 leftdist = findDistancefast(&leftpos, &player[i].avoidwhere);
                                 rightdist = findDistancefast(&rightpos, &player[i].avoidwhere);
                                 if(leftdist<rightdist)
-                                    player[i].targetrotation+=90;
+                                    player[i].targetyaw+=90;
                                 else
-                                    player[i].targetrotation-=90;
+                                    player[i].targetyaw-=90;
                             }
                         }
                     }
@@ -5103,7 +5273,7 @@ void Game::doAI(int i){
                                     player[i].setAnimation(backhandspringanim);
                                 else
                                     player[i].setAnimation(rollanim);
-                                player[i].targetrotation+=90*(abs(Random()%2)*2-1);
+                                player[i].targetyaw+=90*(abs(Random()%2)*2-1);
                                 player[i].wentforweapon=0;
                             }
                             if(player[i].targetanimation==jumpupanim||player[i].targetanimation==jumpdownanim)
@@ -5163,7 +5333,7 @@ void Game::doAI(int i){
                     if(j==-1) {
                         player[i].velocity=0;
                         player[i].setAnimation(player[i].getStop());
-                        player[i].targetrotation+=180;
+                        player[i].targetyaw+=180;
                         player[i].stunned=.5;
                         player[i].aitype=pathfindtype;
                         player[i].finalfinaltarget=player[i].waypoints[player[i].waypoint];
@@ -5209,8 +5379,8 @@ void Game::doAI(int i){
                         findDistancefast(&rotatetarget,&player[i].coords))
                     targetpoint+=player[0].velocity*
                         findDistance(&player[0].coords,&player[i].coords)/findLength(&player[i].velocity);
-                player[i].targetrotation=roughDirectionTo(player[i].coords,targetpoint);
-                player[i].lookrotation=player[i].targetrotation;
+                player[i].targetyaw=roughDirectionTo(player[i].coords,targetpoint);
+                player[i].lookyaw=player[i].targetyaw;
                 player[i].aiupdatedelay=.2+fabs((float)(Random()%100)/1000);
 
                 if(findDistancefast(&player[i].coords,&player[0].coords)>5&&(player[0].weaponactive==-1||player[i].weaponactive!=-1))
@@ -5246,7 +5416,7 @@ void Game::doAI(int i){
                 player[i].throwkeydown=0;
 
                 if(player[i].avoidcollided>.8&&!player[i].jumpkeydown&&player[i].collided<.8)
-                    player[i].targetrotation+=90*(player[i].whichdirection*2-1);
+                    player[i].targetyaw+=90*(player[i].whichdirection*2-1);
                 //attack!!!
                 if(Random()%2==0||player[i].weaponactive!=-1||player[i].creature==wolftype)
                     player[i].attackkeydown=1;
@@ -5355,7 +5525,7 @@ void Game::doAI(int i){
                 player[i].pause&&player[i].damage>player[i].superpermanentdamage){
             if(player[i].pause)
                 player[i].lastseentime=1;
-            player[i].targetrotation=player[i].rotation;
+            player[i].targetyaw=player[i].yaw;
             player[i].forwardkeydown=0;
             player[i].leftkeydown=0;
             player[i].backkeydown=0;
@@ -5371,15 +5541,15 @@ void Game::doAI(int i){
         facing=0;
         facing.z=-1;
 
-        XYZ flatfacing=DoRotation(facing,0,player[i].rotation+180,0);
+        XYZ flatfacing=DoRotation(facing,0,player[i].yaw+180,0);
         facing=flatfacing;
 
         if(player[i].aitype==attacktypecutoff){
-            player[i].targetheadrotation=180-roughDirectionTo(player[i].coords,player[0].coords);
-            player[i].targetheadrotation2=pitchTo(player[i].coords,player[0].coords);
+            player[i].targetheadyaw=180-roughDirectionTo(player[i].coords,player[0].coords);
+            player[i].targetheadpitch=pitchTo(player[i].coords,player[0].coords);
         }else if(player[i].howactive>=typesleeping){
-            player[i].targetheadrotation=player[i].targetrotation;
-            player[i].targetheadrotation2=0;
+            player[i].targetheadyaw=player[i].targetyaw;
+            player[i].targetheadpitch=0;
         }else{
             if(player[i].interestdelay<=0){
                 player[i].interestdelay=.7+(float)(abs(Random()%100))/100;
@@ -5389,8 +5559,8 @@ void Game::doAI(int i){
                 player[i].headtarget.y+=(float)(abs(Random()%200)-100)/300;
                 player[i].headtarget+=player[i].facing*1.5;
             }
-            player[i].targetheadrotation=180-roughDirectionTo(player[i].coords,player[i].headtarget);
-            player[i].targetheadrotation2=pitchTo(player[i].coords,player[i].headtarget);
+            player[i].targetheadyaw=180-roughDirectionTo(player[i].coords,player[i].headtarget);
+            player[i].targetheadpitch=pitchTo(player[i].coords,player[i].headtarget);
         }
     }
 }
@@ -5613,7 +5783,7 @@ void Game::LoadMenu(){
     }
 }
 
-void Game::MenuTick(){
+void MenuTick(){
     //menu buttons
     selected=Menu::getSelected(mousecoordh*640/screenwidth,480-mousecoordv*480/screenheight);
 
@@ -5995,6 +6165,7 @@ void Game::MenuTick(){
                 displayselected=0;
             }
             entername=0;
+            LoadMenu();
         }
         
         displayblinkdelay-=multiplier;
@@ -6096,7 +6267,6 @@ void Game::Tick(){
 			LoadMenu();
         }
         //escape key pressed
-        //TODO: there must be code somewhere else that handles clicking the Back button, merge it with this
 		if(Input::isKeyPressed(SDLK_ESCAPE)&&
                 (gameon||mainmenu==0||(mainmenu>=3&&mainmenu!=8&&!(mainmenu==7&&entername)))) {
 			selected=-1;
@@ -6193,7 +6363,6 @@ void Game::Tick(){
 		if(console&&!Input::isKeyDown(SDLK_LMETA)) {
 			inputText(consoletext[0],&consoleselected,&consolechars[0]);
 			if(!waiting) {
-				archiveselected=0;
 				if(consolechars[0]>0) {
                     consoletext[0][consolechars[0]]='\0';
                     cmd_dispatch(consoletext[0]);
@@ -6250,10 +6419,11 @@ void Game::Tick(){
 
 
 
-        //TODO: what is this test?
 		if(!freeze&&!winfreeze&&!(mainmenu&&gameon)&&(gameon||!gamestarted)){
 
             //dialogues
+            static float talkdelay = 0;
+
 			if(indialogue!=-1)
                 talkdelay=1;
 			talkdelay-=multiplier;
@@ -6297,8 +6467,8 @@ void Game::Tick(){
                             whichdialogue=i;
                             for(int j=0;j<numdialogueboxes[whichdialogue];j++){
                                 player[participantfocus[whichdialogue][j]].coords=participantlocation[whichdialogue][participantfocus[whichdialogue][j]];
-                                player[participantfocus[whichdialogue][j]].rotation=participantrotation[whichdialogue][participantfocus[whichdialogue][j]];
-                                player[participantfocus[whichdialogue][j]].targetrotation=participantrotation[whichdialogue][participantfocus[whichdialogue][j]];
+                                player[participantfocus[whichdialogue][j]].yaw=participantyaw[whichdialogue][participantfocus[whichdialogue][j]];
+                                player[participantfocus[whichdialogue][j]].targetyaw=participantyaw[whichdialogue][participantfocus[whichdialogue][j]];
                                 player[participantfocus[whichdialogue][j]].velocity=0;
                                 player[participantfocus[whichdialogue][j]].targetanimation=player[participantfocus[whichdialogue][j]].getIdle();
                                 player[participantfocus[whichdialogue][j]].targetframe=0;
@@ -6437,13 +6607,13 @@ void Game::Tick(){
                     facing=0;
                     facing.z=-1;
 
-                    facing=DoRotation(facing,-rotation2,0,0);
-                    facing=DoRotation(facing,0,0-rotation,0);
+                    facing=DoRotation(facing,-pitch,0,0);
+                    facing=DoRotation(facing,0,0-yaw,0);
 
                     flatfacing=0;
                     flatfacing.z=-1;
 
-                    flatfacing=DoRotation(flatfacing,0,-rotation,0);
+                    flatfacing=DoRotation(flatfacing,0,-yaw,0);
 
                     if(Input::isKeyDown(forwardkey))
                         viewer+=facing*multiplier*4;
@@ -6484,7 +6654,7 @@ void Game::Tick(){
                         if(whichend!=-1){
                             participantfocus[whichdialogue][indialogue]=whichend;
                             participantlocation[whichdialogue][whichend]=player[whichend].coords;
-                            participantrotation[whichdialogue][whichend]=player[whichend].rotation;
+                            participantyaw[whichdialogue][whichend]=player[whichend].yaw;
                         }
                         if(whichend==-1){
                             participantfocus[whichdialogue][indialogue]=-1;
@@ -6495,8 +6665,8 @@ void Game::Tick(){
                             cameramode=0;
                         }
                         dialoguecamera[whichdialogue][indialogue]=viewer;
-                        dialoguecamerarotation[whichdialogue][indialogue]=rotation;
-                        dialoguecamerarotation2[whichdialogue][indialogue]=rotation2;
+                        dialoguecamerayaw[whichdialogue][indialogue]=yaw;
+                        dialoguecamerapitch[whichdialogue][indialogue]=pitch;
                         indialogue++;
                         if(indialogue<numdialogueboxes[whichdialogue]){
                             if(dialogueboxsound[whichdialogue][indialogue]!=0){
@@ -6542,8 +6712,8 @@ void Game::Tick(){
                     pause_sound(whooshsound);
                     viewer=dialoguecamera[whichdialogue][indialogue];
                     viewer.y=max((double)viewer.y,terrain.getHeight(viewer.x,viewer.z)+.1);
-                    rotation=dialoguecamerarotation[whichdialogue][indialogue];
-                    rotation2=dialoguecamerarotation2[whichdialogue][indialogue];
+                    yaw=dialoguecamerayaw[whichdialogue][indialogue];
+                    pitch=dialoguecamerapitch[whichdialogue][indialogue];
                     if(dialoguetime>0.5)
                         if(     Input::isKeyPressed(SDLK_1)||
                                 Input::isKeyPressed(SDLK_2)||
@@ -6611,10 +6781,10 @@ void Game::Tick(){
 
 
             dialoguetime+=multiplier;
-            hawkrotation+=multiplier*25;
+            hawkyaw+=multiplier*25;
             realhawkcoords=0;
             realhawkcoords.x=25;
-            realhawkcoords=DoRotation(realhawkcoords,0,hawkrotation,0)+hawkcoords;
+            realhawkcoords=DoRotation(realhawkcoords,0,hawkyaw,0)+hawkcoords;
             hawkcalldelay-=multiplier/2;
 
             if(hawkcalldelay<=0){
@@ -6670,9 +6840,9 @@ void Game::Tick(){
 
             //?
             for(int i=0;i<numplayers;i++){
-                static float oldtargetrotation;
+                static float oldtargetyaw;
                 if(!player[i].skeleton.free){
-                    oldtargetrotation=player[i].targetrotation;
+                    oldtargetyaw=player[i].targetyaw;
                     if(i==0&&indialogue==-1){
                         //TODO: refactor repetitive code
                         if(!animation[player[0].targetanimation].attack&&
@@ -6685,26 +6855,26 @@ void Game::Tick(){
                                 player[0].targetanimation!=walljumprightkickanim&&
                                 player[0].targetanimation!=walljumpleftkickanim){
                             if(cameramode)
-                                player[0].targetrotation=0;
+                                player[0].targetyaw=0;
                             else
-                                player[0].targetrotation=-rotation+180;
+                                player[0].targetyaw=-yaw+180;
                         }
 
                         facing=0;
                         facing.z=-1;
 
-                        flatfacing=DoRotation(facing,0,player[i].rotation+180,0);
+                        flatfacing=DoRotation(facing,0,player[i].yaw+180,0);
                         if(cameramode){
                             facing=flatfacing;
                         }else{
-                            facing=DoRotation(facing,-rotation2,0,0);
-                            facing=DoRotation(facing,0,0-rotation,0);
+                            facing=DoRotation(facing,-pitch,0,0);
+                            facing=DoRotation(facing,0,0-yaw,0);
                         }
 
-                        player[0].lookrotation=-rotation;
+                        player[0].lookyaw=-yaw;
 
-                        player[i].targetheadrotation=rotation;
-                        player[i].targetheadrotation2=rotation2;
+                        player[i].targetheadyaw=yaw;
+                        player[i].targetheadpitch=pitch;
                     }
                     if(i!=0&&player[i].aitype==playercontrolled&&indialogue==-1){
                         if(!animation[player[i].targetanimation].attack&&
@@ -6716,23 +6886,23 @@ void Game::Tick(){
                                 player[i].targetanimation!=dodgebackanim&&
                                 player[i].targetanimation!=walljumprightkickanim&&
                                 player[i].targetanimation!=walljumpleftkickanim){
-                            player[i].targetrotation=-player[i].lookrotation+180;
+                            player[i].targetyaw=-player[i].lookyaw+180;
                         }
 
                         facing=0;
                         facing.z=-1;
 
-                        flatfacing=DoRotation(facing,0,player[i].rotation+180,0);
+                        flatfacing=DoRotation(facing,0,player[i].yaw+180,0);
 
-                        facing=DoRotation(facing,-player[i].lookrotation2,0,0);
-                        facing=DoRotation(facing,0,0-player[i].lookrotation,0);
+                        facing=DoRotation(facing,-player[i].lookpitch,0,0);
+                        facing=DoRotation(facing,0,0-player[i].lookyaw,0);
 
-                        player[i].targetheadrotation=player[i].lookrotation;
-                        player[i].targetheadrotation2=player[i].lookrotation2;
+                        player[i].targetheadyaw=player[i].lookyaw;
+                        player[i].targetheadpitch=player[i].lookpitch;
                     }
                     if(indialogue!=-1){
-                        player[i].targetheadrotation=180-roughDirection(participantfacing[whichdialogue][indialogue][i]);
-                        player[i].targetheadrotation2=pitch(participantfacing[whichdialogue][indialogue][i]);
+                        player[i].targetheadyaw=180-roughDirection(participantfacing[whichdialogue][indialogue][i]);
+                        player[i].targetheadpitch=pitchOf(participantfacing[whichdialogue][indialogue][i]);
                     }
 
                     if(leveltime<.5)
@@ -6778,7 +6948,7 @@ void Game::Tick(){
                     doAI(i);
 
                     if(animation[player[i].targetanimation].attack==reversed){
-                        //player[i].targetrotation=player[i].rotation;
+                        //player[i].targetyaw=player[i].yaw;
                         player[i].forwardkeydown=0;
                         player[i].leftkeydown=0;
                         player[i].backkeydown=0;
@@ -6854,7 +7024,7 @@ void Game::Tick(){
                                                     player[i].aitype!=playercontrolled){
                                                 player[i].throwtogglekeydown=1;
                                                 player[i].setAnimation(crouchremoveknifeanim);
-                                                player[i].targetrotation=roughDirectionTo(player[i].coords,weapons[j].position);
+                                                player[i].targetyaw=roughDirectionTo(player[i].coords,weapons[j].position);
                                                 player[i].hasvictim=0;
                                             }
                                             if(player[i].targetanimation==rollanim||player[i].targetanimation==backhandspringanim){
@@ -6887,7 +7057,7 @@ void Game::Tick(){
                                             if(!player[i].isFlip()){
                                                 player[i].throwtogglekeydown=1;
                                                 player[i].setAnimation(removeknifeanim);
-                                                player[i].targetrotation=roughDirectionTo(player[i].coords,weapons[j].position);
+                                                player[i].targetyaw=roughDirectionTo(player[i].coords,weapons[j].position);
                                             }
                                             if(player[i].isFlip()){
                                                 player[i].throwtogglekeydown=1;
@@ -6940,7 +7110,7 @@ void Game::Tick(){
                                                         player[i].victim=&player[j];
                                                         player[i].hasvictim=1;
                                                         player[i].setAnimation(crouchremoveknifeanim);
-                                                        player[i].targetrotation=roughDirectionTo(player[i].coords,player[j].coords);
+                                                        player[i].targetyaw=roughDirectionTo(player[i].coords,player[j].coords);
                                                     }
                                                     if(player[i].targetanimation==rollanim||player[i].targetanimation==backhandspringanim){
                                                         player[i].throwtogglekeydown=1;
@@ -7034,12 +7204,12 @@ void Game::Tick(){
                                                                 findDistancefast(&player[i].coords,&player[j].coords)<100&&
                                                                 findDistancefast(&player[i].coords,&player[j].coords)>1.5&&
                                                                 !player[j].skeleton.free&&
-                                                                -1==checkcollide(DoRotation(player[j].getJointFor(head).position,0,player[j].rotation,0)*player[j].scale+player[j].coords,DoRotation(player[i].getJointFor(head).position,0,player[i].rotation,0)*player[i].scale+player[i].coords)){
+                                                                -1==checkcollide(DoRotation(player[j].getJointFor(head).position,0,player[j].yaw,0)*player[j].scale+player[j].coords,DoRotation(player[i].getJointFor(head).position,0,player[i].yaw,0)*player[i].scale+player[i].coords)){
                                                             if(!player[i].isFlip()){
                                                                 player[i].throwtogglekeydown=1;
                                                                 player[i].victim=&player[j];
                                                                 player[i].setAnimation(knifethrowanim);
-                                                                player[i].targetrotation=roughDirectionTo(player[i].coords,player[j].coords);
+                                                                player[i].targetyaw=roughDirectionTo(player[i].coords,player[j].coords);
                                                                 player[i].targettilt2=pitchTo(player[i].coords,player[j].coords);
                                                             }
                                                             if(player[i].isFlip()){
@@ -7048,7 +7218,7 @@ void Game::Tick(){
                                                                     player[i].victim=&player[j];
                                                                     XYZ aim;
                                                                     weapons[player[i].weaponids[0]].owner=-1;
-                                                                    aim=player[i].victim->coords+DoRotation(player[i].victim->getJointFor(abdomen).position,0,player[i].victim->rotation,0)*player[i].victim->scale+player[i].victim->velocity*findDistance(&player[i].victim->coords,&player[i].coords)/50-(player[i].coords+DoRotation(player[i].getJointFor(righthand).position,0,player[i].rotation,0)*player[i].scale);
+                                                                    aim=player[i].victim->coords+DoRotation(player[i].victim->getJointFor(abdomen).position,0,player[i].victim->yaw,0)*player[i].victim->scale+player[i].victim->velocity*findDistance(&player[i].victim->coords,&player[i].coords)/50-(player[i].coords+DoRotation(player[i].getJointFor(righthand).position,0,player[i].yaw,0)*player[i].scale);
                                                                     Normalise(&aim);
 
                                                                     aim=DoRotation(aim,(float)abs(Random()%30)-15,(float)abs(Random()%30)-15,0);
@@ -7156,7 +7326,7 @@ void Game::Tick(){
                         absflatfacing=0;
                         absflatfacing.z=-1;
 
-                        absflatfacing=DoRotation(absflatfacing,0,-rotation,0);
+                        absflatfacing=DoRotation(absflatfacing,0,-yaw,0);
                     } else
 						absflatfacing=flatfacing;
 
@@ -7272,7 +7442,7 @@ void Game::Tick(){
                         if(player[i].forwardkeydown){
                             if(player[i].isIdle()||
                                     (player[i].isStop()&&
-                                     player[i].targetrotation==player[i].rotation)||
+                                     player[i].targetyaw==player[i].yaw)||
                                     (player[i].isLanding()&&
                                      player[i].targetframe>0&&
                                      !player[i].jumpkeydown)||
@@ -7305,7 +7475,7 @@ void Game::Tick(){
                         if (player[i].rightkeydown){
                             if(player[i].isIdle()||
                                     (player[i].isStop()&&
-                                     player[i].targetrotation==player[i].rotation)||
+                                     player[i].targetyaw==player[i].yaw)||
                                     (player[i].isLanding()&&
                                      player[i].targetframe>0&&
                                      !player[i].jumpkeydown)||
@@ -7324,15 +7494,15 @@ void Game::Tick(){
                             if(player[i].targetanimation==jumpupanim||player[i].targetanimation==jumpdownanim||player[i].isFlip()){
                                 player[i].velocity+=DoRotation(absflatfacing*5*multiplier,0,-90,0);
                             }
-                            player[i].targetrotation-=90;
-                            if(player[i].forwardkeydown)player[i].targetrotation+=45;
-                            if(player[i].backkeydown)player[i].targetrotation-=45;
+                            player[i].targetyaw-=90;
+                            if(player[i].forwardkeydown)player[i].targetyaw+=45;
+                            if(player[i].backkeydown)player[i].targetyaw-=45;
                             movekey=1;
                         }
                         if ( player[i].leftkeydown){
                             if(player[i].isIdle()||
                                     (player[i].isStop()&&
-                                     player[i].targetrotation==player[i].rotation)||
+                                     player[i].targetyaw==player[i].yaw)||
                                     (player[i].isLanding()&&
                                      player[i].targetframe>0&&
                                      !player[i].jumpkeydown)||
@@ -7351,15 +7521,15 @@ void Game::Tick(){
                             if(player[i].targetanimation==jumpupanim||player[i].targetanimation==jumpdownanim||player[i].isFlip()){
                                 player[i].velocity-=DoRotation(absflatfacing*5*multiplier,0,-90,0);
                             }
-                            player[i].targetrotation+=90;
-                            if(player[i].forwardkeydown)player[i].targetrotation-=45;
-                            if(player[i].backkeydown)player[i].targetrotation+=45;
+                            player[i].targetyaw+=90;
+                            if(player[i].forwardkeydown)player[i].targetyaw-=45;
+                            if(player[i].backkeydown)player[i].targetyaw+=45;
                             movekey=1;
                         }
                         if(player[i].backkeydown){
                             if(player[i].isIdle()||
                                     (player[i].isStop()&&
-                                     player[i].targetrotation==player[i].rotation)||
+                                     player[i].targetyaw==player[i].yaw)||
                                     (player[i].isLanding()&&
                                      player[i].targetframe>0&&
                                      !player[i].jumpkeydown)||
@@ -7390,7 +7560,7 @@ void Game::Tick(){
                                 player[i].grabdelay=1;
                             }
                             if ( !player[i].leftkeydown&&!player[i].rightkeydown)
-                                player[i].targetrotation+=180;
+                                player[i].targetyaw+=180;
                             movekey=1;
                         }
                         if((player[i].jumpkeydown&&!player[i].jumpclimb)||player[i].jumpstart){
@@ -7404,14 +7574,14 @@ void Game::Tick(){
                                       player[i].targetanimation!=wolfrunninganim)||i!=0)){
                                 player[i].jumpstart=0;
                                 player[i].setAnimation(jumpupanim);
-                                player[i].rotation=player[i].targetrotation;
+                                player[i].yaw=player[i].targetyaw;
                                 player[i].transspeed=20;
                                 player[i].FootLand(0,1);
                                 player[i].FootLand(1,1);
 
                                 facing=0;
                                 facing.z=-1;
-                                flatfacing=DoRotation(facing,0,player[i].targetrotation+180,0);
+                                flatfacing=DoRotation(facing,0,player[i].targetyaw+180,0);
 
                                 if(movekey)player[i].velocity=flatfacing*player[i].speed*45*player[i].scale;
                                 if(!movekey)player[i].velocity=0;
@@ -7494,20 +7664,20 @@ void Game::Tick(){
                     }
                 }
                 if(player[i].targetanimation==rollanim)
-                    player[i].targetrotation=oldtargetrotation;
+                    player[i].targetyaw=oldtargetyaw;
             }
 
             //Rotation
             for(int k=0;k<numplayers;k++){
-                if(fabs(player[k].rotation-player[k].targetrotation)>180){
-                    if(player[k].rotation>player[k].targetrotation)
-                        player[k].rotation-=360;
+                if(fabs(player[k].yaw-player[k].targetyaw)>180){
+                    if(player[k].yaw>player[k].targetyaw)
+                        player[k].yaw-=360;
                     else
-                        player[k].rotation+=360;
+                        player[k].yaw+=360;
                 }
 
                 //stop to turn in right direction
-                if(fabs(player[k].rotation-player[k].targetrotation)>90&&(player[k].isRun()||player[k].targetanimation==walkanim))
+                if(fabs(player[k].yaw-player[k].targetyaw)>90&&(player[k].isRun()||player[k].targetanimation==walkanim))
                     player[k].setAnimation(player[k].getStop());
 
                 if(player[k].targetanimation==backhandspringanim||player[k].targetanimation==dodgebackanim)
@@ -7528,7 +7698,7 @@ void Game::Tick(){
                 }
 
                 if(player[k].isRun())
-                    player[k].targettilt=(player[k].rotation-player[k].targetrotation)/4;
+                    player[k].targettilt=(player[k].yaw-player[k].targetyaw)/4;
 
                 player[k].tilt=stepTowardf(player[k].tilt,player[k].targettilt,multiplier*150);
                 player[k].grabdelay-=multiplier;
@@ -7604,7 +7774,7 @@ void Game::Tick(){
                             if(Random()%2==0){
                                 if(!player[1].skeleton.free)temp2=(player[1].coords-player[1].oldcoords)/multiplier/2;//velocity/2;
                                 if(player[1].skeleton.free)temp2=player[1].skeleton.joints[i].velocity*player[1].scale/2;
-                                if(!player[1].skeleton.free)temp=DoRotation(DoRotation(DoRotation(player[1].skeleton.joints[i].position,0,0,player[1].tilt),player[1].tilt2,0,0),0,player[1].rotation,0)*player[1].scale+player[1].coords;
+                                if(!player[1].skeleton.free)temp=DoRotation(DoRotation(DoRotation(player[1].skeleton.joints[i].position,0,0,player[1].tilt),player[1].tilt2,0,0),0,player[1].yaw,0)*player[1].scale+player[1].coords;
                                 if(player[1].skeleton.free)temp=player[1].skeleton.joints[i].position*player[1].scale+player[1].coords;
                                 Sprite::MakeSprite(breathsprite, temp,temp2, 1,1,1, .6+(float)abs(Random()%100)/200-.25, 1);
                             }
@@ -7616,7 +7786,7 @@ void Game::Tick(){
                             if(Random()%2==0){
                                 if(!player[1].skeleton.free)temp2=(player[1].coords-player[1].oldcoords)/multiplier/2;//velocity/2;
                                 if(player[1].skeleton.free)temp2=player[1].skeleton.joints[i].velocity*player[1].scale/2;
-                                if(!player[1].skeleton.free)temp=DoRotation(DoRotation(DoRotation(player[1].skeleton.joints[i].position,0,0,player[1].tilt),player[1].tilt2,0,0),0,player[1].rotation,0)*player[1].scale+player[1].coords;
+                                if(!player[1].skeleton.free)temp=DoRotation(DoRotation(DoRotation(player[1].skeleton.joints[i].position,0,0,player[1].tilt),player[1].tilt2,0,0),0,player[1].yaw,0)*player[1].scale+player[1].coords;
                                 if(player[1].skeleton.free)temp=player[1].skeleton.joints[i].position*player[1].scale+player[1].coords;
                                 Sprite::MakeSprite(breathsprite, temp,temp2, 1,1,1, .6+(float)abs(Random()%100)/200-.25, 1);
                             }
@@ -7640,14 +7810,14 @@ void Game::Tick(){
             upvector=0;
             upvector.z=-1;
 
-            upvector=DoRotation(upvector,-rotation2+90,0,0);
-            upvector=DoRotation(upvector,0,0-rotation,0);
+            upvector=DoRotation(upvector,-pitch+90,0,0);
+            upvector=DoRotation(upvector,0,0-yaw,0);
 
             facing=0;
             facing.z=-1;
 
-            facing=DoRotation(facing,-rotation2,0,0);
-            facing=DoRotation(facing,0,0-rotation,0);
+            facing=DoRotation(facing,-pitch,0,0);
+            facing=DoRotation(facing,0,0-yaw,0);
 
 
             static float ori[6];
@@ -7671,18 +7841,18 @@ void Game::Tick(){
 
 void Game::TickOnce(){
 	if(mainmenu)
-		rotation+=multiplier*5;
+		yaw+=multiplier*5;
 	else
 		if(directing||indialogue==-1) {
-			rotation+=deltah*.7;
+			yaw+=deltah*.7;
 			if(!invertmouse)
-                rotation2+=deltav*.7;
+                pitch+=deltav*.7;
 			if(invertmouse)
-                rotation2-=deltav*.7;
-			if(rotation2>90)
-                rotation2=90;
-			if(rotation2<-70)
-                rotation2=-70;
+                pitch-=deltav*.7;
+			if(pitch>90)
+                pitch=90;
+			if(pitch<-70)
+                pitch=-70;
 		}
 }
 
@@ -7698,6 +7868,7 @@ void Game::TickOnceAfter(){
 	static float cameraspeed;
 
 	if(!mainmenu){
+        static int oldmusictype=musictype;
 
 		if(environment==snowyenvironment)
             leveltheme=stream_snowtheme;
@@ -7993,8 +8164,8 @@ void Game::TickOnceAfter(){
 	facing=0;
 	facing.z=-1;
 
-	facing=DoRotation(facing,-rotation2,0,0);
-	facing=DoRotation(facing,0,0-rotation,0);
+	facing=DoRotation(facing,-pitch,0,0);
+	facing=DoRotation(facing,0,0-yaw,0);
 	viewerfacing=facing;
 
 	if(!cameramode){
@@ -8008,7 +8179,7 @@ void Game::TickOnceAfter(){
 			}
 			target.y+=.1;
 		}
-		if(player[0].skeleton.free!=2&&!autocam){
+		if(player[0].skeleton.free!=2/*&&!autocam*/){
 			cameraspeed=20;
 			if(findLengthfast(&player[0].velocity)>400){
 				cameraspeed=20+(findLength(&player[0].velocity)-20)*.96;
@@ -8033,13 +8204,13 @@ void Game::TickOnceAfter(){
 					int i=terrain.patchobjects[player[0].whichpatchx][player[0].whichpatchz][j];
 					colviewer=viewer;
 					coltarget=cameraloc;
-					if(objects.model[i].LineCheckPossible(&colviewer,&coltarget,&col,&objects.position[i],&objects.rotation[i])!=-1)viewer=col;
+					if(objects.model[i].LineCheckPossible(&colviewer,&coltarget,&col,&objects.position[i],&objects.yaw[i])!=-1)viewer=col;
 				}
             if(terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz])
                 for(int j=0;j<terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz];j++){
                     int i=terrain.patchobjects[player[0].whichpatchx][player[0].whichpatchz][j];
                     colviewer=viewer;
-                    if(objects.model[i].SphereCheck(&colviewer,.15,&col,&objects.position[i],&objects.rotation[i])!=-1){
+                    if(objects.model[i].SphereCheck(&colviewer,.15,&col,&objects.position[i],&objects.yaw[i])!=-1){
                         viewer=colviewer;
                     }
                 }
@@ -8049,6 +8220,8 @@ void Game::TickOnceAfter(){
                 cameraloc.y=terrain.getHeight(cameraloc.x,cameraloc.z);
             }
 		}
+        /*
+        //what did autocam do?
 		if(player[0].skeleton.free!=2&&autocam){
 			cameraspeed=20;
 			if(findLengthfast(&player[0].velocity)>400){
@@ -8075,13 +8248,13 @@ void Game::TickOnceAfter(){
 					int i=terrain.patchobjects[player[0].whichpatchx][player[0].whichpatchz][j];
 					colviewer=viewer;
 					coltarget=cameraloc;
-					if(objects.model[i].LineCheckPossible(&colviewer,&coltarget,&col,&objects.position[i],&objects.rotation[i])!=-1)viewer=col;
+					if(objects.model[i].LineCheckPossible(&colviewer,&coltarget,&col,&objects.position[i],&objects.yaw[i])!=-1)viewer=col;
 				}
             if(terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz])
                 for(int j=0;j<terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz];j++){
                     int i=terrain.patchobjects[player[0].whichpatchx][player[0].whichpatchz][j];
                     colviewer=viewer;
-                    if(objects.model[i].SphereCheck(&colviewer,.15,&col,&objects.position[i],&objects.rotation[i])!=-1){
+                    if(objects.model[i].SphereCheck(&colviewer,.15,&col,&objects.position[i],&objects.yaw[i])!=-1){
                         viewer=colviewer;
                     }
                 }
@@ -8091,6 +8264,7 @@ void Game::TickOnceAfter(){
                 cameraloc.y=terrain.getHeight(cameraloc.x,cameraloc.z);
             }
 		}
+        */
 		if(camerashake>.8)camerashake=.8;
 		//if(woozy>10)woozy=10;
 		//woozy+=multiplier;

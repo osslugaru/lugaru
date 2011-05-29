@@ -28,7 +28,6 @@ extern float screenwidth,screenheight;
 extern float viewdistance;
 extern XYZ viewer;
 extern XYZ lightlocation;
-extern float lightambient[3],lightbrightness[3];
 extern float fadestart;
 extern float texscale;
 extern float gravity;
@@ -79,8 +78,8 @@ extern int dialogueboxsound[20][20];
 extern char dialoguetext[20][20][128];
 extern char dialoguename[20][20][64];
 extern XYZ dialoguecamera[20][20];
-extern float dialoguecamerarotation[20][20];
-extern float dialoguecamerarotation2[20][20];
+extern float dialoguecamerayaw[20][20];
+extern float dialoguecamerapitch[20][20];
 extern int indialogue;
 extern int whichdialogue;
 extern float dialoguetime;
@@ -98,16 +97,16 @@ void LOG(const std::string &fmt, ...)
     // !!! FIXME: write me.
 }
 
-void Game::Dispose()
+void Dispose()
 {
 	LOGFUNC;
 
-	if(endgame==2){
-		accountactive->endGame();
-		endgame=0;
+	if(Game::endgame==2){
+        Game::accountactive->endGame();
+        Game::endgame=0;
 	}
 
-	Account::saveFile(":Data:Users", accountactive);
+	Account::saveFile(":Data:Users", Game::accountactive);
 
 	//textures.clear();
 
@@ -133,6 +132,35 @@ void Game::Dispose()
 #endif
 }
 
+void Game::newGame(){
+    text = new Text();
+    skybox = new SkyBox();
+}
+
+void Game::deleteGame(){
+    if(skybox)
+        delete skybox;
+    if(text)
+        delete text;
+    for(int i=0;i<10;i++){
+        if(Mainmenuitems[i])glDeleteTextures( 1, &Mainmenuitems[i] );
+    }
+    glDeleteTextures( 1, &cursortexture );
+    glDeleteTextures( 1, &Maparrowtexture );
+    glDeleteTextures( 1, &Mapboxtexture );
+    glDeleteTextures( 1, &Mapcircletexture );
+    glDeleteTextures( 1, &terraintexture );
+    glDeleteTextures( 1, &terraintexture2 );
+    if(screentexture>0)glDeleteTextures( 1, &screentexture );
+    if(screentexture2>0)glDeleteTextures( 1, &screentexture2 );
+    glDeleteTextures( 1, &hawktexture );
+    glDeleteTextures( 1, &logotexture );
+    glDeleteTextures( 1, &loadscreentexture );
+
+    Dispose();
+}
+
+
 
 void Game::LoadTexture(const string fileName, GLuint *textureid,int mipmap, bool hasalpha) {
 	*textureid = Texture::Load(fileName,mipmap,hasalpha);
@@ -142,7 +170,7 @@ void Game::LoadTextureSave(const string fileName, GLuint *textureid,int mipmap,G
 	*textureid = Texture::Load(fileName,mipmap,false,array,skinsize);
 }
 
-void Game::LoadSave(const char *fileName, GLuint *textureid,bool mipmap,GLubyte *array, int *skinsize)
+void LoadSave(const char *fileName, GLuint *textureid,bool mipmap,GLubyte *array, int *skinsize)
 {
 	int i;
 	int bytesPerPixel;
@@ -181,53 +209,6 @@ void Game::LoadSave(const char *fileName, GLuint *textureid,bool mipmap,GLubyte 
 	}
 }
 
-bool Game::AddClothes(const char *fileName, GLubyte *array)
-{
-	int i;
-	int bytesPerPixel;
-
-	LOGFUNC;
-
-	//upload_image( fileName );
-	//LoadTGA( fileName );
-	//Load Image
-	unsigned char fileNamep[256];
-	CopyCStringToPascal(fileName,fileNamep);
-	//Load Image
-	bool opened;
-	opened=upload_image( fileNamep ,1);
-
-	float alphanum;
-	//Is it valid?
-	if(opened){
-		if(tintr>1)tintr=1;
-		if(tintg>1)tintg=1;
-		if(tintb>1)tintb=1;
-
-		if(tintr<0)tintr=0;
-		if(tintg<0)tintg=0;
-		if(tintb<0)tintb=0;
-
-		bytesPerPixel=texture.bpp/8;
-
-		int tempnum=0;
-		alphanum=255;
-		for(i=0;i<(int)(texture.sizeY*texture.sizeX*bytesPerPixel);i++){
-			if(bytesPerPixel==3)alphanum=255;
-			else if((i+1)%4==0)alphanum=texture.data[i];
-			//alphanum/=2;
-			if((i+1)%4||bytesPerPixel==3){
-				if((i%4)==0)texture.data[i]*=tintr;
-				if((i%4)==1)texture.data[i]*=tintg;
-				if((i%4)==2)texture.data[i]*=tintb;
-				array[tempnum]=(float)array[tempnum]*(1-alphanum/255)+(float)texture.data[i]*(alphanum/255);
-				tempnum++;
-			}
-		}
-	}
-	else return 0;
-	return 1;
-}
 
 
 //***************> ResizeGLScene() <******/
@@ -464,7 +445,7 @@ void Game::LoadingScreen()
 	}
 }
 
-void Game::FadeLoadingScreen(float howmuch)
+void FadeLoadingScreen(float howmuch)
 {
 	static float loadprogress;
 
@@ -548,8 +529,6 @@ void Game::InitGame()
 #endif
 
 	LOGFUNC;
-
-	autocam=0;
 
 	numchallengelevels=14;
 
@@ -741,22 +720,23 @@ void Game::InitGame()
 }
 
 
-void Game::LoadScreenTexture() {
+void LoadScreenTexture() {
     glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 
-    if(!screentexture)
-        glGenTextures( 1, &screentexture );
+    if(!Game::screentexture)
+        glGenTextures( 1, &Game::screentexture );
     glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 
 
     glEnable(GL_TEXTURE_2D);
-    glBindTexture( GL_TEXTURE_2D, screentexture);
+    glBindTexture( GL_TEXTURE_2D, Game::screentexture);
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 
     glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, kTextureSize, kTextureSize, 0);
 }
 
+//TODO: move LoadStuff() closer to GameTick.cpp to get rid of various vars shared in Game.h
 void Game::LoadStuff()
 {
 	static float temptexdetail;
@@ -794,8 +774,6 @@ void Game::LoadStuff()
 
 	viewdistdetail=2;
 	viewdistance=50*megascale*viewdistdetail;
-
-	brightness=100;
 
 	if(detail==2){
 		texdetail=1;
@@ -881,8 +859,8 @@ void Game::LoadStuff()
 	LoadTexture(":Data:Textures:leaf.png",&Sprite::leaftexture,1,1);
 	LoadTexture(":Data:Textures:tooth.png",&Sprite::toothtexture,1,1);
 
-	rotation=0;
-	rotation2=0;
+	yaw=0;
+	pitch=0;
 	ReSizeGLScene(90,.01);
 
 	viewer=0;
@@ -948,9 +926,6 @@ void Game::LoadStuff()
 	mainmenu=0;
 
 	firstload=0;
-
-	rabbitcoords=player[0].coords;
-	rabbitcoords.y=terrain.getHeight(rabbitcoords.x,rabbitcoords.z);
 
 	loadAllAnimations();
 	//Fix knife stab, too lazy to do it manually

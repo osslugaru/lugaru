@@ -549,7 +549,12 @@ void DoUpdate ()
 		num_channels = 0;
 	}
 */
-	DrawGL();
+	if ( stereomode == stereoNone ) {
+		DrawGLScene(stereoCenter);
+	} else {
+		DrawGLScene(stereoLeft);
+		DrawGLScene(stereoRight);
+	}
 }
 
 // --------------------------------------------------------------------------
@@ -707,7 +712,7 @@ int main(int argc, char **argv)
 			if (!SetUp ())
                 return 42;
 
-			while (!gDone&&!quit&&(!tryquit))
+			while (!gDone&&!tryquit)
 			{
 					if (IsFocused())
 					{

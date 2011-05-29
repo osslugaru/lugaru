@@ -141,7 +141,7 @@ void Person::CheckKick()
       velocity=0;
       victim->oldcoords=victim->coords;
       coords=victim->coords;
-      victim->targetrotation=targetrotation;
+      victim->targetyaw=targetyaw;
       victim->victim=this;
     }
 }
@@ -153,7 +153,7 @@ void Person::CatchFire(){
 		howmany=abs(Random()%(skeleton.num_joints));
 		if(!skeleton.free)flatvelocity=velocity;
 		if(skeleton.free)flatvelocity=skeleton.joints[howmany].velocity;
-		if(!skeleton.free)flatfacing=DoRotation(DoRotation(DoRotation(skeleton.joints[howmany].position,0,0,tilt),tilt2,0,0),0,rotation,0)*scale+coords;
+		if(!skeleton.free)flatfacing=DoRotation(DoRotation(DoRotation(skeleton.joints[howmany].position,0,0,tilt),tilt2,0,0),0,yaw,0)*scale+coords;
 		if(skeleton.free)flatfacing=skeleton.joints[howmany].position*scale+coords;
 		Sprite::MakeSprite(flamesprite, flatfacing,flatvelocity, 1,1,1, 2, 1);
 	}
@@ -254,20 +254,20 @@ void Person::DoBlood(float howmuch,int which){
 				bloodvel=0;
 				if(!skeleton.free){
 					bloodvel.z=10;
-					bloodvel=DoRotation(bloodvel,((float)(Random()%100))/4,rotation+((float)(Random()%100))/4,0)*scale;
+					bloodvel=DoRotation(bloodvel,((float)(Random()%100))/4,yaw+((float)(Random()%100))/4,0)*scale;
 				}
 				if(skeleton.free){
 					bloodvel-=DoRotation(skeleton.forward*10*scale,((float)(Random()%100))/4,((float)(Random()%100))/4,0);
 				}
-				if(skeleton.free)bloodvel+=DoRotation(skeleton.joints[skeleton.jointlabels[head]].velocity,((float)(Random()%100))/4,rotation+((float)(Random()%100))/4,0)*scale;
+				if(skeleton.free)bloodvel+=DoRotation(skeleton.joints[skeleton.jointlabels[head]].velocity,((float)(Random()%100))/4,yaw+((float)(Random()%100))/4,0)*scale;
 				if(!skeleton.free)bloodvel+=DoRotation(velocity,((float)(Random()%100))/4,((float)(Random()%100))/4,0)*scale;
 				if(skeleton.free){
 					Sprite::MakeSprite(bloodsprite, skeleton.joints[skeleton.jointlabels[head]].position*scale+coords,bloodvel, 1,1,1, .05, 1);
 					Sprite::MakeSprite(bloodflamesprite, skeleton.joints[skeleton.jointlabels[head]].position*scale+coords,bloodvel, 1,1,1, .3, 1);
 				}
 				if(!skeleton.free){
-					Sprite::MakeSprite(bloodsprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2,0,rotation,0)*scale+coords,bloodvel, 1,1,1, .05, 1);
-					Sprite::MakeSprite(bloodflamesprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2,0,rotation,0)*scale+coords,bloodvel, 1,1,1, .3, 1);
+					Sprite::MakeSprite(bloodsprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2,0,yaw,0)*scale+coords,bloodvel, 1,1,1, .05, 1);
+					Sprite::MakeSprite(bloodflamesprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2,0,yaw,0)*scale+coords,bloodvel, 1,1,1, .3, 1);
 				}
 			}
 			if(Random()%2==0)
@@ -276,17 +276,17 @@ void Person::DoBlood(float howmuch,int which){
 						bloodvel=0;
 						if(skeleton.free) {
 							bloodvel-=DoRotation(skeleton.forward*10*scale,((float)(Random()%100))/4,((float)(Random()%100))/4,0);
-							bloodvel+=DoRotation(skeleton.joints[skeleton.jointlabels[head]].velocity,((float)(Random()%100))/4,rotation+((float)(Random()%100))/4,0)*scale;
+							bloodvel+=DoRotation(skeleton.joints[skeleton.jointlabels[head]].velocity,((float)(Random()%100))/4,yaw+((float)(Random()%100))/4,0)*scale;
 						} else {
 							bloodvel.z=10;
-							bloodvel=DoRotation(bloodvel,((float)(Random()%100))/4,rotation+((float)(Random()%100))/4,0)*scale;
+							bloodvel=DoRotation(bloodvel,((float)(Random()%100))/4,yaw+((float)(Random()%100))/4,0)*scale;
 							bloodvel+=DoRotation(velocity,((float)(Random()%100))/4,((float)(Random()%100))/4,0)*scale;
 						}
 						bloodvel*=.2;
 						if(skeleton.free){
 							Sprite::MakeSprite(splintersprite, skeleton.joints[skeleton.jointlabels[head]].position*scale+coords,bloodvel, 1,1,1, .05, 1);
 						} else {
-							Sprite::MakeSprite(splintersprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2,0,rotation,0)*scale+coords,bloodvel, 1,1,1, .05, 1);
+							Sprite::MakeSprite(splintersprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2,0,yaw,0)*scale+coords,bloodvel, 1,1,1, .05, 1);
 						}
 						Sprite::setLastSpriteSpecial(3);
 					}
@@ -365,20 +365,20 @@ void Person::DoBloodBig(float howmuch,int which){
 					bloodvel=0;
 					if(!skeleton.free){
 						bloodvel.z=10;
-						bloodvel=DoRotation(bloodvel,((float)(Random()%100))/4,rotation+((float)(Random()%100))/4,0)*scale;
+						bloodvel=DoRotation(bloodvel,((float)(Random()%100))/4,yaw+((float)(Random()%100))/4,0)*scale;
 					}
 					if(skeleton.free){
 						bloodvel-=DoRotation(skeleton.forward*10*scale,((float)(Random()%100))/4,((float)(Random()%100))/4,0);
 					}
-					if(skeleton.free)bloodvel+=DoRotation(skeleton.joints[skeleton.jointlabels[head]].velocity,((float)(Random()%100))/4,rotation+((float)(Random()%100))/4,0)*scale;
+					if(skeleton.free)bloodvel+=DoRotation(skeleton.joints[skeleton.jointlabels[head]].velocity,((float)(Random()%100))/4,yaw+((float)(Random()%100))/4,0)*scale;
 					if(!skeleton.free)bloodvel+=DoRotation(velocity,((float)(Random()%100))/4,((float)(Random()%100))/4,0)*scale;
 					if(skeleton.free){
 						Sprite::MakeSprite(bloodsprite, skeleton.joints[skeleton.jointlabels[head]].position*scale+coords,bloodvel, 1,1,1, .05, 1);
 						Sprite::MakeSprite(bloodflamesprite, skeleton.joints[skeleton.jointlabels[head]].position*scale+coords,bloodvel, 1,1,1, .3, 1);
 					}
 					if(!skeleton.free){
-						Sprite::MakeSprite(bloodsprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2,0,rotation,0)*scale+coords,bloodvel, 1,1,1, .05, 1);
-						Sprite::MakeSprite(bloodflamesprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2,0,rotation,0)*scale+coords,bloodvel, 1,1,1, .3, 1);
+						Sprite::MakeSprite(bloodsprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2,0,yaw,0)*scale+coords,bloodvel, 1,1,1, .05, 1);
+						Sprite::MakeSprite(bloodflamesprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2,0,yaw,0)*scale+coords,bloodvel, 1,1,1, .3, 1);
 					}
 				}
 			}
@@ -530,7 +530,7 @@ bool Person::DoBloodBigWhere(float howmuch,int which, XYZ where){
 
 	if(bloodtoggle&&decals&&tutoriallevel!=1){
 		where-=coords;
-		if(!skeleton.free)where=DoRotation(where,0,-rotation,0);
+		if(!skeleton.free)where=DoRotation(where,0,-yaw,0);
 		//where=scale;
 		startpoint=where;
 		startpoint.y+=100;
@@ -589,20 +589,20 @@ bool Person::DoBloodBigWhere(float howmuch,int which, XYZ where){
 					bloodvel=0;
 					if(!skeleton.free){
 						bloodvel.z=10;
-						bloodvel=DoRotation(bloodvel,((float)(Random()%100))/4,rotation+((float)(Random()%100))/4,0)*scale;
+						bloodvel=DoRotation(bloodvel,((float)(Random()%100))/4,yaw+((float)(Random()%100))/4,0)*scale;
 					}
 					if(skeleton.free){
 						bloodvel-=DoRotation(skeleton.forward*10*scale,((float)(Random()%100))/4,((float)(Random()%100))/4,0);
 					}
-					if(skeleton.free)bloodvel+=DoRotation(skeleton.joints[skeleton.jointlabels[head]].velocity,((float)(Random()%100))/4,rotation+((float)(Random()%100))/4,0)*scale;
+					if(skeleton.free)bloodvel+=DoRotation(skeleton.joints[skeleton.jointlabels[head]].velocity,((float)(Random()%100))/4,yaw+((float)(Random()%100))/4,0)*scale;
 					if(!skeleton.free)bloodvel+=DoRotation(velocity,((float)(Random()%100))/4,((float)(Random()%100))/4,0)*scale;
 					if(skeleton.free){
 						Sprite::MakeSprite(bloodsprite, skeleton.joints[skeleton.jointlabels[head]].position*scale+coords,bloodvel, 1,1,1, .05, 1);
 						Sprite::MakeSprite(bloodflamesprite, skeleton.joints[skeleton.jointlabels[head]].position*scale+coords,bloodvel, 1,1,1, .3, 1);
 					}
 					if(!skeleton.free){
-						Sprite::MakeSprite(bloodsprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2,0,rotation,0)*scale+coords,bloodvel, 1,1,1, .05, 1);
-						Sprite::MakeSprite(bloodflamesprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2,0,rotation,0)*scale+coords,bloodvel, 1,1,1, .3, 1);
+						Sprite::MakeSprite(bloodsprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2,0,yaw,0)*scale+coords,bloodvel, 1,1,1, .05, 1);
+						Sprite::MakeSprite(bloodflamesprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2,0,yaw,0)*scale+coords,bloodvel, 1,1,1, .3, 1);
 					}
 				}
 			}
@@ -892,8 +892,8 @@ void Person::Reverse()
     victim->velocity=0;
     victim->oldcoords=victim->coords;
     victim->coords=coords;
-    victim->targetrotation=targetrotation;
-    victim->rotation=targetrotation;
+    victim->targetyaw=targetyaw;
+    victim->yaw=targetyaw;
     victim->victim=this;
   }
   if(targetanimation==winduppunchanim){
@@ -902,7 +902,7 @@ void Person::Reverse()
     victim->targetframe=1;
     victim->target=.5;
     victim->victim=this;
-    victim->targetrotation=targetrotation+180;
+    victim->targetyaw=targetyaw+180;
   }
   if(targetanimation==wolfslapanim){
     targetanimation=winduppunchblockedanim;
@@ -910,7 +910,7 @@ void Person::Reverse()
     victim->targetframe=1;
     victim->target=.5;
     victim->victim=this;
-    victim->targetrotation=targetrotation+180;
+    victim->targetyaw=targetyaw+180;
   }
   if((targetanimation==swordslashanim||targetanimation==staffhitanim||targetanimation==staffspinhitanim)&&victim->weaponactive!=-1){
     targetanimation=swordslashparriedanim;
@@ -920,7 +920,7 @@ void Person::Reverse()
     victim->targetframe=1;
     victim->target=.5;
     victim->victim=this;
-    victim->targetrotation=targetrotation+180;
+    victim->targetyaw=targetyaw+180;
 
     if(abs(Random()%20)==0||weapons[victim->weaponids[victim->weaponactive]].getType()==knife){
       if(victim->weaponactive!=-1){
@@ -940,7 +940,7 @@ void Person::Reverse()
       victim->target=0;
       victim->targetframe=0;
       victim->targetanimation=staggerbackhighanim;
-      victim->targetrotation=targetrotation+180;
+      victim->targetyaw=targetyaw+180;
       victim->target=0;
       weapons[victim->weaponids[0]].owner=-1;
       aim=DoRotation(facing,0,90,0)*21;
@@ -981,7 +981,7 @@ void Person::Reverse()
       target=0;
       targetframe=0;
       targetanimation=staggerbackhighanim;
-      targetrotation=targetrotation+180;
+      targetyaw=targetyaw+180;
       target=0;
       weapons[weaponids[0]].owner=-1;
       aim=DoRotation(facing,0,90,0)*21;
@@ -1016,9 +1016,9 @@ void Person::Reverse()
 	XYZ rotatetarget;
 	rotatetarget=coords-victim->coords;
 	Normalise(&rotatetarget);
-	victim->targetrotation=-asin(0-rotatetarget.x);
-	victim->targetrotation*=360/6.28;
-	if(rotatetarget.z<0)victim->targetrotation=180-victim->targetrotation;
+	victim->targetyaw=-asin(0-rotatetarget.x);
+	victim->targetyaw*=360/6.28;
+	if(rotatetarget.z<0)victim->targetyaw=180-victim->targetyaw;
 
 	victim->targettilt2=-asin(rotatetarget.y)*360/6.28;//*-70;
 
@@ -1035,9 +1035,9 @@ void Person::Reverse()
 	  XYZ rotatetarget;
 	  rotatetarget=coords-victim->coords;
 	  Normalise(&rotatetarget);
-	  victim->targetrotation=-asin(0-rotatetarget.x);
-	  victim->targetrotation*=360/6.28;
-	  if(rotatetarget.z<0)victim->targetrotation=180-victim->targetrotation;
+	  victim->targetyaw=-asin(0-rotatetarget.x);
+	  victim->targetyaw*=360/6.28;
+	  if(rotatetarget.z<0)victim->targetyaw=180-victim->targetyaw;
 
 	  victim->targettilt2=-asin(rotatetarget.y)*360/6.28;//*-70;
 
@@ -1088,7 +1088,7 @@ void Person::DoDamage(float howmuch){
 		for(int i=0;i<skeleton.num_joints; i++){
 			if(!skeleton.free)flatvelocity2=velocity;
 			if(skeleton.free)flatvelocity2=skeleton.joints[i].velocity;
-			if(!skeleton.free)flatfacing2=DoRotation(DoRotation(DoRotation(skeleton.joints[i].position,0,0,tilt),tilt2,0,0),0,rotation,0)*scale+coords;
+			if(!skeleton.free)flatfacing2=DoRotation(DoRotation(DoRotation(skeleton.joints[i].position,0,0,tilt),tilt2,0,0),0,yaw,0)*scale+coords;
 			if(skeleton.free)flatfacing2=skeleton.joints[i].position*scale+coords;
 			flatvelocity2.x+=(float)(abs(Random()%100)-50)/10;
 			flatvelocity2.y+=(float)(abs(Random()%100)-50)/10;
@@ -1156,68 +1156,68 @@ void Person::DoHead(){
 	if(!freeze&&!winfreeze){
 
 		//head facing
-		targetheadrotation=(float)((int)((0-rotation-targetheadrotation+180)*100)%36000)/100;
-		targetheadrotation2=(float)((int)(targetheadrotation2*100)%36000)/100;
+		targetheadyaw=(float)((int)((0-yaw-targetheadyaw+180)*100)%36000)/100;
+		targetheadpitch=(float)((int)(targetheadpitch*100)%36000)/100;
 
-		while(targetheadrotation>180)targetheadrotation-=360;
-		while(targetheadrotation<-180)targetheadrotation+=360;
+		while(targetheadyaw>180)targetheadyaw-=360;
+		while(targetheadyaw<-180)targetheadyaw+=360;
 
-		if(targetheadrotation>160)targetheadrotation2=targetheadrotation2*-1;
-		if(targetheadrotation<-160)targetheadrotation2=targetheadrotation2*-1;
-		if(targetheadrotation>160)targetheadrotation=targetheadrotation-180;
-		if(targetheadrotation<-160)targetheadrotation=targetheadrotation+180;
+		if(targetheadyaw>160)targetheadpitch=targetheadpitch*-1;
+		if(targetheadyaw<-160)targetheadpitch=targetheadpitch*-1;
+		if(targetheadyaw>160)targetheadyaw=targetheadyaw-180;
+		if(targetheadyaw<-160)targetheadyaw=targetheadyaw+180;
 
-		if(targetheadrotation2>120)targetheadrotation2=120;
-		if(targetheadrotation2<-120)targetheadrotation2=-120;
-		if(targetheadrotation>120)targetheadrotation=120;
-		if(targetheadrotation<-120)targetheadrotation=-120;
+		if(targetheadpitch>120)targetheadpitch=120;
+		if(targetheadpitch<-120)targetheadpitch=-120;
+		if(targetheadyaw>120)targetheadyaw=120;
+		if(targetheadyaw<-120)targetheadyaw=-120;
 
-		if(!isIdle())targetheadrotation2=0;
+		if(!isIdle())targetheadpitch=0;
 		if(isIdle()){
-			if(targetheadrotation>80)targetheadrotation=80;
-			if(targetheadrotation<-80)targetheadrotation=-80;
-			if(targetheadrotation2>50)targetheadrotation2=50;
-			if(targetheadrotation2<-50)targetheadrotation2=-50;
+			if(targetheadyaw>80)targetheadyaw=80;
+			if(targetheadyaw<-80)targetheadyaw=-80;
+			if(targetheadpitch>50)targetheadpitch=50;
+			if(targetheadpitch<-50)targetheadpitch=-50;
 		}
 
-		if(abs(headrotation-targetheadrotation)<multiplier*lookspeed)headrotation=targetheadrotation;
-		else if(headrotation>targetheadrotation){
-			headrotation-=multiplier*lookspeed;
+		if(abs(headyaw-targetheadyaw)<multiplier*lookspeed)headyaw=targetheadyaw;
+		else if(headyaw>targetheadyaw){
+			headyaw-=multiplier*lookspeed;
 		}
-		else if(headrotation<targetheadrotation){
-			headrotation+=multiplier*lookspeed;
+		else if(headyaw<targetheadyaw){
+			headyaw+=multiplier*lookspeed;
 		}
 
-		if(abs(headrotation2-targetheadrotation2)<multiplier*lookspeed/2)headrotation2=targetheadrotation2;
-		else if(headrotation2>targetheadrotation2){
-			headrotation2-=multiplier*lookspeed/2;
+		if(abs(headpitch-targetheadpitch)<multiplier*lookspeed/2)headpitch=targetheadpitch;
+		else if(headpitch>targetheadpitch){
+			headpitch-=multiplier*lookspeed/2;
 		}
-		else if(headrotation2<targetheadrotation2){
-			headrotation2+=multiplier*lookspeed/2;
+		else if(headpitch<targetheadpitch){
+			headpitch+=multiplier*lookspeed/2;
 		}
 
 		rotatearound=skeleton.joints[skeleton.jointlabels[neck]].position;
-		skeleton.joints[skeleton.jointlabels[head]].position=rotatearound+DoRotation(skeleton.joints[skeleton.jointlabels[head]].position-rotatearound,headrotation2,0,0);
+		skeleton.joints[skeleton.jointlabels[head]].position=rotatearound+DoRotation(skeleton.joints[skeleton.jointlabels[head]].position-rotatearound,headpitch,0,0);
 
 		facing=0;
 		facing.z=-1;
 		if(targetanimation!=bounceidleanim&&targetanimation!=fightidleanim&&targetanimation!=wolfidle&&targetanimation!=knifefightidleanim&&targetanimation!=drawrightanim&&targetanimation!=drawleftanim&&targetanimation!=walkanim){
-			facing=DoRotation(facing,headrotation2*.4,0,0);
-			facing=DoRotation(facing,0,headrotation*.4,0);
+			facing=DoRotation(facing,headpitch*.4,0,0);
+			facing=DoRotation(facing,0,headyaw*.4,0);
 		}
 
 		if(targetanimation==bounceidleanim||targetanimation==fightidleanim||targetanimation==wolfidle||targetanimation==knifefightidleanim||targetanimation==drawrightanim||targetanimation==drawleftanim){
-			facing=DoRotation(facing,headrotation2*.8,0,0);
-			facing=DoRotation(facing,0,headrotation*.8,0);
+			facing=DoRotation(facing,headpitch*.8,0,0);
+			facing=DoRotation(facing,0,headyaw*.8,0);
 		}
 
 		if(targetanimation==walkanim){
-			facing=DoRotation(facing,headrotation2*.6,0,0);
-			facing=DoRotation(facing,0,headrotation*.6,0);
+			facing=DoRotation(facing,headpitch*.6,0,0);
+			facing=DoRotation(facing,0,headyaw*.6,0);
 		}
 
 		skeleton.specialforward[0]=facing;
-		//skeleton.specialforward[0]=DoRotation(facing,0,rotation,0);
+		//skeleton.specialforward[0]=DoRotation(facing,0,yaw,0);
 		static int i;
 		for(i=0;i<skeleton.num_muscles;i++){
 			if(skeleton.muscles[i].visible&&(skeleton.muscles[i].parent1->label==head||skeleton.muscles[i].parent2->label==head))
@@ -1240,7 +1240,7 @@ void Person::RagDoll(bool checkcollision){
 
 		facing=0;
 		facing.z=1;
-		facing=DoRotation(facing,0,rotation,0);
+		facing=DoRotation(facing,0,yaw,0);
 
 		skeleton.freetime=0;
 
@@ -1255,7 +1255,7 @@ void Person::RagDoll(bool checkcollision){
 		if(!isnormal(velocity.x))velocity.x=0;
 		if(!isnormal(velocity.y))velocity.y=0;
 		if(!isnormal(velocity.z))velocity.z=0;
-		if(!isnormal(rotation))rotation=0;
+		if(!isnormal(yaw))yaw=0;
 		if(!isnormal(coords.x))coords=0;
 		if(!isnormal(tilt))tilt=0;
 		if(!isnormal(tilt2))tilt2=0;
@@ -1263,8 +1263,8 @@ void Person::RagDoll(bool checkcollision){
 		for(i=0;i<skeleton.num_joints;i++){
 			skeleton.joints[i].delay=0;
 			skeleton.joints[i].locked=0;
-			skeleton.joints[i].position=DoRotation(DoRotation(DoRotation(skeleton.joints[i].position,0,0,tilt),tilt2,0,0),0,rotation,0);
-			if(!isnormal(skeleton.joints[i].position.x))skeleton.joints[i].position=DoRotation(skeleton.joints[i].position,0,rotation,0);
+			skeleton.joints[i].position=DoRotation(DoRotation(DoRotation(skeleton.joints[i].position,0,0,tilt),tilt2,0,0),0,yaw,0);
+			if(!isnormal(skeleton.joints[i].position.x))skeleton.joints[i].position=DoRotation(skeleton.joints[i].position,0,yaw,0);
 			if(!isnormal(skeleton.joints[i].position.x))skeleton.joints[i].position=skeleton.joints[i].position;
 			if(!isnormal(skeleton.joints[i].position.x))skeleton.joints[i].position=coords;
 			skeleton.joints[i].position.y+=.1;
@@ -1294,7 +1294,7 @@ void Person::RagDoll(bool checkcollision){
 		speed*=speedmult;
 
 		for(i=0;i<skeleton.num_joints;i++){
-			if((animation[currentanimation].attack!=reversed||currentanimation==swordslashreversedanim)&&currentanimation!=rabbitkickanim&&!isLanding()&&!wasLanding()&&animation[currentanimation].height==animation[targetanimation].height)skeleton.joints[i].velocity=velocity/scale+facing*5+DoRotation(DoRotation(DoRotation((animation[targetanimation].position[i][targetframe]-animation[currentanimation].position[i][currentframe])*speed,0,0,tilt),tilt2,0,0),0,rotation,0);
+			if((animation[currentanimation].attack!=reversed||currentanimation==swordslashreversedanim)&&currentanimation!=rabbitkickanim&&!isLanding()&&!wasLanding()&&animation[currentanimation].height==animation[targetanimation].height)skeleton.joints[i].velocity=velocity/scale+facing*5+DoRotation(DoRotation(DoRotation((animation[targetanimation].position[i][targetframe]-animation[currentanimation].position[i][currentframe])*speed,0,0,tilt),tilt2,0,0),0,yaw,0);
 			else skeleton.joints[i].velocity=velocity/scale+facing*5;
 			change.x=(float)(Random()%100)/100;
 			change.y=(float)(Random()%100)/100;
@@ -1333,14 +1333,14 @@ void Person::RagDoll(bool checkcollision){
 					i=terrain.patchobjects[whichpatchx][whichpatchz][l];
 					lowpoint=coords;
 					lowpoint.y+=1;
-					if(SphereCheck(&lowpoint, 3, &colpoint, &objects.position[i], &objects.rotation[i], &objects.model[i])!=-1){
+					if(SphereCheck(&lowpoint, 3, &colpoint, &objects.position[i], &objects.yaw[i], &objects.model[i])!=-1){
 						coords.x=lowpoint.x;
 						coords.z=lowpoint.z;
 					}
 				}
 		}
 
-		rotation=0;
+		yaw=0;
 		updatedelay=0;
 
 		velocity=0;
@@ -1388,26 +1388,26 @@ void Person::FootLand(int which, float opacity){
 		if(opacity>1)
 		{
 			footvel=0;
-			if(which==0)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,rotation,0)*scale+coords;
-			if(which==1)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,rotation,0)*scale+coords;
+			if(which==0)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,yaw,0)*scale+coords;
+			if(which==1)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,yaw,0)*scale+coords;
 			//footpoint.y=coords.y;
 			if(findDistancefast(&footpoint,&viewer))Sprite::MakeSprite(cloudsprite, footpoint,footvel, 1,1,1, .5, .2*opacity);
 		}
 		else if(environment==snowyenvironment&&onterrain&&terrain.getOpacity(coords.x,coords.z)<.2){
 			footvel=velocity/5;
 			if(footvel.y<.8)footvel.y=.8;
-			if(which==0)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,rotation,0)*scale+coords;
-			if(which==1)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,rotation,0)*scale+coords;
+			if(which==0)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,yaw,0)*scale+coords;
+			if(which==1)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,yaw,0)*scale+coords;
 			footpoint.y=terrain.getHeight(footpoint.x,footpoint.z);
 			terrainlight=terrain.getLighting(footpoint.x,footpoint.z);
 			if(findDistancefast(&footpoint,&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, footpoint,footvel*.6, terrainlight.x,terrainlight.y,terrainlight.z, .5, .7*opacity);
-			if(opacity>=1||detail==2)if(detail==2)if(findDistancefast(&footpoint,&viewer)<viewdistance*viewdistance/4)terrain.MakeDecal(footprintdecal,footpoint,.2,1*opacity,rotation);
+			if(opacity>=1||detail==2)if(detail==2)if(findDistancefast(&footpoint,&viewer)<viewdistance*viewdistance/4)terrain.MakeDecal(footprintdecal,footpoint,.2,1*opacity,yaw);
 		}
 		else if(environment==grassyenvironment&&onterrain&&terrain.getOpacity(coords.x,coords.z)<.2){
 			footvel=velocity/5;
 			if(footvel.y<.8)footvel.y=.8;
-			if(which==0)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,rotation,0)*scale+coords;
-			if(which==1)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,rotation,0)*scale+coords;
+			if(which==0)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,yaw,0)*scale+coords;
+			if(which==1)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,yaw,0)*scale+coords;
 			footpoint.y=terrain.getHeight(footpoint.x,footpoint.z);
 			terrainlight=terrain.getLighting(footpoint.x,footpoint.z);
 			if(findDistancefast(&footpoint,&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, footpoint,footvel*.6, terrainlight.x*90/255,terrainlight.y*70/255,terrainlight.z*8/255, .5, .5*opacity);
@@ -1415,19 +1415,19 @@ void Person::FootLand(int which, float opacity){
 		else if(environment==desertenvironment&&onterrain&&terrain.getOpacity(coords.x,coords.z)<.2){
 			footvel=velocity/5;
 			if(footvel.y<.8)footvel.y=.8;
-			if(which==0)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,rotation,0)*scale+coords;
-			if(which==1)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,rotation,0)*scale+coords;
+			if(which==0)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,yaw,0)*scale+coords;
+			if(which==1)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,yaw,0)*scale+coords;
 			footpoint.y=terrain.getHeight(footpoint.x,footpoint.z);
 			terrainlight=terrain.getLighting(footpoint.x,footpoint.z);
 			if(findDistancefast(&footpoint,&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, footpoint,footvel*.6, terrainlight.x*190/255,terrainlight.y*170/255,terrainlight.z*108/255, .5, .7*opacity);
-			if(opacity>=1||detail==2)if(detail==2)if(findDistancefast(&footpoint,&viewer)<viewdistance*viewdistance/4)terrain.MakeDecal(footprintdecal,footpoint,.2,.25*opacity,rotation);
+			if(opacity>=1||detail==2)if(detail==2)if(findDistancefast(&footpoint,&viewer)<viewdistance*viewdistance/4)terrain.MakeDecal(footprintdecal,footpoint,.2,.25*opacity,yaw);
 		}
 		else if(isLanding()||targetanimation==jumpupanim||isLandhard())
 		{
 			footvel=velocity/5;
 			if(footvel.y<.8)footvel.y=.8;
-			if(which==0)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,rotation,0)*scale+coords;
-			if(which==1)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,rotation,0)*scale+coords;
+			if(which==0)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,yaw,0)*scale+coords;
+			if(which==1)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,yaw,0)*scale+coords;
 			//footpoint.y=coords.y;
 			if(findDistancefast(&footpoint,&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, footpoint,footvel*.6, 1,1,1, .5, .2*opacity);
 		}
@@ -1437,7 +1437,7 @@ void Person::Puff(int whichlabel){
 	static XYZ footvel,footpoint;
 
 	footvel=0;
-	footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[whichlabel]].position,0,rotation,0)*scale+coords;
+	footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[whichlabel]].position,0,yaw,0)*scale+coords;
 	Sprite::MakeSprite(cloudimpactsprite, footpoint,footvel, 1,1,1, .9, .3);
 }
 
@@ -1483,7 +1483,7 @@ void	Person::DoAnimations(){
 			targfacing=0;
 			targfacing.z=1;
 
-			targfacing=DoRotation(targfacing,0,targetrotation,0);
+			targfacing=DoRotation(targfacing,0,targetyaw,0);
 
 			if(normaldotproduct(targfacing,velocity)>=-.3)targetanimation=flipanim;
 			else targetanimation=backflipanim;
@@ -1526,8 +1526,8 @@ void	Person::DoAnimations(){
 					else victim->targetanimation=rabbittackledfrontanim;
 					victim->targetframe=2;
 					victim->target=0;
-					victim->rotation=rotation;
-					victim->targetrotation=rotation;
+					victim->yaw=yaw;
+					victim->targetyaw=yaw;
 					if(victim->aitype==gethelptype)victim->DoDamage(victim->damagetolerance-victim->damage);
 					//victim->DoDamage(30);
 					if(creature==wolftype){
@@ -1775,14 +1775,14 @@ void	Person::DoAnimations(){
 
 
 							if((currentanimation==walljumprightkickanim&&targetanimation==walljumprightkickanim)||(currentanimation==walljumpleftkickanim&&targetanimation==walljumpleftkickanim)){
-								XYZ rotatetarget=DoRotation(skeleton.forward,0,rotation,0);
+								XYZ rotatetarget=DoRotation(skeleton.forward,0,yaw,0);
 								Normalise(&rotatetarget);
-								targetrotation=-asin(0-rotatetarget.x);
-								targetrotation*=360/6.28;
-								if(rotatetarget.z<0)targetrotation=180-targetrotation;
+								targetyaw=-asin(0-rotatetarget.x);
+								targetyaw*=360/6.28;
+								if(rotatetarget.z<0)targetyaw=180-targetyaw;
 
-								if(targetanimation==walljumprightkickanim)targetrotation+=40;
-								if(targetanimation==walljumpleftkickanim)targetrotation-=40;
+								if(targetanimation==walljumprightkickanim)targetyaw+=40;
+								if(targetanimation==walljumpleftkickanim)targetyaw-=40;
 							}
 
 							bool dojumpattack;
@@ -1825,9 +1825,9 @@ void	Person::DoAnimations(){
 										if(coords.z!=victim->coords.z||coords.x!=victim->coords.x){
 											rotatetarget=coords-victim->coords;
 											Normalise(&rotatetarget);
-											targetrotation=-asin(0-rotatetarget.x);
-											targetrotation*=360/6.28;
-											if(rotatetarget.z<0)targetrotation=180-targetrotation;
+											targetyaw=-asin(0-rotatetarget.x);
+											targetyaw*=360/6.28;
+											if(rotatetarget.z<0)targetyaw=180-targetyaw;
 										}
 										if(targetanimation!=rabbitrunninganim){
 											emit_sound_at(jumpsound, coords, 128.);
@@ -2118,7 +2118,7 @@ void	Person::DoAnimations(){
 											if(weapons[weaponids[weaponactive]].getType()==knife){
 												where=(weapons[weaponids[weaponactive]].tippoint*.6+weapons[weaponids[weaponactive]].position*.4);
 												where-=victim->coords;
-												if(!victim->skeleton.free)where=DoRotation(where,0,-victim->rotation,0);
+												if(!victim->skeleton.free)where=DoRotation(where,0,-victim->yaw,0);
 												//where=scale;
 												startpoint=where;
 												startpoint.y+=100;
@@ -2128,21 +2128,21 @@ void	Person::DoAnimations(){
 											if(weapons[weaponids[weaponactive]].getType()==sword){
 												where=weapons[weaponids[weaponactive]].position;
 												where-=victim->coords;
-												if(!victim->skeleton.free)where=DoRotation(where,0,-victim->rotation,0);
+												if(!victim->skeleton.free)where=DoRotation(where,0,-victim->yaw,0);
 												startpoint=where;
 												where=weapons[weaponids[weaponactive]].tippoint;
 												where-=victim->coords;
-												if(!victim->skeleton.free)where=DoRotation(where,0,-victim->rotation,0);
+												if(!victim->skeleton.free)where=DoRotation(where,0,-victim->yaw,0);
 												endpoint=where;
 											}
 											if(weapons[weaponids[weaponactive]].getType()==staff){
 												where=weapons[weaponids[weaponactive]].position;
 												where-=victim->coords;
-												if(!victim->skeleton.free)where=DoRotation(where,0,-victim->rotation,0);
+												if(!victim->skeleton.free)where=DoRotation(where,0,-victim->yaw,0);
 												startpoint=where;
 												where=weapons[weaponids[weaponactive]].tippoint;
 												where-=victim->coords;
-												if(!victim->skeleton.free)where=DoRotation(where,0,-victim->rotation,0);
+												if(!victim->skeleton.free)where=DoRotation(where,0,-victim->yaw,0);
 												endpoint=where;
 											}
 											movepoint=0;
@@ -2201,11 +2201,11 @@ void	Person::DoAnimations(){
 
 											where=weapons[weaponids[weaponactive]].position;
 											where-=victim->coords;
-											if(!victim->skeleton.free)where=DoRotation(where,0,-victim->rotation,0);
+											if(!victim->skeleton.free)where=DoRotation(where,0,-victim->yaw,0);
 											startpoint=where;
 											where=weapons[weaponids[weaponactive]].tippoint;
 											where-=victim->coords;
-											if(!victim->skeleton.free)where=DoRotation(where,0,-victim->rotation,0);
+											if(!victim->skeleton.free)where=DoRotation(where,0,-victim->yaw,0);
 											endpoint=where;
 
 											movepoint=0;
@@ -2224,11 +2224,11 @@ void	Person::DoAnimations(){
 
 											where=weapons[weaponids[weaponactive]].position;
 											where-=victim->coords;
-											if(!victim->skeleton.free)where=DoRotation(where,0,-victim->rotation,0);
+											if(!victim->skeleton.free)where=DoRotation(where,0,-victim->yaw,0);
 											startpoint=where;
 											where=weapons[weaponids[weaponactive]].tippoint;
 											where-=victim->coords;
-											if(!victim->skeleton.free)where=DoRotation(where,0,-victim->rotation,0);
+											if(!victim->skeleton.free)where=DoRotation(where,0,-victim->yaw,0);
 											endpoint=where;
 
 											movepoint=0;
@@ -2299,7 +2299,7 @@ void	Person::DoAnimations(){
 
 										victim->targetframe=0;
 										victim->targetanimation=staggerbackhardanim;
-										victim->targetrotation=targetrotation+180;
+										victim->targetyaw=targetyaw+180;
 										victim->target=0;
 										victim->stunned=1;
 
@@ -2347,7 +2347,7 @@ void	Person::DoAnimations(){
 
 										victim->targetframe=0;
 										victim->targetanimation=staggerbackhardanim;
-										victim->targetrotation=targetrotation+180;
+										victim->targetyaw=targetyaw+180;
 										victim->target=0;
 										victim->stunned=1;
 
@@ -2392,7 +2392,7 @@ void	Person::DoAnimations(){
 										escapednum=0;
 										XYZ aim;
 										weapons[weaponids[0]].owner=-1;
-										aim=victim->coords+DoRotation(victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].position,0,victim->rotation,0)*victim->scale+victim->velocity*findDistance(&victim->coords,&coords)/50-(coords+DoRotation(skeleton.joints[skeleton.jointlabels[righthand]].position,0,rotation,0)*scale);
+										aim=victim->coords+DoRotation(victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].position,0,victim->yaw,0)*victim->scale+victim->velocity*findDistance(&victim->coords,&coords)/50-(coords+DoRotation(skeleton.joints[skeleton.jointlabels[righthand]].position,0,yaw,0)*scale);
 										Normalise(&aim);
 										/*if(victim->targetanimation==jumpupanim||victim->targetanimation==jumpdownanim){
 										aim=DoRotation(aim,(float)abs(Random()%15)-7,(float)abs(Random()%15)-7,0);
@@ -2427,7 +2427,7 @@ void	Person::DoAnimations(){
 												if(victim->id != 0 || difficulty==2){
 													victim->targetframe=0;
 													victim->targetanimation=staggerbackhardanim;
-													victim->targetrotation=targetrotation+180;
+													victim->targetyaw=targetyaw+180;
 													victim->target=0;
 												}
 											}
@@ -2444,7 +2444,7 @@ void	Person::DoAnimations(){
 												footpoint=(victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].position+victim->skeleton.joints[victim->skeleton.jointlabels[neck]].position)/2*victim->scale+victim->coords;
 											}
 											if(!skeleton.free){
-												footpoint=DoRotation((victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].position+victim->skeleton.joints[victim->skeleton.jointlabels[neck]].position)/2,0,victim->rotation,0)*victim->scale+victim->coords;
+												footpoint=DoRotation((victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].position+victim->skeleton.joints[victim->skeleton.jointlabels[neck]].position)/2,0,victim->yaw,0)*victim->scale+victim->coords;
 											}
 											if(tutoriallevel!=1){
 												if(bloodtoggle)Sprite::MakeSprite(cloudimpactsprite, footpoint,footvel, 1,0,0, .6, .3);
@@ -2476,7 +2476,7 @@ void	Person::DoAnimations(){
 											if(tutoriallevel!=1){
 												victim->targetframe=0;
 												victim->targetanimation=staggerbackhardanim;
-												victim->targetrotation=targetrotation+180;
+												victim->targetyaw=targetyaw+180;
 												victim->target=0;
 											}
 
@@ -2496,7 +2496,7 @@ void	Person::DoAnimations(){
 													footpoint=(victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].position+victim->skeleton.joints[victim->skeleton.jointlabels[neck]].position)/2*victim->scale+victim->coords;
 												}
 												if(!skeleton.free){
-													footpoint=DoRotation((victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].position+victim->skeleton.joints[victim->skeleton.jointlabels[neck]].position)/2,0,victim->rotation,0)*victim->scale+victim->coords;
+													footpoint=DoRotation((victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].position+victim->skeleton.joints[victim->skeleton.jointlabels[neck]].position)/2,0,victim->yaw,0)*victim->scale+victim->coords;
 												}
 												if(bloodtoggle)Sprite::MakeSprite(cloudimpactsprite, footpoint,footvel, 1,0,0, .9, .3);
 												footvel=DoRotation(facing,0,90,0)*.8;
@@ -2526,7 +2526,7 @@ void	Person::DoAnimations(){
 											victim->target=0;
 											victim->targetframe=0;
 											victim->targetanimation=staggerbackhighanim;
-											victim->targetrotation=targetrotation+180;
+											victim->targetyaw=targetyaw+180;
 											victim->target=0;
 											weapons[victim->weaponids[0]].owner=-1;
 											aim=DoRotation(facing,0,90,0)*21;
@@ -2712,7 +2712,7 @@ void	Person::DoAnimations(){
 											victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].velocity+=relative*damagemult*200;
 											victim->targetframe=0;
 											victim->targetanimation=staggerbackhighanim;
-											victim->targetrotation=targetrotation+180;
+											victim->targetyaw=targetyaw+180;
 											victim->target=0;
 											if(tutoriallevel!=1){
 												emit_sound_at(landsound2, victim->coords, 128.);
@@ -2770,7 +2770,7 @@ void	Person::DoAnimations(){
 											victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].velocity+=relative*damagemult*200;
 											victim->targetframe=0;
 											victim->targetanimation=staggerbackhighanim;
-											victim->targetrotation=targetrotation+180;
+											victim->targetyaw=targetyaw+180;
 											victim->target=0;
 											if(tutoriallevel!=1){
 												emit_sound_at(landsound2, victim->coords, 128.);
@@ -3034,8 +3034,8 @@ void	Person::DoAnimations(){
 											bloodvel=0;
 											bloodvel.z=20;
 											bloodvel.y=5;
-											bloodvel=DoRotation(bloodvel,((float)(Random()%100))/4,rotation+((float)(Random()%100))/4,0)*scale;
-											Sprite::MakeSprite(bloodsprite, DoRotation(skeleton.joints[skeleton.jointlabels[neck]].position,0,rotation,0)*scale+coords,bloodvel, 1,1,1, .05, 1);
+											bloodvel=DoRotation(bloodvel,((float)(Random()%100))/4,yaw+((float)(Random()%100))/4,0)*scale;
+											Sprite::MakeSprite(bloodsprite, DoRotation(skeleton.joints[skeleton.jointlabels[neck]].position,0,yaw,0)*scale+coords,bloodvel, 1,1,1, .05, 1);
 											*/
 											XYZ footvel,footpoint;
 											footvel=0;
@@ -3337,9 +3337,9 @@ void	Person::DoAnimations(){
 												targetframe=0;
 												XYZ rotatetarget=victim->coords-coords;
 												Normalise(&rotatetarget);
-												rotation=-asin(0-rotatetarget.x);
-												rotation*=360/6.28;
-												if(rotatetarget.z<0)rotation=180-rotation;
+												yaw=-asin(0-rotatetarget.x);
+												yaw*=360/6.28;
+												if(rotatetarget.z<0)yaw=180-yaw;
 												targettilt2=-asin(rotatetarget.y)*360/6.28;
 												velocity=(victim->coords-coords)*4;
 												velocity.y+=2;
@@ -3357,16 +3357,16 @@ void	Person::DoAnimations(){
 									if(targetanimation==walljumprightanim){
 										targetanimation=rightflipanim;
 										targetframe=4;
-										targetrotation-=90;
-										rotation-=90;
+										targetyaw-=90;
+										yaw-=90;
 										velocity=DoRotation(facing,0,30,0)*-8;
 										velocity.y=4;
 									}
 									if(targetanimation==walljumpfrontanim){
 										targetanimation=frontflipanim;
 										targetframe=2;
-										//targetrotation-=180;
-										////rotation-=180;
+										//targetyaw-=180;
+										////yaw-=180;
 										velocity=facing*8;
 										velocity.y=4;
 									}
@@ -3394,9 +3394,9 @@ void	Person::DoAnimations(){
 												targetframe=0;
 												XYZ rotatetarget=victim->coords-coords;
 												Normalise(&rotatetarget);
-												rotation=-asin(0-rotatetarget.x);
-												rotation*=360/6.28;
-												if(rotatetarget.z<0)rotation=180-rotation;
+												yaw=-asin(0-rotatetarget.x);
+												yaw*=360/6.28;
+												if(rotatetarget.z<0)yaw=180-yaw;
 												targettilt2=-asin(rotatetarget.y)*360/6.28;
 												velocity=(victim->coords-coords)*4;
 												velocity.y+=2;
@@ -3406,8 +3406,8 @@ void	Person::DoAnimations(){
 									if(targetanimation!=walljumpleftkickanim){
 										targetanimation=leftflipanim;
 										targetframe=4;
-										targetrotation+=90;
-										rotation+=90;
+										targetyaw+=90;
+										yaw+=90;
 										velocity=DoRotation(facing,0,-30,0)*-8;
 										velocity.y=4;
 									}
@@ -3419,12 +3419,12 @@ void	Person::DoAnimations(){
 									targetanimation=getCrouch();
 									targetframe=1;
 									currentframe=0;
-									targetrotation+=180;
-									rotation+=180;
+									targetyaw+=180;
+									yaw+=180;
 									targettilt2*=-1;
 									tilt2*=-1;
 									transspeed=1000000;
-									targetheadrotation+=180;
+									targetheadyaw+=180;
 									coords-=facing*.7;
 									if(onterrain)coords.y=terrain.getHeight(coords.x,coords.z);
 
@@ -3444,12 +3444,12 @@ void	Person::DoAnimations(){
 								if(animation[targetanimation].attack==reversal&&currentanimation!=sneakattackanim&&currentanimation!=knifesneakattackanim&&currentanimation!=swordsneakattackanim&&currentanimation!=knifefollowanim){
 									float ycoords=oldcoords.y;
 									targetanimation=getStop();
-									targetrotation+=180;
-									rotation+=180;
+									targetyaw+=180;
+									yaw+=180;
 									targettilt2*=-1;
 									tilt2*=-1;
 									transspeed=1000000;
-									targetheadrotation+=180;
+									targetheadyaw+=180;
 									if(!isnormal(coords.x))
 										coords=oldcoords;
 									if(currentanimation==spinkickreversalanim||currentanimation==swordslashreversalanim)
@@ -3458,24 +3458,24 @@ void	Person::DoAnimations(){
 										oldcoords=coords+facing*1.1;
 									else if(currentanimation==upunchreversalanim){
 										oldcoords=coords+facing*1.5;
-										targetrotation+=180;
-										rotation+=180;
-										targetheadrotation+=180;
+										targetyaw+=180;
+										yaw+=180;
+										targetheadyaw+=180;
 										targettilt2*=-1;
 										tilt2*=-1;
 									}
 									else if(currentanimation==knifeslashreversalanim){
 										oldcoords=coords+facing*.5;
-										targetrotation+=90;
-										rotation+=90;
-										targetheadrotation+=90;
+										targetyaw+=90;
+										yaw+=90;
+										targetheadyaw+=90;
 										targettilt2=0;
 										tilt2=0;
 									}
 									else if(currentanimation==staffspinhitreversalanim){
-										targetrotation+=180;
-										rotation+=180;
-										targetheadrotation+=180;
+										targetyaw+=180;
+										yaw+=180;
+										targetheadyaw+=180;
 										targettilt2=0;
 										tilt2=0;
 									}
@@ -3494,7 +3494,7 @@ void	Person::DoAnimations(){
 								}
 								if(animation[targetanimation].attack==reversed){
 									escapednum++;
-									if(targetanimation==sweepreversedanim)targetrotation+=90;
+									if(targetanimation==sweepreversedanim)targetyaw+=90;
 									targetanimation=backhandspringanim;
 									targetframe=2;
 									emit_sound_at(landsound, coords, 128);
@@ -3503,16 +3503,16 @@ void	Person::DoAnimations(){
 										targetanimation=rollanim;
 										targetframe=5;
 										oldcoords=coords;
-										coords+=(DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,rotation,0)+DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,rotation,0))/2*scale;
+										coords+=(DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,yaw,0)+DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,yaw,0))/2*scale;
 										coords.y=oldcoords.y;
 									}
 									if(currentanimation==knifeslashreversedanim){
 										targetanimation=rollanim;
 										targetframe=0;
-										targetrotation+=90;
-										rotation+=90;
+										targetyaw+=90;
+										yaw+=90;
 										oldcoords=coords;
-										coords+=(DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,rotation,0)+DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,rotation,0))/2*scale;
+										coords+=(DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,yaw,0)+DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,yaw,0))/2*scale;
 										coords.y=oldcoords.y;
 									}
 								}
@@ -3524,12 +3524,12 @@ void	Person::DoAnimations(){
 								if(currentanimation==spinkickanim||currentanimation==getupfrombackanim||currentanimation==getupfromfrontanim||currentanimation==lowkickanim){
 									targetanimation=getIdle();
 									oldcoords=coords;
-									coords+=(DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,rotation,0)+DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,rotation,0))/2*scale;
+									coords+=(DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,yaw,0)+DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,yaw,0))/2*scale;
 									coords.y=oldcoords.y;
-									//coords+=DoRotation(animation[currentanimation].offset,0,rotation,0)*scale;
+									//coords+=DoRotation(animation[currentanimation].offset,0,yaw,0)*scale;
 									targetoffset.y=coords.y;
 									if(onterrain)targetoffset.y=terrain.getHeight(coords.x,coords.z);
-									currentoffset=DoRotation(animation[currentanimation].offset*-1,0,rotation,0)*scale;
+									currentoffset=DoRotation(animation[currentanimation].offset*-1,0,yaw,0)*scale;
 									currentoffset.y-=(coords.y-targetoffset.y);
 									coords.y=targetoffset.y;
 									targetoffset=0;
@@ -3541,7 +3541,7 @@ void	Person::DoAnimations(){
 									lastfeint=0;
 								}
 								if(currentanimation==rabbitkickanim&&targetanimation!=backflipanim){
-									targetrotation=rotation;
+									targetyaw=yaw;
 									bool hasstaff;
 									hasstaff=0;
 									if(num_weapons>0)if(weapons[0].getType()==staff)hasstaff=1;
@@ -3649,7 +3649,7 @@ void	Person::DoAnimations(){
 			if(target>1){currentframe=targetframe; target=1;}
 			oldrot=rot;
 			rot=targetrot*target;
-			rotation+=rot-oldrot;
+			yaw+=rot-oldrot;
 			if(target==1){
 				rot=0;
 				oldrot=0;
@@ -3840,7 +3840,7 @@ void	Person::DoStuff(){
 		howmany=abs(Random()%(skeleton.num_joints));
 		if(!skeleton.free)flatvelocity=(coords-oldcoords)/multiplier/2;//velocity/2;
 		if(skeleton.free)flatvelocity=skeleton.joints[howmany].velocity*scale/2;
-		if(!skeleton.free)flatfacing=DoRotation(DoRotation(DoRotation(skeleton.joints[howmany].position,0,0,tilt),tilt2,0,0),0,rotation,0)*scale+coords;
+		if(!skeleton.free)flatfacing=DoRotation(DoRotation(DoRotation(skeleton.joints[howmany].position,0,0,tilt),tilt2,0,0),0,yaw,0)*scale+coords;
 		if(skeleton.free)flatfacing=skeleton.joints[howmany].position*scale+coords;
 		Sprite::MakeSprite(flamesprite, flatfacing,flatvelocity, 1,1,1, .6+(float)abs(Random()%100)/200-.25, 1);
 	}
@@ -3850,7 +3850,7 @@ void	Person::DoStuff(){
 		howmany=abs(Random()%(skeleton.num_joints));
 		if(!skeleton.free)flatvelocity=(coords-oldcoords)/multiplier/2;//velocity/2;
 		if(skeleton.free)flatvelocity=skeleton.joints[howmany].velocity*scale/2;
-		if(!skeleton.free)flatfacing=DoRotation(DoRotation(DoRotation(skeleton.joints[howmany].position,0,0,tilt),tilt2,0,0),0,rotation,0)*scale+coords;
+		if(!skeleton.free)flatfacing=DoRotation(DoRotation(DoRotation(skeleton.joints[howmany].position,0,0,tilt),tilt2,0,0),0,yaw,0)*scale+coords;
 		if(skeleton.free)flatfacing=skeleton.joints[howmany].position*scale+coords;
 		Sprite::MakeSprite(breathsprite, flatfacing,flatvelocity, 1,1,1, .6+(float)abs(Random()%100)/200-.25, .3);
 	}
@@ -3872,15 +3872,15 @@ void	Person::DoStuff(){
 			bloodvel=0;
 			if(!skeleton.free){
 				bloodvel.z=5*neckspurtamount;
-				bloodvel=DoRotation(bloodvel,((float)(Random()%100))/40,rotation+((float)(Random()%100))/40,0)*scale;
+				bloodvel=DoRotation(bloodvel,((float)(Random()%100))/40,yaw+((float)(Random()%100))/40,0)*scale;
 			}
 			if(skeleton.free){
 				bloodvel-=DoRotation(skeleton.forward*10*scale,((float)(Random()%100))/40,((float)(Random()%100))/40,0);
 			}
-			if(skeleton.free)bloodvel+=DoRotation(skeleton.joints[skeleton.jointlabels[head]].velocity,((float)(Random()%100))/40,rotation+((float)(Random()%100))/40,0)*scale;
+			if(skeleton.free)bloodvel+=DoRotation(skeleton.joints[skeleton.jointlabels[head]].velocity,((float)(Random()%100))/40,yaw+((float)(Random()%100))/40,0)*scale;
 			if(!skeleton.free)bloodvel+=DoRotation(velocity,((float)(Random()%100))/40,((float)(Random()%100))/40,0)*scale;
 			if(skeleton.free)Sprite::MakeSprite(bloodsprite, (skeleton.joints[skeleton.jointlabels[neck]].position+(skeleton.joints[skeleton.jointlabels[neck]].position-skeleton.joints[skeleton.jointlabels[head]].position)/5)*scale+coords,bloodvel, 1,1,1, .05, .9);
-			if(!skeleton.free)Sprite::MakeSprite(bloodsprite, DoRotation(skeleton.joints[skeleton.jointlabels[neck]].position+(skeleton.joints[skeleton.jointlabels[neck]].position-skeleton.joints[skeleton.jointlabels[head]].position)/5,0,rotation,0)*scale+coords,bloodvel, 1,1,1, .05, .9);
+			if(!skeleton.free)Sprite::MakeSprite(bloodsprite, DoRotation(skeleton.joints[skeleton.jointlabels[neck]].position+(skeleton.joints[skeleton.jointlabels[neck]].position-skeleton.joints[skeleton.jointlabels[head]].position)/5,0,yaw,0)*scale+coords,bloodvel, 1,1,1, .05, .9);
 			neckspurtparticledelay=.05;
 		}
 		if(neckspurtdelay<0){
@@ -3896,10 +3896,10 @@ void	Person::DoStuff(){
 			XYZ bloodvel;
 			if(bloodtoggle){
 				bloodvel=0;
-				if(skeleton.free)bloodvel+=DoRotation(skeleton.joints[skeleton.jointlabels[abdomen]].velocity,((float)(Random()%100))/4,rotation+((float)(Random()%100))/4,0)*scale;
+				if(skeleton.free)bloodvel+=DoRotation(skeleton.joints[skeleton.jointlabels[abdomen]].velocity,((float)(Random()%100))/4,yaw+((float)(Random()%100))/4,0)*scale;
 				if(!skeleton.free)bloodvel+=DoRotation(velocity,((float)(Random()%100))/4,((float)(Random()%100))/4,0)*scale;
 				if(skeleton.free)Sprite::MakeSprite(bloodsprite, skeleton.joints[skeleton.jointlabels[abdomen]].position*scale+coords,bloodvel, 1,1,1, .05, 1);
-				if(!skeleton.free)Sprite::MakeSprite(bloodsprite, DoRotation((skeleton.joints[skeleton.jointlabels[abdomen]].position+skeleton.joints[skeleton.jointlabels[abdomen]].position)/2,0,rotation,0)*scale+coords,bloodvel, 1,1,1, .05, 1);
+				if(!skeleton.free)Sprite::MakeSprite(bloodsprite, DoRotation((skeleton.joints[skeleton.jointlabels[abdomen]].position+skeleton.joints[skeleton.jointlabels[abdomen]].position)/2,0,yaw,0)*scale+coords,bloodvel, 1,1,1, .05, 1);
 			}
 		}
 		bloodloss+=deathbleeding*multiplier*80;
@@ -4109,9 +4109,9 @@ void	Person::DoStuff(){
 			if(environment==snowyenvironment){
 				XYZ footpoint;
 				XYZ footvel;
-				if(!skeleton.free)footvel=DoRotation(skeleton.specialforward[0],0,rotation,0)*-1;
+				if(!skeleton.free)footvel=DoRotation(skeleton.specialforward[0],0,yaw,0)*-1;
 				if(skeleton.free)footvel=skeleton.specialforward[0]*-1;
-				if(!skeleton.free)footpoint=DoRotation((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2,0,rotation,0)*scale+coords;
+				if(!skeleton.free)footpoint=DoRotation((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2,0,yaw,0)*scale+coords;
 				if(skeleton.free)footpoint=((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2)*scale+coords;
 				if(targetanimation==sleepanim)footvel=DoRotation(footvel,0,90,0);
 				Sprite::MakeSprite(breathsprite, footpoint+footvel*.2,footvel*.4, 1,1,1, .4, .3);
@@ -4275,11 +4275,11 @@ void	Person::DoStuff(){
 		if(bloodtoggle&&!bled)
 			for(l=0;l<terrain.patchobjectnum[whichpatchx][whichpatchz];l++){
 				j=terrain.patchobjects[whichpatchx][whichpatchz][l];
-				XYZ point=DoRotation(headpoint-objects.position[j],0,-objects.rotation[j],0);
+				XYZ point=DoRotation(headpoint-objects.position[j],0,-objects.yaw[j],0);
 				float size=.8;
 				float opacity=.6;
-				float rotation=0;
-				objects.model[j].MakeDecal(blooddecalslow,&point,&size,&opacity,&rotation);
+				float yaw=0;
+				objects.model[j].MakeDecal(blooddecalslow,&point,&size,&opacity,&yaw);
 			}
 			bled=1;
 	}
@@ -4485,11 +4485,11 @@ void	Person::DoStuff(){
 					if(bloodtoggle&&!bled)
 						for(l=0;l<terrain.patchobjectnum[whichpatchx][whichpatchz];l++){
 							j=terrain.patchobjects[whichpatchx][whichpatchz][l];
-							XYZ point=DoRotation(headpoint-objects.position[j],0,-objects.rotation[j],0);
+							XYZ point=DoRotation(headpoint-objects.position[j],0,-objects.yaw[j],0);
 							float size=.2*1.2;
 							float opacity=.6;
-							float rotation=0;
-							objects.model[j].MakeDecal(blooddecal,&point,&size,&opacity,&rotation);
+							float yaw=0;
+							objects.model[j].MakeDecal(blooddecal,&point,&size,&opacity,&yaw);
 						}
 						bled=1;
 				}
@@ -4503,11 +4503,11 @@ void	Person::DoStuff(){
 					if(bloodtoggle&&!bled)
 						for(l=0;l<terrain.patchobjectnum[whichpatchx][whichpatchz];l++){
 							j=terrain.patchobjects[whichpatchx][whichpatchz][l];
-							XYZ point=DoRotation(headpoint-objects.position[j],0,-objects.rotation[j],0);
+							XYZ point=DoRotation(headpoint-objects.position[j],0,-objects.yaw[j],0);
 							float size=.8;
 							float opacity=.6;
-							float rotation=0;
-							objects.model[j].MakeDecal(blooddecalslow,&point,&size,&opacity,&rotation);
+							float yaw=0;
+							objects.model[j].MakeDecal(blooddecalslow,&point,&size,&opacity,&yaw);
 						}
 						bled=1;
 				}
@@ -4526,7 +4526,7 @@ void	Person::DoStuff(){
 				if(objects.type[i]!=treeleavestype&&objects.type[i]!=bushtype&&objects.type[i]!=firetype){
 					colviewer=startpoint;
 					coltarget=endpoint;
-					if(objects.model[i].LineCheck(&colviewer,&coltarget,&colpoint,&objects.position[i],&objects.rotation[i])!=-1)canrecover=0;
+					if(objects.model[i].LineCheck(&colviewer,&coltarget,&colpoint,&objects.position[i],&objects.yaw[i])!=-1)canrecover=0;
 				}
 			}
 			if(canrecover){
@@ -4549,10 +4549,10 @@ void	Person::DoStuff(){
 				}
 				Normalise(&terrainnormal);
 
-				targetrotation=-asin(0-terrainnormal.x);
-				targetrotation*=360/6.28;
-				if(terrainnormal.z<0)targetrotation=180-targetrotation;
-				rotation=targetrotation;
+				targetyaw=-asin(0-terrainnormal.x);
+				targetyaw*=360/6.28;
+				if(terrainnormal.z<0)targetyaw=180-targetyaw;
+				yaw=targetyaw;
 
 				targetframe=0;
 				//	targetframe=2;
@@ -4571,7 +4571,7 @@ void	Person::DoStuff(){
 
 				for(i=0;i<skeleton.num_joints;i++){
 					tempanimation.position[i][0]=skeleton.joints[i].position;
-					tempanimation.position[i][0]=DoRotation(tempanimation.position[i][0],0,-rotation,0);
+					tempanimation.position[i][0]=DoRotation(tempanimation.position[i][0],0,-yaw,0);
 				}
 			}
 		}
@@ -4600,10 +4600,10 @@ void	Person::DoStuff(){
 				}
 				Normalise(&terrainnormal);
 
-				targetrotation=-asin(0-terrainnormal.x);
-				targetrotation*=360/6.28;
-				if(terrainnormal.z<0)targetrotation=180-targetrotation;
-				rotation=targetrotation;
+				targetyaw=-asin(0-terrainnormal.x);
+				targetyaw*=360/6.28;
+				if(terrainnormal.z<0)targetyaw=180-targetyaw;
+				yaw=targetyaw;
 
 				targettilt2=asin(terrainnormal.y)*180/3.14*-1;
 
@@ -4615,8 +4615,8 @@ void	Person::DoStuff(){
 				}
 				if(skeleton.forward.y>-.3){
 					targetanimation=getupfromfrontanim;
-					rotation+=180;
-					targetrotation+=180;
+					yaw+=180;
+					targetyaw+=180;
 					targettilt2*=-1;
 					targetframe=0;
 					targettilt2=0;
@@ -4624,23 +4624,23 @@ void	Person::DoStuff(){
 
 				if((Random()%8==0&&id!=0&&creature==rabbittype)||(Random()%2==0&&id!=0&&creature==wolftype)||(id==0&&crouchkeydown&&(forwardkeydown||backkeydown||leftkeydown||rightkeydown))){
 					targetanimation=rollanim;
-					targetrotation=lookrotation;
+					targetyaw=lookyaw;
 					if(id==0){
 						if(rightkeydown){
-							targetrotation-=90;
-							if(forwardkeydown)targetrotation+=45;
-							if(backkeydown)targetrotation-=45;
+							targetyaw-=90;
+							if(forwardkeydown)targetyaw+=45;
+							if(backkeydown)targetyaw-=45;
 						}
 						if(leftkeydown){
-							targetrotation+=90;
-							if(forwardkeydown)targetrotation-=45;
-							if(backkeydown)targetrotation+=45;
+							targetyaw+=90;
+							if(forwardkeydown)targetyaw-=45;
+							if(backkeydown)targetyaw+=45;
 						}
 						if(backkeydown){
 							if ( !leftkeydown&&!rightkeydown)
-								targetrotation+=180;
+								targetyaw+=180;
 						}
-						targetrotation+=180;
+						targetyaw+=180;
 					}
 				}
 
@@ -4654,7 +4654,7 @@ void	Person::DoStuff(){
 
 				for(i=0;i<skeleton.num_joints;i++){
 					tempanimation.position[i][0]=skeleton.joints[i].position;
-					tempanimation.position[i][0]=DoRotation(tempanimation.position[i][0],0,-rotation,0);
+					tempanimation.position[i][0]=DoRotation(tempanimation.position[i][0],0,-yaw,0);
 				}
 			}
 		}
@@ -4667,10 +4667,10 @@ void	Person::DoStuff(){
 				XYZ tempvelocity;
 				tempvelocity=velocity;
 				Normalise(&tempvelocity);
-				targetrotation=-asin(0-tempvelocity.x);
-				targetrotation*=360/6.28;
-				if(velocity.z<0)targetrotation=180-targetrotation;
-				//targetrotation+=180;
+				targetyaw=-asin(0-tempvelocity.x);
+				targetyaw*=360/6.28;
+				if(velocity.z<0)targetyaw=180-targetyaw;
+				//targetyaw+=180;
 
 				skeleton.free=0;
 				if(dotproduct(&skeleton.forward,&tempvelocity)<0){
@@ -4679,7 +4679,7 @@ void	Person::DoStuff(){
 				}
 				else{
 					targetanimation=backhandspringanim;
-					targetrotation+=180;
+					targetyaw+=180;
 					targetframe=6;
 				}
 				target=0;
@@ -4692,7 +4692,7 @@ void	Person::DoStuff(){
 
 				velocity=0;
 
-				rotation=targetrotation;
+				yaw=targetyaw;
 				tilt=0;
 				targettilt=0;
 				tilt2=0;
@@ -4786,11 +4786,11 @@ void	Person::DoStuff(){
 						}
 						XYZ tempcoord;
 						if(objects.type[i]==treeleavestype&&environment!=desertenvironment){
-							if(objects.rotation2[i]==0)tempcoord=coords;
+							if(objects.pitch[i]==0)tempcoord=coords;
 							else{
 								tempcoord=coords-objects.position[i];
-								tempcoord=DoRotation(tempcoord,0,-objects.rotation[i],0);
-								tempcoord=DoRotation(tempcoord,-objects.rotation2[i],0,0);
+								tempcoord=DoRotation(tempcoord,0,-objects.yaw[i],0);
+								tempcoord=DoRotation(tempcoord,-objects.pitch[i],0,0);
 								tempcoord+=objects.position[i];
 							}
 							if(findDistancefastflat(&tempcoord,&objects.position[i])<objects.scale[i]*objects.scale[i]*8&&findDistancefast(&tempcoord,&objects.position[i])<objects.scale[i]*objects.scale[i]*300&&tempcoord.y>objects.position[i].y+3*objects.scale[i]){
@@ -4898,8 +4898,8 @@ void	Person::DoStuff(){
 				if(!isnormal(targettilt2)&&targettilt2){
 					targettilt2=0;
 				}
-				if(!isnormal(targetrotation)&&targetrotation){
-					targetrotation=0;
+				if(!isnormal(targetyaw)&&targetyaw){
+					targetyaw=0;
 				}
 
 				if(targetanimation==bounceidleanim||targetanimation==wolfidle||targetanimation==walkanim||targetanimation==drawrightanim||targetanimation==crouchdrawrightanim||targetanimation==drawleftanim||targetanimation==fightidleanim||targetanimation==fightsidestep||targetanimation==hanganim||isCrouch()||targetanimation==backhandspringanim){
@@ -5026,7 +5026,7 @@ void	Person::DoStuff(){
 					flatfacing=0;
 					flatfacing.z=1;
 
-					flatfacing=DoRotation(flatfacing,0,rotation,0);
+					flatfacing=DoRotation(flatfacing,0,yaw,0);
 					facing=flatfacing;
 					ReflectVector(&facing,terrainnormal);
 					Normalise(&facing);
@@ -5342,14 +5342,14 @@ void	Person::DoStuff(){
 					if(animation[targetanimation].attack==normalattack&&targetanimation!=rabbitkickanim&&!victim->skeleton.free){
 						terrainnormal=victim->coords-coords;
 						Normalise(&terrainnormal);
-						targetrotation=-asin(0-terrainnormal.x);
-						targetrotation*=360/6.28;
-						if(terrainnormal.z<0)targetrotation=180-targetrotation;
+						targetyaw=-asin(0-terrainnormal.x);
+						targetyaw*=360/6.28;
+						if(terrainnormal.z<0)targetyaw=180-targetyaw;
 						targettilt2=-asin(terrainnormal.y)*360/6.28;//*-70;
 					}
 
 					if(animation[targetanimation].attack==reversal&&targetanimation!=rabbittacklinganim){
-						targetrotation=victim->targetrotation;
+						targetyaw=victim->targetyaw;
 					}
 					if(targetanimation==rabbittacklinganim){
 						coords=victim->coords;
@@ -5389,7 +5389,7 @@ int Person::DrawSkeleton(){
 		XYZ terrainlight;
 		float terrainheight;
 		float distance;
-		if(!isnormal(rotation))rotation=0;
+		if(!isnormal(yaw))yaw=0;
 		if(!isnormal(tilt))tilt=0;
 		if(!isnormal(tilt2))tilt2=0;
 		oldplayerdetail=playerdetail;
@@ -5430,41 +5430,41 @@ int Person::DrawSkeleton(){
 			if(!isSleeping()&&!isSitting()){
 				if(onterrain&&((isIdle()||isCrouch()||isLanding()||isLandhard()||targetanimation==drawrightanim||targetanimation==drawleftanim||targetanimation==crouchdrawrightanim)&&(wasIdle()||wasCrouch()||wasLanding()||wasLandhard()||currentanimation==drawrightanim||currentanimation==drawleftanim||currentanimation==crouchdrawrightanim))&&!skeleton.free){
 					XYZ point,newpoint,change,change2;
-					point=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,rotation,0)*scale+coords;
+					point=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,yaw,0)*scale+coords;
 					heightleft=terrain.getHeight(point.x,point.z)+.04;
 					point.y=heightleft;
 					change=skeleton.joints[skeleton.jointlabels[leftankle]].position-skeleton.joints[skeleton.jointlabels[leftfoot]].position;
 					change2=skeleton.joints[skeleton.jointlabels[leftknee]].position-skeleton.joints[skeleton.jointlabels[leftfoot]].position;
-					skeleton.joints[skeleton.jointlabels[leftfoot]].position=DoRotation((point-coords)/scale,0,-rotation,0);
+					skeleton.joints[skeleton.jointlabels[leftfoot]].position=DoRotation((point-coords)/scale,0,-yaw,0);
 					skeleton.joints[skeleton.jointlabels[leftankle]].position=skeleton.joints[skeleton.jointlabels[leftfoot]].position+change;
 					skeleton.joints[skeleton.jointlabels[leftknee]].position=(skeleton.joints[skeleton.jointlabels[leftfoot]].position+change2)/2+(skeleton.joints[skeleton.jointlabels[leftknee]].position)/2;
 
-					point=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,rotation,0)*scale+coords;
+					point=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,yaw,0)*scale+coords;
 					heightright=terrain.getHeight(point.x,point.z)+.04;
 					point.y=heightright;
 					change=skeleton.joints[skeleton.jointlabels[rightankle]].position-skeleton.joints[skeleton.jointlabels[rightfoot]].position;
 					change2=skeleton.joints[skeleton.jointlabels[rightknee]].position-skeleton.joints[skeleton.jointlabels[rightfoot]].position;
-					skeleton.joints[skeleton.jointlabels[rightfoot]].position=DoRotation((point-coords)/scale,0,-rotation,0);
+					skeleton.joints[skeleton.jointlabels[rightfoot]].position=DoRotation((point-coords)/scale,0,-yaw,0);
 					skeleton.joints[skeleton.jointlabels[rightankle]].position=skeleton.joints[skeleton.jointlabels[rightfoot]].position+change;
 					skeleton.joints[skeleton.jointlabels[rightknee]].position=(skeleton.joints[skeleton.jointlabels[rightfoot]].position+change2)/2+(skeleton.joints[skeleton.jointlabels[rightknee]].position)/2;
 					skeleton.DoConstraints(&coords,&scale);
 
 					if(creature==wolftype){
-						point=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,rotation,0)*scale+coords;
+						point=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,yaw,0)*scale+coords;
 						heightleft=terrain.getHeight(point.x,point.z)+.04;
 						point.y=heightleft;
 						change=skeleton.joints[skeleton.jointlabels[leftankle]].position-skeleton.joints[skeleton.jointlabels[leftfoot]].position;
 						change2=skeleton.joints[skeleton.jointlabels[leftknee]].position-skeleton.joints[skeleton.jointlabels[leftfoot]].position;
-						skeleton.joints[skeleton.jointlabels[leftfoot]].position=DoRotation((point-coords)/scale,0,-rotation,0);
+						skeleton.joints[skeleton.jointlabels[leftfoot]].position=DoRotation((point-coords)/scale,0,-yaw,0);
 						skeleton.joints[skeleton.jointlabels[leftankle]].position=skeleton.joints[skeleton.jointlabels[leftfoot]].position+change;
 						skeleton.joints[skeleton.jointlabels[leftknee]].position=(skeleton.joints[skeleton.jointlabels[leftfoot]].position+change2)/2+(skeleton.joints[skeleton.jointlabels[leftknee]].position)/2;
 
-						point=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,rotation,0)*scale+coords;
+						point=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,yaw,0)*scale+coords;
 						heightright=terrain.getHeight(point.x,point.z)+.04;
 						point.y=heightright;
 						change=skeleton.joints[skeleton.jointlabels[rightankle]].position-skeleton.joints[skeleton.jointlabels[rightfoot]].position;
 						change2=skeleton.joints[skeleton.jointlabels[rightknee]].position-skeleton.joints[skeleton.jointlabels[rightfoot]].position;
-						skeleton.joints[skeleton.jointlabels[rightfoot]].position=DoRotation((point-coords)/scale,0,-rotation,0);
+						skeleton.joints[skeleton.jointlabels[rightfoot]].position=DoRotation((point-coords)/scale,0,-yaw,0);
 						skeleton.joints[skeleton.jointlabels[rightankle]].position=skeleton.joints[skeleton.jointlabels[rightfoot]].position+change;
 						skeleton.joints[skeleton.jointlabels[rightknee]].position=(skeleton.joints[skeleton.jointlabels[rightfoot]].position+change2)/2+(skeleton.joints[skeleton.jointlabels[rightknee]].position)/2;
 						skeleton.DoConstraints(&coords,&scale);
@@ -5472,41 +5472,41 @@ int Person::DrawSkeleton(){
 				}
 				if(onterrain&&((isIdle()||isCrouch()||isLanding()||isLandhard()||targetanimation==drawrightanim||targetanimation==drawleftanim||targetanimation==crouchdrawrightanim)&&!(wasIdle()||wasCrouch()||wasLanding()||wasLandhard()||currentanimation==drawrightanim||currentanimation==drawleftanim||currentanimation==crouchdrawrightanim))&&!skeleton.free){
 					XYZ point,newpoint,change,change2;
-					point=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,rotation,0)*scale+coords;
+					point=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,yaw,0)*scale+coords;
 					heightleft=terrain.getHeight(point.x,point.z)+.04;
 					point.y=heightleft;
 					change=skeleton.joints[skeleton.jointlabels[leftankle]].position-skeleton.joints[skeleton.jointlabels[leftfoot]].position;
 					change2=skeleton.joints[skeleton.jointlabels[leftknee]].position-skeleton.joints[skeleton.jointlabels[leftfoot]].position;
-					skeleton.joints[skeleton.jointlabels[leftfoot]].position=DoRotation((point-coords)/scale,0,-rotation,0)*target+skeleton.joints[skeleton.jointlabels[leftfoot]].position*(1-target);
+					skeleton.joints[skeleton.jointlabels[leftfoot]].position=DoRotation((point-coords)/scale,0,-yaw,0)*target+skeleton.joints[skeleton.jointlabels[leftfoot]].position*(1-target);
 					skeleton.joints[skeleton.jointlabels[leftankle]].position=skeleton.joints[skeleton.jointlabels[leftfoot]].position+change;
 					skeleton.joints[skeleton.jointlabels[leftknee]].position=(skeleton.joints[skeleton.jointlabels[leftfoot]].position+change2)/2+(skeleton.joints[skeleton.jointlabels[leftknee]].position)/2;
 
-					point=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,rotation,0)*scale+coords;
+					point=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,yaw,0)*scale+coords;
 					heightright=terrain.getHeight(point.x,point.z)+.04;
 					point.y=heightright;
 					change=skeleton.joints[skeleton.jointlabels[rightankle]].position-skeleton.joints[skeleton.jointlabels[rightfoot]].position;
 					change2=skeleton.joints[skeleton.jointlabels[rightknee]].position-skeleton.joints[skeleton.jointlabels[rightfoot]].position;
-					skeleton.joints[skeleton.jointlabels[rightfoot]].position=DoRotation((point-coords)/scale,0,-rotation,0)*target+skeleton.joints[skeleton.jointlabels[rightfoot]].position*(1-target);
+					skeleton.joints[skeleton.jointlabels[rightfoot]].position=DoRotation((point-coords)/scale,0,-yaw,0)*target+skeleton.joints[skeleton.jointlabels[rightfoot]].position*(1-target);
 					skeleton.joints[skeleton.jointlabels[rightankle]].position=skeleton.joints[skeleton.jointlabels[rightfoot]].position+change;
 					skeleton.joints[skeleton.jointlabels[rightknee]].position=(skeleton.joints[skeleton.jointlabels[rightfoot]].position+change2)/2+(skeleton.joints[skeleton.jointlabels[rightknee]].position)/2;
 					skeleton.DoConstraints(&coords,&scale);
 
 					if(creature==wolftype){
-						point=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,rotation,0)*scale+coords;
+						point=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,yaw,0)*scale+coords;
 						heightleft=terrain.getHeight(point.x,point.z)+.04;
 						point.y=heightleft;
 						change=skeleton.joints[skeleton.jointlabels[leftankle]].position-skeleton.joints[skeleton.jointlabels[leftfoot]].position;
 						change2=skeleton.joints[skeleton.jointlabels[leftknee]].position-skeleton.joints[skeleton.jointlabels[leftfoot]].position;
-						skeleton.joints[skeleton.jointlabels[leftfoot]].position=DoRotation((point-coords)/scale,0,-rotation,0)*target+skeleton.joints[skeleton.jointlabels[leftfoot]].position*(1-target);
+						skeleton.joints[skeleton.jointlabels[leftfoot]].position=DoRotation((point-coords)/scale,0,-yaw,0)*target+skeleton.joints[skeleton.jointlabels[leftfoot]].position*(1-target);
 						skeleton.joints[skeleton.jointlabels[leftankle]].position=skeleton.joints[skeleton.jointlabels[leftfoot]].position+change;
 						skeleton.joints[skeleton.jointlabels[leftknee]].position=(skeleton.joints[skeleton.jointlabels[leftfoot]].position+change2)/2+(skeleton.joints[skeleton.jointlabels[leftknee]].position)/2;
 
-						point=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,rotation,0)*scale+coords;
+						point=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,yaw,0)*scale+coords;
 						heightright=terrain.getHeight(point.x,point.z)+.04;
 						point.y=heightright;
 						change=skeleton.joints[skeleton.jointlabels[rightankle]].position-skeleton.joints[skeleton.jointlabels[rightfoot]].position;
 						change2=skeleton.joints[skeleton.jointlabels[rightknee]].position-skeleton.joints[skeleton.jointlabels[rightfoot]].position;
-						skeleton.joints[skeleton.jointlabels[rightfoot]].position=DoRotation((point-coords)/scale,0,-rotation,0)*target+skeleton.joints[skeleton.jointlabels[rightfoot]].position*(1-target);
+						skeleton.joints[skeleton.jointlabels[rightfoot]].position=DoRotation((point-coords)/scale,0,-yaw,0)*target+skeleton.joints[skeleton.jointlabels[rightfoot]].position*(1-target);
 						skeleton.joints[skeleton.jointlabels[rightankle]].position=skeleton.joints[skeleton.jointlabels[rightfoot]].position+change;
 						skeleton.joints[skeleton.jointlabels[rightknee]].position=(skeleton.joints[skeleton.jointlabels[rightfoot]].position+change2)/2+(skeleton.joints[skeleton.jointlabels[rightknee]].position)/2;
 						skeleton.DoConstraints(&coords,&scale);
@@ -5515,41 +5515,41 @@ int Person::DrawSkeleton(){
 
 				if(onterrain&&(!(isIdle()||isCrouch()||isLanding()||isLandhard()||targetanimation==drawrightanim||targetanimation==drawleftanim||targetanimation==crouchdrawrightanim)&&(wasIdle()||wasCrouch()||wasLanding()||wasLandhard()||currentanimation==drawrightanim||currentanimation==drawleftanim||currentanimation==crouchdrawrightanim))&&!skeleton.free){
 					XYZ point,newpoint,change,change2;
-					point=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,rotation,0)*scale+coords;
+					point=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,yaw,0)*scale+coords;
 					heightleft=terrain.getHeight(point.x,point.z)+.04;
 					point.y=heightleft;
 					change=skeleton.joints[skeleton.jointlabels[leftankle]].position-skeleton.joints[skeleton.jointlabels[leftfoot]].position;
 					change2=skeleton.joints[skeleton.jointlabels[leftknee]].position-skeleton.joints[skeleton.jointlabels[leftfoot]].position;
-					skeleton.joints[skeleton.jointlabels[leftfoot]].position=DoRotation((point-coords)/scale,0,-rotation,0)*(1-target)+skeleton.joints[skeleton.jointlabels[leftfoot]].position*target;
+					skeleton.joints[skeleton.jointlabels[leftfoot]].position=DoRotation((point-coords)/scale,0,-yaw,0)*(1-target)+skeleton.joints[skeleton.jointlabels[leftfoot]].position*target;
 					skeleton.joints[skeleton.jointlabels[leftankle]].position=skeleton.joints[skeleton.jointlabels[leftfoot]].position+change;
 					skeleton.joints[skeleton.jointlabels[leftknee]].position=(skeleton.joints[skeleton.jointlabels[leftfoot]].position+change2)/2+(skeleton.joints[skeleton.jointlabels[leftknee]].position)/2;
 
-					point=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,rotation,0)*scale+coords;
+					point=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,yaw,0)*scale+coords;
 					heightright=terrain.getHeight(point.x,point.z)+.04;
 					point.y=heightright;
 					change=skeleton.joints[skeleton.jointlabels[rightankle]].position-skeleton.joints[skeleton.jointlabels[rightfoot]].position;
 					change2=skeleton.joints[skeleton.jointlabels[rightknee]].position-skeleton.joints[skeleton.jointlabels[rightfoot]].position;
-					skeleton.joints[skeleton.jointlabels[rightfoot]].position=DoRotation((point-coords)/scale,0,-rotation,0)*(1-target)+skeleton.joints[skeleton.jointlabels[rightfoot]].position*target;
+					skeleton.joints[skeleton.jointlabels[rightfoot]].position=DoRotation((point-coords)/scale,0,-yaw,0)*(1-target)+skeleton.joints[skeleton.jointlabels[rightfoot]].position*target;
 					skeleton.joints[skeleton.jointlabels[rightankle]].position=skeleton.joints[skeleton.jointlabels[rightfoot]].position+change;
 					skeleton.joints[skeleton.jointlabels[rightknee]].position=(skeleton.joints[skeleton.jointlabels[rightfoot]].position+change2)/2+(skeleton.joints[skeleton.jointlabels[rightknee]].position)/2;
 					skeleton.DoConstraints(&coords,&scale);
 
 					if(creature==wolftype){
-						point=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,rotation,0)*scale+coords;
+						point=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,yaw,0)*scale+coords;
 						heightleft=terrain.getHeight(point.x,point.z)+.04;
 						point.y=heightleft;
 						change=skeleton.joints[skeleton.jointlabels[leftankle]].position-skeleton.joints[skeleton.jointlabels[leftfoot]].position;
 						change2=skeleton.joints[skeleton.jointlabels[leftknee]].position-skeleton.joints[skeleton.jointlabels[leftfoot]].position;
-						skeleton.joints[skeleton.jointlabels[leftfoot]].position=DoRotation((point-coords)/scale,0,-rotation,0)*(1-target)+skeleton.joints[skeleton.jointlabels[leftfoot]].position*target;
+						skeleton.joints[skeleton.jointlabels[leftfoot]].position=DoRotation((point-coords)/scale,0,-yaw,0)*(1-target)+skeleton.joints[skeleton.jointlabels[leftfoot]].position*target;
 						skeleton.joints[skeleton.jointlabels[leftankle]].position=skeleton.joints[skeleton.jointlabels[leftfoot]].position+change;
 						skeleton.joints[skeleton.jointlabels[leftknee]].position=(skeleton.joints[skeleton.jointlabels[leftfoot]].position+change2)/2+(skeleton.joints[skeleton.jointlabels[leftknee]].position)/2;
 
-						point=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,rotation,0)*scale+coords;
+						point=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,yaw,0)*scale+coords;
 						heightright=terrain.getHeight(point.x,point.z)+.04;
 						point.y=heightright;
 						change=skeleton.joints[skeleton.jointlabels[rightankle]].position-skeleton.joints[skeleton.jointlabels[rightfoot]].position;
 						change2=skeleton.joints[skeleton.jointlabels[rightknee]].position-skeleton.joints[skeleton.jointlabels[rightfoot]].position;
-						skeleton.joints[skeleton.jointlabels[rightfoot]].position=DoRotation((point-coords)/scale,0,-rotation,0)*(1-target)+skeleton.joints[skeleton.jointlabels[rightfoot]].position*target;
+						skeleton.joints[skeleton.jointlabels[rightfoot]].position=DoRotation((point-coords)/scale,0,-yaw,0)*(1-target)+skeleton.joints[skeleton.jointlabels[rightfoot]].position*target;
 						skeleton.joints[skeleton.jointlabels[rightankle]].position=skeleton.joints[skeleton.jointlabels[rightfoot]].position+change;
 						skeleton.joints[skeleton.jointlabels[rightknee]].position=(skeleton.joints[skeleton.jointlabels[rightfoot]].position+change2)/2+(skeleton.joints[skeleton.jointlabels[rightknee]].position)/2;
 						skeleton.DoConstraints(&coords,&scale);
@@ -5559,9 +5559,9 @@ int Person::DrawSkeleton(){
 			if(!skeleton.free&&(!animation[targetanimation].attack&&targetanimation!=getupfrombackanim&&((targetanimation!=rollanim&&!isFlip())||animation[targetanimation].label[targetframe]==6)&&targetanimation!=getupfromfrontanim&&targetanimation!=wolfrunninganim&&targetanimation!=rabbitrunninganim&&targetanimation!=backhandspringanim&&targetanimation!=walljumpfrontanim&&targetanimation!=hurtidleanim&&!isLandhard()&&!isSleeping()))
 				DoHead();
 			else {
-				targetheadrotation=-targetrotation;
-				targetheadrotation2=0;
-				if(animation[targetanimation].attack==3)targetheadrotation+=180;
+				targetheadyaw=-targetyaw;
+				targetheadpitch=0;
+				if(animation[targetanimation].attack==3)targetheadyaw+=180;
 			}
 			for(i=0;i<skeleton.drawmodel.vertexNum;i++){
 				skeleton.drawmodel.vertex[i]=0;
@@ -5764,7 +5764,7 @@ int Person::DrawSkeleton(){
 		if(!skeleton.free)glTranslatef(coords.x,coords.y-.02,coords.z);
 		if(skeleton.free)glTranslatef(coords.x,coords.y-.02,coords.z);
 		if(!skeleton.free)glTranslatef(offset.x*scale,offset.y*scale,offset.z*scale);
-		if(!skeleton.free)glRotatef(rotation,0,1,0);
+		if(!skeleton.free)glRotatef(yaw,0,1,0);
 		if(showpoints){
 			glPointSize(5);
 			glColor4f(.4,1,.4,1);
@@ -5950,8 +5950,8 @@ int Person::DrawSkeleton(){
 					weapons[i].bigtilt=0;
 					weapons[i].bigtilt2=0;
 				} else {
-					weapons[i].position=DoRotation(DoRotation(DoRotation(weaponpoint,0,0,tilt),tilt2,0,0),0,rotation,0)*scale+coords+currentoffset*(1-target)*scale+targetoffset*target*scale;
-					weapons[i].bigrotation=rotation;
+					weapons[i].position=DoRotation(DoRotation(DoRotation(weaponpoint,0,0,tilt),tilt2,0,0),0,yaw,0)*scale+coords+currentoffset*(1-target)*scale+targetoffset*target*scale;
+					weapons[i].bigrotation=yaw;
 					weapons[i].bigtilt=tilt;
 					weapons[i].bigtilt2=tilt2;
 				}

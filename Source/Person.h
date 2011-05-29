@@ -93,15 +93,15 @@ class Person
 		bool immobile;
 		
 		float velspeed;
-		float targetrotation;
+		float targetyaw;
 		float targetrot;
 		float rot;
 		float oldrot;
-		float lookrotation;
-		float lookrotation2;
-		float rotation;
-		float rotation2;
-		float lowrotation;
+		float lookyaw;
+		float lookpitch;
+		float yaw;
+		float pitch;
+		float lowyaw;
 		float tilt;
 		float targettilt;
 		float tilt2;
@@ -138,8 +138,8 @@ class Person
 		int direction;
 		float texupdatedelay;
 		
-		float headrotation,headrotation2;
-		float targetheadrotation,targetheadrotation2;
+		float headyaw,headpitch;
+		float targetheadyaw,targetheadpitch;
 		
 		bool onterrain;
 		bool pause;

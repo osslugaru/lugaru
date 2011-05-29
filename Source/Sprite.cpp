@@ -310,11 +310,11 @@ void Sprite::Draw()
 					if(!spritehit&&player[j].dead&&sprites[i]->alivetime>.1){
 						where=sprites[i]->oldposition;
 						where-=player[j].coords;
-						if(!player[j].skeleton.free)where=DoRotation(where,0,-player[j].rotation,0);
+						if(!player[j].skeleton.free)where=DoRotation(where,0,-player[j].yaw,0);
 						startpoint=where;
 						where=sprites[i]->position;
 						where-=player[j].coords;
-						if(!player[j].skeleton.free)where=DoRotation(where,0,-player[j].rotation,0);
+						if(!player[j].skeleton.free)where=DoRotation(where,0,-player[j].yaw,0);
 						endpoint=where;
 
 						movepoint=0;
@@ -338,8 +338,8 @@ void Sprite::Draw()
 								start=sprites[i]->oldposition;
 								end=sprites[i]->position;
 								if(!spritehit)
-									if(objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k])!=-1){
-										if(detail==2||(detail==1&&abs(Random()%4)==0)||(detail==0&&abs(Random()%8)==0))objects.model[k].MakeDecal(blooddecalfast,DoRotation(colpoint-objects.position[k],0,-objects.rotation[k],0),sprites[i]->size*1.6/*+abs((float)(Random()%100))/2400*/,.5,Random()%360);
+									if(objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.yaw[k])!=-1){
+										if(detail==2||(detail==1&&abs(Random()%4)==0)||(detail==0&&abs(Random()%8)==0))objects.model[k].MakeDecal(blooddecalfast,DoRotation(colpoint-objects.position[k],0,-objects.yaw[k],0),sprites[i]->size*1.6/*+abs((float)(Random()%100))/2400*/,.5,Random()%360);
 										DeleteSprite(i);
 										spritehit=1;
 									}	

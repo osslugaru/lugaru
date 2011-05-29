@@ -24,7 +24,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Objects.h"
 extern XYZ viewer;
 extern float viewdistance;
-extern float lightambient[3],lightbrightness[3];
 extern float fadestart;
 extern int environment;
 extern float texscale;
@@ -1459,7 +1458,7 @@ void Terrain::DoShadows()
 					if(objects.type[l]!=treetrunktype){
 						testpoint=terrainpoint;
 						testpoint2=terrainpoint+lightloc*50*(1-shadowed);
-						if(objects.model[l].LineCheck(&testpoint,&testpoint2,&col,&objects.position[l],&objects.rotation[l])!=-1){
+						if(objects.model[l].LineCheck(&testpoint,&testpoint2,&col,&objects.position[l],&objects.yaw[l])!=-1){
 							shadowed=1-(findDistance(&terrainpoint,&col)/50);	
 						}
 					}

@@ -22,7 +22,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Objects.h"
 extern XYZ viewer;
 extern float viewdistance;
-extern float lightambient[3],lightbrightness[3];
 extern float fadestart;
 extern int environment;
 extern float texscale;
@@ -53,7 +52,7 @@ bool 	Objects::checkcollide(XYZ startpoint,XYZ endpoint,int which){
 		if(type[i]!=treeleavestype&&type[i]!=treetrunktype&&type[i]!=bushtype&&type[i]!=firetype&&i!=which){
 			colviewer=startpoint;
 			coltarget=endpoint;
-			if(model[i].LineCheck(&colviewer,&coltarget,&colpoint,&position[i],&rotation[i])!=-1)return 1;	
+			if(model[i].LineCheck(&colviewer,&coltarget,&colpoint,&position[i],&yaw[i])!=-1)return 1;	
 		}
 	}
 
@@ -74,7 +73,7 @@ void Objects::SphereCheckPossible(XYZ *p1,float radius)
 			for(j=0;j<terrain.patchobjectnum[whichpatchx][whichpatchz];j++){
 				i=terrain.patchobjects[whichpatchx][whichpatchz][j];
 				possible[i]=0;
-				if(model[i].SphereCheckPossible(p1, radius, &position[i], &rotation[i])!=-1){
+				if(model[i].SphereCheckPossible(p1, radius, &position[i], &yaw[i])!=-1){
 					possible[i]=1;
 				}
 			}
@@ -89,7 +88,7 @@ void Objects::Draw()
 
 	for(i=0;i<numobjects;i++){
 		if(type[i]!=firetype){
-			moved=DoRotation(model[i].boundingspherecenter,0,rotation[i],0);
+			moved=DoRotation(model[i].boundingspherecenter,0,yaw[i],0);
 			if(type[i]==tunneltype||frustum.SphereInFrustum(position[i].x+moved.x,position[i].y+moved.y,position[i].z+moved.z,model[i].boundingsphereradius)){   
 				distance=findDistancefast(&viewer,&position[i]);
 				distance*=1.2;
@@ -102,7 +101,7 @@ void Objects::Draw()
 					if(distance>1)distance=1;
 					if(distance>0){
 
-						/*if(checkcollide(viewer,DoRotation(model[i].vertex[model[i].vertexNum],0,rotation[i],0)*scale[i]+position[i],i)){
+						/*if(checkcollide(viewer,DoRotation(model[i].vertex[model[i].vertexNum],0,yaw[i],0)*scale[i]+position[i],i)){
 						occluded[i]+=1;
 						}
 						else occluded[i]=0;*/
@@ -255,7 +254,7 @@ void Objects::Draw()
 										glRotatef((sin(windvar+position[i].x*.3)+.5)*4*.5*(sin(windvar*2+position[i].x*.3)+1)/2,1,0,0);
 									}
 								}
-								glRotatef(rotation[i],0,1,0);
+								glRotatef(yaw[i],0,1,0);
 								if(distance>1)distance=1;
 								glColor4f((1-shadowed[i])/2+.5,(1-shadowed[i])/2+.5,(1-shadowed[i])/2+.5,distance);
 								if(distance>=1){
@@ -328,7 +327,7 @@ void Objects::Draw()
 	glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, 0 );
 	for(i=0;i<numobjects;i++){
 		if(type[i]==treeleavestype||type[i]==bushtype){
-			moved=DoRotation(model[i].boundingspherecenter,0,rotation[i],0);
+			moved=DoRotation(model[i].boundingspherecenter,0,yaw[i],0);
 			if(frustum.SphereInFrustum(position[i].x+moved.x,position[i].y+moved.y,position[i].z+moved.z,model[i].boundingsphereradius)){   
 				hidden=findDistancefastflat(&viewer,&position[i])<=playerdist+3;
 				if(hidden){
@@ -436,7 +435,7 @@ void Objects::Draw()
 										glRotatef((sin(windvar+position[i].x*.3)+.5)*4*.5*(sin(windvar*2+position[i].x*.3)+1)/2,1,0,0);
 									}
 								}
-								glRotatef(rotation[i],0,1,0);
+								glRotatef(yaw[i],0,1,0);
 								glColor4f(1,1,1,distance);
 								if(type[i]==treeleavestype){
 									glDisable(GL_CULL_FACE);
@@ -475,7 +474,7 @@ void Objects::Draw()
 void Objects::DeleteObject(int which)
 {
 	type[numobjects-1]=0;
-	rotation[numobjects-1]=0;
+	yaw[numobjects-1]=0;
 	position[numobjects-1]=0;
 	scale[numobjects-1]=0;
 	friction[numobjects-1]=0;
@@ -483,7 +482,7 @@ void Objects::DeleteObject(int which)
 	numobjects--;
 }
 
-void Objects::MakeObject(int atype, XYZ where, float arotation, float ascale){
+void Objects::MakeObject(int atype, XYZ where, float ayaw, float ascale){
 	if((atype!=treeleavestype&&atype!=bushtype)||foliage==1){
 		scale[numobjects]=ascale;
 		if(atype==treeleavestype)scale[numobjects]+=fabs((float)(Random()%100)/900)*ascale;
@@ -496,7 +495,7 @@ void Objects::MakeObject(int atype, XYZ where, float arotation, float ascale){
 
 		position[numobjects]=where;
 		if(atype==bushtype)position[numobjects].y=terrain.getHeight(position[numobjects].x,position[numobjects].z)-.3;
-		rotation[numobjects]=arotation;
+		yaw[numobjects]=ayaw;
 
 		rotxvel[numobjects]=0;
 		rotyvel[numobjects]=0;
@@ -546,7 +545,7 @@ void Objects::MakeObject(int atype, XYZ where, float arotation, float ascale){
 		model[numobjects].Scale(.3*scale[numobjects],.3*scale[numobjects],.3*scale[numobjects]);
 		model[numobjects].Rotate(90,1,1);
 		if(type[numobjects]==rocktype){
-			model[numobjects].Rotate(arotation*5,1,1);
+			model[numobjects].Rotate(ayaw*5,1,1);
 		}
 		model[numobjects].CalculateNormals(1);
 		model[numobjects].ScaleNormals(-1,-1,-1);
@@ -560,13 +559,13 @@ void Objects::MakeObject(int atype, XYZ where, float arotation, float ascale){
 		}
 
 		if(atype!=treeleavestype&&atype!=bushtype&&atype!=firetype)
-			terrain.AddObject(where+DoRotation(model[numobjects].boundingspherecenter,0,arotation,0),model[numobjects].boundingsphereradius,numobjects);
+			terrain.AddObject(where+DoRotation(model[numobjects].boundingspherecenter,0,ayaw,0),model[numobjects].boundingsphereradius,numobjects);
 
 		numobjects++;
 	}	
 }
 
-void Objects::MakeObject(int atype, XYZ where, float arotation, float arotation2, float ascale){
+void Objects::MakeObject(int atype, XYZ where, float ayaw, float apitch, float ascale){
 	if((atype!=treeleavestype&&atype!=bushtype)||foliage==1){
 		scale[numobjects]=ascale;
 		if(atype==treeleavestype)scale[numobjects]+=fabs((float)(Random()%100)/900)*ascale;
@@ -583,8 +582,8 @@ void Objects::MakeObject(int atype, XYZ where, float arotation, float arotation2
 		if(position[numobjects].y<terrain.getHeight(position[numobjects].x,position[numobjects].z)-.3)
 		position[numobjects].y=terrain.getHeight(position[numobjects].x,position[numobjects].z)-.3;
 		}*/
-		rotation[numobjects]=arotation;
-		rotation2[numobjects]=arotation2;
+		yaw[numobjects]=ayaw;
+		pitch[numobjects]=apitch;
 
 		rotxvel[numobjects]=0;
 		rotyvel[numobjects]=0;
@@ -616,7 +615,7 @@ void Objects::MakeObject(int atype, XYZ where, float arotation, float arotation2
 		if(atype==treetrunktype)friction[numobjects]=.4;
 		if(atype==treeleavestype)friction[numobjects]=0;
 
-		if(friction[numobjects]==1.5&&fabs(arotation2)>5)friction[numobjects]=.5;
+		if(friction[numobjects]==1.5&&fabs(apitch)>5)friction[numobjects]=.5;
 
 		if(atype==platformtype){
 			model[numobjects].loaddecal((char *)":Data:Models:Platform.solid",0);
@@ -635,9 +634,9 @@ void Objects::MakeObject(int atype, XYZ where, float arotation, float arotation2
 		}
 		model[numobjects].Scale(.3*scale[numobjects],.3*scale[numobjects],.3*scale[numobjects]);
 		model[numobjects].Rotate(90,1,1);
-		model[numobjects].Rotate(arotation2,0,0);
+		model[numobjects].Rotate(apitch,0,0);
 		if(type[numobjects]==rocktype){
-			model[numobjects].Rotate(arotation*5,0,0);
+			model[numobjects].Rotate(ayaw*5,0,0);
 		}
 		model[numobjects].CalculateNormals(1);
 		model[numobjects].ScaleNormals(-1,-1,-1);
@@ -651,7 +650,7 @@ void Objects::MakeObject(int atype, XYZ where, float arotation, float arotation2
 		}
 
 		if(atype!=treeleavestype&&atype!=bushtype&&atype!=firetype)
-			terrain.AddObject(where+DoRotation(model[numobjects].boundingspherecenter,0,arotation,0),model[numobjects].boundingsphereradius,numobjects);
+			terrain.AddObject(where+DoRotation(model[numobjects].boundingspherecenter,0,ayaw,0),model[numobjects].boundingsphereradius,numobjects);
 
 		numobjects++;
 	}	
@@ -696,8 +695,7 @@ void Objects::DoStuff()
 
 void Objects::DoShadows()
 {
-	int i,j,k,l,todivide;
-	static float brightness, total;
+	int i,j,k,l;
 	static XYZ testpoint,testpoint2, terrainpoint,lightloc,col;
 	lightloc=light.location;
 	if(!skyboxtexture)lightloc=0;
@@ -709,7 +707,7 @@ void Objects::DoShadows()
 		for(i=0;i<numobjects;i++){
 			if(type[i]!=treeleavestype&&type[i]!=treetrunktype&&type[i]!=bushtype&&type[i]!=firetype){
 				for(j=0;j<model[i].vertexNum;j++){
-					terrainpoint=position[i]+DoRotation(model[i].vertex[j]+model[i].normals[j]*.1,0,rotation[i],0);
+					terrainpoint=position[i]+DoRotation(model[i].vertex[j]+model[i].normals[j]*.1,0,yaw[i],0);
 					//terrainpoint.y+=model[i].boundingsphereradius;
 					shadowed[i]=0;
 					patchx=terrainpoint.x/(terrain.size/subdivision*terrain.scale);
@@ -721,13 +719,13 @@ void Objects::DoShadows()
 								if(type[l]!=treetrunktype/*&&l!=i*/){
 									testpoint=terrainpoint;
 									testpoint2=terrainpoint+lightloc*50*(1-shadowed[i]);
-									if(model[l].LineCheck(&testpoint,&testpoint2,&col,&position[l],&rotation[l])!=-1){
+									if(model[l].LineCheck(&testpoint,&testpoint2,&col,&position[l],&yaw[l])!=-1){
 										shadowed[i]=1-(findDistance(&terrainpoint,&col)/50);	
 									}
 								}
 							}
 							if(shadowed[i]>0){
-								col=model[i].normals[j]-DoRotation(lightloc*shadowed[i],0,-rotation[i],0);
+								col=model[i].normals[j]-DoRotation(lightloc*shadowed[i],0,-yaw[i],0);
 								Normalise(&col);
 								for(k=0;k<model[i].TriangleNum;k++){
 									if(model[i].Triangles[k].vertex[0]==j){
@@ -768,8 +766,8 @@ Objects::Objects()
 
 	memset(position, 0, sizeof(position));
 	memset(type, 0, sizeof(type));
-	memset(rotation, 0, sizeof(rotation));
-	memset(rotation2, 0, sizeof(rotation2));
+	memset(yaw, 0, sizeof(yaw));
+	memset(pitch, 0, sizeof(pitch));
 	memset(rotx, 0, sizeof(rotx));
 	memset(rotxvel, 0, sizeof(rotxvel));
 	memset(roty, 0, sizeof(roty));

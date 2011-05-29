@@ -59,8 +59,8 @@ public:
 	float radius;
 	XYZ position[max_objects];
 	int type[max_objects];
-	float rotation[max_objects];
-	float rotation2[max_objects];
+	float yaw[max_objects];
+	float pitch[max_objects];
 	float rotx[max_objects];
 	float rotxvel[max_objects];
 	float roty[max_objects];
@@ -85,8 +85,8 @@ public:
 
 	void SphereCheckPossible(XYZ *p1,float radius);
 	void DeleteObject(int which);
-	void MakeObject(int atype, XYZ where, float arotation, float ascale);
-	void MakeObject(int atype, XYZ where, float arotation, float arotation2, float ascale);
+	void MakeObject(int atype, XYZ where, float ayaw, float ascale);
+	void MakeObject(int atype, XYZ where, float ayaw, float apitch, float ascale);
 	void Draw();
 	void DoShadows();
 	void DoStuff();

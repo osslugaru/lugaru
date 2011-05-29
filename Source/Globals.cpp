@@ -183,8 +183,6 @@ bool vertexweird[6] = {0};
 TGAImageRec texture;
 bool debugmode = false;
 
-bool won = false;
-
 
 bool campaign = false;
 

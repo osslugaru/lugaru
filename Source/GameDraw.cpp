@@ -25,10 +25,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Awards.h"
 #include "Menu.h"
 
-#include <dirent.h>
-
-using namespace std;
-
 extern XYZ viewer;
 extern int environment;
 extern float texscale;
@@ -111,6 +107,15 @@ extern bool gamestarted;
 
 extern bool showdamagebar;
 
+
+
+int drawtoggle = 0;
+int numboundaries = 0;
+XYZ boundary[360];
+int change = 0;
+
+
+
 enum drawmodes {
   normalmode, motionblurmode, radialzoommode,
   realmotionblurmode, doublevisionmode, glowmode,
@@ -123,9 +128,12 @@ void Game::flash() { // shouldn't be that way, these should be attributes and Pe
 	flashamount=1;
 	flashdelay=1;
 }
+
+void DrawMenu();
+
 /*********************> DrawGLScene() <*****/
 int Game::DrawGLScene(StereoSide side)
-{	
+{
 	static float texcoordwidth,texcoordheight;
 	static float texviewwidth, texviewheight;
 	static int i,j,k,l;
@@ -136,6 +144,7 @@ int Game::DrawGLScene(StereoSide side)
 	static char string[256]="";
 	static char string2[256]="";
 	static char string3[256]="";
+    static int drawmode = 0;
 
 	if ( stereomode == stereoAnaglyph ) {
 		switch(side) {
@@ -171,7 +180,7 @@ int Game::DrawGLScene(StereoSide side)
 		static int changed;
 		changed=0;
 
-		olddrawmode=drawmode;
+		int olddrawmode=drawmode;
 		if(ismotionblur&&!loading){
 			if((findLengthfast(&player[0].velocity)>200)&&velocityblur&&!cameramode){
 				drawmode=motionblurmode;
@@ -251,7 +260,7 @@ int Game::DrawGLScene(StereoSide side)
 		static XYZ terrainlight;
 		static float distance;
 		if(drawmode==normalmode)
-            ReSizeGLScene(90,.1f);
+            Game::ReSizeGLScene(90,.1f);
 		if(drawmode!=normalmode)
             glViewport(0,0,texviewwidth,texviewheight);	
 		glDepthFunc(GL_LEQUAL);
@@ -274,12 +283,12 @@ int Game::DrawGLScene(StereoSide side)
             //shake
 			glRotatef(float(Random()%100)/10*camerashake/*+(woozy*woozy)/10*/,0,0,1);
             //sway
-			glRotatef(rotation2+sin(woozy/2)*(player[0].damage/player[0].damagetolerance)*5,1,0,0);
-			glRotatef(rotation+sin(woozy)*(player[0].damage/player[0].damagetolerance)*5,0,1,0);
+			glRotatef(pitch+sin(woozy/2)*(player[0].damage/player[0].damagetolerance)*5,1,0,0);
+			glRotatef(yaw+sin(woozy)*(player[0].damage/player[0].damagetolerance)*5,0,1,0);
 		}
 		if(cameramode||freeze||winfreeze){
-			glRotatef(rotation2,1,0,0);
-			glRotatef(rotation,0,1,0);
+			glRotatef(pitch,1,0,0);
+			glRotatef(yaw,0,1,0);
 		}
 
 		if(environment==desertenvironment){
@@ -305,7 +314,7 @@ int Game::DrawGLScene(StereoSide side)
 			glRotatef((float)(abs(Random()%100))/1000,1,0,0);
 			glRotatef((float)(abs(Random()%100))/1000,0,1,0);
 		}	
-		skybox.draw();
+		skybox->draw();
 		glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, 0);
 		glPopMatrix();
 		glTranslatef(-viewer.x,-viewer.y,-viewer.z);
@@ -320,7 +329,7 @@ int Game::DrawGLScene(StereoSide side)
 				if(frustum.SphereInFrustum(player[k].coords.x,player[k].coords.y+player[k].scale*3,player[k].coords.z,player[k].scale*7)&&player[k].occluded<25)
 					for(i=0;i<player[k].skeleton.num_joints;i++){
 						if(player[k].skeleton.joints[i].label==leftknee||player[k].skeleton.joints[i].label==rightknee||player[k].skeleton.joints[i].label==groin){
-							point=DoRotation(player[k].skeleton.joints[i].position,0,player[k].rotation,0)*player[k].scale+player[k].coords;
+							point=DoRotation(player[k].skeleton.joints[i].position,0,player[k].yaw,0)*player[k].scale+player[k].coords;
 							size=.4f;
 							opacity=.4-player[k].skeleton.joints[i].position.y*player[k].scale/5-(player[k].coords.y-terrain.getHeight(player[k].coords.x,player[k].coords.z))/10;
 							if(k!=0&&tutoriallevel==1){
@@ -330,7 +339,7 @@ int Game::DrawGLScene(StereoSide side)
 							for(l=0;l<terrain.patchobjectnum[player[k].whichpatchx][player[k].whichpatchz];l++){
 								j=terrain.patchobjects[player[k].whichpatchx][player[k].whichpatchz][l];
 								if(objects.position[j].y<player[k].coords.y||objects.type[j]==tunneltype||objects.type[j]==weirdtype){
-									point=DoRotation(DoRotation(player[k].skeleton.joints[i].position,0,player[k].rotation,0)*player[k].scale+player[k].coords-objects.position[j],0,-objects.rotation[j],0);
+									point=DoRotation(DoRotation(player[k].skeleton.joints[i].position,0,player[k].yaw,0)*player[k].scale+player[k].coords-objects.position[j],0,-objects.yaw[j],0);
 									size=.4f;
 									opacity=.4f;
 									if(k!=0&&tutoriallevel==1){
@@ -348,7 +357,7 @@ int Game::DrawGLScene(StereoSide side)
                             if(player[k].skeleton.free)
                                 point=player[k].skeleton.joints[i].position*player[k].scale+player[k].coords;
                             else
-                                point=DoRotation(player[k].skeleton.joints[i].position,0,player[k].rotation,0)*player[k].scale+player[k].coords;
+                                point=DoRotation(player[k].skeleton.joints[i].position,0,player[k].yaw,0)*player[k].scale+player[k].coords;
                             size=.4f;
                             opacity=.4-player[k].skeleton.joints[i].position.y*player[k].scale/5-(player[k].coords.y-terrain.getHeight(player[k].coords.x,player[k].coords.z))/5;
                             if(k!=0&&tutoriallevel==1){
@@ -358,8 +367,8 @@ int Game::DrawGLScene(StereoSide side)
                             for(l=0;l<terrain.patchobjectnum[player[k].whichpatchx][player[k].whichpatchz];l++){
                                 j=terrain.patchobjects[player[k].whichpatchx][player[k].whichpatchz][l];
                                 if(objects.position[j].y<player[k].coords.y||objects.type[j]==tunneltype||objects.type[j]==weirdtype){
-                                    if(player[k].skeleton.free)point=DoRotation(player[k].skeleton.joints[i].position*player[k].scale+player[k].coords-objects.position[j],0,-objects.rotation[j],0);
-                                    else point=DoRotation(DoRotation(player[k].skeleton.joints[i].position,0,player[k].rotation,0)*player[k].scale+player[k].coords-objects.position[j],0,-objects.rotation[j],0);
+                                    if(player[k].skeleton.free)point=DoRotation(player[k].skeleton.joints[i].position*player[k].scale+player[k].coords-objects.position[j],0,-objects.yaw[j],0);
+                                    else point=DoRotation(DoRotation(player[k].skeleton.joints[i].position,0,player[k].yaw,0)*player[k].scale+player[k].coords-objects.position[j],0,-objects.yaw[j],0);
                                     size=.4f;
                                     opacity=.4f;
                                     if(k!=0&&tutoriallevel==1){
@@ -379,7 +388,7 @@ int Game::DrawGLScene(StereoSide side)
                     terrain.MakeDecal(shadowdecal,point,size,opacity*.7,rotation);
                     for(l=0;l<terrain.patchobjectnum[player[k].whichpatchx][player[k].whichpatchz];l++){
                         j=terrain.patchobjects[player[k].whichpatchx][player[k].whichpatchz][l];
-                        point=DoRotation(player[k].coords-objects.position[j],0,-objects.rotation[j],0);
+                        point=DoRotation(player[k].coords-objects.position[j],0,-objects.yaw[j],0);
                         size=.7;
                         opacity=.4f;
                         objects.model[j].MakeDecal(shadowdecal,&point,&size,&opacity,&rotation);
@@ -442,7 +451,7 @@ int Game::DrawGLScene(StereoSide side)
 					if(distance>=1)
                         glDisable(GL_BLEND);
 					if(distance>=.5){
-						checkpoint=DoRotation(player[k].skeleton.joints[abs(Random()%player[k].skeleton.num_joints)].position,0,player[k].rotation,0)*player[k].scale+player[k].coords;
+						checkpoint=DoRotation(player[k].skeleton.joints[abs(Random()%player[k].skeleton.num_joints)].position,0,player[k].yaw,0)*player[k].scale+player[k].coords;
 						checkpoint.y+=1;
 						if(!player[k].occluded==0)
                             i=checkcollide(viewer,checkpoint,player[k].lastoccluded);
@@ -479,7 +488,7 @@ int Game::DrawGLScene(StereoSide side)
 			glDisable(GL_LIGHTING);
 			glEnable(GL_BLEND);
 			glTranslatef(hawkcoords.x,hawkcoords.y,hawkcoords.z);
-			glRotatef(hawkrotation,0,1,0);
+			glRotatef(hawkyaw,0,1,0);
 			glTranslatef(25,0,0);
 			distance=findDistancefast(&viewer,&realhawkcoords)*1.2;
 			glColor4f(light.color[0],light.color[1],light.color[2],(viewdistance*viewdistance-(distance-(viewdistance*viewdistance*fadestart))*(1/(1-fadestart)))/viewdistance/viewdistance);
@@ -505,7 +514,7 @@ int Game::DrawGLScene(StereoSide side)
 				if(distance>=1)
                     glDisable(GL_BLEND);
 				if(distance>=.5){
-					checkpoint=DoRotation(player[k].skeleton.joints[abs(Random()%player[k].skeleton.num_joints)].position,0,player[k].rotation,0)*player[k].scale+player[k].coords;
+					checkpoint=DoRotation(player[k].skeleton.joints[abs(Random()%player[k].skeleton.num_joints)].position,0,player[k].yaw,0)*player[k].scale+player[k].coords;
 					checkpoint.y+=1;
 					if(!player[k].occluded==0)
                         i=checkcollide(viewer,checkpoint,player[k].lastoccluded);
@@ -950,8 +959,8 @@ int Game::DrawGLScene(StereoSide side)
                         whichdialogue=hotspottype[closest]-20;
                         for(j=0;j<numdialogueboxes[whichdialogue];j++){
                             player[participantfocus[whichdialogue][j]].coords=participantlocation[whichdialogue][participantfocus[whichdialogue][j]];
-                            player[participantfocus[whichdialogue][j]].rotation=participantrotation[whichdialogue][participantfocus[whichdialogue][j]];
-                            player[participantfocus[whichdialogue][j]].targetrotation=participantrotation[whichdialogue][participantfocus[whichdialogue][j]];
+                            player[participantfocus[whichdialogue][j]].yaw=participantyaw[whichdialogue][participantfocus[whichdialogue][j]];
+                            player[participantfocus[whichdialogue][j]].targetyaw=participantyaw[whichdialogue][participantfocus[whichdialogue][j]];
                             player[participantfocus[whichdialogue][j]].velocity=0;
                             player[participantfocus[whichdialogue][j]].targetanimation=player[participantfocus[whichdialogue][j]].getIdle();
                             player[participantfocus[whichdialogue][j]].targetframe=0;
@@ -1203,10 +1212,6 @@ int Game::DrawGLScene(StereoSide side)
                 sprintf (string, "The framespersecond is %d.",(int)(fps));
                 text->glPrint(10,30,string,0,.8,1024,768);
 
-                sprintf (string, "Name: %s", registrationname);
-                text->glPrint(10,260,string,0,.8,1024,768);
-
-
                 if(editorenabled)
                     sprintf (string, "Map editor enabled.");
                 else
@@ -1215,11 +1220,11 @@ int Game::DrawGLScene(StereoSide side)
                 if(editorenabled){
                     sprintf (string, "Object size: %f",editorsize);
                     text->glPrint(10,75,string,0,.8,1024,768);
-                    if(editorrotation>=0)sprintf (string, "Object rotation: %f",editorrotation);
-                    else sprintf (string, "Object rotation: Random");
+                    if(editoryaw>=0)sprintf (string, "Object yaw: %f",editoryaw);
+                    else sprintf (string, "Object yaw: Random");
                     text->glPrint(10,90,string,0,.8,1024,768);
-                    if(editorrotation2>=0)sprintf (string, "Object rotation2: %f",editorrotation2);
-                    else sprintf (string, "Object rotation2: Random");
+                    if(editorpitch>=0)sprintf (string, "Object pitch: %f",editorpitch);
+                    else sprintf (string, "Object pitch: Random");
                     text->glPrint(10,105,string,0,.8,1024,768);
                     sprintf (string, "Object type: %d",editortype);
                     text->glPrint(10,120,string,0,.8,1024,768);
@@ -1413,7 +1418,7 @@ int Game::DrawGLScene(StereoSide side)
 					}
 		}
 
-		if(minimap&&indialogue==-1){
+		if(difficulty<2&&indialogue==-1){  // minimap
 			float mapviewdist = 20000;
 
 			glDisable(GL_DEPTH_TEST);
@@ -1491,7 +1496,7 @@ int Game::DrawGLScene(StereoSide side)
 			glPushMatrix();
 			glScalef(1/(1/radius*256*terrain.scale*.4),1/(1/radius*256*terrain.scale*.4),1);
 			glPopMatrix();
-			glRotatef(player[0].lookrotation*-1+180,0,0,1);
+			glRotatef(player[0].lookyaw*-1+180,0,0,1);
 			glTranslatef(-(center.x/terrain.scale/256*-2+1),(center.z/terrain.scale/256*-2+1),0);
 			for(i=0;i<objects.numobjects;i++){
 				if(objects.type[i]==treetrunktype){
@@ -1501,7 +1506,7 @@ int Game::DrawGLScene(StereoSide side)
 						glColor4f(0,.3,0,opac*(1-distcheck/mapviewdist));
 						glPushMatrix();
 						glTranslatef(objects.position[i].x/terrain.scale/256*-2+1,objects.position[i].z/terrain.scale/256*2-1,0);
-						glRotatef(objects.rotation[i],0,0,1);
+						glRotatef(objects.yaw[i],0,0,1);
 						glScalef(.003,.003,.003);
 						glBegin(GL_QUADS);
 						glTexCoord2f(0,0);
@@ -1523,7 +1528,7 @@ int Game::DrawGLScene(StereoSide side)
 						glColor4f(.4,.4,.4,opac*(1-distcheck/mapviewdist));
 						glPushMatrix();
 						glTranslatef(objects.position[i].x/terrain.scale/256*-2+1,objects.position[i].z/terrain.scale/256*2-1,0);
-						glRotatef(objects.rotation[i],0,0,1);
+						glRotatef(objects.yaw[i],0,0,1);
 						glScalef(.01*objects.scale[i],.01*objects.scale[i],.01*objects.scale[i]);
 						glBegin(GL_QUADS);
 						glTexCoord2f(0,0);
@@ -1571,7 +1576,7 @@ int Game::DrawGLScene(StereoSide side)
 					else if(player[i].aitype==passivetype)glColor4f(0,1,0,opac*(1-distcheck/mapviewdist));
 					else glColor4f(1,1,0,1);
 					glTranslatef(player[i].coords.x/terrain.scale/256*-2+1,player[i].coords.z/terrain.scale/256*2-1,0);
-					glRotatef(player[i].rotation+180,0,0,1);
+					glRotatef(player[i].yaw+180,0,0,1);
 					glScalef(.005,.005,.005);
 					glBegin(GL_QUADS);
 					glTexCoord2f(0,0);
@@ -1762,7 +1767,7 @@ int Game::DrawGLScene(StereoSide side)
 		}
 
 		glClear(GL_DEPTH_BUFFER_BIT);
-		ReSizeGLScene(90,.1f);
+        Game::ReSizeGLScene(90,.1f);
 		glViewport(0,0,screenwidth,screenheight);	
 
 		if(drawmode!=normalmode){
@@ -2028,63 +2033,14 @@ int Game::DrawGLScene(StereoSide side)
 	return 0;
 }
 
-vector<string> Game::ListCampaigns() {
-	DIR *campaigns = opendir(ConvertFileName(":Data:Campaigns"));
-	struct dirent *campaign = NULL;
-	if(!campaigns) {
-		perror("Problem while loading campaigns");
-		cerr << "campaign folder was : " << ConvertFileName(":Data:Campaigns") << endl;
-		exit(EXIT_FAILURE);
-	}
-	vector<string> campaignNames;
-	while ((campaign = readdir(campaigns)) != NULL) {
-		string name(campaign->d_name);
-		if(name.length()<5)
-			continue;
-		if(!name.compare(name.length()-4,4,".txt")) {
-			campaignNames.push_back(name.substr(0,name.length()-4));
-		}
-	}
-	closedir(campaigns);
-	return campaignNames;
-}
-
-void Game::LoadCampaign() {
-	if(!accountactive)
-		return;
-	ifstream ipstream(ConvertFileName((":Data:Campaigns:"+accountactive->getCurrentCampaign()+".txt").c_str()));
-	ipstream.ignore(256,':');
-	int numlevels;
-	ipstream >> numlevels;
-	campaignlevels.clear();
-	for(int i=0;i<numlevels;i++) {
-		CampaignLevel cl;
-		ipstream >> cl;
-		campaignlevels.push_back(cl);
-	}
-	ipstream.close();
-
-	ifstream test(ConvertFileName((":Data:Textures:"+accountactive->getCurrentCampaign()+":World.png").c_str()));
-	if(test.good()) {
-		LoadTexture((":Data:Textures:"+accountactive->getCurrentCampaign()+":World.png").c_str(),&Mainmenuitems[7],0,0);
-	} else {
-		LoadTexture(":Data:Textures:World.png",&Mainmenuitems[7],0,0);
-	}
-
-	if(accountactive->getCampaignChoicesMade()==0) {
-		accountactive->setCampaignScore(0);
-		accountactive->resetFasttime();
-	}
-}
-
-void Game::DrawMenu() {
+void DrawMenu() {
 	// !!! FIXME: hack: clamp framerate in menu so text input works correctly on fast systems.
 	SDL_Delay(15);
 
 	glDrawBuffer(GL_BACK);
 	glReadBuffer(GL_BACK);
 	glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-	ReSizeGLScene(90,.1f);
+    Game::ReSizeGLScene(90,.1f);
 
     //draw menu background
 	glClear(GL_DEPTH_BUFFER_BIT);
@@ -2122,7 +2078,7 @@ void Game::DrawMenu() {
 				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
 				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
 				glEnable(GL_TEXTURE_2D);
-				glBindTexture( GL_TEXTURE_2D, Mainmenuitems[4]);
+				glBindTexture( GL_TEXTURE_2D, Game::Mainmenuitems[4]);
 					glBegin(GL_QUADS);
 					glTexCoord2f(0,0);
 					glVertex3f(-1,-1,0);
@@ -2175,14 +2131,14 @@ void Game::DrawMenu() {
 					glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
 					glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
 				glPopMatrix();
-				if(!waiting) { // hide the cursor while waiting for a key
+				if(!Game::waiting) { // hide the cursor while waiting for a key
 					glPushMatrix();
-						glTranslatef(mousecoordh-screenwidth/2,mousecoordv*-1+screenheight/2,0);
+						glTranslatef(Game::mousecoordh-screenwidth/2,Game::mousecoordv*-1+screenheight/2,0);
 						glScalef((float)screenwidth/64,(float)screenwidth/64,1);
 						glTranslatef(1,-1,0);
 						glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 						glColor4f(1,1,1,1);
-						glBindTexture( GL_TEXTURE_2D, cursortexture);
+						glBindTexture( GL_TEXTURE_2D, Game::cursortexture);
 						glPushMatrix();
 							//glScalef(.25,.25,.25);
 							glBegin(GL_QUADS);

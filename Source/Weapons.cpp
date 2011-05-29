@@ -159,11 +159,11 @@ void Weapon::DoStuff(int i) {
 					int k=terrain.patchobjects[whichpatchx][whichpatchz][j];
 					start=oldtippoint;
 					end=tippoint;
-					whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
+					whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.yaw[k]);
 					if(whichhit!=-1) {
 						if(objects.type[k]==treetrunktype){
-							objects.model[k].MakeDecal(breakdecal,DoRotation(colpoint-objects.position[k],0,-objects.rotation[k],0),.1,1,Random()%360);
-							normalrot=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0);
+							objects.model[k].MakeDecal(breakdecal,DoRotation(colpoint-objects.position[k],0,-objects.yaw[k],0),.1,1,Random()%360);
+							normalrot=DoRotation(objects.model[k].facenormals[whichhit],0,objects.yaw[k],0);
 							velocity=0;
 							if(type==knife)
 								position=colpoint-normalrot*.1;
@@ -214,7 +214,7 @@ void Weapon::DoStuff(int i) {
 		if(velocity.x||velocity.y||velocity.z) {
 			for(int j=0;j<numplayers;j++) {
 				footvel=0;
-				footpoint=DoRotation((player[j].skeleton.joints[player[j].skeleton.jointlabels[abdomen]].position+player[j].skeleton.joints[player[j].skeleton.jointlabels[neck]].position)/2,0,player[j].rotation,0)*player[j].scale+player[j].coords;
+				footpoint=DoRotation((player[j].skeleton.joints[player[j].skeleton.jointlabels[abdomen]].position+player[j].skeleton.joints[player[j].skeleton.jointlabels[neck]].position)/2,0,player[j].yaw,0)*player[j].scale+player[j].coords;
 				if(owner==-1 && findDistancefastflat(&position,&player[j].coords)<1.5 && 
 				findDistancefast(&position,&player[j].coords)<4 && player[j].weaponstuck==-1 &&
 				!player[j].skeleton.free && j!=oldowner) {
@@ -420,7 +420,7 @@ void Weapon::DoStuff(int i) {
 							if(type==staff) {
 								start=tippoint-(position-tippoint)/5;
 								end=position+(position-tippoint)/30;
-								whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
+								whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.yaw[k]);
 								if(whichhit!=-1) {
 									XYZ diff;
 									diff=(colpoint-position);
@@ -435,7 +435,7 @@ void Weapon::DoStuff(int i) {
 							} else {
 								start=position-(tippoint-position)/5;
 								end=tippoint+(tippoint-position)/30;
-								whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
+								whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.yaw[k]);
 								if(whichhit!=-1){
 									XYZ diff;
 									diff=(colpoint-tippoint);
@@ -452,11 +452,11 @@ void Weapon::DoStuff(int i) {
 
 						start=oldposition;
 						end=position;
-						whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
+						whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.yaw[k]);
 						if(whichhit!=-1) {
 							hitsomething=1;
 							position=colpoint;
-							terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
+							terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.yaw[k],0)*-1;
 							ReflectVector(&velocity,&terrainnormal);
 							position+=terrainnormal*.002;
 
@@ -480,11 +480,11 @@ void Weapon::DoStuff(int i) {
 						}
 						start=oldtippoint;
 						end=tippoint;
-						whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
+						whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.yaw[k]);
 						if(whichhit!=-1) {
 							hitsomething=1;
 							tippoint=colpoint;
-							terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
+							terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.yaw[k],0)*-1;
 							ReflectVector(&tipvelocity,&terrainnormal);
 							tippoint+=terrainnormal*.002;
 
@@ -506,7 +506,7 @@ void Weapon::DoStuff(int i) {
 							}
 						}
 
-						if((objects.type[k]!=boxtype && objects.type[k]!=platformtype && objects.type[k]!=walltype && objects.type[k]!=weirdtype)||objects.rotation2[k]!=0)
+						if((objects.type[k]!=boxtype && objects.type[k]!=platformtype && objects.type[k]!=walltype && objects.type[k]!=weirdtype)||objects.pitch[k]!=0)
 							for(int m=0;m<2;m++){
 								mid=(position*(21+(float)m*10)+tippoint*(19-(float)m*10))/40;
 								oldmid2=mid;
@@ -514,11 +514,11 @@ void Weapon::DoStuff(int i) {
 
 								start=oldmid;
 								end=mid;
-								whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
+								whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.yaw[k]);
 								if(whichhit!=-1) {
 									hitsomething=1;
 									mid=colpoint;
-									terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
+									terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.yaw[k],0)*-1;
 									ReflectVector(&velocity,&terrainnormal);
 
 									bounceness=terrainnormal*findLength(&velocity)*(abs(normaldotproduct(velocity,terrainnormal)));
@@ -546,11 +546,11 @@ void Weapon::DoStuff(int i) {
 
 								start=oldmid;
 								end=mid;
-								whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
+								whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.yaw[k]);
 								if(whichhit!=-1) {
 									hitsomething=1;
 									mid=colpoint;
-									terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
+									terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.yaw[k],0)*-1;
 									ReflectVector(&tipvelocity,&terrainnormal);
 
 									bounceness=terrainnormal*findLength(&tipvelocity)*(abs(normaldotproduct(tipvelocity,terrainnormal)));
@@ -576,14 +576,14 @@ void Weapon::DoStuff(int i) {
 						{
 							start=position;
 							end=tippoint;
-							whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
+							whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.yaw[k]);
 							if(whichhit!=-1) {
 								hitsomething=1;
 								closestdistance=-1;
 								closestswordpoint=colpoint;//(position+tippoint)/2;
-								point[0]=DoRotation(objects.model[k].vertex[objects.model[k].Triangles[whichhit].vertex[0]],0,objects.rotation[k],0)+objects.position[k];
-								point[1]=DoRotation(objects.model[k].vertex[objects.model[k].Triangles[whichhit].vertex[1]],0,objects.rotation[k],0)+objects.position[k];
-								point[2]=DoRotation(objects.model[k].vertex[objects.model[k].Triangles[whichhit].vertex[2]],0,objects.rotation[k],0)+objects.position[k];
+								point[0]=DoRotation(objects.model[k].vertex[objects.model[k].Triangles[whichhit].vertex[0]],0,objects.yaw[k],0)+objects.position[k];
+								point[1]=DoRotation(objects.model[k].vertex[objects.model[k].Triangles[whichhit].vertex[1]],0,objects.yaw[k],0)+objects.position[k];
+								point[2]=DoRotation(objects.model[k].vertex[objects.model[k].Triangles[whichhit].vertex[2]],0,objects.yaw[k],0)+objects.position[k];
 								if(DistancePointLine(&closestswordpoint, &point[0], &point[1], &distance,&colpoint )) {
 									if(distance<closestdistance||closestdistance==-1){
 										closestpoint=colpoint;

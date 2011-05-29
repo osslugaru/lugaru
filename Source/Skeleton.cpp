@@ -308,7 +308,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 
 						if(tutoriallevel!=1||id==0)
 							if(findLengthfast(&bounceness)>8000&&breaking){
-								objects.model[k].MakeDecal(breakdecal,DoRotation(temp-objects.position[k],0,-objects.rotation[k],0),.4,.5,Random()%360);
+								objects.model[k].MakeDecal(breakdecal,DoRotation(temp-objects.position[k],0,-objects.yaw[k],0),.4,.5,Random()%360);
 								Sprite::MakeSprite(cloudsprite, joints[i].position*(*scale)+*coords,joints[i].velocity*.06, 1,1,1, 4, .2);
 								//Sprite::MakeSprite(cloudsprite, joints[i].position*(*scale)+*coords,joints[i].velocity*.06, 1,1,1, 1, .2);
 								breaking=0;
@@ -366,7 +366,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 									friction=objects.friction[k];
 									start=joints[i].realoldposition;
 									end=joints[i].position*(*scale)+*coords;
-									whichhit=objects.model[k].LineCheckPossible(&start,&end,&temp,&objects.position[k],&objects.rotation[k]);
+									whichhit=objects.model[k].LineCheckPossible(&start,&end,&temp,&objects.position[k],&objects.yaw[k]);
 									if(whichhit!=-1){
 										if(joints[i].label==groin&&!joints[i].locked&&joints[i].delay<=0){
 											joints[i].locked=1;
@@ -385,7 +385,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 											}
 										}
 
-										terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
+										terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.yaw[k],0)*-1;
 										if(terrainnormal.y>.8)freefall=0;
 										bounceness=terrainnormal*findLength(&joints[i].velocity)*(abs(normaldotproduct(joints[i].velocity,terrainnormal)));
 										if(findLengthfast(&joints[i].velocity)>findLengthfast(&joints[i].oldvelocity)){
@@ -394,7 +394,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 										}
 										if(tutoriallevel!=1||id==0)
 											if(findLengthfast(&bounceness)>4000&&breaking){
-												objects.model[k].MakeDecal(breakdecal,DoRotation(temp-objects.position[k],0,-objects.rotation[k],0),.4,.5,Random()%360);
+												objects.model[k].MakeDecal(breakdecal,DoRotation(temp-objects.position[k],0,-objects.yaw[k],0),.4,.5,Random()%360);
 												Sprite::MakeSprite(cloudsprite, joints[i].position*(*scale)+*coords,joints[i].velocity*.06, 1,1,1, 4, .2);
 												breaking=0;
 												camerashake+=.6;
@@ -469,7 +469,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 						//Make this less stupid
 						start=joints[jointlabels[whichjointstartarray[i]]].position*(*scale)+*coords;
 						end=joints[jointlabels[whichjointendarray[i]]].position*(*scale)+*coords;
-						whichhit=objects.model[k].LineCheckSlidePossible(&start,&end,&temp,&objects.position[k],&objects.rotation[k]);
+						whichhit=objects.model[k].LineCheckSlidePossible(&start,&end,&temp,&objects.position[k],&objects.yaw[k]);
 						if(whichhit!=-1){
 							joints[jointlabels[whichjointendarray[i]]].position=(end-*coords)/(*scale);
 							for(j=0; j<num_muscles; j++){
