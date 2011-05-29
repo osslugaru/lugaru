@@ -1,3 +1,6 @@
+#ifndef _TEXTURE_H_
+#define _TEXTURE_H_
+
 #include <map>
 #include <string>
 
@@ -34,3 +37,4 @@ class Texture {
 		static GLuint Load(const std::string& fileName, bool mipmap, bool hasalpha, GLubyte* array, int* skinsize);
 };
 
+#endif
