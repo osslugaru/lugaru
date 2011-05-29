@@ -60,7 +60,6 @@ extern TGAImageRec texture;
 extern short vRefNum;
 extern long dirID;
 extern int mainmenu;
-extern int oldmainmenu;
 extern bool visibleloading;
 extern float flashamount,flashr,flashg,flashb;
 extern int flashdelay;
@@ -733,11 +732,12 @@ void Game::InitGame()
 
 	stillloading=0;
 	firstload=0;
-	oldmainmenu=0;
 
 	newdetail=detail;
 	newscreenwidth=screenwidth;
 	newscreenheight=screenheight;
+
+    LoadMenu();
 }
 
 

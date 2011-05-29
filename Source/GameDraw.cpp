@@ -76,7 +76,6 @@ extern bool vertexweird[6];
 extern bool velocityblur;
 extern bool debugmode;
 extern int mainmenu;
-extern int oldmainmenu;
 extern int bloodtoggle;
 extern int difficulty;
 extern bool decals;
@@ -2076,7 +2075,6 @@ void Game::LoadCampaign() {
 		accountactive->setCampaignScore(0);
 		accountactive->resetFasttime();
 	}
-    oldmainmenu=0; //reload menu
 }
 
 void Game::DrawMenu() {
@@ -2087,12 +2085,6 @@ void Game::DrawMenu() {
 	glReadBuffer(GL_BACK);
 	glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 	ReSizeGLScene(90,.1f);
-
-	if(oldmainmenu!=mainmenu){
-		if(mainmenu==5){
-			LoadCampaign();
-		}
-	}
 
     //draw menu background
 	glClear(GL_DEPTH_BUFFER_BIT);
@@ -2147,257 +2139,7 @@ void Game::DrawMenu() {
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 
-    /*
-    Values of mainmenu :
-    1 Main menu
-    2 Menu pause (resume/end game)
-    3 Option menu
-    4 Controls configuration menu
-    5 Main game menu (choose level or challenge)
-    6 Deleting user menu
-    7 User managment menu (select/add)
-    8 Choose difficulty menu
-    9 Challenge level selection menu
-    10 End of the campaign congratulation (is that really a menu?)
-    11 Same that 9 ??? => unused
-    18 stereo configuration
-    */
 
-    if(oldmainmenu!=mainmenu)
-        Menu::clearMenu();
-
-    switch(mainmenu) {
-		case 1:
-		case 2:{
-            if(oldmainmenu!=mainmenu){
-                Menu::addImage(0,Mainmenuitems[0],150,480-128,256,128);
-                Menu::addImageButton(1,Mainmenuitems[mainmenu==1?1:5],NULL,18,480-152-32,128,32);
-                Menu::addImageButton(2,Mainmenuitems[2],NULL,18,480-228-32,112,32);
-                Menu::addImageButton(3,Mainmenuitems[mainmenu==1?3:6],NULL,18,480-306-32,mainmenu==1?68:132,32);
-            }
-		}
-		break;
-		case 3: {
-            if(oldmainmenu!=mainmenu){
-                Menu::addButton( 0,"",NULL,10+20,440,-1,-1);
-                Menu::addButton( 1,"",NULL,10+60,405,-1,-1);
-                Menu::addButton( 2,"",NULL,10+70,370,-1,-1);
-                Menu::addButton( 3,"",NULL,10+20-1000,335-1000,-1,-1);
-                Menu::addButton( 4,"",NULL,10   ,335,-1,-1);
-                Menu::addButton( 5,"",NULL,10+60,300,-1,-1);
-                Menu::addButton( 6,"",NULL,10+70,265,-1,-1);
-                Menu::addButton( 9,"",NULL,10   ,230,-1,-1);
-                Menu::addButton(10,"",NULL,20   ,195,-1,-1);
-                Menu::addButton(11,"",NULL,10+60,160,-1,-1);
-                Menu::addButton(13,"",NULL,30   ,125,-1,-1);
-                Menu::addButton( 7,"",NULL,10+15, 90,-1,-1);
-                Menu::addButton(12,"",NULL,10+15, 55,-1,-1);
-                Menu::addButton(8,"Back",NULL,10,10,-1,-1);
-            }
-			if((float)newscreenwidth>(float)newscreenheight*1.61||(float)newscreenwidth<(float)newscreenheight*1.59)
-                sprintf (menustring[0], "Resolution: %d*%d",(int)newscreenwidth,(int)newscreenheight);
-			else
-                sprintf (menustring[0], "Resolution: %d*%d (widescreen)",(int)newscreenwidth,(int)newscreenheight);
-
-			if(newdetail==2)		sprintf (menustring[1], "Detail: High");
-			else if(newdetail==1)	sprintf (menustring[1], "Detail: Medium");
-			else 					sprintf (menustring[1], "Detail: Low");
-
-			if(bloodtoggle==2) sprintf (menustring[2], "Blood: On, high detail (slower)");
-			if(bloodtoggle==1) sprintf (menustring[2], "Blood: On, low detail");
-			if(bloodtoggle==0) sprintf (menustring[2], "Blood: Off");
-
-			if(difficulty==2) sprintf (menustring[3], "Difficulty: Insane");
-			if(difficulty==1) sprintf (menustring[3], "Difficulty: Difficult");
-			if(difficulty==0) sprintf (menustring[3], "Difficulty: Easier");
-
-			if(ismotionblur==1) sprintf (menustring[4], "Blur Effects: Enabled (less compatible)");
-			if(ismotionblur==0) sprintf (menustring[4], "Blur Effects: Disabled (more compatible)");
-
-			if(decals==1) sprintf (menustring[5], "Decals: Enabled (slower)");
-			if(decals==0) sprintf (menustring[5], "Decals: Disabled");
-
-			if(musictoggle==1) sprintf (menustring[6], "Music: Enabled");
-			if(musictoggle==0) sprintf (menustring[6], "Music: Disabled");
-
-			if(invertmouse==1) sprintf (menustring[9], "Invert mouse: Yes");
-			if(invertmouse==0) sprintf (menustring[9], "Invert mouse: No");
-
-			sprintf (menustring[10], "Mouse Speed: %d", (int)(usermousesensitivity*5));
-			
-			sprintf (menustring[11], "Volume: %d%%", (int)(volume*100));
-			
-			sprintf (menustring[13], "Damage Bar: %s",(showdamagebar?"on":"off"));
-			
-			sprintf (menustring[7], "-Configure Controls-");
-
-			sprintf (menustring[12], "-Configure Stereo -");
-			
-			if(newdetail==detail&&newscreenheight==(int)screenheight&&newscreenwidth==(int)screenwidth)sprintf (menustring[8], "Back");
-			else sprintf (menustring[8], "Back (some changes take effect next time Lugaru is opened)");
-
-            for(int i=0;i<=13;i++)
-                Menu::setButtonText(i,menustring[i]);
-		}
-		break;
-		case 4: {
-            if(oldmainmenu!=mainmenu){
-                Menu::addButton(0,"",NULL,10   ,400,-1,-1);
-                Menu::addButton(1,"",NULL,10+40,360,-1,-1);
-                Menu::addButton(2,"",NULL,10+40,320,-1,-1);
-                Menu::addButton(3,"",NULL,10+30,280,-1,-1);
-                Menu::addButton(4,"",NULL,10+20,240,-1,-1);
-                Menu::addButton(5,"",NULL,10+40,200,-1,-1);
-                Menu::addButton(6,"",NULL,10+40,160,-1,-1);
-                Menu::addButton(7,"",NULL,10+30,120,-1,-1);
-                Menu::addButton(8,"",NULL,10+20,80,-1,-1);
-                if(debugmode)
-                    Menu::addButton(9,"",NULL,10+10,40,-1,-1);
-                Menu::addButton(debugmode?10:9,"Back",NULL,10,10,-1,-1);
-            }
-            Menu::setButtonText(0,(string)"Forwards: "+(keyselect==0?"_":Input::keyToChar(forwardkey)));
-            Menu::setButtonText(1,(string)"Back: "    +(keyselect==1?"_":Input::keyToChar(backkey)));
-            Menu::setButtonText(2,(string)"Left: "    +(keyselect==2?"_":Input::keyToChar(leftkey)));
-            Menu::setButtonText(3,(string)"Right: "   +(keyselect==3?"_":Input::keyToChar(rightkey)));
-            Menu::setButtonText(4,(string)"Crouch: "  +(keyselect==4?"_":Input::keyToChar(crouchkey)));
-            Menu::setButtonText(5,(string)"Jump: "    +(keyselect==5?"_":Input::keyToChar(jumpkey)));
-            Menu::setButtonText(6,(string)"Draw: "    +(keyselect==6?"_":Input::keyToChar(drawkey)));
-            Menu::setButtonText(7,(string)"Throw: "   +(keyselect==7?"_":Input::keyToChar(throwkey)));
-            Menu::setButtonText(8,(string)"Attack: "  +(keyselect==8?"_":Input::keyToChar(attackkey)));
-            if(debugmode)
-                Menu::setButtonText(9,(string)"Console: "+(keyselect==9?"_":Input::keyToChar(consolekey)));
-		}
-		break;
-		case 5: {			
-            if(oldmainmenu!=mainmenu){
-                Menu::addLabel(-1,accountactive->getName(),5,400);
-                Menu::addButton(1,"Tutorial",NULL,5,300,-1,-1);
-                Menu::addButton(2,"Challenge",NULL,5,240,-1,-1);
-                Menu::addButton(3,"Delete User",NULL,400,10,-1,-1);
-                Menu::addButton(4,"Main Menu",NULL,5,10,-1,-1);
-                Menu::addButton(5,"Change User",NULL,5,180,-1,-1);
-                Menu::addButton(6,"Campaign : "+accountactive->getCurrentCampaign(),NULL,200,420,-1,-1);
-
-                //show campaign map
-                //with (2,-5) offset from old code
-                Menu::addImage(-1,Mainmenuitems[7],150+2,60-5,400,400);
-                //show levels
-                int numlevels = accountactive->getCampaignChoicesMade();
-                numlevels += numlevels>0 ? campaignlevels[numlevels-1].nextlevel.size() : 1;
-                for(int i=0;i<numlevels;i++){
-					XYZ midpoint=campaignlevels[i].getCenter();
-                    float itemsize=campaignlevels[i].getWidth();
-                    const bool active=i>=accountactive->getCampaignChoicesMade();
-                    if(!active)
-                        itemsize/=2;
-
-                    if(i>=1){
-                        XYZ start=campaignlevels[i-1].getCenter();
-                        Menu::addMapLine(start.x,start.y,midpoint.x-start.x,midpoint.y-start.y,0.5,active?1:0.5,active?1:0.5,0,0);
-                    }
-                    Menu::addMapMarker(NB_CAMPAIGN_MENU_ITEM+i, Mapcircletexture, NULL,
-                            midpoint.x-itemsize/2, midpoint.y-itemsize/2, itemsize, itemsize, active?1:0.5, 0, 0);
-
-                    if(active){
-                        Menu::addLabel(-2,campaignlevels[i].description,
-                                campaignlevels[i].getStartX()+10,
-                                campaignlevels[i].getStartY()-4);
-                        Menu::setMapItem(-2);
-                    }
-                }
-            }
-		}
-		break;
-		case 6: {			
-            if(oldmainmenu!=mainmenu){
-                Menu::addLabel(-1,"Are you sure you want to delete this user?",10,400);
-                Menu::addButton(1,"Yes",NULL,10,360,-1,-1);
-                Menu::addButton(2,"No",NULL,10,320,-1,-1);
-            }
-		}
-		break;
-		case 7: {	
-            if(oldmainmenu!=mainmenu){
-                Menu::addButton(0,Account::getNbAccounts()<8?"New User":"No More Users",NULL,10,400,-1,-1);
-                Menu::addLabel(-2,"",20,400);
-                Menu::addButton(Account::getNbAccounts()+1,"Back",NULL,10,10,-1,-1);
-                for(int i=0;i<Account::getNbAccounts();i++)
-                    Menu::addButton(i+1,Account::get(i)->getName(),NULL,10,340-20*(i+1),-1,-1);
-            }
-            if(entername){
-                Menu::setButtonText(0,displaytext[0],20,400,-1,-1);
-                Menu::setButtonText(-2,displayblink?"_":"",20+displayselected*10,400,-1,-1);
-            }
-		}
-		break;
-		case 8: {			
-            if(oldmainmenu!=mainmenu){
-                Menu::addButton(0,"Easier",NULL,10,400,-1,-1);
-                Menu::addButton(1,"Difficult",NULL,10,360,-1,-1);
-                Menu::addButton(2,"Insane",NULL,10,320,-1,-1);
-            }
-		}
-		break;
-		case 9: {			
-            if(oldmainmenu!=mainmenu){
-                for(int i=0;i<numchallengelevels;i++){
-                    char temp[255];
-                    string name="";
-                    sprintf (temp, "Level %d",i+1);
-                    for(int j=strlen(temp);j<17;j++)
-                            strcat(temp," ");
-                    name+=temp;
-                    sprintf (temp, "%d",(int)accountactive->getHighScore(i));
-                    for(int j=strlen(temp);j<(32-17);j++)
-                            strcat(temp," ");
-                    name+=temp;
-                    sprintf (temp, "%d:",(int)(((int)accountactive->getFastTime(i)-(int)(accountactive->getFastTime(i))%60)/60));
-                    if((int)(accountactive->getFastTime(i))%60<10)strcat(temp,"0");
-                    name+=temp;
-                    sprintf (temp, "%d",(int)(accountactive->getFastTime(i))%60);
-                    name+=temp;
-
-                    Menu::addButton(i,name,NULL,10,400-i*25,-1,-1,i>accountactive->getProgress()?0.5:1,0,0);
-                }
-
-                Menu::addButton(-1,"             High Score      Best Time",NULL,10,440,-1,-1);
-                Menu::addButton(numchallengelevels,"Back",NULL,10,10,-1,-1);
-            }
-		}
-		break;
-		case 10: {			
-            if(oldmainmenu!=mainmenu){
-                Menu::addLabel(0,"Congratulations!",220,330);
-                Menu::addLabel(1,"You have avenged your family and",140,300);
-                Menu::addLabel(2,"restored peace to the island of Lugaru.",110,270);
-                Menu::addButton(3,"Back",NULL,10,10,-1,-1);
-                sprintf(menustring[4],"Your score:         %d",(int)accountactive->getCampaignScore());
-                sprintf(menustring[5],"Highest score:      %d",(int)accountactive->getCampaignHighScore());
-                Menu::addLabel(4,menustring[4],190,200);
-                Menu::addLabel(5,menustring[5],190,180);
-            }
-		}
-		break;
-		case 18: {
-            if(oldmainmenu!=mainmenu){
-                Menu::addButton(0,"",NULL,70,400,-1,-1);
-                Menu::addButton(1,"",NULL,10,360,-1,-1);
-                Menu::addButton(2,"",NULL,40,320,-1,-1);
-                Menu::addButton(3,"Back",NULL,10,10,-1,-1);
-            }
-			sprintf(menustring[0], "Stereo mode: %s", StereoModeName(newstereomode));
-			sprintf(menustring[1], "Stereo separation: %.3f", stereoseparation);
-			sprintf(menustring[2], "Reverse stereo: %s", stereoreverse ? "Yes" : "No");
-            Menu::setButtonText(0,menustring[0]);
-            Menu::setButtonText(1,menustring[1]);
-            Menu::setButtonText(2,menustring[2]);
-		}
-	}
-
-	oldmainmenu=mainmenu;
-
-    selected=Menu::getSelected(mousecoordh*640/screenwidth,480-mousecoordv*480/screenheight);
-    Menu::GUITick();
 
 	glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
 	glPushMatrix();										// Store The Projection Matrix

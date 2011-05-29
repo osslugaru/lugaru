@@ -176,7 +176,6 @@ namespace Game
 
     extern bool entername;
 
-    extern char menustring[100][256];
     extern char registrationname[256];
     extern float registrationnumber;
 
@@ -294,6 +293,7 @@ namespace Game
     int DrawGLScene(StereoSide side);
     void DrawMenu();
     void DrawGL();
+    void LoadMenu();
     //factored from Tick() -sf17k
     void MenuTick();
     void doTutorial();

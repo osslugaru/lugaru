@@ -120,7 +120,6 @@ XYZ windvector;
 short vRefNum = 0;
 long dirID = 0;
 int mainmenu = 0;
-int oldmainmenu = 0;
 int whichjointstartarray[26] = {0};
 int whichjointendarray[26] = {0};
 int kBitsPerPixel = 0;

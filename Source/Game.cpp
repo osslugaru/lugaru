@@ -48,7 +48,6 @@ namespace Game{
 
     bool entername;
 
-    char menustring[100][256];
     char registrationname[256];
     float registrationnumber;
 
@@ -198,7 +197,6 @@ void Game::newGame()
 
 	entername = 0;
 
-	memset(menustring, 0, sizeof(menustring));
 	memset(registrationname, 0, sizeof(registrationname));
 	registrationnumber = 0;
 
@@ -473,6 +471,7 @@ int Game::setKeySelected_thread(void* data) {
 	}
 	keyselect=-1;
 	waiting=false;
+    LoadMenu();
     return 0;
 }
 

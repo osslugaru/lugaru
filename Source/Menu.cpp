@@ -10,9 +10,8 @@ extern float multiplier;
 struct MenuItem {
     enum MenuItemType{NONE,LABEL,BUTTON,IMAGE,IMAGEBUTTON,MAPMARKER,MAPLINE,MAPLABEL} type;
     int id;
-    string label;
+    string text;
     int texture;
-    MBCallback cb;
     int x,y,w,h;
     float r,g,b;
     float effectfade;
@@ -20,14 +19,13 @@ struct MenuItem {
     float linestartsize;
     float lineendsize;
 
-    void init(MenuItemType _type, int _id, const string& _label, int _texture, MBCallback _cb,
+    void init(MenuItemType _type, int _id, const string& _text, int _texture,
             int _x, int _y, int _w, int _h, float _r, float _g, float _b,
             float _linestartsize=1, float _lineendsize=1){
         type=_type;
         id=_id;
-        label=_label;
+        text=_text;
         texture=_texture;
-        cb=_cb;
         x=_x; y=_y; w=_w; h=_h;
         r=_r; g=_g; b=_b;
         effectfade=0;
@@ -35,7 +33,7 @@ struct MenuItem {
         lineendsize=_lineendsize;
         if(type==MenuItem::BUTTON){
             if(w==-1)
-                w=label.length()*10;
+                w=text.length()*10;
             if(h==-1)
                 h=20;
         }
@@ -47,75 +45,56 @@ vector<MenuItem> items;
 
 
 
-void Menu::GUITick(){
-    for(vector<MenuItem>::iterator it=items.begin();it!=items.end();it++){
-		if(it->id==Game::selected){
-			it->effectfade+=multiplier*5;
-			if(it->effectfade>1)
-                it->effectfade=1;
-		}else{
-			it->effectfade-=multiplier*5;
-			if(it->effectfade<0)
-                it->effectfade=0;	
-		}        
-    }
-}
-
 void Menu::clearMenu(){
     items.clear();
 }
 
-void Menu::addLabel(int id,const string& label,int x,int y){
+void Menu::addLabel(int id,const string& text,int x,int y,float r,float g,float b){
     items.push_back(MenuItem());
-    items.back().init(MenuItem::LABEL,id,label,0,NULL,x,y,-1,-1,1,0,0);
+    items.back().init(MenuItem::LABEL,id,text,0,x,y,-1,-1,r,g,b);
 }
-void Menu::addButton(int id,const string& label,MBCallback cb,int x,int y,int w,int h,float r,float g,float b){
+void Menu::addButton(int id,const string& text,int x,int y,float r,float g,float b){
     items.push_back(MenuItem());
-    items.back().init(MenuItem::BUTTON,id,label,0,cb,x,y,w,h,r,g,b);
+    items.back().init(MenuItem::BUTTON,id,text,0,x,y,-1,-1,r,g,b);
 }
-void Menu::addImage(int id,int texture,int x,int y,int w,int h){
+void Menu::addImage(int id,int texture,int x,int y,int w,int h,float r,float g,float b){
     items.push_back(MenuItem());
-    items.back().init(MenuItem::IMAGE,id,"",texture,NULL,x,y,w,h,1,1,1);
+    items.back().init(MenuItem::IMAGE,id,"",texture,x,y,w,h,r,g,b);
 }
-void Menu::addImageButton(int id,int texture,MBCallback cb,int x,int y,int w,int h,float r,float g,float b){
+void Menu::addButtonImage(int id,int texture,int x,int y,int w,int h,float r,float g,float b){
     items.push_back(MenuItem());
-    items.back().init(MenuItem::IMAGEBUTTON,id,"",texture,cb,x,y,w,h,r,g,b);
+    items.back().init(MenuItem::IMAGEBUTTON,id,"",texture,x,y,w,h,r,g,b);
 }
 void Menu::addMapLine(int x, int y, int w, int h, float startsize, float endsize, float r,float g,float b){
     items.push_back(MenuItem());
-    items.back().init(MenuItem::MAPLINE,-1,"",0,NULL,x,y,w,h,r,g,b,startsize,endsize);
+    items.back().init(MenuItem::MAPLINE,-1,"",0,x,y,w,h,r,g,b,startsize,endsize);
 }
-void Menu::addMapMarker(int id,int texture,MBCallback cb,int x,int y,int w,int h,float r,float g,float b){
+void Menu::addMapMarker(int id,int texture,int x,int y,int w,int h,float r,float g,float b){
     items.push_back(MenuItem());
-    items.back().init(MenuItem::MAPMARKER,id,"",texture,cb,x,y,w,h,r,g,b);
+    items.back().init(MenuItem::MAPMARKER,id,"",texture,x,y,w,h,r,g,b);
+}
+void Menu::addMapLabel(int id,const string& text,int x,int y,float r,float g,float b){
+    items.push_back(MenuItem());
+    items.back().init(MenuItem::MAPLABEL,id,text,0,x,y,-1,-1,r,g,b);
 }
 
-void Menu::setMapItem(int id){
+void Menu::setText(int id,const string& text){
     for(vector<MenuItem>::iterator it=items.begin();it!=items.end();it++)
         if(it->id==id){
-            if(it->type==MenuItem::LABEL)
-                it->type=MenuItem::MAPLABEL;
+            it->text=text;
+            it->w=it->text.length()*10;
             break;
         }
 }
 
-void Menu::setButtonText(int id,const string& label){
+void Menu::setText(int id,const string& text,int x,int y,int w,int h){
     for(vector<MenuItem>::iterator it=items.begin();it!=items.end();it++)
         if(it->id==id){
-            it->label=label;
-            it->w=it->label.length()*10;
-            break;
-        }
-}
-
-void Menu::setButtonText(int id,const string& label,int x,int y,int w,int h){
-    for(vector<MenuItem>::iterator it=items.begin();it!=items.end();it++)
-        if(it->id==id){
-            it->label=label;
+            it->text=text;
             it->x=x;
             it->y=y;
             if(w==-1)
-                it->w=it->label.length()*10;
+                it->w=it->text.length()*10;
             if(h==-1)
                 it->h=20;
             break;
@@ -137,7 +116,22 @@ int Menu::getSelected(int mousex, int mousey){
     return -1;
 }
 
+void GUITick(){
+    for(vector<MenuItem>::iterator it=items.begin();it!=items.end();it++){
+		if(it->id==Game::selected){
+			it->effectfade+=multiplier*5;
+			if(it->effectfade>1)
+                it->effectfade=1;
+		}else{
+			it->effectfade-=multiplier*5;
+			if(it->effectfade<0)
+                it->effectfade=0;	
+		}        
+    }
+}
+
 void Menu::drawItems(){
+    GUITick();
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_ALPHA_TEST);
     glEnable(GL_BLEND);
@@ -191,20 +185,20 @@ void Menu::drawItems(){
         case MenuItem::BUTTON:
             glColor4f(it->r,it->g,it->b,1);
             glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-            Game::text->glPrint(it->x,it->y,it->label.c_str(),0,1,640,480);
+            Game::text->glPrint(it->x,it->y,it->text.c_str(),0,1,640,480);
             if(it->type!=MenuItem::LABEL){
                 //mouseover highlight
                 glBlendFunc(GL_SRC_ALPHA,GL_ONE);
                 for(int i=0;i<15;i++){
                     if(1-((float)i)/15-(1-it->effectfade)>0){
                         glColor4f(it->r,it->g,it->b,(1-((float)i)/10-(1-it->effectfade))*.25);
-                        Game::text->glPrint(it->x-((float)i),it->y,it->label.c_str(),0,1+((float)i)/70,640,480);
+                        Game::text->glPrint(it->x-((float)i),it->y,it->text.c_str(),0,1+((float)i)/70,640,480);
                     }
                 }
             }
             break;
         case MenuItem::MAPLABEL:
-            Game::text->glPrintOutlined(0.9,0,0,it->x,it->y,it->label.c_str(),0,0.6,640,480);
+            Game::text->glPrintOutlined(0.9,0,0,it->x,it->y,it->text.c_str(),0,0.6,640,480);
             break;
         case MenuItem::MAPLINE: {
             XYZ linestart;
