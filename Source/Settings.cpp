@@ -8,8 +8,8 @@ void DefaultSettings() {
 	detail=1;
 	ismotionblur=0;
 	usermousesensitivity=1;
-	kContextWidth=640;
-	kContextHeight=480;
+	newscreenwidth=kContextWidth=640;
+	newscreenheight=kContextHeight=480;
 	kBitsPerPixel = 32;
 	floatjump=0;
 	autoslomo=1;
