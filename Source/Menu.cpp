@@ -144,7 +144,7 @@ void Menu::drawItems(){
             glPushMatrix();
             if(it->type==MenuItem::MAPMARKER){
                 glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-                glTranslatef(2,-5,0); //from old code
+                glTranslatef(2.5,-4.5,0); //from old code
             }else{
                 glBlendFunc(GL_SRC_ALPHA,GL_ONE);
             }
@@ -202,12 +202,12 @@ void Menu::drawItems(){
             break;
         case MenuItem::MAPLINE: {
             XYZ linestart;
-            linestart.x=it->x-0.5;
-            linestart.y=it->y-0.5;
+            linestart.x=it->x;
+            linestart.y=it->y;
             linestart.z=0;
             XYZ lineend;
-            lineend.x=it->x+it->w-0.5;
-            lineend.y=it->y+it->h-0.5;
+            lineend.x=it->x+it->w;
+            lineend.y=it->y+it->h;
             lineend.z=0;
             XYZ offset=lineend-linestart;
             XYZ fac=offset;
