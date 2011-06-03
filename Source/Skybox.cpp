@@ -134,11 +134,11 @@ void	SkyBox::draw()
 
 SkyBox::~SkyBox()
 {
-	if (front) glDeleteTextures( 1, &front );
-	if (left) glDeleteTextures( 1, &left );
-	if (back) glDeleteTextures( 1, &back );
-	if (right) glDeleteTextures( 1, &right );
-	if (up) glDeleteTextures( 1, &up );
-	if (down) glDeleteTextures( 1, &down );
+	glDeleteTextures( 1, &front );
+	glDeleteTextures( 1, &left );
+	glDeleteTextures( 1, &back );
+	glDeleteTextures( 1, &right );
+	glDeleteTextures( 1, &up );
+	glDeleteTextures( 1, &down );
 };
 

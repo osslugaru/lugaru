@@ -1386,7 +1386,7 @@ Model::~Model()
 {
 	deallocate();
 
-	if(textureptr) glDeleteTextures( 1, &textureptr );
+	glDeleteTextures( 1, &textureptr );
 }
 
 void Model::deallocate()

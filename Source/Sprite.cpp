@@ -438,16 +438,16 @@ Sprite::Sprite()
 
 void Sprite::clearTextures()
 {
-	if (toothtexture) glDeleteTextures( 1, &toothtexture );
-	if (cloudtexture) glDeleteTextures( 1, &cloudtexture );
-	if (cloudimpacttexture) glDeleteTextures( 1, &cloudimpacttexture );
-	if (bloodtexture) glDeleteTextures( 1, &bloodtexture );
-	if (flametexture) glDeleteTextures( 1, &flametexture );
-	if (bloodflametexture) glDeleteTextures( 1, &bloodflametexture );
-	if (smoketexture) glDeleteTextures( 1, &smoketexture );
-	if (snowflaketexture) glDeleteTextures( 1, &snowflaketexture );
-	if (shinetexture) glDeleteTextures( 1, &shinetexture );
-	if (splintertexture) glDeleteTextures( 1, &splintertexture );
-	if (leaftexture) glDeleteTextures( 1, &leaftexture );
+	glDeleteTextures( 1, &toothtexture );
+	glDeleteTextures( 1, &cloudtexture );
+	glDeleteTextures( 1, &cloudimpacttexture );
+	glDeleteTextures( 1, &bloodtexture );
+	glDeleteTextures( 1, &flametexture );
+	glDeleteTextures( 1, &bloodflametexture );
+	glDeleteTextures( 1, &smoketexture );
+	glDeleteTextures( 1, &snowflaketexture );
+	glDeleteTextures( 1, &shinetexture );
+	glDeleteTextures( 1, &splintertexture );
+	glDeleteTextures( 1, &leaftexture );
 }
 

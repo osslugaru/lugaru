@@ -11,8 +11,7 @@ extern bool trilinear;
 
 Texture::~Texture()  {
 	free(array);
-	if(id)
-		glDeleteTextures(1,&id);
+    glDeleteTextures(1,&id);
 }
 
 void Texture::load()  {

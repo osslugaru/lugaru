@@ -193,6 +193,6 @@ Text::~Text()
 		glDeleteLists(base, 512);
 		base = 0;
 	}
-	if (FontTexture) glDeleteTextures( 1, &FontTexture );
+	glDeleteTextures( 1, &FontTexture );
 }
 

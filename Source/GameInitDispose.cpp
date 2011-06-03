@@ -142,17 +142,15 @@ void Game::deleteGame(){
         delete skybox;
     if(text)
         delete text;
-    for(int i=0;i<10;i++){
-        if(Mainmenuitems[i])glDeleteTextures( 1, &Mainmenuitems[i] );
-    }
+    glDeleteTextures( 10, &Mainmenuitems[0] );
     glDeleteTextures( 1, &cursortexture );
     glDeleteTextures( 1, &Maparrowtexture );
     glDeleteTextures( 1, &Mapboxtexture );
     glDeleteTextures( 1, &Mapcircletexture );
     glDeleteTextures( 1, &terraintexture );
     glDeleteTextures( 1, &terraintexture2 );
-    if(screentexture>0)glDeleteTextures( 1, &screentexture );
-    if(screentexture2>0)glDeleteTextures( 1, &screentexture2 );
+    glDeleteTextures( 1, &screentexture );
+    glDeleteTextures( 1, &screentexture2 );
     glDeleteTextures( 1, &hawktexture );
     glDeleteTextures( 1, &logotexture );
     glDeleteTextures( 1, &loadscreentexture );
@@ -754,10 +752,7 @@ void Game::LoadStuff()
 
 	for(i=0;i<maxplayers;i++)
 	{
-		if (glIsTexture(player[i].skeleton.drawmodel.textureptr))
-		{
-			glDeleteTextures(1, &player[i].skeleton.drawmodel.textureptr);
-		}
+        glDeleteTextures(1, &player[i].skeleton.drawmodel.textureptr);
 		player[i].skeleton.drawmodel.textureptr=0;;
 	}
 

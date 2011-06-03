@@ -1073,12 +1073,12 @@ Weapons::Weapons()
 
 Weapons::~Weapons()
 {
-	if (Weapon::stafftextureptr) glDeleteTextures( 1, &Weapon::stafftextureptr );
-	if (Weapon::knifetextureptr) glDeleteTextures( 1, &Weapon::knifetextureptr );
-	if (Weapon::lightbloodknifetextureptr) glDeleteTextures( 1, &Weapon::lightbloodknifetextureptr );
-	if (Weapon::bloodknifetextureptr) glDeleteTextures( 1, &Weapon::bloodknifetextureptr );
-	if (Weapon::swordtextureptr) glDeleteTextures( 1, &Weapon::swordtextureptr );
-	if (Weapon::lightbloodswordtextureptr) glDeleteTextures( 1, &Weapon::lightbloodswordtextureptr );
-	if (Weapon::bloodswordtextureptr) glDeleteTextures( 1, &Weapon::bloodswordtextureptr );
+	glDeleteTextures( 1, &Weapon::stafftextureptr );
+	glDeleteTextures( 1, &Weapon::knifetextureptr );
+	glDeleteTextures( 1, &Weapon::lightbloodknifetextureptr );
+	glDeleteTextures( 1, &Weapon::bloodknifetextureptr );
+	glDeleteTextures( 1, &Weapon::swordtextureptr );
+	glDeleteTextures( 1, &Weapon::lightbloodswordtextureptr );
+	glDeleteTextures( 1, &Weapon::bloodswordtextureptr );
 }
 
