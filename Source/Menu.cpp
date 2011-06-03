@@ -202,12 +202,12 @@ void Menu::drawItems(){
             break;
         case MenuItem::MAPLINE: {
             XYZ linestart;
-            linestart.x=it->x;
-            linestart.y=it->y;
+            linestart.x=it->x-0.5;
+            linestart.y=it->y-0.5;
             linestart.z=0;
             XYZ lineend;
-            lineend.x=it->x+it->w;
-            lineend.y=it->y+it->h;
+            lineend.x=it->x+it->w-0.5;
+            lineend.y=it->y+it->h-0.5;
             lineend.z=0;
             XYZ offset=lineend-linestart;
             XYZ fac=offset;
