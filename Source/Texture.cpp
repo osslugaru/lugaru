@@ -44,6 +44,7 @@ void Texture::load()  {
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (trilinear?GL_LINEAR_MIPMAP_LINEAR:GL_LINEAR_MIPMAP_NEAREST) );
 	else
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+	glTexParameteri( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE );
 	
 	skinsize=texture.sizeX;
 	
@@ -59,9 +60,9 @@ void Texture::load()  {
 		}
 		arraySize=tempnum;
 
-		gluBuild2DMipmaps( GL_TEXTURE_2D, type, texture.sizeX, texture.sizeY, GL_RGB, GL_UNSIGNED_BYTE, array );
+        glTexImage2D( GL_TEXTURE_2D, 0, type, texture.sizeX, texture.sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, array );
 	} else {
-		gluBuild2DMipmaps( GL_TEXTURE_2D, type, texture.sizeX, texture.sizeY, type, GL_UNSIGNED_BYTE, texture.data );
+        glTexImage2D( GL_TEXTURE_2D, 0, type, texture.sizeX, texture.sizeY, 0, type, GL_UNSIGNED_BYTE, texture.data );
 	}
 }
 
