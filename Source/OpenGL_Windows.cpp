@@ -237,21 +237,25 @@ void initGL(){
 }
 
 static void toggleFullscreen(){
-	SDL_WM_ToggleFullScreen(SDL_GetVideoSurface());
-    //~ SDL_Surface* screen=SDL_GetVideoSurface();
-    //~ Uint32 flags=screen->flags;
-    //~ screen=SDL_SetVideoMode(0,0,0,flags^SDL_FULLSCREEN);
-    //~ if(!screen)
-        //~ screen=SDL_SetVideoMode(0,0,0,flags);
-    //~ if(!screen)
-        //~ exit(1);
-    //~ //reload opengl state
-    //~ initGL();
-    //~ for(std::vector<TextureInfo>::iterator it=Game::textures.begin(); it!=Game::textures.end(); it++) {
-        //~ it->load();
-    //~ }
-    //~ pgame->text.BuildFont();
-    //~ pgame->LoadScreenTexture();
+	if(!SDL_WM_ToggleFullScreen(SDL_GetVideoSurface())){
+        SDL_Surface* screen=SDL_GetVideoSurface();
+        Uint32 flags=screen->flags;
+        screen=SDL_SetVideoMode(0,0,0,flags^SDL_FULLSCREEN);
+        if(!screen)
+            screen=SDL_SetVideoMode(0,0,0,flags);
+        if(!screen)
+            exit(1);
+        //reload opengl state
+        initGL();
+        Texture::reloadAll();
+        if(text)
+            text->BuildFont();
+        if(firstload){
+            screentexture=0;
+            LoadScreenTexture();
+        }
+        screentexture2=0;
+    }
 }
 
 static void sdlEventProc(const SDL_Event &e)
