@@ -759,10 +759,6 @@ Objects::Objects()
 	center = 0;
 	radius = 0;
 	numobjects = 0;
-	boxtextureptr = 0;
-	treetextureptr = 0;
-	bushtextureptr = 0;
-	rocktextureptr = 0;
 
 	memset(position, 0, sizeof(position));
 	memset(type, 0, sizeof(type));
@@ -787,9 +783,9 @@ Objects::Objects()
 
 Objects::~Objects()
 {
-	glDeleteTextures( 1, &boxtextureptr );
-	glDeleteTextures( 1, &treetextureptr );
-	glDeleteTextures( 1, &bushtextureptr );
-	glDeleteTextures( 1, &rocktextureptr );
+    boxtextureptr.destroy();
+    treetextureptr.destroy();
+    bushtextureptr.destroy();
+    rocktextureptr.destroy();
 };
 

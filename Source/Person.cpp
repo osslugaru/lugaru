@@ -475,7 +475,7 @@ void Person::DoBloodBig(float howmuch,int which){
 									}
 								}
 							}
-							glBindTexture(GL_TEXTURE_2D,skeleton.drawmodel.textureptr);
+							skeleton.drawmodel.textureptr.bind();
 							DoMipmaps();
 
 							bleedxint=0;
@@ -703,7 +703,7 @@ bool Person::DoBloodBigWhere(float howmuch,int which, XYZ where){
 									}
 								}
 							}
-							glBindTexture(GL_TEXTURE_2D,skeleton.drawmodel.textureptr);
+							skeleton.drawmodel.textureptr.bind();
 							DoMipmaps();
 
 							bleedy=(1+coordsy)*512;
@@ -3858,7 +3858,7 @@ void	Person::DoStuff(){
 	if(bleeding>0){
 		bleeding-=multiplier*.3;
 		if(bloodtoggle==2){
-			glBindTexture(GL_TEXTURE_2D,skeleton.drawmodel.textureptr);
+			skeleton.drawmodel.textureptr.bind();
 			if(bleeding<=0&&(detail!=2||osx))DoMipmaps();
 		}
 	}
@@ -3984,7 +3984,7 @@ void	Person::DoStuff(){
 			}
 		}
 		if(!osx&&detail>1){
-			glBindTexture(GL_TEXTURE_2D,skeleton.drawmodel.textureptr);
+			skeleton.drawmodel.textureptr.bind();
 			DoMipmaps();
 		}
 

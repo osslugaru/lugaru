@@ -11,7 +11,7 @@ struct MenuItem {
     enum MenuItemType{NONE,LABEL,BUTTON,IMAGE,IMAGEBUTTON,MAPMARKER,MAPLINE,MAPLABEL} type;
     int id;
     string text;
-    int texture;
+    Texture texture;
     int x,y,w,h;
     float r,g,b;
     float effectfade;
@@ -19,7 +19,7 @@ struct MenuItem {
     float linestartsize;
     float lineendsize;
 
-    void init(MenuItemType _type, int _id, const string& _text, int _texture,
+    void init(MenuItemType _type, int _id, const string& _text, Texture _texture,
             int _x, int _y, int _w, int _h, float _r, float _g, float _b,
             float _linestartsize=1, float _lineendsize=1){
         type=_type;
@@ -51,31 +51,31 @@ void Menu::clearMenu(){
 
 void Menu::addLabel(int id,const string& text,int x,int y,float r,float g,float b){
     items.push_back(MenuItem());
-    items.back().init(MenuItem::LABEL,id,text,0,x,y,-1,-1,r,g,b);
+    items.back().init(MenuItem::LABEL,id,text,Texture(),x,y,-1,-1,r,g,b);
 }
 void Menu::addButton(int id,const string& text,int x,int y,float r,float g,float b){
     items.push_back(MenuItem());
-    items.back().init(MenuItem::BUTTON,id,text,0,x,y,-1,-1,r,g,b);
+    items.back().init(MenuItem::BUTTON,id,text,Texture(),x,y,-1,-1,r,g,b);
 }
-void Menu::addImage(int id,int texture,int x,int y,int w,int h,float r,float g,float b){
+void Menu::addImage(int id,Texture texture,int x,int y,int w,int h,float r,float g,float b){
     items.push_back(MenuItem());
     items.back().init(MenuItem::IMAGE,id,"",texture,x,y,w,h,r,g,b);
 }
-void Menu::addButtonImage(int id,int texture,int x,int y,int w,int h,float r,float g,float b){
+void Menu::addButtonImage(int id,Texture texture,int x,int y,int w,int h,float r,float g,float b){
     items.push_back(MenuItem());
     items.back().init(MenuItem::IMAGEBUTTON,id,"",texture,x,y,w,h,r,g,b);
 }
 void Menu::addMapLine(int x, int y, int w, int h, float startsize, float endsize, float r,float g,float b){
     items.push_back(MenuItem());
-    items.back().init(MenuItem::MAPLINE,-1,"",0,x,y,w,h,r,g,b,startsize,endsize);
+    items.back().init(MenuItem::MAPLINE,-1,"",Texture(),x,y,w,h,r,g,b,startsize,endsize);
 }
-void Menu::addMapMarker(int id,int texture,int x,int y,int w,int h,float r,float g,float b){
+void Menu::addMapMarker(int id,Texture texture,int x,int y,int w,int h,float r,float g,float b){
     items.push_back(MenuItem());
     items.back().init(MenuItem::MAPMARKER,id,"",texture,x,y,w,h,r,g,b);
 }
 void Menu::addMapLabel(int id,const string& text,int x,int y,float r,float g,float b){
     items.push_back(MenuItem());
-    items.back().init(MenuItem::MAPLABEL,id,text,0,x,y,-1,-1,r,g,b);
+    items.back().init(MenuItem::MAPLABEL,id,text,Texture(),x,y,-1,-1,r,g,b);
 }
 
 void Menu::setText(int id,const string& text){
@@ -148,7 +148,7 @@ void Menu::drawItems(){
             }else{
                 glBlendFunc(GL_SRC_ALPHA,GL_ONE);
             }
-            glBindTexture(GL_TEXTURE_2D,it->texture);
+            it->texture.bind();
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             glBegin(GL_QUADS);

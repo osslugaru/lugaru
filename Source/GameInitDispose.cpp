@@ -138,35 +138,27 @@ void Game::newGame(){
 }
 
 void Game::deleteGame(){
-    if(skybox)
-        delete skybox;
-    if(text)
-        delete text;
-    glDeleteTextures( 10, &Mainmenuitems[0] );
-    glDeleteTextures( 1, &cursortexture );
-    glDeleteTextures( 1, &Maparrowtexture );
-    glDeleteTextures( 1, &Mapboxtexture );
-    glDeleteTextures( 1, &Mapcircletexture );
-    glDeleteTextures( 1, &terraintexture );
-    glDeleteTextures( 1, &terraintexture2 );
-    glDeleteTextures( 1, &screentexture );
-    glDeleteTextures( 1, &screentexture2 );
-    glDeleteTextures( 1, &hawktexture );
-    glDeleteTextures( 1, &logotexture );
-    glDeleteTextures( 1, &loadscreentexture );
+    if(skybox) delete skybox;
+    if(text) delete text;
+    terraintexture.destroy();
+    terraintexture2.destroy();
+    cursortexture.destroy();
+    Maparrowtexture.destroy();
+    Mapboxtexture.destroy();
+    Mapcircletexture.destroy();
+    hawktexture.destroy();
+    loadscreentexture.destroy();
+
+    for(int i=0;i<10;i++)
+        Mainmenuitems[i].destroy();
+
+    glDeleteTextures(1,&screentexture);
+    glDeleteTextures(1,&screentexture2);
 
     Dispose();
 }
 
 
-
-void Game::LoadTexture(const string fileName, GLuint *textureid,int mipmap, bool hasalpha) {
-	*textureid = Texture::Load(fileName,mipmap,hasalpha);
-}
-
-void Game::LoadTextureSave(const string fileName, GLuint *textureid,int mipmap,GLubyte *array, int *skinsize) {
-	*textureid = Texture::Load(fileName,mipmap,false,array,skinsize);
-}
 
 void LoadSave(const char *fileName, GLuint *textureid,bool mipmap,GLubyte *array, int *skinsize)
 {
@@ -263,7 +255,7 @@ void Game::LoadingScreen()
 		//Background
 
 		glEnable(GL_TEXTURE_2D);
-		glBindTexture( GL_TEXTURE_2D, loadscreentexture);
+        loadscreentexture.bind();
 		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
 		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 		glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
@@ -318,7 +310,7 @@ void Game::LoadingScreen()
 		glDepthMask(1);
 
 		glEnable(GL_TEXTURE_2D);
-		glBindTexture( GL_TEXTURE_2D, loadscreentexture);
+        loadscreentexture.bind();
 		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
 		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 		glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
@@ -360,7 +352,7 @@ void Game::LoadingScreen()
 		glDepthMask(1);
 
 		glEnable(GL_TEXTURE_2D);
-		glBindTexture( GL_TEXTURE_2D, loadscreentexture);
+        loadscreentexture.bind();
 		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
 		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 		glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
@@ -681,21 +673,21 @@ void Game::InitGame()
 	if(musictoggle)
 	  emit_stream_np(stream_menutheme);
 
-	LoadTexture(":Data:Textures:Cursor.png",&cursortexture,0,1);
+	cursortexture.load(":Data:Textures:Cursor.png",0,1);
 
-	LoadTexture(":Data:Textures:MapCircle.png",&Mapcircletexture,0,1);
-	LoadTexture(":Data:Textures:MapBox.png",&Mapboxtexture,0,1);
-	LoadTexture(":Data:Textures:MapArrow.png",&Maparrowtexture,0,1);
+	Mapcircletexture.load(":Data:Textures:MapCircle.png",0,1);
+	Mapboxtexture.load(":Data:Textures:MapBox.png",0,1);
+	Maparrowtexture.load(":Data:Textures:MapArrow.png",0,1);
 
 	temptexdetail=texdetail;
 	if(texdetail>2)texdetail=2;
-	LoadTexture(":Data:Textures:Lugaru.png",&Mainmenuitems[0],0,0);
-	LoadTexture(":Data:Textures:Newgame.png",&Mainmenuitems[1],0,0);
-	LoadTexture(":Data:Textures:Options.png",&Mainmenuitems[2],0,0);
-	LoadTexture(":Data:Textures:Quit.png",&Mainmenuitems[3],0,0);
-	LoadTexture(":Data:Textures:Eyelid.png",&Mainmenuitems[4],0,1);
-	LoadTexture(":Data:Textures:Resume.png",&Mainmenuitems[5],0,0);
-	LoadTexture(":Data:Textures:Endgame.png",&Mainmenuitems[6],0,0);
+	Mainmenuitems[0].load(":Data:Textures:Lugaru.png",0,0);
+	Mainmenuitems[1].load(":Data:Textures:Newgame.png",0,0);
+	Mainmenuitems[2].load(":Data:Textures:Options.png",0,0);
+	Mainmenuitems[3].load(":Data:Textures:Quit.png",0,0);
+	Mainmenuitems[4].load(":Data:Textures:Eyelid.png",0,1);
+	Mainmenuitems[5].load(":Data:Textures:Resume.png",0,0);
+	Mainmenuitems[6].load(":Data:Textures:Endgame.png",0,0);
 	
 	//LoadTexture(":Data:Textures:Eye.jpg",&Mainmenuitems[5],0,1);
 	//~ LoadTexture(":Data:Textures:World.png",&Mainmenuitems[7],0,0); // LoadCampaign will take care of that
@@ -718,7 +710,7 @@ void Game::InitGame()
 }
 
 
-void LoadScreenTexture() {
+void Game::LoadScreenTexture() {
     glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 
     if(!Game::screentexture)
@@ -744,20 +736,17 @@ void Game::LoadStuff()
 
 	LOGFUNC;
 
-	visibleloading=1;
-
 	loadtime=0;
 
 	stillloading=1;
 
 	for(i=0;i<maxplayers;i++)
-	{
-        glDeleteTextures(1, &player[i].skeleton.drawmodel.textureptr);
-		player[i].skeleton.drawmodel.textureptr=0;;
-	}
+		player[i].skeleton.drawmodel.textureptr.destroy();
 
 	i=abs(Random()%4);
-	LoadTexture(":Data:Textures:fire.jpg",&loadscreentexture,1,0);
+	visibleloading=0; //don't use loadscreentexture yet
+	loadscreentexture.load(":Data:Textures:fire.jpg",1,0);
+	visibleloading=1;
 
 	temptexdetail=texdetail;
 	texdetail=1;
@@ -787,13 +776,13 @@ void Game::LoadStuff()
 
 	LOG("Loading weapon data...");
 
-	LoadTexture(":Data:Textures:knife.png",&Weapon::knifetextureptr,0,1);
-	LoadTexture(":Data:Textures:bloodknife.png",&Weapon::bloodknifetextureptr,0,1);
-	LoadTexture(":Data:Textures:lightbloodknife.png",&Weapon::lightbloodknifetextureptr,0,1);
-	LoadTexture(":Data:Textures:sword.jpg",&Weapon::swordtextureptr,1,0);
-	LoadTexture(":Data:Textures:Swordblood.jpg",&Weapon::bloodswordtextureptr,1,0);
-	LoadTexture(":Data:Textures:Swordbloodlight.jpg",&Weapon::lightbloodswordtextureptr,1,0);
-	LoadTexture(":Data:Textures:Staff.jpg",&Weapon::stafftextureptr,1,0);
+	Weapon::knifetextureptr.load(":Data:Textures:knife.png",0,1);
+	Weapon::bloodknifetextureptr.load(":Data:Textures:bloodknife.png",0,1);
+	Weapon::lightbloodknifetextureptr.load(":Data:Textures:lightbloodknife.png",0,1);
+	Weapon::swordtextureptr.load(":Data:Textures:sword.jpg",1,0);
+	Weapon::bloodswordtextureptr.load(":Data:Textures:Swordblood.jpg",1,0);
+	Weapon::lightbloodswordtextureptr.load(":Data:Textures:Swordbloodlight.jpg",1,0);
+	Weapon::stafftextureptr.load(":Data:Textures:Staff.jpg",1,0);
 
 	Weapon::throwingknifemodel.load((char *)":Data:Models:throwingknife.solid",1);
 	Weapon::throwingknifemodel.Scale(.001,.001,.001);
@@ -824,35 +813,28 @@ void Game::LoadStuff()
 	Weapon::staffmodel.CalculateNormals(1);
 	//Weapon::staffmodel.ScaleNormals(-1,-1,-1);
 
-	LoadTexture(":Data:Textures:shadow.png",&terrain.shadowtexture,0,1);
-
-	LoadTexture(":Data:Textures:blood.png",&terrain.bloodtexture,0,1);
-
-	LoadTexture(":Data:Textures:break.png",&terrain.breaktexture,0,1);
-
-	LoadTexture(":Data:Textures:blood.png",&terrain.bloodtexture2,0,1);
+	terrain.shadowtexture.load(":Data:Textures:shadow.png",0,1);
+	terrain.bloodtexture.load(":Data:Textures:blood.png",0,1);
+	terrain.breaktexture.load(":Data:Textures:break.png",0,1);
+	terrain.bloodtexture2.load(":Data:Textures:blood.png",0,1);
 
 
-	LoadTexture(":Data:Textures:footprint.png",&terrain.footprinttexture,0,1);
-
-	LoadTexture(":Data:Textures:bodyprint.png",&terrain.bodyprinttexture,0,1);
-
-	LoadTexture(":Data:Textures:hawk.png",&hawktexture,0,1);
-
-	LoadTexture(":Data:Textures:logo.png",&logotexture,0,1);
+	terrain.footprinttexture.load(":Data:Textures:footprint.png",0,1);
+	terrain.bodyprinttexture.load(":Data:Textures:bodyprint.png",0,1);
+	hawktexture.load(":Data:Textures:hawk.png",0,1);
 
 
-	LoadTexture(":Data:Textures:cloud.png",&Sprite::cloudtexture,1,1);
-	LoadTexture(":Data:Textures:cloudimpact.png",&Sprite::cloudimpacttexture,1,1);
-	LoadTexture(":Data:Textures:bloodparticle.png",&Sprite::bloodtexture,1,1);
-	LoadTexture(":Data:Textures:snowflake.png",&Sprite::snowflaketexture,1,1);
-	LoadTexture(":Data:Textures:flame.png",&Sprite::flametexture,1,1);
-	LoadTexture(":Data:Textures:bloodflame.png",&Sprite::bloodflametexture,1,1);
-	LoadTexture(":Data:Textures:smoke.png",&Sprite::smoketexture,1,1);
-	LoadTexture(":Data:Textures:shine.png",&Sprite::shinetexture,1,0);
-	LoadTexture(":Data:Textures:splinter.png",&Sprite::splintertexture,1,1);
-	LoadTexture(":Data:Textures:leaf.png",&Sprite::leaftexture,1,1);
-	LoadTexture(":Data:Textures:tooth.png",&Sprite::toothtexture,1,1);
+	Sprite::cloudtexture.load(":Data:Textures:cloud.png",1,1);
+	Sprite::cloudimpacttexture.load(":Data:Textures:cloudimpact.png",1,1);
+	Sprite::bloodtexture.load(":Data:Textures:bloodparticle.png",1,1);
+	Sprite::snowflaketexture.load(":Data:Textures:snowflake.png",1,1);
+	Sprite::flametexture.load(":Data:Textures:flame.png",1,1);
+	Sprite::bloodflametexture.load(":Data:Textures:bloodflame.png",1,1);
+	Sprite::smoketexture.load(":Data:Textures:smoke.png",1,1);
+	Sprite::shinetexture.load(":Data:Textures:shine.png",1,0);
+	Sprite::splintertexture.load(":Data:Textures:splinter.png",1,1);
+	Sprite::leaftexture.load(":Data:Textures:leaf.png",1,1);
+	Sprite::toothtexture.load(":Data:Textures:tooth.png",1,1);
 
 	yaw=0;
 	pitch=0;

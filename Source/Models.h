@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Terrain.h"
 #include "binio.h"
 #include "Quaternions.h"
+#include "Texture.h"
 
 //
 // Textures List
@@ -85,8 +86,8 @@ public:
 	TexturedTriangle Triangles[max_textured_triangle];
 	GLfloat vArray[max_textured_triangle*24];*/
 
-	GLuint 				textureptr;
-	ModelTexture		Texture;
+	Texture textureptr;
+	ModelTexture modelTexture;
 	int numpossible;
 	bool color;
 
@@ -116,7 +117,7 @@ public:
 	void DeleteDecal(int which);
 	void MakeDecal(int atype, XYZ *where, float *size, float *opacity, float *rotation);
 	void MakeDecal(int atype, XYZ where, float size, float opacity, float rotation);
-	void drawdecals(GLuint shadowtexture,GLuint bloodtexture,GLuint bloodtexture2,GLuint breaktexture);
+	void drawdecals(Texture shadowtexture,Texture bloodtexture,Texture bloodtexture2,Texture breaktexture);
 	int SphereCheck(XYZ *p1,float radius, XYZ *p, XYZ *move, float *rotate);
 	int SphereCheckPossible(XYZ *p1,float radius, XYZ *move, float *rotate);
 	int LineCheck(XYZ *p1,XYZ *p2, XYZ *p, XYZ *move, float *rotate);
@@ -139,6 +140,7 @@ public:
 	void CalculateNormals(bool facenormalise);
 	void draw();
 	void drawdifftex(GLuint texture);
+	void drawdifftex(Texture texture);
 	void drawimmediate();
 	void drawdiffteximmediate(GLuint texture);
 	void Rotate(float xang,float yang,float zang);

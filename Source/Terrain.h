@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "TGALoader.h"
 #include "Quaternions.h"
 #include "Quaternions.h"
+#include "Texture.h"
 
 #define max_terrain_size			256		
 #define curr_terrain_size			size
@@ -58,13 +59,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Terrain{
 public:
-	GLuint bloodtexture;
-	GLuint bloodtexture2;
-	GLuint shadowtexture;
-	GLuint footprinttexture;
-	GLuint bodyprinttexture;
-	GLuint breaktexture;
-	GLuint terraintexture;
+	Texture bloodtexture;
+	Texture bloodtexture2;
+	Texture shadowtexture;
+	Texture footprinttexture;
+	Texture bodyprinttexture;
+	Texture breaktexture;
+	Texture terraintexture;
 	short	size;
 
 	int patchobjectnum[subdivision][subdivision];

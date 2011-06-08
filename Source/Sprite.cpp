@@ -38,17 +38,17 @@ extern int bloodtoggle;
 extern XYZ windvector;
 
 // init statics
-GLuint Sprite::cloudtexture = 0;
-GLuint Sprite::cloudimpacttexture = 0;
-GLuint Sprite::bloodtexture = 0;
-GLuint Sprite::flametexture = 0;
-GLuint Sprite::bloodflametexture = 0;
-GLuint Sprite::smoketexture = 0;
-GLuint Sprite::snowflaketexture = 0;
-GLuint Sprite::shinetexture = 0;
-GLuint Sprite::splintertexture = 0;
-GLuint Sprite::leaftexture = 0;
-GLuint Sprite::toothtexture = 0;
+Texture Sprite::cloudtexture;
+Texture Sprite::cloudimpacttexture;
+Texture Sprite::bloodtexture;
+Texture Sprite::flametexture;
+Texture Sprite::bloodflametexture;
+Texture Sprite::smoketexture;
+Texture Sprite::snowflaketexture;
+Texture Sprite::shinetexture;
+Texture Sprite::splintertexture;
+Texture Sprite::leaftexture;
+Texture Sprite::toothtexture;
 
 float Sprite::checkdelay = 0;
 
@@ -101,7 +101,7 @@ void Sprite::Draw()
 		if(lasttype!=sprites[i]->type) {
 			switch(sprites[i]->type) {
 				case cloudsprite:
-					glBindTexture( GL_TEXTURE_2D, cloudtexture);
+					cloudtexture.bind();
 					if(!blend){
 						blend=1;
 						glAlphaFunc(GL_GREATER, 0.0001);
@@ -109,7 +109,7 @@ void Sprite::Draw()
 					}
 				break;
 				case cloudimpactsprite:
-					glBindTexture( GL_TEXTURE_2D, cloudimpacttexture);
+					cloudimpacttexture.bind();
 					if(!blend){
 						blend=1;
 						glAlphaFunc(GL_GREATER, 0.0001);
@@ -117,7 +117,7 @@ void Sprite::Draw()
 					}
 				break;
 				case breathsprite:
-					glBindTexture( GL_TEXTURE_2D, cloudimpacttexture);
+					cloudimpacttexture.bind();
 					if(!blend){
 						blend=1;
 						glAlphaFunc(GL_GREATER, 0.0001);
@@ -125,7 +125,7 @@ void Sprite::Draw()
 					}
 				break;
 				case smoketype:
-					glBindTexture( GL_TEXTURE_2D, smoketexture);
+					smoketexture.bind();
 					if(!blend){
 						blend=1;
 						glAlphaFunc(GL_GREATER, 0.0001);
@@ -133,7 +133,7 @@ void Sprite::Draw()
 					}
 				break;
 				case bloodsprite:
-					glBindTexture( GL_TEXTURE_2D, bloodtexture);
+					bloodtexture.bind();
 					if(!blend){
 						blend=1;
 						glAlphaFunc(GL_GREATER, 0.0001);
@@ -142,10 +142,10 @@ void Sprite::Draw()
 				break;
 				case splintersprite :
 					if(lastspecial!=sprites[i]->special) {
-						if(sprites[i]->special==0)glBindTexture( GL_TEXTURE_2D, splintertexture);
-						if(sprites[i]->special==1)glBindTexture( GL_TEXTURE_2D, leaftexture);
-						if(sprites[i]->special==2)glBindTexture( GL_TEXTURE_2D, snowflaketexture);
-						if(sprites[i]->special==3)glBindTexture( GL_TEXTURE_2D, toothtexture);
+						if(sprites[i]->special==0)splintertexture.bind();
+						if(sprites[i]->special==1)leaftexture.bind();
+						if(sprites[i]->special==2)snowflaketexture.bind();
+						if(sprites[i]->special==3)toothtexture.bind();
 						if(!blend){
 							blend=1;
 							glAlphaFunc(GL_GREATER, 0.0001);
@@ -154,7 +154,7 @@ void Sprite::Draw()
 					}
 				break;
 				case snowsprite:
-					glBindTexture( GL_TEXTURE_2D, snowflaketexture);
+					snowflaketexture.bind();
 					if(!blend){
 						blend=1;
 						glAlphaFunc(GL_GREATER, 0.0001);
@@ -162,7 +162,7 @@ void Sprite::Draw()
 					}
 				break;
 				case weaponshinesprite:
-					glBindTexture( GL_TEXTURE_2D, shinetexture);
+					shinetexture.bind();
 					if(blend){
 						blend=0;
 						glAlphaFunc(GL_GREATER, 0.001);
@@ -171,7 +171,7 @@ void Sprite::Draw()
 				break;
 				case flamesprite:
 				case weaponflamesprite:
-					glBindTexture( GL_TEXTURE_2D, flametexture);
+					flametexture.bind();
 					if(blend||lasttype==bloodflamesprite){
 						blend=0;
 						glAlphaFunc(GL_GREATER, 0.3);
@@ -179,7 +179,7 @@ void Sprite::Draw()
 					}
 				break;
 				case bloodflamesprite:
-					glBindTexture( GL_TEXTURE_2D, bloodflametexture);
+					bloodflametexture.bind();
 					if(blend){
 						blend=0;
 						glAlphaFunc(GL_GREATER, 0.3);
@@ -438,16 +438,16 @@ Sprite::Sprite()
 
 void Sprite::clearTextures()
 {
-	glDeleteTextures( 1, &toothtexture );
-	glDeleteTextures( 1, &cloudtexture );
-	glDeleteTextures( 1, &cloudimpacttexture );
-	glDeleteTextures( 1, &bloodtexture );
-	glDeleteTextures( 1, &flametexture );
-	glDeleteTextures( 1, &bloodflametexture );
-	glDeleteTextures( 1, &smoketexture );
-	glDeleteTextures( 1, &snowflaketexture );
-	glDeleteTextures( 1, &shinetexture );
-	glDeleteTextures( 1, &splintertexture );
-	glDeleteTextures( 1, &leaftexture );
+	toothtexture.destroy();
+	cloudtexture.destroy();
+	cloudimpacttexture.destroy();
+	bloodtexture.destroy();
+	flametexture.destroy();
+	bloodflametexture.destroy();
+	smoketexture.destroy();
+	snowflaketexture.destroy();
+	shinetexture.destroy();
+	splintertexture.destroy();
+	leaftexture.destroy();
 }
 

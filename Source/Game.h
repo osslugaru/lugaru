@@ -58,22 +58,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Stereo.h"
 #include "Account.h"
 #include "Sounds.h"
+#include "Texture.h"
 
 #define NB_CAMPAIGN_MENU_ITEM 7
 
 namespace Game {
-    extern GLuint terraintexture;
-    extern GLuint terraintexture2;
-    extern GLuint terraintexture3;
+    extern Texture terraintexture;
+    extern Texture terraintexture2;
+    extern Texture loadscreentexture;
+    extern Texture Maparrowtexture;
+    extern Texture Mapboxtexture;
+    extern Texture Mapcircletexture;
+    extern Texture cursortexture;
     extern GLuint screentexture;
     extern GLuint screentexture2;
-    extern GLuint logotexture;
-    extern GLuint loadscreentexture;
-    extern GLuint Maparrowtexture;
-    extern GLuint Mapboxtexture;
-    extern GLuint Mapcircletexture;
-    extern GLuint cursortexture;
-    extern GLuint Mainmenuitems[10];
+    extern Texture Mainmenuitems[10];
 
     extern int selected;
     extern int keyselect;
@@ -97,7 +96,7 @@ namespace Game {
     extern Model hawk;
     extern XYZ hawkcoords;
     extern XYZ realhawkcoords;
-    extern GLuint hawktexture;
+    extern Texture hawktexture;
     extern float hawkyaw;
     extern float hawkcalldelay;
 
@@ -161,10 +160,9 @@ namespace Game {
     void newGame();
     void deleteGame();
 
-    void LoadTexture(const string fileName, GLuint *textureid,int mipmap, bool hasalpha);
-    void LoadTextureSave(const string fileName, GLuint *textureid,int mipmap,GLubyte *array, int *skinsize);
     void InitGame();
     void LoadStuff();
+    void LoadScreenTexture();
     void LoadingScreen();
     int DrawGLScene(StereoSide side);
     void LoadMenu();

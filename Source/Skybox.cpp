@@ -34,12 +34,12 @@ void
 SkyBox::load (const char *ffront, const char *fleft, const char *fback,
 	      const char *fright, const char *fup,   const char *fdown)
 {
-	Game::LoadTexture(ffront, &front, true, false);
-	Game::LoadTexture(fleft,  &left,  true, false);
-	Game::LoadTexture(fback,  &back,  true, false);
-	Game::LoadTexture(fright, &right, true, false);
-	Game::LoadTexture(fup,    &up,    true, false);
-	Game::LoadTexture(fdown,  &down,  true, false);
+	front.load(ffront, true, false);
+	left.load(fleft, true, false);
+	back.load(fback, true, false);
+	right.load(fright, true, false);
+	up.load(fup, true, false);
+	down.load(fdown, true, false);
 }
 
 void	SkyBox::draw()
@@ -66,7 +66,7 @@ void	SkyBox::draw()
 	glDisable(GL_LIGHTING);
 	if(skyboxtexture)glEnable(GL_TEXTURE_2D);
 	glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-	glBindTexture(GL_TEXTURE_2D, front); 
+	front.bind(); 
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 	glBegin(GL_QUADS);
@@ -76,7 +76,7 @@ void	SkyBox::draw()
 	glTexCoord2f(1, 1); glVertex3f( size,  size,  size);
 	glTexCoord2f(0, 1); glVertex3f(-size,  size,  size);
 	glEnd();
-	glBindTexture(GL_TEXTURE_2D, back);
+	back.bind();
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 	glBegin(GL_QUADS);
@@ -86,7 +86,7 @@ void	SkyBox::draw()
 	glTexCoord2f(0, 1); glVertex3f( size,  size, -size);
 	glTexCoord2f(0, 0); glVertex3f( size, -size, -size);
 	glEnd();
-	glBindTexture(GL_TEXTURE_2D, up);
+	up.bind();
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 	glBegin(GL_QUADS);
@@ -96,7 +96,7 @@ void	SkyBox::draw()
 	glTexCoord2f(1, 0); glVertex3f( size,  size,  size);
 	glTexCoord2f(1, 1); glVertex3f( size,  size, -size);
 	glEnd();
-	glBindTexture(GL_TEXTURE_2D, down);
+	down.bind();
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 	glBegin(GL_QUADS);
@@ -107,7 +107,7 @@ void	SkyBox::draw()
 	glTexCoord2f(1, 1); glVertex3f( size, -size,  size);
 	glTexCoord2f(0, 1); glVertex3f(-size, -size,  size);
 	glEnd();
-	glBindTexture(GL_TEXTURE_2D, right);
+	right.bind();
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 	glBegin(GL_QUADS);
@@ -117,7 +117,7 @@ void	SkyBox::draw()
 	glTexCoord2f(0, 1); glVertex3f( size,  size,  size);
 	glTexCoord2f(0, 0); glVertex3f( size, -size,  size);
 	glEnd();
-	glBindTexture(GL_TEXTURE_2D, left);
+	left.bind();
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 	glBegin(GL_QUADS);
@@ -134,11 +134,11 @@ void	SkyBox::draw()
 
 SkyBox::~SkyBox()
 {
-	glDeleteTextures( 1, &front );
-	glDeleteTextures( 1, &left );
-	glDeleteTextures( 1, &back );
-	glDeleteTextures( 1, &right );
-	glDeleteTextures( 1, &up );
-	glDeleteTextures( 1, &down );
+    front.destroy();
+    left.destroy();
+    back.destroy();
+    right.destroy();
+    up.destroy();
+    down.destroy();
 };
 

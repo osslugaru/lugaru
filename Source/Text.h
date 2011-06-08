@@ -29,10 +29,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Quaternions.h"
 #include "gamegl.h"
 #include "TGALoader.h"
+#include "Texture.h"
 
 class Text{
 public:
-	GLuint FontTexture;
+	Texture FontTexture;
 	GLuint base;
 
 	void LoadFontTexture(const char *fileName);

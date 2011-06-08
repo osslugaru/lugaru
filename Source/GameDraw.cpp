@@ -404,9 +404,9 @@ int Game::DrawGLScene(StereoSide side)
 		glDisable(GL_BLEND);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); 
-		glBindTexture( GL_TEXTURE_2D, terraintexture);
+		terraintexture.bind();
 		terrain.draw(0);
-		glBindTexture( GL_TEXTURE_2D, terraintexture2);
+		terraintexture2.bind();
 		terrain.draw(1);
 		//glBindTexture( GL_TEXTURE_2D, terraintexture3);
 		//glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -1502,7 +1502,7 @@ int Game::DrawGLScene(StereoSide side)
 				if(objects.type[i]==treetrunktype){
 					distcheck=findDistancefast(&player[0].coords,&objects.position[i]);
 					if(distcheck<mapviewdist){
-						glBindTexture( GL_TEXTURE_2D, Mapcircletexture);
+                        Mapcircletexture.bind();
 						glColor4f(0,.3,0,opac*(1-distcheck/mapviewdist));
 						glPushMatrix();
 						glTranslatef(objects.position[i].x/terrain.scale/256*-2+1,objects.position[i].z/terrain.scale/256*2-1,0);
@@ -1524,7 +1524,7 @@ int Game::DrawGLScene(StereoSide side)
 				if(objects.type[i]==boxtype){
 					distcheck=findDistancefast(&player[0].coords,&objects.position[i]);
 					if(distcheck<mapviewdist){
-						glBindTexture( GL_TEXTURE_2D, Mapboxtexture);
+						Mapboxtexture.bind();
 						glColor4f(.4,.4,.4,opac*(1-distcheck/mapviewdist));
 						glPushMatrix();
 						glTranslatef(objects.position[i].x/terrain.scale/256*-2+1,objects.position[i].z/terrain.scale/256*2-1,0);
@@ -1545,7 +1545,7 @@ int Game::DrawGLScene(StereoSide side)
 				}
 			}
 			if(editorenabled){
-				glBindTexture( GL_TEXTURE_2D, Mapcircletexture);
+				Mapcircletexture.bind();
 				for(i=0;i<numboundaries;i++){
 					glColor4f(0,0,0,opac/3);
 					glPushMatrix();
@@ -1568,7 +1568,7 @@ int Game::DrawGLScene(StereoSide side)
 				distcheck=findDistancefast(&player[0].coords,&player[i].coords);
 				if(distcheck<mapviewdist){
 					glPushMatrix();
-					glBindTexture( GL_TEXTURE_2D, Maparrowtexture);
+                    Maparrowtexture.bind();
 					if(i==0)glColor4f(1,1,1,opac);
 					else if(player[i].dead==2||player[i].howactive>typesleeping)glColor4f(0,0,0,opac*(1-distcheck/mapviewdist));
 					else if(player[i].dead)glColor4f(.3,.3,.3,opac*(1-distcheck/mapviewdist));
@@ -2078,7 +2078,7 @@ void DrawMenu() {
 				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
 				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
 				glEnable(GL_TEXTURE_2D);
-				glBindTexture( GL_TEXTURE_2D, Game::Mainmenuitems[4]);
+				Game::Mainmenuitems[4].bind();
 					glBegin(GL_QUADS);
 					glTexCoord2f(0,0);
 					glVertex3f(-1,-1,0);
@@ -2138,7 +2138,7 @@ void DrawMenu() {
 						glTranslatef(1,-1,0);
 						glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 						glColor4f(1,1,1,1);
-						glBindTexture( GL_TEXTURE_2D, Game::cursortexture);
+                        Game::cursortexture.bind();
 						glPushMatrix();
 							//glScalef(.25,.25,.25);
 							glBegin(GL_QUADS);

@@ -524,7 +524,7 @@ bool Model::load(const char *filename,bool texture )
 		funpackf(tfile, "Bf Bf Bf", &Triangles[i].gy[0], &Triangles[i].gy[1], &Triangles[i].gy[2]);
 	}
 
-	Texture.xsz=0;
+	modelTexture.xsz=0;
 
 	fclose(tfile);
 
@@ -607,7 +607,7 @@ bool Model::loaddecal(const char *filename,bool texture )
 	}
 
 
-	Texture.xsz=0;
+	modelTexture.xsz=0;
 
 	fclose(tfile);
 
@@ -878,7 +878,7 @@ void Model::CalculateNormals(bool facenormalise)
 
 void Model::drawimmediate()
 {
-	glBindTexture(GL_TEXTURE_2D,(unsigned long)textureptr);
+	textureptr.bind();
 	glBegin(GL_TRIANGLES);
 	for(int i=0;i<TriangleNum;i++){
 		/*if(Triangles[i].vertex[0]<vertexNum&&Triangles[i].vertex[1]<vertexNum&&Triangles[i].vertex[2]<vertexNum&&Triangles[i].vertex[0]>=0&&Triangles[i].vertex[1]>=0&&Triangles[i].vertex[2]>=0){
@@ -919,7 +919,7 @@ void Model::draw()
 
 	if(!color)glInterleavedArrays( GL_T2F_N3F_V3F,8*sizeof(GLfloat),&vArray[0]);
 	if(color)glInterleavedArrays( GL_T2F_C3F_V3F,8*sizeof(GLfloat),&vArray[0]);
-	glBindTexture(GL_TEXTURE_2D,(unsigned long)textureptr);
+	textureptr.bind();
 
 #if PLATFORM_MACOSX
 	glLockArraysEXT( 0, TriangleNum*3);
@@ -937,6 +937,7 @@ void Model::draw()
 	//drawimmediate();
 }
 
+//TODO: phase out in favor of Texture
 void Model::drawdifftex(GLuint texture)
 {
 	glEnableClientState(GL_NORMAL_ARRAY);
@@ -946,6 +947,35 @@ void Model::drawdifftex(GLuint texture)
 	if(color)glInterleavedArrays( GL_T2F_C3F_V3F,8*sizeof(GLfloat),&vArray[0]);
 
 	glBindTexture(GL_TEXTURE_2D,(unsigned long)texture);
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+
+
+#ifndef WIN32
+	glLockArraysEXT( 0, TriangleNum*3);
+#endif
+	glDrawArrays(GL_TRIANGLES, 0, TriangleNum*3);
+#ifndef WIN32
+	glUnlockArraysEXT();
+#endif
+
+
+	if(!color)glDisableClientState(GL_NORMAL_ARRAY);
+	if(color)glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	//drawdiffteximmediate(texture);
+}
+
+void Model::drawdifftex(Texture texture)
+{
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	if(!color)glInterleavedArrays( GL_T2F_N3F_V3F,8*sizeof(GLfloat),&vArray[0]);
+	if(color)glInterleavedArrays( GL_T2F_C3F_V3F,8*sizeof(GLfloat),&vArray[0]);
+
+	texture.bind();
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 
@@ -999,7 +1029,7 @@ void Model::drawdiffteximmediate(GLuint texture)
 	glEnd();
 }
 
-void Model::drawdecals(GLuint shadowtexture,GLuint bloodtexture,GLuint bloodtexture2,GLuint breaktexture)
+void Model::drawdecals(Texture shadowtexture,Texture bloodtexture,Texture bloodtexture2,Texture breaktexture)
 {
 	if(decals){
 		if(type!=decalstype)return;
@@ -1023,7 +1053,7 @@ void Model::drawdecals(GLuint shadowtexture,GLuint bloodtexture,GLuint bloodtext
 			if(decaltype[i]==blooddecalfast&&decalalivetime[i]<2)decalalivetime[i]=2;
 
 			if(decaltype[i]==shadowdecal&&decaltype[i]!=lasttype){
-				glBindTexture( GL_TEXTURE_2D, shadowtexture);
+				shadowtexture.bind();
 				if(!blend){
 					blend=1;
 					glAlphaFunc(GL_GREATER, 0.0001);
@@ -1031,7 +1061,7 @@ void Model::drawdecals(GLuint shadowtexture,GLuint bloodtexture,GLuint bloodtext
 				}
 			}
 			if(decaltype[i]==breakdecal&&decaltype[i]!=lasttype){
-				glBindTexture( GL_TEXTURE_2D, breaktexture);
+				breaktexture.bind();
 				if(!blend){
 					blend=1;
 					glAlphaFunc(GL_GREATER, 0.0001);
@@ -1039,7 +1069,7 @@ void Model::drawdecals(GLuint shadowtexture,GLuint bloodtexture,GLuint bloodtext
 				}
 			}
 			if((decaltype[i]==blooddecal||decaltype[i]==blooddecalslow)&&decaltype[i]!=lasttype){
-				glBindTexture( GL_TEXTURE_2D, bloodtexture);
+				bloodtexture.bind();
 				if(blend){
 					blend=0;
 					glAlphaFunc(GL_GREATER, 0.15);
@@ -1047,7 +1077,7 @@ void Model::drawdecals(GLuint shadowtexture,GLuint bloodtexture,GLuint bloodtext
 				}
 			}
 			if((decaltype[i]==blooddecalfast)&&decaltype[i]!=lasttype){
-				glBindTexture( GL_TEXTURE_2D, bloodtexture2);
+				bloodtexture2.bind();
 				if(blend){
 					blend=0;
 					glAlphaFunc(GL_GREATER, 0.15);
@@ -1385,8 +1415,7 @@ void Model::MakeDecal(int atype, XYZ where,float size, float opacity, float rota
 Model::~Model()
 {
 	deallocate();
-
-	glDeleteTextures( 1, &textureptr );
+    textureptr.destroy();
 }
 
 void Model::deallocate()
@@ -1474,8 +1503,7 @@ Model::Model()
 	Triangles=0;
 	vArray=0;
 
-	textureptr = 0;
-	memset(&Texture, 0, sizeof(Texture));
+	memset(&modelTexture, 0, sizeof(modelTexture));
 	numpossible = 0;
 	color = 0;
 

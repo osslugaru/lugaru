@@ -1047,7 +1047,7 @@ void Terrain::drawdecals()
 		for(i=0;i<numdecals;i++){
 			if(decaltype[i]==blooddecalfast&&decalalivetime[i]<2)decalalivetime[i]=2;
 			if((decaltype[i]==shadowdecal||decaltype[i]==shadowdecalpermanent)&&decaltype[i]!=lasttype){
-				glBindTexture( GL_TEXTURE_2D, shadowtexture);
+				shadowtexture.bind();
 				if(!blend){
 					blend=1;
 					glAlphaFunc(GL_GREATER, 0.0001);
@@ -1055,7 +1055,7 @@ void Terrain::drawdecals()
 				}
 			}
 			if(decaltype[i]==footprintdecal&&decaltype[i]!=lasttype){
-				glBindTexture( GL_TEXTURE_2D, footprinttexture);
+				footprinttexture.bind();
 				if(!blend){
 					blend=1;
 					glAlphaFunc(GL_GREATER, 0.0001);
@@ -1063,7 +1063,7 @@ void Terrain::drawdecals()
 				}
 			}
 			if(decaltype[i]==bodyprintdecal&&decaltype[i]!=lasttype){
-				glBindTexture( GL_TEXTURE_2D, bodyprinttexture);
+				bodyprinttexture.bind();
 				if(!blend){
 					blend=1;
 					glAlphaFunc(GL_GREATER, 0.0001);
@@ -1071,7 +1071,7 @@ void Terrain::drawdecals()
 				}
 			}
 			if((decaltype[i]==blooddecal||decaltype[i]==blooddecalslow)&&decaltype[i]!=lasttype){
-				glBindTexture( GL_TEXTURE_2D, bloodtexture);
+				bloodtexture.bind();
 				if(blend){
 					blend=0;
 					glAlphaFunc(GL_GREATER, 0.15);
@@ -1079,7 +1079,7 @@ void Terrain::drawdecals()
 				}
 			}
 			if((decaltype[i]==blooddecalfast)&&decaltype[i]!=lasttype){
-				glBindTexture( GL_TEXTURE_2D, bloodtexture2);
+				bloodtexture2.bind();
 				if(blend){
 					blend=0;
 					glAlphaFunc(GL_GREATER, 0.15);
@@ -1516,13 +1516,6 @@ void Terrain::DoShadows()
 
 Terrain::Terrain()
 {
-	bloodtexture = 0;
-	bloodtexture2 = 0;
-	shadowtexture = 0;
-	footprinttexture = 0;
-	bodyprinttexture = 0;
-	breaktexture = 0;
-	terraintexture = 0;
 	size = 0;
 
 	memset(patchobjectnum, 0, sizeof(patchobjectnum));
@@ -1563,12 +1556,12 @@ Terrain::Terrain()
 }
 Terrain::~Terrain()
 {
-	glDeleteTextures( 1, &terraintexture );
-	glDeleteTextures( 1, &shadowtexture );
-	glDeleteTextures( 1, &bodyprinttexture );
-	glDeleteTextures( 1, &footprinttexture );
-	glDeleteTextures( 1, &bloodtexture );
-	glDeleteTextures( 1, &bloodtexture2 );
-	glDeleteTextures( 1, &breaktexture );
+	terraintexture.destroy();
+	shadowtexture.destroy();
+	bodyprinttexture.destroy();
+	footprinttexture.destroy();
+	bloodtexture.destroy();
+	bloodtexture2.destroy();
+	breaktexture.destroy();
 }
 

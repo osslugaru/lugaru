@@ -27,18 +27,16 @@ float dialoguetime;
 int dialoguegonethrough[20];
 
 namespace Game{
-    GLuint terraintexture = 0;
-    GLuint terraintexture2 = 0;
-    GLuint terraintexture3 = 0;
+    Texture terraintexture;
+    Texture terraintexture2;
+    Texture loadscreentexture;
+    Texture Maparrowtexture;
+    Texture Mapboxtexture;
+    Texture Mapcircletexture;
+    Texture cursortexture;
     GLuint screentexture = 0;
     GLuint screentexture2 = 0;
-    GLuint logotexture = 0;
-    GLuint loadscreentexture = 0;
-    GLuint Maparrowtexture = 0;
-    GLuint Mapboxtexture = 0;
-    GLuint Mapcircletexture = 0;
-    GLuint cursortexture = 0;
-    GLuint Mainmenuitems[10] = {};
+    Texture Mainmenuitems[10];
 
     int selected = 0;
     int keyselect = 0;
@@ -60,7 +58,7 @@ namespace Game{
     bool cameramode = 0;
     bool firstload = 0;
 
-	GLuint hawktexture = 0;
+	Texture hawktexture;
 	float hawkyaw = 0;
 	float hawkcalldelay = 0;
     float leveltime = 0;

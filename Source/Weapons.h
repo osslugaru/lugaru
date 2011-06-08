@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Terrain.h"
 #include "Sprite.h"
 #include "Person.h"
+#include "Texture.h"
 #include <cmath>
 
 #define max_weapons 30
@@ -45,17 +46,17 @@ class Weapon {
 		Weapon(int type, int owner);
 			
 		static Model throwingknifemodel;
-		static GLuint knifetextureptr;
-		static GLuint lightbloodknifetextureptr;
-		static GLuint bloodknifetextureptr;
+		static Texture knifetextureptr;
+		static Texture lightbloodknifetextureptr;
+		static Texture bloodknifetextureptr;
 
 		static Model swordmodel;
-		static GLuint swordtextureptr;
-		static GLuint lightbloodswordtextureptr;
-		static GLuint bloodswordtextureptr;
+		static Texture swordtextureptr;
+		static Texture lightbloodswordtextureptr;
+		static Texture bloodswordtextureptr;
 
 		static Model staffmodel;
-		static GLuint stafftextureptr;
+		static Texture stafftextureptr;
 	
 		void Draw();
 		void DoStuff(int);

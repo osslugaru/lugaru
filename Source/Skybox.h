@@ -26,16 +26,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "TGALoader.h"
 #include "Quaternions.h"
 #include "gamegl.h"
+#include "Texture.h"
 
 class SkyBox{
 public:
-	GLuint front, left, back, right, up, down;
+	Texture front, left, back, right, up, down;
 
 	void load(const char *ffront, const char *fleft, const char *fback,
 		  const char *fright, const char *fup,   const char *fdown);
 	void draw();
 
-	SkyBox(): front(0), left(0), back(0), right(0), up(0), down(0) {}
+	SkyBox() {}
 	~SkyBox();
 };
 

@@ -54,17 +54,17 @@ extern int tutoriallevel;
 extern int numthrowkill;
 
 Model Weapon::throwingknifemodel;
-GLuint Weapon::knifetextureptr = 0;
-GLuint Weapon::lightbloodknifetextureptr = 0;
-GLuint Weapon::bloodknifetextureptr = 0;
+Texture Weapon::knifetextureptr;
+Texture Weapon::lightbloodknifetextureptr;
+Texture Weapon::bloodknifetextureptr;
 
 Model Weapon::swordmodel;
-GLuint Weapon::swordtextureptr = 0;
-GLuint Weapon::lightbloodswordtextureptr = 0;
-GLuint Weapon::bloodswordtextureptr = 0;
+Texture Weapon::swordtextureptr;
+Texture Weapon::lightbloodswordtextureptr;
+Texture Weapon::bloodswordtextureptr;
 
 Model Weapon::staffmodel;
-GLuint Weapon::stafftextureptr = 0;
+Texture Weapon::stafftextureptr;
 
 Weapon::Weapon(int t, int o) : owner(o) {
 	setType(t);
@@ -1073,12 +1073,12 @@ Weapons::Weapons()
 
 Weapons::~Weapons()
 {
-	glDeleteTextures( 1, &Weapon::stafftextureptr );
-	glDeleteTextures( 1, &Weapon::knifetextureptr );
-	glDeleteTextures( 1, &Weapon::lightbloodknifetextureptr );
-	glDeleteTextures( 1, &Weapon::bloodknifetextureptr );
-	glDeleteTextures( 1, &Weapon::swordtextureptr );
-	glDeleteTextures( 1, &Weapon::lightbloodswordtextureptr );
-	glDeleteTextures( 1, &Weapon::bloodswordtextureptr );
+	Weapon::stafftextureptr.destroy();
+	Weapon::knifetextureptr.destroy();
+	Weapon::lightbloodknifetextureptr.destroy();
+	Weapon::bloodknifetextureptr.destroy();
+	Weapon::swordtextureptr.destroy();
+	Weapon::lightbloodswordtextureptr.destroy();
+	Weapon::bloodswordtextureptr.destroy();
 }
 

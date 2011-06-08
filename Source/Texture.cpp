@@ -4,95 +4,141 @@
 
 using namespace std;
 
-map<string,Texture> Texture::textures;
-
 extern TGAImageRec texture;
 extern bool trilinear;
 
-Texture::~Texture()  {
-	free(array);
-    glDeleteTextures(1,&id);
-}
 
-void Texture::load()  {
-	GLuint type;
+class TextureRes {
+private:
+    static vector<TextureRes*> list;
 
-	LOGFUNC;
+    GLuint id;
+    string filename;
+    bool hasMipmap;
+    bool hasAlpha;
+    bool isSkin;
+    int skinsize;
+    GLubyte* data;
+    int datalen;
 
-	LOG(std::string("Loading texture...") + fileName);
+    void load();
 
-	unsigned char fileNamep[256];
-	CopyCStringToPascal(ConvertFileName(fileName.c_str()), fileNamep);
-	//Load Image
-	upload_image( fileNamep ,hasalpha);
-	
-	//Alpha channel?
-	if ( texture.bpp == 24 )
-		type = GL_RGB;
-	else
-		type = GL_RGBA;
+public:
+    TextureRes(const string& filename, bool hasMipmap, bool hasAlpha);
+    TextureRes(const string& filename, bool hasMipmap, GLubyte* array, int* skinsize);
+    ~TextureRes();
+    void bind();
 
-	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+    static void reloadAll();
+};
 
-	if(!id)
-		glGenTextures( 1, &id );
-	glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 
-	glBindTexture( GL_TEXTURE_2D, id);
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-	if(mipmap)
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (trilinear?GL_LINEAR_MIPMAP_LINEAR:GL_LINEAR_MIPMAP_NEAREST) );
-	else
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-	glTexParameteri( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE );
+vector<TextureRes*> TextureRes::list;
+
+void TextureRes::load(){
+    //load image into 'texture' global var
+	unsigned char filenamep[256];
+	CopyCStringToPascal(ConvertFileName(filename.c_str()),filenamep);
+	upload_image(filenamep,hasAlpha);
 	
 	skinsize=texture.sizeX;
+	GLuint type=GL_RGBA;
+	if(texture.bpp==24)
+		type=GL_RGB;
 	
-	if(isSkin) {
-		int tempnum=0;
-		int nb = (texture.sizeY*texture.sizeX*(texture.bpp/8));
-		array = (GLubyte*)malloc(nb*sizeof(GLubyte));
-		for(int i=0;i<nb;i++) {
-			if((i+1)%4||type==GL_RGB) {
-				array[tempnum]=texture.data[i];
-				tempnum++;
-			}
-		}
-		arraySize=tempnum;
+	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 
-        glTexImage2D( GL_TEXTURE_2D, 0, type, texture.sizeX, texture.sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, array );
-	} else {
-        glTexImage2D( GL_TEXTURE_2D, 0, type, texture.sizeX, texture.sizeY, 0, type, GL_UNSIGNED_BYTE, texture.data );
+    glDeleteTextures(1,&id);
+    glGenTextures(1,&id);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+
+	glBindTexture(GL_TEXTURE_2D, id);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	if(hasMipmap){
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,(trilinear?GL_LINEAR_MIPMAP_LINEAR:GL_LINEAR_MIPMAP_NEAREST));
+        glTexParameteri(GL_TEXTURE_2D,GL_GENERATE_MIPMAP,GL_TRUE);
+    }else{
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+    }
+	
+	if(isSkin){
+        free(data);
+		const int nb=texture.sizeY*texture.sizeX*(texture.bpp/8);
+		data=(GLubyte*)malloc(nb*sizeof(GLubyte));
+		datalen=0;
+		for(int i=0;i<nb;i++)
+			if((i+1)%4||type==GL_RGB)
+				data[datalen++]=texture.data[i];
+        glTexImage2D(GL_TEXTURE_2D, 0, type, texture.sizeX, texture.sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	}else{
+        glTexImage2D(GL_TEXTURE_2D, 0, type, texture.sizeX, texture.sizeY, 0, type, GL_UNSIGNED_BYTE, texture.data);
 	}
 }
 
-GLuint Texture::Load(const string& fileName, bool mipmap, bool hasalpha) {
-	map<string,Texture>::iterator it = textures.find(fileName);
-	if(it==textures.end()) {
-		textures.insert(make_pair(fileName,Texture(fileName,mipmap,hasalpha)));
-		textures[fileName].load();
-		return textures[fileName].getId();
-	} else {
-		return it->second.getId();
-	}
+void TextureRes::bind(){
+    glBindTexture(GL_TEXTURE_2D,id);
 }
 
-GLuint Texture::Load(const string& fileName, bool mipmap, bool hasalpha, GLubyte* array, int* skinsize) {
-	map<string,Texture>::iterator it = textures.find(fileName);
-	if(it==textures.end()) {
-		textures.insert(make_pair(fileName,Texture(fileName,mipmap,hasalpha,true)));
-		textures[fileName].load();
-		*skinsize = textures[fileName].skinsize;
-		for(int i=0;i<textures[fileName].arraySize;i++) {
-			array[i] = textures[fileName].array[i];
-		}
-		return textures[fileName].getId();
-	} else {
-		*skinsize = it->second.skinsize;
-		for(int i=0;i<it->second.arraySize;i++) {
-			array[i] = it->second.array[i];
-		}
-		return it->second.getId();
-	}
+TextureRes::TextureRes(const string& _filename, bool _hasMipmap, bool _hasAlpha):
+    id(0),filename(_filename),hasMipmap(_hasMipmap),hasAlpha(_hasAlpha),isSkin(false),
+    skinsize(0),data(NULL),datalen(0) {
+    load();
+    list.push_back(this);
+}
+
+TextureRes::TextureRes(const string& _filename, bool _hasMipmap, GLubyte* array, int* skinsizep):
+    id(0),filename(_filename),hasMipmap(_hasMipmap),hasAlpha(false),isSkin(true),
+    skinsize(0),data(NULL),datalen(0) {
+    load();
+    *skinsizep=skinsize;
+    for(int i=0;i<datalen;i++)
+        array[i]=data[i];
+    list.push_back(this);
+}
+
+TextureRes::~TextureRes(){
+    free(data);
+    glDeleteTextures(1,&id);
+    for(vector<TextureRes*>::iterator it=list.begin();it!=list.end();it++)
+        if(*it==this){
+            list.erase(it);
+            break;
+        }
+}
+
+void TextureRes::reloadAll(){
+    for(vector<TextureRes*>::iterator it=list.begin();it!=list.end();it++)
+        (*it)->load();
+}
+
+
+
+
+void Texture::load(const string& filename, bool hasMipmap, bool hasAlpha){
+    destroy();
+    tex=new TextureRes(filename,hasMipmap,hasAlpha);
+}
+
+void Texture::load(const string& filename, bool hasMipmap, GLubyte* array, int* skinsizep){
+    destroy();
+    tex=new TextureRes(filename,hasMipmap,array,skinsizep);
+}
+
+void Texture::destroy(){
+    if(tex){
+        delete tex;
+        tex=NULL;
+    }
+}
+
+void Texture::bind(){
+    if(tex)
+        tex->bind();
+    else
+        glBindTexture(GL_TEXTURE_2D,0);
+}
+
+void Texture::reloadAll(){
+    TextureRes::reloadAll();
 }
 

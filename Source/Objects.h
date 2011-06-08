@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Models.h"
 #include "Terrain.h"
 #include "Sprite.h"
+#include "Texture.h"
 #include <vector>
 //
 // Model Structures
@@ -73,10 +74,10 @@ public:
 	float scale[max_objects];
 	float messedwith[max_objects];
 	float checked[max_objects];
-	GLuint 	boxtextureptr;
-	GLuint 	treetextureptr;
-	GLuint 	bushtextureptr;
-	GLuint 	rocktextureptr;
+	Texture boxtextureptr;
+	Texture treetextureptr;
+	Texture bushtextureptr;
+	Texture rocktextureptr;
 	float shadowed[max_objects];
 	float occluded[max_objects];
 	bool checkcollide(XYZ startpoint, XYZ endpoint,int which);

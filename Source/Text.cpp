@@ -32,7 +32,7 @@ void Text::LoadFontTexture(const char *fileName)
 
 	LOG(std::string("Loading font texture...") + fileName);
 
-	Game::LoadTexture(fileName, &FontTexture, false, false);
+	FontTexture.load(fileName, false, false);
 /*
 	//Load Image
 	//LoadTGA( fileName ); 
@@ -86,7 +86,7 @@ void Text::BuildFont()								// Build Our Font Display List
 
 //	base=glGenLists(256);								// Creating 256 Display Lists
 	base=glGenLists(512);								// Creating 256 Display Lists
-	glBindTexture(GL_TEXTURE_2D, FontTexture);			// Select Our Font Texture
+	FontTexture.bind();
 	for (loop=0; loop<512; loop++)						// Loop Through All 256 Lists
 	{
 		if (loop < 256)
@@ -130,7 +130,7 @@ void Text::_glPrint(float x, float y, const char *string, int set, float size, f
 		set=1;
 	}
 	glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-	glBindTexture(GL_TEXTURE_2D, FontTexture);			// Select Our Font Texture
+	FontTexture.bind();
 	glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
 	glDisable(GL_LIGHTING);
 	glEnable(GL_BLEND);
@@ -181,18 +181,14 @@ void Text::glPrintOutlined(float r, float g, float b, float x, float y, const ch
 	glPrint( x,  y, string,  set,  size,  width,  height);
 }
 
-Text::Text()
-{
+Text::Text() {
 	base = 0;
-	FontTexture = 0;
 }
-Text::~Text()
-{
-	if (base)
-	{
+Text::~Text() {
+	if (base) {
 		glDeleteLists(base, 512);
 		base = 0;
 	}
-	glDeleteTextures( 1, &FontTexture );
+	FontTexture.destroy();
 }
 

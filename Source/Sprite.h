@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Lights.h"
 #include "Terrain.h"
 #include "Objects.h"
+#include "Texture.h"
 
 #include <vector>
 
@@ -88,20 +89,20 @@ class Sprite{
 		}
 		static void clearTextures();
 		
-		static GLuint cloudtexture;
-		static GLuint bloodtexture;
-		static GLuint flametexture;
-		static GLuint smoketexture;
+		static Texture cloudtexture;
+		static Texture bloodtexture;
+		static Texture flametexture;
+		static Texture smoketexture;
 		
-		static GLuint cloudimpacttexture;
-		static GLuint snowflaketexture;
-		static GLuint shinetexture;
-		static GLuint bloodflametexture;
+		static Texture cloudimpacttexture;
+		static Texture snowflaketexture;
+		static Texture shinetexture;
+		static Texture bloodflametexture;
 		
-		static GLuint splintertexture;
+		static Texture splintertexture;
 		
-		static GLuint leaftexture;
-		static GLuint toothtexture;
+		static Texture leaftexture;
+		static Texture toothtexture;
 
 		Sprite();
 		~Sprite();
