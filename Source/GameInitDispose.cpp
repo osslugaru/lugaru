@@ -496,6 +496,8 @@ void FadeLoadingScreen(float howmuch)
 }
 
 
+extern bool cmdline(const char *cmd);
+    
 void Game::InitGame()
 {
 #if PLATFORM_MACOSX
@@ -635,7 +637,6 @@ void Game::InitGame()
     #if PLATFORM_LINUX
     int output = -1;
     
-    extern bool cmdline(const char *cmd);
     unsigned char rc = 0;
     output = OPENAL_OUTPUT_ALSA;  // Try alsa first...
     if (cmdline("forceoss"))      //  ...but let user override that.

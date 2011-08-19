@@ -5771,6 +5771,8 @@ void Game::LoadMenu(){
     }
 }
 
+extern SDL_Rect **resolutions;
+
 void MenuTick(){
     //menu buttons
     selected=Menu::getSelected(mousecoordh*640/screenwidth,480-mousecoordv*480/screenheight);
@@ -5837,7 +5839,6 @@ void MenuTick(){
 				bool isCustomResolution,found;
 				switch(selected){
 					case 0:
-						extern SDL_Rect **resolutions;
 						isCustomResolution = true;
 						found = false;
 						for(int i = 0; (!found) && (resolutions[i]); i++) {

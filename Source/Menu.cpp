@@ -103,7 +103,7 @@ void Menu::setText(int id,const string& text,int x,int y,int w,int h){
 
 int Menu::getSelected(int mousex, int mousey){
     for(vector<MenuItem>::iterator it=items.begin();it!=items.end();it++)
-        if(it->type==MenuItem::BUTTON || it->type==MenuItem::IMAGEBUTTON || it->type==MenuItem::MAPMARKER){
+        if(it->type==MenuItem::BUTTON || it->type==MenuItem::IMAGEBUTTON || it->type==MenuItem::MAPMARKER) {
             int mx=mousex;
             int my=mousey;
             if(it->type==MenuItem::MAPMARKER){

@@ -896,8 +896,10 @@ static bool load_png(const char *file_name, TGAImageRec &tex)
     png_byte **row_pointers = NULL;
     FILE *fp = fopen(file_name, "rb");
 
-    if (fp == NULL)
+    if (fp == NULL) {
+		cerr << file_name << " not found" << endl;
         return(NULL);
+	}
 
     png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
     if (png_ptr == NULL)
@@ -961,8 +963,11 @@ static bool load_png(const char *file_name, TGAImageRec &tex)
     tex.sizeY = height;
     tex.bpp = 32;
     retval = true;
-
+    
 png_done:
+	if(!retval) {
+		cerr << "There was a problem loading " << file_name << endl;
+	}
     png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
     if (fp)
         fclose(fp);
