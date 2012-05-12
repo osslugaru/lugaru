@@ -115,9 +115,7 @@ set(LUGARU_H
 	${SRCDIR}/Settings.h
 	${SRCDIR}/Stereo.h
 	${SRCDIR}/Animation.h
-	${SRCDIR}/Animation.def
 	${SRCDIR}/Sounds.h
-	${SRCDIR}/Sounds.def
 )
 
 if(UNIX)

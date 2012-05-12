@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
 #include <stdio.h>
-#include <float.h>
+#include <math.h>
 
 // stuff to make Mac code compatable with Windows
 
@@ -84,11 +84,13 @@ enum
 Duration AbsoluteDeltaToDuration( AbsoluteTime& a, AbsoluteTime& b);
 
 
+/*
 inline bool isnormal( double x)
 {
 	int ret = _fpclass( x);
 	return (ret == _FPCLASS_NN || ret == _FPCLASS_PN);
 }
+*/
 
 typedef unsigned int uintptr_t;
 
