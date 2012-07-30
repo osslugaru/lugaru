@@ -173,7 +173,7 @@ int Model::SphereCheck(XYZ *p1,float radius, XYZ *p, XYZ *move, float *rotate)
 	oldp1=*p1;
 	*p1=*p1-*move;
 	if(*rotate)*p1=DoRotation(*p1,0,-*rotate,0);
-	if(findDistancefast(p1,&boundingspherecenter)>radius*radius+boundingsphereradius*boundingsphereradius)return -1;
+	if(distsq(p1,&boundingspherecenter)>radius*radius+boundingsphereradius*boundingsphereradius)return -1;
 
 	for(i=0;i<4;i++){
 		for (j=0;j<TriangleNum;j++){
@@ -230,7 +230,7 @@ int Model::SphereCheckPossible(XYZ *p1,float radius, XYZ *move, float *rotate)
 	numpossible=0;
 
 	if(*rotate)*p1=DoRotation(*p1,0,-*rotate,0);
-	if(findDistancefast(p1,&boundingspherecenter)>radius*radius+boundingsphereradius*boundingsphereradius){*p1=oldp1; return -1;}
+	if(distsq(p1,&boundingspherecenter)>radius*radius+boundingsphereradius*boundingsphereradius){*p1=oldp1; return -1;}
 
 	for (j=0;j<TriangleNum;j++){
 		intersecting=0;
@@ -458,8 +458,8 @@ bool Model::loadnotex(const char *filename )
 	boundingsphereradius=0;
 	for(i=0;i<vertexNum;i++){
 		for(j=0;j<vertexNum;j++){
-			if(j!=i&&findDistancefast(&vertex[j],&vertex[i])/2>boundingsphereradius){
-				boundingsphereradius=findDistancefast(&vertex[j],&vertex[i])/2;
+			if(j!=i&&distsq(&vertex[j],&vertex[i])/2>boundingsphereradius){
+				boundingsphereradius=distsq(&vertex[j],&vertex[i])/2;
 				boundingspherecenter=(vertex[i]+vertex[j])/2;
 			}
 		}
@@ -538,8 +538,8 @@ bool Model::load(const char *filename,bool texture )
 	boundingsphereradius=0;
 	for(i=0;i<vertexNum;i++){
 		for(j=0;j<vertexNum;j++){
-			if(j!=i&&findDistancefast(&vertex[j],&vertex[i])/2>boundingsphereradius){
-				boundingsphereradius=findDistancefast(&vertex[j],&vertex[i])/2;
+			if(j!=i&&distsq(&vertex[j],&vertex[i])/2>boundingsphereradius){
+				boundingsphereradius=distsq(&vertex[j],&vertex[i])/2;
 				boundingspherecenter=(vertex[i]+vertex[j])/2;
 			}
 		}
@@ -620,8 +620,8 @@ bool Model::loaddecal(const char *filename,bool texture )
 	boundingsphereradius=0;
 	for(i=0;i<vertexNum;i++){
 		for(j=0;j<vertexNum;j++){
-			if(j!=i&&findDistancefast(&vertex[j],&vertex[i])/2>boundingsphereradius){
-				boundingsphereradius=findDistancefast(&vertex[j],&vertex[i])/2;
+			if(j!=i&&distsq(&vertex[j],&vertex[i])/2>boundingsphereradius){
+				boundingsphereradius=distsq(&vertex[j],&vertex[i])/2;
 				boundingspherecenter=(vertex[i]+vertex[j])/2;
 			}
 		}
@@ -769,8 +769,8 @@ void Model::Scale(float xscale,float yscale,float zscale)
 	boundingsphereradius=0;
 	for(i=0;i<vertexNum;i++){
 		for(j=0;j<vertexNum;j++){
-			if(j!=i&&findDistancefast(&vertex[j],&vertex[i])/2>boundingsphereradius){
-				boundingsphereradius=findDistancefast(&vertex[j],&vertex[i])/2;
+			if(j!=i&&distsq(&vertex[j],&vertex[i])/2>boundingsphereradius){
+				boundingsphereradius=distsq(&vertex[j],&vertex[i])/2;
 				boundingspherecenter=(vertex[i]+vertex[j])/2;
 			}
 		}
@@ -809,8 +809,8 @@ void Model::Translate(float xtrans,float ytrans,float ztrans)
 	boundingsphereradius=0;
 	for(i=0;i<vertexNum;i++){
 		for(j=0;j<vertexNum;j++){
-			if(j!=i&&findDistancefast(&vertex[j],&vertex[i])/2>boundingsphereradius){
-				boundingsphereradius=findDistancefast(&vertex[j],&vertex[i])/2;
+			if(j!=i&&distsq(&vertex[j],&vertex[i])/2>boundingsphereradius){
+				boundingsphereradius=distsq(&vertex[j],&vertex[i])/2;
 				boundingspherecenter=(vertex[i]+vertex[j])/2;
 			}
 		}
@@ -830,8 +830,8 @@ void Model::Rotate(float xang,float yang,float zang)
 	boundingsphereradius=0;
 	for(i=0;i<vertexNum;i++){
 		for(j=0;j<vertexNum;j++){
-			if(j!=i&&findDistancefast(&vertex[j],&vertex[i])/2>boundingsphereradius){
-				boundingsphereradius=findDistancefast(&vertex[j],&vertex[i])/2;
+			if(j!=i&&distsq(&vertex[j],&vertex[i])/2>boundingsphereradius){
+				boundingsphereradius=distsq(&vertex[j],&vertex[i])/2;
 				boundingspherecenter=(vertex[i]+vertex[j])/2;
 			}
 		}
@@ -1151,7 +1151,7 @@ void Model::MakeDecal(int atype, XYZ *where,float *size, float *opacity, float *
 		static int i,j;
 
 		if(*opacity>0)
-			if(findDistancefast(where,&boundingspherecenter)<(boundingsphereradius+*size)*(boundingsphereradius+*size))
+			if(distsq(where,&boundingspherecenter)<(boundingsphereradius+*size)*(boundingsphereradius+*size))
 				for(i=0;i<TriangleNum;i++){
 					if(facenormals[i].y<-.1&&(vertex[Triangles[i].vertex[0]].y<where->y||vertex[Triangles[i].vertex[1]].y<where->y||vertex[Triangles[i].vertex[2]].y<where->y)){
 						decalposition[numdecals]=*where;
@@ -1228,7 +1228,7 @@ void Model::MakeDecal(int atype, XYZ where,float size, float opacity, float rota
 		static int i,j;
 
 		if(opacity>0)
-			if(findDistancefast(&where,&boundingspherecenter)<(boundingsphereradius+size)*(boundingsphereradius+size))
+			if(distsq(&where,&boundingspherecenter)<(boundingsphereradius+size)*(boundingsphereradius+size))
 				for(i=0;i<TriangleNum;i++){
 					distance=abs(((facenormals[i].x*where.x)+(facenormals[i].y*where.y)+(facenormals[i].z*where.z)-((facenormals[i].x*vertex[Triangles[i].vertex[0]].x)+(facenormals[i].y*vertex[Triangles[i].vertex[0]].y)+(facenormals[i].z*vertex[Triangles[i].vertex[0]].z))));
 					if(distance<.02&&abs(facenormals[i].y)>abs(facenormals[i].x)&&abs(facenormals[i].y)>abs(facenormals[i].z)){

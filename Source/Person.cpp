@@ -93,7 +93,7 @@ void Person::CheckKick()
 	    && victim != this
 	    && currentframe >= 2
 	    && currentanimation == rabbitkickanim)
-	&& (findDistancefast(&coords,&victim->coords) < 1.2)
+	&& (distsq(&coords,&victim->coords) < 1.2)
 	&& (!victim->skeleton.free)))
     return;
 
@@ -552,9 +552,9 @@ bool Person::DoBloodBigWhere(float howmuch,int which, XYZ where){
 			t = dotproduct(&temp,&N)/findLength(&N);
 			r = 1 - (s + t);*/
 
-			bary.x=findDistancefast(&p0,&p1);
-			bary.y=findDistancefast(&p0,&p2);
-			bary.z=findDistancefast(&p0,&p3);
+			bary.x=distsq(&p0,&p1);
+			bary.y=distsq(&p0,&p2);
+			bary.z=distsq(&p0,&p3);
 
 			total=bary.x+bary.y+bary.z;
 			bary.x/=total;
@@ -775,7 +775,7 @@ void Person::Reverse()
     victim->currentanimation=upunchreversalanim;
     victim->targetanimation=upunchreversalanim;
   }
-  if(targetanimation==staffhitanim&&findDistancefast(&victim->coords,&coords)<2&&((victim->id==0&&victim->crouchkeydown)||Random()%4==0)){
+  if(targetanimation==staffhitanim&&distsq(&victim->coords,&coords)<2&&((victim->id==0&&victim->crouchkeydown)||Random()%4==0)){
     if(victim->weaponactive!=-1){
       victim->throwtogglekeydown=1;
       weapons[victim->weaponids[0]].owner=-1;
@@ -803,7 +803,7 @@ void Person::Reverse()
     victim->currentanimation=staffhitreversalanim;
     victim->targetanimation=staffhitreversalanim;
   }
-  if(targetanimation==staffspinhitanim&&findDistancefast(&victim->coords,&coords)<2&&((victim->id==0&&victim->crouchkeydown)||Random()%2==0)){
+  if(targetanimation==staffspinhitanim&&distsq(&victim->coords,&coords)<2&&((victim->id==0&&victim->crouchkeydown)||Random()%2==0)){
     if(victim->weaponactive!=-1){
       victim->throwtogglekeydown=1;
       weapons[victim->weaponids[0]].owner=-1;
@@ -830,7 +830,7 @@ void Person::Reverse()
     victim->currentanimation=staffspinhitreversalanim;
     victim->targetanimation=staffspinhitreversalanim;
   }
-  if(targetanimation==swordslashanim&&findDistancefast(&victim->coords,&coords)<2&&((victim->id==0&&victim->crouchkeydown)||Random()%4==0)){
+  if(targetanimation==swordslashanim&&distsq(&victim->coords,&coords)<2&&((victim->id==0&&victim->crouchkeydown)||Random()%4==0)){
     if(victim->weaponactive!=-1){
       victim->throwtogglekeydown=1;
       weapons[victim->weaponids[0]].owner=-1;
@@ -857,7 +857,7 @@ void Person::Reverse()
     victim->currentanimation=swordslashreversalanim;
     victim->targetanimation=swordslashreversalanim;
   }
-  if(targetanimation==knifeslashstartanim&&findDistancefast(&victim->coords,&coords)<2&&(victim->id==0||Random()%4==0)){
+  if(targetanimation==knifeslashstartanim&&distsq(&victim->coords,&coords)<2&&(victim->id==0||Random()%4==0)){
     if(victim->weaponactive!=-1){
       victim->throwtogglekeydown=1;
       weapons[victim->weaponids[0]].owner=-1;
@@ -1008,7 +1008,7 @@ void Person::Reverse()
   }
   if(hasvictim)
     if(targetanimation==knifeslashstartanim||targetanimation==swordslashanim||targetanimation==staffhitanim||targetanimation==staffspinhitanim){
-      if((targetanimation!=staffhitanim&&targetanimation!=staffspinhitanim)||findDistancefast(&coords,&victim->coords)>.2){
+      if((targetanimation!=staffhitanim&&targetanimation!=staffspinhitanim)||distsq(&coords,&victim->coords)>.2){
 	victim->targetanimation=dodgebackanim;
 	victim->targetframe=0;
 	victim->target=0;
@@ -1391,7 +1391,7 @@ void Person::FootLand(int which, float opacity){
 			if(which==0)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,yaw,0)*scale+coords;
 			if(which==1)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,yaw,0)*scale+coords;
 			//footpoint.y=coords.y;
-			if(findDistancefast(&footpoint,&viewer))Sprite::MakeSprite(cloudsprite, footpoint,footvel, 1,1,1, .5, .2*opacity);
+			if(distsq(&footpoint,&viewer))Sprite::MakeSprite(cloudsprite, footpoint,footvel, 1,1,1, .5, .2*opacity);
 		}
 		else if(environment==snowyenvironment&&onterrain&&terrain.getOpacity(coords.x,coords.z)<.2){
 			footvel=velocity/5;
@@ -1400,8 +1400,8 @@ void Person::FootLand(int which, float opacity){
 			if(which==1)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,yaw,0)*scale+coords;
 			footpoint.y=terrain.getHeight(footpoint.x,footpoint.z);
 			terrainlight=terrain.getLighting(footpoint.x,footpoint.z);
-			if(findDistancefast(&footpoint,&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, footpoint,footvel*.6, terrainlight.x,terrainlight.y,terrainlight.z, .5, .7*opacity);
-			if(opacity>=1||detail==2)if(detail==2)if(findDistancefast(&footpoint,&viewer)<viewdistance*viewdistance/4)terrain.MakeDecal(footprintdecal,footpoint,.2,1*opacity,yaw);
+			if(distsq(&footpoint,&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, footpoint,footvel*.6, terrainlight.x,terrainlight.y,terrainlight.z, .5, .7*opacity);
+			if(opacity>=1||detail==2)if(detail==2)if(distsq(&footpoint,&viewer)<viewdistance*viewdistance/4)terrain.MakeDecal(footprintdecal,footpoint,.2,1*opacity,yaw);
 		}
 		else if(environment==grassyenvironment&&onterrain&&terrain.getOpacity(coords.x,coords.z)<.2){
 			footvel=velocity/5;
@@ -1410,7 +1410,7 @@ void Person::FootLand(int which, float opacity){
 			if(which==1)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,yaw,0)*scale+coords;
 			footpoint.y=terrain.getHeight(footpoint.x,footpoint.z);
 			terrainlight=terrain.getLighting(footpoint.x,footpoint.z);
-			if(findDistancefast(&footpoint,&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, footpoint,footvel*.6, terrainlight.x*90/255,terrainlight.y*70/255,terrainlight.z*8/255, .5, .5*opacity);
+			if(distsq(&footpoint,&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, footpoint,footvel*.6, terrainlight.x*90/255,terrainlight.y*70/255,terrainlight.z*8/255, .5, .5*opacity);
 		}
 		else if(environment==desertenvironment&&onterrain&&terrain.getOpacity(coords.x,coords.z)<.2){
 			footvel=velocity/5;
@@ -1419,8 +1419,8 @@ void Person::FootLand(int which, float opacity){
 			if(which==1)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,yaw,0)*scale+coords;
 			footpoint.y=terrain.getHeight(footpoint.x,footpoint.z);
 			terrainlight=terrain.getLighting(footpoint.x,footpoint.z);
-			if(findDistancefast(&footpoint,&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, footpoint,footvel*.6, terrainlight.x*190/255,terrainlight.y*170/255,terrainlight.z*108/255, .5, .7*opacity);
-			if(opacity>=1||detail==2)if(detail==2)if(findDistancefast(&footpoint,&viewer)<viewdistance*viewdistance/4)terrain.MakeDecal(footprintdecal,footpoint,.2,.25*opacity,yaw);
+			if(distsq(&footpoint,&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, footpoint,footvel*.6, terrainlight.x*190/255,terrainlight.y*170/255,terrainlight.z*108/255, .5, .7*opacity);
+			if(opacity>=1||detail==2)if(detail==2)if(distsq(&footpoint,&viewer)<viewdistance*viewdistance/4)terrain.MakeDecal(footprintdecal,footpoint,.2,.25*opacity,yaw);
 		}
 		else if(isLanding()||targetanimation==jumpupanim||isLandhard())
 		{
@@ -1429,7 +1429,7 @@ void Person::FootLand(int which, float opacity){
 			if(which==0)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,yaw,0)*scale+coords;
 			if(which==1)footpoint=DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,yaw,0)*scale+coords;
 			//footpoint.y=coords.y;
-			if(findDistancefast(&footpoint,&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, footpoint,footvel*.6, 1,1,1, .5, .2*opacity);
+			if(distsq(&footpoint,&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, footpoint,footvel*.6, 1,1,1, .5, .2*opacity);
 		}
 }
 
@@ -1658,8 +1658,8 @@ void	Person::DoAnimations(){
 							if(targetanimation==removeknifeanim&&animation[targetanimation].label[currentframe]==5){
 								for(i=0;i<weapons.size();i++){
 									if(weapons[i].owner==-1)
-										if(findDistancefastflat(&coords,&weapons[i].position)<4&&weaponactive==-1){
-											if(findDistancefast(&coords,&weapons[i].position)>=1){
+										if(distsqflat(&coords,&weapons[i].position)<4&&weaponactive==-1){
+											if(distsq(&coords,&weapons[i].position)>=1){
 												if(weapons[i].getType()!=staff){
 													emit_sound_at(knifedrawsound, coords, 128.);
 												}
@@ -1684,8 +1684,8 @@ void	Person::DoAnimations(){
 											if(player[weapons[i].owner].weaponids[player[weapons[i].owner].weaponstuck]==i)
 												if(player[weapons[i].owner].num_weapons>1)willwork=0;
 									if((weapons[i].owner==-1)||(hasvictim&&weapons[i].owner==victim->id&&victim->skeleton.free))
-										if(willwork&&findDistancefastflat(&coords,&weapons[i].position)<3&&weaponactive==-1){
-											if(findDistancefast(&coords,&weapons[i].position)<1||hasvictim){
+										if(willwork&&distsqflat(&coords,&weapons[i].position)<3&&weaponactive==-1){
+											if(distsq(&coords,&weapons[i].position)<1||hasvictim){
 												bool fleshstuck=false;
 												if(weapons[i].owner!=-1)
 													if(victim->weaponstuck!=-1){
@@ -1789,7 +1789,7 @@ void	Person::DoAnimations(){
 							dojumpattack=0;
 							if((targetanimation==rabbitrunninganim||targetanimation==wolfrunninganim)&&targetframe==3&&(jumpkeydown||attackkeydown||id!=0))dojumpattack=1;
 							if(hasvictim)
-			if(findDistancefast(&victim->coords,&/*player[i].*/coords)<5&&victim->aitype==gethelptype&&(attackkeydown)&&!victim->skeleton.free&&victim->isRun()&&victim->runninghowlong>=1)dojumpattack=1;							if(!hostile)dojumpattack=0;
+			if(distsq(&victim->coords,&/*player[i].*/coords)<5&&victim->aitype==gethelptype&&(attackkeydown)&&!victim->skeleton.free&&victim->isRun()&&victim->runninghowlong>=1)dojumpattack=1;							if(!hostile)dojumpattack=0;
 							if(dojumpattack){
 								if((targetanimation==rabbitrunninganim||targetanimation==wolfrunninganim)&&id==0){
 									targetanimation=rabbittackleanim;
@@ -1807,8 +1807,8 @@ void	Person::DoAnimations(){
 								targetloc+=coords;
 								for(i=0;i<numplayers;i++){
 									if(i!=id)
-										if(findDistancefast(&targetloc,&player[i].coords)<closestdist||closestdist==0){
-											closestdist=findDistancefast(&targetloc,&player[i].coords);
+										if(distsq(&targetloc,&player[i].coords)<closestdist||closestdist==0){
+											closestdist=distsq(&targetloc,&player[i].coords);
 											closestid=i;
 										}
 								}
@@ -1842,7 +1842,7 @@ void	Person::DoAnimations(){
 							//if(onfire)damagemult=3;
 							if((animation[targetanimation].attack==normalattack||targetanimation==walljumprightkickanim||targetanimation==walljumpleftkickanim)&&(!feint)&&(victim->skeleton.free!=2||targetanimation==killanim||targetanimation==dropkickanim||targetanimation==crouchstabanim||targetanimation==swordgroundstabanim||targetanimation==staffgroundsmashanim)){
 								if(targetanimation==spinkickanim&&animation[targetanimation].label[currentframe]==5){
-									if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&3&&animation[victim->targetanimation].height!=lowheight){
+									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&3&&animation[victim->targetanimation].height!=lowheight){
 										escapednum=0;
 										if(id==0)camerashake+=.4;
 										if(Random()%2||creature==wolftype){
@@ -1877,7 +1877,7 @@ void	Person::DoAnimations(){
 								}
 
 								if(targetanimation==wolfslapanim&&animation[targetanimation].label[currentframe]==5){
-									if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&3&&animation[victim->targetanimation].height!=lowheight){
+									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&3&&animation[victim->targetanimation].height!=lowheight){
 										escapednum=0;
 										if(id==0)camerashake+=.4;
 										if(Random()%2||creature==wolftype){
@@ -1909,7 +1909,7 @@ void	Person::DoAnimations(){
 								}
 
 								if(targetanimation==walljumprightkickanim&&animation[targetanimation].label[currentframe]==5){
-									if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&animation[victim->targetanimation].height!=lowheight){
+									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&animation[victim->targetanimation].height!=lowheight){
 										escapednum=0;
 										if(id==0)camerashake+=.4;
 										victim->spurt=1;
@@ -1944,7 +1944,7 @@ void	Person::DoAnimations(){
 								}
 
 								if(targetanimation==walljumpleftkickanim&&animation[targetanimation].label[currentframe]==5){
-									if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&animation[victim->targetanimation].height!=lowheight){
+									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&animation[victim->targetanimation].height!=lowheight){
 										escapednum=0;
 										if(id==0)camerashake+=.4;
 										victim->spurt=1;
@@ -1979,7 +1979,7 @@ void	Person::DoAnimations(){
 								}
 
 								if(targetanimation==blockhighleftstrikeanim&&animation[targetanimation].label[currentframe]==5){
-									if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&animation[victim->targetanimation].height!=lowheight){
+									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&animation[victim->targetanimation].height!=lowheight){
 										escapednum=0;
 										if(id==0)camerashake+=.4;
 										if(Random()%2){
@@ -2003,7 +2003,7 @@ void	Person::DoAnimations(){
 								}
 
 								if(targetanimation==killanim&&animation[targetanimation].label[currentframe]==8){
-									if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&victim->dead){
+									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&victim->dead){
 										escapednum=0;
 										if(id==0)camerashake+=.2;
 										emit_sound_at(whooshhitsound, victim->coords, 128.);
@@ -2036,7 +2036,7 @@ void	Person::DoAnimations(){
 								}
 
 								if(targetanimation==killanim&&animation[targetanimation].label[currentframe]==5){
-									if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*9&&victim->dead){
+									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*9&&victim->dead){
 										escapednum=0;
 										if(id==0)camerashake+=.4;
 										if(tutoriallevel!=1){
@@ -2060,7 +2060,7 @@ void	Person::DoAnimations(){
 								}
 
 								if(targetanimation==dropkickanim&&animation[targetanimation].label[currentframe]==7){
-									if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*9&&victim->skeleton.free){
+									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*9&&victim->skeleton.free){
 										escapednum=0;
 										if(id==0)camerashake+=.4;
 										if(tutoriallevel!=1){
@@ -2110,7 +2110,7 @@ void	Person::DoAnimations(){
 									}
 
 									if(victim&&hasvictim){
-										if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*3){
+										if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3){
 
 											XYZ where,startpoint,endpoint,movepoint,colpoint;
 											float rotationpoint;
@@ -2242,7 +2242,7 @@ void	Person::DoAnimations(){
 										}
 										hasvictim=victim->DoBloodBigWhere(2,220,footpoint);
 										if(hasvictim){
-											if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*3){
+											if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3){
 												victim->skeleton.longdead=0;
 												victim->skeleton.free=1;
 												victim->skeleton.broken=0;
@@ -2276,7 +2276,7 @@ void	Person::DoAnimations(){
 								}
 
 								if(targetanimation==upunchanim&&animation[targetanimation].label[currentframe]==5){
-									if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*3){
+									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3){
 										escapednum=0;
 										if(id==0)camerashake+=.4;
 										if(Random()%2){
@@ -2313,7 +2313,7 @@ void	Person::DoAnimations(){
 
 
 								if(targetanimation==winduppunchanim&&animation[targetanimation].label[currentframe]==5){
-									if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*2){
+									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*2){
 										escapednum=0;
 										if(id==0)camerashake+=.4;
 										if(victim->damage<=victim->damagetolerance-60&&normaldotproduct(victim->facing,victim->coords-coords)<(scale*5)*(scale*5)*0&&animation[victim->targetanimation].height!=lowheight){
@@ -2359,7 +2359,7 @@ void	Person::DoAnimations(){
 								}
 
 								if(targetanimation==blockhighleftanim&&animation[targetanimation].label[currentframe]==5){
-									if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*4){
+									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*4){
 										if(victim->id==0)camerashake+=.4;
 										emit_sound_at(landsound2, victim->coords);
 
@@ -2368,7 +2368,7 @@ void	Person::DoAnimations(){
 								}
 
 								if(targetanimation==swordslashparryanim&&animation[targetanimation].label[currentframe]==5){
-									if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*4){
+									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*4){
 										if(victim->id==0)camerashake+=.4;
 
 										if(weaponactive!=-1){
@@ -2414,7 +2414,7 @@ void	Person::DoAnimations(){
 
 								if(targetanimation==knifeslashstartanim&&animation[targetanimation].label[currentframe]==5){
 									if(hasvictim)
-										if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*4.5&&/*animation[victim->targetanimation].height!=lowheight&&*/victim->targetanimation!=dodgebackanim&&victim->targetanimation!=rollanim){
+										if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*4.5&&/*animation[victim->targetanimation].height!=lowheight&&*/victim->targetanimation!=dodgebackanim&&victim->targetanimation!=rollanim){
 											escapednum=0;
 											if(tutoriallevel!=1)victim->DoBloodBig(1.5/victim->armorhigh,225);
 
@@ -2462,7 +2462,7 @@ void	Person::DoAnimations(){
 										}
 								}
 								if(targetanimation==swordslashanim&&animation[targetanimation].label[currentframe]==5&&victim->targetanimation!=rollanim){
-									if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*6.5&&victim->targetanimation!=dodgebackanim){
+									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*6.5&&victim->targetanimation!=dodgebackanim){
 										if(victim->weaponactive==-1||normaldotproduct(victim->facing,victim->coords-coords)>0||(Random()%2==0)){
 											award_bonus(id, Slashbonus);
 											escapednum=0;
@@ -2487,7 +2487,7 @@ void	Person::DoAnimations(){
 												float bloodlossamount;
 												bloodlossamount=200+abs((float)(Random()%40))-20;
 												victim->bloodloss+=bloodlossamount/victim->armorhigh;
-												//victim->bloodloss+=100*(6.5-findDistancefast(&coords,&victim->coords));
+												//victim->bloodloss+=100*(6.5-distsq(&coords,&victim->coords));
 												victim->DoDamage(damagemult*0);
 
 												XYZ footvel,footpoint;
@@ -2553,7 +2553,7 @@ void	Person::DoAnimations(){
 								}
 
 								if(targetanimation==staffhitanim&&animation[targetanimation].label[currentframe]==5&&victim->targetanimation!=rollanim){
-									if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*6.5&&victim->targetanimation!=dodgebackanim&&victim->targetanimation!=sweepanim){
+									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*6.5&&victim->targetanimation!=dodgebackanim&&victim->targetanimation!=sweepanim){
 										if(tutoriallevel!=1){
 											weapons[weaponids[0]].damage+=.4+float(abs(Random()%100)-50)/250;
 											escapednum=0;
@@ -2587,7 +2587,7 @@ void	Person::DoAnimations(){
 								}
 
 								if(targetanimation==staffspinhitanim&&animation[targetanimation].label[currentframe]==5&&victim->targetanimation!=rollanim){
-									if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*6.5&&victim->targetanimation!=dodgebackanim&&victim->targetanimation!=sweepanim){
+									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*6.5&&victim->targetanimation!=dodgebackanim&&victim->targetanimation!=sweepanim){
 										if(tutoriallevel!=1){
 											weapons[weaponids[0]].damage+=.6+float(abs(Random()%100)-50)/250;
 											escapednum=0;
@@ -2618,7 +2618,7 @@ void	Person::DoAnimations(){
 								}
 
 								if(targetanimation==staffgroundsmashanim&&animation[targetanimation].label[currentframe]==5){
-									if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*6.5){
+									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*6.5){
 										escapednum=0;
 										if(tutoriallevel!=1){
 											if(!victim->dead)weapons[weaponids[0]].damage+=.4+float(abs(Random()%100)-50)/500;
@@ -2672,7 +2672,7 @@ void	Person::DoAnimations(){
 								}
 
 								if(targetanimation==lowkickanim&&animation[targetanimation].label[currentframe]==5){
-									if(findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&animation[victim->targetanimation].height!=highheight){
+									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&animation[victim->targetanimation].height!=highheight){
 										escapednum=0;
 										if(id==0)camerashake+=.4;
 										XYZ relative;
@@ -2730,7 +2730,7 @@ void	Person::DoAnimations(){
 								}
 
 								if(targetanimation==sweepanim&&animation[targetanimation].label[currentframe]==5){
-									if(victim->targetanimation!=jumpupanim&&findDistancefast(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&victim!=this){
+									if(victim->targetanimation!=jumpupanim&&distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&victim!=this){
 										escapednum=0;
 										if(id==0)camerashake+=.2;
 										if(tutoriallevel!=1){
@@ -3324,7 +3324,7 @@ void	Person::DoAnimations(){
 										if(numplayers>1)
 											for(i=0;i<numplayers;i++){
 												if(id!=i&&player[i].coords.y<coords.y&&!player[i].skeleton.free){
-													distance=findDistancefast(&player[i].coords,&coords);
+													distance=distsq(&player[i].coords,&coords);
 													if(closestdist==-1||distance<closestdist){
 														closestdist=distance;
 														closest=i;
@@ -3381,7 +3381,7 @@ void	Person::DoAnimations(){
 										if(numplayers>1)
 											for(i=0;i<numplayers;i++){
 												if(id!=i&&player[i].coords.y<coords.y&&!player[i].skeleton.free){
-													distance=findDistancefast(&player[i].coords,&coords);
+													distance=distsq(&player[i].coords,&coords);
 													if(closestdist==-1||distance<closestdist){
 														closestdist=distance;
 														closest=i;
@@ -3795,7 +3795,7 @@ void	Person::DoStuff(){
 		superruntoggle=0;
 		if(aitype!=passivetype){
 			superruntoggle=1;
-			if(aitype==attacktypecutoff&&(player[0].isIdle()||player[0].isCrouch()||player[0].skeleton.free||player[0].targetanimation==getupfrombackanim||player[0].targetanimation==getupfromfrontanim||player[0].targetanimation==sneakanim)&&findDistancefast(&coords,&player[0].coords)<16){
+			if(aitype==attacktypecutoff&&(player[0].isIdle()||player[0].isCrouch()||player[0].skeleton.free||player[0].targetanimation==getupfrombackanim||player[0].targetanimation==getupfromfrontanim||player[0].targetanimation==sneakanim)&&distsq(&coords,&player[0].coords)<16){
 				superruntoggle=0;
 			}
 		}
@@ -3954,7 +3954,7 @@ void	Person::DoStuff(){
 		}
 	}
 
-	if(texupdatedelay<0&&bleeding>0&&bloodtoggle==2&&findDistancefast(&viewer,&coords)<9){
+	if(texupdatedelay<0&&bleeding>0&&bloodtoggle==2&&distsq(&viewer,&coords)<9){
 		texupdatedelay=.12;
 
 		bloodsize=5-realtexdetail;
@@ -4339,7 +4339,7 @@ void	Person::DoStuff(){
 
 
 
-		if((id==0||findDistancefast(&coords,&viewer)<50)&&autoslomo){
+		if((id==0||distsq(&coords,&viewer)<50)&&autoslomo){
 			slomo=1;
 			slomodelay=.2;
 		}
@@ -4707,7 +4707,7 @@ void	Person::DoStuff(){
 		if(findLengthfast(&velocity)>.1)
 			for(i=0;i<objects.numobjects;i++){
 				if(objects.type[i]==firetype)
-					if(findDistancefastflat(&coords,&objects.position[i])<objects.scale[i]*objects.scale[i]*12&&findDistancefast(&coords,&objects.position[i])<objects.scale[i]*objects.scale[i]*49){
+					if(distsqflat(&coords,&objects.position[i])<objects.scale[i]*objects.scale[i]*12&&distsq(&coords,&objects.position[i])<objects.scale[i]*objects.scale[i]*49){
 						if(onfire){
 							if(!objects.onfire[i]){
 								emit_sound_at(firestartsound, objects.position[i]);
@@ -4721,7 +4721,7 @@ void	Person::DoStuff(){
 						}
 					}
 					if(objects.type[i]==bushtype)
-						if(findDistancefastflat(&coords,&objects.position[i])<objects.scale[i]*objects.scale[i]*12&&findDistancefast(&coords,&objects.position[i])<objects.scale[i]*objects.scale[i]*49){
+						if(distsqflat(&coords,&objects.position[i])<objects.scale[i]*objects.scale[i]*12&&distsq(&coords,&objects.position[i])<objects.scale[i]*objects.scale[i]*49){
 							if(onfire){
 								if(!objects.onfire[i]){
 									emit_sound_at(firestartsound, objects.position[i]);
@@ -4793,7 +4793,7 @@ void	Person::DoStuff(){
 								tempcoord=DoRotation(tempcoord,-objects.pitch[i],0,0);
 								tempcoord+=objects.position[i];
 							}
-							if(findDistancefastflat(&tempcoord,&objects.position[i])<objects.scale[i]*objects.scale[i]*8&&findDistancefast(&tempcoord,&objects.position[i])<objects.scale[i]*objects.scale[i]*300&&tempcoord.y>objects.position[i].y+3*objects.scale[i]){
+							if(distsqflat(&tempcoord,&objects.position[i])<objects.scale[i]*objects.scale[i]*8&&distsq(&tempcoord,&objects.position[i])<objects.scale[i]*objects.scale[i]*300&&tempcoord.y>objects.position[i].y+3*objects.scale[i]){
 								if(objects.messedwith[i]<=0){
 									XYZ tempvel;
 									XYZ pos;
@@ -5361,7 +5361,7 @@ void	Person::DoStuff(){
 			midterrain=0;
 			midterrain.x=terrain.size*terrain.scale/2;
 			midterrain.z=terrain.size*terrain.scale/2;
-			if(findDistancefastflat(&coords,&midterrain)>(terrain.size*terrain.scale/2-viewdistance)*(terrain.size*terrain.scale/2-viewdistance)){
+			if(distsqflat(&coords,&midterrain)>(terrain.size*terrain.scale/2-viewdistance)*(terrain.size*terrain.scale/2-viewdistance)){
 				XYZ tempposit;
 				tempposit=coords-midterrain;
 				tempposit.y=0;
@@ -5374,7 +5374,7 @@ void	Person::DoStuff(){
 
 int Person::DrawSkeleton(){
 	int oldplayerdetail;
-	if((frustum.SphereInFrustum(coords.x,coords.y+scale*3,coords.z,scale*8)&&findDistancefast(&viewer,&coords)<viewdistance*viewdistance)||skeleton.free==3){
+	if((frustum.SphereInFrustum(coords.x,coords.y+scale*3,coords.z,scale*8)&&distsq(&viewer,&coords)<viewdistance*viewdistance)||skeleton.free==3){
 		if(onterrain&&(isIdle()||isCrouch()||wasIdle()||wasCrouch())&&!skeleton.free){
 			calcrot=1;
 		}
@@ -5394,13 +5394,13 @@ int Person::DrawSkeleton(){
 		if(!isnormal(tilt2))tilt2=0;
 		oldplayerdetail=playerdetail;
 		playerdetail=0;
-		if(findDistancefast(&viewer,&coords)<viewdistance*viewdistance/32&&detail==2){
+		if(distsq(&viewer,&coords)<viewdistance*viewdistance/32&&detail==2){
 			playerdetail=1;
 		}
-		if(findDistancefast(&viewer,&coords)<viewdistance*viewdistance/128&&detail==1){
+		if(distsq(&viewer,&coords)<viewdistance*viewdistance/128&&detail==1){
 			playerdetail=1;
 		}
-		if(findDistancefast(&viewer,&coords)<viewdistance*viewdistance/256&&(detail!=1&&detail!=2)){
+		if(distsq(&viewer,&coords)<viewdistance*viewdistance/256&&(detail!=1&&detail!=2)){
 			playerdetail=1;
 		}
 		if(id==0)
@@ -5792,7 +5792,7 @@ int Person::DrawSkeleton(){
 		}
 
 		terrainlight=terrain.getLighting(coords.x,coords.z);
-		distance=findDistancefast(&viewer,&coords);
+		distance=distsq(&viewer,&coords);
 		distance=(viewdistance*viewdistance-(distance-(viewdistance*viewdistance*fadestart))*(1/(1-fadestart)))/viewdistance/viewdistance;
 		if(distance>1)distance=1;
 		if(distance>0){
@@ -6123,7 +6123,7 @@ int Person::SphereCheck(XYZ *p1,float radius, XYZ *p, XYZ *move, float *rotate, 
 
 	oldp1=*p1;
 	*p1=*p1-*move;
-	if(findDistancefast(p1,&model->boundingspherecenter)>radius*radius+model->boundingsphereradius*model->boundingsphereradius)return -1;
+	if(distsq(p1,&model->boundingspherecenter)>radius*radius+model->boundingsphereradius*model->boundingsphereradius)return -1;
 	if(*rotate)*p1=DoRotation(*p1,0,-*rotate,0);
 	for(i=0;i<4;i++){
 		for (j=0;j<model->TriangleNum;j++){

@@ -614,7 +614,7 @@ static int findClosestPlayer(){
     float closestdist = std::numeric_limits<float>::max();
 
     for(int i=1; i<numplayers; i++){
-        float distance = findDistancefast(&player[i].coords, &player[0].coords);
+        float distance = distsq(&player[i].coords, &player[0].coords);
         if(distance < closestdist){
             closestdist = distance;
             closest = i;
@@ -628,7 +628,7 @@ static int findClosestObject(){
     float closestdist = std::numeric_limits<float>::max();
 
     for(int i=0; i<objects.numobjects; i++){
-        float distance = findDistancefast(&objects.position[i], &player[0].coords);
+        float distance = distsq(&objects.position[i], &player[0].coords);
         if(distance < closestdist){
             closestdist = distance;
             closest = i;
@@ -1878,7 +1878,7 @@ void Loadlevel(const char *name) {
 			float tempdist;
 			//~ int whichclosest;
 			for(int i=0;i<objects.numobjects;i++){
-				tempdist=findDistancefast(&objects.center,&objects.position[i]);
+				tempdist=distsq(&objects.center,&objects.position[i]);
 				if(tempdist>maxdistance){
 					//~ whichclosest=i;
 					maxdistance=tempdist;
@@ -2800,7 +2800,7 @@ void doDebugKeys(){
             float closestdist = std::numeric_limits<float>::max();
 
             for(int i=1; i<numplayers; i++){
-                float distance = findDistancefast(&player[i].coords, &player[0].coords);
+                float distance = distsq(&player[i].coords, &player[0].coords);
                 if(!player[i].headless)
                     if(distance < closestdist){
                         closestdist = distance;
@@ -2810,7 +2810,7 @@ void doDebugKeys(){
 
             XYZ flatfacing2,flatvelocity2;
             XYZ blah;
-            if(closest!=-1 && findDistancefast(&player[closest].coords, &player[0].coords)<144){
+            if(closest!=-1 && distsq(&player[closest].coords, &player[0].coords)<144){
                 blah = player[closest].coords;
                 XYZ headspurtdirection;
                 //int i = player[closest].skeleton.jointlabels[head];
@@ -2852,7 +2852,7 @@ void doDebugKeys(){
             int closest=findClosestPlayer();
             XYZ flatfacing2,flatvelocity2;
             XYZ blah;
-            if(closest>=0 && findDistancefast(&player[closest].coords,&player[0].coords)<144){
+            if(closest>=0 && distsq(&player[closest].coords,&player[0].coords)<144){
                 blah=player[closest].coords;
                 emit_sound_at(splattersound, blah);
                 emit_sound_at(breaksound2, blah);
@@ -2909,18 +2909,18 @@ void doDebugKeys(){
                 XYZ temppos;
                 for(int j=0;j<numplayers; j++){
                     if(j!=closest){
-                        if(findDistancefast(&player[j].coords,&player[closest].coords)<25){
-                            player[j].DoDamage((25-findDistancefast(&player[j].coords,&player[closest].coords))*60);
+                        if(distsq(&player[j].coords,&player[closest].coords)<25){
+                            player[j].DoDamage((25-distsq(&player[j].coords,&player[closest].coords))*60);
                             if(player[j].skeleton.free==2)
                                 player[j].skeleton.free=1;
                             player[j].skeleton.longdead=0;
                             player[j].RagDoll(0);
                             for(int i=0;i<player[j].skeleton.num_joints; i++){
                                 temppos=player[j].skeleton.joints[i].position+player[j].coords;
-                                if(findDistancefast(&temppos,&player[closest].coords)<25){
+                                if(distsq(&temppos,&player[closest].coords)<25){
                                     flatvelocity2=temppos-player[closest].coords;
                                     Normalise(&flatvelocity2);
-                                    player[j].skeleton.joints[i].velocity+=flatvelocity2*((20-findDistancefast(&temppos,&player[closest].coords))*20);
+                                    player[j].skeleton.joints[i].velocity+=flatvelocity2*((20-distsq(&temppos,&player[closest].coords))*20);
                                 }
                             }
                         }
@@ -3188,7 +3188,7 @@ void doDebugKeys(){
                     connected=0;
                     if(numpathpoints>1)
                         for(int i=0;i<numpathpoints;i++){
-                            if(findDistancefast(&pathpoint[i],&player[0].coords)<.5&&i!=pathpointselected&&!connected){
+                            if(distsq(&pathpoint[i],&player[0].coords)<.5&&i!=pathpointselected&&!connected){
                                 alreadyconnected=0;
                                 for(int j=0;j<numpathpointconnect[pathpointselected];j++){
                                     if(pathpointconnect[pathpointselected][j]==i)alreadyconnected=1;
@@ -3313,8 +3313,8 @@ void doJumpReversals(){
                      player[k].aitype==playercontrolled)&&
                     (player[i].aitype==attacktypecutoff&&player[i].stunned<=0||
                      player[k].aitype==attacktypecutoff&&player[k].stunned<=0)){
-                if(     findDistancefast(&player[i].coords,&player[k].coords)<10*sq((player[i].scale+player[k].scale)*2.5)&&
-                        findDistancefastflat(&player[i].coords,&player[k].coords)<2*sq((player[i].scale+player[k].scale)*2.5)){
+                if(     distsq(&player[i].coords,&player[k].coords)<10*sq((player[i].scale+player[k].scale)*2.5)&&
+                        distsqflat(&player[i].coords,&player[k].coords)<2*sq((player[i].scale+player[k].scale)*2.5)){
                     //TODO: refactor two huge similar ifs
                     if(player[i].targetanimation==jumpupanim&&
                             player[k].targetanimation!=getupfrombackanim&&
@@ -3436,13 +3436,13 @@ void doAerialAcrobatics(){
             player[k].yaw=stepTowardf(player[k].yaw, player[k].targetyaw, multiplier*player[k].turnspeed*4);
         }
 
-        /*if(player[k].aitype!=passivetype||(findDistancefast(&player[k].coords,&viewer)<viewdistance*viewdistance))*/
+        /*if(player[k].aitype!=passivetype||(distsq(&player[k].coords,&viewer)<viewdistance*viewdistance))*/
         player[k].DoStuff();
         if(player[k].immobile&&k!=0)
             player[k].coords=player[k].realoldcoords;
 
         //if player's position has changed (?)
-        if(findDistancefast(&player[k].coords,&player[k].realoldcoords)>0&&
+        if(distsq(&player[k].coords,&player[k].realoldcoords)>0&&
                 !player[k].skeleton.free&&
                 player[k].targetanimation!=climbanim&&
                 player[k].targetanimation!=hanganim){
@@ -3834,7 +3834,7 @@ void doAttacks(){
                                     player[i].targetanimation==knifeslashstartanim||
                                     player[i].targetanimation==staffhitanim||
                                     player[i].targetanimation==staffspinhitanim)
-                                if(findDistancefast(&player[k].coords,&player[i].coords)<6.5&&!player[i].skeleton.free){
+                                if(distsq(&player[k].coords,&player[i].coords)<6.5&&!player[i].skeleton.free){
                                     player[k].setAnimation(dodgebackanim);
                                     player[k].targetyaw=roughDirectionTo(player[k].coords,player[i].coords);
                                     player[k].targettilt2=pitchTo(player[k].coords,player[i].coords);
@@ -3870,7 +3870,7 @@ void doAttacks(){
                             if(!player[k].hasvictim)
                                 if(animation[player[k].targetanimation].attack!=reversal){
                                     //choose an attack
-                                    const float distance=findDistancefast(&player[k].coords,&player[i].coords);
+                                    const float distance=distsq(&player[k].coords,&player[i].coords);
                                     if(distance<4.5&&
                                             !player[i].skeleton.free&&
                                             player[i].howactive<typedead1&&
@@ -4139,7 +4139,7 @@ void doAttacks(){
                             if(i==k)continue;
                             if((playerrealattackkeydown||player[i].dead||!hasstaff)&&
                                     animation[player[k].targetanimation].attack==neutral){
-                                const float distance=findDistancefast(&player[k].coords,&player[i].coords);
+                                const float distance=distsq(&player[k].coords,&player[i].coords);
                                 if(!player[i].dead||!realthreat||(!attackweapon&&player[k].crouchkeydown))
                                     if(player[i].skeleton.free)
                                         if(distance<3.5*sq(player[k].scale*5)&&
@@ -4263,8 +4263,8 @@ void doAttacks(){
                             if(i==k||!(i==0||k==0))continue;
                             if(!player[i].skeleton.free){
                                 if(player[k].hasvictim){
-                                    if(findDistancefast(&player[k].coords,&player[i].coords)<
-                                       findDistancefast(&player[k].coords,&player[k].victim->coords))
+                                    if(distsq(&player[k].coords,&player[i].coords)<
+                                       distsq(&player[k].coords,&player[k].victim->coords))
                                         player[k].victim=&player[i];
                                 }else{
                                     player[k].victim=&player[i];
@@ -4279,8 +4279,8 @@ void doAttacks(){
                                 player[k].isRun()&&
                                 player[k].wasRun()&&
                                 ((player[k].hasvictim&&
-                                  findDistancefast(&player[k].coords,&player[k].victim->coords)<12*sq(player[k].scale*5)&&
-                                  findDistancefast(&player[k].coords,&player[k].victim->coords)>7*sq(player[k].scale*5)&&
+                                  distsq(&player[k].coords,&player[k].victim->coords)<12*sq(player[k].scale*5)&&
+                                  distsq(&player[k].coords,&player[k].victim->coords)>7*sq(player[k].scale*5)&&
                                   !player[k].victim->skeleton.free&&
                                   player[k].victim->targetanimation!=getupfrombackanim&&
                                   player[k].victim->targetanimation!=getupfromfrontanim&&
@@ -4343,7 +4343,7 @@ void doPlayerCollisions(){
                 if(player[i].coords.z>player[k].coords.z-3)
                 if(player[i].coords.z<player[k].coords.z+3){
                     //spread fire from player to player
-                    if(findDistancefast(&player[i].coords,&player[k].coords)
+                    if(distsq(&player[i].coords,&player[k].coords)
                             <3*sq((player[i].scale+player[k].scale)*2.5)){
                         if(player[i].onfire||player[k].onfire){
                             if(!player[i].onfire)player[i].CatchFire();
@@ -4362,8 +4362,8 @@ void doPlayerCollisions(){
                         if(player[0].targetanimation==rabbitkickanim&&(k==0||i==0)&&!player[0].victim->skeleton.free)
                             collisionradius=3;
                     if((!player[i].skeleton.oldfree||!player[k].skeleton.oldfree)&&
-                            (findDistancefast(&tempcoords1,&tempcoords2)<collisionradius||
-                             findDistancefast(&player[i].coords,&player[k].coords)<collisionradius)){
+                            (distsq(&tempcoords1,&tempcoords2)<collisionradius||
+                             distsq(&player[i].coords,&player[k].coords)<collisionradius)){
                         //jump down on a dead body
                         if(k==0||i==0){
                             int l=i?i:k;
@@ -4375,7 +4375,7 @@ void doPlayerCollisions(){
                                     player[l].dead&&
                                     player[0].lastcollide<=0&&
                                     fabs(player[l].coords.y-player[0].coords.y)<.2&&
-                                    findDistancefast(&player[0].coords,&player[l].coords)<.7*sq((player[l].scale+player[0].scale)*2.5)){
+                                    distsq(&player[0].coords,&player[l].coords)<.7*sq((player[l].scale+player[0].scale)*2.5)){
                                 player[0].coords.y=player[l].coords.y;
                                 player[l].velocity=player[0].velocity;
                                 player[l].skeleton.free=0;
@@ -4440,7 +4440,7 @@ void doPlayerCollisions(){
                                      animation[player[k].targetanimation].attack==normalattack)){
                                 //If bumped
                                 if(player[i].skeleton.oldfree==0&&player[k].skeleton.oldfree==0){
-                                    if(findDistancefast(&player[k].coords,&player[i].coords)<.5*sq((player[i].scale+player[k].scale)*2.5)){
+                                    if(distsq(&player[k].coords,&player[i].coords)<.5*sq((player[i].scale+player[k].scale)*2.5)){
                                         rotatetarget=player[k].coords-player[i].coords;
                                         Normalise(&rotatetarget);
                                         player[k].coords=(player[k].coords+player[i].coords)/2;
@@ -4518,7 +4518,7 @@ void doAI(int i){
             player[i].stunned=1;
 
         player[i].pause=0;
-        if(findDistancefastflat(&player[0].coords,&player[i].coords)<30&&
+        if(distsqflat(&player[0].coords,&player[i].coords)<30&&
                 player[0].coords.y>player[i].coords.y+2&&
                 !player[0].onterrain)
             player[i].pause=1;
@@ -4533,8 +4533,8 @@ void doAI(int i){
                 closest=-1;
                 closestdistance=-1;
                 for(int j=0;j<numpathpoints;j++)
-                    if(closest==-1||findDistancefast(&player[i].finalfinaltarget,&pathpoint[j])<closestdistance){
-                        closestdistance=findDistancefast(&player[i].finalfinaltarget,&pathpoint[j]);
+                    if(closest==-1||distsq(&player[i].finalfinaltarget,&pathpoint[j])<closestdistance){
+                        closestdistance=distsq(&player[i].finalfinaltarget,&pathpoint[j]);
                         closest=j;
                         player[i].finaltarget=pathpoint[j];
                     }
@@ -4563,8 +4563,8 @@ void doAI(int i){
                 if(player[i].lastpathfindpoint==-1){
                     for(int j=0;j<numpathpoints;j++){
                         if(j!=player[i].lastpathfindpoint)
-                            if(closest==-1||(findDistancefast(&player[i].coords,&pathpoint[j])<closestdistance)){
-                                closestdistance=findDistancefast(&player[i].coords,&pathpoint[j]);
+                            if(closest==-1||(distsq(&player[i].coords,&pathpoint[j])<closestdistance)){
+                                closestdistance=distsq(&player[i].coords,&pathpoint[j]);
                                 closest=j;
                             }
                     }
@@ -4617,7 +4617,7 @@ void doAI(int i){
             player[i].lookyaw=player[i].targetyaw;
 
             //reached target point
-            if(findDistancefastflat(&player[i].coords,&pathpoint[player[i].targetpathfindpoint])<.6){
+            if(distsqflat(&player[i].coords,&pathpoint[player[i].targetpathfindpoint])<.6){
                 player[i].lastpathfindpoint4=player[i].lastpathfindpoint3;
                 player[i].lastpathfindpoint3=player[i].lastpathfindpoint2;
                 player[i].lastpathfindpoint2=player[i].lastpathfindpoint;
@@ -4630,9 +4630,9 @@ void doAI(int i){
                     player[i].lastpathfindpoint4=player[i].lastpathfindpoint3;
                 player[i].targetpathfindpoint=-1;
             }
-            if(     findDistancefastflat(&player[i].coords,&player[i].finalfinaltarget)<
-                    findDistancefastflat(&player[i].coords,&player[i].finaltarget)||
-                    findDistancefastflat(&player[i].coords,&player[i].finaltarget)<.6*sq(player[i].scale*5)||
+            if(     distsqflat(&player[i].coords,&player[i].finalfinaltarget)<
+                    distsqflat(&player[i].coords,&player[i].finaltarget)||
+                    distsqflat(&player[i].coords,&player[i].finaltarget)<.6*sq(player[i].scale*5)||
                     player[i].lastpathfindpoint==player[i].finalpathfindpoint) {
                 player[i].aitype=passivetype;
             }
@@ -4656,14 +4656,14 @@ void doAI(int i){
             if((tutoriallevel!=1||cananger)&&
                     hostile&&
                     !player[0].dead&&
-                    findDistancefast(&player[i].coords,&player[0].coords)<400&&
+                    distsq(&player[i].coords,&player[0].coords)<400&&
                     player[i].occluded<25){
-                if(findDistancefast(&player[i].coords,&player[0].coords)<12&&
+                if(distsq(&player[i].coords,&player[0].coords)<12&&
                         animation[player[0].targetanimation].height!=lowheight&&
                         !editorenabled&&
                         (player[0].coords.y<player[i].coords.y+5||player[0].onterrain))
                     player[i].aitype=attacktypecutoff;
-                if(findDistancefast(&player[i].coords,&player[0].coords)<30&&
+                if(distsq(&player[i].coords,&player[0].coords)<30&&
                         animation[player[0].targetanimation].height==highheight&&
                         !editorenabled)
                     player[i].aitype=attacktypecutoff;
@@ -4673,7 +4673,7 @@ void doAI(int i){
                     for(int j=0;j<numplayers;j++)
                         if(j==0||player[j].skeleton.free||player[j].aitype!=passivetype)
                             if(abs(Random()%2)||animation[player[j].targetanimation].height!=lowheight||j!=0)
-                                if(findDistancefast(&player[i].coords,&player[j].coords)<400)
+                                if(distsq(&player[i].coords,&player[j].coords)<400)
                                     if(normaldotproduct(player[i].facing,player[j].coords-player[i].coords)>0)
                                         if(player[j].coords.y<player[i].coords.y+5||player[j].onterrain)
                                             if(!player[j].isWallJump()&&-1==checkcollide(
@@ -4714,7 +4714,7 @@ void doAI(int i){
                     player[i].lookyaw=player[i].targetyaw;
                     player[i].aiupdatedelay=.05;
 
-                    if(findDistancefastflat(&player[i].coords,&player[i].waypoints[player[i].waypoint])<1){
+                    if(distsqflat(&player[i].coords,&player[i].waypoints[player[i].waypoint])<1){
                         if(player[i].waypointtype[player[i].waypoint]==wppause)
                             player[i].pausetime=4;
                         player[i].waypoint++;
@@ -4743,8 +4743,8 @@ void doAI(int i){
                         float leftdist,rightdist;
                         leftpos = player[i].coords+DoRotation(player[i].facing,0,90,0);
                         rightpos = player[i].coords-DoRotation(player[i].facing,0,90,0);
-                        leftdist = findDistancefast(&leftpos, &player[i].avoidwhere);
-                        rightdist = findDistancefast(&rightpos, &player[i].avoidwhere);
+                        leftdist = distsq(&leftpos, &player[i].avoidwhere);
+                        rightdist = distsq(&rightpos, &player[i].avoidwhere);
                         if(leftdist<rightdist)
                             player[i].targetyaw+=90;
                         else
@@ -4764,7 +4764,7 @@ void doAI(int i){
                     if(numenvsounds>0&&(tutoriallevel!=1||cananger)&&hostile)
                         for(int j=0;j<numenvsounds;j++){
                             float vol=player[i].howactive==typesleeping?envsoundvol[j]-14:envsoundvol[j];
-                            if(vol>0&&findDistancefast(&player[i].coords,&envsound[j])<
+                            if(vol>0&&distsq(&player[i].coords,&envsound[j])<
                                     2*(vol+vol*(player[i].creature==rabbittype)*3))
                                 player[i].aitype=attacktypecutoff;
                         }
@@ -4779,12 +4779,12 @@ void doAI(int i){
             if(player[i].howactive<typesleeping&&
                     ((tutoriallevel!=1||cananger)&&hostile)&&
                     !player[0].dead&&
-                    findDistancefast(&player[i].coords,&player[0].coords)<400&&
+                    distsq(&player[i].coords,&player[0].coords)<400&&
                     player[i].occluded<25){
-                if(findDistancefast(&player[i].coords,&player[0].coords)<12&&
+                if(distsq(&player[i].coords,&player[0].coords)<12&&
                         animation[player[0].targetanimation].height!=lowheight&&!editorenabled)
                     player[i].aitype=attacktypecutoff;
-                if(findDistancefast(&player[i].coords,&player[0].coords)<30&&
+                if(distsq(&player[i].coords,&player[0].coords)<30&&
                         animation[player[0].targetanimation].height==highheight&&!editorenabled)
                     player[i].aitype=attacktypecutoff;
 
@@ -4806,7 +4806,7 @@ void doAI(int i){
                             windsmell=windvector;
                             Normalise(&windsmell);
                             windsmell=windsmell*2+player[j].coords;
-                            if(findDistancefast(&player[i].coords,&windsmell)<smelldistance&&!editorenabled)
+                            if(distsq(&player[i].coords,&windsmell)<smelldistance&&!editorenabled)
                                 player[i].aitype=attacktypecutoff;
                         }
                     }
@@ -4817,7 +4817,7 @@ void doAI(int i){
                     for(int j=0;j<numplayers;j++){
                         if(j==0||player[j].skeleton.free||player[j].aitype!=passivetype){
                             if(abs(Random()%2)||animation[player[j].targetanimation].height!=lowheight||j!=0)
-                                if(findDistancefast(&player[i].coords,&player[j].coords)<400)
+                                if(distsq(&player[i].coords,&player[j].coords)<400)
                                     if(normaldotproduct(player[i].facing,player[j].coords-player[i].coords)>0)
                                         if((-1==checkcollide(
                                                         DoRotation(player[i].getJointFor(head).position,0,player[i].yaw,0)*
@@ -4900,7 +4900,7 @@ void doAI(int i){
                 player[i].aiupdatedelay=.05;
                 player[i].forwardkeydown=1;
 
-                if(findDistancefastflat(&player[i].coords,&player[i].lastseen)<1*sq(player[i].scale*5)||player[i].lastchecktime<0){
+                if(distsqflat(&player[i].coords,&player[i].lastseen)<1*sq(player[i].scale*5)||player[i].lastchecktime<0){
                     player[i].forwardkeydown=0;
                     player[i].aiupdatedelay=1;
                     player[i].lastseen.x+=(float(Random()%100)-50)/25;
@@ -4922,8 +4922,8 @@ void doAI(int i){
                         float leftdist,rightdist;
                         leftpos = player[i].coords+DoRotation(player[i].facing,0,90,0);
                         rightpos = player[i].coords-DoRotation(player[i].facing,0,90,0);
-                        leftdist = findDistancefast(&leftpos, &player[i].avoidwhere);
-                        rightdist = findDistancefast(&rightpos, &player[i].avoidwhere);
+                        leftdist = distsq(&leftpos, &player[i].avoidwhere);
+                        rightdist = distsq(&rightpos, &player[i].avoidwhere);
                         if(leftdist<rightdist)player[i].targetyaw+=90;
                         else player[i].targetyaw-=90;
                     }
@@ -4936,7 +4936,7 @@ void doAI(int i){
 
             if(numenvsounds>0&&((tutoriallevel!=1||cananger)&&hostile))
                 for(int k=0;k<numenvsounds;k++){
-                    if(findDistancefast(&player[i].coords,&envsound[k])<2*(envsoundvol[k]+envsoundvol[k]*(player[i].creature==rabbittype)*3)){
+                    if(distsq(&player[i].coords,&envsound[k])<2*(envsoundvol[k]+envsoundvol[k]*(player[i].creature==rabbittype)*3)){
                         player[i].aitype=attacktypecutoff;
                     }
                 }
@@ -4947,13 +4947,13 @@ void doAI(int i){
                     player[i].occluded<2&&
                     ((tutoriallevel!=1||cananger)&&hostile)){
                 player[i].losupdatedelay=.2;
-                if(findDistancefast(&player[i].coords,&player[0].coords)<4&&animation[player[i].targetanimation].height!=lowheight){
+                if(distsq(&player[i].coords,&player[0].coords)<4&&animation[player[i].targetanimation].height!=lowheight){
                     player[i].aitype=attacktypecutoff;
                     player[i].lastseentime=1;
                 }
                 if(abs(Random()%2)||animation[player[i].targetanimation].height!=lowheight)
                     //TODO: factor out canSeePlayer()
-                    if(findDistancefast(&player[i].coords,&player[0].coords)<400)
+                    if(distsq(&player[i].coords,&player[0].coords)<400)
                         if(normaldotproduct(player[i].facing,player[0].coords-player[i].coords)>0)
                             if((checkcollide(
                                         DoRotation(player[i].getJointFor(head).position,0,player[i].yaw,0)*
@@ -5006,7 +5006,7 @@ void doAI(int i){
                                 player[k].howactive<typedead1&&
                                 !player[k].skeleton.free&&
                                 player[k].aitype==passivetype) {
-                            float distance=findDistancefast(&player[i].coords,&player[k].coords);
+                            float distance=distsq(&player[i].coords,&player[k].coords);
                             if(closestdist==-1||distance<closestdist) {
                                 closestdist=distance;
                                 closest=k;
@@ -5048,7 +5048,7 @@ void doAI(int i){
                     player[i].aiupdatedelay=.05;
                     player[i].forwardkeydown=1;
 
-                    if(findDistancefastflat(&player[i].coords,&player[player[i].ally].coords)<3){
+                    if(distsqflat(&player[i].coords,&player[player[i].ally].coords)<3){
                         player[i].aitype=searchtype;
                         player[i].lastseentime=12;
                         player[player[i].ally].aitype=searchtype;
@@ -5067,8 +5067,8 @@ void doAI(int i){
                             float leftdist,rightdist;
                             leftpos = player[i].coords+DoRotation(player[i].facing,0,90,0);
                             rightpos = player[i].coords-DoRotation(player[i].facing,0,90,0);
-                            leftdist = findDistancefast(&leftpos, &player[i].avoidwhere);
-                            rightdist = findDistancefast(&rightpos, &player[i].avoidwhere);
+                            leftdist = distsq(&leftpos, &player[i].avoidwhere);
+                            rightdist = distsq(&rightpos, &player[i].avoidwhere);
                             if(leftdist<rightdist)
                                 player[i].targetyaw+=90;
                             else
@@ -5103,7 +5103,7 @@ void doAI(int i){
                     float closestdist=-1;
                     for(int k=0;k<weapons.size();k++)
                         if(weapons[k].owner==-1){
-                            float distance=findDistancefast(&player[i].coords,&weapons[k].position);
+                            float distance=distsq(&player[i].coords,&weapons[k].position);
                             if(closestdist==-1||distance<closestdist){
                                 closestdist=distance;
                                 closest=k;
@@ -5126,7 +5126,7 @@ void doAI(int i){
                 if(!player[0].dead)
                     if(player[i].ally>=0){
                         if(weapons[player[i].ally].owner!=-1||
-                                findDistancefast(&player[i].coords,&weapons[player[i].ally].position)>16){
+                                distsq(&player[i].coords,&weapons[player[i].ally].position)>16){
                             player[i].aitype=attacktypecutoff;
                             player[i].lastseentime=1;
                         }
@@ -5145,8 +5145,8 @@ void doAI(int i){
                                 float leftdist,rightdist;
                                 leftpos = player[i].coords+DoRotation(player[i].facing,0,90,0);
                                 rightpos = player[i].coords-DoRotation(player[i].facing,0,90,0);
-                                leftdist = findDistancefast(&leftpos, &player[i].avoidwhere);
-                                rightdist = findDistancefast(&rightpos, &player[i].avoidwhere);
+                                leftdist = distsq(&leftpos, &player[i].avoidwhere);
+                                rightdist = distsq(&rightpos, &player[i].avoidwhere);
                                 if(leftdist<rightdist)
                                     player[i].targetyaw+=90;
                                 else
@@ -5207,7 +5207,7 @@ void doAI(int i){
                     !player[0].skeleton.free&&
                     player[0].targetanimation!=walljumprightkickanim&&
                     player[0].targetanimation!=walljumpleftkickanim){
-                if(findDistancefast(&player[0].coords,&player[i].coords)<25)
+                if(distsq(&player[0].coords,&player[i].coords)<25)
                     if((1-player[i].damage/player[i].damagetolerance)>.5)
                         player[i].stunned=1;
             }
@@ -5220,7 +5220,7 @@ void doAI(int i){
                                 weapons[i].velocity.x==0&&
                                 weapons[i].velocity.z==0&&
                                 weapons[i].velocity.y==0){
-                            if(findDistancefast(&player[i].coords,&weapons[k].position)<16) {
+                            if(distsq(&player[i].coords,&weapons[k].position)<16) {
                                 player[i].wentforweapon++;
                                 player[i].lastchecktime=6;
                                 player[i].aitype=getweapontype;
@@ -5294,18 +5294,18 @@ void doAI(int i){
                 //chase player
                 XYZ rotatetarget=player[0].coords+player[0].velocity;
                 XYZ targetpoint=player[0].coords;
-                if(findDistancefast(&player[0].coords,&player[i].coords)<
-                        findDistancefast(&rotatetarget,&player[i].coords))
+                if(distsq(&player[0].coords,&player[i].coords)<
+                        distsq(&rotatetarget,&player[i].coords))
                     targetpoint+=player[0].velocity*
                         findDistance(&player[0].coords,&player[i].coords)/findLength(&player[i].velocity);
                 player[i].targetyaw=roughDirectionTo(player[i].coords,targetpoint);
                 player[i].lookyaw=player[i].targetyaw;
                 player[i].aiupdatedelay=.2+fabs((float)(Random()%100)/1000);
 
-                if(findDistancefast(&player[i].coords,&player[0].coords)>5&&(player[0].weaponactive==-1||player[i].weaponactive!=-1))
+                if(distsq(&player[i].coords,&player[0].coords)>5&&(player[0].weaponactive==-1||player[i].weaponactive!=-1))
                     player[i].forwardkeydown=1;
-                else if((findDistancefast(&player[i].coords,&player[0].coords)>16||
-                            findDistancefast(&player[i].coords,&player[0].coords)<9)&&
+                else if((distsq(&player[i].coords,&player[0].coords)>16||
+                            distsq(&player[i].coords,&player[0].coords)<9)&&
                         player[0].weaponactive!=-1)
                     player[i].forwardkeydown=1;
                 else if(Random()%6==0||(player[i].creature==wolftype&&Random()%3==0))
@@ -5341,7 +5341,7 @@ void doAI(int i){
                     player[i].attackkeydown=1;
                 else
                     player[i].attackkeydown=0;
-                if(player[i].isRun()&&Random()%6&&findDistancefast(&player[i].coords,&player[0].coords)>7)
+                if(player[i].isRun()&&Random()%6&&distsq(&player[i].coords,&player[0].coords)>7)
                     player[i].attackkeydown=0;
 
                 //TODO: wat
@@ -5366,7 +5366,7 @@ void doAI(int i){
                                  player[i].weaponactive!=-1||
                                  player[j].targetanimation==staffhitanim||
                                  player[j].targetanimation==staffspinhitanim))
-                            if(findDistancefast(&player[j].coords,&player[j].victim->coords)<4&&
+                            if(distsq(&player[j].coords,&player[j].victim->coords)<4&&
                                     player[j].victim==&player[i]&&
                                     (player[j].targetanimation==sweepanim||
                                      player[j].targetanimation==spinkickanim||
@@ -5377,7 +5377,7 @@ void doAI(int i){
                                      player[j].targetanimation==wolfslapanim||
                                      player[j].targetanimation==knifeslashstartanim||
                                      player[j].targetanimation==swordslashanim&&
-                                      (findDistancefast(&player[j].coords,&player[i].coords)<2||
+                                      (distsq(&player[j].coords,&player[i].coords)<2||
                                        player[i].weaponactive!=-1))){
                                 if(target>=0)
                                     target=-1;
@@ -5391,7 +5391,7 @@ void doAI(int i){
                 if(player[i].collided<1)
                     player[i].jumpkeydown=0;
                 if(player[i].collided>.8&&player[i].jumppower>=5||
-                        findDistancefast(&player[i].coords,&player[0].coords)>400&&
+                        distsq(&player[i].coords,&player[0].coords)>400&&
                         player[i].onterrain&&
                         player[i].creature==rabbittype)
                     player[i].jumpkeydown=1;
@@ -5399,7 +5399,7 @@ void doAI(int i){
                 if(normaldotproduct(player[i].facing,player[0].coords-player[i].coords)>0)
                     player[0].jumpkeydown=0;
                 if(player[0].targetanimation==jumpdownanim&&
-                        findDistancefast(&player[0].coords,&player[i].coords)<40)
+                        distsq(&player[0].coords,&player[i].coords)<40)
                     player[i].crouchkeydown=1;
                 if(player[i].jumpkeydown)
                     player[i].attackkeydown=0;
@@ -6381,7 +6381,7 @@ void Game::Tick(){
                             realdialoguetype>0&&
                             (dialoguegonethrough[i]==0||!special)&&
                             (special||Input::isKeyPressed(attackkey))){
-                        if(findDistancefast(&player[0].coords,&player[realdialoguetype].coords)<6||
+                        if(distsq(&player[0].coords,&player[realdialoguetype].coords)<6||
                                 player[realdialoguetype].howactive>=typedead1||
                                 dialoguetype[i]>40&&dialoguetype[i]<50){
                             whichdialogue=i;
@@ -6833,14 +6833,14 @@ void Game::Tick(){
                     //avoid flaming things
                     for(int j=0;j<objects.numobjects;j++)
                         if(objects.onfire[j])
-                            if(findDistancefast(&player[i].coords,&objects.position[j])<sq(objects.scale[j])*200)
-                                if(     findDistancefast(&player[i].coords,&objects.position[j])<
-                                        findDistancefast(&player[i].coords,&player[0].coords)){
+                            if(distsq(&player[i].coords,&objects.position[j])<sq(objects.scale[j])*200)
+                                if(     distsq(&player[i].coords,&objects.position[j])<
+                                        distsq(&player[i].coords,&player[0].coords)){
                                     player[i].collided=0;
                                     player[i].avoidcollided=1;
                                     if(player[i].avoidsomething==0||
-                                            findDistancefast(&player[i].coords,&objects.position[j])<
-                                            findDistancefast(&player[i].coords,&player[i].avoidwhere)){
+                                            distsq(&player[i].coords,&objects.position[j])<
+                                            distsq(&player[i].coords,&player[i].avoidwhere)){
                                         player[i].avoidwhere=objects.position[j];
                                         player[i].avoidsomething=1;
                                     }
@@ -6849,14 +6849,14 @@ void Game::Tick(){
                     //avoid flaming players
                     for(int j=0;j<numplayers;j++)
                         if(player[j].onfire)
-                            if(findDistancefast(&player[j].coords,&player[i].coords)<sq(0.3)*200)
-                                if(     findDistancefast(&player[i].coords,&player[j].coords)<
-                                        findDistancefast(&player[i].coords,&player[0].coords)){
+                            if(distsq(&player[j].coords,&player[i].coords)<sq(0.3)*200)
+                                if(     distsq(&player[i].coords,&player[j].coords)<
+                                        distsq(&player[i].coords,&player[0].coords)){
                                     player[i].collided=0;
                                     player[i].avoidcollided=1;
                                     if(player[i].avoidsomething==0||
-                                            findDistancefast(&player[i].coords,&player[j].coords)<
-                                            findDistancefast(&player[i].coords,&player[i].avoidwhere)){
+                                            distsq(&player[i].coords,&player[j].coords)<
+                                            distsq(&player[i].coords,&player[i].avoidwhere)){
                                         player[i].avoidwhere=player[j].coords;
                                         player[i].avoidsomething=1;
                                     }
@@ -6935,8 +6935,8 @@ void Game::Tick(){
                                             player[i].aitype==playercontrolled)&&
                                         weapons[j].owner==-1&&
                                         player[i].weaponactive==-1)
-                                    if(findDistancefastflat(&player[i].coords,&weapons[j].position)<2){
-                                        if(findDistancefast(&player[i].coords,&weapons[j].position)<2){
+                                    if(distsqflat(&player[i].coords,&weapons[j].position)<2){
+                                        if(distsq(&player[i].coords,&weapons[j].position)<2){
                                             if(player[i].isCrouch()||
                                                     player[i].targetanimation==sneakanim||
                                                     player[i].isRun()||
@@ -6956,8 +6956,8 @@ void Game::Tick(){
                                                             weapons[j].owner==-1||
                                                         player[i].victim&&
                                                         weapons[j].owner==player[i].victim->id)
-                                                    if(findDistancefastflat(&player[i].coords,&weapons[j].position)<2&&player[i].weaponactive==-1)
-                                                        if(findDistancefast(&player[i].coords,&weapons[j].position)<1||player[i].victim){
+                                                    if(distsqflat(&player[i].coords,&weapons[j].position)<2&&player[i].weaponactive==-1)
+                                                        if(distsq(&player[i].coords,&weapons[j].position)<1||player[i].victim){
                                                             if(weapons[j].getType()!=staff)
                                                                 emit_sound_at(knifedrawsound, player[i].coords, 128.);
 
@@ -6972,7 +6972,7 @@ void Game::Tick(){
                                         }else if((player[i].isIdle()||
                                                     player[i].isFlip()||
                                                     player[i].aitype!=playercontrolled)&&
-                                                findDistancefast(&player[i].coords,&weapons[j].position)<5&&
+                                                distsq(&player[i].coords,&weapons[j].position)<5&&
                                                 player[i].coords.y<weapons[j].position.y){
                                             if(!player[i].isFlip()){
                                                 player[i].throwtogglekeydown=1;
@@ -6990,7 +6990,7 @@ void Game::Tick(){
                                                                     weapons[k].owner==-1||
                                                                 player[i].victim&&
                                                                  weapons[k].owner==player[i].victim->id)
-                                                            if(findDistancefastflat(&player[i].coords,&weapons[k].position)<3&&
+                                                            if(distsqflat(&player[i].coords,&weapons[k].position)<3&&
                                                                     player[i].weaponactive==-1){
                                                                 if(weapons[k].getType()!=staff)
                                                                     emit_sound_at(knifedrawsound, player[i].coords, 128.);
@@ -7018,7 +7018,7 @@ void Game::Tick(){
                                             if(j!=i)
                                                 if(player[j].num_weapons&&
                                                         player[j].skeleton.free&&
-                                                        findDistancefast(&player[i].coords,&player[j].coords)<2/*&&player[j].dead*/&&
+                                                        distsq(&player[i].coords,&player[j].coords)<2/*&&player[j].dead*/&&
                                                         (((player[j].skeleton.forward.y<0&&
                                                            player[j].weaponstuckwhere==0)||
                                                           (player[j].skeleton.forward.y>0&&
@@ -7121,8 +7121,8 @@ void Game::Tick(){
                                                 if(tutoriallevel!=1||tutorialstage==49)
                                                     if(hostile)
                                                         if(normaldotproduct(player[i].facing,player[i].coords-player[j].coords)<0&&
-                                                                findDistancefast(&player[i].coords,&player[j].coords)<100&&
-                                                                findDistancefast(&player[i].coords,&player[j].coords)>1.5&&
+                                                                distsq(&player[i].coords,&player[j].coords)<100&&
+                                                                distsq(&player[i].coords,&player[j].coords)>1.5&&
                                                                 !player[j].skeleton.free&&
                                                                 -1==checkcollide(DoRotation(player[j].getJointFor(head).position,0,player[j].yaw,0)*player[j].scale+player[j].coords,DoRotation(player[i].getJointFor(head).position,0,player[i].yaw,0)*player[i].scale+player[i].coords)){
                                                             if(!player[i].isFlip()){
@@ -7277,14 +7277,14 @@ void Game::Tick(){
                                 if(numplayers>1)
                                     for(int j=0;j<numplayers;j++)
                                         if(j!=i&&!player[j].skeleton.free&&player[j].aitype==passivetype)
-                                            if(findDistancefast(&player[j].coords,&player[i].coords)<16)
+                                            if(distsq(&player[j].coords,&player[i].coords)<16)
                                                 player[i].superruntoggle=0;
                             }
 
                             if(numplayers>1)
                                 for(int j=0;j<numplayers;j++){
                                     if(j!=i&&!player[j].skeleton.free&&player[j].victim&&player[i].lowreversaldelay<=0){
-                                        if(findDistancefast(&player[j].coords,&player[j].victim->coords)<3&&
+                                        if(distsq(&player[j].coords,&player[j].victim->coords)<3&&
                                                 player[j].victim==&player[i]&&
                                                 (player[j].targetanimation==sweepanim||
                                                  player[j].targetanimation==upunchanim||
@@ -7293,7 +7293,7 @@ void Game::Tick(){
                                                    player[j].targetanimation==knifeslashstartanim||
                                                    player[j].targetanimation==staffhitanim||
                                                    player[j].targetanimation==staffspinhitanim)&&
-                                                  findDistancefast(&player[j].coords,&player[i].coords)<2))){
+                                                  distsq(&player[j].coords,&player[i].coords)<2))){
                                             if(target>=0)
                                                 target=-1;
                                             else
@@ -7330,7 +7330,7 @@ void Game::Tick(){
                                                 !player[j].skeleton.free&&
                                                 player[j].victim&&
                                                 player[i].highreversaldelay<=0){
-                                            if(findDistancefast(&player[j].coords,&player[j].victim->coords)<3&&
+                                            if(distsq(&player[j].coords,&player[j].victim->coords)<3&&
                                                     player[j].victim==&player[i]&&
                                                     (player[j].targetanimation==spinkickanim)&&
                                                     player[i].isCrouch()){
@@ -7511,7 +7511,7 @@ void Game::Tick(){
                                 if(numplayers>1)
                                     for(int j=0;j<numplayers;j++){
                                         if(j!=i&&!player[j].skeleton.free&&player[j].victim){
-                                            if(findDistancefast(&player[j].coords,&player[j].victim->coords)<3&&
+                                            if(distsq(&player[j].coords,&player[j].victim->coords)<3&&
                                                     player[j].victim==&player[i]&&
                                                     (player[j].targetanimation==sweepanim)){
                                                 if(target>=0)target=-1;
@@ -7665,7 +7665,7 @@ void Game::Tick(){
                 oldtemp=temp;
                 oldtemp2=temp2;
                 if(tutorialstage>=51)
-                    if(findDistancefast(&temp,&player[0].coords)>=findDistancefast(&temp,&temp2)-1||findDistancefast(&temp3,&player[0].coords)<4){
+                    if(distsq(&temp,&player[0].coords)>=distsq(&temp,&temp2)-1||distsq(&temp3,&player[0].coords)<4){
                         OPENAL_StopSound(OPENAL_ALL);  // hack...OpenAL renderer isn't stopping music after tutorial goes to level menu...
                         OPENAL_SetFrequency(OPENAL_ALL, 0.001);
 
@@ -7679,7 +7679,7 @@ void Game::Tick(){
                         flash();
                     }
                 if(tutorialstage<51)
-                    if(findDistancefast(&temp,&player[0].coords)>=findDistancefast(&temp,&temp2)-1||findDistancefast(&temp3,&player[0].coords)<4){
+                    if(distsq(&temp,&player[0].coords)>=distsq(&temp,&temp2)-1||distsq(&temp3,&player[0].coords)<4){
                         emit_sound_at(fireendsound, player[0].coords);
 
                         player[0].coords=(oldtemp+oldtemp2)/2;
@@ -7687,7 +7687,7 @@ void Game::Tick(){
                         flash();
                     }
                 if(tutorialstage>=14&&tutorialstage<50)
-                    if(findDistancefast(&temp,&player[1].coords)>=findDistancefast(&temp,&temp2)-1||findDistancefast(&temp3,&player[1].coords)<4){
+                    if(distsq(&temp,&player[1].coords)>=distsq(&temp,&temp2)-1||distsq(&temp3,&player[1].coords)<4){
                         emit_sound_at(fireendsound, player[1].coords);
 
                         for(int i=0;i<player[1].skeleton.num_joints;i++){
@@ -7913,7 +7913,7 @@ void Game::TickOnceAfter(){
 		winhotspot=false;
 		for(int i=0;i<numhotspots;i++)
 			if(hotspottype[i]==-1)
-				if(findDistancefast(&player[0].coords,&hotspot[i])<hotspotsize[i])
+				if(distsq(&player[0].coords,&hotspot[i])<hotspotsize[i])
 					winhotspot=true;
 
 		int numalarmed=0;

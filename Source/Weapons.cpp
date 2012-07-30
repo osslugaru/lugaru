@@ -215,8 +215,8 @@ void Weapon::DoStuff(int i) {
 			for(int j=0;j<numplayers;j++) {
 				footvel=0;
 				footpoint=DoRotation((player[j].skeleton.joints[player[j].skeleton.jointlabels[abdomen]].position+player[j].skeleton.joints[player[j].skeleton.jointlabels[neck]].position)/2,0,player[j].yaw,0)*player[j].scale+player[j].coords;
-				if(owner==-1 && findDistancefastflat(&position,&player[j].coords)<1.5 && 
-				findDistancefast(&position,&player[j].coords)<4 && player[j].weaponstuck==-1 &&
+				if(owner==-1 && distsqflat(&position,&player[j].coords)<1.5 && 
+				distsq(&position,&player[j].coords)<4 && player[j].weaponstuck==-1 &&
 				!player[j].skeleton.free && j!=oldowner) {
 					if((player[j].aitype!=attacktypecutoff||abs(Random()%6)==0||(player[j].targetanimation!=backhandspringanim&&player[j].targetanimation!=rollanim&&player[j].targetanimation!=flipanim&&Random()%2==0))&&!missed) {
 						if( (player[j].creature==wolftype	&&	Random()%3!=0 && player[j].weaponactive==-1 && (player[j].isIdle()||player[j].isRun()||player[j].targetanimation==walkanim))||
@@ -331,15 +331,15 @@ void Weapon::DoStuff(int i) {
 				XYZ terrainlight;
 				terrainlight=terrain.getLighting(position.x,position.z);
 				if(environment==snowyenvironment){
-					if(findDistancefast(&position,&viewer)<viewdistance*viewdistance/4)
+					if(distsq(&position,&viewer)<viewdistance*viewdistance/4)
 						Sprite::MakeSprite(cloudsprite, position,velocity, terrainlight.x,terrainlight.y,terrainlight.z, .5, .7);
 				}
 				else if(environment==grassyenvironment){
-					if(findDistancefast(&position,&viewer)<viewdistance*viewdistance/4)
+					if(distsq(&position,&viewer)<viewdistance*viewdistance/4)
 						Sprite::MakeSprite(cloudsprite, position,velocity, terrainlight.x*90/255,terrainlight.y*70/255,terrainlight.z*8/255, .5, .5);
 				}
 				else if(environment==desertenvironment){
-					if(findDistancefast(&position,&viewer)<viewdistance*viewdistance/4)
+					if(distsq(&position,&viewer)<viewdistance*viewdistance/4)
 						Sprite::MakeSprite(cloudsprite, position,velocity, terrainlight.x*190/255,terrainlight.y*170/255,terrainlight.z*108/255, .5, .7);
 				}
 
@@ -654,15 +654,15 @@ void Weapon::DoStuff(int i) {
 							XYZ terrainlight;
 							terrainlight=terrain.getLighting(position.x,position.z);
 							if(environment==snowyenvironment){
-								if(findDistancefast(&position,&viewer)<viewdistance*viewdistance/4)
+								if(distsq(&position,&viewer)<viewdistance*viewdistance/4)
 									Sprite::MakeSprite(cloudsprite, position,velocity, terrainlight.x,terrainlight.y,terrainlight.z, .5, .7);
 							}
 							else if(environment==grassyenvironment){
-								if(findDistancefast(&position,&viewer)<viewdistance*viewdistance/4)
+								if(distsq(&position,&viewer)<viewdistance*viewdistance/4)
 									Sprite::MakeSprite(cloudsprite, position,velocity, terrainlight.x*90/255,terrainlight.y*70/255,terrainlight.z*8/255, .5, .5);
 							}
 							else if(environment==desertenvironment){
-								if(findDistancefast(&position,&viewer)<viewdistance*viewdistance/4)
+								if(distsq(&position,&viewer)<viewdistance*viewdistance/4)
 									Sprite::MakeSprite(cloudsprite, position,velocity, terrainlight.x*190/255,terrainlight.y*170/255,terrainlight.z*108/255, .5, .7);
 							}
 						}
@@ -705,15 +705,15 @@ void Weapon::DoStuff(int i) {
 							XYZ terrainlight;
 							terrainlight=terrain.getLighting(tippoint.x,tippoint.z);
 							if(environment==snowyenvironment){
-								if(findDistancefast(&tippoint,&viewer)<viewdistance*viewdistance/4)
+								if(distsq(&tippoint,&viewer)<viewdistance*viewdistance/4)
 									Sprite::MakeSprite(cloudsprite, tippoint,tipvelocity, terrainlight.x,terrainlight.y,terrainlight.z, .5, .7);
 							}
 							else if(environment==grassyenvironment){
-								if(findDistancefast(&tippoint,&viewer)<viewdistance*viewdistance/4)
+								if(distsq(&tippoint,&viewer)<viewdistance*viewdistance/4)
 									Sprite::MakeSprite(cloudsprite, tippoint,tipvelocity, terrainlight.x*90/255,terrainlight.y*70/255,terrainlight.z*8/255, .5, .5);
 							}
 							else if(environment==desertenvironment){
-								if(findDistancefast(&tippoint,&viewer)<viewdistance*viewdistance/4)
+								if(distsq(&tippoint,&viewer)<viewdistance*viewdistance/4)
 									Sprite::MakeSprite(cloudsprite, tippoint,tipvelocity, terrainlight.x*190/255,terrainlight.y*170/255,terrainlight.z*108/255, .5, .7);
 							}
 						}
@@ -874,7 +874,7 @@ void Weapon::DoStuff(int i) {
 			flamedelay=.020;
 			flamedelay-=multiplier;
 			normalrot=0;
-			if(Random()%50==0&&findDistancefast(&position,&viewer)>80) {
+			if(Random()%50==0&&distsq(&position,&viewer)>80) {
 				XYZ shinepoint;
 				shinepoint=position+(tippoint-position)*(((float)abs(Random()%100))/100);
 				Sprite::MakeSprite(weaponshinesprite, shinepoint,normalrot, 1,1,1, (.1+(float)abs(Random()%100)/200-.25)*1/3*fast_sqrt(findDistance(&shinepoint,&viewer)), 1);
@@ -898,7 +898,7 @@ void Weapon::Draw() {
 	static GLfloat M[16];
 	
 	if((frustum.SphereInFrustum(position.x,position.y,position.z,1)&&
-		findDistancefast(&viewer,&position)<viewdistance*viewdistance))
+		distsq(&viewer,&position)<viewdistance*viewdistance))
 	{
 		bool draw=false;
 		if(owner==-1)
@@ -910,7 +910,7 @@ void Weapon::Draw() {
 				drawhowmany=1;
 		} else {
 			if(player[owner].occluded<25)
-				if((frustum.SphereInFrustum(player[owner].coords.x,player[owner].coords.y+player[owner].scale*3,player[owner].coords.z,player[owner].scale*8)&&findDistancefast(&viewer,&player[owner].coords)<viewdistance*viewdistance)||player[owner].skeleton.free==3)
+				if((frustum.SphereInFrustum(player[owner].coords.x,player[owner].coords.y+player[owner].scale*3,player[owner].coords.z,player[owner].scale*8)&&distsq(&viewer,&player[owner].coords)<viewdistance*viewdistance)||player[owner].skeleton.free==3)
 					draw=true;
 			if	(
 				(player[owner].targetanimation==knifeslashstartanim||

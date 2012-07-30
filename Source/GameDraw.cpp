@@ -445,7 +445,7 @@ int Game::DrawGLScene(StereoSide side)
 					glEnable(GL_BLEND);
 					glEnable(GL_LIGHTING);
 					terrainlight=terrain.getLighting(player[k].coords.x,player[k].coords.z);
-					distance=findDistancefast(&viewer,&player[k].coords);
+					distance=distsq(&viewer,&player[k].coords);
 					distance=(viewdistance*viewdistance-(distance-(viewdistance*viewdistance*fadestart))*(1/(1-fadestart)))/viewdistance/viewdistance;
 					glColor4f(terrainlight.x,terrainlight.y,terrainlight.z,distance);
 					if(distance>=1)
@@ -470,7 +470,7 @@ int Game::DrawGLScene(StereoSide side)
 		}
 
 		if(!cameramode&&musictype==stream_fighttheme)
-            playerdist=findDistancefastflat(&player[0].coords,&viewer);
+            playerdist=distsqflat(&player[0].coords,&viewer);
 		else
             playerdist=-100;
 		glPushMatrix();
@@ -490,7 +490,7 @@ int Game::DrawGLScene(StereoSide side)
 			glTranslatef(hawkcoords.x,hawkcoords.y,hawkcoords.z);
 			glRotatef(hawkyaw,0,1,0);
 			glTranslatef(25,0,0);
-			distance=findDistancefast(&viewer,&realhawkcoords)*1.2;
+			distance=distsq(&viewer,&realhawkcoords)*1.2;
 			glColor4f(light.color[0],light.color[1],light.color[2],(viewdistance*viewdistance-(distance-(viewdistance*viewdistance*fadestart))*(1/(1-fadestart)))/viewdistance/viewdistance);
 			if((viewdistance*viewdistance-(distance-(viewdistance*viewdistance*fadestart))*(1/(1-fadestart)))/viewdistance/viewdistance>1)
                 glColor4f(light.color[0],light.color[1],light.color[2],1);
@@ -508,7 +508,7 @@ int Game::DrawGLScene(StereoSide side)
 				glEnable(GL_BLEND);
 				glEnable(GL_LIGHTING);
 				terrainlight=terrain.getLighting(player[k].coords.x,player[k].coords.z);
-				distance=findDistancefast(&viewer,&player[k].coords);
+				distance=distsq(&viewer,&player[k].coords);
 				distance=(viewdistance*viewdistance-(distance-(viewdistance*viewdistance*fadestart))*(1/(1-fadestart)))/viewdistance/viewdistance;
 				glColor4f(terrainlight.x,terrainlight.y,terrainlight.z,distance);
 				if(distance>=1)
@@ -917,9 +917,9 @@ int Game::DrawGLScene(StereoSide side)
                 float distance=0;
                 closest=currenthotspot;
                 for(i=0;i<numhotspots;i++){
-                    distance=findDistancefast(&player[0].coords,&hotspot[i]);
+                    distance=distsq(&player[0].coords,&hotspot[i]);
                     if(closestdist==-1||distance<closestdist){
-                        if(findDistancefast(&player[0].coords,&hotspot[i])<hotspotsize[i]&&((hotspottype[i]<=10&&hotspottype[i]>=0)||(hotspottype[i]<=40&&hotspottype[i]>=20))){
+                        if(distsq(&player[0].coords,&hotspot[i])<hotspotsize[i]&&((hotspottype[i]<=10&&hotspottype[i]>=0)||(hotspottype[i]<=40&&hotspottype[i]>=20))){
                             closestdist=distance;
                             closest=i;
                         }
@@ -929,7 +929,7 @@ int Game::DrawGLScene(StereoSide side)
                     currenthotspot=closest;
                 if(currenthotspot!=-1){
                     if(hotspottype[closest]<=10){
-                        if(findDistancefast(&player[0].coords,&hotspot[closest])<hotspotsize[closest])
+                        if(distsq(&player[0].coords,&hotspot[closest])<hotspotsize[closest])
                             tutorialstagetime=0;
                         tutorialmaxtime=1;
                         tutorialopac=tutorialmaxtime-tutorialstagetime;
@@ -1473,7 +1473,7 @@ int Game::DrawGLScene(StereoSide side)
 			float tempdist;
 			//~ int whichclosest;
 			for(i=0;i<objects.numobjects;i++){
-				tempdist=findDistancefast(&center,&objects.position[i]);
+				tempdist=distsq(&center,&objects.position[i]);
 				if(tempdist>maxdistance){
 					//~ whichclosest=i;
 					maxdistance=tempdist;
@@ -1481,7 +1481,7 @@ int Game::DrawGLScene(StereoSide side)
 			}
 			for(i=0;i<numplayers;i++){
 				if(!player[i].dead){
-					tempdist=findDistancefast(&center,&player[i].coords);
+					tempdist=distsq(&center,&player[i].coords);
 					if(tempdist>maxdistance){
 						//~ whichclosest=i;
 						maxdistance=tempdist;
@@ -1500,7 +1500,7 @@ int Game::DrawGLScene(StereoSide side)
 			glTranslatef(-(center.x/terrain.scale/256*-2+1),(center.z/terrain.scale/256*-2+1),0);
 			for(i=0;i<objects.numobjects;i++){
 				if(objects.type[i]==treetrunktype){
-					distcheck=findDistancefast(&player[0].coords,&objects.position[i]);
+					distcheck=distsq(&player[0].coords,&objects.position[i]);
 					if(distcheck<mapviewdist){
                         Mapcircletexture.bind();
 						glColor4f(0,.3,0,opac*(1-distcheck/mapviewdist));
@@ -1522,7 +1522,7 @@ int Game::DrawGLScene(StereoSide side)
 					}
 				}
 				if(objects.type[i]==boxtype){
-					distcheck=findDistancefast(&player[0].coords,&objects.position[i]);
+					distcheck=distsq(&player[0].coords,&objects.position[i]);
 					if(distcheck<mapviewdist){
 						Mapboxtexture.bind();
 						glColor4f(.4,.4,.4,opac*(1-distcheck/mapviewdist));
@@ -1565,7 +1565,7 @@ int Game::DrawGLScene(StereoSide side)
 				}
 			}
 			for(i=0;i<numplayers;i++){
-				distcheck=findDistancefast(&player[0].coords,&player[i].coords);
+				distcheck=distsq(&player[0].coords,&player[i].coords);
 				if(distcheck<mapviewdist){
 					glPushMatrix();
                     Maparrowtexture.bind();

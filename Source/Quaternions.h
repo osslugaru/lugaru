@@ -105,9 +105,9 @@ inline XYZ DoRotationRadian(XYZ thePoint, float xang, float yang, float zang);
 inline float findDistance(XYZ *point1, XYZ *point2);
 inline float findLength(XYZ *point1);
 inline float findLengthfast(XYZ *point1);
-inline float findDistancefast(XYZ *point1, XYZ *point2);
-inline float findDistancefast(XYZ point1, XYZ point2);
-inline float findDistancefastflat(XYZ *point1, XYZ *point2);
+inline float distsq(XYZ *point1, XYZ *point2);
+inline float distsq(XYZ point1, XYZ point2);
+inline float distsqflat(XYZ *point1, XYZ *point2);
 inline float dotproduct(const XYZ *point1, const XYZ *point2);
 bool sphere_line_intersection (
 							   float x1, float y1 , float z1,
@@ -302,15 +302,15 @@ inline float findLengthfast(XYZ *point1){
 	return((point1->x)*(point1->x)+(point1->y)*(point1->y)+(point1->z)*(point1->z));
 }
 
-inline float findDistancefast(XYZ *point1, XYZ *point2){
+inline float distsq(XYZ *point1, XYZ *point2){
 	return((point1->x-point2->x)*(point1->x-point2->x)+(point1->y-point2->y)*(point1->y-point2->y)+(point1->z-point2->z)*(point1->z-point2->z));
 }
 
-inline float findDistancefast(XYZ point1, XYZ point2){
+inline float distsq(XYZ point1, XYZ point2){
 	return((point1.x-point2.x)*(point1.x-point2.x)+(point1.y-point2.y)*(point1.y-point2.y)+(point1.z-point2.z)*(point1.z-point2.z));
 }
 
-inline float findDistancefastflat(XYZ *point1, XYZ *point2){
+inline float distsqflat(XYZ *point1, XYZ *point2){
 	return((point1->x-point2->x)*(point1->x-point2->x)+(point1->z-point2->z)*(point1->z-point2->z));
 }
 

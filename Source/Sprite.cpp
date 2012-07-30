@@ -189,9 +189,9 @@ void Sprite::Draw()
 			}
 		}
 		if(sprites[i]->type==snowsprite)
-			distancemult=(144-(findDistancefast(&tempviewer,&sprites[i]->position)-(144*fadestart))*(1/(1-fadestart)))/144;
+			distancemult=(144-(distsq(&tempviewer,&sprites[i]->position)-(144*fadestart))*(1/(1-fadestart)))/144;
 		else
-			distancemult=(viewdistsquared-(findDistancefast(&viewer,&sprites[i]->position)-(viewdistsquared*fadestart))*(1/(1-fadestart)))/viewdistsquared;
+			distancemult=(viewdistsquared-(distsq(&viewer,&sprites[i]->position)-(viewdistsquared*fadestart))*(1/(1-fadestart)))/viewdistsquared;
 		if(sprites[i]->type==flamesprite){
 			if(distancemult>=1) glColor4f(sprites[i]->color[0],sprites[i]->color[1],sprites[i]->color[2],sprites[i]->opacity);
 			else glColor4f(sprites[i]->color[0],sprites[i]->color[1],sprites[i]->color[2],sprites[i]->opacity*distancemult);

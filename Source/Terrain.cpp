@@ -103,7 +103,7 @@ int Terrain::lineTerrain(XYZ p1,XYZ p2, XYZ *p)
 				triangles[2].z=j;
 
 				intersecting=LineFacet(p1,p2,triangles[0],triangles[1],triangles[2],&point);
-				distance=findDistancefast(&p1,&point);
+				distance=distsq(&p1,&point);
 				if((distance<olddistance||firstintersecting==-1)&&intersecting==1){olddistance=distance; firstintersecting=1; *p=point;}
 
 				triangles[0].x=i+1;
@@ -119,7 +119,7 @@ int Terrain::lineTerrain(XYZ p1,XYZ p2, XYZ *p)
 				triangles[2].z=j+1;
 
 				intersecting=LineFacet(p1,p2,triangles[0],triangles[1],triangles[2],&point);
-				distance=findDistancefast(&p1,&point);
+				distance=distsq(&p1,&point);
 				if((distance<olddistance||firstintersecting==-1)&&intersecting==1){olddistance=distance; firstintersecting=1; *p=point;}
 			}
 		}
@@ -146,7 +146,7 @@ void Terrain::UpdateTransparency(int whichx, int whichy){
 				vertex.x=i*scale;
 				vertex.z=j*scale;
 				vertex.y=heightmap[i][j]*scale;
-				distance=findDistancefast(&viewer,&vertex);
+				distance=distsq(&viewer,&vertex);
 				if(distance>viewdistsquared)distance=viewdistsquared;
 				colors[i][j][3]=(viewdistsquared-(distance-(viewdistsquared*fadestart))*(1/(1-fadestart)))/viewdistsquared;
 			}
@@ -222,7 +222,7 @@ void Terrain::UpdateTransparencyotherother(int whichx, int whichy){
 				vertex.x=i*scale;
 				vertex.z=j*scale;
 				vertex.y=heightmap[i][j]*scale;
-				distance=findDistancefast(&viewer,&vertex);
+				distance=distsq(&viewer,&vertex);
 				if(distance>viewdistsquared)distance=viewdistsquared;
 				colors[i][j][3]=(viewdistsquared-(distance-(viewdistsquared*fadestart))*(1/(1-fadestart)))/viewdistsquared;
 			}
@@ -982,7 +982,7 @@ void Terrain::draw(int layer)
 				terrainpoint.x=i*patch_size+(patch_size)/2;
 				terrainpoint.y=viewer.y;//heightmap[i][j]*scale;
 				terrainpoint.z=j*patch_size+(patch_size)/2;
-				distance[i][j]=findDistancefast(&viewer,&terrainpoint);
+				distance[i][j]=distsq(&viewer,&terrainpoint);
 			}
 		}
 	}
@@ -1087,12 +1087,12 @@ void Terrain::drawdecals()
 				}
 			}
 			if(decaltype[i]==shadowdecal||decaltype[i]==shadowdecalpermanent){
-				distancemult=(viewdistsquared-(findDistancefast(&viewer,&decalposition[i])-(viewdistsquared*fadestart))*(1/(1-fadestart)))/viewdistsquared;
+				distancemult=(viewdistsquared-(distsq(&viewer,&decalposition[i])-(viewdistsquared*fadestart))*(1/(1-fadestart)))/viewdistsquared;
 				if(distancemult>=1)glColor4f(1,1,1,decalopacity[i]);
 				if(distancemult<1)glColor4f(1,1,1,decalopacity[i]*distancemult);
 			}
 			if(decaltype[i]==footprintdecal||decaltype[i]==bodyprintdecal){
-				distancemult=(viewdistsquared-(findDistancefast(&viewer,&decalposition[i])-(viewdistsquared*fadestart))*(1/(1-fadestart)))/viewdistsquared;
+				distancemult=(viewdistsquared-(distsq(&viewer,&decalposition[i])-(viewdistsquared*fadestart))*(1/(1-fadestart)))/viewdistsquared;
 				if(distancemult>=1){
 					glColor4f(1,1,1,decalopacity[i]);
 					if(decalalivetime[i]>3)glColor4f(1,1,1,decalopacity[i]*(5-decalalivetime[i])/2);
@@ -1103,7 +1103,7 @@ void Terrain::drawdecals()
 				}
 			}
 			if((decaltype[i]==blooddecal||decaltype[i]==blooddecalfast||decaltype[i]==blooddecalslow)){
-				distancemult=(viewdistsquared-(findDistancefast(&viewer,&decalposition[i])-(viewdistsquared*fadestart))*(1/(1-fadestart)))/viewdistsquared;
+				distancemult=(viewdistsquared-(distsq(&viewer,&decalposition[i])-(viewdistsquared*fadestart))*(1/(1-fadestart)))/viewdistsquared;
 				if(distancemult>=1){
 					glColor4f(decalbrightness[i],decalbrightness[i],decalbrightness[i],decalopacity[i]);
 					if(decalalivetime[i]<4)glColor4f(decalbrightness[i],decalbrightness[i],decalbrightness[i],decalopacity[i]*decalalivetime[i]*.25);

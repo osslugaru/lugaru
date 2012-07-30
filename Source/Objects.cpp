@@ -90,9 +90,9 @@ void Objects::Draw()
 		if(type[i]!=firetype){
 			moved=DoRotation(model[i].boundingspherecenter,0,yaw[i],0);
 			if(type[i]==tunneltype||frustum.SphereInFrustum(position[i].x+moved.x,position[i].y+moved.y,position[i].z+moved.z,model[i].boundingsphereradius)){   
-				distance=findDistancefast(&viewer,&position[i]);
+				distance=distsq(&viewer,&position[i]);
 				distance*=1.2;
-				hidden=!(findDistancefastflat(&viewer,&position[i])>playerdist+3||(type[i]!=bushtype&&type[i]!=treeleavestype));
+				hidden=!(distsqflat(&viewer,&position[i])>playerdist+3||(type[i]!=bushtype&&type[i]!=treeleavestype));
 				if(!hidden){
 
 					if(detail==2&&distance>viewdistance*viewdistance/4&&environment==desertenvironment)glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, blurness );
@@ -329,7 +329,7 @@ void Objects::Draw()
 		if(type[i]==treeleavestype||type[i]==bushtype){
 			moved=DoRotation(model[i].boundingspherecenter,0,yaw[i],0);
 			if(frustum.SphereInFrustum(position[i].x+moved.x,position[i].y+moved.y,position[i].z+moved.z,model[i].boundingsphereradius)){   
-				hidden=findDistancefastflat(&viewer,&position[i])<=playerdist+3;
+				hidden=distsqflat(&viewer,&position[i])<=playerdist+3;
 				if(hidden){
 					distance=1;
 					if(distance>0){
