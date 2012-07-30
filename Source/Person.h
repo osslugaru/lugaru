@@ -118,7 +118,8 @@ class Person
 		float damagetolerance;
 		float damage;
 		float permanentdamage;
-		float superpermanentdamage;		float lastcollide;
+		float superpermanentdamage;
+        float lastcollide;
 		int dead;
 		
 		float jumppower;
@@ -190,7 +191,8 @@ class Person
 		bool loaded;
 		bool whichdirection;
 		float whichdirectiondelay;
-		bool avoidsomething;		XYZ avoidwhere;		
+		bool avoidsomething;
+        XYZ avoidwhere;		
 		float blooddimamount;
 		
 		float staggerdelay;
@@ -250,7 +252,8 @@ class Person
 		bool bled;
 		bool spurt;
 		bool onfire;
-		float onfiredelay;		float burnt;
+		float onfiredelay;
+        float burnt;
 		float fireduration;
 		
 		float flamedelay;
@@ -293,7 +296,8 @@ class Person
 		float lastchecktime;
 		float stunned;
 		float surprised;
-		float runninghowlong;		int lastoccluded;
+		float runninghowlong;
+        int lastoccluded;
 		int laststanding;
 		int escapednum;
 		
@@ -312,101 +316,52 @@ class Person
 		
 		float occluded;
 		
+		bool jumpclimb;
+
+
+
 		void CheckKick();
 		void CatchFire();
 		void DoBlood(float howmuch, int which);
 		void DoBloodBig(float howmuch, int which);
 		bool DoBloodBigWhere(float howmuch, int which, XYZ where);
 		
-		bool wasIdle()
-		{
-		  return animation_bits[currentanimation] & ab_idle;
-		}
-		bool isIdle()
-		{
-		  return animation_bits[targetanimation] & ab_idle;
-		}
+		bool wasIdle() { return animation_bits[currentanimation] & ab_idle; }
+		bool isIdle() { return animation_bits[targetanimation] & ab_idle; }
 		int getIdle();
 		
-		bool isSitting()
-		{
-		  return animation_bits[targetanimation] & ab_sit;
-		}
+		bool isSitting() { return animation_bits[targetanimation] & ab_sit; }
 
-		bool isSleeping()
-		{
-		  return animation_bits[targetanimation] & ab_sleep;
-		}
+		bool isSleeping() { return animation_bits[targetanimation] & ab_sleep; }
 
-		bool wasCrouch()
-		{
-		  return animation_bits[currentanimation] & ab_crouch;
-		}
-		bool isCrouch()
-		{
-		  return animation_bits[targetanimation] & ab_crouch;
-		}
+		bool wasCrouch() { return animation_bits[currentanimation] & ab_crouch; }
+		bool isCrouch() { return animation_bits[targetanimation] & ab_crouch; }
 		int getCrouch();
 		
-		bool wasStop()
-		{
-		  return animation_bits[currentanimation] & ab_stop;
-		}
-		bool isStop()
-		{
-		  return animation_bits[targetanimation] & ab_stop;
-		}
+		bool wasStop() { return animation_bits[currentanimation] & ab_stop; }
+		bool isStop() { return animation_bits[targetanimation] & ab_stop; }
 		int getStop();
 		
 		bool wasSneak();
 		bool isSneak();
 		int getSneak();
 		
-		bool wasRun()
-		{
-		  return animation_bits[currentanimation] & ab_run;
-		}
-		bool isRun()
-		{
-		  return animation_bits[targetanimation] & ab_run;
-		}
+		bool wasRun() { return animation_bits[currentanimation] & ab_run; }
+		bool isRun() { return animation_bits[targetanimation] & ab_run; }
 		int getRun();
 
-		bool wasLanding()
-		{
-		  return animation_bits[currentanimation] & ab_land;
-		}
-		bool isLanding()
-		{
-		  return animation_bits[targetanimation] & ab_land;
-		}
+		bool wasLanding() { return animation_bits[currentanimation] & ab_land; }
+		bool isLanding() { return animation_bits[targetanimation] & ab_land; }
 		int getLanding();
 
-		bool wasLandhard()
-		{
-		  return animation_bits[currentanimation] & ab_landhard;
-		}
-		bool isLandhard()
-		{
-		  return animation_bits[targetanimation] & ab_landhard;
-		}
+		bool wasLandhard() { return animation_bits[currentanimation] & ab_landhard; }
+		bool isLandhard() { return animation_bits[targetanimation] & ab_landhard; }
 		int getLandhard();
 
-		bool wasFlip()
-		{
-		  return animation_bits[currentanimation] & ab_flip;
-		}
-		bool isFlip()
-		{
-		  return animation_bits[targetanimation] & ab_flip;
-		}
+		bool wasFlip() { return animation_bits[currentanimation] & ab_flip; }
+		bool isFlip() { return animation_bits[targetanimation] & ab_flip; }
 
-		bool jumpclimb;
-
-		bool isWallJump()
-		{
-		  return animation_bits[targetanimation] & ab_walljump;
-		}
+		bool isWallJump() { return animation_bits[targetanimation] & ab_walljump; }
 		void Reverse();
 		void DoDamage(float howmuch);
 		void DoHead();
