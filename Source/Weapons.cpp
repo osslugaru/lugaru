@@ -218,14 +218,14 @@ void Weapon::DoStuff(int i) {
 				if(owner==-1 && distsqflat(&position,&player[j].coords)<1.5 && 
 				distsq(&position,&player[j].coords)<4 && player[j].weaponstuck==-1 &&
 				!player[j].skeleton.free && j!=oldowner) {
-					if((player[j].aitype!=attacktypecutoff||abs(Random()%6)==0||(player[j].targetanimation!=backhandspringanim&&player[j].targetanimation!=rollanim&&player[j].targetanimation!=flipanim&&Random()%2==0))&&!missed) {
-						if( (player[j].creature==wolftype	&&	Random()%3!=0 && player[j].weaponactive==-1 && (player[j].isIdle()||player[j].isRun()||player[j].targetanimation==walkanim))||
+					if((player[j].aitype!=attacktypecutoff||abs(Random()%6)==0||(player[j].animTarget!=backhandspringanim&&player[j].animTarget!=rollanim&&player[j].animTarget!=flipanim&&Random()%2==0))&&!missed) {
+						if( (player[j].creature==wolftype	&&	Random()%3!=0 && player[j].weaponactive==-1 && (player[j].isIdle()||player[j].isRun()||player[j].animTarget==walkanim))||
 							(player[j].creature==rabbittype	&&	Random()%2==0 && player[j].aitype==attacktypecutoff && player[j].weaponactive==-1)) {
 							emit_sound_at(knifedrawsound, player[j].coords, 128.);
 
 							player[j].weaponactive=0;
-							player[j].targetanimation=removeknifeanim;
-							player[j].targetframe=1;
+							player[j].animTarget=removeknifeanim;
+							player[j].frameTarget=1;
 							player[j].target=1;
 							owner=player[j].id;
 							if(player[j].num_weapons>0){
@@ -276,7 +276,7 @@ void Weapon::DoStuff(int i) {
 
 							emit_sound_at(fleshstabsound, position, 128.);
 
-							if(animation[player[0].targetanimation].height==highheight)
+							if(animation[player[0].animTarget].height==highheight)
 							  award_bonus(0, ninja);
 							else
 							  award_bonus(0, Bullseyebonus);
@@ -913,21 +913,21 @@ void Weapon::Draw() {
 				if((frustum.SphereInFrustum(player[owner].coords.x,player[owner].coords.y+player[owner].scale*3,player[owner].coords.z,player[owner].scale*8)&&distsq(&viewer,&player[owner].coords)<viewdistance*viewdistance)||player[owner].skeleton.free==3)
 					draw=true;
 			if	(
-				(player[owner].targetanimation==knifeslashstartanim||
-				 player[owner].targetanimation==swordsneakattackanim||
-				 (player[owner].currentanimation==staffhitanim	&&				player[owner].currentframe>1)||
-				 (player[owner].currentanimation==staffhitreversedanim	&&		player[owner].currentframe>1)||
-				 (player[owner].currentanimation==staffspinhitanim	&&			player[owner].currentframe>1)||
-				 (player[owner].currentanimation==staffspinhitreversedanim	&&	player[owner].currentframe>1)||
-				 (player[owner].currentanimation==staffgroundsmashanim	&&		player[owner].currentframe>1)||
-				 (player[owner].targetanimation==swordslashanim	&&				player[owner].targetframe<7)||
-				 player[owner].targetanimation==crouchstabanim||
-				 player[owner].targetanimation==swordslashreversalanim||
-				 player[owner].targetanimation==swordslashreversedanim||
-				 player[owner].targetanimation==knifefollowanim||
-				 player[owner].targetanimation==swordgroundstabanim||
-				 player[owner].targetanimation==knifethrowanim)&&
-				 player[owner].targetanimation==lastdrawnanim&&
+				(player[owner].animTarget==knifeslashstartanim||
+				 player[owner].animTarget==swordsneakattackanim||
+				 (player[owner].animCurrent==staffhitanim	&&				player[owner].frameCurrent>1)||
+				 (player[owner].animCurrent==staffhitreversedanim	&&		player[owner].frameCurrent>1)||
+				 (player[owner].animCurrent==staffspinhitanim	&&			player[owner].frameCurrent>1)||
+				 (player[owner].animCurrent==staffspinhitreversedanim	&&	player[owner].frameCurrent>1)||
+				 (player[owner].animCurrent==staffgroundsmashanim	&&		player[owner].frameCurrent>1)||
+				 (player[owner].animTarget==swordslashanim	&&				player[owner].frameTarget<7)||
+				 player[owner].animTarget==crouchstabanim||
+				 player[owner].animTarget==swordslashreversalanim||
+				 player[owner].animTarget==swordslashreversedanim||
+				 player[owner].animTarget==knifefollowanim||
+				 player[owner].animTarget==swordgroundstabanim||
+				 player[owner].animTarget==knifethrowanim)&&
+				 player[owner].animTarget==lastdrawnanim&&
 				 !player[owner].skeleton.free
 				)
 			{
@@ -935,7 +935,7 @@ void Weapon::Draw() {
 			} else {
 				drawhowmany=1;
 			}
-			if(player[owner].targetanimation==swordgroundstabanim)
+			if(player[owner].animTarget==swordgroundstabanim)
 			{
 				lastdrawnrotation1=rotation1;
 				lastdrawnrotation2=rotation2;
@@ -974,11 +974,11 @@ void Weapon::Draw() {
 
 					if(owner!=-1)
 					{
-						if(player[owner].targetanimation==staffhitanim||player[owner].currentanimation==staffhitanim||player[owner].targetanimation==staffhitreversedanim||player[owner].currentanimation==staffhitreversedanim)
+						if(player[owner].animTarget==staffhitanim||player[owner].animCurrent==staffhitanim||player[owner].animTarget==staffhitreversedanim||player[owner].animCurrent==staffhitreversedanim)
 						{
 							glTranslatef(0,0,-.3);
 						}
-						if(player[owner].targetanimation==staffgroundsmashanim||player[owner].currentanimation==staffgroundsmashanim||player[owner].targetanimation==staffspinhitreversedanim||player[owner].currentanimation==staffspinhitreversedanim||player[owner].targetanimation==staffspinhitanim||player[owner].currentanimation==staffspinhitanim)
+						if(player[owner].animTarget==staffgroundsmashanim||player[owner].animCurrent==staffgroundsmashanim||player[owner].animTarget==staffspinhitreversedanim||player[owner].animCurrent==staffspinhitreversedanim||player[owner].animTarget==staffspinhitanim||player[owner].animCurrent==staffspinhitanim)
 						{
 							glTranslatef(0,0,-.1);
 						}
@@ -1026,7 +1026,7 @@ void Weapon::Draw() {
 			lastdrawnbigtilt2=bigtilt2;
 			lastdrawnsmallrotation=smallrotation;
 			lastdrawnsmallrotation2=smallrotation2;
-			if(owner!=-1)lastdrawnanim=player[owner].currentanimation;
+			if(owner!=-1)lastdrawnanim=player[owner].animCurrent;
 		}
 		if(owner!=-1)
 		{

@@ -88,16 +88,16 @@ Person player[maxplayers];
 void Person::CheckKick()
 {
   if (!(hasvictim
-	&& (targetanimation == rabbitkickanim
+	&& (animTarget == rabbitkickanim
 	    && victim
 	    && victim != this
-	    && currentframe >= 2
-	    && currentanimation == rabbitkickanim)
+	    && frameCurrent >= 2
+	    && animCurrent == rabbitkickanim)
 	&& (distsq(&coords,&victim->coords) < 1.2)
 	&& (!victim->skeleton.free)))
     return;
 
-  if (animation[victim->targetanimation].height!=lowheight)
+  if (animation[victim->animTarget].height!=lowheight)
     {
       float damagemult = (creature == wolftype ? 2.5 : 1.) * power * power;
       XYZ relative = velocity;
@@ -117,9 +117,9 @@ void Person::CheckKick()
       if(id==0)camerashake+=.4;
 
       target=0;
-      currentframe=3;
-      targetanimation=backflipanim;
-      targetframe=4;
+      frameCurrent=3;
+      animTarget=backflipanim;
+      frameTarget=4;
       velocity=facing*-10;
       velocity.y=5;
       skeleton.free=0;
@@ -130,13 +130,13 @@ void Person::CheckKick()
     }
   else if (victim->isCrouch())
     {
-      targetanimation=rabbitkickreversedanim;
-      currentanimation=rabbitkickreversedanim;
-      victim->currentanimation=rabbitkickreversalanim;
-      victim->targetanimation=rabbitkickreversalanim;
+      animTarget=rabbitkickreversedanim;
+      animCurrent=rabbitkickreversedanim;
+      victim->animCurrent=rabbitkickreversalanim;
+      victim->animTarget=rabbitkickreversalanim;
       targettilt2=0;
-      currentframe=0;
-      targetframe=1;
+      frameCurrent=0;
+      frameTarget=1;
       target=0;
       velocity=0;
       victim->oldcoords=victim->coords;
@@ -740,8 +740,8 @@ void Person::Reverse()
   if (!((victim->aitype == playercontrolled
 	 || hostiletime > 1
 	 || staggerdelay <= 0)
-	&& victim->targetanimation != jumpupanim
-	&& victim->targetanimation != jumpdownanim
+	&& victim->animTarget != jumpupanim
+	&& victim->animTarget != jumpdownanim
 	&& (tutoriallevel != 1 || cananger)
 	&& hostile))
     return;
@@ -751,31 +751,31 @@ void Person::Reverse()
       && (creature != wolftype || victim->creature == wolftype))
     return;
 
-  if(targetanimation==sweepanim){
-    targetanimation=sweepreversedanim;
-    currentanimation=sweepreversedanim;
-    victim->currentanimation=sweepreversalanim;
-    victim->targetanimation=sweepreversalanim;
+  if(animTarget==sweepanim){
+    animTarget=sweepreversedanim;
+    animCurrent=sweepreversedanim;
+    victim->animCurrent=sweepreversalanim;
+    victim->animTarget=sweepreversalanim;
   }
-  if(targetanimation==spinkickanim){
-    targetanimation=spinkickreversedanim;
-    currentanimation=spinkickreversedanim;
-    victim->currentanimation=spinkickreversalanim;
-    victim->targetanimation=spinkickreversalanim;
+  if(animTarget==spinkickanim){
+    animTarget=spinkickreversedanim;
+    animCurrent=spinkickreversedanim;
+    victim->animCurrent=spinkickreversalanim;
+    victim->animTarget=spinkickreversalanim;
   }
-  if(targetanimation==upunchanim||targetanimation==rabbittacklinganim){
-    if(targetanimation==rabbittacklinganim){
-      currentframe=6;
-      targetframe=7;
-      victim->currentframe=6;
-      victim->targetframe=7;
+  if(animTarget==upunchanim||animTarget==rabbittacklinganim){
+    if(animTarget==rabbittacklinganim){
+      frameCurrent=6;
+      frameTarget=7;
+      victim->frameCurrent=6;
+      victim->frameTarget=7;
     }
-    targetanimation=upunchreversedanim;
-    currentanimation=upunchreversedanim;
-    victim->currentanimation=upunchreversalanim;
-    victim->targetanimation=upunchreversalanim;
+    animTarget=upunchreversedanim;
+    animCurrent=upunchreversedanim;
+    victim->animCurrent=upunchreversalanim;
+    victim->animTarget=upunchreversalanim;
   }
-  if(targetanimation==staffhitanim&&distsq(&victim->coords,&coords)<2&&((victim->id==0&&victim->crouchkeydown)||Random()%4==0)){
+  if(animTarget==staffhitanim&&distsq(&victim->coords,&coords)<2&&((victim->id==0&&victim->crouchkeydown)||Random()%4==0)){
     if(victim->weaponactive!=-1){
       victim->throwtogglekeydown=1;
       weapons[victim->weaponids[0]].owner=-1;
@@ -798,12 +798,12 @@ void Person::Reverse()
       }
     }
 
-    targetanimation=staffhitreversedanim;
-    currentanimation=staffhitreversedanim;
-    victim->currentanimation=staffhitreversalanim;
-    victim->targetanimation=staffhitreversalanim;
+    animTarget=staffhitreversedanim;
+    animCurrent=staffhitreversedanim;
+    victim->animCurrent=staffhitreversalanim;
+    victim->animTarget=staffhitreversalanim;
   }
-  if(targetanimation==staffspinhitanim&&distsq(&victim->coords,&coords)<2&&((victim->id==0&&victim->crouchkeydown)||Random()%2==0)){
+  if(animTarget==staffspinhitanim&&distsq(&victim->coords,&coords)<2&&((victim->id==0&&victim->crouchkeydown)||Random()%2==0)){
     if(victim->weaponactive!=-1){
       victim->throwtogglekeydown=1;
       weapons[victim->weaponids[0]].owner=-1;
@@ -825,12 +825,12 @@ void Person::Reverse()
 	player[j].wentforweapon=0;
       }
     }
-    targetanimation=staffspinhitreversedanim;
-    currentanimation=staffspinhitreversedanim;
-    victim->currentanimation=staffspinhitreversalanim;
-    victim->targetanimation=staffspinhitreversalanim;
+    animTarget=staffspinhitreversedanim;
+    animCurrent=staffspinhitreversedanim;
+    victim->animCurrent=staffspinhitreversalanim;
+    victim->animTarget=staffspinhitreversalanim;
   }
-  if(targetanimation==swordslashanim&&distsq(&victim->coords,&coords)<2&&((victim->id==0&&victim->crouchkeydown)||Random()%4==0)){
+  if(animTarget==swordslashanim&&distsq(&victim->coords,&coords)<2&&((victim->id==0&&victim->crouchkeydown)||Random()%4==0)){
     if(victim->weaponactive!=-1){
       victim->throwtogglekeydown=1;
       weapons[victim->weaponids[0]].owner=-1;
@@ -852,12 +852,12 @@ void Person::Reverse()
 	player[j].wentforweapon=0;
       }
     }
-    targetanimation=swordslashreversedanim;
-    currentanimation=swordslashreversedanim;
-    victim->currentanimation=swordslashreversalanim;
-    victim->targetanimation=swordslashreversalanim;
+    animTarget=swordslashreversedanim;
+    animCurrent=swordslashreversedanim;
+    victim->animCurrent=swordslashreversalanim;
+    victim->animTarget=swordslashreversalanim;
   }
-  if(targetanimation==knifeslashstartanim&&distsq(&victim->coords,&coords)<2&&(victim->id==0||Random()%4==0)){
+  if(animTarget==knifeslashstartanim&&distsq(&victim->coords,&coords)<2&&(victim->id==0||Random()%4==0)){
     if(victim->weaponactive!=-1){
       victim->throwtogglekeydown=1;
       weapons[victim->weaponids[0]].owner=-1;
@@ -879,15 +879,15 @@ void Person::Reverse()
 	player[j].wentforweapon=0;
       }
     }
-    targetanimation=knifeslashreversedanim;
-    currentanimation=knifeslashreversedanim;
-    victim->currentanimation=knifeslashreversalanim;
-    victim->targetanimation=knifeslashreversalanim;
+    animTarget=knifeslashreversedanim;
+    animCurrent=knifeslashreversedanim;
+    victim->animCurrent=knifeslashreversalanim;
+    victim->animTarget=knifeslashreversalanim;
   }
-  if(targetanimation!=knifeslashstartanim&&targetanimation!=staffhitanim&&targetanimation!=staffspinhitanim&&targetanimation!=winduppunchanim&&targetanimation!=wolfslapanim&&targetanimation!=swordslashanim&&targetanimation!=swordslashanim){
+  if(animTarget!=knifeslashstartanim&&animTarget!=staffhitanim&&animTarget!=staffspinhitanim&&animTarget!=winduppunchanim&&animTarget!=wolfslapanim&&animTarget!=swordslashanim&&animTarget!=swordslashanim){
     victim->targettilt2=targettilt2;
-    victim->currentframe=currentframe;
-    victim->targetframe=targetframe;
+    victim->frameCurrent=frameCurrent;
+    victim->frameTarget=frameTarget;
     victim->target=target;
     victim->velocity=0;
     victim->oldcoords=victim->coords;
@@ -896,28 +896,28 @@ void Person::Reverse()
     victim->yaw=targetyaw;
     victim->victim=this;
   }
-  if(targetanimation==winduppunchanim){
-    targetanimation=winduppunchblockedanim;
-    victim->targetanimation=blockhighleftanim;
-    victim->targetframe=1;
+  if(animTarget==winduppunchanim){
+    animTarget=winduppunchblockedanim;
+    victim->animTarget=blockhighleftanim;
+    victim->frameTarget=1;
     victim->target=.5;
     victim->victim=this;
     victim->targetyaw=targetyaw+180;
   }
-  if(targetanimation==wolfslapanim){
-    targetanimation=winduppunchblockedanim;
-    victim->targetanimation=blockhighleftanim;
-    victim->targetframe=1;
+  if(animTarget==wolfslapanim){
+    animTarget=winduppunchblockedanim;
+    victim->animTarget=blockhighleftanim;
+    victim->frameTarget=1;
     victim->target=.5;
     victim->victim=this;
     victim->targetyaw=targetyaw+180;
   }
-  if((targetanimation==swordslashanim||targetanimation==staffhitanim||targetanimation==staffspinhitanim)&&victim->weaponactive!=-1){
-    targetanimation=swordslashparriedanim;
+  if((animTarget==swordslashanim||animTarget==staffhitanim||animTarget==staffspinhitanim)&&victim->weaponactive!=-1){
+    animTarget=swordslashparriedanim;
     parriedrecently=.4;
     victim->parriedrecently=0;
-    victim->targetanimation=swordslashparryanim;
-    victim->targetframe=1;
+    victim->animTarget=swordslashparryanim;
+    victim->frameTarget=1;
     victim->target=.5;
     victim->victim=this;
     victim->targetyaw=targetyaw+180;
@@ -938,8 +938,8 @@ void Person::Reverse()
       XYZ aim;
       victim->Puff(righthand);
       victim->target=0;
-      victim->targetframe=0;
-      victim->targetanimation=staggerbackhighanim;
+      victim->frameTarget=0;
+      victim->animTarget=staggerbackhighanim;
       victim->targetyaw=targetyaw+180;
       victim->target=0;
       weapons[victim->weaponids[0]].owner=-1;
@@ -979,8 +979,8 @@ void Person::Reverse()
       XYZ aim;
       Puff(righthand);
       target=0;
-      targetframe=0;
-      targetanimation=staggerbackhighanim;
+      frameTarget=0;
+      animTarget=staggerbackhighanim;
       targetyaw=targetyaw+180;
       target=0;
       weapons[weaponids[0]].owner=-1;
@@ -1007,10 +1007,10 @@ void Person::Reverse()
     }
   }
   if(hasvictim)
-    if(targetanimation==knifeslashstartanim||targetanimation==swordslashanim||targetanimation==staffhitanim||targetanimation==staffspinhitanim){
-      if((targetanimation!=staffhitanim&&targetanimation!=staffspinhitanim)||distsq(&coords,&victim->coords)>.2){
-	victim->targetanimation=dodgebackanim;
-	victim->targetframe=0;
+    if(animTarget==knifeslashstartanim||animTarget==swordslashanim||animTarget==staffhitanim||animTarget==staffspinhitanim){
+      if((animTarget!=staffhitanim&&animTarget!=staffspinhitanim)||distsq(&coords,&victim->coords)>.2){
+	victim->animTarget=dodgebackanim;
+	victim->frameTarget=0;
 	victim->target=0;
 
 	XYZ rotatetarget;
@@ -1024,12 +1024,12 @@ void Person::Reverse()
 
 	victim->lastattack3=victim->lastattack2;
 	victim->lastattack2=victim->lastattack;
-	victim->lastattack=victim->targetanimation;
+	victim->lastattack=victim->animTarget;
       }
       else
 	{
-	  victim->targetanimation=sweepanim;
-	  victim->targetframe=0;
+	  victim->animTarget=sweepanim;
+	  victim->frameTarget=0;
 	  victim->target=0;
 
 	  XYZ rotatetarget;
@@ -1043,7 +1043,7 @@ void Person::Reverse()
 
 	  victim->lastattack3=victim->lastattack2;
 	  victim->lastattack2=victim->lastattack;
-	  victim->lastattack=victim->targetanimation;
+	  victim->lastattack=victim->animTarget;
 	}
     }
 
@@ -1055,7 +1055,7 @@ void Person::Reverse()
   if(aitype!=playercontrolled&&Random()%5==0&&escapednum<2&&difficulty==1)feint=1;
   if(aitype!=playercontrolled&&Random()%10==0&&escapednum<2&&difficulty==0)feint=1;
 
-  if(victim->id==0&&animation[victim->targetanimation].attack==reversal)numreversals++;
+  if(victim->id==0&&animation[victim->animTarget].attack==reversal)numreversals++;
 }
 
 void Person::DoDamage(float howmuch){
@@ -1201,17 +1201,17 @@ void Person::DoHead(){
 
 		facing=0;
 		facing.z=-1;
-		if(targetanimation!=bounceidleanim&&targetanimation!=fightidleanim&&targetanimation!=wolfidle&&targetanimation!=knifefightidleanim&&targetanimation!=drawrightanim&&targetanimation!=drawleftanim&&targetanimation!=walkanim){
+		if(animTarget!=bounceidleanim&&animTarget!=fightidleanim&&animTarget!=wolfidle&&animTarget!=knifefightidleanim&&animTarget!=drawrightanim&&animTarget!=drawleftanim&&animTarget!=walkanim){
 			facing=DoRotation(facing,headpitch*.4,0,0);
 			facing=DoRotation(facing,0,headyaw*.4,0);
 		}
 
-		if(targetanimation==bounceidleanim||targetanimation==fightidleanim||targetanimation==wolfidle||targetanimation==knifefightidleanim||targetanimation==drawrightanim||targetanimation==drawleftanim){
+		if(animTarget==bounceidleanim||animTarget==fightidleanim||animTarget==wolfidle||animTarget==knifefightidleanim||animTarget==drawrightanim||animTarget==drawleftanim){
 			facing=DoRotation(facing,headpitch*.8,0,0);
 			facing=DoRotation(facing,0,headyaw*.8,0);
 		}
 
-		if(targetanimation==walkanim){
+		if(animTarget==walkanim){
 			facing=DoRotation(facing,headpitch*.6,0,0);
 			facing=DoRotation(facing,0,headyaw*.6,0);
 		}
@@ -1222,7 +1222,7 @@ void Person::DoHead(){
 		for(i=0;i<skeleton.num_muscles;i++){
 			if(skeleton.muscles[i].visible&&(skeleton.muscles[i].parent1->label==head||skeleton.muscles[i].parent2->label==head))
 			{
-				skeleton.FindRotationMuscle(i,targetanimation);
+				skeleton.FindRotationMuscle(i,animTarget);
 			}
 		}
 	}
@@ -1277,7 +1277,7 @@ void Person::RagDoll(bool checkcollision){
 			skeleton.joints[i].velchange=0;
 		}
 		skeleton.DoConstraints(&coords,&scale);
-		if(animation[currentanimation].height==lowheight||animation[targetanimation].height==lowheight)
+		if(animation[animCurrent].height==lowheight||animation[animTarget].height==lowheight)
 		{
 			skeleton.DoConstraints(&coords,&scale);
 			skeleton.DoConstraints(&coords,&scale);
@@ -1285,16 +1285,16 @@ void Person::RagDoll(bool checkcollision){
 			skeleton.DoConstraints(&coords,&scale);
 		}
 
-		speed=animation[targetanimation].speed[targetframe]*2;
-		if(animation[currentanimation].speed[currentframe]>animation[targetanimation].speed[targetframe]){
-			speed=animation[currentanimation].speed[currentframe]*2;
+		speed=animation[animTarget].speed[frameTarget]*2;
+		if(animation[animCurrent].speed[frameCurrent]>animation[animTarget].speed[frameTarget]){
+			speed=animation[animCurrent].speed[frameCurrent]*2;
 		}
 		if(transspeed)speed=transspeed*2;
 
 		speed*=speedmult;
 
 		for(i=0;i<skeleton.num_joints;i++){
-			if((animation[currentanimation].attack!=reversed||currentanimation==swordslashreversedanim)&&currentanimation!=rabbitkickanim&&!isLanding()&&!wasLanding()&&animation[currentanimation].height==animation[targetanimation].height)skeleton.joints[i].velocity=velocity/scale+facing*5+DoRotation(DoRotation(DoRotation((animation[targetanimation].position[i][targetframe]-animation[currentanimation].position[i][currentframe])*speed,0,0,tilt),tilt2,0,0),0,yaw,0);
+			if((animation[animCurrent].attack!=reversed||animCurrent==swordslashreversedanim)&&animCurrent!=rabbitkickanim&&!isLanding()&&!wasLanding()&&animation[animCurrent].height==animation[animTarget].height)skeleton.joints[i].velocity=velocity/scale+facing*5+DoRotation(DoRotation(DoRotation((animation[animTarget].position[i][frameTarget]-animation[animCurrent].position[i][frameCurrent])*speed,0,0,tilt),tilt2,0,0),0,yaw,0);
 			else skeleton.joints[i].velocity=velocity/scale+facing*5;
 			change.x=(float)(Random()%100)/100;
 			change.y=(float)(Random()%100)/100;
@@ -1350,7 +1350,7 @@ void Person::RagDoll(bool checkcollision){
 		velocity/=skeleton.num_joints;
 
 		if(Random()%2==0){
-			if(weaponactive!=-1&&targetanimation!=rabbitkickanim&&num_weapons>0){
+			if(weaponactive!=-1&&animTarget!=rabbitkickanim&&num_weapons>0){
 				weapons[weaponids[0]].owner=-1;
 				weapons[weaponids[0]].hitsomething=0;
 				weapons[weaponids[0]].velocity=skeleton.joints[skeleton.jointlabels[righthand]].velocity*scale*-.3;
@@ -1372,10 +1372,10 @@ void Person::RagDoll(bool checkcollision){
 			}
 		}
 
-		targetanimation=bounceidleanim;
-		currentanimation=bounceidleanim;
-		targetframe=0;
-		currentframe=0;
+		animTarget=bounceidleanim;
+		animCurrent=bounceidleanim;
+		frameTarget=0;
+		frameCurrent=0;
 	}
 }
 
@@ -1422,7 +1422,7 @@ void Person::FootLand(int which, float opacity){
 			if(distsq(&footpoint,&viewer)<viewdistance*viewdistance/4)Sprite::MakeSprite(cloudsprite, footpoint,footvel*.6, terrainlight.x*190/255,terrainlight.y*170/255,terrainlight.z*108/255, .5, .7*opacity);
 			if(opacity>=1||detail==2)if(detail==2)if(distsq(&footpoint,&viewer)<viewdistance*viewdistance/4)terrain.MakeDecal(footprintdecal,footpoint,.2,.25*opacity,yaw);
 		}
-		else if(isLanding()||targetanimation==jumpupanim||isLandhard())
+		else if(isLanding()||animTarget==jumpupanim||isLandhard())
 		{
 			footvel=velocity/5;
 			if(footvel.y<.8)footvel.y=.8;
@@ -1446,8 +1446,8 @@ Joint& Person::getJointFor(int bodypart) {
 }
 
 void Person::setAnimation(int animation) {
-    targetanimation=animation;
-    targetframe=0;
+    animTarget=animation;
+    frameTarget=0;
     target=0;
 }
 
@@ -1456,12 +1456,12 @@ void	Person::DoAnimations(){
 		int i = 0;
 		static float oldtarget;
 
-		if(isIdle()&&currentanimation!=getIdle())normalsupdatedelay=0;
+		if(isIdle()&&animCurrent!=getIdle())normalsupdatedelay=0;
 
-		if(targetanimation==tempanim||currentanimation==tempanim){
+		if(animTarget==tempanim||animCurrent==tempanim){
 			animation[tempanim]=tempanimation;
 		}
-		if(targetanimation==jumpupanim||targetanimation==jumpdownanim||isFlip()){
+		if(animTarget==jumpupanim||animTarget==jumpdownanim||isFlip()){
 			float gLoc[3];
 			float vel[3];
 			gLoc[0]=coords.x;
@@ -1478,53 +1478,53 @@ void	Person::DoAnimations(){
 			if(((velocity.y<-15)||(crouchkeydown&&velocity.y<-8))&&abs(velocity.y)*4>fast_sqrt(velocity.x*velocity.x*velocity.z*velocity.z))landhard=1;
 			if(!crouchkeydown&&velocity.y>=-15)landhard=0;
 		}
-		if((currentanimation==jumpupanim||targetanimation==jumpdownanim)/*&&velocity.y<40*/&&!isFlip()&&(!isLanding()&&!isLandhard())&&((crouchkeydown&&!crouchtogglekeydown))){
+		if((animCurrent==jumpupanim||animTarget==jumpdownanim)/*&&velocity.y<40*/&&!isFlip()&&(!isLanding()&&!isLandhard())&&((crouchkeydown&&!crouchtogglekeydown))){
 			XYZ targfacing;
 			targfacing=0;
 			targfacing.z=1;
 
 			targfacing=DoRotation(targfacing,0,targetyaw,0);
 
-			if(normaldotproduct(targfacing,velocity)>=-.3)targetanimation=flipanim;
-			else targetanimation=backflipanim;
+			if(normaldotproduct(targfacing,velocity)>=-.3)animTarget=flipanim;
+			else animTarget=backflipanim;
 			crouchtogglekeydown=1;
-			targetframe=0;
+			frameTarget=0;
 			target=0;
 
 			if(id==0)numflipped++;
 		}
 
-		if(animation[targetanimation].attack!=reversed)feint=0;
+		if(animation[animTarget].attack!=reversed)feint=0;
 		if(!crouchkeydown||(isLanding()||isLandhard())||(wasLanding()||wasLandhard())){
 			crouchtogglekeydown=0;
 			if(aitype==playercontrolled)feint=0;
 		}
 		else
 		{
-			if(!crouchtogglekeydown&&animation[targetanimation].attack==reversed&&aitype==playercontrolled&&(escapednum<2||reversaltrain))feint=1;
+			if(!crouchtogglekeydown&&animation[animTarget].attack==reversed&&aitype==playercontrolled&&(escapednum<2||reversaltrain))feint=1;
 			if(!isFlip())crouchtogglekeydown=1;
 		}
 
 
-		if(animation[targetanimation].attack||currentanimation==getupfrombackanim||currentanimation==getupfromfrontanim){
+		if(animation[animTarget].attack||animCurrent==getupfrombackanim||animCurrent==getupfromfrontanim){
 			if(detail)normalsupdatedelay=0;
 		}
 
 		if(target>=1){
-			if(targetanimation==rollanim&&targetframe==3&&onfire){
+			if(animTarget==rollanim&&frameTarget==3&&onfire){
 				onfire=0;
 				emit_sound_at(fireendsound, coords);
 				pause_sound(stream_firesound);
 				deathbleeding=0;
 			}
 
-			if(targetanimation==rabbittacklinganim&&targetframe==1){
-				//if(victim->aitype==attacktypecutoff&&Random()%2==0&&victim->stunned<=0&&animation[victim->targetanimation].attack==neutral&&victim->id!=0)Reverse();
+			if(animTarget==rabbittacklinganim&&frameTarget==1){
+				//if(victim->aitype==attacktypecutoff&&Random()%2==0&&victim->stunned<=0&&animation[victim->animTarget].attack==neutral&&victim->id!=0)Reverse();
 				if(victim->aitype==attacktypecutoff&&victim->stunned<=0&&victim->surprised<=0&&victim->id!=0)Reverse();
-				if(targetanimation==rabbittacklinganim&&targetframe==1&&!victim->isCrouch()&&victim->targetanimation!=backhandspringanim){
-					if(normaldotproduct(victim->facing,facing)>0)victim->targetanimation=rabbittackledbackanim;
-					else victim->targetanimation=rabbittackledfrontanim;
-					victim->targetframe=2;
+				if(animTarget==rabbittacklinganim&&frameTarget==1&&!victim->isCrouch()&&victim->animTarget!=backhandspringanim){
+					if(normaldotproduct(victim->facing,facing)>0)victim->animTarget=rabbittackledbackanim;
+					else victim->animTarget=rabbittackledfrontanim;
+					victim->frameTarget=2;
 					victim->target=0;
 					victim->yaw=yaw;
 					victim->targetyaw=yaw;
@@ -1541,7 +1541,7 @@ void	Person::DoAnimations(){
 				}
 			}
 
-			if(!drawtogglekeydown&&drawkeydown&&(weaponactive==-1||num_weapons==1)&&(animation[targetanimation].label[targetframe]||(targetanimation!=currentanimation&&currentanimation==rollanim))&&num_weapons>0&&creature!=wolftype){
+			if(!drawtogglekeydown&&drawkeydown&&(weaponactive==-1||num_weapons==1)&&(animation[animTarget].label[frameTarget]||(animTarget!=animCurrent&&animCurrent==rollanim))&&num_weapons>0&&creature!=wolftype){
 				if(weapons[weaponids[0]].getType()==knife){
 					if(weaponactive==-1)weaponactive=0;
 					else if(weaponactive==0)weaponactive=-1;
@@ -1557,53 +1557,53 @@ void	Person::DoAnimations(){
 			}
 			//Footstep sounds
 			if(tutoriallevel!=1||id==0)
-				if((animation[targetanimation].label[targetframe]&&(animation[targetanimation].label[targetframe]<5||animation[targetanimation].label[targetframe]==8))/*||(targetanimation==rollanim&&targetframe==animation[rollanim].numframes-1)*/){
+				if((animation[animTarget].label[frameTarget]&&(animation[animTarget].label[frameTarget]<5||animation[animTarget].label[frameTarget]==8))/*||(animTarget==rollanim&&frameTarget==animation[rollanim].numframes-1)*/){
 					int whichsound;
 					if(onterrain){
 						if(terrain.getOpacity(coords.x,coords.z)<.2){
-							if(animation[targetanimation].label[targetframe]==1)whichsound=footstepsound;
+							if(animation[animTarget].label[frameTarget]==1)whichsound=footstepsound;
 							else whichsound=footstepsound2;
-							if(animation[targetanimation].label[targetframe]==1)FootLand(0,1);
-							if(animation[targetanimation].label[targetframe]==2)FootLand(1,1);
-							if(animation[targetanimation].label[targetframe]==3&&isRun()){
+							if(animation[animTarget].label[frameTarget]==1)FootLand(0,1);
+							if(animation[animTarget].label[frameTarget]==2)FootLand(1,1);
+							if(animation[animTarget].label[frameTarget]==3&&isRun()){
 								FootLand(1,1);
 								FootLand(0,1);
 							}
 
 						}
 						if(terrain.getOpacity(coords.x,coords.z)>=.2){
-							if(animation[targetanimation].label[targetframe]==1)whichsound=footstepsound3;
+							if(animation[animTarget].label[frameTarget]==1)whichsound=footstepsound3;
 							else whichsound=footstepsound4;
 						}
 					}
 					if(!onterrain){
-						if(animation[targetanimation].label[targetframe]==1)whichsound=footstepsound3;
+						if(animation[animTarget].label[frameTarget]==1)whichsound=footstepsound3;
 						else whichsound=footstepsound4;
 					}
-					if(animation[targetanimation].label[targetframe]==4&&(weaponactive==-1||(targetanimation!=knifeslashstartanim&&targetanimation!=knifethrowanim&&targetanimation!=crouchstabanim&&targetanimation!=swordgroundstabanim&&targetanimation!=knifefollowanim))){
-						if(animation[targetanimation].attack!=neutral){
+					if(animation[animTarget].label[frameTarget]==4&&(weaponactive==-1||(animTarget!=knifeslashstartanim&&animTarget!=knifethrowanim&&animTarget!=crouchstabanim&&animTarget!=swordgroundstabanim&&animTarget!=knifefollowanim))){
+						if(animation[animTarget].attack!=neutral){
 							i=abs(Random()%3);
 							if(i==0)whichsound=lowwhooshsound;
 							if(i==1)whichsound=midwhooshsound;
 							if(i==2)whichsound=highwhooshsound;
 						}
-						if(animation[targetanimation].attack==neutral)whichsound=movewhooshsound;
+						if(animation[animTarget].attack==neutral)whichsound=movewhooshsound;
 					}
-					else if(animation[targetanimation].label[targetframe]==4)whichsound=knifeswishsound;
-					if(animation[targetanimation].label[targetframe]==8&&tutoriallevel!=1)whichsound=landsound2;
+					else if(animation[animTarget].label[frameTarget]==4)whichsound=knifeswishsound;
+					if(animation[animTarget].label[frameTarget]==8&&tutoriallevel!=1)whichsound=landsound2;
 
 					emit_sound_at(whichsound, coords, 256.);
 
 					if(id==0)
 						if(whichsound==footstepsound||whichsound==footstepsound2||whichsound==footstepsound3||whichsound==footstepsound4){
 							envsound[numenvsounds]=coords;
-							if(targetanimation==wolfrunninganim||targetanimation==rabbitrunninganim)envsoundvol[numenvsounds]=15;
+							if(animTarget==wolfrunninganim||animTarget==rabbitrunninganim)envsoundvol[numenvsounds]=15;
 							else envsoundvol[numenvsounds]=6;
 							envsoundlife[numenvsounds]=.4;
 							numenvsounds++;
 						}
 
-						if(animation[targetanimation].label[targetframe]==3){
+						if(animation[animTarget].label[frameTarget]==3){
 							whichsound--;
 							emit_sound_at(whichsound, coords, 128.);
 						}
@@ -1612,11 +1612,11 @@ void	Person::DoAnimations(){
 				//Combat sounds
 				if(tutoriallevel!=1||id==0)
 					if(speechdelay<=0)
-						if(targetanimation!=crouchstabanim&&targetanimation!=swordgroundstabanim&&targetanimation!=staffgroundsmashanim)
-							if((animation[targetanimation].label[targetframe]&&(animation[targetanimation].label[targetframe]<5||animation[targetanimation].label[targetframe]==8))/*||(targetanimation==rollanim&&targetframe==animation[rollanim].numframes-1)*/){
+						if(animTarget!=crouchstabanim&&animTarget!=swordgroundstabanim&&animTarget!=staffgroundsmashanim)
+							if((animation[animTarget].label[frameTarget]&&(animation[animTarget].label[frameTarget]<5||animation[animTarget].label[frameTarget]==8))/*||(animTarget==rollanim&&frameTarget==animation[rollanim].numframes-1)*/){
 								int whichsound=-1;
-								if(animation[targetanimation].label[targetframe]==4&&aitype!=playercontrolled){
-									if(animation[targetanimation].attack!=neutral){
+								if(animation[animTarget].label[frameTarget]==4&&aitype!=playercontrolled){
+									if(animation[animTarget].attack!=neutral){
 										i=abs(Random()%4);
 										if(creature==rabbittype){
 											if(i==0)whichsound=rabbitattacksound;
@@ -1632,10 +1632,10 @@ void	Person::DoAnimations(){
 										}
 										speechdelay=.3;
 									}
-									//if(animation[targetanimation].attack==neutral)whichsound=movewhooshsound;
+									//if(animation[animTarget].attack==neutral)whichsound=movewhooshsound;
 								}
-								//else if(animation[targetanimation].label[targetframe]==4)whichsound=knifeswishsound;
-								//if(animation[targetanimation].label[targetframe]==8)whichsound=landsound2;
+								//else if(animation[animTarget].label[frameTarget]==4)whichsound=knifeswishsound;
+								//if(animation[animTarget].label[frameTarget]==8)whichsound=landsound2;
 
 								if(whichsound!=-1){
 									emit_sound_at(whichsound, coords);
@@ -1644,18 +1644,18 @@ void	Person::DoAnimations(){
 
 
 
-							if((!wasLanding()&&!wasLandhard())&&currentanimation!=getIdle()&&(isLanding()||isLandhard())){
+							if((!wasLanding()&&!wasLandhard())&&animCurrent!=getIdle()&&(isLanding()||isLandhard())){
 								FootLand(0,1);
 								FootLand(1,1);
 							}
 
 							transspeed=0;
 							currentoffset=targetoffset;
-							targetframe=currentframe;
-							currentanimation=targetanimation;
-							targetframe++;
+							frameTarget=frameCurrent;
+							animCurrent=animTarget;
+							frameTarget++;
 
-							if(targetanimation==removeknifeanim&&animation[targetanimation].label[currentframe]==5){
+							if(animTarget==removeknifeanim&&animation[animTarget].label[frameCurrent]==5){
 								for(i=0;i<weapons.size();i++){
 									if(weapons[i].owner==-1)
 										if(distsqflat(&coords,&weapons[i].position)<4&&weaponactive==-1){
@@ -1676,7 +1676,7 @@ void	Person::DoAnimations(){
 								}
 							}
 
-							if(targetanimation==crouchremoveknifeanim&&animation[targetanimation].label[currentframe]==5){
+							if(animTarget==crouchremoveknifeanim&&animation[animTarget].label[frameCurrent]==5){
 								for(i=0;i<weapons.size();i++){
 									bool willwork=true;
 									if(weapons[i].owner!=-1)
@@ -1754,7 +1754,7 @@ void	Person::DoAnimations(){
 								}
 							}
 
-							if(currentanimation==drawleftanim&&animation[targetanimation].label[currentframe]==5){
+							if(animCurrent==drawleftanim&&animation[animTarget].label[frameCurrent]==5){
 								if(weaponactive==-1)weaponactive=0;
 								else if(weaponactive==0){
 									weaponactive=-1;
@@ -1774,26 +1774,26 @@ void	Person::DoAnimations(){
 							}
 
 
-							if((currentanimation==walljumprightkickanim&&targetanimation==walljumprightkickanim)||(currentanimation==walljumpleftkickanim&&targetanimation==walljumpleftkickanim)){
+							if((animCurrent==walljumprightkickanim&&animTarget==walljumprightkickanim)||(animCurrent==walljumpleftkickanim&&animTarget==walljumpleftkickanim)){
 								XYZ rotatetarget=DoRotation(skeleton.forward,0,yaw,0);
 								Normalise(&rotatetarget);
 								targetyaw=-asin(0-rotatetarget.x);
 								targetyaw*=360/6.28;
 								if(rotatetarget.z<0)targetyaw=180-targetyaw;
 
-								if(targetanimation==walljumprightkickanim)targetyaw+=40;
-								if(targetanimation==walljumpleftkickanim)targetyaw-=40;
+								if(animTarget==walljumprightkickanim)targetyaw+=40;
+								if(animTarget==walljumpleftkickanim)targetyaw-=40;
 							}
 
 							bool dojumpattack;
 							dojumpattack=0;
-							if((targetanimation==rabbitrunninganim||targetanimation==wolfrunninganim)&&targetframe==3&&(jumpkeydown||attackkeydown||id!=0))dojumpattack=1;
+							if((animTarget==rabbitrunninganim||animTarget==wolfrunninganim)&&frameTarget==3&&(jumpkeydown||attackkeydown||id!=0))dojumpattack=1;
 							if(hasvictim)
 			if(distsq(&victim->coords,&/*player[i].*/coords)<5&&victim->aitype==gethelptype&&(attackkeydown)&&!victim->skeleton.free&&victim->isRun()&&victim->runninghowlong>=1)dojumpattack=1;							if(!hostile)dojumpattack=0;
 							if(dojumpattack){
-								if((targetanimation==rabbitrunninganim||targetanimation==wolfrunninganim)&&id==0){
-									targetanimation=rabbittackleanim;
-									targetframe=0;
+								if((animTarget==rabbitrunninganim||animTarget==wolfrunninganim)&&id==0){
+									animTarget=rabbittackleanim;
+									frameTarget=0;
 									emit_sound_at(jumpsound, coords);
 								}
 
@@ -1813,14 +1813,14 @@ void	Person::DoAnimations(){
 										}
 								}
 								if(closestid!=-1)
-									if(closestdist<5&&!player[closestid].dead&&animation[player[closestid].targetanimation].height!=lowheight&&player[closestid].targetanimation!=backhandspringanim){
+									if(closestdist<5&&!player[closestid].dead&&animation[player[closestid].animTarget].height!=lowheight&&player[closestid].animTarget!=backhandspringanim){
 										hasvictim=1;
 										victim=&player[closestid];
 										coords=victim->coords;
-										currentanimation=rabbittacklinganim;
-										targetanimation=rabbittacklinganim;
-										currentframe=0;
-										targetframe=1;
+										animCurrent=rabbittacklinganim;
+										animTarget=rabbittacklinganim;
+										frameCurrent=0;
+										frameTarget=1;
 										XYZ rotatetarget;
 										if(coords.z!=victim->coords.z||coords.x!=victim->coords.x){
 											rotatetarget=coords-victim->coords;
@@ -1829,7 +1829,7 @@ void	Person::DoAnimations(){
 											targetyaw*=360/6.28;
 											if(rotatetarget.z<0)targetyaw=180-targetyaw;
 										}
-										if(targetanimation!=rabbitrunninganim){
+										if(animTarget!=rabbitrunninganim){
 											emit_sound_at(jumpsound, coords, 128.);
 										}
 									}
@@ -1840,9 +1840,9 @@ void	Person::DoAnimations(){
 							if(creature==wolftype)damagemult=2.5*power;
 							if(hasvictim){damagemult/=victim->damagetolerance/200;}
 							//if(onfire)damagemult=3;
-							if((animation[targetanimation].attack==normalattack||targetanimation==walljumprightkickanim||targetanimation==walljumpleftkickanim)&&(!feint)&&(victim->skeleton.free!=2||targetanimation==killanim||targetanimation==dropkickanim||targetanimation==crouchstabanim||targetanimation==swordgroundstabanim||targetanimation==staffgroundsmashanim)){
-								if(targetanimation==spinkickanim&&animation[targetanimation].label[currentframe]==5){
-									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&3&&animation[victim->targetanimation].height!=lowheight){
+							if((animation[animTarget].attack==normalattack||animTarget==walljumprightkickanim||animTarget==walljumpleftkickanim)&&(!feint)&&(victim->skeleton.free!=2||animTarget==killanim||animTarget==dropkickanim||animTarget==crouchstabanim||animTarget==swordgroundstabanim||animTarget==staffgroundsmashanim)){
+								if(animTarget==spinkickanim&&animation[animTarget].label[frameCurrent]==5){
+									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&3&&animation[victim->animTarget].height!=lowheight){
 										escapednum=0;
 										if(id==0)camerashake+=.4;
 										if(Random()%2||creature==wolftype){
@@ -1876,8 +1876,8 @@ void	Person::DoAnimations(){
 									}
 								}
 
-								if(targetanimation==wolfslapanim&&animation[targetanimation].label[currentframe]==5){
-									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&3&&animation[victim->targetanimation].height!=lowheight){
+								if(animTarget==wolfslapanim&&animation[animTarget].label[frameCurrent]==5){
+									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&3&&animation[victim->animTarget].height!=lowheight){
 										escapednum=0;
 										if(id==0)camerashake+=.4;
 										if(Random()%2||creature==wolftype){
@@ -1908,8 +1908,8 @@ void	Person::DoAnimations(){
 									}
 								}
 
-								if(targetanimation==walljumprightkickanim&&animation[targetanimation].label[currentframe]==5){
-									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&animation[victim->targetanimation].height!=lowheight){
+								if(animTarget==walljumprightkickanim&&animation[animTarget].label[frameCurrent]==5){
+									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&animation[victim->animTarget].height!=lowheight){
 										escapednum=0;
 										if(id==0)camerashake+=.4;
 										victim->spurt=1;
@@ -1943,8 +1943,8 @@ void	Person::DoAnimations(){
 									}
 								}
 
-								if(targetanimation==walljumpleftkickanim&&animation[targetanimation].label[currentframe]==5){
-									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&animation[victim->targetanimation].height!=lowheight){
+								if(animTarget==walljumpleftkickanim&&animation[animTarget].label[frameCurrent]==5){
+									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&animation[victim->animTarget].height!=lowheight){
 										escapednum=0;
 										if(id==0)camerashake+=.4;
 										victim->spurt=1;
@@ -1978,8 +1978,8 @@ void	Person::DoAnimations(){
 									}
 								}
 
-								if(targetanimation==blockhighleftstrikeanim&&animation[targetanimation].label[currentframe]==5){
-									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&animation[victim->targetanimation].height!=lowheight){
+								if(animTarget==blockhighleftstrikeanim&&animation[animTarget].label[frameCurrent]==5){
+									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&animation[victim->animTarget].height!=lowheight){
 										escapednum=0;
 										if(id==0)camerashake+=.4;
 										if(Random()%2){
@@ -2002,7 +2002,7 @@ void	Person::DoAnimations(){
 									}
 								}
 
-								if(targetanimation==killanim&&animation[targetanimation].label[currentframe]==8){
+								if(animTarget==killanim&&animation[animTarget].label[frameCurrent]==8){
 									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&victim->dead){
 										escapednum=0;
 										if(id==0)camerashake+=.2;
@@ -2035,7 +2035,7 @@ void	Person::DoAnimations(){
 									}
 								}
 
-								if(targetanimation==killanim&&animation[targetanimation].label[currentframe]==5){
+								if(animTarget==killanim&&animation[animTarget].label[frameCurrent]==5){
 									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*9&&victim->dead){
 										escapednum=0;
 										if(id==0)camerashake+=.4;
@@ -2059,7 +2059,7 @@ void	Person::DoAnimations(){
 									}
 								}
 
-								if(targetanimation==dropkickanim&&animation[targetanimation].label[currentframe]==7){
+								if(animTarget==dropkickanim&&animation[animTarget].label[frameCurrent]==7){
 									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*9&&victim->skeleton.free){
 										escapednum=0;
 										if(id==0)camerashake+=.4;
@@ -2098,7 +2098,7 @@ void	Person::DoAnimations(){
 									}
 								}
 
-								if((targetanimation==crouchstabanim||targetanimation==swordgroundstabanim)&&animation[targetanimation].label[currentframe]==5){
+								if((animTarget==crouchstabanim||animTarget==swordgroundstabanim)&&animation[animTarget].label[frameCurrent]==5){
 									//if(id==0)camerashake+=.4;
 
 									if(hasvictim)
@@ -2181,7 +2181,7 @@ void	Person::DoAnimations(){
 									}
 								}
 
-								if((targetanimation==crouchstabanim||targetanimation==swordgroundstabanim)&&animation[targetanimation].label[currentframe]==6){
+								if((animTarget==crouchstabanim||animTarget==swordgroundstabanim)&&animation[animTarget].label[frameCurrent]==6){
 									if(!hasvictim){
 										emit_sound_at(knifedrawsound, coords, 128);
 									}
@@ -2275,7 +2275,7 @@ void	Person::DoAnimations(){
 									}
 								}
 
-								if(targetanimation==upunchanim&&animation[targetanimation].label[currentframe]==5){
+								if(animTarget==upunchanim&&animation[animTarget].label[frameCurrent]==5){
 									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3){
 										escapednum=0;
 										if(id==0)camerashake+=.4;
@@ -2297,8 +2297,8 @@ void	Person::DoAnimations(){
 										}
 										victim->skeleton.joints[victim->skeleton.jointlabels[head]].velocity+=relative*damagemult*150;
 
-										victim->targetframe=0;
-										victim->targetanimation=staggerbackhardanim;
+										victim->frameTarget=0;
+										victim->animTarget=staggerbackhardanim;
 										victim->targetyaw=targetyaw+180;
 										victim->target=0;
 										victim->stunned=1;
@@ -2312,16 +2312,16 @@ void	Person::DoAnimations(){
 								}
 
 
-								if(targetanimation==winduppunchanim&&animation[targetanimation].label[currentframe]==5){
+								if(animTarget==winduppunchanim&&animation[animTarget].label[frameCurrent]==5){
 									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*2){
 										escapednum=0;
 										if(id==0)camerashake+=.4;
-										if(victim->damage<=victim->damagetolerance-60&&normaldotproduct(victim->facing,victim->coords-coords)<(scale*5)*(scale*5)*0&&animation[victim->targetanimation].height!=lowheight){
+										if(victim->damage<=victim->damagetolerance-60&&normaldotproduct(victim->facing,victim->coords-coords)<(scale*5)*(scale*5)*0&&animation[victim->animTarget].height!=lowheight){
 											if(tutoriallevel!=1){
 												emit_sound_at(thudsound, victim->coords);
 											}
 										}
-										else if(victim->damage<=victim->damagetolerance-60&&normaldotproduct(victim->facing,victim->coords-coords)<(scale*5)*(scale*5)*0&&animation[victim->targetanimation].height==lowheight){
+										else if(victim->damage<=victim->damagetolerance-60&&normaldotproduct(victim->facing,victim->coords-coords)<(scale*5)*(scale*5)*0&&animation[victim->animTarget].height==lowheight){
 											if(tutoriallevel!=1){
 												emit_sound_at(whooshhitsound, victim->coords);
 											}
@@ -2332,7 +2332,7 @@ void	Person::DoAnimations(){
 											}
 										}
 
-										if(victim->damage>victim->damagetolerance-60||normaldotproduct(victim->facing,victim->coords-coords)>0||animation[victim->targetanimation].height==lowheight)
+										if(victim->damage>victim->damagetolerance-60||normaldotproduct(victim->facing,victim->coords-coords)>0||animation[victim->animTarget].height==lowheight)
 											victim->RagDoll(0);
 										XYZ relative;
 										relative=victim->coords-coords;
@@ -2345,8 +2345,8 @@ void	Person::DoAnimations(){
 										}
 										victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].velocity+=relative*damagemult*400;
 
-										victim->targetframe=0;
-										victim->targetanimation=staggerbackhardanim;
+										victim->frameTarget=0;
+										victim->animTarget=staggerbackhardanim;
 										victim->targetyaw=targetyaw+180;
 										victim->target=0;
 										victim->stunned=1;
@@ -2358,7 +2358,7 @@ void	Person::DoAnimations(){
 									}
 								}
 
-								if(targetanimation==blockhighleftanim&&animation[targetanimation].label[currentframe]==5){
+								if(animTarget==blockhighleftanim&&animation[animTarget].label[frameCurrent]==5){
 									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*4){
 										if(victim->id==0)camerashake+=.4;
 										emit_sound_at(landsound2, victim->coords);
@@ -2367,7 +2367,7 @@ void	Person::DoAnimations(){
 									}
 								}
 
-								if(targetanimation==swordslashparryanim&&animation[targetanimation].label[currentframe]==5){
+								if(animTarget==swordslashparryanim&&animation[animTarget].label[frameCurrent]==5){
 									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*4){
 										if(victim->id==0)camerashake+=.4;
 
@@ -2387,14 +2387,14 @@ void	Person::DoAnimations(){
 									}
 								}
 
-								if(targetanimation==knifethrowanim&&animation[targetanimation].label[currentframe]==5){
+								if(animTarget==knifethrowanim&&animation[animTarget].label[frameCurrent]==5){
 									if(weaponactive!=-1){
 										escapednum=0;
 										XYZ aim;
 										weapons[weaponids[0]].owner=-1;
 										aim=victim->coords+DoRotation(victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].position,0,victim->yaw,0)*victim->scale+victim->velocity*findDistance(&victim->coords,&coords)/50-(coords+DoRotation(skeleton.joints[skeleton.jointlabels[righthand]].position,0,yaw,0)*scale);
 										Normalise(&aim);
-										/*if(victim->targetanimation==jumpupanim||victim->targetanimation==jumpdownanim){
+										/*if(victim->animTarget==jumpupanim||victim->animTarget==jumpdownanim){
 										aim=DoRotation(aim,(float)abs(Random()%15)-7,(float)abs(Random()%15)-7,0);
 										}*/
 										weapons[weaponids[0]].velocity=aim*50;
@@ -2412,9 +2412,9 @@ void	Person::DoAnimations(){
 									}
 								}
 
-								if(targetanimation==knifeslashstartanim&&animation[targetanimation].label[currentframe]==5){
+								if(animTarget==knifeslashstartanim&&animation[animTarget].label[frameCurrent]==5){
 									if(hasvictim)
-										if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*4.5&&/*animation[victim->targetanimation].height!=lowheight&&*/victim->targetanimation!=dodgebackanim&&victim->targetanimation!=rollanim){
+										if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*4.5&&/*animation[victim->animTarget].height!=lowheight&&*/victim->animTarget!=dodgebackanim&&victim->animTarget!=rollanim){
 											escapednum=0;
 											if(tutoriallevel!=1)victim->DoBloodBig(1.5/victim->armorhigh,225);
 
@@ -2423,10 +2423,10 @@ void	Person::DoAnimations(){
 												emit_sound_at(knifeslicesound, victim->coords);
 											}
 											//victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].velocity+=relative*damagemult*200;
-											if(animation[victim->targetanimation].attack&&(victim->aitype!=playercontrolled||victim->targetanimation==knifeslashstartanim)&&(victim->creature==rabbittype||victim->deathbleeding<=0)){
+											if(animation[victim->animTarget].attack&&(victim->aitype!=playercontrolled||victim->animTarget==knifeslashstartanim)&&(victim->creature==rabbittype||victim->deathbleeding<=0)){
 												if(victim->id != 0 || difficulty==2){
-													victim->targetframe=0;
-													victim->targetanimation=staggerbackhardanim;
+													victim->frameTarget=0;
+													victim->animTarget=staggerbackhardanim;
 													victim->targetyaw=targetyaw+180;
 													victim->target=0;
 												}
@@ -2461,8 +2461,8 @@ void	Person::DoAnimations(){
 											victim->DoDamage(damagemult*0);
 										}
 								}
-								if(targetanimation==swordslashanim&&animation[targetanimation].label[currentframe]==5&&victim->targetanimation!=rollanim){
-									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*6.5&&victim->targetanimation!=dodgebackanim){
+								if(animTarget==swordslashanim&&animation[animTarget].label[frameCurrent]==5&&victim->animTarget!=rollanim){
+									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*6.5&&victim->animTarget!=dodgebackanim){
 										if(victim->weaponactive==-1||normaldotproduct(victim->facing,victim->coords-coords)>0||(Random()%2==0)){
 											award_bonus(id, Slashbonus);
 											escapednum=0;
@@ -2474,8 +2474,8 @@ void	Person::DoAnimations(){
 											}
 											//victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].velocity+=relative*damagemult*200;
 											if(tutoriallevel!=1){
-												victim->targetframe=0;
-												victim->targetanimation=staggerbackhardanim;
+												victim->frameTarget=0;
+												victim->animTarget=staggerbackhardanim;
 												victim->targetyaw=targetyaw+180;
 												victim->target=0;
 											}
@@ -2524,8 +2524,8 @@ void	Person::DoAnimations(){
 											XYZ aim;
 											victim->Puff(righthand);
 											victim->target=0;
-											victim->targetframe=0;
-											victim->targetanimation=staggerbackhighanim;
+											victim->frameTarget=0;
+											victim->animTarget=staggerbackhighanim;
 											victim->targetyaw=targetyaw+180;
 											victim->target=0;
 											weapons[victim->weaponids[0]].owner=-1;
@@ -2552,8 +2552,8 @@ void	Person::DoAnimations(){
 									}
 								}
 
-								if(targetanimation==staffhitanim&&animation[targetanimation].label[currentframe]==5&&victim->targetanimation!=rollanim){
-									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*6.5&&victim->targetanimation!=dodgebackanim&&victim->targetanimation!=sweepanim){
+								if(animTarget==staffhitanim&&animation[animTarget].label[frameCurrent]==5&&victim->animTarget!=rollanim){
+									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*6.5&&victim->animTarget!=dodgebackanim&&victim->animTarget!=sweepanim){
 										if(tutoriallevel!=1){
 											weapons[weaponids[0]].damage+=.4+float(abs(Random()%100)-50)/250;
 											escapednum=0;
@@ -2586,8 +2586,8 @@ void	Person::DoAnimations(){
 									}
 								}
 
-								if(targetanimation==staffspinhitanim&&animation[targetanimation].label[currentframe]==5&&victim->targetanimation!=rollanim){
-									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*6.5&&victim->targetanimation!=dodgebackanim&&victim->targetanimation!=sweepanim){
+								if(animTarget==staffspinhitanim&&animation[animTarget].label[frameCurrent]==5&&victim->animTarget!=rollanim){
+									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*6.5&&victim->animTarget!=dodgebackanim&&victim->animTarget!=sweepanim){
 										if(tutoriallevel!=1){
 											weapons[weaponids[0]].damage+=.6+float(abs(Random()%100)-50)/250;
 											escapednum=0;
@@ -2617,7 +2617,7 @@ void	Person::DoAnimations(){
 									}
 								}
 
-								if(targetanimation==staffgroundsmashanim&&animation[targetanimation].label[currentframe]==5){
+								if(animTarget==staffgroundsmashanim&&animation[animTarget].label[frameCurrent]==5){
 									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*6.5){
 										escapednum=0;
 										if(tutoriallevel!=1){
@@ -2671,8 +2671,8 @@ void	Person::DoAnimations(){
 									}
 								}
 
-								if(targetanimation==lowkickanim&&animation[targetanimation].label[currentframe]==5){
-									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&animation[victim->targetanimation].height!=highheight){
+								if(animTarget==lowkickanim&&animation[animTarget].label[frameCurrent]==5){
+									if(distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&animation[victim->animTarget].height!=highheight){
 										escapednum=0;
 										if(id==0)camerashake+=.4;
 										XYZ relative;
@@ -2682,7 +2682,7 @@ void	Person::DoAnimations(){
 
 										SolidHitBonus(id);
 
-										if(animation[victim->targetanimation].height==lowheight){
+										if(animation[victim->animTarget].height==lowheight){
 											if(Random()%2){
 												victim->spurt=1;
 												DoBlood(.2,250);
@@ -2710,8 +2710,8 @@ void	Person::DoAnimations(){
 												victim->skeleton.joints[i].velocity+=relative*damagemult*10;
 											}
 											victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].velocity+=relative*damagemult*200;
-											victim->targetframe=0;
-											victim->targetanimation=staggerbackhighanim;
+											victim->frameTarget=0;
+											victim->animTarget=staggerbackhighanim;
 											victim->targetyaw=targetyaw+180;
 											victim->target=0;
 											if(tutoriallevel!=1){
@@ -2729,8 +2729,8 @@ void	Person::DoAnimations(){
 									}
 								}
 
-								if(targetanimation==sweepanim&&animation[targetanimation].label[currentframe]==5){
-									if(victim->targetanimation!=jumpupanim&&distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&victim!=this){
+								if(animTarget==sweepanim&&animation[animTarget].label[frameCurrent]==5){
+									if(victim->animTarget!=jumpupanim&&distsq(&coords,&victim->coords)<(scale*5)*(scale*5)*3&&victim!=this){
 										escapednum=0;
 										if(id==0)camerashake+=.2;
 										if(tutoriallevel!=1){
@@ -2741,7 +2741,7 @@ void	Person::DoAnimations(){
 										relative.y=0;
 										Normalise(&relative);
 
-										if(animation[victim->targetanimation].height==middleheight||animation[victim->currentanimation].height==middleheight||victim->damage>=victim->damagetolerance-40){
+										if(animation[victim->animTarget].height==middleheight||animation[victim->animCurrent].height==middleheight||victim->damage>=victim->damagetolerance-40){
 											victim->RagDoll(0);
 
 											for(i=0;i<victim->skeleton.num_joints;i++){
@@ -2768,8 +2768,8 @@ void	Person::DoAnimations(){
 													victim->skeleton.joints[i].velocity+=relative*damagemult*80;
 											}
 											victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].velocity+=relative*damagemult*200;
-											victim->targetframe=0;
-											victim->targetanimation=staggerbackhighanim;
+											victim->frameTarget=0;
+											victim->animTarget=staggerbackhighanim;
 											victim->targetyaw=targetyaw+180;
 											victim->target=0;
 											if(tutoriallevel!=1){
@@ -2784,8 +2784,8 @@ void	Person::DoAnimations(){
 									}
 								}
 							}
-							if(animation[targetanimation].attack==reversal&&(!victim->feint||(victim->lastattack==victim->lastattack2&&victim->lastattack2==victim->lastattack3&&Random()%2)||targetanimation==knifefollowanim)){
-								if(targetanimation==spinkickreversalanim&&animation[targetanimation].label[currentframe]==7){
+							if(animation[animTarget].attack==reversal&&(!victim->feint||(victim->lastattack==victim->lastattack2&&victim->lastattack2==victim->lastattack3&&Random()%2)||animTarget==knifefollowanim)){
+								if(animTarget==spinkickreversalanim&&animation[animTarget].label[frameCurrent]==7){
 									escapednum=0;
 									if(id==0)camerashake+=.4;
 									if(Random()%2){
@@ -2817,7 +2817,7 @@ void	Person::DoAnimations(){
 									award_bonus(id, Reversal);
 								}
 
-								if((targetanimation==swordslashreversalanim||targetanimation==knifeslashreversalanim||targetanimation==staffhitreversalanim||targetanimation==staffspinhitreversalanim)&&animation[targetanimation].label[currentframe]==5){
+								if((animTarget==swordslashreversalanim||animTarget==knifeslashreversalanim||animTarget==staffhitreversalanim||animTarget==staffspinhitreversalanim)&&animation[animTarget].label[frameCurrent]==5){
 									if(victim->weaponactive!=-1&&victim->num_weapons>0){
 										if(weapons[victim->weaponids[victim->weaponactive]].owner==victim->id){
 											weapons[victim->weaponids[victim->weaponactive]].owner=id;
@@ -2837,7 +2837,7 @@ void	Person::DoAnimations(){
 									}
 								}
 
-								if(targetanimation==staffhitreversalanim&&animation[targetanimation].label[currentframe]==5){
+								if(animTarget==staffhitreversalanim&&animation[animTarget].label[frameCurrent]==5){
 									escapednum=0;
 									if(id==0)camerashake+=.4;
 									if(Random()%2){
@@ -2860,7 +2860,7 @@ void	Person::DoAnimations(){
 									victim->DoDamage(damagemult*70/victim->protectionhigh);
 								}
 
-								if(targetanimation==staffspinhitreversalanim&&animation[targetanimation].label[currentframe]==7){
+								if(animTarget==staffspinhitreversalanim&&animation[animTarget].label[frameCurrent]==7){
 									escapednum=0;
 									if(id==0)camerashake+=.4;
 									if(Random()%2){
@@ -2890,7 +2890,7 @@ void	Person::DoAnimations(){
 									victim->DoDamage(damagemult*70/victim->protectionhigh);
 								}
 
-								if(targetanimation==upunchreversalanim&&animation[targetanimation].label[currentframe]==7){
+								if(animTarget==upunchreversalanim&&animation[animTarget].label[frameCurrent]==7){
 									escapednum=0;
 									victim->RagDoll(1);
 									XYZ relative;
@@ -2937,7 +2937,7 @@ void	Person::DoAnimations(){
 
 
 
-								if(targetanimation==swordslashreversalanim&&animation[targetanimation].label[currentframe]==7){
+								if(animTarget==swordslashreversalanim&&animation[animTarget].label[frameCurrent]==7){
 									escapednum=0;
 									victim->RagDoll(1);
 									XYZ relative;
@@ -2961,7 +2961,7 @@ void	Person::DoAnimations(){
 									award_bonus(id, swordreversebonus);
 								}
 
-								if(hasvictim&&targetanimation==knifeslashreversalanim&&animation[targetanimation].label[currentframe]==7){
+								if(hasvictim&&animTarget==knifeslashreversalanim&&animation[animTarget].label[frameCurrent]==7){
 									escapednum=0;
 									if(id==0)camerashake+=.4;
 									if(Random()%2){
@@ -2988,7 +2988,7 @@ void	Person::DoAnimations(){
 									award_bonus(id, Reversal);
 								}
 
-								if(hasvictim&&targetanimation==sneakattackanim&&animation[targetanimation].label[currentframe]==7){
+								if(hasvictim&&animTarget==sneakattackanim&&animation[animTarget].label[frameCurrent]==7){
 									escapednum=0;
 									victim->RagDoll(0);
 									victim->skeleton.spinny=0;
@@ -3024,11 +3024,11 @@ void	Person::DoAnimations(){
 									award_bonus(id, spinecrusher);
 								}
 
-								if(hasvictim&&(targetanimation==knifefollowanim||targetanimation==knifesneakattackanim)&&animation[targetanimation].label[currentframe]==5){
+								if(hasvictim&&(animTarget==knifefollowanim||animTarget==knifesneakattackanim)&&animation[animTarget].label[frameCurrent]==5){
 									if(weaponactive!=-1&&victim->bloodloss<victim->damagetolerance){
 										escapednum=0;
-										if(targetanimation==knifefollowanim)victim->DoBloodBig(200,210);
-										if(targetanimation==knifesneakattackanim){
+										if(animTarget==knifefollowanim)victim->DoBloodBig(200,210);
+										if(animTarget==knifesneakattackanim){
 											/*victim->DoBloodBig(200,195);
 											XYZ bloodvel;
 											bloodvel=0;
@@ -3049,7 +3049,7 @@ void	Person::DoAnimations(){
 											victim->DoBloodBig(200,195);
 											award_bonus(id, tracheotomy);
 										}
-										if(targetanimation==knifefollowanim){
+										if(animTarget==knifefollowanim){
 											award_bonus(id, Stabbonus);
 											XYZ footvel,footpoint;
 											footvel=0;
@@ -3070,19 +3070,19 @@ void	Person::DoAnimations(){
 									}
 								}
 
-								if(hasvictim&&(targetanimation==knifefollowanim||targetanimation==knifesneakattackanim)&&animation[targetanimation].label[currentframe]==6){
+								if(hasvictim&&(animTarget==knifefollowanim||animTarget==knifesneakattackanim)&&animation[animTarget].label[frameCurrent]==6){
 									escapednum=0;
 									victim->velocity=0;
 									for(i=0;i<victim->skeleton.num_joints;i++){
 										victim->skeleton.joints[i].velocity=0;
 									}
-									if(targetanimation==knifefollowanim){
+									if(animTarget==knifefollowanim){
 										victim->RagDoll(0);
 										for(i=0;i<victim->skeleton.num_joints;i++){
 											victim->skeleton.joints[i].velocity=0;
 										}
 									}
-									if(weaponactive!=-1&&animation[victim->targetanimation].attack!=reversal){
+									if(weaponactive!=-1&&animation[victim->animTarget].attack!=reversal){
 										emit_sound_at(fleshstabremovesound, victim->coords);
 										if(bloodtoggle)weapons[weaponids[weaponactive]].bloody=2;
 										weapons[weaponids[weaponactive]].blooddrip+=5;
@@ -3099,7 +3099,7 @@ void	Person::DoAnimations(){
 									}
 								}
 
-								if(hasvictim&&(targetanimation==swordsneakattackanim)&&animation[targetanimation].label[currentframe]==5){
+								if(hasvictim&&(animTarget==swordsneakattackanim)&&animation[animTarget].label[frameCurrent]==5){
 									if(weaponactive!=-1&&victim->bloodloss<victim->damagetolerance){
 										award_bonus(id, backstab);
 
@@ -3124,7 +3124,7 @@ void	Person::DoAnimations(){
 									}
 								}
 
-								if(hasvictim&&targetanimation==swordsneakattackanim&&animation[targetanimation].label[currentframe]==6){
+								if(hasvictim&&animTarget==swordsneakattackanim&&animation[animTarget].label[frameCurrent]==6){
 									escapednum=0;
 									victim->velocity=0;
 									for(i=0;i<victim->skeleton.num_joints;i++){
@@ -3147,7 +3147,7 @@ void	Person::DoAnimations(){
 									}
 								}
 
-								if(targetanimation==sweepreversalanim&&animation[targetanimation].label[currentframe]==7){
+								if(animTarget==sweepreversalanim&&animation[animTarget].label[frameCurrent]==7){
 									escapednum=0;
 									if(id==0)camerashake+=.4;
 									if(Random()%2){
@@ -3198,7 +3198,7 @@ void	Person::DoAnimations(){
 									victim->velocity=0;
 								}
 
-								if(targetanimation==sweepreversalanim&&((animation[targetanimation].label[currentframe]==9&&victim->damage<victim->damagetolerance)||(animation[targetanimation].label[currentframe]==7&&victim->damage>victim->damagetolerance))){
+								if(animTarget==sweepreversalanim&&((animation[animTarget].label[frameCurrent]==9&&victim->damage<victim->damagetolerance)||(animation[animTarget].label[frameCurrent]==7&&victim->damage>victim->damagetolerance))){
 									escapednum=0;
 									victim->RagDoll(0);
 									XYZ relative;
@@ -3215,7 +3215,7 @@ void	Person::DoAnimations(){
 									victim->skeleton.joints[victim->skeleton.jointlabels[head]].velocity+=relative*damagemult*200;
 								}
 
-								if(hasvictim&&(targetanimation==spinkickreversalanim||targetanimation==sweepreversalanim||targetanimation==rabbitkickreversalanim||targetanimation==upunchreversalanim||targetanimation==jumpreversalanim||targetanimation==swordslashreversalanim||targetanimation==knifeslashreversalanim||targetanimation==rabbittacklereversal||targetanimation==wolftacklereversal||targetanimation==staffhitreversalanim||targetanimation==staffspinhitreversalanim))
+								if(hasvictim&&(animTarget==spinkickreversalanim||animTarget==sweepreversalanim||animTarget==rabbitkickreversalanim||animTarget==upunchreversalanim||animTarget==jumpreversalanim||animTarget==swordslashreversalanim||animTarget==knifeslashreversalanim||animTarget==rabbittacklereversal||animTarget==wolftacklereversal||animTarget==staffhitreversalanim||animTarget==staffspinhitreversalanim))
 									if(victim->damage>victim->damagetolerance&&bonus!=reverseko){
 									  award_bonus(id, reverseko);
 									}
@@ -3223,43 +3223,43 @@ void	Person::DoAnimations(){
 
 
 							//Animation end
-							if(targetframe>animation[currentanimation].numframes-1){
-								targetframe=0;
+							if(frameTarget>animation[animCurrent].numframes-1){
+								frameTarget=0;
 								if(wasStop()){
-									targetanimation=getIdle();
+									animTarget=getIdle();
 									FootLand(0,1);
 									FootLand(1,1);
 								}
-								if(currentanimation==rabbittackleanim||currentanimation==rabbittacklinganim){
-									targetanimation=rollanim;
-									targetframe=3;
+								if(animCurrent==rabbittackleanim||animCurrent==rabbittacklinganim){
+									animTarget=rollanim;
+									frameTarget=3;
 									emit_sound_at(movewhooshsound, coords, 128.);
 								}
-								if(currentanimation==staggerbackhighanim){
-									targetanimation=getIdle();
+								if(animCurrent==staggerbackhighanim){
+									animTarget=getIdle();
 								}
-								if(currentanimation==staggerbackhardanim){
-									targetanimation=getIdle();
+								if(animCurrent==staggerbackhardanim){
+									animTarget=getIdle();
 								}
-								if(currentanimation==removeknifeanim){
-									targetanimation=getIdle();
+								if(animCurrent==removeknifeanim){
+									animTarget=getIdle();
 								}
-								if(currentanimation==crouchremoveknifeanim){
-									targetanimation=getCrouch();
+								if(animCurrent==crouchremoveknifeanim){
+									animTarget=getCrouch();
 								}
-								if(currentanimation==backhandspringanim){
-									targetanimation=getIdle();
+								if(animCurrent==backhandspringanim){
+									animTarget=getIdle();
 								}
-								if(currentanimation==dodgebackanim){
-									targetanimation=getIdle();
+								if(animCurrent==dodgebackanim){
+									animTarget=getIdle();
 								}
-								if(currentanimation==drawleftanim){
-									targetanimation=getIdle();
+								if(animCurrent==drawleftanim){
+									animTarget=getIdle();
 								}
-								if(currentanimation==drawrightanim||currentanimation==crouchdrawrightanim){
-									targetanimation=getIdle();
-									if(currentanimation==crouchdrawrightanim){
-										targetanimation=getCrouch();
+								if(animCurrent==drawrightanim||animCurrent==crouchdrawrightanim){
+									animTarget=getIdle();
+									if(animCurrent==crouchdrawrightanim){
+										animTarget=getCrouch();
 									}
 									if(weaponactive==-1)weaponactive=0;
 									else if(weaponactive==0){
@@ -3279,23 +3279,23 @@ void	Person::DoAnimations(){
 										emit_sound_at(knifedrawsound, coords, 128.);
 									}
 								}
-								if(currentanimation==rollanim){
-									targetanimation=getCrouch();
+								if(animCurrent==rollanim){
+									animTarget=getCrouch();
 									FootLand(0,1);
 									FootLand(1,1);
 								}
 								if(isFlip()){
-									if(targetanimation==walljumprightkickanim){
+									if(animTarget==walljumprightkickanim){
 										targetrot=-190;
 									}
-									if(targetanimation==walljumpleftkickanim){
+									if(animTarget==walljumpleftkickanim){
 										targetrot=190;
 									}
-									targetanimation=jumpdownanim;
+									animTarget=jumpdownanim;
 								}
-								if(currentanimation==climbanim){
-									targetanimation=getCrouch();
-									targetframe=1;
+								if(animCurrent==climbanim){
+									animTarget=getCrouch();
+									frameTarget=1;
 									coords+=facing*.1;
 									if(!isnormal(coords.x))
 										coords=oldcoords;
@@ -3308,16 +3308,16 @@ void	Person::DoAnimations(){
 									collided=0;
 									avoidcollided=0;
 								}
-								if(targetanimation==rabbitkickreversalanim){
-									targetanimation=getCrouch();
+								if(animTarget==rabbitkickreversalanim){
+									animTarget=getCrouch();
 									lastfeint=0;
 								}
-								if(targetanimation==jumpreversalanim){
-									targetanimation=getCrouch();
+								if(animTarget==jumpreversalanim){
+									animTarget=getCrouch();
 									lastfeint=0;
 								}
-								if(targetanimation==walljumprightanim||targetanimation==walljumpbackanim||targetanimation==walljumpfrontanim){
-									if(attackkeydown&&targetanimation!=walljumpfrontanim){
+								if(animTarget==walljumprightanim||animTarget==walljumpbackanim||animTarget==walljumpfrontanim){
+									if(attackkeydown&&animTarget!=walljumpfrontanim){
 										int closest=-1;
 										float closestdist=-1;
 										float distance;
@@ -3333,8 +3333,8 @@ void	Person::DoAnimations(){
 											}
 											if(closestdist>0&&closest>=0&&closestdist<16){
 												victim=&player[closest];
-												targetanimation=walljumprightkickanim;
-												targetframe=0;
+												animTarget=walljumprightkickanim;
+												frameTarget=0;
 												XYZ rotatetarget=victim->coords-coords;
 												Normalise(&rotatetarget);
 												yaw=-asin(0-rotatetarget.x);
@@ -3346,25 +3346,25 @@ void	Person::DoAnimations(){
 												transspeed=40;
 											}
 									}
-									if(targetanimation==walljumpbackanim){
-										targetanimation=backflipanim;
-										targetframe=3;
+									if(animTarget==walljumpbackanim){
+										animTarget=backflipanim;
+										frameTarget=3;
 										velocity=facing*-8;
 										velocity.y=4;
 										if(id==0)
 										  resume_stream(whooshsound);
 									}
-									if(targetanimation==walljumprightanim){
-										targetanimation=rightflipanim;
-										targetframe=4;
+									if(animTarget==walljumprightanim){
+										animTarget=rightflipanim;
+										frameTarget=4;
 										targetyaw-=90;
 										yaw-=90;
 										velocity=DoRotation(facing,0,30,0)*-8;
 										velocity.y=4;
 									}
-									if(targetanimation==walljumpfrontanim){
-										targetanimation=frontflipanim;
-										targetframe=2;
+									if(animTarget==walljumpfrontanim){
+										animTarget=frontflipanim;
+										frameTarget=2;
 										//targetyaw-=180;
 										////yaw-=180;
 										velocity=facing*8;
@@ -3373,7 +3373,7 @@ void	Person::DoAnimations(){
 									if(id==0)
 									  resume_stream(whooshsound);
 								}
-								if(targetanimation==walljumpleftanim){
+								if(animTarget==walljumpleftanim){
 									if(attackkeydown){
 										int closest=-1;
 										float closestdist=-1;
@@ -3390,8 +3390,8 @@ void	Person::DoAnimations(){
 											}
 											if(closestdist>0&&closest>=0&&closestdist<16){
 												victim=&player[closest];
-												targetanimation=walljumpleftkickanim;
-												targetframe=0;
+												animTarget=walljumpleftkickanim;
+												frameTarget=0;
 												XYZ rotatetarget=victim->coords-coords;
 												Normalise(&rotatetarget);
 												yaw=-asin(0-rotatetarget.x);
@@ -3403,9 +3403,9 @@ void	Person::DoAnimations(){
 												transspeed=40;
 											}
 									}
-									if(targetanimation!=walljumpleftkickanim){
-										targetanimation=leftflipanim;
-										targetframe=4;
+									if(animTarget!=walljumpleftkickanim){
+										animTarget=leftflipanim;
+										frameTarget=4;
 										targetyaw+=90;
 										yaw+=90;
 										velocity=DoRotation(facing,0,-30,0)*-8;
@@ -3414,11 +3414,11 @@ void	Person::DoAnimations(){
 									if(id==0)
 									  resume_stream(whooshsound);
 								}
-								if(targetanimation==sneakattackanim){
-									currentanimation=getCrouch();
-									targetanimation=getCrouch();
-									targetframe=1;
-									currentframe=0;
+								if(animTarget==sneakattackanim){
+									animCurrent=getCrouch();
+									animTarget=getCrouch();
+									frameTarget=1;
+									frameCurrent=0;
 									targetyaw+=180;
 									yaw+=180;
 									targettilt2*=-1;
@@ -3430,20 +3430,20 @@ void	Person::DoAnimations(){
 
 									lastfeint=0;
 								}
-								if(targetanimation==knifesneakattackanim||targetanimation==swordsneakattackanim){
-									targetanimation=getIdle();
-									targetframe=0;
+								if(animTarget==knifesneakattackanim||animTarget==swordsneakattackanim){
+									animTarget=getIdle();
+									frameTarget=0;
 									if(onterrain)coords.y=terrain.getHeight(coords.x,coords.z);
 
 									lastfeint=0;
 								}
-								if(currentanimation==knifefollowanim){
-									targetanimation=getIdle();
+								if(animCurrent==knifefollowanim){
+									animTarget=getIdle();
 									lastfeint=0;
 								}
-								if(animation[targetanimation].attack==reversal&&currentanimation!=sneakattackanim&&currentanimation!=knifesneakattackanim&&currentanimation!=swordsneakattackanim&&currentanimation!=knifefollowanim){
+								if(animation[animTarget].attack==reversal&&animCurrent!=sneakattackanim&&animCurrent!=knifesneakattackanim&&animCurrent!=swordsneakattackanim&&animCurrent!=knifefollowanim){
 									float ycoords=oldcoords.y;
-									targetanimation=getStop();
+									animTarget=getStop();
 									targetyaw+=180;
 									yaw+=180;
 									targettilt2*=-1;
@@ -3452,11 +3452,11 @@ void	Person::DoAnimations(){
 									targetheadyaw+=180;
 									if(!isnormal(coords.x))
 										coords=oldcoords;
-									if(currentanimation==spinkickreversalanim||currentanimation==swordslashreversalanim)
+									if(animCurrent==spinkickreversalanim||animCurrent==swordslashreversalanim)
 										oldcoords=coords+facing*.5;
-									else if(currentanimation==sweepreversalanim)
+									else if(animCurrent==sweepreversalanim)
 										oldcoords=coords+facing*1.1;
-									else if(currentanimation==upunchreversalanim){
+									else if(animCurrent==upunchreversalanim){
 										oldcoords=coords+facing*1.5;
 										targetyaw+=180;
 										yaw+=180;
@@ -3464,7 +3464,7 @@ void	Person::DoAnimations(){
 										targettilt2*=-1;
 										tilt2*=-1;
 									}
-									else if(currentanimation==knifeslashreversalanim){
+									else if(animCurrent==knifeslashreversalanim){
 										oldcoords=coords+facing*.5;
 										targetyaw+=90;
 										yaw+=90;
@@ -3472,7 +3472,7 @@ void	Person::DoAnimations(){
 										targettilt2=0;
 										tilt2=0;
 									}
-									else if(currentanimation==staffspinhitreversalanim){
+									else if(animCurrent==staffspinhitreversalanim){
 										targetyaw+=180;
 										yaw+=180;
 										targetheadyaw+=180;
@@ -3487,28 +3487,28 @@ void	Person::DoAnimations(){
 
 									lastfeint=0;
 								}
-								if(currentanimation==knifesneakattackedanim||currentanimation==swordsneakattackedanim){
+								if(animCurrent==knifesneakattackedanim||animCurrent==swordsneakattackedanim){
 									velocity=0;
 									velocity.y=-5;
 									RagDoll(0);
 								}
-								if(animation[targetanimation].attack==reversed){
+								if(animation[animTarget].attack==reversed){
 									escapednum++;
-									if(targetanimation==sweepreversedanim)targetyaw+=90;
-									targetanimation=backhandspringanim;
-									targetframe=2;
+									if(animTarget==sweepreversedanim)targetyaw+=90;
+									animTarget=backhandspringanim;
+									frameTarget=2;
 									emit_sound_at(landsound, coords, 128);
 
-									if(currentanimation==upunchreversedanim||currentanimation==swordslashreversedanim){
-										targetanimation=rollanim;
-										targetframe=5;
+									if(animCurrent==upunchreversedanim||animCurrent==swordslashreversedanim){
+										animTarget=rollanim;
+										frameTarget=5;
 										oldcoords=coords;
 										coords+=(DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,yaw,0)+DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,yaw,0))/2*scale;
 										coords.y=oldcoords.y;
 									}
-									if(currentanimation==knifeslashreversedanim){
-										targetanimation=rollanim;
-										targetframe=0;
+									if(animCurrent==knifeslashreversedanim){
+										animTarget=rollanim;
+										frameTarget=0;
 										targetyaw+=90;
 										yaw+=90;
 										oldcoords=coords;
@@ -3517,30 +3517,30 @@ void	Person::DoAnimations(){
 									}
 								}
 								if(wasFlip()){
-									targetanimation=jumpdownanim;
+									animTarget=jumpdownanim;
 								}
-								if(wasLanding())targetanimation=getIdle();
-								if(wasLandhard())targetanimation=getIdle();
-								if(currentanimation==spinkickanim||currentanimation==getupfrombackanim||currentanimation==getupfromfrontanim||currentanimation==lowkickanim){
-									targetanimation=getIdle();
+								if(wasLanding())animTarget=getIdle();
+								if(wasLandhard())animTarget=getIdle();
+								if(animCurrent==spinkickanim||animCurrent==getupfrombackanim||animCurrent==getupfromfrontanim||animCurrent==lowkickanim){
+									animTarget=getIdle();
 									oldcoords=coords;
 									coords+=(DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,yaw,0)+DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position,0,yaw,0))/2*scale;
 									coords.y=oldcoords.y;
-									//coords+=DoRotation(animation[currentanimation].offset,0,yaw,0)*scale;
+									//coords+=DoRotation(animation[animCurrent].offset,0,yaw,0)*scale;
 									targetoffset.y=coords.y;
 									if(onterrain)targetoffset.y=terrain.getHeight(coords.x,coords.z);
-									currentoffset=DoRotation(animation[currentanimation].offset*-1,0,yaw,0)*scale;
+									currentoffset=DoRotation(animation[animCurrent].offset*-1,0,yaw,0)*scale;
 									currentoffset.y-=(coords.y-targetoffset.y);
 									coords.y=targetoffset.y;
 									targetoffset=0;
 									normalsupdatedelay=0;
 								}
-								if(currentanimation==upunchanim){
-									targetanimation=getStop();
+								if(animCurrent==upunchanim){
+									animTarget=getStop();
 									normalsupdatedelay=0;
 									lastfeint=0;
 								}
-								if(currentanimation==rabbitkickanim&&targetanimation!=backflipanim){
+								if(animCurrent==rabbitkickanim&&animTarget!=backflipanim){
 									targetyaw=yaw;
 									bool hasstaff;
 									hasstaff=0;
@@ -3550,7 +3550,7 @@ void	Person::DoAnimations(){
 									lastfeint=0;
 									rabbitkickragdoll=1;
 								}
-								if(currentanimation==rabbitkickreversedanim){
+								if(animCurrent==rabbitkickreversedanim){
 									if(!feint){
 										velocity=0;
 										velocity.y=-10;
@@ -3561,19 +3561,19 @@ void	Person::DoAnimations(){
 									}
 									if(feint){
 										escapednum++;
-										targetanimation=rollanim;
+										animTarget=rollanim;
 										coords+=facing;
 										if(id==0)pause_sound(whooshsound);
 									}
 									lastfeint=0;
 								}
-								if(currentanimation==rabbittackledbackanim||currentanimation==rabbittackledfrontanim){
+								if(animCurrent==rabbittackledbackanim||animCurrent==rabbittackledfrontanim){
 									velocity=0;
 									velocity.y=-10;
 									RagDoll(0);
 									skeleton.spinny=0;
 								}
-								if(currentanimation==jumpreversedanim){
+								if(animCurrent==jumpreversedanim){
 									if(!feint){
 										velocity=0;
 										velocity.y=-10;
@@ -3584,69 +3584,69 @@ void	Person::DoAnimations(){
 									}
 									if(feint){
 										escapednum++;
-										targetanimation=rollanim;
+										animTarget=rollanim;
 										coords+=facing*2;
 										if(id==0)pause_sound(whooshsound);
 									}
 									lastfeint=0;
 								}
 
-								if(animation[currentanimation].attack==normalattack&&!victim->skeleton.free&&victim->targetanimation!=staggerbackhighanim&&victim->targetanimation!=staggerbackhardanim&&targetanimation!=winduppunchblockedanim&&targetanimation!=blockhighleftanim&&targetanimation!=swordslashparryanim&&targetanimation!=swordslashparriedanim&&targetanimation!=crouchstabanim&&targetanimation!=swordgroundstabanim){
-									targetanimation=getupfromfrontanim;
+								if(animation[animCurrent].attack==normalattack&&!victim->skeleton.free&&victim->animTarget!=staggerbackhighanim&&victim->animTarget!=staggerbackhardanim&&animTarget!=winduppunchblockedanim&&animTarget!=blockhighleftanim&&animTarget!=swordslashparryanim&&animTarget!=swordslashparriedanim&&animTarget!=crouchstabanim&&animTarget!=swordgroundstabanim){
+									animTarget=getupfromfrontanim;
 									lastfeint=0;
 								}
-								else if(animation[currentanimation].attack==normalattack){
-									targetanimation=getIdle();
+								else if(animation[animCurrent].attack==normalattack){
+									animTarget=getIdle();
 									lastfeint=0;
 								}
-								if(currentanimation==blockhighleftanim&&aitype!=playercontrolled){
-									targetanimation=blockhighleftstrikeanim;
+								if(animCurrent==blockhighleftanim&&aitype!=playercontrolled){
+									animTarget=blockhighleftstrikeanim;
 								}
-								if(currentanimation==knifeslashstartanim||currentanimation==knifethrowanim||currentanimation==swordslashanim||currentanimation==staffhitanim||currentanimation==staffgroundsmashanim||currentanimation==staffspinhitanim){
-									targetanimation=getIdle();
+								if(animCurrent==knifeslashstartanim||animCurrent==knifethrowanim||animCurrent==swordslashanim||animCurrent==staffhitanim||animCurrent==staffgroundsmashanim||animCurrent==staffspinhitanim){
+									animTarget=getIdle();
 									lastfeint=0;
 								}
-								if(currentanimation==spinkickanim&&victim->skeleton.free){
-									if(creature==rabbittype)targetanimation=fightidleanim;
+								if(animCurrent==spinkickanim&&victim->skeleton.free){
+									if(creature==rabbittype)animTarget=fightidleanim;
 								}
 							}
 							target=0;
 
 							if(isIdle()&&!wasIdle())normalsupdatedelay=0;
 
-							if(currentanimation==jumpupanim&&velocity.y<0&&!isFlip()){
-								targetanimation=jumpdownanim;
+							if(animCurrent==jumpupanim&&velocity.y<0&&!isFlip()){
+								animTarget=jumpdownanim;
 							}
 		}
 		if(!skeleton.free){
 			oldtarget=target;
-			if(!transspeed&&animation[targetanimation].attack!=2&&animation[targetanimation].attack!=3){
+			if(!transspeed&&animation[animTarget].attack!=2&&animation[animTarget].attack!=3){
 				if(!isRun()||!wasRun()){
-					if(animation[targetanimation].speed[targetframe]>animation[currentanimation].speed[currentframe])
-						target+=multiplier*animation[targetanimation].speed[targetframe]*speed*2;
-					if(animation[targetanimation].speed[targetframe]<=animation[currentanimation].speed[currentframe])
-						target+=multiplier*animation[currentanimation].speed[currentframe]*speed*2;
+					if(animation[animTarget].speed[frameTarget]>animation[animCurrent].speed[frameCurrent])
+						target+=multiplier*animation[animTarget].speed[frameTarget]*speed*2;
+					if(animation[animTarget].speed[frameTarget]<=animation[animCurrent].speed[frameCurrent])
+						target+=multiplier*animation[animCurrent].speed[frameCurrent]*speed*2;
 				}
 				if(isRun()&&wasRun()){
 					float tempspeed;
 					tempspeed=velspeed;
 					if(tempspeed<10*speedmult)tempspeed=10*speedmult;
-					target+=multiplier*animation[targetanimation].speed[currentframe]*speed*1.7*tempspeed/(speed*45*scale);
+					target+=multiplier*animation[animTarget].speed[frameCurrent]*speed*1.7*tempspeed/(speed*45*scale);
 				}
 			}
 			else if(transspeed)target+=multiplier*transspeed*speed*2;
 			else{
 				if(!isRun()||!wasRun()){
-					if(animation[targetanimation].speed[targetframe]>animation[currentanimation].speed[currentframe])
-						target+=multiplier*animation[targetanimation].speed[targetframe]*2;
-					if(animation[targetanimation].speed[targetframe]<=animation[currentanimation].speed[currentframe])
-						target+=multiplier*animation[currentanimation].speed[currentframe]*2;
+					if(animation[animTarget].speed[frameTarget]>animation[animCurrent].speed[frameCurrent])
+						target+=multiplier*animation[animTarget].speed[frameTarget]*2;
+					if(animation[animTarget].speed[frameTarget]<=animation[animCurrent].speed[frameCurrent])
+						target+=multiplier*animation[animCurrent].speed[frameCurrent]*2;
 				}
 			}
 
-			if(currentanimation!=targetanimation)target=(target+oldtarget)/2;
+			if(animCurrent!=animTarget)target=(target+oldtarget)/2;
 
-			if(target>1){currentframe=targetframe; target=1;}
+			if(target>1){frameCurrent=frameTarget; target=1;}
 			oldrot=rot;
 			rot=targetrot*target;
 			yaw+=rot-oldrot;
@@ -3655,10 +3655,10 @@ void	Person::DoAnimations(){
 				oldrot=0;
 				targetrot=0;
 			}
-			if(currentanimation!=oldcurrentanimation||targetanimation!=oldtargetanimation||((currentframe!=oldcurrentframe||targetframe!=oldtargetframe)&&!calcrot)){
+			if(animCurrent!=oldanimCurrent||animTarget!=oldanimTarget||((frameCurrent!=oldframeCurrent||frameTarget!=oldframeTarget)&&!calcrot)){
 				//Old rotates
 				for(i=0;i<skeleton.num_joints;i++){
-					skeleton.joints[i].position=animation[currentanimation].position[i][currentframe];
+					skeleton.joints[i].position=animation[animCurrent].position[i][frameCurrent];
 				}
 
 				skeleton.FindForwards();
@@ -3666,7 +3666,7 @@ void	Person::DoAnimations(){
 				for(i=0;i<skeleton.num_muscles;i++){
 					if(skeleton.muscles[i].visible)
 					{
-						skeleton.FindRotationMuscle(i,targetanimation);
+						skeleton.FindRotationMuscle(i,animTarget);
 					}
 				}
 				for(i=0;i<skeleton.num_muscles;i++){
@@ -3680,7 +3680,7 @@ void	Person::DoAnimations(){
 
 				//New rotates
 				for(i=0;i<skeleton.num_joints;i++){
-					skeleton.joints[i].position=animation[targetanimation].position[i][targetframe];
+					skeleton.joints[i].position=animation[animTarget].position[i][frameTarget];
 				}
 
 				skeleton.FindForwards();
@@ -3688,7 +3688,7 @@ void	Person::DoAnimations(){
 				for(i=0;i<skeleton.num_muscles;i++){
 					if(skeleton.muscles[i].visible)
 					{
-						skeleton.FindRotationMuscle(i,targetanimation);
+						skeleton.FindRotationMuscle(i,animTarget);
 					}
 				}
 				for(i=0;i<skeleton.num_muscles;i++){
@@ -3706,16 +3706,16 @@ void	Person::DoAnimations(){
 					}
 				}
 			}
-			if(currentframe>=animation[currentanimation].numframes)currentframe=animation[currentanimation].numframes-1;
+			if(frameCurrent>=animation[animCurrent].numframes)frameCurrent=animation[animCurrent].numframes-1;
 
-			oldcurrentanimation=currentanimation;
-			oldtargetanimation=targetanimation;
-			oldtargetframe=targetframe;
-			oldcurrentframe=currentframe;
+			oldanimCurrent=animCurrent;
+			oldanimTarget=animTarget;
+			oldframeTarget=frameTarget;
+			oldframeCurrent=frameCurrent;
 
 			for(i=0;i<skeleton.num_joints;i++){
-				skeleton.joints[i].velocity=(animation[currentanimation].position[i][currentframe]*(1-target)+animation[targetanimation].position[i][targetframe]*(target)-skeleton.joints[i].position)/multiplier;
-				skeleton.joints[i].position=animation[currentanimation].position[i][currentframe]*(1-target)+animation[targetanimation].position[i][targetframe]*(target);
+				skeleton.joints[i].velocity=(animation[animCurrent].position[i][frameCurrent]*(1-target)+animation[animTarget].position[i][frameTarget]*(target)-skeleton.joints[i].position)/multiplier;
+				skeleton.joints[i].position=animation[animCurrent].position[i][frameCurrent]*(1-target)+animation[animTarget].position[i][frameTarget]*(target);
 			}
 			offset=currentoffset*(1-target)+targetoffset*target;
 			for(i=0;i<skeleton.num_muscles;i++){
@@ -3730,8 +3730,8 @@ void	Person::DoAnimations(){
 
 		if(isLanding()&&landhard){
 			if(id==0)camerashake+=.4;
-			targetanimation=getLandhard();
-			targetframe=0;
+			animTarget=getLandhard();
+			frameTarget=0;
 			target=0;
 			landhard=0;
 			transspeed=15;
@@ -3795,14 +3795,14 @@ void	Person::DoStuff(){
 		superruntoggle=0;
 		if(aitype!=passivetype){
 			superruntoggle=1;
-			if(aitype==attacktypecutoff&&(player[0].isIdle()||player[0].isCrouch()||player[0].skeleton.free||player[0].targetanimation==getupfrombackanim||player[0].targetanimation==getupfromfrontanim||player[0].targetanimation==sneakanim)&&distsq(&coords,&player[0].coords)<16){
+			if(aitype==attacktypecutoff&&(player[0].isIdle()||player[0].isCrouch()||player[0].skeleton.free||player[0].animTarget==getupfrombackanim||player[0].animTarget==getupfromfrontanim||player[0].animTarget==sneakanim)&&distsq(&coords,&player[0].coords)<16){
 				superruntoggle=0;
 			}
 		}
 		if(scale<0.2)superruntoggle=0;
-		if(targetanimation==wolfrunninganim&&!superruntoggle){
-			targetanimation=getRun();
-			targetframe=0;
+		if(animTarget==wolfrunninganim&&!superruntoggle){
+			animTarget=getRun();
+			frameTarget=0;
 		}
 	}
 	if(weaponactive==-1&&num_weapons>0){
@@ -3819,7 +3819,7 @@ void	Person::DoStuff(){
 		if(burnt>.6)burnt=.6;
 		OPENAL_SetVolume(channels[stream_firesound], 256+256*findLength(&velocity)/3);
 
-		if(targetanimation==jumpupanim||targetanimation==jumpdownanim||isFlip()){
+		if(animTarget==jumpupanim||animTarget==jumpdownanim||isFlip()){
 			float gLoc[3];
 			float vel[3];
 			gLoc[0]=coords.x;
@@ -3906,7 +3906,7 @@ void	Person::DoStuff(){
 		deathbleeding-=multiplier*1.6;
 		//if(id==0)deathbleeding-=multiplier*.2;
 		if(deathbleeding<0)deathbleeding=0;
-		if(bloodloss>damagetolerance&&animation[targetanimation].attack==neutral){
+		if(bloodloss>damagetolerance&&animation[animTarget].attack==neutral){
 			if(weaponactive!=-1){
 				weapons[weaponids[0]].owner=-1;
 				weapons[weaponids[0]].velocity=velocity*scale*-.3;
@@ -3940,7 +3940,7 @@ void	Person::DoStuff(){
 			  award_bonus(0, Wolfbonus);
 			}
 			dead=2;
-			if(targetanimation==knifefollowedanim&&!skeleton.free){
+			if(animTarget==knifefollowedanim&&!skeleton.free){
 				for(i=0;i<skeleton.num_joints;i++){
 					skeleton.joints[i].velocity=0;
 					skeleton.joints[i].velocity.y=-2;
@@ -4113,7 +4113,7 @@ void	Person::DoStuff(){
 				if(skeleton.free)footvel=skeleton.specialforward[0]*-1;
 				if(!skeleton.free)footpoint=DoRotation((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2,0,yaw,0)*scale+coords;
 				if(skeleton.free)footpoint=((skeleton.joints[skeleton.jointlabels[head]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2)*scale+coords;
-				if(targetanimation==sleepanim)footvel=DoRotation(footvel,0,90,0);
+				if(animTarget==sleepanim)footvel=DoRotation(footvel,0,90,0);
 				Sprite::MakeSprite(breathsprite, footpoint+footvel*.2,footvel*.4, 1,1,1, .4, .3);
 			}
 		}
@@ -4134,7 +4134,7 @@ void	Person::DoStuff(){
 		}
 		if(!dead){
 			twitchdelay-=multiplier*1.5;
-			if(targetanimation!=hurtidleanim){
+			if(animTarget!=hurtidleanim){
 				if(headmorphstart==0&&headmorphend==0&&twitchdelay<=0){
 					headmorphness=0;
 					targetheadmorphness=1;
@@ -4147,7 +4147,7 @@ void	Person::DoStuff(){
 					headmorphend=0;
 				}
 			}
-			if((isIdle()||isCrouch())&&targetanimation!=hurtidleanim){
+			if((isIdle()||isCrouch())&&animTarget!=hurtidleanim){
 				twitchdelay3-=multiplier*1;
 				if(Random()%2==0){
 					if(righthandmorphstart==0&&righthandmorphend==0&&twitchdelay3<=0){
@@ -4205,14 +4205,14 @@ void	Person::DoStuff(){
 	if(creature==wolftype){
 		twitchdelay2-=multiplier*1.5;
 		if(tailmorphend!=0)
-			if((isRun()||targetanimation==jumpupanim||targetanimation==jumpdownanim||targetanimation==backflipanim)&&!skeleton.free){
+			if((isRun()||animTarget==jumpupanim||animTarget==jumpdownanim||animTarget==backflipanim)&&!skeleton.free){
 				tailmorphness=0;
 				targettailmorphness=1;
 				tailmorphend=0;
 				twitchdelay2=.1;
 			}
 			if(tailmorphend!=5)
-				if(targetanimation==flipanim||targetanimation==frontflipanim||targetanimation==rollanim||skeleton.free){
+				if(animTarget==flipanim||animTarget==frontflipanim||animTarget==rollanim||skeleton.free){
 					tailmorphness=0;
 					targettailmorphness=1;
 					tailmorphend=5;
@@ -4554,16 +4554,16 @@ void	Person::DoStuff(){
 				if(terrainnormal.z<0)targetyaw=180-targetyaw;
 				yaw=targetyaw;
 
-				targetframe=0;
-				//	targetframe=2;
-				targetanimation=flipanim;
+				frameTarget=0;
+				//	frameTarget=2;
+				animTarget=flipanim;
 				crouchtogglekeydown=1;
 				target=0;
 				tilt2=0;
 				targettilt2=0;
 
-				currentanimation=tempanim;
-				currentframe=0;
+				animCurrent=tempanim;
+				frameCurrent=0;
 				target=0;
 				//tilt2=targettilt2;
 
@@ -4609,21 +4609,21 @@ void	Person::DoStuff(){
 
 
 				if(skeleton.forward.y<0){
-					targetanimation=getupfrombackanim;
-					targetframe=0;
+					animTarget=getupfrombackanim;
+					frameTarget=0;
 					targettilt2=0;
 				}
 				if(skeleton.forward.y>-.3){
-					targetanimation=getupfromfrontanim;
+					animTarget=getupfromfrontanim;
 					yaw+=180;
 					targetyaw+=180;
 					targettilt2*=-1;
-					targetframe=0;
+					frameTarget=0;
 					targettilt2=0;
 				}
 
 				if((Random()%8==0&&id!=0&&creature==rabbittype)||(Random()%2==0&&id!=0&&creature==wolftype)||(id==0&&crouchkeydown&&(forwardkeydown||backkeydown||leftkeydown||rightkeydown))){
-					targetanimation=rollanim;
+					animTarget=rollanim;
 					targetyaw=lookyaw;
 					if(id==0){
 						if(rightkeydown){
@@ -4645,12 +4645,12 @@ void	Person::DoStuff(){
 				}
 
 				if(abs(targettilt2)>50)targettilt2=0;
-				currentanimation=tempanim;
-				currentframe=0;
+				animCurrent=tempanim;
+				frameCurrent=0;
 				target=0;
 				tilt2=targettilt2;
 
-				if(middle.y>0&&targetanimation!=rollanim)targetoffset.y=middle.y+1;
+				if(middle.y>0&&animTarget!=rollanim)targetoffset.y=middle.y+1;
 
 				for(i=0;i<skeleton.num_joints;i++){
 					tempanimation.position[i][0]=skeleton.joints[i].position;
@@ -4674,20 +4674,20 @@ void	Person::DoStuff(){
 
 				skeleton.free=0;
 				if(dotproduct(&skeleton.forward,&tempvelocity)<0){
-					targetanimation=rollanim;
-					targetframe=2;
+					animTarget=rollanim;
+					frameTarget=2;
 				}
 				else{
-					targetanimation=backhandspringanim;
+					animTarget=backhandspringanim;
 					targetyaw+=180;
-					targetframe=6;
+					frameTarget=6;
 				}
 				target=0;
 
 				emit_sound_at(movewhooshsound, coords, 128.);
 
-				currentanimation=targetanimation;
-				currentframe=targetframe-1;
+				animCurrent=animTarget;
+				frameCurrent=frameTarget-1;
 				target=0;
 
 				velocity=0;
@@ -4874,14 +4874,14 @@ void	Person::DoStuff(){
 					}
 				}
 
-				if(targetanimation==staggerbackhighanim)staggerdelay=1;
-				if(targetanimation==staggerbackhardanim)staggerdelay=1;
+				if(animTarget==staggerbackhighanim)staggerdelay=1;
+				if(animTarget==staggerbackhardanim)staggerdelay=1;
 				staggerdelay-=multiplier;
-				if(targetanimation!=crouchstabanim&&targetanimation!=swordgroundstabanim&&targetanimation!=staffgroundsmashanim)hasvictim=1;
-				if(velocity.y<-30&&targetanimation==jumpdownanim)RagDoll(0);
-				if(currentanimation!=getIdle()&&wasIdle()&&targetanimation!=getIdle()&&isIdle()){
-					targetanimation=getIdle();
-					targetframe=0;
+				if(animTarget!=crouchstabanim&&animTarget!=swordgroundstabanim&&animTarget!=staffgroundsmashanim)hasvictim=1;
+				if(velocity.y<-30&&animTarget==jumpdownanim)RagDoll(0);
+				if(animCurrent!=getIdle()&&wasIdle()&&animTarget!=getIdle()&&isIdle()){
+					animTarget=getIdle();
+					frameTarget=0;
 					target=0;
 				}
 				weaponmissdelay-=multiplier;
@@ -4902,7 +4902,7 @@ void	Person::DoStuff(){
 					targetyaw=0;
 				}
 
-				if(targetanimation==bounceidleanim||targetanimation==wolfidle||targetanimation==walkanim||targetanimation==drawrightanim||targetanimation==crouchdrawrightanim||targetanimation==drawleftanim||targetanimation==fightidleanim||targetanimation==fightsidestep||targetanimation==hanganim||isCrouch()||targetanimation==backhandspringanim){
+				if(animTarget==bounceidleanim||animTarget==wolfidle||animTarget==walkanim||animTarget==drawrightanim||animTarget==crouchdrawrightanim||animTarget==drawleftanim||animTarget==fightidleanim||animTarget==fightsidestep||animTarget==hanganim||isCrouch()||animTarget==backhandspringanim){
 					//open hands and close mouth
 					if(righthandmorphend!=0&&righthandmorphness==targetrighthandmorphness){
 						righthandmorphness=0;
@@ -4923,7 +4923,7 @@ void	Person::DoStuff(){
 					}
 				}
 
-				if(targetanimation==rollanim||targetanimation==dodgebackanim||targetanimation==removeknifeanim||targetanimation==knifefightidleanim||targetanimation==swordfightidleanim||targetanimation==blockhighleftstrikeanim||targetanimation==crouchremoveknifeanim||targetanimation==sneakanim||targetanimation==sweepanim||targetanimation==spinkickreversedanim||targetanimation==jumpdownanim||isWallJump()||isFlip()||targetanimation==climbanim||isRun()||targetanimation==getupfrombackanim||targetanimation==getupfromfrontanim){
+				if(animTarget==rollanim||animTarget==dodgebackanim||animTarget==removeknifeanim||animTarget==knifefightidleanim||animTarget==swordfightidleanim||animTarget==blockhighleftstrikeanim||animTarget==crouchremoveknifeanim||animTarget==sneakanim||animTarget==sweepanim||animTarget==spinkickreversedanim||animTarget==jumpdownanim||isWallJump()||isFlip()||animTarget==climbanim||isRun()||animTarget==getupfrombackanim||animTarget==getupfromfrontanim){
 					//open hands and mouth
 					if(righthandmorphend!=0&&righthandmorphness==targetrighthandmorphness){
 						righthandmorphness=0;
@@ -4944,7 +4944,7 @@ void	Person::DoStuff(){
 					}
 				}
 
-				if(targetanimation==jumpupanim||targetanimation==crouchstabanim||targetanimation==swordgroundstabanim||targetanimation==swordfightidlebothanim||targetanimation==blockhighleftanim||targetanimation==blockhighleftanim){
+				if(animTarget==jumpupanim||animTarget==crouchstabanim||animTarget==swordgroundstabanim||animTarget==swordfightidlebothanim||animTarget==blockhighleftanim||animTarget==blockhighleftanim){
 					//close hands and mouth
 					if(righthandmorphend!=1&&righthandmorphness==targetrighthandmorphness){
 						righthandmorphness=0;
@@ -4965,7 +4965,7 @@ void	Person::DoStuff(){
 					}
 				}
 
-				if(targetanimation==spinkickanim||targetanimation==staffspinhitreversalanim||targetanimation==staffspinhitreversedanim||targetanimation==staffhitreversalanim||targetanimation==staffhitreversedanim||targetanimation==hurtidleanim||targetanimation==winduppunchanim||targetanimation==swordslashreversalanim||targetanimation==swordslashreversedanim||targetanimation==knifeslashreversalanim||targetanimation==knifeslashreversedanim||targetanimation==knifethrowanim||targetanimation==knifefollowanim||targetanimation==knifefollowedanim||targetanimation==killanim||targetanimation==dropkickanim||targetanimation==upunchanim||targetanimation==knifeslashstartanim||targetanimation==swordslashanim||targetanimation==staffhitanim||targetanimation==staffspinhitanim||targetanimation==staffgroundsmashanim||targetanimation==spinkickreversalanim||targetanimation==sweepreversalanim||targetanimation==lowkickanim||targetanimation==sweepreversedanim||targetanimation==rabbitkickreversalanim||targetanimation==rabbitkickreversedanim||targetanimation==jumpreversalanim||targetanimation==jumpreversedanim){
+				if(animTarget==spinkickanim||animTarget==staffspinhitreversalanim||animTarget==staffspinhitreversedanim||animTarget==staffhitreversalanim||animTarget==staffhitreversedanim||animTarget==hurtidleanim||animTarget==winduppunchanim||animTarget==swordslashreversalanim||animTarget==swordslashreversedanim||animTarget==knifeslashreversalanim||animTarget==knifeslashreversedanim||animTarget==knifethrowanim||animTarget==knifefollowanim||animTarget==knifefollowedanim||animTarget==killanim||animTarget==dropkickanim||animTarget==upunchanim||animTarget==knifeslashstartanim||animTarget==swordslashanim||animTarget==staffhitanim||animTarget==staffspinhitanim||animTarget==staffgroundsmashanim||animTarget==spinkickreversalanim||animTarget==sweepreversalanim||animTarget==lowkickanim||animTarget==sweepreversedanim||animTarget==rabbitkickreversalanim||animTarget==rabbitkickreversedanim||animTarget==jumpreversalanim||animTarget==jumpreversedanim){
 					//close hands and yell
 					if(righthandmorphend!=1&&righthandmorphness==targetrighthandmorphness){
 						righthandmorphness=0;
@@ -4994,8 +4994,8 @@ void	Person::DoStuff(){
 					}
 				}
 
-				if(!dead&&targetanimation!=hurtidleanim)
-					if(behind||targetanimation==killanim||targetanimation==knifethrowanim||targetanimation==knifefollowanim||targetanimation==spinkickreversalanim||targetanimation==rabbitkickreversedanim||targetanimation==jumpreversedanim){
+				if(!dead&&animTarget!=hurtidleanim)
+					if(behind||animTarget==killanim||animTarget==knifethrowanim||animTarget==knifefollowanim||animTarget==spinkickreversalanim||animTarget==rabbitkickreversedanim||animTarget==jumpreversedanim){
 						if(headmorphend!=4||headmorphness==targetheadmorphness){
 							headmorphend=4;
 							//headmorphness=1;
@@ -5017,7 +5017,7 @@ void	Person::DoStuff(){
 
 					terrainnormal=terrain.getNormal(coords.x,coords.z);
 
-					if(animation[targetanimation].attack!=reversal){
+					if(animation[animTarget].attack!=reversal){
 						if(!isnormal(coords.x))
 							coords=oldcoords;
 						oldcoords=coords;
@@ -5031,13 +5031,13 @@ void	Person::DoStuff(){
 					ReflectVector(&facing,terrainnormal);
 					Normalise(&facing);
 
-					if(isRun()||targetanimation==sneakanim||targetanimation==rollanim||targetanimation==walkanim){
+					if(isRun()||animTarget==sneakanim||animTarget==rollanim||animTarget==walkanim){
 						if(onterrain)targettilt2=-facing.y*20;
 						else targettilt2=0;
 					}
 					onterrain=0;
-					if(!isRun()&&!animation[targetanimation].attack&&targetanimation!=getupfromfrontanim&&targetanimation!=getupfrombackanim&&targetanimation!=sneakanim)targettilt2=0;
-					if(targetanimation==jumpupanim||targetanimation==jumpdownanim||isFlip()){
+					if(!isRun()&&!animation[animTarget].attack&&animTarget!=getupfromfrontanim&&animTarget!=getupfrombackanim&&animTarget!=sneakanim)targettilt2=0;
+					if(animTarget==jumpupanim||animTarget==jumpdownanim||isFlip()){
 						flatvelocity=velocity;
 						flatvelocity.y=0;
 						flatvelspeed=findLength(&flatvelocity);
@@ -5058,7 +5058,7 @@ void	Person::DoStuff(){
 					else if(tilt2<targettilt2){
 						tilt2+=multiplier*400;
 					}
-					if(!animation[targetanimation].attack&&targetanimation!=getupfrombackanim&&targetanimation!=getupfromfrontanim){
+					if(!animation[animTarget].attack&&animTarget!=getupfrombackanim&&animTarget!=getupfromfrontanim){
 						if(tilt2>25)tilt2=25;
 						if(tilt2<-25)tilt2=-25;
 					}
@@ -5071,8 +5071,8 @@ void	Person::DoStuff(){
 					}
 
 					//Running velocity
-					//if(!creature==wolftype||targetanimation==rabbitkickanim)
-					if(targetanimation==rabbittackleanim){
+					//if(!creature==wolftype||animTarget==rabbitkickanim)
+					if(animTarget==rabbittackleanim){
 						velocity+=facing*multiplier*speed*700*scale;
 						velspeed=findLength(&velocity);
 						if(velspeed>speed*65*scale){
@@ -5085,8 +5085,8 @@ void	Person::DoStuff(){
 						velspeed=findLength(&velocity);
 						velocity=flatfacing*velspeed;
 					}
-					if(targetanimation!=rabbitrunninganim&&targetanimation!=wolfrunninganim){
-						if(isRun()||targetanimation==rabbitkickanim){
+					if(animTarget!=rabbitrunninganim&&animTarget!=wolfrunninganim){
+						if(isRun()||animTarget==rabbitkickanim){
 							velocity+=facing*multiplier*speed*700*scale;
 							velspeed=findLength(&velocity);
 							if(velspeed>speed*45*scale){
@@ -5124,7 +5124,7 @@ void	Person::DoStuff(){
 						velocity=flatfacing*velspeed;
 					}
 
-					if(targetanimation==rollanim&&animation[targetanimation].label[targetframe]!=6){
+					if(animTarget==rollanim&&animation[animTarget].label[frameTarget]!=6){
 						velocity+=facing*multiplier*speed*700*scale;
 						velspeed=findLength(&velocity);
 						if(velspeed>speed*45*scale){
@@ -5139,7 +5139,7 @@ void	Person::DoStuff(){
 					}
 
 
-					/*if(currentanimation==rollanim&&(isCrouch()||isIdle())){
+					/*if(animCurrent==rollanim&&(isCrouch()||isIdle())){
 					velocity+=facing*multiplier*speed*700*scale;
 					velspeed=findLength(&velocity);
 					if(velspeed>speed*25*scale){
@@ -5153,7 +5153,7 @@ void	Person::DoStuff(){
 					velocity=flatfacing*velspeed;
 					}*/
 
-					if(targetanimation==sneakanim||targetanimation==walkanim){
+					if(animTarget==sneakanim||animTarget==walkanim){
 						velocity+=facing*multiplier*speed*700*scale;
 						velspeed=findLength(&velocity);
 						if(velspeed>speed*12*scale){
@@ -5167,7 +5167,7 @@ void	Person::DoStuff(){
 						velocity=flatfacing*velspeed;
 					}
 
-					if((targetanimation==fightidleanim||targetanimation==knifefightidleanim)&&(currentanimation==bounceidleanim||currentanimation==hurtidleanim)){
+					if((animTarget==fightidleanim||animTarget==knifefightidleanim)&&(animCurrent==bounceidleanim||animCurrent==hurtidleanim)){
 						velocity+=facing*multiplier*speed*700*scale;
 						velspeed=findLength(&velocity);
 						if(velspeed>speed*2*scale){
@@ -5182,7 +5182,7 @@ void	Person::DoStuff(){
 					}
 
 
-					if((targetanimation==bounceidleanim||currentanimation==hurtidleanim)&&(currentanimation==fightidleanim||currentanimation==knifefightidleanim)){
+					if((animTarget==bounceidleanim||animCurrent==hurtidleanim)&&(animCurrent==fightidleanim||animCurrent==knifefightidleanim)){
 						velocity-=facing*multiplier*speed*700*scale;
 						velspeed=findLength(&velocity);
 						if(velspeed>speed*2*scale){
@@ -5196,7 +5196,7 @@ void	Person::DoStuff(){
 						velocity=flatfacing*velspeed*-1;
 					}
 
-					if(targetanimation==fightsidestep){
+					if(animTarget==fightsidestep){
 						velocity+=DoRotation(facing*multiplier*speed*700*scale,0,-90,0);
 						velspeed=findLength(&velocity);
 						if(velspeed>speed*12*scale){
@@ -5210,16 +5210,16 @@ void	Person::DoStuff(){
 						velocity=DoRotation(flatfacing*velspeed,0,-90,0);
 					}
 
-					if(targetanimation==staggerbackhighanim){
+					if(animTarget==staggerbackhighanim){
 						coords-=facing*multiplier*speed*16*scale;
 						velocity=0;
 					}
-					if(targetanimation==staggerbackhardanim&&animation[staggerbackhardanim].label[targetframe]!=6){
+					if(animTarget==staggerbackhardanim&&animation[staggerbackhardanim].label[frameTarget]!=6){
 						coords-=facing*multiplier*speed*20*scale;
 						velocity=0;
 					}
 
-					if(targetanimation==backhandspringanim){
+					if(animTarget==backhandspringanim){
 						//coords-=facing*multiplier*50*scale;
 						velocity+=facing*multiplier*speed*700*scale*-1;
 						velspeed=findLength(&velocity);
@@ -5233,7 +5233,7 @@ void	Person::DoStuff(){
 						velspeed=findLength(&velocity);
 						velocity=flatfacing*velspeed*-1;
 					}
-					if(targetanimation==dodgebackanim){
+					if(animTarget==dodgebackanim){
 						//coords-=facing*multiplier*50*scale;
 						velocity+=facing*multiplier*speed*700*scale*-1;
 						velspeed=findLength(&velocity);
@@ -5248,23 +5248,23 @@ void	Person::DoStuff(){
 						velocity=flatfacing*velspeed*-1;
 					}
 
-					if(targetanimation==jumpupanim||targetanimation==jumpdownanim||isFlip()){
+					if(animTarget==jumpupanim||animTarget==jumpdownanim||isFlip()){
 						velspeed=findLength(&velocity);
 					}
 
 
-					if(targetanimation==jumpupanim||targetanimation==jumpdownanim||isFlip()){
+					if(animTarget==jumpupanim||animTarget==jumpdownanim||isFlip()){
 						velocity.y+=gravity*multiplier;
 					}
 
-					if(targetanimation!=climbanim&&targetanimation!=hanganim&&!isWallJump())coords+=velocity*multiplier;
+					if(animTarget!=climbanim&&animTarget!=hanganim&&!isWallJump())coords+=velocity*multiplier;
 
-					if(coords.y<terrain.getHeight(coords.x,coords.z)&&(targetanimation==jumpdownanim||targetanimation==jumpupanim||isFlip())){
-						if(isFlip()&&animation[targetanimation].label[targetframe]==7)RagDoll(0);
+					if(coords.y<terrain.getHeight(coords.x,coords.z)&&(animTarget==jumpdownanim||animTarget==jumpupanim||isFlip())){
+						if(isFlip()&&animation[animTarget].label[frameTarget]==7)RagDoll(0);
 
-						if(targetanimation==jumpupanim){jumppower=-4;targetanimation=getIdle();}
+						if(animTarget==jumpupanim){jumppower=-4;animTarget=getIdle();}
 						target=0;
-						targetframe=0;
+						frameTarget=0;
 						onterrain=1;
 
 						if(id==0){
@@ -5272,9 +5272,9 @@ void	Person::DoStuff(){
 							OPENAL_SetVolume(channels[whooshsound], 0);
 						}
 
-						if(targetanimation==jumpdownanim||isFlip()){
+						if(animTarget==jumpdownanim||isFlip()){
 							if(isFlip())jumppower=-4;
-							targetanimation=getLanding();
+							animTarget=getLanding();
 							emit_sound_at(landsound, coords, 128.);
 
 							if(id==0){
@@ -5286,14 +5286,14 @@ void	Person::DoStuff(){
 						}
 					}
 
-					if(targetanimation!=jumpupanim&&targetanimation!=jumpdownanim&&!isFlip()&&targetanimation!=climbanim&&targetanimation!=hanganim&&!isWallJump())coords.y+=gravity*multiplier*2;
-					if(targetanimation!=jumpupanim&&targetanimation!=jumpdownanim&&!isFlip()&&coords.y<terrain.getHeight(coords.x,coords.z)){
+					if(animTarget!=jumpupanim&&animTarget!=jumpdownanim&&!isFlip()&&animTarget!=climbanim&&animTarget!=hanganim&&!isWallJump())coords.y+=gravity*multiplier*2;
+					if(animTarget!=jumpupanim&&animTarget!=jumpdownanim&&!isFlip()&&coords.y<terrain.getHeight(coords.x,coords.z)){
 						coords.y=terrain.getHeight(coords.x,coords.z);
 						onterrain=1;
 					}
 
 
-					if(isIdle()||targetanimation==drawrightanim||targetanimation==drawleftanim||targetanimation==crouchdrawrightanim||targetanimation==crouchstabanim||targetanimation==swordgroundstabanim||isStop()||targetanimation==removeknifeanim||targetanimation==crouchremoveknifeanim||isLanding()||isCrouch()||animation[targetanimation].attack||(targetanimation==rollanim&&animation[targetanimation].label[targetframe]==6)){
+					if(isIdle()||animTarget==drawrightanim||animTarget==drawleftanim||animTarget==crouchdrawrightanim||animTarget==crouchstabanim||animTarget==swordgroundstabanim||isStop()||animTarget==removeknifeanim||animTarget==crouchremoveknifeanim||isLanding()||isCrouch()||animation[animTarget].attack||(animTarget==rollanim&&animation[animTarget].label[frameTarget]==6)){
 						velspeed=findLength(&velocity);
 						velocity.y=0;
 						if(velspeed<multiplier*300*scale){
@@ -5339,7 +5339,7 @@ void	Person::DoStuff(){
 						}
 					}
 
-					if(animation[targetanimation].attack==normalattack&&targetanimation!=rabbitkickanim&&!victim->skeleton.free){
+					if(animation[animTarget].attack==normalattack&&animTarget!=rabbitkickanim&&!victim->skeleton.free){
 						terrainnormal=victim->coords-coords;
 						Normalise(&terrainnormal);
 						targetyaw=-asin(0-terrainnormal.x);
@@ -5348,10 +5348,10 @@ void	Person::DoStuff(){
 						targettilt2=-asin(terrainnormal.y)*360/6.28;//*-70;
 					}
 
-					if(animation[targetanimation].attack==reversal&&targetanimation!=rabbittacklinganim){
+					if(animation[animTarget].attack==reversal&&animTarget!=rabbittacklinganim){
 						targetyaw=victim->targetyaw;
 					}
-					if(targetanimation==rabbittacklinganim){
+					if(animTarget==rabbittacklinganim){
 						coords=victim->coords;
 					}
 			}
@@ -5428,7 +5428,7 @@ int Person::DrawSkeleton(){
 		static int start,endthing;
 		if((dead!=2||skeleton.free!=2)&&updatedelay<=0){
 			if(!isSleeping()&&!isSitting()){
-				if(onterrain&&((isIdle()||isCrouch()||isLanding()||isLandhard()||targetanimation==drawrightanim||targetanimation==drawleftanim||targetanimation==crouchdrawrightanim)&&(wasIdle()||wasCrouch()||wasLanding()||wasLandhard()||currentanimation==drawrightanim||currentanimation==drawleftanim||currentanimation==crouchdrawrightanim))&&!skeleton.free){
+				if(onterrain&&((isIdle()||isCrouch()||isLanding()||isLandhard()||animTarget==drawrightanim||animTarget==drawleftanim||animTarget==crouchdrawrightanim)&&(wasIdle()||wasCrouch()||wasLanding()||wasLandhard()||animCurrent==drawrightanim||animCurrent==drawleftanim||animCurrent==crouchdrawrightanim))&&!skeleton.free){
 					XYZ point,newpoint,change,change2;
 					point=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,yaw,0)*scale+coords;
 					heightleft=terrain.getHeight(point.x,point.z)+.04;
@@ -5470,7 +5470,7 @@ int Person::DrawSkeleton(){
 						skeleton.DoConstraints(&coords,&scale);
 					}
 				}
-				if(onterrain&&((isIdle()||isCrouch()||isLanding()||isLandhard()||targetanimation==drawrightanim||targetanimation==drawleftanim||targetanimation==crouchdrawrightanim)&&!(wasIdle()||wasCrouch()||wasLanding()||wasLandhard()||currentanimation==drawrightanim||currentanimation==drawleftanim||currentanimation==crouchdrawrightanim))&&!skeleton.free){
+				if(onterrain&&((isIdle()||isCrouch()||isLanding()||isLandhard()||animTarget==drawrightanim||animTarget==drawleftanim||animTarget==crouchdrawrightanim)&&!(wasIdle()||wasCrouch()||wasLanding()||wasLandhard()||animCurrent==drawrightanim||animCurrent==drawleftanim||animCurrent==crouchdrawrightanim))&&!skeleton.free){
 					XYZ point,newpoint,change,change2;
 					point=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,yaw,0)*scale+coords;
 					heightleft=terrain.getHeight(point.x,point.z)+.04;
@@ -5513,7 +5513,7 @@ int Person::DrawSkeleton(){
 					}
 				}
 
-				if(onterrain&&(!(isIdle()||isCrouch()||isLanding()||isLandhard()||targetanimation==drawrightanim||targetanimation==drawleftanim||targetanimation==crouchdrawrightanim)&&(wasIdle()||wasCrouch()||wasLanding()||wasLandhard()||currentanimation==drawrightanim||currentanimation==drawleftanim||currentanimation==crouchdrawrightanim))&&!skeleton.free){
+				if(onterrain&&(!(isIdle()||isCrouch()||isLanding()||isLandhard()||animTarget==drawrightanim||animTarget==drawleftanim||animTarget==crouchdrawrightanim)&&(wasIdle()||wasCrouch()||wasLanding()||wasLandhard()||animCurrent==drawrightanim||animCurrent==drawleftanim||animCurrent==crouchdrawrightanim))&&!skeleton.free){
 					XYZ point,newpoint,change,change2;
 					point=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,yaw,0)*scale+coords;
 					heightleft=terrain.getHeight(point.x,point.z)+.04;
@@ -5556,12 +5556,12 @@ int Person::DrawSkeleton(){
 					}
 				}
 			}
-			if(!skeleton.free&&(!animation[targetanimation].attack&&targetanimation!=getupfrombackanim&&((targetanimation!=rollanim&&!isFlip())||animation[targetanimation].label[targetframe]==6)&&targetanimation!=getupfromfrontanim&&targetanimation!=wolfrunninganim&&targetanimation!=rabbitrunninganim&&targetanimation!=backhandspringanim&&targetanimation!=walljumpfrontanim&&targetanimation!=hurtidleanim&&!isLandhard()&&!isSleeping()))
+			if(!skeleton.free&&(!animation[animTarget].attack&&animTarget!=getupfrombackanim&&((animTarget!=rollanim&&!isFlip())||animation[animTarget].label[frameTarget]==6)&&animTarget!=getupfromfrontanim&&animTarget!=wolfrunninganim&&animTarget!=rabbitrunninganim&&animTarget!=backhandspringanim&&animTarget!=walljumpfrontanim&&animTarget!=hurtidleanim&&!isLandhard()&&!isSleeping()))
 				DoHead();
 			else {
 				targetheadyaw=-targetyaw;
 				targetheadpitch=0;
-				if(animation[targetanimation].attack==3)targetheadyaw+=180;
+				if(animation[animTarget].attack==3)targetheadyaw+=180;
 			}
 			for(i=0;i<skeleton.drawmodel.vertexNum;i++){
 				skeleton.drawmodel.vertex[i]=0;
@@ -5605,7 +5605,7 @@ int Person::DrawSkeleton(){
 						start=tailmorphstart;
 						endthing=tailmorphend;
 					}
-					if(calcrot)skeleton.FindRotationMuscle(i,targetanimation);
+					if(calcrot)skeleton.FindRotationMuscle(i,animTarget);
 					mid=(skeleton.muscles[i].parent1->position+skeleton.muscles[i].parent2->position)/2;
 					glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 					glPushMatrix();
@@ -5736,7 +5736,7 @@ int Person::DrawSkeleton(){
 				}
 				updatedelay=1+(float)(Random()%100)/1000;
 			}
-			if(skeleton.free!=2&&(skeleton.free==1||skeleton.free==3||id==0||(normalsupdatedelay<=0)||targetanimation==getupfromfrontanim||targetanimation==getupfrombackanim||currentanimation==getupfromfrontanim||currentanimation==getupfrombackanim)){
+			if(skeleton.free!=2&&(skeleton.free==1||skeleton.free==3||id==0||(normalsupdatedelay<=0)||animTarget==getupfromfrontanim||animTarget==getupfrombackanim||animCurrent==getupfromfrontanim||animCurrent==getupfrombackanim)){
 				normalsupdatedelay=1;
 				if(playerdetail||skeleton.free==3)skeleton.drawmodel.CalculateNormals(0);
 				if(!playerdetail||skeleton.free==3)skeleton.drawmodellow.CalculateNormals(0);
@@ -5819,7 +5819,7 @@ int Person::DrawSkeleton(){
 				glEnable(GL_LIGHTING);
 				glEnable(GL_BLEND);
 				if(canattack&&cananger)
-					if(animation[targetanimation].attack==normalattack||animation[targetanimation].attack==reversed){
+					if(animation[animTarget].attack==normalattack||animation[animTarget].attack==reversed){
 						glDisable(GL_TEXTURE_2D);
 						glColor4f(1,0,0,0.8);
 					}
@@ -5839,7 +5839,7 @@ int Person::DrawSkeleton(){
 				else skeleton.drawmodellow.drawdifftex(skeleton.drawmodel.textureptr);
 			}
 
-			if(!(animation[targetanimation].attack==normalattack||animation[targetanimation].attack==reversed))
+			if(!(animation[animTarget].attack==normalattack||animation[animTarget].attack==reversed))
 				if(tutoriallevel&&id!=0){
 					glPopMatrix();
 					glMatrixMode(GL_MODELVIEW);
@@ -5849,7 +5849,7 @@ int Person::DrawSkeleton(){
 					glEnable(GL_LIGHTING);
 					glEnable(GL_BLEND);
 					if(canattack&&cananger)
-						if(animation[targetanimation].attack==normalattack||animation[targetanimation].attack==reversed){
+						if(animation[animTarget].attack==normalattack||animation[animTarget].attack==reversed){
 							glDisable(GL_TEXTURE_2D);
 							glColor4f(1,0,0,0.8);
 						}
@@ -5922,7 +5922,7 @@ int Person::DrawSkeleton(){
 						vec2=(skeleton.joints[skeleton.jointlabels[rightwrist]].position-skeleton.joints[skeleton.jointlabels[rightshoulder]].position);
 						CrossProduct(&vec1,&vec2,&tempnormthing);
 						Normalise(&tempnormthing);
-						if(targetanimation!=staffhitanim&&currentanimation!=staffhitanim&&targetanimation!=staffgroundsmashanim&&currentanimation!=staffgroundsmashanim&&targetanimation!=staffspinhitanim&&currentanimation!=staffspinhitanim)weaponpoint+=tempnormthing*.1-skeleton.specialforward[1]*.3+(skeleton.joints[skeleton.jointlabels[rightwrist]].position-skeleton.joints[skeleton.jointlabels[rightelbow]].position);
+						if(animTarget!=staffhitanim&&animCurrent!=staffhitanim&&animTarget!=staffgroundsmashanim&&animCurrent!=staffgroundsmashanim&&animTarget!=staffspinhitanim&&animCurrent!=staffspinhitanim)weaponpoint+=tempnormthing*.1-skeleton.specialforward[1]*.3+(skeleton.joints[skeleton.jointlabels[rightwrist]].position-skeleton.joints[skeleton.jointlabels[rightelbow]].position);
 					}
 				}
 				if(weaponactive!=k&&weaponstuck!=k){
@@ -5965,15 +5965,15 @@ int Person::DrawSkeleton(){
 						if(isCrouch()||wasCrouch()){
 							weapons[i].smallrotation2=20;
 						}
-						if(targetanimation==hurtidleanim){
+						if(animTarget==hurtidleanim){
 							weapons[i].smallrotation2=50;
 						}
-						if((currentanimation==crouchstabanim&&targetanimation==crouchstabanim)||(currentanimation==backhandspringanim&&targetanimation==backhandspringanim)){
+						if((animCurrent==crouchstabanim&&animTarget==crouchstabanim)||(animCurrent==backhandspringanim&&animTarget==backhandspringanim)){
 							XYZ temppoint1,temppoint2,tempforward;
 							float distance;
 
 							temppoint1=skeleton.joints[skeleton.jointlabels[righthand]].position;
-							temppoint2=animation[currentanimation].weapontarget[currentframe]*(1-target)+animation[targetanimation].weapontarget[targetframe]*(target);
+							temppoint2=animation[animCurrent].weapontarget[frameCurrent]*(1-target)+animation[animTarget].weapontarget[frameTarget]*(target);
 							distance=findDistance(&temppoint1,&temppoint2);
 							weapons[i].rotation2=asin((temppoint1.y-temppoint2.y)/distance);
 							weapons[i].rotation2*=360/6.28;
@@ -5986,12 +5986,12 @@ int Person::DrawSkeleton(){
 							weapons[i].smallrotation2=0;
 							if(temppoint1.x>temppoint2.x)weapons[i].rotation1=360-weapons[i].rotation1;
 						}
-						if((currentanimation==knifeslashreversalanim&&targetanimation==knifeslashreversalanim)||(currentanimation==knifeslashreversedanim&&targetanimation==knifeslashreversedanim)){
+						if((animCurrent==knifeslashreversalanim&&animTarget==knifeslashreversalanim)||(animCurrent==knifeslashreversedanim&&animTarget==knifeslashreversedanim)){
 							XYZ temppoint1,temppoint2,tempforward;
 							float distance;
 
 							temppoint1=skeleton.joints[skeleton.jointlabels[righthand]].position;
-							temppoint2=animation[currentanimation].weapontarget[currentframe]*(1-target)+animation[targetanimation].weapontarget[targetframe]*(target);
+							temppoint2=animation[animCurrent].weapontarget[frameCurrent]*(1-target)+animation[animTarget].weapontarget[frameTarget]*(target);
 							distance=findDistance(&temppoint1,&temppoint2);
 							weapons[i].rotation2=asin((temppoint1.y-temppoint2.y)/distance);
 							weapons[i].rotation2*=360/6.28;
@@ -6004,7 +6004,7 @@ int Person::DrawSkeleton(){
 							weapons[i].smallrotation2=0;
 							if(temppoint1.x>temppoint2.x)weapons[i].rotation1=360-weapons[i].rotation1;
 						}
-						if(targetanimation==knifethrowanim){
+						if(animTarget==knifethrowanim){
 							weapons[i].smallrotation=90;
 							//weapons[i].smallrotation2=-90;
 							weapons[i].smallrotation2=0;
@@ -6012,7 +6012,7 @@ int Person::DrawSkeleton(){
 							weapons[i].rotation2=0;
 							weapons[i].rotation3=0;
 						}
-						if(targetanimation==knifesneakattackanim&&targetframe<5){
+						if(animTarget==knifesneakattackanim&&frameTarget<5){
 							weapons[i].smallrotation=-90;
 							weapons[i].rotation1=0;
 							weapons[i].rotation2=0;
@@ -6022,19 +6022,19 @@ int Person::DrawSkeleton(){
 					if(weapons[i].getType()==sword){
 						weapons[i].smallrotation=0;
 						weapons[i].smallrotation2=0;
-						if(targetanimation==knifethrowanim){
+						if(animTarget==knifethrowanim){
 							weapons[i].smallrotation=-90;
 							weapons[i].smallrotation2=0;
 							weapons[i].rotation1=0;
 							weapons[i].rotation2=0;
 							weapons[i].rotation3=0;
 						}
-						if((targetanimation==swordgroundstabanim&&currentanimation==swordgroundstabanim)||(targetanimation==swordsneakattackanim&&currentanimation==swordsneakattackanim)||(targetanimation==swordslashparryanim&&currentanimation==swordslashparryanim)||(targetanimation==swordslashparriedanim&&currentanimation==swordslashparriedanim)||(targetanimation==swordslashreversalanim&&currentanimation==swordslashreversalanim)||(targetanimation==swordslashreversedanim&&currentanimation==swordslashreversedanim)||(targetanimation==knifeslashreversalanim&&currentanimation==knifeslashreversalanim)||(targetanimation==knifeslashreversedanim&&currentanimation==knifeslashreversedanim)||(targetanimation==swordslashanim&&currentanimation==swordslashanim)||(targetanimation==drawleftanim&&currentanimation==drawleftanim)||(currentanimation==backhandspringanim&&targetanimation==backhandspringanim)){
+						if((animTarget==swordgroundstabanim&&animCurrent==swordgroundstabanim)||(animTarget==swordsneakattackanim&&animCurrent==swordsneakattackanim)||(animTarget==swordslashparryanim&&animCurrent==swordslashparryanim)||(animTarget==swordslashparriedanim&&animCurrent==swordslashparriedanim)||(animTarget==swordslashreversalanim&&animCurrent==swordslashreversalanim)||(animTarget==swordslashreversedanim&&animCurrent==swordslashreversedanim)||(animTarget==knifeslashreversalanim&&animCurrent==knifeslashreversalanim)||(animTarget==knifeslashreversedanim&&animCurrent==knifeslashreversedanim)||(animTarget==swordslashanim&&animCurrent==swordslashanim)||(animTarget==drawleftanim&&animCurrent==drawleftanim)||(animCurrent==backhandspringanim&&animTarget==backhandspringanim)){
 							XYZ temppoint1,temppoint2,tempforward;
 							float distance;
 
-							temppoint1=animation[currentanimation].position[skeleton.jointlabels[righthand]][currentframe]*(1-target)+animation[targetanimation].position[skeleton.jointlabels[righthand]][targetframe]*(target); //skeleton.joints[skeleton.jointlabels[righthand]].position;
-							temppoint2=animation[currentanimation].weapontarget[currentframe]*(1-target)+animation[targetanimation].weapontarget[targetframe]*(target);
+							temppoint1=animation[animCurrent].position[skeleton.jointlabels[righthand]][frameCurrent]*(1-target)+animation[animTarget].position[skeleton.jointlabels[righthand]][frameTarget]*(target); //skeleton.joints[skeleton.jointlabels[righthand]].position;
+							temppoint2=animation[animCurrent].weapontarget[frameCurrent]*(1-target)+animation[animTarget].weapontarget[frameTarget]*(target);
 							distance=findDistance(&temppoint1,&temppoint2);
 							weapons[i].rotation2=asin((temppoint1.y-temppoint2.y)/distance);
 							weapons[i].rotation2*=360/6.28;
@@ -6051,12 +6051,12 @@ int Person::DrawSkeleton(){
 					if(weapons[i].getType()==staff){
 						weapons[i].smallrotation=100;
 						weapons[i].smallrotation2=0;
-						if((targetanimation==staffhitanim&&currentanimation==staffhitanim)||(targetanimation==staffhitreversedanim&&currentanimation==staffhitreversedanim)||(targetanimation==staffspinhitreversedanim&&currentanimation==staffspinhitreversedanim)||(targetanimation==staffgroundsmashanim&&currentanimation==staffgroundsmashanim)||(targetanimation==staffspinhitanim&&currentanimation==staffspinhitanim)){
+						if((animTarget==staffhitanim&&animCurrent==staffhitanim)||(animTarget==staffhitreversedanim&&animCurrent==staffhitreversedanim)||(animTarget==staffspinhitreversedanim&&animCurrent==staffspinhitreversedanim)||(animTarget==staffgroundsmashanim&&animCurrent==staffgroundsmashanim)||(animTarget==staffspinhitanim&&animCurrent==staffspinhitanim)){
 							XYZ temppoint1,temppoint2,tempforward;
 							float distance;
 
-							temppoint1=animation[currentanimation].position[skeleton.jointlabels[righthand]][currentframe]*(1-target)+animation[targetanimation].position[skeleton.jointlabels[righthand]][targetframe]*(target); //skeleton.joints[skeleton.jointlabels[righthand]].position;
-							temppoint2=animation[currentanimation].weapontarget[currentframe]*(1-target)+animation[targetanimation].weapontarget[targetframe]*(target);
+							temppoint1=animation[animCurrent].position[skeleton.jointlabels[righthand]][frameCurrent]*(1-target)+animation[animTarget].position[skeleton.jointlabels[righthand]][frameTarget]*(target); //skeleton.joints[skeleton.jointlabels[righthand]].position;
+							temppoint2=animation[animCurrent].weapontarget[frameCurrent]*(1-target)+animation[animTarget].weapontarget[frameTarget]*(target);
 							distance=findDistance(&temppoint1,&temppoint2);
 							weapons[i].rotation2=asin((temppoint1.y-temppoint2.y)/distance);
 							weapons[i].rotation2*=360/6.28;
@@ -6098,8 +6098,8 @@ int Person::DrawSkeleton(){
 
 	calcrot=0;
 	if(skeleton.free)calcrot=1;
-	if(animation[targetanimation].attack||isRun()||targetanimation==staggerbackhardanim||isFlip()||targetanimation==climbanim||targetanimation==sneakanim||targetanimation==rollanim||targetanimation==walkanim||targetanimation==backhandspringanim||isFlip()||isWallJump())calcrot=1;
-	if(currentanimation!=targetanimation)calcrot=1;
+	if(animation[animTarget].attack||isRun()||animTarget==staggerbackhardanim||isFlip()||animTarget==climbanim||animTarget==sneakanim||animTarget==rollanim||animTarget==walkanim||animTarget==backhandspringanim||isFlip()||isWallJump())calcrot=1;
+	if(animCurrent!=animTarget)calcrot=1;
 	//if(id==0)calcrot=1;
 	if(skeleton.free==2)calcrot=0;
 
@@ -6149,12 +6149,12 @@ int Person::SphereCheck(XYZ *p1,float radius, XYZ *p, XYZ *move, float *rotate, 
 						end.y-=radius;
 						if(LineFacetd(&start,&end,&model->vertex[model->Triangles[j].vertex[0]],&model->vertex[model->Triangles[j].vertex[1]],&model->vertex[model->Triangles[j].vertex[2]],&model->facenormals[j],&point)){
 							p1->y=point.y+radius;
-							if((targetanimation==jumpdownanim||isFlip())){
-								if(isFlip()&&(targetframe<5||animation[targetanimation].label[targetframe]==7||animation[targetanimation].label[targetframe]==4))RagDoll(0);
+							if((animTarget==jumpdownanim||isFlip())){
+								if(isFlip()&&(frameTarget<5||animation[animTarget].label[frameTarget]==7||animation[animTarget].label[frameTarget]==4))RagDoll(0);
 
-								if(targetanimation==jumpupanim){jumppower=-4;targetanimation=getIdle();}
+								if(animTarget==jumpupanim){jumppower=-4;animTarget=getIdle();}
 								target=0;
-								targetframe=0;
+								frameTarget=0;
 								onterrain=1;
 
 								if(id==0){
@@ -6162,9 +6162,9 @@ int Person::SphereCheck(XYZ *p1,float radius, XYZ *p, XYZ *move, float *rotate, 
 									OPENAL_SetVolume(channels[whooshsound], 0);
 								}
 
-								if((targetanimation==jumpdownanim||isFlip())&&!wasLanding()&&!wasLandhard()){
+								if((animTarget==jumpdownanim||isFlip())&&!wasLanding()&&!wasLandhard()){
 									if(isFlip())jumppower=-4;
-									targetanimation=getLanding();
+									animTarget=getLanding();
 									emit_sound_at(landsound, coords, 128.);
 
 									if(id==0){
@@ -6201,7 +6201,7 @@ int Person::SphereCheck(XYZ *p1,float radius, XYZ *p, XYZ *move, float *rotate, 
 						p1->x, p1->y, p1->z, radius/2);
 					end=*p1-point;
 					if(dotproduct(&model->facenormals[j],&end)>0&&intersecting){
-						if((targetanimation==jumpdownanim||targetanimation==jumpupanim||isFlip())){
+						if((animTarget==jumpdownanim||animTarget==jumpupanim||isFlip())){
 							start=velocity;
 							velocity-=DoRotation(model->facenormals[j],0,*rotate,0)*findLength(&velocity)*abs(normaldotproduct(velocity,DoRotation(model->facenormals[j],0,*rotate,0)));//(distance-radius*.5)/multiplier;
 							if(findLengthfast(&start)<findLengthfast(&velocity))velocity=start;

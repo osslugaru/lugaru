@@ -962,8 +962,8 @@ int Game::DrawGLScene(StereoSide side)
                             player[participantfocus[whichdialogue][j]].yaw=participantyaw[whichdialogue][participantfocus[whichdialogue][j]];
                             player[participantfocus[whichdialogue][j]].targetyaw=participantyaw[whichdialogue][participantfocus[whichdialogue][j]];
                             player[participantfocus[whichdialogue][j]].velocity=0;
-                            player[participantfocus[whichdialogue][j]].targetanimation=player[participantfocus[whichdialogue][j]].getIdle();
-                            player[participantfocus[whichdialogue][j]].targetframe=0;
+                            player[participantfocus[whichdialogue][j]].animTarget=player[participantfocus[whichdialogue][j]].getIdle();
+                            player[participantfocus[whichdialogue][j]].frameTarget=0;
                         }
                         directing=0;
                         indialogue=0;

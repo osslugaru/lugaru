@@ -1131,8 +1131,8 @@ static void ch_play(const char *args)
     player[participantfocus[whichdialogue][i]].yaw=participantyaw[whichdialogue][participantfocus[whichdialogue][i]];
     player[participantfocus[whichdialogue][i]].targetyaw=participantyaw[whichdialogue][participantfocus[whichdialogue][i]];
     player[participantfocus[whichdialogue][i]].velocity=0;
-    player[participantfocus[whichdialogue][i]].targetanimation=player[participantfocus[whichdialogue][i]].getIdle();
-    player[participantfocus[whichdialogue][i]].targetframe=0;
+    player[participantfocus[whichdialogue][i]].animTarget=player[participantfocus[whichdialogue][i]].getIdle();
+    player[participantfocus[whichdialogue][i]].frameTarget=0;
   }
 
   directing=0;
@@ -2110,10 +2110,10 @@ void Loadlevel(const char *name) {
 				player[i].DoMipmaps();
 			}
 
-			player[i].currentanimation=bounceidleanim;
-			player[i].targetanimation=bounceidleanim;
-			player[i].currentframe=0;
-			player[i].targetframe=1;
+			player[i].animCurrent=bounceidleanim;
+			player[i].animTarget=bounceidleanim;
+			player[i].frameCurrent=0;
+			player[i].frameTarget=1;
 			player[i].target=0;
 			player[i].speed=1+(float)(Random()%100)/1000;
 			if(difficulty==0)
@@ -2568,23 +2568,23 @@ void doTutorial(){
             break; case 4: if(player[0].forwardkeydown||player[0].backkeydown||player[0].leftkeydown||player[0].rightkeydown)tutorialsuccess+=multiplier;
             break; case 5: if(player[0].jumpkeydown)tutorialsuccess=1;
             break; case 6: if(player[0].isCrouch())tutorialsuccess=1;
-            break; case 7: if(player[0].targetanimation==rollanim)tutorialsuccess=1;
-            break; case 8: if(player[0].targetanimation==sneakanim)tutorialsuccess+=multiplier;
-            break; case 9: if(player[0].targetanimation==rabbitrunninganim||player[0].targetanimation==wolfrunninganim)tutorialsuccess+=multiplier;
+            break; case 7: if(player[0].animTarget==rollanim)tutorialsuccess=1;
+            break; case 8: if(player[0].animTarget==sneakanim)tutorialsuccess+=multiplier;
+            break; case 9: if(player[0].animTarget==rabbitrunninganim||player[0].animTarget==wolfrunninganim)tutorialsuccess+=multiplier;
             break; case 11: if(player[0].isWallJump())tutorialsuccess=1;
-            break; case 12: if(player[0].targetanimation==flipanim)tutorialsuccess=1;
-            break; case 15: if(player[0].targetanimation==upunchanim||player[0].targetanimation==winduppunchanim)tutorialsuccess=1;
-            break; case 16: if(player[0].targetanimation==winduppunchanim)tutorialsuccess=1;
-            break; case 17: if(player[0].targetanimation==spinkickanim)tutorialsuccess=1;
-            break; case 18: if(player[0].targetanimation==sweepanim)tutorialsuccess=1;
-            break; case 19: if(player[0].targetanimation==dropkickanim)tutorialsuccess=1;
-            break; case 20: if(player[0].targetanimation==rabbitkickanim)tutorialsuccess=1;
+            break; case 12: if(player[0].animTarget==flipanim)tutorialsuccess=1;
+            break; case 15: if(player[0].animTarget==upunchanim||player[0].animTarget==winduppunchanim)tutorialsuccess=1;
+            break; case 16: if(player[0].animTarget==winduppunchanim)tutorialsuccess=1;
+            break; case 17: if(player[0].animTarget==spinkickanim)tutorialsuccess=1;
+            break; case 18: if(player[0].animTarget==sweepanim)tutorialsuccess=1;
+            break; case 19: if(player[0].animTarget==dropkickanim)tutorialsuccess=1;
+            break; case 20: if(player[0].animTarget==rabbitkickanim)tutorialsuccess=1;
             break; case 21: if(bonus==cannon)tutorialsuccess=1;
             break; case 22: if(bonus==spinecrusher)tutorialsuccess=1;
-            break; case 23: if(player[0].targetanimation==walljumprightkickanim||player[0].targetanimation==walljumpleftkickanim)tutorialsuccess=1;
-            break; case 24: if(player[0].targetanimation==rabbittacklinganim)tutorialsuccess=1;
-            break; case 25: if(player[0].targetanimation==backhandspringanim)tutorialsuccess=1;
-            break; case 28: if(animation[player[0].targetanimation].attack==reversed&&player[0].feint)tutorialsuccess=1;
+            break; case 23: if(player[0].animTarget==walljumprightkickanim||player[0].animTarget==walljumpleftkickanim)tutorialsuccess=1;
+            break; case 24: if(player[0].animTarget==rabbittacklinganim)tutorialsuccess=1;
+            break; case 25: if(player[0].animTarget==backhandspringanim)tutorialsuccess=1;
+            break; case 28: if(animation[player[0].animTarget].attack==reversed&&player[0].feint)tutorialsuccess=1;
             break; case 29:
                 if(player[0].escapednum==2) {
                     tutorialsuccess=1;
@@ -2592,10 +2592,10 @@ void doTutorial(){
                     cananger=0;
                     player[1].aitype=passivetype;
                 }
-            break; case 33: if(animation[player[0].targetanimation].attack==reversal)tutorialsuccess=1;
-            break; case 34: if(animation[player[0].targetanimation].attack==reversal)tutorialsuccess=1;
+            break; case 33: if(animation[player[0].animTarget].attack==reversal)tutorialsuccess=1;
+            break; case 34: if(animation[player[0].animTarget].attack==reversal)tutorialsuccess=1;
             break; case 35:
-                if(animation[player[0].targetanimation].attack==reversal){
+                if(animation[player[0].animTarget].attack==reversal){
                     tutorialsuccess=1;
                     reversaltrain=0;
                     cananger=0;
@@ -2603,10 +2603,10 @@ void doTutorial(){
                 }
             break; case 40: if(player[0].num_weapons>0)tutorialsuccess=1;
             break; case 41: if(player[0].weaponactive==-1&&player[0].num_weapons>0)tutorialsuccess=1;
-            break; case 43: if(player[0].targetanimation==knifeslashstartanim)tutorialsuccess=1;
-            break; case 44: if(animation[player[0].targetanimation].attack==reversal)tutorialsuccess=1;
-            break; case 45: if(animation[player[0].targetanimation].attack==reversal)tutorialsuccess=1;
-            break; case 46: if(animation[player[0].targetanimation].attack==reversal)tutorialsuccess=1;
+            break; case 43: if(player[0].animTarget==knifeslashstartanim)tutorialsuccess=1;
+            break; case 44: if(animation[player[0].animTarget].attack==reversal)tutorialsuccess=1;
+            break; case 45: if(animation[player[0].animTarget].attack==reversal)tutorialsuccess=1;
+            break; case 46: if(animation[player[0].animTarget].attack==reversal)tutorialsuccess=1;
             break; case 49: if(player[1].weaponstuck!=-1)tutorialsuccess=1;
             break; default: break;
         }
@@ -3057,10 +3057,10 @@ void doDebugKeys(){
                     player[numplayers].skeleton.drawmodelclothes.textureptr.load(":Data:Textures:Belt.png",1,1);
                     player[numplayers].power=1;
                     player[numplayers].speedmult=1;
-                    player[numplayers].currentanimation=bounceidleanim;
-                    player[numplayers].targetanimation=bounceidleanim;
-                    player[numplayers].currentframe=0;
-                    player[numplayers].targetframe=1;
+                    player[numplayers].animCurrent=bounceidleanim;
+                    player[numplayers].animTarget=bounceidleanim;
+                    player[numplayers].frameCurrent=0;
+                    player[numplayers].frameTarget=1;
                     player[numplayers].target=0;
                     player[numplayers].bled=0;
                     player[numplayers].speed=1+(float)(Random()%100)/1000;
@@ -3307,8 +3307,8 @@ void doJumpReversals(){
             if(i==k)continue;
             if(     player[k].skeleton.free==0&&
                     player[i].skeleton.oldfree==0&&
-                    (player[i].targetanimation==jumpupanim||
-                     player[k].targetanimation==jumpupanim)&&
+                    (player[i].animTarget==jumpupanim||
+                     player[k].animTarget==jumpupanim)&&
                     (player[i].aitype==playercontrolled||
                      player[k].aitype==playercontrolled)&&
                     (player[i].aitype==attacktypecutoff&&player[i].stunned<=0||
@@ -3316,36 +3316,36 @@ void doJumpReversals(){
                 if(     distsq(&player[i].coords,&player[k].coords)<10*sq((player[i].scale+player[k].scale)*2.5)&&
                         distsqflat(&player[i].coords,&player[k].coords)<2*sq((player[i].scale+player[k].scale)*2.5)){
                     //TODO: refactor two huge similar ifs
-                    if(player[i].targetanimation==jumpupanim&&
-                            player[k].targetanimation!=getupfrombackanim&&
-                            player[k].targetanimation!=getupfromfrontanim&&
-                            animation[player[k].targetanimation].height==middleheight&&
+                    if(player[i].animTarget==jumpupanim&&
+                            player[k].animTarget!=getupfrombackanim&&
+                            player[k].animTarget!=getupfromfrontanim&&
+                            animation[player[k].animTarget].height==middleheight&&
                             normaldotproduct(player[i].velocity,player[k].coords-player[i].coords)<0&&
                             (player[k].aitype==playercontrolled&&player[k].attackkeydown||
                              player[k].aitype!=playercontrolled)){
                         player[i].victim=&player[k];
                         player[i].velocity=0;
-                        player[i].currentanimation=jumpreversedanim;
-                        player[i].targetanimation=jumpreversedanim;
-                        player[i].currentframe=0;
-                        player[i].targetframe=1;
+                        player[i].animCurrent=jumpreversedanim;
+                        player[i].animTarget=jumpreversedanim;
+                        player[i].frameCurrent=0;
+                        player[i].frameTarget=1;
                         player[i].targettilt2=0;
                         player[k].victim=&player[i];
                         player[k].velocity=0;
-                        player[k].currentanimation=jumpreversalanim;
-                        player[k].targetanimation=jumpreversalanim;
-                        player[k].currentframe=0;
-                        player[k].targetframe=1;
+                        player[k].animCurrent=jumpreversalanim;
+                        player[k].animTarget=jumpreversalanim;
+                        player[k].frameCurrent=0;
+                        player[k].frameTarget=1;
                         player[k].targettilt2=0;
                         if(player[i].coords.y<player[k].coords.y+1){
-                            player[i].currentanimation=rabbitkickreversedanim;
-                            player[i].targetanimation=rabbitkickreversedanim;
-                            player[i].currentframe=1;
-                            player[i].targetframe=2;
-                            player[k].currentanimation=rabbitkickreversalanim;
-                            player[k].targetanimation=rabbitkickreversalanim;
-                            player[k].currentframe=1;
-                            player[k].targetframe=2;
+                            player[i].animCurrent=rabbitkickreversedanim;
+                            player[i].animTarget=rabbitkickreversedanim;
+                            player[i].frameCurrent=1;
+                            player[i].frameTarget=2;
+                            player[k].animCurrent=rabbitkickreversalanim;
+                            player[k].animTarget=rabbitkickreversalanim;
+                            player[k].frameCurrent=1;
+                            player[k].frameTarget=2;
                         }
                         player[i].target=0;
                         player[k].oldcoords=player[k].coords;
@@ -3355,36 +3355,36 @@ void doJumpReversals(){
                         if(player[k].aitype==attacktypecutoff)
                             player[k].stunned=.5;
                     }
-                    if(player[k].targetanimation==jumpupanim&&
-                            player[i].targetanimation!=getupfrombackanim&&
-                            player[i].targetanimation!=getupfromfrontanim&&
-                            animation[player[i].targetanimation].height==middleheight&&
+                    if(player[k].animTarget==jumpupanim&&
+                            player[i].animTarget!=getupfrombackanim&&
+                            player[i].animTarget!=getupfromfrontanim&&
+                            animation[player[i].animTarget].height==middleheight&&
                             normaldotproduct(player[k].velocity,player[i].coords-player[k].coords)<0&&
                             ((player[i].aitype==playercontrolled&&player[i].attackkeydown)||
                              player[i].aitype!=playercontrolled)){
                         player[k].victim=&player[i];
                         player[k].velocity=0;
-                        player[k].currentanimation=jumpreversedanim;
-                        player[k].targetanimation=jumpreversedanim;
-                        player[k].currentframe=0;
-                        player[k].targetframe=1;
+                        player[k].animCurrent=jumpreversedanim;
+                        player[k].animTarget=jumpreversedanim;
+                        player[k].frameCurrent=0;
+                        player[k].frameTarget=1;
                         player[k].targettilt2=0;
                         player[i].victim=&player[k];
                         player[i].velocity=0;
-                        player[i].currentanimation=jumpreversalanim;
-                        player[i].targetanimation=jumpreversalanim;
-                        player[i].currentframe=0;
-                        player[i].targetframe=1;
+                        player[i].animCurrent=jumpreversalanim;
+                        player[i].animTarget=jumpreversalanim;
+                        player[i].frameCurrent=0;
+                        player[i].frameTarget=1;
                         player[i].targettilt2=0;
                         if(player[k].coords.y<player[i].coords.y+1){
-                            player[k].targetanimation=rabbitkickreversedanim;
-                            player[k].currentanimation=rabbitkickreversedanim;
-                            player[i].currentanimation=rabbitkickreversalanim;
-                            player[i].targetanimation=rabbitkickreversalanim;
-                            player[k].currentframe=1;
-                            player[k].targetframe=2;
-                            player[i].currentframe=1;
-                            player[i].targetframe=2;
+                            player[k].animTarget=rabbitkickreversedanim;
+                            player[k].animCurrent=rabbitkickreversedanim;
+                            player[i].animCurrent=rabbitkickreversalanim;
+                            player[i].animTarget=rabbitkickreversalanim;
+                            player[k].frameCurrent=1;
+                            player[k].frameTarget=2;
+                            player[i].frameCurrent=1;
+                            player[i].frameTarget=2;
                         }
                         player[k].target=0;
                         player[i].oldcoords=player[i].coords;
@@ -3407,32 +3407,32 @@ void doAerialAcrobatics(){
         if((player[k].isRun()&&
                     ((player[k].targetyaw!=rabbitrunninganim&&
                       player[k].targetyaw!=wolfrunninganim)||
-                     player[k].targetframe==4))||
-                player[k].targetanimation==removeknifeanim||
-                player[k].targetanimation==crouchremoveknifeanim||
-                player[k].targetanimation==flipanim||
-                player[k].targetanimation==fightsidestep||
-                player[k].targetanimation==walkanim){
+                     player[k].frameTarget==4))||
+                player[k].animTarget==removeknifeanim||
+                player[k].animTarget==crouchremoveknifeanim||
+                player[k].animTarget==flipanim||
+                player[k].animTarget==fightsidestep||
+                player[k].animTarget==walkanim){
             player[k].yaw=stepTowardf(player[k].yaw, player[k].targetyaw, multiplier*player[k].turnspeed);
         }
 
 
         if(player[k].isStop()||
                 player[k].isLanding()||
-                player[k].targetanimation==staggerbackhighanim||
-                (player[k].targetanimation==sneakanim&&player[k].currentanimation==sneakanim)||
-                player[k].targetanimation==staggerbackhardanim||
-                player[k].targetanimation==backhandspringanim||
-                player[k].targetanimation==dodgebackanim||
-                player[k].targetanimation==rollanim||
-                (animation[player[k].targetanimation].attack&&
-                 player[k].targetanimation!=rabbitkickanim&&
-                 (player[k].targetanimation!=crouchstabanim||player[k].hasvictim)&&
-                 (player[k].targetanimation!=swordgroundstabanim||player[k].hasvictim))){
+                player[k].animTarget==staggerbackhighanim||
+                (player[k].animTarget==sneakanim&&player[k].animCurrent==sneakanim)||
+                player[k].animTarget==staggerbackhardanim||
+                player[k].animTarget==backhandspringanim||
+                player[k].animTarget==dodgebackanim||
+                player[k].animTarget==rollanim||
+                (animation[player[k].animTarget].attack&&
+                 player[k].animTarget!=rabbitkickanim&&
+                 (player[k].animTarget!=crouchstabanim||player[k].hasvictim)&&
+                 (player[k].animTarget!=swordgroundstabanim||player[k].hasvictim))){
             player[k].yaw=stepTowardf(player[k].yaw, player[k].targetyaw, multiplier*player[k].turnspeed*2);
         }
 
-        if(player[k].targetanimation==sneakanim&&player[k].currentanimation!=sneakanim){
+        if(player[k].animTarget==sneakanim&&player[k].animCurrent!=sneakanim){
             player[k].yaw=stepTowardf(player[k].yaw, player[k].targetyaw, multiplier*player[k].turnspeed*4);
         }
 
@@ -3444,8 +3444,8 @@ void doAerialAcrobatics(){
         //if player's position has changed (?)
         if(distsq(&player[k].coords,&player[k].realoldcoords)>0&&
                 !player[k].skeleton.free&&
-                player[k].targetanimation!=climbanim&&
-                player[k].targetanimation!=hanganim){
+                player[k].animTarget!=climbanim&&
+                player[k].animTarget!=hanganim){
             XYZ lowpoint,lowpointtarget,lowpoint2,lowpointtarget2,lowpoint3,lowpointtarget3,lowpoint4,lowpointtarget4,lowpoint5,lowpointtarget5,lowpoint6,lowpointtarget6,lowpoint7,lowpointtarget7,colpoint,colpoint2;
             int whichhit;
             bool tempcollide=0;
@@ -3465,8 +3465,8 @@ void doAerialAcrobatics(){
                         objects.scale[i]>.5&&player[k].aitype==playercontrolled||
                         objects.position[i].y>player[k].coords.y){
                     lowpoint=player[k].coords;
-                    if(player[k].targetanimation!=jumpupanim&&
-                            player[k].targetanimation!=jumpdownanim&&
+                    if(player[k].animTarget!=jumpupanim&&
+                            player[k].animTarget!=jumpdownanim&&
                             !player[k].isFlip())
                         lowpoint.y+=1.25;
                     else
@@ -3483,8 +3483,8 @@ void doAerialAcrobatics(){
                         //wall jumps
                         //TODO: refactor four similar blocks
                         if(player[k].aitype==playercontrolled&&
-                                (player[k].targetanimation==jumpupanim||
-                                 player[k].targetanimation==jumpdownanim||
+                                (player[k].animTarget==jumpupanim||
+                                 player[k].animTarget==jumpdownanim||
                                  player[k].isFlip())&&
                                 !player[k].jumptogglekeydown&&
                                 player[k].jumpkeydown){
@@ -3573,17 +3573,17 @@ void doAerialAcrobatics(){
                         player[k].collide=1;
                         tempcollide=1;
 
-                        if(player[k].targetanimation==jumpdownanim||player[k].isFlip()){
+                        if(player[k].animTarget==jumpdownanim||player[k].isFlip()){
                             //flipped into a rock
-                            if(player[k].isFlip()&&animation[player[k].targetanimation].label[player[k].targetframe]==7)
+                            if(player[k].isFlip()&&animation[player[k].animTarget].label[player[k].frameTarget]==7)
                                 player[k].RagDoll(0);
 
-                            if(player[k].targetanimation==jumpupanim){
+                            if(player[k].animTarget==jumpupanim){
                                 player[k].jumppower=-4;
-                                player[k].targetanimation=player[k].getIdle();
+                                player[k].animTarget=player[k].getIdle();
                             }
                             player[k].target=0;
-                            player[k].targetframe=0;
+                            player[k].frameTarget=0;
                             player[k].onterrain=1;
 
                             if(player[k].id==0){
@@ -3592,10 +3592,10 @@ void doAerialAcrobatics(){
                             }
 
                             //landing
-                            if((player[k].targetanimation==jumpdownanim||player[k].isFlip())&&!player[k].wasLanding()){
+                            if((player[k].animTarget==jumpdownanim||player[k].isFlip())&&!player[k].wasLanding()){
                                 if(player[k].isFlip())
                                     player[k].jumppower=-4;
-                                player[k].targetanimation=player[k].getLanding();
+                                player[k].animTarget=player[k].getLanding();
                                 emit_sound_at(landsound, player[k].coords, 128.);
                                 if(k==0){
                                     envsound[numenvsounds]=player[k].coords;
@@ -3617,8 +3617,8 @@ void doAerialAcrobatics(){
                     lowpoint.y+=1.35;
                     if(objects.type[i]!=rocktype)
                         if(player[k].SphereCheck(&lowpoint,1.33,&colpoint,&objects.position[i],&objects.yaw[i],&objects.model[i])!=-1){
-                            if(player[k].targetanimation!=jumpupanim&&
-                                    player[k].targetanimation!=jumpdownanim&&
+                            if(player[k].animTarget!=jumpupanim&&
+                                    player[k].animTarget!=jumpdownanim&&
                                     player[k].onterrain)
                                 player[k].avoidcollided=1;
                             player[k].coords=lowpoint;
@@ -3626,11 +3626,11 @@ void doAerialAcrobatics(){
                             player[k].collide=1;
 
                             if((player[k].grabdelay<=0||player[k].aitype!=playercontrolled)&&
-                                    (player[k].currentanimation!=climbanim&&
-                                     player[k].currentanimation!=hanganim&&
+                                    (player[k].animCurrent!=climbanim&&
+                                     player[k].animCurrent!=hanganim&&
                                      !player[k].isWallJump()||
-                                     player[k].targetanimation==jumpupanim||
-                                     player[k].targetanimation==jumpdownanim)){
+                                     player[k].animTarget==jumpupanim||
+                                     player[k].animTarget==jumpdownanim)){
                                 lowpoint=player[k].coords;
                                 objects.model[i].SphereCheckPossible(&lowpoint, 1.5, &objects.position[i], &objects.yaw[i]);
                                 lowpoint=player[k].coords;
@@ -3671,7 +3671,7 @@ void doAerialAcrobatics(){
                                     whichhit=objects.model[i].LineCheckPossible(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.yaw[i]);
                                     if(objects.friction[i]>.5)
                                         if(whichhit!=-1){
-                                            if(whichhit!=-1&&player[k].targetanimation!=jumpupanim&&player[k].targetanimation!=jumpdownanim)
+                                            if(whichhit!=-1&&player[k].animTarget!=jumpupanim&&player[k].animTarget!=jumpdownanim)
                                                 player[k].collided=1;
                                             if(checkcollide(lowpoint7,lowpointtarget7)==-1)
                                                 if(checkcollide(lowpoint6,lowpointtarget6)==-1)
@@ -3689,9 +3689,9 @@ void doAerialAcrobatics(){
                                                             lowpointtarget=lowpoint+facing*1.4;
                                                             if(objects.model[i].LineCheckPossible(&lowpoint,&lowpointtarget,
                                                                         &colpoint2,&objects.position[i],&objects.yaw[i])==-1){
-                                                                if(j<=6||j<=25&&player[k].targetanimation==jumpdownanim)
+                                                                if(j<=6||j<=25&&player[k].animTarget==jumpdownanim)
                                                                     break;
-                                                                if(player[k].targetanimation==jumpupanim||player[k].targetanimation==jumpdownanim){
+                                                                if(player[k].animTarget==jumpupanim||player[k].animTarget==jumpdownanim){
                                                                     lowpoint=DoRotation(objects.model[i].facenormals[whichhit],0,objects.yaw[k],0);
                                                                     lowpoint=player[k].coords;
                                                                     lowpoint.y+=(float)j/13;
@@ -3702,7 +3702,7 @@ void doAerialAcrobatics(){
                                                                     player[k].currentoffset=(flatfacing-player[k].coords)/player[k].scale;
 
                                                                     if(j>10||!player[k].isRun()){
-                                                                        if(player[k].targetanimation==jumpdownanim||player[k].targetanimation==jumpupanim){
+                                                                        if(player[k].animTarget==jumpdownanim||player[k].animTarget==jumpupanim){
                                                                             if(k==0)
                                                                                 pause_sound(whooshsound);
                                                                         }
@@ -3719,14 +3719,14 @@ void doAerialAcrobatics(){
                                                                         player[k].velocity=0;
 
                                                                         //climb ledge (?)
-                                                                        if(player[k].targetanimation==jumpupanim){
-                                                                            player[k].targetanimation=climbanim;
+                                                                        if(player[k].animTarget==jumpupanim){
+                                                                            player[k].animTarget=climbanim;
                                                                             player[k].jumppower=0;
                                                                             player[k].jumpclimb=1;
                                                                         }
                                                                         player[k].transspeed=6;
                                                                         player[k].target=0;
-                                                                        player[k].targetframe=1;
+                                                                        player[k].frameTarget=1;
                                                                         //hang ledge (?)
                                                                         if(j>25){
                                                                             player[k].setAnimation(hanganim);
@@ -3745,20 +3745,20 @@ void doAerialAcrobatics(){
             if(player[k].collide<=0){
                 //in the air
                 if(!player[k].onterrain&&
-                        player[k].targetanimation!=jumpupanim&&
-                        player[k].targetanimation!=jumpdownanim&&
-                        player[k].targetanimation!=climbanim&&
-                        player[k].targetanimation!=hanganim&&
+                        player[k].animTarget!=jumpupanim&&
+                        player[k].animTarget!=jumpdownanim&&
+                        player[k].animTarget!=climbanim&&
+                        player[k].animTarget!=hanganim&&
                         !player[k].isWallJump()&&
                         !player[k].isFlip()){
-                    if(player[k].currentanimation!=climbanim&&
-                            player[k].currentanimation!=tempanim&&
-                            player[k].targetanimation!=backhandspringanim&&
-                            (player[k].targetanimation!=rollanim||
-                             player[k].targetframe<2||
-                             player[k].targetframe>6)){
+                    if(player[k].animCurrent!=climbanim&&
+                            player[k].animCurrent!=tempanim&&
+                            player[k].animTarget!=backhandspringanim&&
+                            (player[k].animTarget!=rollanim||
+                             player[k].frameTarget<2||
+                             player[k].frameTarget>6)){
                         //stagger off ledge (?)
-                        if(player[k].targetanimation==staggerbackhighanim||player[k].targetanimation==staggerbackhardanim)
+                        if(player[k].animTarget==staggerbackhighanim||player[k].animTarget==staggerbackhardanim)
                             player[k].RagDoll(0);
                         player[k].setAnimation(jumpdownanim);
 
@@ -3800,10 +3800,10 @@ void doAttacks(){
             !oldattackkey&&
             !player[0].backkeydown){
         for(int k=0;k<numplayers;k++){
-            if((player[k].targetanimation==swordslashanim||
-                        player[k].targetanimation==staffhitanim||
-                        player[k].targetanimation==staffspinhitanim)&&
-                    player[0].currentanimation!=dodgebackanim&&
+            if((player[k].animTarget==swordslashanim||
+                        player[k].animTarget==staffhitanim||
+                        player[k].animTarget==staffspinhitanim)&&
+                    player[0].animCurrent!=dodgebackanim&&
                     !player[k].skeleton.free)
                 player[k].Reverse();
         }
@@ -3813,34 +3813,34 @@ void doAttacks(){
 
     for(int k=0;k<numplayers;k++){
         if(indialogue!=-1)player[k].attackkeydown=0;
-        if(player[k].targetanimation!=rabbitrunninganim&&player[k].targetanimation!=wolfrunninganim){
+        if(player[k].animTarget!=rabbitrunninganim&&player[k].animTarget!=wolfrunninganim){
             if(player[k].aitype!=playercontrolled)
                 player[k].victim=&player[0];
             //attack key pressed
             if(player[k].attackkeydown){
                 //dodge backward
                 if(player[k].backkeydown&&
-                        player[k].targetanimation!=backhandspringanim&&
+                        player[k].animTarget!=backhandspringanim&&
                         (player[k].isIdle()||
                          player[k].isStop()||
                          player[k].isRun()||
-                         player[k].targetanimation==walkanim)){
+                         player[k].animTarget==walkanim)){
                     if(player[k].jumppower<=1){
                         player[k].jumppower-=2;
                     }else{
                         for(int i=0;i<numplayers;i++){
                             if(i==k)continue;
-                            if(player[i].targetanimation==swordslashanim||
-                                    player[i].targetanimation==knifeslashstartanim||
-                                    player[i].targetanimation==staffhitanim||
-                                    player[i].targetanimation==staffspinhitanim)
+                            if(player[i].animTarget==swordslashanim||
+                                    player[i].animTarget==knifeslashstartanim||
+                                    player[i].animTarget==staffhitanim||
+                                    player[i].animTarget==staffspinhitanim)
                                 if(distsq(&player[k].coords,&player[i].coords)<6.5&&!player[i].skeleton.free){
                                     player[k].setAnimation(dodgebackanim);
                                     player[k].targetyaw=roughDirectionTo(player[k].coords,player[i].coords);
                                     player[k].targettilt2=pitchTo(player[k].coords,player[i].coords);
                                 }
                         }
-                        if(player[k].targetanimation!=dodgebackanim){
+                        if(player[k].animTarget!=dodgebackanim){
                             if(k==0)numflipped++;
                             player[k].setAnimation(backhandspringanim);
                             player[k].targetyaw=-yaw+180;
@@ -3854,12 +3854,12 @@ void doAttacks(){
                     }
                 }
                 //attack
-                if(!animation[player[k].targetanimation].attack&&
+                if(!animation[player[k].animTarget].attack&&
                         !player[k].backkeydown&&
                         (player[k].isIdle()||
                          player[k].isRun()||
-                         player[k].targetanimation==walkanim||
-                         player[k].targetanimation==sneakanim||
+                         player[k].animTarget==walkanim||
+                         player[k].animTarget==sneakanim||
                          player[k].isCrouch())){
                     const int attackweapon=player[k].weaponactive==-1?0:weapons[player[k].weaponids[player[k].weaponactive]].getType();
                     //normal attacks (?)
@@ -3868,177 +3868,177 @@ void doAttacks(){
                         for(int i=0;i<numplayers;i++){
                             if(i==k||!(k==0||i==0))continue;
                             if(!player[k].hasvictim)
-                                if(animation[player[k].targetanimation].attack!=reversal){
+                                if(animation[player[k].animTarget].attack!=reversal){
                                     //choose an attack
                                     const float distance=distsq(&player[k].coords,&player[i].coords);
                                     if(distance<4.5&&
                                             !player[i].skeleton.free&&
                                             player[i].howactive<typedead1&&
-                                            player[i].targetanimation!=jumpreversedanim&&
-                                            player[i].targetanimation!=rabbitkickreversedanim&&
-                                            player[i].targetanimation!=rabbitkickanim&&
-                                            player[k].targetanimation!=rabbitkickanim&&
-                                            player[i].targetanimation!=getupfrombackanim&&
-                                            (player[i].targetanimation!=staggerbackhighanim&&
-                                             (player[i].targetanimation!=staggerbackhardanim||
-                                              animation[staggerbackhardanim].label[player[i].targetframe]==6))&&
-                                            player[i].targetanimation!=jumpdownanim&&
-                                            player[i].targetanimation!=jumpupanim&&
-                                            player[i].targetanimation!=getupfromfrontanim){
+                                            player[i].animTarget!=jumpreversedanim&&
+                                            player[i].animTarget!=rabbitkickreversedanim&&
+                                            player[i].animTarget!=rabbitkickanim&&
+                                            player[k].animTarget!=rabbitkickanim&&
+                                            player[i].animTarget!=getupfrombackanim&&
+                                            (player[i].animTarget!=staggerbackhighanim&&
+                                             (player[i].animTarget!=staggerbackhardanim||
+                                              animation[staggerbackhardanim].label[player[i].frameTarget]==6))&&
+                                            player[i].animTarget!=jumpdownanim&&
+                                            player[i].animTarget!=jumpupanim&&
+                                            player[i].animTarget!=getupfromfrontanim){
                                         player[k].victim=&player[i];
                                         player[k].hasvictim=1;
                                         if(player[k].aitype==playercontrolled){ //human player
                                             //sweep
                                             if(distance<2.5*sq(player[k].scale*5)&&
                                                     player[k].crouchkeydown&&
-                                                    animation[player[i].targetanimation].height!=lowheight)
-                                                player[k].targetanimation=sweepanim;
+                                                    animation[player[i].animTarget].height!=lowheight)
+                                                player[k].animTarget=sweepanim;
                                             //winduppunch
                                             else if(distance<1.5*sq(player[k].scale*5)&&
-                                                    animation[player[i].targetanimation].height!=lowheight&&
+                                                    animation[player[i].animTarget].height!=lowheight&&
                                                     !player[k].forwardkeydown&&
                                                     !player[k].leftkeydown&&
                                                     !player[k].rightkeydown&&
                                                     !player[k].crouchkeydown&&
                                                     !attackweapon&&
                                                     !reversaltrain)
-                                                player[k].targetanimation=winduppunchanim;
+                                                player[k].animTarget=winduppunchanim;
                                             //upunch
                                             else if(distance<2.5*sq(player[k].scale*5)&&
-                                                    animation[player[i].targetanimation].height!=lowheight&&
+                                                    animation[player[i].animTarget].height!=lowheight&&
                                                     !player[k].forwardkeydown&&
                                                     !player[k].leftkeydown&&
                                                     !player[k].rightkeydown&&
                                                     !player[k].crouchkeydown&&
                                                     !attackweapon)
-                                                player[k].targetanimation=upunchanim;
+                                                player[k].animTarget=upunchanim;
                                             //knifefollow
                                             else if(distance<2.5*sq(player[k].scale*5)&&
                                                     player[i].staggerdelay>0&&
                                                     attackweapon==knife&&
                                                     player[i].bloodloss>player[i].damagetolerance/2)
-                                                player[k].targetanimation=knifefollowanim;
+                                                player[k].animTarget=knifefollowanim;
                                             //knifeslashstart
                                             else if(distance<2.5*sq(player[k].scale*5)&&
-                                                    animation[player[i].targetanimation].height!=lowheight&&
+                                                    animation[player[i].animTarget].height!=lowheight&&
                                                     !player[k].forwardkeydown&&
                                                     !player[k].leftkeydown&&
                                                     !player[k].rightkeydown&&
                                                     !player[k].crouchkeydown&&
                                                     attackweapon==knife&&
                                                     player[k].weaponmissdelay<=0)
-                                                player[k].targetanimation=knifeslashstartanim;
+                                                player[k].animTarget=knifeslashstartanim;
                                             //swordslash
                                             else if(distance<4.5*sq(player[k].scale*5)&&
-                                                    animation[player[i].targetanimation].height!=lowheight&&
+                                                    animation[player[i].animTarget].height!=lowheight&&
                                                     !player[k].crouchkeydown&&
                                                     attackweapon==sword&&
                                                     player[k].weaponmissdelay<=0)
-                                                player[k].targetanimation=swordslashanim;
+                                                player[k].animTarget=swordslashanim;
                                             //staffhit
                                             else if(distance<4.5*sq(player[k].scale*5)&&
-                                                    animation[player[i].targetanimation].height!=lowheight&&
+                                                    animation[player[i].animTarget].height!=lowheight&&
                                                     !player[k].crouchkeydown&&
                                                     attackweapon==staff&&
                                                     player[k].weaponmissdelay<=0&&
                                                     !player[k].leftkeydown&&
                                                     !player[k].rightkeydown&&
                                                     !player[k].forwardkeydown)
-                                                player[k].targetanimation=staffhitanim;
+                                                player[k].animTarget=staffhitanim;
                                             //staffspinhit
                                             else if(distance<4.5*sq(player[k].scale*5)&&
-                                                    animation[player[i].targetanimation].height!=lowheight&&
+                                                    animation[player[i].animTarget].height!=lowheight&&
                                                     !player[k].crouchkeydown&&
                                                     attackweapon==staff&&
                                                     player[k].weaponmissdelay<=0)
-                                                player[k].targetanimation=staffspinhitanim;
+                                                player[k].animTarget=staffspinhitanim;
                                             //spinkick
                                             else if(distance<2.5*sq(player[k].scale*5)&&
-                                                    animation[player[i].targetanimation].height!=lowheight)
-                                                player[k].targetanimation=spinkickanim;
+                                                    animation[player[i].animTarget].height!=lowheight)
+                                                player[k].animTarget=spinkickanim;
                                             //lowkick
                                             else if(distance<2.5*sq(player[k].scale*5)&&
-                                                    animation[player[i].targetanimation].height==lowheight&&
-                                                    animation[player[k].targetanimation].attack!=normalattack)
-                                                player[k].targetanimation=lowkickanim;
+                                                    animation[player[i].animTarget].height==lowheight&&
+                                                    animation[player[k].animTarget].attack!=normalattack)
+                                                player[k].animTarget=lowkickanim;
                                         } else { //AI player
                                             if(distance<4.5*sq(player[k].scale*5)){
                                                 randattack=abs(Random()%5);
                                                 if(!attackweapon&&distance<2.5*sq(player[k].scale*5)){
                                                     //sweep
-                                                    if(randattack==0&&animation[player[i].targetanimation].height!=lowheight)
-                                                        player[k].targetanimation=sweepanim;
+                                                    if(randattack==0&&animation[player[i].animTarget].height!=lowheight)
+                                                        player[k].animTarget=sweepanim;
                                                     //upunch
-                                                    else if(randattack==1&&animation[player[i].targetanimation].height!=lowheight&&
+                                                    else if(randattack==1&&animation[player[i].animTarget].height!=lowheight&&
                                                             !attackweapon)
-                                                        player[k].targetanimation=upunchanim;
+                                                        player[k].animTarget=upunchanim;
                                                     //spinkick
-                                                    else if(randattack==2&&animation[player[i].targetanimation].height!=lowheight)
-                                                        player[k].targetanimation=spinkickanim;
+                                                    else if(randattack==2&&animation[player[i].animTarget].height!=lowheight)
+                                                        player[k].animTarget=spinkickanim;
                                                     //lowkick
-                                                    else if(animation[player[i].targetanimation].height==lowheight)
-                                                        player[k].targetanimation=lowkickanim;
+                                                    else if(animation[player[i].animTarget].height==lowheight)
+                                                        player[k].animTarget=lowkickanim;
                                                 }
                                                 if(attackweapon){
                                                     //sweep
                                                     if((tutoriallevel!=1||!attackweapon)&&
                                                             distance<2.5*sq(player[k].scale*5)&&
                                                             randattack==0&&
-                                                            animation[player[i].targetanimation].height!=lowheight)
-                                                        player[k].targetanimation=sweepanim;
+                                                            animation[player[i].animTarget].height!=lowheight)
+                                                        player[k].animTarget=sweepanim;
                                                     //knifeslashstart
                                                     else if(distance<2.5*sq(player[k].scale*5)&&
                                                             attackweapon==knife&&
                                                             player[k].weaponmissdelay<=0)
-                                                        player[k].targetanimation=knifeslashstartanim;
+                                                        player[k].animTarget=knifeslashstartanim;
                                                     //swordslash
                                                     else if(!(player[0].victim==&player[i]&&
                                                                 player[0].hasvictim&&
-                                                                player[0].targetanimation==swordslashanim)&&
+                                                                player[0].animTarget==swordslashanim)&&
                                                             attackweapon==sword&&
                                                             player[k].weaponmissdelay<=0)
-                                                        player[k].targetanimation=swordslashanim;
+                                                        player[k].animTarget=swordslashanim;
                                                     //staffhit
                                                     else if(!(player[0].victim==&player[i]&&
                                                                 player[0].hasvictim&&
-                                                                player[0].targetanimation==swordslashanim)&&
+                                                                player[0].animTarget==swordslashanim)&&
                                                             attackweapon==staff&&
                                                             player[k].weaponmissdelay<=0&&
                                                             randattack<3)
-                                                        player[k].targetanimation=staffhitanim;
+                                                        player[k].animTarget=staffhitanim;
                                                     //staffspinhit
                                                     else if(!(player[0].victim==&player[i]&&
                                                                 player[0].hasvictim&&
-                                                                player[0].targetanimation==swordslashanim)&&
+                                                                player[0].animTarget==swordslashanim)&&
                                                             attackweapon==staff&&
                                                             player[k].weaponmissdelay<=0&&
                                                             randattack>=3)
-                                                        player[k].targetanimation=staffspinhitanim;
+                                                        player[k].animTarget=staffspinhitanim;
                                                     //spinkick
                                                     else if((tutoriallevel!=1||!attackweapon)&&
                                                             distance<2.5*sq(player[k].scale*5)&&
                                                             randattack==1&&
-                                                            animation[player[i].targetanimation].height!=lowheight)
-                                                        player[k].targetanimation=spinkickanim;
+                                                            animation[player[i].animTarget].height!=lowheight)
+                                                        player[k].animTarget=spinkickanim;
                                                     //lowkick
                                                     else if(distance<2.5*sq(player[k].scale*5)&&
-                                                            animation[player[i].targetanimation].height==lowheight&&
-                                                            animation[player[k].targetanimation].attack!=normalattack)
-                                                        player[k].targetanimation=lowkickanim;
+                                                            animation[player[i].animTarget].height==lowheight&&
+                                                            animation[player[k].animTarget].attack!=normalattack)
+                                                        player[k].animTarget=lowkickanim;
                                                 }
                                             }
                                         }
                                         //upunch becomes wolfslap
-                                        if(player[k].targetanimation==upunchanim&&player[k].creature==wolftype)
-                                            player[k].targetanimation=wolfslapanim;
+                                        if(player[k].animTarget==upunchanim&&player[k].creature==wolftype)
+                                            player[k].animTarget=wolfslapanim;
                                     }
                                     //sneak attacks
                                     if((k==0)&&(tutoriallevel!=1||tutorialstage==22)&&
                                             player[i].howactive<typedead1&&
                                             distance<1.5*sq(player[k].scale*5)&&
                                             !player[i].skeleton.free&&
-                                            player[i].targetanimation!=getupfrombackanim&&
-                                            player[i].targetanimation!=getupfromfrontanim&&
+                                            player[i].animTarget!=getupfrombackanim&&
+                                            player[i].animTarget!=getupfromfrontanim&&
                                             (player[i].stunned>0&&player[k].madskills||
                                              player[i].surprised>0||
                                              player[i].aitype==passivetype||
@@ -4046,28 +4046,28 @@ void doAttacks(){
                                             normaldotproduct(player[i].facing,player[i].coords-player[k].coords)>0){
                                         //sneakattack
                                         if(!attackweapon){
-                                            player[k].currentanimation=sneakattackanim;
-                                            player[k].targetanimation=sneakattackanim;
-                                            player[i].currentanimation=sneakattackedanim;
-                                            player[i].targetanimation=sneakattackedanim;
+                                            player[k].animCurrent=sneakattackanim;
+                                            player[k].animTarget=sneakattackanim;
+                                            player[i].animCurrent=sneakattackedanim;
+                                            player[i].animTarget=sneakattackedanim;
                                             player[k].oldcoords=player[k].coords;
                                             player[k].coords=player[i].coords;
                                         }
                                         //knifesneakattack
                                         if(attackweapon==knife){
-                                            player[k].currentanimation=knifesneakattackanim;
-                                            player[k].targetanimation=knifesneakattackanim;
-                                            player[i].currentanimation=knifesneakattackedanim;
-                                            player[i].targetanimation=knifesneakattackedanim;
+                                            player[k].animCurrent=knifesneakattackanim;
+                                            player[k].animTarget=knifesneakattackanim;
+                                            player[i].animCurrent=knifesneakattackedanim;
+                                            player[i].animTarget=knifesneakattackedanim;
                                             player[i].oldcoords=player[i].coords;
                                             player[i].coords=player[k].coords;
                                         }
                                         //swordsneakattack
                                         if(attackweapon==sword){
-                                            player[k].currentanimation=swordsneakattackanim;
-                                            player[k].targetanimation=swordsneakattackanim;
-                                            player[i].currentanimation=swordsneakattackedanim;
-                                            player[i].targetanimation=swordsneakattackedanim;
+                                            player[k].animCurrent=swordsneakattackanim;
+                                            player[k].animTarget=swordsneakattackanim;
+                                            player[i].animCurrent=swordsneakattackedanim;
+                                            player[i].animTarget=swordsneakattackedanim;
                                             player[i].oldcoords=player[i].coords;
                                             player[i].coords=player[k].coords;
                                         }
@@ -4075,13 +4075,13 @@ void doAttacks(){
                                             player[k].victim=&player[i];
                                             player[k].hasvictim=1;
                                             player[i].targettilt2=0;
-                                            player[i].targetframe=1;
-                                            player[i].currentframe=0;
+                                            player[i].frameTarget=1;
+                                            player[i].frameCurrent=0;
                                             player[i].target=0;
                                             player[i].velocity=0;
                                             player[k].targettilt2=player[i].targettilt2;
-                                            player[k].currentframe=player[i].currentframe;
-                                            player[k].targetframe=player[i].targetframe;
+                                            player[k].frameCurrent=player[i].frameCurrent;
+                                            player[k].frameTarget=player[i].frameTarget;
                                             player[k].target=player[i].target;
                                             player[k].velocity=0;
                                             player[k].targetyaw=player[i].yaw;
@@ -4089,39 +4089,39 @@ void doAttacks(){
                                             player[i].targetyaw=player[i].yaw;
                                         }
                                     }
-                                    if(animation[player[k].targetanimation].attack==normalattack&&
+                                    if(animation[player[k].animTarget].attack==normalattack&&
                                             player[k].victim==&player[i]&&
                                             (!player[i].skeleton.free)){
                                         oldattackkey=1;
-                                        player[k].targetframe=0;
+                                        player[k].frameTarget=0;
                                         player[k].target=0;
 
                                         player[k].targetyaw=roughDirectionTo(player[k].coords,player[i].coords);
                                         player[k].targettilt2=pitchTo(player[k].coords,player[i].coords);
                                         player[k].lastattack3=player[k].lastattack2;
                                         player[k].lastattack2=player[k].lastattack;
-                                        player[k].lastattack=player[k].targetanimation;
+                                        player[k].lastattack=player[k].animTarget;
                                     }
-                                    if(player[k].targetanimation==knifefollowanim&&
+                                    if(player[k].animTarget==knifefollowanim&&
                                             player[k].victim==&player[i]){
                                         oldattackkey=1;
                                         player[k].targetyaw=roughDirectionTo(player[k].coords,player[i].coords);
                                         player[k].targettilt2=pitchTo(player[k].coords,player[i].coords);
                                         player[k].victim=&player[i];
                                         player[k].hasvictim=1;
-                                        player[i].targetanimation=knifefollowedanim;
-                                        player[i].currentanimation=knifefollowedanim;
+                                        player[i].animTarget=knifefollowedanim;
+                                        player[i].animCurrent=knifefollowedanim;
                                         player[i].targettilt2=0;
                                         player[i].targettilt2=player[k].targettilt2;
-                                        player[i].targetframe=1;
-                                        player[i].currentframe=0;
+                                        player[i].frameTarget=1;
+                                        player[i].frameCurrent=0;
                                         player[i].target=0;
                                         player[i].velocity=0;
-                                        player[k].currentanimation=knifefollowanim;
-                                        player[k].targetanimation=knifefollowanim;
+                                        player[k].animCurrent=knifefollowanim;
+                                        player[k].animTarget=knifefollowanim;
                                         player[k].targettilt2=player[i].targettilt2;
-                                        player[k].currentframe=player[i].currentframe;
-                                        player[k].targetframe=player[i].targetframe;
+                                        player[k].frameCurrent=player[i].frameCurrent;
+                                        player[k].frameTarget=player[i].frameTarget;
                                         player[k].target=player[i].target;
                                         player[k].velocity=0;
                                         player[k].oldcoords=player[k].coords;
@@ -4138,7 +4138,7 @@ void doAttacks(){
                         for(int i=0;i<numplayers;i++){
                             if(i==k)continue;
                             if((playerrealattackkeydown||player[i].dead||!hasstaff)&&
-                                    animation[player[k].targetanimation].attack==neutral){
+                                    animation[player[k].animTarget].attack==neutral){
                                 const float distance=distsq(&player[k].coords,&player[i].coords);
                                 if(!player[i].dead||!realthreat||(!attackweapon&&player[k].crouchkeydown))
                                     if(player[i].skeleton.free)
@@ -4157,22 +4157,22 @@ void doAttacks(){
                                             if(attackweapon&&tutoriallevel!=1){
                                                 //crouchstab
                                                 if(player[k].crouchkeydown&&attackweapon==knife&&distance<1.5*sq(player[k].scale*5))
-                                                    player[k].targetanimation=crouchstabanim;
+                                                    player[k].animTarget=crouchstabanim;
                                                 //swordgroundstab
                                                 if(player[k].crouchkeydown&&distance<1.5*sq(player[k].scale*5)&&attackweapon==sword)
-                                                    player[k].targetanimation=swordgroundstabanim;
+                                                    player[k].animTarget=swordgroundstabanim;
                                                 //staffgroundsmash
                                                 if(distance<3.5*sq(player[k].scale*5)&&attackweapon==staff)
-                                                    player[k].targetanimation=staffgroundsmashanim;
+                                                    player[k].animTarget=staffgroundsmashanim;
                                             }
                                             if(distance<2.5&&
                                                     player[k].crouchkeydown&&
-                                                    player[k].targetanimation!=crouchstabanim&&
+                                                    player[k].animTarget!=crouchstabanim&&
                                                     !attackweapon&&
                                                     player[i].dead&&
                                                     player[i].skeleton.free&&
                                                     player[i].skeleton.longdead>1000){
-                                                player[k].targetanimation=killanim;
+                                                player[k].animTarget=killanim;
                                                 //TODO: refactor this out, what does it do?
                                                 for(int j=0;j<terrain.numdecals;j++){
                                                     if((terrain.decaltype[j]==blooddecal||terrain.decaltype[j]==blooddecalslow)&&
@@ -4198,7 +4198,7 @@ void doAttacks(){
                                                          player[k].lastattack!=spinkickanim&&
                                                          player[i].skeleton.free)&&
                                                         (!player[i].dead||musictype!=stream_fighttheme)){
-                                                    player[k].targetanimation=dropkickanim;
+                                                    player[k].animTarget=dropkickanim;
                                                     for(int j=0;j<terrain.numdecals;j++){
                                                         if((terrain.decaltype[j]==blooddecal||terrain.decaltype[j]==blooddecalslow)&&
                                                                 terrain.decalalivetime[j]<2){
@@ -4217,22 +4217,22 @@ void doAttacks(){
                                                     }
                                                 }
                                         }
-                                if(animation[player[k].targetanimation].attack==normalattack&&
+                                if(animation[player[k].animTarget].attack==normalattack&&
                                         player[k].victim==&player[i]&&
                                         (!player[i].skeleton.free||
-                                         player[k].targetanimation==killanim||
-                                         player[k].targetanimation==crouchstabanim||
-                                         player[k].targetanimation==swordgroundstabanim||
-                                         player[k].targetanimation==staffgroundsmashanim||
-                                         player[k].targetanimation==dropkickanim)){
+                                         player[k].animTarget==killanim||
+                                         player[k].animTarget==crouchstabanim||
+                                         player[k].animTarget==swordgroundstabanim||
+                                         player[k].animTarget==staffgroundsmashanim||
+                                         player[k].animTarget==dropkickanim)){
                                     oldattackkey=1;
-                                    player[k].targetframe=0;
+                                    player[k].frameTarget=0;
                                     player[k].target=0;
 
                                     XYZ targetpoint=player[i].coords;
-                                    if(player[k].targetanimation==crouchstabanim||
-                                            player[k].targetanimation==swordgroundstabanim||
-                                            player[k].targetanimation==staffgroundsmashanim){
+                                    if(player[k].animTarget==crouchstabanim||
+                                            player[k].animTarget==swordgroundstabanim||
+                                            player[k].animTarget==staffgroundsmashanim){
                                         targetpoint+=(player[i].getJointFor(abdomen).position+
                                                  player[i].getJointFor(neck).position)/2*
                                                 player[i].scale;
@@ -4240,18 +4240,18 @@ void doAttacks(){
                                     player[k].targetyaw=roughDirectionTo(player[k].coords,targetpoint);
                                     player[k].targettilt2=pitchTo(player[k].coords,targetpoint);
 
-                                    if(player[k].targetanimation==crouchstabanim||player[k].targetanimation==swordgroundstabanim){
+                                    if(player[k].animTarget==crouchstabanim||player[k].animTarget==swordgroundstabanim){
                                         player[k].targetyaw+=(float)(abs(Random()%100)-50)/4;
                                     }
 
-                                    if(player[k].targetanimation==staffgroundsmashanim)
+                                    if(player[k].animTarget==staffgroundsmashanim)
                                         player[k].targettilt2+=10;
 
                                     player[k].lastattack3=player[k].lastattack2;
                                     player[k].lastattack2=player[k].lastattack;
-                                    player[k].lastattack=player[k].targetanimation;
+                                    player[k].lastattack=player[k].animTarget;
 
-                                    if(player[k].targetanimation==swordgroundstabanim){
+                                    if(player[k].animTarget==swordgroundstabanim){
                                         player[k].targetyaw+=30;
                                     }
                                 }
@@ -4282,9 +4282,9 @@ void doAttacks(){
                                   distsq(&player[k].coords,&player[k].victim->coords)<12*sq(player[k].scale*5)&&
                                   distsq(&player[k].coords,&player[k].victim->coords)>7*sq(player[k].scale*5)&&
                                   !player[k].victim->skeleton.free&&
-                                  player[k].victim->targetanimation!=getupfrombackanim&&
-                                  player[k].victim->targetanimation!=getupfromfrontanim&&
-                                  animation[player[k].victim->targetanimation].height!=lowheight&&
+                                  player[k].victim->animTarget!=getupfrombackanim&&
+                                  player[k].victim->animTarget!=getupfromfrontanim&&
+                                  animation[player[k].victim->animTarget].height!=lowheight&&
                                   player[k].aitype!=playercontrolled&& //wat???
                                   normaldotproduct(player[k].facing,player[k].victim->coords-player[k].coords)>0&&
                                   player[k].rabbitkickenabled)||
@@ -4293,7 +4293,7 @@ void doAttacks(){
                             player[k].setAnimation(rabbitkickanim);
                         }
                     //update counts
-                    if(animation[player[k].targetanimation].attack&&k==0){
+                    if(animation[player[k].animTarget].attack&&k==0){
                         numattacks++;
                         switch(attackweapon){
                             case 0: numunarmedattack++; break;
@@ -4315,14 +4315,14 @@ void doPlayerCollisions(){
         for(int k=0;k<numplayers;k++)
             for(int i=k+1;i<numplayers;i++){
                 //neither player is part of a reversal
-                if((animation[player[i].targetanimation].attack!=reversed&&
-                            animation[player[i].targetanimation].attack!=reversal&&
-                            animation[player[k].targetanimation].attack!=reversed&&
-                            animation[player[k].targetanimation].attack!=reversal)||(i!=0&&k!=0))
-                if((animation[player[i].currentanimation].attack!=reversed&&
-                            animation[player[i].currentanimation].attack!=reversal&&
-                            animation[player[k].currentanimation].attack!=reversed&&
-                            animation[player[k].currentanimation].attack!=reversal)||(i!=0&&k!=0))
+                if((animation[player[i].animTarget].attack!=reversed&&
+                            animation[player[i].animTarget].attack!=reversal&&
+                            animation[player[k].animTarget].attack!=reversed&&
+                            animation[player[k].animTarget].attack!=reversal)||(i!=0&&k!=0))
+                if((animation[player[i].animCurrent].attack!=reversed&&
+                            animation[player[i].animCurrent].attack!=reversal&&
+                            animation[player[k].animCurrent].attack!=reversed&&
+                            animation[player[k].animCurrent].attack!=reversal)||(i!=0&&k!=0))
                 //neither is sleeping
                 if(player[i].howactive<=typesleeping&&player[k].howactive<=typesleeping)
                 if(player[i].howactive!=typesittingwall&&player[k].howactive!=typesittingwall)
@@ -4331,10 +4331,10 @@ void doPlayerCollisions(){
                         player[i].whichpatchz==player[k].whichpatchz&&
                         player[k].skeleton.oldfree==player[k].skeleton.free&&
                         player[i].skeleton.oldfree==player[i].skeleton.free&&
-                        player[i].targetanimation!=climbanim&&
-                        player[i].targetanimation!=hanganim&&
-                        player[k].targetanimation!=climbanim&&
-                        player[k].targetanimation!=hanganim)
+                        player[i].animTarget!=climbanim&&
+                        player[i].animTarget!=hanganim&&
+                        player[k].animTarget!=climbanim&&
+                        player[k].animTarget!=hanganim)
                 //players are close (bounding box test)
                 if(player[i].coords.y>player[k].coords.y-3)
                 if(player[i].coords.y<player[k].coords.y+3)
@@ -4359,7 +4359,7 @@ void doPlayerCollisions(){
                         tempcoords2.y+=player[k].getJointFor(abdomen).position.y*player[k].scale;
                     collisionradius=1.2*sq((player[i].scale+player[k].scale)*2.5);
                     if(player[0].hasvictim)
-                        if(player[0].targetanimation==rabbitkickanim&&(k==0||i==0)&&!player[0].victim->skeleton.free)
+                        if(player[0].animTarget==rabbitkickanim&&(k==0||i==0)&&!player[0].victim->skeleton.free)
                             collisionradius=3;
                     if((!player[i].skeleton.oldfree||!player[k].skeleton.oldfree)&&
                             (distsq(&tempcoords1,&tempcoords2)<collisionradius||
@@ -4367,7 +4367,7 @@ void doPlayerCollisions(){
                         //jump down on a dead body
                         if(k==0||i==0){
                             int l=i?i:k;
-                            if(player[0].targetanimation==jumpdownanim&&
+                            if(player[0].animTarget==jumpdownanim&&
                                     !player[0].skeleton.oldfree&&
                                     !player[0].skeleton.free&&
                                     player[l].skeleton.oldfree&&
@@ -4392,24 +4392,24 @@ void doPlayerCollisions(){
                                 (player[k].skeleton.oldfree==1&&findLengthfast(&player[k].velocity)>1)||
                                 (player[i].skeleton.oldfree==0&&player[k].skeleton.oldfree==0)){
                             rotatetarget=player[k].velocity-player[i].velocity;
-                            if((player[i].targetanimation!=getupfrombackanim&&player[i].targetanimation!=getupfromfrontanim||
+                            if((player[i].animTarget!=getupfrombackanim&&player[i].animTarget!=getupfromfrontanim||
                                         player[i].skeleton.free)&&
-                                    (player[k].targetanimation!=getupfrombackanim&&player[k].targetanimation!=getupfromfrontanim||
+                                    (player[k].animTarget!=getupfrombackanim&&player[k].animTarget!=getupfromfrontanim||
                                      player[k].skeleton.free))
                                 if((((k!=0&&findLengthfast(&rotatetarget)>150||
                                                     k==0&&findLengthfast(&rotatetarget)>50&&player[0].rabbitkickragdoll)&&
                                                 normaldotproduct(rotatetarget,player[k].coords-player[i].coords)>0)&&
                                             (k==0||
-                                             k!=0&&player[i].skeleton.oldfree==1&&animation[player[k].currentanimation].attack==neutral||
-                                         /*i!=0&&*/player[k].skeleton.oldfree==1&&animation[player[i].currentanimation].attack==neutral))||
-                                        (player[i].targetanimation==jumpupanim||player[i].targetanimation==jumpdownanim||player[i].isFlip())&&
-                                        (player[k].targetanimation==jumpupanim||player[k].targetanimation==jumpdownanim||player[k].isFlip())&&
+                                             k!=0&&player[i].skeleton.oldfree==1&&animation[player[k].animCurrent].attack==neutral||
+                                         /*i!=0&&*/player[k].skeleton.oldfree==1&&animation[player[i].animCurrent].attack==neutral))||
+                                        (player[i].animTarget==jumpupanim||player[i].animTarget==jumpdownanim||player[i].isFlip())&&
+                                        (player[k].animTarget==jumpupanim||player[k].animTarget==jumpdownanim||player[k].isFlip())&&
                                         k==0&&!player[i].skeleton.oldfree&&!player[k].skeleton.oldfree){
                                     //If hit by body
                                     if(     (i!=0||player[i].skeleton.free)&&
                                             (k!=0||player[k].skeleton.free)||
-                                            (animation[player[i].targetanimation].height==highheight&&
-                                             animation[player[k].targetanimation].height==highheight)){
+                                            (animation[player[i].animTarget].height==highheight&&
+                                             animation[player[k].animTarget].height==highheight)){
                                         if(tutoriallevel!=1){
                                             emit_sound_at(heavyimpactsound, player[i].coords);
                                         }
@@ -4434,10 +4434,10 @@ void doPlayerCollisions(){
 
                                     }
                                 }
-                            if(     (animation[player[i].targetanimation].attack==neutral||
-                                     animation[player[i].targetanimation].attack==normalattack)&&
-                                    (animation[player[k].targetanimation].attack==neutral||
-                                     animation[player[k].targetanimation].attack==normalattack)){
+                            if(     (animation[player[i].animTarget].attack==neutral||
+                                     animation[player[i].animTarget].attack==normalattack)&&
+                                    (animation[player[k].animTarget].attack==neutral||
+                                     animation[player[k].animTarget].attack==normalattack)){
                                 //If bumped
                                 if(player[i].skeleton.oldfree==0&&player[k].skeleton.oldfree==0){
                                     if(distsq(&player[k].coords,&player[i].coords)<.5*sq((player[i].scale+player[k].scale)*2.5)){
@@ -4468,9 +4468,9 @@ void doPlayerCollisions(){
                                     }
                                     //jump down on player
                                     if(hostile){
-                                        if(k==0&&i!=0&&player[k].targetanimation==jumpdownanim&&
+                                        if(k==0&&i!=0&&player[k].animTarget==jumpdownanim&&
                                                 !player[i].isCrouch()&&
-                                                player[i].targetanimation!=rollanim&&
+                                                player[i].animTarget!=rollanim&&
                                                 !player[k].skeleton.oldfree&&!
                                                 player[k].skeleton.free&&
                                                 player[k].lastcollide<=0&&
@@ -4483,9 +4483,9 @@ void doPlayerCollisions(){
                                             player[k].lastcollide=1;
                                             award_bonus(k, AboveBonus);
                                         }
-                                        if(i==0&&k!=0&&player[i].targetanimation==jumpdownanim&&
+                                        if(i==0&&k!=0&&player[i].animTarget==jumpdownanim&&
                                                 !player[k].isCrouch()&&
-                                                player[k].targetanimation!=rollanim&&
+                                                player[k].animTarget!=rollanim&&
                                                 !player[i].skeleton.oldfree&&
                                                 !player[i].skeleton.free&&
                                                 player[i].lastcollide<=0&&
@@ -4648,7 +4648,7 @@ void doAI(int i){
             if(player[i].avoidcollided>.8 && !player[i].jumpkeydown && player[i].collided<.8)
                 player[i].targetyaw+=90*(player[i].whichdirection*2-1);
 
-            if(player[i].collided<1||player[i].targetanimation!=jumpupanim)
+            if(player[i].collided<1||player[i].animTarget!=jumpupanim)
                 player[i].jumpkeydown=0;
             if((player[i].collided>.8&&player[i].jumppower>=5))
                 player[i].jumpkeydown=1;
@@ -4659,12 +4659,12 @@ void doAI(int i){
                     distsq(&player[i].coords,&player[0].coords)<400&&
                     player[i].occluded<25){
                 if(distsq(&player[i].coords,&player[0].coords)<12&&
-                        animation[player[0].targetanimation].height!=lowheight&&
+                        animation[player[0].animTarget].height!=lowheight&&
                         !editorenabled&&
                         (player[0].coords.y<player[i].coords.y+5||player[0].onterrain))
                     player[i].aitype=attacktypecutoff;
                 if(distsq(&player[i].coords,&player[0].coords)<30&&
-                        animation[player[0].targetanimation].height==highheight&&
+                        animation[player[0].animTarget].height==highheight&&
                         !editorenabled)
                     player[i].aitype=attacktypecutoff;
 
@@ -4672,7 +4672,7 @@ void doAI(int i){
                     player[i].losupdatedelay=.2;
                     for(int j=0;j<numplayers;j++)
                         if(j==0||player[j].skeleton.free||player[j].aitype!=passivetype)
-                            if(abs(Random()%2)||animation[player[j].targetanimation].height!=lowheight||j!=0)
+                            if(abs(Random()%2)||animation[player[j].animTarget].height!=lowheight||j!=0)
                                 if(distsq(&player[i].coords,&player[j].coords)<400)
                                     if(normaldotproduct(player[i].facing,player[j].coords-player[i].coords)>0)
                                         if(player[j].coords.y<player[i].coords.y+5||player[j].onterrain)
@@ -4681,7 +4681,7 @@ void doAI(int i){
                                                                 *player[i].scale+player[i].coords,
                                                             DoRotation(player[j].getJointFor(head).position,0,player[j].yaw,0)
                                                                 *player[j].scale+player[j].coords)||
-                                                    (player[j].targetanimation==hanganim&&
+                                                    (player[j].animTarget==hanganim&&
                                                      normaldotproduct(player[j].facing,player[i].coords-player[j].coords)<0)){
                                                 player[i].aitype=searchtype;
                                                 player[i].lastchecktime=12;
@@ -4752,7 +4752,7 @@ void doAI(int i){
                     }
                 }
             }
-            if(player[i].collided<1||player[i].targetanimation!=jumpupanim)
+            if(player[i].collided<1||player[i].animTarget!=jumpupanim)
                 player[i].jumpkeydown=0;
             if((player[i].collided>.8&&player[i].jumppower>=5))
                 player[i].jumpkeydown=1;
@@ -4782,10 +4782,10 @@ void doAI(int i){
                     distsq(&player[i].coords,&player[0].coords)<400&&
                     player[i].occluded<25){
                 if(distsq(&player[i].coords,&player[0].coords)<12&&
-                        animation[player[0].targetanimation].height!=lowheight&&!editorenabled)
+                        animation[player[0].animTarget].height!=lowheight&&!editorenabled)
                     player[i].aitype=attacktypecutoff;
                 if(distsq(&player[i].coords,&player[0].coords)<30&&
-                        animation[player[0].targetanimation].height==highheight&&!editorenabled)
+                        animation[player[0].animTarget].height==highheight&&!editorenabled)
                     player[i].aitype=attacktypecutoff;
 
                 //wolf smell
@@ -4816,7 +4816,7 @@ void doAI(int i){
                     player[i].losupdatedelay=.2;
                     for(int j=0;j<numplayers;j++){
                         if(j==0||player[j].skeleton.free||player[j].aitype!=passivetype){
-                            if(abs(Random()%2)||animation[player[j].targetanimation].height!=lowheight||j!=0)
+                            if(abs(Random()%2)||animation[player[j].animTarget].height!=lowheight||j!=0)
                                 if(distsq(&player[i].coords,&player[j].coords)<400)
                                     if(normaldotproduct(player[i].facing,player[j].coords-player[i].coords)>0)
                                         if((-1==checkcollide(
@@ -4825,10 +4825,10 @@ void doAI(int i){
                                                         DoRotation(player[j].getJointFor(head).position,0,player[j].yaw,0)*
                                                             player[j].scale+player[j].coords)&&
                                                     !player[j].isWallJump())||
-                                                (player[j].targetanimation==hanganim&&
+                                                (player[j].animTarget==hanganim&&
                                                  normaldotproduct(player[j].facing,player[i].coords-player[j].coords)<0)){
                                             player[i].lastseentime-=.2;
-                                            if(j==0&&animation[player[j].targetanimation].height==lowheight)
+                                            if(j==0&&animation[player[j].animTarget].height==lowheight)
                                                 player[i].lastseentime-=.4;
                                             else
                                                 player[i].lastseentime-=.6;
@@ -4929,7 +4929,7 @@ void doAI(int i){
                     }
                 }
             }
-            if(player[i].collided<1||player[i].targetanimation!=jumpupanim)
+            if(player[i].collided<1||player[i].animTarget!=jumpupanim)
                 player[i].jumpkeydown=0;
             if((player[i].collided>.8&&player[i].jumppower>=5))
                 player[i].jumpkeydown=1;
@@ -4947,11 +4947,11 @@ void doAI(int i){
                     player[i].occluded<2&&
                     ((tutoriallevel!=1||cananger)&&hostile)){
                 player[i].losupdatedelay=.2;
-                if(distsq(&player[i].coords,&player[0].coords)<4&&animation[player[i].targetanimation].height!=lowheight){
+                if(distsq(&player[i].coords,&player[0].coords)<4&&animation[player[i].animTarget].height!=lowheight){
                     player[i].aitype=attacktypecutoff;
                     player[i].lastseentime=1;
                 }
-                if(abs(Random()%2)||animation[player[i].targetanimation].height!=lowheight)
+                if(abs(Random()%2)||animation[player[i].animTarget].height!=lowheight)
                     //TODO: factor out canSeePlayer()
                     if(distsq(&player[i].coords,&player[0].coords)<400)
                         if(normaldotproduct(player[i].facing,player[0].coords-player[i].coords)>0)
@@ -4960,10 +4960,10 @@ void doAI(int i){
                                             player[i].scale+player[i].coords,
                                         DoRotation(player[0].getJointFor(head).position,0,player[0].yaw,0)*
                                             player[0].scale+player[0].coords)==-1)||
-                                    (player[0].targetanimation==hanganim&&normaldotproduct(
+                                    (player[0].animTarget==hanganim&&normaldotproduct(
                                         player[0].facing,player[i].coords-player[0].coords)<0)){
                                     /* //TODO: changed j to 0 on a whim, make sure this is correct
-                                    (player[j].targetanimation==hanganim&&normaldotproduct(
+                                    (player[j].animTarget==hanganim&&normaldotproduct(
                                         player[j].facing,player[i].coords-player[j].coords)<0)
                                     */
                                 player[i].aitype=attacktypecutoff;
@@ -5083,7 +5083,7 @@ void doAI(int i){
                 player[i].crouchkeydown=0;
                 player[i].attackkeydown=0;
             }
-            if(player[i].collided<1||player[i].targetanimation!=jumpupanim)
+            if(player[i].collided<1||player[i].animTarget!=jumpupanim)
                 player[i].jumpkeydown=0;
             if(player[i].collided>.8&&player[i].jumppower>=5)
                 player[i].jumpkeydown=1;
@@ -5161,12 +5161,12 @@ void doAI(int i){
                 player[i].attackkeydown=0;
                 player[i].throwkeydown=1;
                 player[i].crouchkeydown=0;
-                if(player[i].targetanimation!=crouchremoveknifeanim&&
-                        player[i].targetanimation!=removeknifeanim)
+                if(player[i].animTarget!=crouchremoveknifeanim&&
+                        player[i].animTarget!=removeknifeanim)
                     player[i].throwtogglekeydown=0;
                 player[i].drawkeydown=0;
             }
-            if(player[i].collided<1||player[i].targetanimation!=jumpupanim)
+            if(player[i].collided<1||player[i].animTarget!=jumpupanim)
                 player[i].jumpkeydown=0;
             if((player[i].collided>.8&&player[i].jumppower>=5))
                 player[i].jumpkeydown=1;
@@ -5176,8 +5176,8 @@ void doAI(int i){
             player[i].aiupdatedelay-=multiplier;
             //dodge or reverse rabbit kicks, knife throws, flips
             if(player[i].damage<player[i].damagetolerance*2/3)
-                if((player[0].targetanimation==rabbitkickanim||
-                            player[0].targetanimation==knifethrowanim||
+                if((player[0].animTarget==rabbitkickanim||
+                            player[0].animTarget==knifethrowanim||
                             (player[0].isFlip()&&
                              normaldotproduct(player[0].facing,player[0].coords-player[i].coords)<0))&&
                         !player[0].skeleton.free&&
@@ -5185,7 +5185,7 @@ void doAI(int i){
                     player[i].attackkeydown=0;
                     if(player[i].isIdle())
                         player[i].crouchkeydown=1;
-                    if(player[0].targetanimation!=rabbitkickanim&&player[0].weaponactive!=-1){
+                    if(player[0].animTarget!=rabbitkickanim&&player[0].weaponactive!=-1){
                         if(weapons[player[0].weaponids[0]].getType()==knife){
                             if(player[i].isIdle()||player[i].isCrouch()||player[i].isRun()||player[i].isFlip()){
                                 if(abs(Random()%2==0))
@@ -5195,7 +5195,7 @@ void doAI(int i){
                                 player[i].targetyaw+=90*(abs(Random()%2)*2-1);
                                 player[i].wentforweapon=0;
                             }
-                            if(player[i].targetanimation==jumpupanim||player[i].targetanimation==jumpdownanim)
+                            if(player[i].animTarget==jumpupanim||player[i].animTarget==jumpdownanim)
                                 player[i].setAnimation(flipanim);
                         }
                     }
@@ -5205,8 +5205,8 @@ void doAI(int i){
             //get confused by flips
             if(player[0].isFlip()&&
                     !player[0].skeleton.free&&
-                    player[0].targetanimation!=walljumprightkickanim&&
-                    player[0].targetanimation!=walljumpleftkickanim){
+                    player[0].animTarget!=walljumprightkickanim&&
+                    player[0].animTarget!=walljumpleftkickanim){
                 if(distsq(&player[0].coords,&player[i].coords)<25)
                     if((1-player[i].damage/player[i].damagetolerance)>.5)
                         player[i].stunned=1;
@@ -5229,10 +5229,10 @@ void doAI(int i){
                         }
             //dodge/reverse walljump kicks
             if(player[i].damage<player[i].damagetolerance/2)
-                if(animation[player[i].targetanimation].height!=highheight)
+                if(animation[player[i].animTarget].height!=highheight)
                     if(player[i].damage<player[i].damagetolerance*.5&&
-                            ((player[0].targetanimation==walljumprightkickanim||
-                              player[0].targetanimation==walljumpleftkickanim)&&
+                            ((player[0].animTarget==walljumprightkickanim||
+                              player[0].animTarget==walljumpleftkickanim)&&
                              ((player[i].aiupdatedelay<.15&&
                                difficulty==2)||
                               (player[i].aiupdatedelay<.08&&
@@ -5267,7 +5267,7 @@ void doAI(int i){
                 }
             //lose sight of player in the air (?)
             if(player[0].coords.y>player[i].coords.y+5&&
-                    animation[player[0].targetanimation].height!=highheight&&
+                    animation[player[0].animTarget].height!=highheight&&
                     !player[0].onterrain){
                 player[i].aitype=pathfindtype;
                 player[i].finalfinaltarget=player[i].waypoints[player[i].waypoint];
@@ -5280,11 +5280,11 @@ void doAI(int i){
             }
             //it's time to think (?)
             if(player[i].aiupdatedelay<0&&
-                    !animation[player[i].targetanimation].attack&&
-                    player[i].targetanimation!=staggerbackhighanim&&
-                    player[i].targetanimation!=staggerbackhardanim&&
-                    player[i].targetanimation!=backhandspringanim&&
-                    player[i].targetanimation!=dodgebackanim){
+                    !animation[player[i].animTarget].attack&&
+                    player[i].animTarget!=staggerbackhighanim&&
+                    player[i].animTarget!=staggerbackhardanim&&
+                    player[i].animTarget!=backhandspringanim&&
+                    player[i].animTarget!=dodgebackanim){
                 //draw weapon
                 if(player[i].weaponactive==-1&&player[i].num_weapons>0)
                     player[i].drawkeydown=Random()%2;
@@ -5357,26 +5357,26 @@ void doAI(int i){
                                  Random()%2==0&&difficulty==2||
                                  Random()%4==0&&difficulty==1||
                                  Random()%8==0&&difficulty==0||
-                                 player[j].lastattack2==player[j].targetanimation&&
-                                 player[j].lastattack3==player[j].targetanimation&&
+                                 player[j].lastattack2==player[j].animTarget&&
+                                 player[j].lastattack3==player[j].animTarget&&
                                  (Random()%2==0||difficulty==2)||
                                  (player[i].isIdle()||player[i].isRun())&&
                                  player[j].weaponactive!=-1||
-                                 player[j].targetanimation==swordslashanim&&
+                                 player[j].animTarget==swordslashanim&&
                                  player[i].weaponactive!=-1||
-                                 player[j].targetanimation==staffhitanim||
-                                 player[j].targetanimation==staffspinhitanim))
+                                 player[j].animTarget==staffhitanim||
+                                 player[j].animTarget==staffspinhitanim))
                             if(distsq(&player[j].coords,&player[j].victim->coords)<4&&
                                     player[j].victim==&player[i]&&
-                                    (player[j].targetanimation==sweepanim||
-                                     player[j].targetanimation==spinkickanim||
-                                     player[j].targetanimation==staffhitanim||
-                                     player[j].targetanimation==staffspinhitanim||
-                                     player[j].targetanimation==winduppunchanim||
-                                     player[j].targetanimation==upunchanim||
-                                     player[j].targetanimation==wolfslapanim||
-                                     player[j].targetanimation==knifeslashstartanim||
-                                     player[j].targetanimation==swordslashanim&&
+                                    (player[j].animTarget==sweepanim||
+                                     player[j].animTarget==spinkickanim||
+                                     player[j].animTarget==staffhitanim||
+                                     player[j].animTarget==staffspinhitanim||
+                                     player[j].animTarget==winduppunchanim||
+                                     player[j].animTarget==upunchanim||
+                                     player[j].animTarget==wolfslapanim||
+                                     player[j].animTarget==knifeslashstartanim||
+                                     player[j].animTarget==swordslashanim&&
                                       (distsq(&player[j].coords,&player[i].coords)<2||
                                        player[i].weaponactive!=-1))){
                                 if(target>=0)
@@ -5398,7 +5398,7 @@ void doAI(int i){
                 //TODO: why are we controlling the human?
                 if(normaldotproduct(player[i].facing,player[0].coords-player[i].coords)>0)
                     player[0].jumpkeydown=0;
-                if(player[0].targetanimation==jumpdownanim&&
+                if(player[0].animTarget==jumpdownanim&&
                         distsq(&player[0].coords,&player[i].coords)<40)
                     player[i].crouchkeydown=1;
                 if(player[i].jumpkeydown)
@@ -5429,7 +5429,7 @@ void doAI(int i){
                         player[i].lastseentime=1;
             }
         }
-        if(animation[player[0].targetanimation].height==highheight&&
+        if(animation[player[0].animTarget].height==highheight&&
                 (player[i].aitype==attacktypecutoff||
                  player[i].aitype==searchtype))
             if(player[0].coords.y>terrain.getHeight(player[0].coords.x,player[0].coords.z)+10){
@@ -6348,7 +6348,7 @@ void Game::Tick(){
                 talkdelay=1;
 			talkdelay-=multiplier;
 
-			if(talkdelay<=0&&indialogue==-1&&animation[player[0].targetanimation].height!=highheight)
+			if(talkdelay<=0&&indialogue==-1&&animation[player[0].animTarget].height!=highheight)
                 for(int i=0;i<numdialogues;i++){
                     int realdialoguetype;
                     bool special;
@@ -6390,8 +6390,8 @@ void Game::Tick(){
                                 player[participantfocus[whichdialogue][j]].yaw=participantyaw[whichdialogue][participantfocus[whichdialogue][j]];
                                 player[participantfocus[whichdialogue][j]].targetyaw=participantyaw[whichdialogue][participantfocus[whichdialogue][j]];
                                 player[participantfocus[whichdialogue][j]].velocity=0;
-                                player[participantfocus[whichdialogue][j]].targetanimation=player[participantfocus[whichdialogue][j]].getIdle();
-                                player[participantfocus[whichdialogue][j]].targetframe=0;
+                                player[participantfocus[whichdialogue][j]].animTarget=player[participantfocus[whichdialogue][j]].getIdle();
+                                player[participantfocus[whichdialogue][j]].frameTarget=0;
                             }
                             directing=0;
                             indialogue=0;
@@ -6694,8 +6694,8 @@ void Game::Tick(){
                 player[0].jumptogglekeydown=0;
             }
             if(player[0].jumpkeydown&&
-                    player[0].targetanimation!=jumpupanim&&
-                    player[0].targetanimation!=jumpdownanim&&
+                    player[0].animTarget!=jumpupanim&&
+                    player[0].animTarget!=jumpdownanim&&
                     !player[0].isFlip())
                 player[0].jumptogglekeydown=1;
 
@@ -6765,15 +6765,15 @@ void Game::Tick(){
                     oldtargetyaw=player[i].targetyaw;
                     if(i==0&&indialogue==-1){
                         //TODO: refactor repetitive code
-                        if(!animation[player[0].targetanimation].attack&&
-                                player[0].targetanimation!=staggerbackhighanim&&
-                                player[0].targetanimation!=staggerbackhardanim&&
-                                player[0].targetanimation!=crouchremoveknifeanim&&
-                                player[0].targetanimation!=removeknifeanim&&
-                                player[0].targetanimation!=backhandspringanim&&
-                                player[0].targetanimation!=dodgebackanim&&
-                                player[0].targetanimation!=walljumprightkickanim&&
-                                player[0].targetanimation!=walljumpleftkickanim){
+                        if(!animation[player[0].animTarget].attack&&
+                                player[0].animTarget!=staggerbackhighanim&&
+                                player[0].animTarget!=staggerbackhardanim&&
+                                player[0].animTarget!=crouchremoveknifeanim&&
+                                player[0].animTarget!=removeknifeanim&&
+                                player[0].animTarget!=backhandspringanim&&
+                                player[0].animTarget!=dodgebackanim&&
+                                player[0].animTarget!=walljumprightkickanim&&
+                                player[0].animTarget!=walljumpleftkickanim){
                             if(cameramode)
                                 player[0].targetyaw=0;
                             else
@@ -6797,15 +6797,15 @@ void Game::Tick(){
                         player[i].targetheadpitch=pitch;
                     }
                     if(i!=0&&player[i].aitype==playercontrolled&&indialogue==-1){
-                        if(!animation[player[i].targetanimation].attack&&
-                                player[i].targetanimation!=staggerbackhighanim&&
-                                player[i].targetanimation!=staggerbackhardanim&&
-                                player[i].targetanimation!=crouchremoveknifeanim&&
-                                player[i].targetanimation!=removeknifeanim&&
-                                player[i].targetanimation!=backhandspringanim&&
-                                player[i].targetanimation!=dodgebackanim&&
-                                player[i].targetanimation!=walljumprightkickanim&&
-                                player[i].targetanimation!=walljumpleftkickanim){
+                        if(!animation[player[i].animTarget].attack&&
+                                player[i].animTarget!=staggerbackhighanim&&
+                                player[i].animTarget!=staggerbackhardanim&&
+                                player[i].animTarget!=crouchremoveknifeanim&&
+                                player[i].animTarget!=removeknifeanim&&
+                                player[i].animTarget!=backhandspringanim&&
+                                player[i].animTarget!=dodgebackanim&&
+                                player[i].animTarget!=walljumprightkickanim&&
+                                player[i].animTarget!=walljumpleftkickanim){
                             player[i].targetyaw=-player[i].lookyaw+180;
                         }
 
@@ -6867,7 +6867,7 @@ void Game::Tick(){
 
                     doAI(i);
 
-                    if(animation[player[i].targetanimation].attack==reversed){
+                    if(animation[player[i].animTarget].attack==reversed){
                         //player[i].targetyaw=player[i].yaw;
                         player[i].forwardkeydown=0;
                         player[i].leftkeydown=0;
@@ -6912,7 +6912,7 @@ void Game::Tick(){
                             player[i].aitype==attacktypecutoff&&
                             !player[i].dead&&
                             !player[i].skeleton.free&&
-                            animation[player[i].targetanimation].attack==neutral)
+                            animation[player[i].animTarget].attack==neutral)
                         numresponded=1;
 
                     if(!player[i].throwkeydown)
@@ -6924,9 +6924,9 @@ void Game::Tick(){
                                 player[i].num_weapons<2&&
                                 (player[i].isIdle()||
                                  player[i].isCrouch()||
-                                 player[i].targetanimation==sneakanim||
-                                 player[i].targetanimation==rollanim||
-                                 player[i].targetanimation==backhandspringanim||
+                                 player[i].animTarget==sneakanim||
+                                 player[i].animTarget==rollanim||
+                                 player[i].animTarget==backhandspringanim||
                                  player[i].isFlip()||
                                  player[i].isFlip()||
                                  player[i].aitype!=playercontrolled)){
@@ -6938,7 +6938,7 @@ void Game::Tick(){
                                     if(distsqflat(&player[i].coords,&weapons[j].position)<2){
                                         if(distsq(&player[i].coords,&weapons[j].position)<2){
                                             if(player[i].isCrouch()||
-                                                    player[i].targetanimation==sneakanim||
+                                                    player[i].animTarget==sneakanim||
                                                     player[i].isRun()||
                                                     player[i].isIdle()||
                                                     player[i].aitype!=playercontrolled){
@@ -6947,7 +6947,7 @@ void Game::Tick(){
                                                 player[i].targetyaw=roughDirectionTo(player[i].coords,weapons[j].position);
                                                 player[i].hasvictim=0;
                                             }
-                                            if(player[i].targetanimation==rollanim||player[i].targetanimation==backhandspringanim){
+                                            if(player[i].animTarget==rollanim||player[i].animTarget==backhandspringanim){
                                                 player[i].throwtogglekeydown=1;
                                                 player[i].hasvictim=0;
 
@@ -7008,10 +7008,10 @@ void Game::Tick(){
                                     }
                             }
                             if(player[i].isCrouch()||
-                                    player[i].targetanimation==sneakanim||
+                                    player[i].animTarget==sneakanim||
                                     player[i].isRun()||
-                                    player[i].isIdle()||player[i].targetanimation==rollanim||
-                                    player[i].targetanimation==backhandspringanim){
+                                    player[i].isIdle()||player[i].animTarget==rollanim||
+                                    player[i].animTarget==backhandspringanim){
                                 if(numplayers>1)
                                     for(int j=0;j<numplayers;j++){
                                         if(player[i].weaponactive==-1)
@@ -7025,14 +7025,14 @@ void Game::Tick(){
                                                            player[j].weaponstuckwhere==1))||
                                                          player[j].weaponstuck==-1||
                                                          player[j].num_weapons>1)){
-                                                    if(player[i].targetanimation!=rollanim&&player[i].targetanimation!=backhandspringanim){
+                                                    if(player[i].animTarget!=rollanim&&player[i].animTarget!=backhandspringanim){
                                                         player[i].throwtogglekeydown=1;
                                                         player[i].victim=&player[j];
                                                         player[i].hasvictim=1;
                                                         player[i].setAnimation(crouchremoveknifeanim);
                                                         player[i].targetyaw=roughDirectionTo(player[i].coords,player[j].coords);
                                                     }
-                                                    if(player[i].targetanimation==rollanim||player[i].targetanimation==backhandspringanim){
+                                                    if(player[i].animTarget==rollanim||player[i].animTarget==backhandspringanim){
                                                         player[i].throwtogglekeydown=1;
                                                         player[i].victim=&player[j];
                                                         player[i].hasvictim=1;
@@ -7113,7 +7113,7 @@ void Game::Tick(){
                                 if(player[i].isIdle()||
                                         player[i].isRun()||
                                         player[i].isCrouch()||
-                                        player[i].targetanimation==sneakanim||
+                                        player[i].animTarget==sneakanim||
                                         player[i].isFlip())
                                     if(numplayers>1)
                                         for(int j=0;j<numplayers;j++){
@@ -7161,7 +7161,7 @@ void Game::Tick(){
                             }
                         }
                         if(player[i].weaponactive!=-1&&player[i].aitype==playercontrolled){
-                            if(player[i].isCrouch()||player[i].targetanimation==sneakanim){
+                            if(player[i].isCrouch()||player[i].animTarget==sneakanim){
                                 player[i].throwtogglekeydown=1;
                                 weapons[player[i].weaponids[0]].owner=-1;
                                 weapons[player[i].weaponids[0]].velocity=player[i].velocity*.2;
@@ -7262,11 +7262,11 @@ void Game::Tick(){
                     }
                     movekey=0;
                     //Do controls
-                    if(!animation[player[i].targetanimation].attack&&
-                            player[i].targetanimation!=staggerbackhighanim&&
-                            player[i].targetanimation!=staggerbackhardanim&&
-                            player[i].targetanimation!=backhandspringanim&&
-                            player[i].targetanimation!=dodgebackanim){
+                    if(!animation[player[i].animTarget].attack&&
+                            player[i].animTarget!=staggerbackhighanim&&
+                            player[i].animTarget!=staggerbackhardanim&&
+                            player[i].animTarget!=backhandspringanim&&
+                            player[i].animTarget!=dodgebackanim){
                         if(!player[i].forwardkeydown)
                             player[i].forwardstogglekeydown=0;
                         if(player[i].crouchkeydown){
@@ -7286,13 +7286,13 @@ void Game::Tick(){
                                     if(j!=i&&!player[j].skeleton.free&&player[j].victim&&player[i].lowreversaldelay<=0){
                                         if(distsq(&player[j].coords,&player[j].victim->coords)<3&&
                                                 player[j].victim==&player[i]&&
-                                                (player[j].targetanimation==sweepanim||
-                                                 player[j].targetanimation==upunchanim||
-                                                 player[j].targetanimation==wolfslapanim||
-                                                 ((player[j].targetanimation==swordslashanim||
-                                                   player[j].targetanimation==knifeslashstartanim||
-                                                   player[j].targetanimation==staffhitanim||
-                                                   player[j].targetanimation==staffspinhitanim)&&
+                                                (player[j].animTarget==sweepanim||
+                                                 player[j].animTarget==upunchanim||
+                                                 player[j].animTarget==wolfslapanim||
+                                                 ((player[j].animTarget==swordslashanim||
+                                                   player[j].animTarget==knifeslashstartanim||
+                                                   player[j].animTarget==staffhitanim||
+                                                   player[j].animTarget==staffspinhitanim)&&
                                                   distsq(&player[j].coords,&player[i].coords)<2))){
                                             if(target>=0)
                                                 target=-1;
@@ -7321,7 +7321,7 @@ void Game::Tick(){
                         }
                         if(!player[i].crouchkeydown){
                             //Uncrouch
-                            if(!player[i].isRun()&&player[i].targetanimation!=sneakanim&&i==0)player[i].superruntoggle=0;
+                            if(!player[i].isRun()&&player[i].animTarget!=sneakanim&&i==0)player[i].superruntoggle=0;
                             target=-2;
                             if(player[i].isCrouch()){
                                 if(numplayers>1)
@@ -7332,7 +7332,7 @@ void Game::Tick(){
                                                 player[i].highreversaldelay<=0){
                                             if(distsq(&player[j].coords,&player[j].victim->coords)<3&&
                                                     player[j].victim==&player[i]&&
-                                                    (player[j].targetanimation==spinkickanim)&&
+                                                    (player[j].animTarget==spinkickanim)&&
                                                     player[i].isCrouch()){
                                                 if(target>=0)
                                                     target=-1;
@@ -7347,14 +7347,14 @@ void Game::Tick(){
 
                                 if(player[i].isCrouch()){
                                     if(!player[i].wasCrouch()){
-                                        player[i].currentanimation=player[i].getCrouch();
-                                        player[i].currentframe=0;
+                                        player[i].animCurrent=player[i].getCrouch();
+                                        player[i].frameCurrent=0;
                                     }
                                     player[i].setAnimation(player[i].getIdle());
                                     player[i].transspeed=10;
                                 }
                             }
-                            if(player[i].targetanimation==sneakanim){
+                            if(player[i].animTarget==sneakanim){
                                 player[i].setAnimation(player[i].getIdle());
                                 player[i].transspeed=10;
                             }
@@ -7364,10 +7364,10 @@ void Game::Tick(){
                                     (player[i].isStop()&&
                                      player[i].targetyaw==player[i].yaw)||
                                     (player[i].isLanding()&&
-                                     player[i].targetframe>0&&
+                                     player[i].frameTarget>0&&
                                      !player[i].jumpkeydown)||
                                     (player[i].isLandhard()&&
-                                     player[i].targetframe>0&&
+                                     player[i].frameTarget>0&&
                                      !player[i].jumpkeydown&&
                                      player[i].crouchkeydown)){
                                 if(player[i].aitype==passivetype)
@@ -7376,17 +7376,17 @@ void Game::Tick(){
                                     player[i].setAnimation(player[i].getRun());
                             }
                             if(player[i].isCrouch()){
-                                player[i].targetanimation=sneakanim;
+                                player[i].animTarget=sneakanim;
                                 if(player[i].wasCrouch())
                                     player[i].target=0;
-                                player[i].targetframe=0;
+                                player[i].frameTarget=0;
                             }
-                            if(player[i].targetanimation==hanganim/*&&(!player[i].forwardstogglekeydown||player[i].aitype!=playercontrolled)*/){
+                            if(player[i].animTarget==hanganim/*&&(!player[i].forwardstogglekeydown||player[i].aitype!=playercontrolled)*/){
                                 player[i].setAnimation(climbanim);
-                                player[i].targetframe=1;
+                                player[i].frameTarget=1;
                                 player[i].jumpclimb=1;
                             }
-                            if(player[i].targetanimation==jumpupanim||player[i].targetanimation==jumpdownanim||player[i].isFlip()){
+                            if(player[i].animTarget==jumpupanim||player[i].animTarget==jumpdownanim||player[i].isFlip()){
                                 player[i].velocity+=absflatfacing*5*multiplier;
                             }
                             player[i].forwardstogglekeydown=1;
@@ -7397,21 +7397,21 @@ void Game::Tick(){
                                     (player[i].isStop()&&
                                      player[i].targetyaw==player[i].yaw)||
                                     (player[i].isLanding()&&
-                                     player[i].targetframe>0&&
+                                     player[i].frameTarget>0&&
                                      !player[i].jumpkeydown)||
                                     (player[i].isLandhard()&&
-                                     player[i].targetframe>0&&
+                                     player[i].frameTarget>0&&
                                      !player[i].jumpkeydown&&
                                      player[i].crouchkeydown)){
                                 player[i].setAnimation(player[i].getRun());
                             }
                             if(player[i].isCrouch()){
-                                player[i].targetanimation=sneakanim;
+                                player[i].animTarget=sneakanim;
                                 if(player[i].wasCrouch())
                                     player[i].target=0;
-                                player[i].targetframe=0;
+                                player[i].frameTarget=0;
                             }
-                            if(player[i].targetanimation==jumpupanim||player[i].targetanimation==jumpdownanim||player[i].isFlip()){
+                            if(player[i].animTarget==jumpupanim||player[i].animTarget==jumpdownanim||player[i].isFlip()){
                                 player[i].velocity+=DoRotation(absflatfacing*5*multiplier,0,-90,0);
                             }
                             player[i].targetyaw-=90;
@@ -7424,21 +7424,21 @@ void Game::Tick(){
                                     (player[i].isStop()&&
                                      player[i].targetyaw==player[i].yaw)||
                                     (player[i].isLanding()&&
-                                     player[i].targetframe>0&&
+                                     player[i].frameTarget>0&&
                                      !player[i].jumpkeydown)||
                                     (player[i].isLandhard()&&
-                                     player[i].targetframe>0&&
+                                     player[i].frameTarget>0&&
                                      !player[i].jumpkeydown&&
                                      player[i].crouchkeydown)){
                                 player[i].setAnimation(player[i].getRun());
                             }
                             if(player[i].isCrouch()){
-                                player[i].targetanimation=sneakanim;
+                                player[i].animTarget=sneakanim;
                                 if(player[i].wasCrouch())
                                     player[i].target=0;
-                                player[i].targetframe=0;
+                                player[i].frameTarget=0;
                             }
-                            if(player[i].targetanimation==jumpupanim||player[i].targetanimation==jumpdownanim||player[i].isFlip()){
+                            if(player[i].animTarget==jumpupanim||player[i].animTarget==jumpdownanim||player[i].isFlip()){
                                 player[i].velocity-=DoRotation(absflatfacing*5*multiplier,0,-90,0);
                             }
                             player[i].targetyaw+=90;
@@ -7451,29 +7451,29 @@ void Game::Tick(){
                                     (player[i].isStop()&&
                                      player[i].targetyaw==player[i].yaw)||
                                     (player[i].isLanding()&&
-                                     player[i].targetframe>0&&
+                                     player[i].frameTarget>0&&
                                      !player[i].jumpkeydown)||
                                     (player[i].isLandhard()&&
-                                     player[i].targetframe>0&&
+                                     player[i].frameTarget>0&&
                                      !player[i].jumpkeydown&&
                                      player[i].crouchkeydown)){
                                 player[i].setAnimation(player[i].getRun());
                             }
                             if(player[i].isCrouch()){
-                                player[i].targetanimation=sneakanim;
+                                player[i].animTarget=sneakanim;
                                 if(player[i].wasCrouch())
                                     player[i].target=0;
-                                player[i].targetframe=0;
+                                player[i].frameTarget=0;
                             }
-                            if(player[i].targetanimation==jumpupanim||player[i].targetanimation==jumpdownanim||player[i].isFlip()){
+                            if(player[i].animTarget==jumpupanim||player[i].animTarget==jumpdownanim||player[i].isFlip()){
                                 player[i].velocity-=absflatfacing*5*multiplier;
                             }
-                            if(player[i].targetanimation==hanganim){
-                                player[i].currentanimation=jumpdownanim;
-                                player[i].targetanimation=jumpdownanim;
+                            if(player[i].animTarget==hanganim){
+                                player[i].animCurrent=jumpdownanim;
+                                player[i].animTarget=jumpdownanim;
                                 player[i].target=0;
-                                player[i].currentframe=0;
-                                player[i].targetframe=1;
+                                player[i].frameCurrent=0;
+                                player[i].frameTarget=1;
                                 player[i].velocity=0;
                                 player[i].velocity.y+=gravity;
                                 player[i].coords.y-=1.4;
@@ -7484,14 +7484,14 @@ void Game::Tick(){
                             movekey=1;
                         }
                         if((player[i].jumpkeydown&&!player[i].jumpclimb)||player[i].jumpstart){
-                            if((((player[i].isLanding()&&player[i].targetframe>=3)||
+                            if((((player[i].isLanding()&&player[i].frameTarget>=3)||
                                             player[i].isRun()||
-                                            player[i].targetanimation==walkanim||
+                                            player[i].animTarget==walkanim||
                                             player[i].isCrouch()||
-                                            player[i].targetanimation==sneakanim)&&
+                                            player[i].animTarget==sneakanim)&&
                                         player[i].jumppower>1)&&
-                                    ((player[i].targetanimation!=rabbitrunninganim&&
-                                      player[i].targetanimation!=wolfrunninganim)||i!=0)){
+                                    ((player[i].animTarget!=rabbitrunninganim&&
+                                      player[i].animTarget!=wolfrunninganim)||i!=0)){
                                 player[i].jumpstart=0;
                                 player[i].setAnimation(jumpupanim);
                                 player[i].yaw=player[i].targetyaw;
@@ -7513,7 +7513,7 @@ void Game::Tick(){
                                         if(j!=i&&!player[j].skeleton.free&&player[j].victim){
                                             if(distsq(&player[j].coords,&player[j].victim->coords)<3&&
                                                     player[j].victim==&player[i]&&
-                                                    (player[j].targetanimation==sweepanim)){
+                                                    (player[j].animTarget==sweepanim)){
                                                 if(target>=0)target=-1;
                                                 else target=j;
                                             }
@@ -7541,12 +7541,12 @@ void Game::Tick(){
                             }
                             if((player[i].isIdle())&&player[i].jumppower>1){
                                 player[i].setAnimation(player[i].getLanding());
-                                player[i].targetframe=2;
+                                player[i].frameTarget=2;
                                 player[i].landhard=0;
                                 player[i].jumpstart=1;
                                 player[i].tempdeltav=deltav;
                             }
-                            if(player[i].targetanimation==jumpupanim&&
+                            if(player[i].animTarget==jumpupanim&&
                                     (((!floatjump&&
                                        !editorenabled)||
                                       !debugmode)||
@@ -7564,16 +7564,16 @@ void Game::Tick(){
                         }
 
                         if(!movekey){
-                            if(player[i].isRun()||player[i].targetanimation==walkanim)
+                            if(player[i].isRun()||player[i].animTarget==walkanim)
                                 player[i].setAnimation(player[i].getStop());
-                            if(player[i].targetanimation==sneakanim){
-                                player[i].targetanimation=player[i].getCrouch();
-                                if(player[i].currentanimation==sneakanim)
+                            if(player[i].animTarget==sneakanim){
+                                player[i].animTarget=player[i].getCrouch();
+                                if(player[i].animCurrent==sneakanim)
                                     player[i].target=0;
-                                player[i].targetframe=0;
+                                player[i].frameTarget=0;
                             }
                         }
-                        if(player[i].targetanimation==walkanim&&
+                        if(player[i].animTarget==walkanim&&
                                 (player[i].aitype==attacktypecutoff||
                                  player[i].aitype==searchtype||
                                  (player[i].aitype==passivetype&&
@@ -7583,7 +7583,7 @@ void Game::Tick(){
                             player[i].setAnimation(player[i].getStop());
                     }
                 }
-                if(player[i].targetanimation==rollanim)
+                if(player[i].animTarget==rollanim)
                     player[i].targetyaw=oldtargetyaw;
             }
 
@@ -7597,15 +7597,15 @@ void Game::Tick(){
                 }
 
                 //stop to turn in right direction
-                if(fabs(player[k].yaw-player[k].targetyaw)>90&&(player[k].isRun()||player[k].targetanimation==walkanim))
+                if(fabs(player[k].yaw-player[k].targetyaw)>90&&(player[k].isRun()||player[k].animTarget==walkanim))
                     player[k].setAnimation(player[k].getStop());
 
-                if(player[k].targetanimation==backhandspringanim||player[k].targetanimation==dodgebackanim)
+                if(player[k].animTarget==backhandspringanim||player[k].animTarget==dodgebackanim)
                     player[k].targettilt=0;
 
-                if(player[k].targetanimation!=jumpupanim&&
-                        player[k].targetanimation!=backhandspringanim&&
-                        player[k].targetanimation!=jumpdownanim&&
+                if(player[k].animTarget!=jumpupanim&&
+                        player[k].animTarget!=backhandspringanim&&
+                        player[k].animTarget!=jumpdownanim&&
                         !player[k].isFlip()){
                     player[k].targettilt=0;
                     if(player[k].jumppower<0&&!player[k].jumpkeydown)
@@ -7806,9 +7806,9 @@ void Game::TickOnceAfter(){
                         player[i].aitype==gethelptype||
                         player[i].aitype==searchtype)&&
                     !player[i].dead/*&&player[i].surprised<=0*/&&
-                    (player[i].targetanimation!=sneakattackedanim&&
-                     player[i].targetanimation!=knifesneakattackedanim&&
-                     player[i].targetanimation!=swordsneakattackedanim)){
+                    (player[i].animTarget!=sneakattackedanim&&
+                     player[i].animTarget!=knifesneakattackedanim&&
+                     player[i].animTarget!=swordsneakattackedanim)){
 				musictype=stream_fighttheme;
 				realthreat=1;
 			}
@@ -8089,7 +8089,7 @@ void Game::TickOnceAfter(){
 	viewerfacing=facing;
 
 	if(!cameramode){
-		if((animation[player[0].targetanimation].attack!=3&&animation[player[0].currentanimation].attack!=3)||player[0].skeleton.free)target=player[0].coords+player[0].currentoffset*(1-player[0].target)*player[0].scale+player[0].targetoffset*player[0].target*player[0].scale-player[0].facing*.05;
+		if((animation[player[0].animTarget].attack!=3&&animation[player[0].animCurrent].attack!=3)||player[0].skeleton.free)target=player[0].coords+player[0].currentoffset*(1-player[0].target)*player[0].scale+player[0].targetoffset*player[0].target*player[0].scale-player[0].facing*.05;
 		else target=player[0].oldcoords+player[0].currentoffset*(1-player[0].target)*player[0].scale+player[0].targetoffset*player[0].target*player[0].scale-player[0].facing*.05;
 		target.y+=.1;
 		if(player[0].skeleton.free){
@@ -8104,12 +8104,12 @@ void Game::TickOnceAfter(){
 			if(findLengthfast(&player[0].velocity)>400){
 				cameraspeed=20+(findLength(&player[0].velocity)-20)*.96;
 			}
-			if(player[0].skeleton.free==0&&player[0].targetanimation!=hanganim&&player[0].targetanimation!=climbanim)target.y+=1.4;
+			if(player[0].skeleton.free==0&&player[0].animTarget!=hanganim&&player[0].animTarget!=climbanim)target.y+=1.4;
 			coltarget=target-cameraloc;
 			if(findLengthfast(&coltarget)<multiplier*multiplier*400)cameraloc=target;
 			else {
 				Normalise(&coltarget);
-				if(player[0].targetanimation!=hanganim&&player[0].targetanimation!=climbanim&&player[0].currentanimation!=climbanim&&player[0].currentoffset.x==0)cameraloc=cameraloc+coltarget*multiplier*cameraspeed;
+				if(player[0].animTarget!=hanganim&&player[0].animTarget!=climbanim&&player[0].animCurrent!=climbanim&&player[0].currentoffset.x==0)cameraloc=cameraloc+coltarget*multiplier*cameraspeed;
 				else cameraloc=cameraloc+coltarget*multiplier*8;
 			}
 			if(editorenabled)cameraloc=target;
@@ -8147,7 +8147,7 @@ void Game::TickOnceAfter(){
 			if(findLengthfast(&player[0].velocity)>400){
 				cameraspeed=20+(findLength(&player[0].velocity)-20)*.96;
 			}
-			if(player[0].skeleton.free==0&&player[0].targetanimation!=hanganim&&player[0].targetanimation!=climbanim)target.y+=1.4;
+			if(player[0].skeleton.free==0&&player[0].animTarget!=hanganim&&player[0].animTarget!=climbanim)target.y+=1.4;
 			cameradist+=multiplier*5;
 			if(cameradist>3.3)cameradist=3.3;
 			coltarget=target-cameraloc;
@@ -8155,7 +8155,7 @@ void Game::TickOnceAfter(){
 			else if(findLengthfast(&coltarget)>1)
 			{
 				Normalise(&coltarget);
-				if(player[0].targetanimation!=hanganim&&player[0].targetanimation!=climbanim&&player[0].currentanimation!=climbanim&&player[0].currentoffset.x==0)cameraloc=cameraloc+coltarget*multiplier*cameraspeed;
+				if(player[0].animTarget!=hanganim&&player[0].animTarget!=climbanim&&player[0].animCurrent!=climbanim&&player[0].currentoffset.x==0)cameraloc=cameraloc+coltarget*multiplier*cameraspeed;
 				else cameraloc=cameraloc+coltarget*multiplier*8;
 			}
 			if(editorenabled)cameraloc=target;

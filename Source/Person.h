@@ -49,18 +49,27 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Person
 {
-	public:	
+	public:
 		int whichpatchx;
 		int whichpatchz;
 		
-		int currentframe;
-		int targetframe;
-		int currentanimation;
-		int targetanimation;
-		int oldcurrentframe;
-		int oldtargetframe;
-		int oldcurrentanimation;
-		int oldtargetanimation;
+        // animCurrent and animTarget are used to interpolate between different animations
+        // (and for a bunch of other things).
+        // animations interpolate with one another at various speeds.
+        // animTarget seems to determine the combat state?
+		int animCurrent;
+		int animTarget;
+
+        // frameCurrent and frameTarget are used to interpolate between the frames of an animation
+        // (e.g. the crouched animation has only two frames, lerped back and forth).
+        // animations advance at various speeds.
+		int frameCurrent;
+		int frameTarget;
+
+		int oldanimCurrent;
+		int oldanimTarget;
+		int oldframeCurrent;
+		int oldframeTarget;
 		
 		int howactive;
 		
@@ -326,42 +335,42 @@ class Person
 		void DoBloodBig(float howmuch, int which);
 		bool DoBloodBigWhere(float howmuch, int which, XYZ where);
 		
-		bool wasIdle() { return animation_bits[currentanimation] & ab_idle; }
-		bool isIdle() { return animation_bits[targetanimation] & ab_idle; }
+		bool wasIdle() { return animation_bits[animCurrent] & ab_idle; }
+		bool isIdle() { return animation_bits[animTarget] & ab_idle; }
 		int getIdle();
 		
-		bool isSitting() { return animation_bits[targetanimation] & ab_sit; }
+		bool isSitting() { return animation_bits[animTarget] & ab_sit; }
 
-		bool isSleeping() { return animation_bits[targetanimation] & ab_sleep; }
+		bool isSleeping() { return animation_bits[animTarget] & ab_sleep; }
 
-		bool wasCrouch() { return animation_bits[currentanimation] & ab_crouch; }
-		bool isCrouch() { return animation_bits[targetanimation] & ab_crouch; }
+		bool wasCrouch() { return animation_bits[animCurrent] & ab_crouch; }
+		bool isCrouch() { return animation_bits[animTarget] & ab_crouch; }
 		int getCrouch();
 		
-		bool wasStop() { return animation_bits[currentanimation] & ab_stop; }
-		bool isStop() { return animation_bits[targetanimation] & ab_stop; }
+		bool wasStop() { return animation_bits[animCurrent] & ab_stop; }
+		bool isStop() { return animation_bits[animTarget] & ab_stop; }
 		int getStop();
 		
 		bool wasSneak();
 		bool isSneak();
 		int getSneak();
 		
-		bool wasRun() { return animation_bits[currentanimation] & ab_run; }
-		bool isRun() { return animation_bits[targetanimation] & ab_run; }
+		bool wasRun() { return animation_bits[animCurrent] & ab_run; }
+		bool isRun() { return animation_bits[animTarget] & ab_run; }
 		int getRun();
 
-		bool wasLanding() { return animation_bits[currentanimation] & ab_land; }
-		bool isLanding() { return animation_bits[targetanimation] & ab_land; }
+		bool wasLanding() { return animation_bits[animCurrent] & ab_land; }
+		bool isLanding() { return animation_bits[animTarget] & ab_land; }
 		int getLanding();
 
-		bool wasLandhard() { return animation_bits[currentanimation] & ab_landhard; }
-		bool isLandhard() { return animation_bits[targetanimation] & ab_landhard; }
+		bool wasLandhard() { return animation_bits[animCurrent] & ab_landhard; }
+		bool isLandhard() { return animation_bits[animTarget] & ab_landhard; }
 		int getLandhard();
 
-		bool wasFlip() { return animation_bits[currentanimation] & ab_flip; }
-		bool isFlip() { return animation_bits[targetanimation] & ab_flip; }
+		bool wasFlip() { return animation_bits[animCurrent] & ab_flip; }
+		bool isFlip() { return animation_bits[animTarget] & ab_flip; }
 
-		bool isWallJump() { return animation_bits[targetanimation] & ab_walljump; }
+		bool isWallJump() { return animation_bits[animTarget] & ab_walljump; }
 		void Reverse();
 		void DoDamage(float howmuch);
 		void DoHead();
