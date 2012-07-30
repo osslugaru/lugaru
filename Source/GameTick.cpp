@@ -609,27 +609,38 @@ static void ch_size(const char *args)
   player[0].scale = atof(args) * .2;
 }
 
-static int find_closest()
-{
-  int closest = 0;
-  float closestdist = std::numeric_limits<float>::max();
+static int findClosestPlayer(){
+    int closest = -1;
+    float closestdist = std::numeric_limits<float>::max();
 
-  for (int i = 1; i < numplayers; i++) {
-    float distance;
-    distance = findDistancefast(&player[i].coords,&player[0].coords);
-    if (distance < closestdist) {
-      closestdist = distance;
-      closest = i;
+    for(int i=1; i<numplayers; i++){
+        float distance = findDistancefast(&player[i].coords, &player[0].coords);
+        if(distance < closestdist){
+            closestdist = distance;
+            closest = i;
+        }
     }
-  }
-  return closest;
+    return closest;
+}
+
+static int findClosestObject(){
+    int closest = -1;
+    float closestdist = std::numeric_limits<float>::max();
+
+    for(int i=0; i<objects.numobjects; i++){
+        float distance = findDistancefast(&objects.position[i], &player[0].coords);
+        if(distance < closestdist){
+            closestdist = distance;
+            closest = i;
+        }
+    }
+    return closest;
 }
 
 static void ch_sizenear(const char *args)
 {
-  int closest = find_closest();
-
-  if (closest)
+  int closest = findClosestPlayer();
+  if(closest>=0)
     player[closest].scale = atof(args) * .2;
 }
 
@@ -660,8 +671,8 @@ static void ch_proportion(const char *args)
 
 static void ch_proportionnear(const char *args)
 {
-  int closest = find_closest();
-  if (closest)
+  int closest = findClosestPlayer();
+  if(closest>=0)
     set_proportion(closest, args);
 }
 
@@ -682,8 +693,8 @@ static void ch_protection(const char *args)
 
 static void ch_protectionnear(const char *args)
 {
-  int closest = find_closest();
-  if (closest)
+  int closest = findClosestPlayer();
+  if(closest>=0)
     set_protection(closest, args);
 }
 
@@ -704,8 +715,8 @@ static void ch_armor(const char *args)
 
 static void ch_armornear(const char *args)
 {
-  int closest = find_closest();
-  if (closest)
+  int closest = findClosestPlayer();
+  if(closest>=0)
     set_armor(closest, args);
 }
 
@@ -745,8 +756,8 @@ static void ch_noclothes(const char *args)
 
 static void ch_noclothesnear(const char *args)
 {
-  int closest = find_closest();
-  if (closest)
+  int closest = findClosestPlayer();
+  if(closest>=0)
     set_noclothes(closest, args);
 }
 
@@ -774,8 +785,8 @@ static void ch_clothes(const char *args)
 
 static void ch_clothesnear(const char *args)
 {
-  int closest = find_closest();
-  if (closest)
+  int closest = findClosestPlayer();
+  if(closest>=0)
     set_clothes(closest, args);
 }
 
@@ -2652,18 +2663,8 @@ void doDebugKeys(){
         }
 
         if(Input::isKeyPressed(SDLK_x)&&Input::isKeyDown(SDLK_LSHIFT)){
-            int closest=-1;
-            float closestdist=-1;
-            float distance;
-            if(numplayers>1)
-                for(int i=1;i<numplayers;i++){
-                    distance=findDistancefast(&player[i].coords,&player[0].coords);
-                    if(closestdist==-1||distance<closestdist){
-                        closestdist=distance;
-                        closest=i;
-                    }
-                }
-            if(closest!=-1){
+            int closest=findClosestPlayer();
+            if(closest>=0){
                 if(player[closest].num_weapons){
                     if(weapons[player[closest].weaponids[0]].getType()==sword)
                         weapons[player[closest].weaponids[0]].setType(staff);
@@ -2683,37 +2684,20 @@ void doDebugKeys(){
         }
 
         if(Input::isKeyDown(SDLK_u)){
-            int closest=-1;
-            float closestdist=-1;
-            float distance;
-            if(numplayers>1)
-                for(int i=1;i<numplayers;i++){
-                    distance=findDistancefast(&player[i].coords,&player[0].coords);
-                    if(closestdist==-1||distance<closestdist){
-                        closestdist=distance;
-                        closest=i;
-                    }
-                }
-            player[closest].yaw+=multiplier*50;
-            player[closest].targetyaw=player[closest].yaw;
+            int closest=findClosestPlayer();
+            if(closest>=0){
+                player[closest].yaw+=multiplier*50;
+                player[closest].targetyaw=player[closest].yaw;
+            }
         }
 
 
         if(Input::isKeyPressed(SDLK_o)&&!Input::isKeyDown(SDLK_LSHIFT)){
-            int closest=-1;
-            float closestdist=-1;
-            float distance;
-            if(numplayers>1)
-                for(int i=1;i<numplayers;i++){
-                    distance=findDistancefast(&player[i].coords,&player[0].coords);
-                    if(closestdist==-1||distance<closestdist){
-                        closestdist=distance;
-                        closest=i;
-                    }
-                }
-            if(Input::isKeyDown(SDLK_LCTRL))closest=0;
+            int closest=findClosestPlayer();
+            if(Input::isKeyDown(SDLK_LCTRL))
+                closest=0;
 
-            if(closest!=-1){
+            if(closest>=0){
                 player[closest].whichskin++;
                 if(player[closest].whichskin>9)
                     player[closest].whichskin=0;
@@ -2736,18 +2720,8 @@ void doDebugKeys(){
         }
 
         if(Input::isKeyPressed(SDLK_o)&&Input::isKeyDown(SDLK_LSHIFT)){
-            int closest=-1;
-            float closestdist=-1;
-            float distance;
-            if(numplayers>1)
-                for(int i=1;i<numplayers;i++){
-                    distance=findDistancefast(&player[i].coords,&player[0].coords);
-                    if(closestdist==-1||distance<closestdist){
-                        closestdist=distance;
-                        closest=i;
-                    }
-                }
-            if(closest!=-1){
+            int closest=findClosestPlayer();
+            if(closest>=0){
                 if(player[closest].creature==wolftype){
                     headprop=player[closest].proportionhead.x/1.1;
                     bodyprop=player[closest].proportionbody.x/1.1;
@@ -2822,23 +2796,22 @@ void doDebugKeys(){
 
 
         if(((Input::isKeyPressed(SDLK_i)&&!Input::isKeyDown(SDLK_LSHIFT)))){
-            int closest=-1;
-            float closestdist=-1;
-            float distance;
+            int closest = -1;
+            float closestdist = std::numeric_limits<float>::max();
+
+            for(int i=1; i<numplayers; i++){
+                float distance = findDistancefast(&player[i].coords, &player[0].coords);
+                if(!player[i].headless)
+                    if(distance < closestdist){
+                        closestdist = distance;
+                        closest = i;
+                    }
+            }
+
             XYZ flatfacing2,flatvelocity2;
             XYZ blah;
-            if(numplayers>1)
-                for(int i=1;i<numplayers;i++){
-                    distance=findDistancefast(&player[i].coords,&player[0].coords);
-                    if(distance<144&&!player[i].headless)
-                        if(closestdist==-1||distance<closestdist){
-                            closestdist=distance;
-                            closest=i;
-                            blah = player[i].coords;
-                        }
-                }
-
-            if(closest!=-1){
+            if(closest!=-1 && findDistancefast(&player[closest].coords, &player[0].coords)<144){
+                blah = player[closest].coords;
                 XYZ headspurtdirection;
                 //int i = player[closest].skeleton.jointlabels[head];
                 Joint& headjoint= player[closest].getJointFor(head);
@@ -2876,25 +2849,12 @@ void doDebugKeys(){
         }
 
         if(((Input::isKeyPressed(SDLK_i)&&Input::isKeyDown(SDLK_LSHIFT)))){
-            int closest=-1;
-            float closestdist=-1;
-            float distance;
+            int closest=findClosestPlayer();
             XYZ flatfacing2,flatvelocity2;
             XYZ blah;
-            if(numplayers>1)
-                for(int i=1;i<numplayers;i++){
-                    distance=findDistancefast(&player[i].coords,&player[0].coords);
-                    if(distance<144)
-                        if(closestdist==-1||distance<closestdist){
-                            closestdist=distance;
-                            closest=i;
-                            blah=player[i].coords;
-                        }
-                }
-
-            if(closest!=-1){
+            if(closest>=0 && findDistancefast(&player[closest].coords,&player[0].coords)<144){
+                blah=player[closest].coords;
                 emit_sound_at(splattersound, blah);
-
                 emit_sound_at(breaksound2, blah);
 
                 for(int i=0;i<player[closest].skeleton.num_joints; i++){
@@ -3031,18 +2991,8 @@ void doDebugKeys(){
 
         if(editorenabled){
             if(Input::isKeyPressed(SDLK_DELETE)&&Input::isKeyDown(SDLK_LSHIFT)){
-                int closest=-1;
-                float closestdist=-1;
-                float distance;
-                if(numplayers>1)
-                    for(int i=1;i<numplayers;i++){
-                        distance=findDistancefast(&player[i].coords,&player[0].coords);
-                        if(closestdist==-1||distance<closestdist){
-                            closestdist=distance;
-                            closest=i;
-                        }
-                    }
-                if(closestdist>0&&closest>=0){
+                int closest=findClosestPlayer();
+                if(closest>=0){
                     //player[closest]=player[numplayers-1];
                     //player[closest].skeleton=player[numplayers-1].skeleton;
                     numplayers--;
@@ -3050,20 +3000,9 @@ void doDebugKeys(){
             }
 
             if(Input::isKeyPressed(SDLK_DELETE)&&Input::isKeyDown(SDLK_LCTRL)){
-                int closest=-1;
-                float closestdist=-1;
-                float distance;
-                if(max_objects>1)
-                    for(int i=1;i<max_objects;i++){
-                        distance=findDistancefast(&objects.position[i],&player[0].coords);
-                        if(closestdist==-1||distance<closestdist){
-                            closestdist=distance;
-                            closest=i;
-                        }
-                    }
-                if(closestdist>0&&closest>=0){
+                int closest=findClosestObject();
+                if(closest>=0)
                     objects.position[closest].y-=500;
-                }
             }
 
             if(Input::isKeyPressed(SDLK_m)&&Input::isKeyDown(SDLK_LSHIFT)){
@@ -3354,17 +3293,9 @@ void doDebugKeys(){
                 if(editorpitch<-.01)editorpitch=-.01;
             }
             if(Input::isKeyPressed(SDLK_DELETE)&&objects.numobjects&&Input::isKeyDown(SDLK_LSHIFT)){
-                int closest=-1;
-                float closestdist=-1;
-                float distance;
-                for(int i=0;i<objects.numobjects;i++){
-                    distance=findDistancefast(&objects.position[i],&player[0].coords);
-                    if(closestdist==-1||distance<closestdist){
-                        closestdist=distance;
-                        closest=i;
-                    }
-                }
-                if(closestdist>0&&closest>=0)objects.DeleteObject(closest);
+                int closest=findClosestObject();
+                if(closest>=0)
+                    objects.DeleteObject(closest);
             }
         }
     }
