@@ -53,16 +53,16 @@ class Person
 		int whichpatchx;
 		int whichpatchz;
 		
-        // animCurrent and animTarget are used to interpolate between different animations
-        // (and for a bunch of other things).
-        // animations interpolate with one another at various speeds.
-        // animTarget seems to determine the combat state?
+		// animCurrent and animTarget are used to interpolate between different animations
+		// (and for a bunch of other things).
+		// animations interpolate with one another at various speeds.
+		// animTarget seems to determine the combat state?
 		int animCurrent;
 		int animTarget;
 
-        // frameCurrent and frameTarget are used to interpolate between the frames of an animation
-        // (e.g. the crouched animation has only two frames, lerped back and forth).
-        // animations advance at various speeds.
+		// frameCurrent and frameTarget are used to interpolate between the frames of an animation
+		// (e.g. the crouched animation has only two frames, lerped back and forth).
+		// animations advance at various speeds.
 		int frameCurrent;
 		int frameTarget;
 
@@ -128,7 +128,7 @@ class Person
 		float damage;
 		float permanentdamage;
 		float superpermanentdamage;
-        float lastcollide;
+		float lastcollide;
 		int dead;
 		
 		float jumppower;
@@ -201,7 +201,7 @@ class Person
 		bool whichdirection;
 		float whichdirectiondelay;
 		bool avoidsomething;
-        XYZ avoidwhere;		
+		XYZ avoidwhere;		
 		float blooddimamount;
 		
 		float staggerdelay;
@@ -262,7 +262,7 @@ class Person
 		bool spurt;
 		bool onfire;
 		float onfiredelay;
-        float burnt;
+		float burnt;
 		float fireduration;
 		
 		float flamedelay;
@@ -306,7 +306,7 @@ class Person
 		float stunned;
 		float surprised;
 		float runninghowlong;
-        int lastoccluded;
+		int lastoccluded;
 		int laststanding;
 		int escapednum;
 		
@@ -377,7 +377,7 @@ class Person
 		void DoMipmaps()
 		{
 		  skeleton.drawmodel.textureptr.bind();
-          glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+		  glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
 		  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, skeleton.skinsize, skeleton.skinsize, 0, GL_RGB, GL_UNSIGNED_BYTE, &skeleton.skinText[0]);
 		}
 
