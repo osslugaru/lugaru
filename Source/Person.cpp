@@ -113,7 +113,8 @@ void Person::CheckKick()
         }
         victim->Puff(neck);
         victim->DoDamage(100 * damagemult / victim->protectionhigh);
-        if (id == 0)camerashake += .4;
+        if (id == 0)
+            camerashake += .4;
 
         target = 0;
         frameCurrent = 3;
@@ -149,10 +150,14 @@ void Person::CatchFire()
     int howmany;
     for (int i = 0; i < 10; i++) {
         howmany = abs(Random() % (skeleton.num_joints));
-        if (!skeleton.free)flatvelocity = velocity;
-        if (skeleton.free)flatvelocity = skeleton.joints[howmany].velocity;
-        if (!skeleton.free)flatfacing = DoRotation(DoRotation(DoRotation(skeleton.joints[howmany].position, 0, 0, tilt), tilt2, 0, 0), 0, yaw, 0) * scale + coords;
-        if (skeleton.free)flatfacing = skeleton.joints[howmany].position * scale + coords;
+        if (!skeleton.free)
+            flatvelocity = velocity;
+        if (skeleton.free)
+            flatvelocity = skeleton.joints[howmany].velocity;
+        if (!skeleton.free)
+            flatfacing = DoRotation(DoRotation(DoRotation(skeleton.joints[howmany].position, 0, 0, tilt), tilt2, 0, 0), 0, yaw, 0) * scale + coords;
+        if (skeleton.free)
+            flatfacing = skeleton.joints[howmany].position * scale + coords;
         Sprite::MakeSprite(flamesprite, flatfacing, flatvelocity, 1, 1, 1, 2, 1);
     }
 
@@ -169,11 +174,15 @@ void Person::CatchFire()
 
 int Person::getIdle()
 {
-    if (indialogue != -1 && howactive == typeactive && creature == rabbittype)return talkidleanim;
-    if (hasvictim && victim != this/*||(id==0&&attackkeydown)*/)if (/*(id==0&&attackkeydown)||*/(!victim->dead && victim->aitype != passivetype && victim->aitype != searchtype && aitype != passivetype && aitype != searchtype && victim->id < numplayers)) {
+    if (indialogue != -1 && howactive == typeactive && creature == rabbittype)
+        return talkidleanim;
+    if (hasvictim && victim != this/*||(id==0&&attackkeydown)*/)
+        if (/*(id==0&&attackkeydown)||*/(!victim->dead && victim->aitype != passivetype && victim->aitype != searchtype && aitype != passivetype && aitype != searchtype && victim->id < numplayers)) {
             if ((aitype == playercontrolled && stunned <= 0 && weaponactive == -1) || pause) {
-                if (creature == rabbittype)return fightidleanim;
-                if (creature == wolftype)return wolfidle;
+                if (creature == rabbittype)
+                    return fightidleanim;
+                if (creature == wolftype)
+                    return wolfidle;
             }
             if (aitype == playercontrolled && stunned <= 0 && weaponactive != -1) {
                 if (weapons[weaponids[weaponactive]].getType() == knife)
@@ -185,56 +194,70 @@ int Person::getIdle()
                 if (weapons[weaponids[weaponactive]].getType() == staff)
                     return swordfightidleanim;
             }
-            if (aitype != playercontrolled && stunned <= 0 && creature != wolftype && !pause)return fightsidestep;
+            if (aitype != playercontrolled && stunned <= 0 && creature != wolftype && !pause)
+                return fightsidestep;
         }
-    if ((damage > permanentdamage || damage > damagetolerance * .8 || deathbleeding > 0) && creature != wolftype)return hurtidleanim;
-    if (howactive == typesitting)return sitanim;
-    if (howactive == typesittingwall)return sitwallanim;
-    if (howactive == typesleeping)return sleepanim;
-    if (howactive == typedead1)return dead1anim;
-    if (howactive == typedead2)return dead2anim;
-    if (howactive == typedead3)return dead3anim;
-    if (howactive == typedead4)return dead4anim;
-    if (creature == rabbittype)return bounceidleanim;
-    if (creature == wolftype)return wolfidle;
+    if ((damage > permanentdamage || damage > damagetolerance * .8 || deathbleeding > 0) && creature != wolftype)
+        return hurtidleanim;
+    if (howactive == typesitting) return sitanim;
+    if (howactive == typesittingwall) return sitwallanim;
+    if (howactive == typesleeping) return sleepanim;
+    if (howactive == typedead1) return dead1anim;
+    if (howactive == typedead2) return dead2anim;
+    if (howactive == typedead3) return dead3anim;
+    if (howactive == typedead4) return dead4anim;
+    if (creature == rabbittype) return bounceidleanim;
+    if (creature == wolftype) return wolfidle;
     return 0;
 }
 
 int Person::getCrouch()
 {
-    if (creature == rabbittype)return crouchanim;
-    if (creature == wolftype)return wolfcrouchanim;
+    if (creature == rabbittype)
+        return crouchanim;
+    if (creature == wolftype)
+        return wolfcrouchanim;
     return 0;
 }
 
 int Person::getRun()
 {
-    if (creature == rabbittype && (!superruntoggle || weaponactive != -1))return runanim;
-    if (creature == wolftype && (!superruntoggle))return wolfrunanim;
+    if (creature == rabbittype && (!superruntoggle || weaponactive != -1))
+        return runanim;
+    if (creature == wolftype && (!superruntoggle))
+        return wolfrunanim;
 
-    if (creature == rabbittype && (superruntoggle && weaponactive == -1))return rabbitrunninganim;
-    if (creature == wolftype && (superruntoggle))return wolfrunninganim;
+    if (creature == rabbittype && (superruntoggle && weaponactive == -1))
+        return rabbitrunninganim;
+    if (creature == wolftype && (superruntoggle))
+        return wolfrunninganim;
     return 0;
 }
 
 int Person::getStop()
 {
-    if (creature == rabbittype)return stopanim;
-    if (creature == wolftype)return wolfstopanim;
+    if (creature == rabbittype)
+        return stopanim;
+    if (creature == wolftype)
+        return wolfstopanim;
     return 0;
 }
 
 int Person::getLanding()
 {
-    if (creature == rabbittype)return landanim;
-    if (creature == wolftype)return wolflandanim;
+    if (creature == rabbittype)
+        return landanim;
+    if (creature == wolftype)
+        return wolflandanim;
     return 0;
 }
 
 int Person::getLandhard()
 {
-    if (creature == rabbittype)return landhardanim;
-    if (creature == wolftype)return wolflandhardanim;
+    if (creature == rabbittype)
+        return landhardanim;
+    if (creature == wolftype)
+        return wolflandhardanim;
     return 0;
 }
 
@@ -264,8 +287,10 @@ void Person::DoBlood(float howmuch, int which)
                 if (skeleton.free) {
                     bloodvel -= DoRotation(skeleton.forward * 10 * scale, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0);
                 }
-                if (skeleton.free)bloodvel += DoRotation(skeleton.joints[skeleton.jointlabels[head]].velocity, ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
-                if (!skeleton.free)bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0) * scale;
+                if (skeleton.free)
+                    bloodvel += DoRotation(skeleton.joints[skeleton.jointlabels[head]].velocity, ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
+                if (!skeleton.free)
+                    bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0) * scale;
                 if (skeleton.free) {
                     Sprite::MakeSprite(bloodsprite, skeleton.joints[skeleton.jointlabels[head]].position * scale + coords, bloodvel, 1, 1, 1, .05, 1);
                     Sprite::MakeSprite(bloodflamesprite, skeleton.joints[skeleton.jointlabels[head]].position * scale + coords, bloodvel, 1, 1, 1, .3, 1);
@@ -319,14 +344,16 @@ void Person::DoBlood(float howmuch, int which)
         }
 
     }
-    if (bleeding > 2)bleeding = 2;
+    if (bleeding > 2)
+        bleeding = 2;
 }
 
 void Person::DoBloodBig(float howmuch, int which)
 {
     static int bleedxint, bleedyint, i, j;
     static XYZ bloodvel;
-    if (howmuch && id == 0)blooddimamount = 1;
+    if (howmuch && id == 0)
+        blooddimamount = 1;
 
     if (tutoriallevel != 1 || id == 0)
         if (aitype != playercontrolled && howmuch > 0) {
@@ -334,8 +361,10 @@ void Person::DoBloodBig(float howmuch, int which)
 
             if (creature == wolftype) {
                 int i = abs(Random() % 2);
-                if (i == 0)whichsound = snarlsound;
-                if (i == 1)whichsound = snarl2sound;
+                if (i == 0)
+                    whichsound = snarlsound;
+                if (i == 1)
+                    whichsound = snarl2sound;
                 envsound[numenvsounds] = coords;
                 envsoundvol[numenvsounds] = 16;
                 envsoundlife[numenvsounds] = .4;
@@ -343,8 +372,10 @@ void Person::DoBloodBig(float howmuch, int which)
             }
             if (creature == rabbittype) {
                 int i = abs(Random() % 2);
-                if (i == 0)whichsound = rabbitpainsound;
-                if (i == 1 && howmuch >= 2)whichsound = rabbitpain1sound;
+                if (i == 0)
+                    whichsound = rabbitpainsound;
+                if (i == 1 && howmuch >= 2)
+                    whichsound = rabbitpain1sound;
                 envsound[numenvsounds] = coords;
                 envsoundvol[numenvsounds] = 16;
                 envsoundlife[numenvsounds] = .4;
@@ -376,8 +407,10 @@ void Person::DoBloodBig(float howmuch, int which)
                 if (skeleton.free) {
                     bloodvel -= DoRotation(skeleton.forward * 10 * scale, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0);
                 }
-                if (skeleton.free)bloodvel += DoRotation(skeleton.joints[skeleton.jointlabels[head]].velocity, ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
-                if (!skeleton.free)bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0) * scale;
+                if (skeleton.free)
+                    bloodvel += DoRotation(skeleton.joints[skeleton.jointlabels[head]].velocity, ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
+                if (!skeleton.free)
+                    bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0) * scale;
                 if (skeleton.free) {
                     Sprite::MakeSprite(bloodsprite, skeleton.joints[skeleton.jointlabels[head]].position * scale + coords, bloodvel, 1, 1, 1, .05, 1);
                     Sprite::MakeSprite(bloodflamesprite, skeleton.joints[skeleton.jointlabels[head]].position * scale + coords, bloodvel, 1, 1, 1, .3, 1);
@@ -419,10 +452,10 @@ void Person::DoBloodBig(float howmuch, int which)
             for (i = 0; i < 512; i++) {
                 for (j = 0; j < 512; j++) {
                     if (bloodText[i * 512 * 3 + j * 3 + 0] <= which + 4 && bloodText[i * 512 * 3 + j * 3 + 0] >= which - 4) {
-                        if (i < startx)startx = i;
-                        if (j < starty)starty = j;
-                        if (i > endx)endx = i;
-                        if (j > endy)endy = j;
+                        if (i < startx) startx = i;
+                        if (j < starty) starty = j;
+                        if (i > endx) endx = i;
+                        if (j > endy) endy = j;
                     }
                 }
             }
@@ -430,10 +463,10 @@ void Person::DoBloodBig(float howmuch, int which)
             for (i = 0; i < 512; i++) {
                 for (j = 0; j < 512; j++) {
                     if (wolfbloodText[i * 512 * 3 + j * 3 + 0] <= which + 4 && wolfbloodText[i * 512 * 3 + j * 3 + 0] >= which - 4) {
-                        if (i < startx)startx = i;
-                        if (j < starty)starty = j;
-                        if (i > endx)endx = i;
-                        if (j > endy)endy = j;
+                        if (i < startx) startx = i;
+                        if (j < starty) starty = j;
+                        if (i > endx) endx = i;
+                        if (j > endy) endy = j;
                     }
                 }
             }
@@ -443,12 +476,12 @@ void Person::DoBloodBig(float howmuch, int which)
         starty += offsety;
         endy += offsety;
 
-        if (startx < 0)startx = 0;
-        if (starty < 0)starty = 0;
-        if (endx > 512 - 1)endx = 512 - 1;
-        if (endy > 512 - 1)endy = 512 - 1;
-        if (endx < startx)endx = startx;
-        if (endy < starty)endy = starty;
+        if (startx < 0) startx = 0;
+        if (starty < 0) starty = 0;
+        if (endx > 512 - 1) endx = 512 - 1;
+        if (endy > 512 - 1) endy = 512 - 1;
+        if (endx < startx) endx = startx;
+        if (endy < starty) endy = starty;
 
         startx /= realtexdetail;
         starty /= realtexdetail;
@@ -463,7 +496,8 @@ void Person::DoBloodBig(float howmuch, int which)
                     if (bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] <= which + 4 && bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] >= which - 4) {
                         color = Random() % 85 + 170;
                         where = i * skeleton.skinsize * 3 + j * 3;
-                        if (skeleton.skinText[where + 0] > color / 2)skeleton.skinText[where + 0] = color / 2;
+                        if (skeleton.skinText[where + 0] > color / 2)
+                            skeleton.skinText[where + 0] = color / 2;
                         skeleton.skinText[where + 1] = 0;
                         skeleton.skinText[where + 2] = 0;
                     }
@@ -475,7 +509,8 @@ void Person::DoBloodBig(float howmuch, int which)
                     if (wolfbloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] <= which + 4 && wolfbloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] >= which - 4) {
                         color = Random() % 85 + 170;
                         where = i * skeleton.skinsize * 3 + j * 3;
-                        if (skeleton.skinText[where + 0] > color / 2)skeleton.skinText[where + 0] = color / 2;
+                        if (skeleton.skinText[where + 0] > color / 2)
+                            skeleton.skinText[where + 0] = color / 2;
                         skeleton.skinText[where + 1] = 0;
                         skeleton.skinText[where + 2] = 0;
                     }
@@ -500,10 +535,14 @@ void Person::DoBloodBig(float howmuch, int which)
         bleedx = bleedyint + offsety;
         bleedy /= realtexdetail;
         bleedx /= realtexdetail;
-        if (bleedx < 0)bleedx = 0;
-        if (bleedy < 0)bleedy = 0;
-        if (bleedx > skeleton.skinsize - 1)bleedx = skeleton.skinsize - 1;
-        if (bleedy > skeleton.skinsize - 1)bleedy = skeleton.skinsize - 1;
+        if (bleedx < 0)
+            bleedx = 0;
+        if (bleedy < 0)
+            bleedy = 0;
+        if (bleedx > skeleton.skinsize - 1)
+            bleedx = skeleton.skinsize - 1;
+        if (bleedy > skeleton.skinsize - 1)
+            bleedy = skeleton.skinsize - 1;
         direction = abs(Random() % 2) * 2 - 1;
 
     }
@@ -515,10 +554,12 @@ void Person::DoBloodBig(float howmuch, int which)
         if (abs(Random() % 2) == 0) {
             aitype = gethelptype;
             lastseentime = 12;
-        } else aitype = attacktypecutoff;
+        } else
+            aitype = attacktypecutoff;
         ally = 0;
     }
-    if (bleeding > 2)bleeding = 2;
+    if (bleeding > 2)
+        bleeding = 2;
 }
 
 bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
@@ -537,7 +578,8 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
 
     if (bloodtoggle && decals && tutoriallevel != 1) {
         where -= coords;
-        if (!skeleton.free)where = DoRotation(where, 0, -yaw, 0);
+        if (!skeleton.free)
+            where = DoRotation(where, 0, -yaw, 0);
         //where=scale;
         startpoint = where;
         startpoint.y += 100;
@@ -601,8 +643,10 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
                     if (skeleton.free) {
                         bloodvel -= DoRotation(skeleton.forward * 10 * scale, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0);
                     }
-                    if (skeleton.free)bloodvel += DoRotation(skeleton.joints[skeleton.jointlabels[head]].velocity, ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
-                    if (!skeleton.free)bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0) * scale;
+                    if (skeleton.free)
+                        bloodvel += DoRotation(skeleton.joints[skeleton.jointlabels[head]].velocity, ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
+                    if (!skeleton.free)
+                        bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0) * scale;
                     if (skeleton.free) {
                         Sprite::MakeSprite(bloodsprite, skeleton.joints[skeleton.jointlabels[head]].position * scale + coords, bloodvel, 1, 1, 1, .05, 1);
                         Sprite::MakeSprite(bloodflamesprite, skeleton.joints[skeleton.jointlabels[head]].position * scale + coords, bloodvel, 1, 1, 1, .3, 1);
@@ -635,10 +679,10 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
                 for (i = 0; i < 512; i++) {
                     for (j = 0; j < 512; j++) {
                         if (bloodText[i * 512 * 3 + j * 3 + 0] <= which + 4 && bloodText[i * 512 * 3 + j * 3 + 0] >= which - 4) {
-                            if (i < startx)startx = i;
-                            if (j < starty)starty = j;
-                            if (i > endx)endx = i;
-                            if (j > endy)endy = j;
+                            if (i < startx) startx = i;
+                            if (j < starty) starty = j;
+                            if (i > endx) endx = i;
+                            if (j > endy) endy = j;
                         }
                     }
                 }
@@ -646,10 +690,10 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
                 for (i = 0; i < 512; i++) {
                     for (j = 0; j < 512; j++) {
                         if (wolfbloodText[i * 512 * 3 + j * 3 + 0] <= which + 4 && wolfbloodText[i * 512 * 3 + j * 3 + 0] >= which - 4) {
-                            if (i < startx)startx = i;
-                            if (j < starty)starty = j;
-                            if (i > endx)endx = i;
-                            if (j > endy)endy = j;
+                            if (i < startx) startx = i;
+                            if (j < starty) starty = j;
+                            if (i > endx) endx = i;
+                            if (j > endy) endy = j;
                         }
                     }
                 }
@@ -658,12 +702,12 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
             starty += offsety;
             endy += offsety;
 
-            if (startx < 0)startx = 0;
-            if (starty < 0)starty = 0;
-            if (endx > 512 - 1)endx = 512 - 1;
-            if (endy > 512 - 1)endy = 512 - 1;
-            if (endx < startx)endx = startx;
-            if (endy < starty)endy = starty;
+            if (startx < 0) startx = 0;
+            if (starty < 0) starty = 0;
+            if (endx > 512 - 1) endx = 512 - 1;
+            if (endy > 512 - 1) endy = 512 - 1;
+            if (endx < startx) endx = startx;
+            if (endy < starty) endy = starty;
 
             startx /= realtexdetail;
             starty /= realtexdetail;
@@ -678,13 +722,15 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
                         if (bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] <= which + 4 && bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] >= which - 4) {
                             color = Random() % 85 + 170;
                             where = i * skeleton.skinsize * 3 + j * 3;
-                            if (skeleton.skinText[where + 0] > color / 2)skeleton.skinText[where + 0] = color / 2;
+                            if (skeleton.skinText[where + 0] > color / 2)
+                                skeleton.skinText[where + 0] = color / 2;
                             skeleton.skinText[where + 1] = 0;
                             skeleton.skinText[where + 2] = 0;
                         } else if (bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] <= 160 + 4 && bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] >= 160 - 4) {
                             color = Random() % 85 + 170;
                             where = i * skeleton.skinsize * 3 + j * 3;
-                            if (skeleton.skinText[where + 0] > color / 2)skeleton.skinText[where + 0] = color / 2;
+                            if (skeleton.skinText[where + 0] > color / 2)
+                                skeleton.skinText[where + 0] = color / 2;
                             skeleton.skinText[where + 1] = 0;
                             skeleton.skinText[where + 2] = 0;
                         }
@@ -696,13 +742,15 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
                         if (wolfbloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] <= which + 4 && wolfbloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] >= which - 4) {
                             color = Random() % 85 + 170;
                             where = i * skeleton.skinsize * 3 + j * 3;
-                            if (skeleton.skinText[where + 0] > color / 2)skeleton.skinText[where + 0] = color / 2;
+                            if (skeleton.skinText[where + 0] > color / 2)
+                                skeleton.skinText[where + 0] = color / 2;
                             skeleton.skinText[where + 1] = 0;
                             skeleton.skinText[where + 2] = 0;
                         } else if (wolfbloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] <= 160 + 4 && wolfbloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] >= 160 - 4) {
                             color = Random() % 85 + 170;
                             where = i * skeleton.skinsize * 3 + j * 3;
-                            if (skeleton.skinText[where + 0] > color / 2)skeleton.skinText[where + 0] = color / 2;
+                            if (skeleton.skinText[where + 0] > color / 2)
+                                skeleton.skinText[where + 0] = color / 2;
                             skeleton.skinText[where + 1] = 0;
                             skeleton.skinText[where + 2] = 0;
                         }
@@ -715,13 +763,18 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
             bleedx = coordsx * 512;
             bleedy /= realtexdetail;
             bleedx /= realtexdetail;
-            if (bleedx < 0)bleedx = 0;
-            if (bleedy < 0)bleedy = 0;
-            if (bleedx > skeleton.skinsize - 1)bleedx = skeleton.skinsize - 1;
-            if (bleedy > skeleton.skinsize - 1)bleedy = skeleton.skinsize - 1;
+            if (bleedx < 0)
+                bleedx = 0;
+            if (bleedy < 0)
+                bleedy = 0;
+            if (bleedx > skeleton.skinsize - 1)
+                bleedx = skeleton.skinsize - 1;
+            if (bleedy > skeleton.skinsize - 1)
+                bleedy = skeleton.skinsize - 1;
             direction = abs(Random() % 2) * 2 - 1;
         }
-        if (whichtri == -1)return 0;
+        if (whichtri == -1)
+            return 0;
     }
     bleeding = howmuch + (float)abs(Random() % 100) / 200 - .25;
     deathbleeding += bleeding;
@@ -731,10 +784,12 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
         if (abs(Random() % 2) == 0) {
             aitype = gethelptype;
             lastseentime = 12;
-        } else aitype = attacktypecutoff;
+        } else
+            aitype = attacktypecutoff;
         ally = 0;
     }
-    if (bleeding > 2)bleeding = 2;
+    if (bleeding > 2)
+        bleeding = 2;
     return 1;
 }
 
@@ -785,7 +840,8 @@ void Person::Reverse()
             victim->throwtogglekeydown = 1;
             weapons[victim->weaponids[0]].owner = -1;
             weapons[victim->weaponids[0]].velocity = victim->velocity * .2;
-            if (weapons[victim->weaponids[0]].velocity.x == 0)weapons[victim->weaponids[0]].velocity.x = .1;
+            if (weapons[victim->weaponids[0]].velocity.x == 0)
+                weapons[victim->weaponids[0]].velocity.x = .1;
             weapons[victim->weaponids[0]].tipvelocity = weapons[victim->weaponids[0]].velocity;
             weapons[victim->weaponids[0]].missed = 1;
             weapons[victim->weaponids[0]].freetime = 0;
@@ -794,7 +850,8 @@ void Person::Reverse()
             victim->num_weapons--;
             if (victim->num_weapons) {
                 victim->weaponids[0] = victim->weaponids[victim->num_weapons];
-                if (victim->weaponstuck == victim->num_weapons)victim->weaponstuck = 0;
+                if (victim->weaponstuck == victim->num_weapons)
+                    victim->weaponstuck = 0;
             }
 
             victim->weaponactive = -1;
@@ -813,7 +870,8 @@ void Person::Reverse()
             victim->throwtogglekeydown = 1;
             weapons[victim->weaponids[0]].owner = -1;
             weapons[victim->weaponids[0]].velocity = victim->velocity * .2;
-            if (weapons[victim->weaponids[0]].velocity.x == 0)weapons[victim->weaponids[0]].velocity.x = .1;
+            if (weapons[victim->weaponids[0]].velocity.x == 0)
+                weapons[victim->weaponids[0]].velocity.x = .1;
             weapons[victim->weaponids[0]].tipvelocity = weapons[victim->weaponids[0]].velocity;
             weapons[victim->weaponids[0]].missed = 1;
             weapons[victim->weaponids[0]].freetime = 0;
@@ -822,7 +880,8 @@ void Person::Reverse()
             victim->num_weapons--;
             if (victim->num_weapons) {
                 victim->weaponids[0] = victim->weaponids[victim->num_weapons];
-                if (victim->weaponstuck == victim->num_weapons)victim->weaponstuck = 0;
+                if (victim->weaponstuck == victim->num_weapons)
+                    victim->weaponstuck = 0;
             }
 
             victim->weaponactive = -1;
@@ -840,7 +899,8 @@ void Person::Reverse()
             victim->throwtogglekeydown = 1;
             weapons[victim->weaponids[0]].owner = -1;
             weapons[victim->weaponids[0]].velocity = victim->velocity * .2;
-            if (weapons[victim->weaponids[0]].velocity.x == 0)weapons[victim->weaponids[0]].velocity.x = .1;
+            if (weapons[victim->weaponids[0]].velocity.x == 0)
+                weapons[victim->weaponids[0]].velocity.x = .1;
             weapons[victim->weaponids[0]].tipvelocity = weapons[victim->weaponids[0]].velocity;
             weapons[victim->weaponids[0]].missed = 1;
             weapons[victim->weaponids[0]].freetime = 0;
@@ -849,7 +909,8 @@ void Person::Reverse()
             victim->num_weapons--;
             if (victim->num_weapons) {
                 victim->weaponids[0] = victim->weaponids[victim->num_weapons];
-                if (victim->weaponstuck == victim->num_weapons)victim->weaponstuck = 0;
+                if (victim->weaponstuck == victim->num_weapons)
+                    victim->weaponstuck = 0;
             }
 
             victim->weaponactive = -1;
@@ -867,7 +928,8 @@ void Person::Reverse()
             victim->throwtogglekeydown = 1;
             weapons[victim->weaponids[0]].owner = -1;
             weapons[victim->weaponids[0]].velocity = victim->velocity * .2;
-            if (weapons[victim->weaponids[0]].velocity.x == 0)weapons[victim->weaponids[0]].velocity.x = .1;
+            if (weapons[victim->weaponids[0]].velocity.x == 0)
+                weapons[victim->weaponids[0]].velocity.x = .1;
             weapons[victim->weaponids[0]].tipvelocity = weapons[victim->weaponids[0]].velocity;
             weapons[victim->weaponids[0]].missed = 1;
             weapons[victim->weaponids[0]].freetime = 0;
@@ -876,7 +938,8 @@ void Person::Reverse()
             victim->num_weapons--;
             if (victim->num_weapons) {
                 victim->weaponids[0] = victim->weaponids[victim->num_weapons];
-                if (victim->weaponstuck == victim->num_weapons)victim->weaponstuck = 0;
+                if (victim->weaponstuck == victim->num_weapons)
+                    victim->weaponstuck = 0;
             }
 
             victim->weaponactive = -1;
@@ -959,7 +1022,8 @@ void Person::Reverse()
             victim->num_weapons--;
             if (victim->num_weapons) {
                 victim->weaponids[0] = victim->weaponids[num_weapons];
-                if (victim->weaponstuck == victim->num_weapons)victim->weaponstuck = 0;
+                if (victim->weaponstuck == victim->num_weapons)
+                    victim->weaponstuck = 0;
             }
             victim->weaponactive = -1;
             for (int i = 0; i < numplayers; i++) {
@@ -970,8 +1034,10 @@ void Person::Reverse()
         if (abs(Random() % 20) == 0) {
             if (weaponactive != -1) {
                 if (weapons[victim->weaponids[0]].getType() == staff || weapons[weaponids[0]].getType() == staff) {
-                    if (weapons[victim->weaponids[0]].getType() == staff)weapons[victim->weaponids[0]].damage += .2 + float(abs(Random() % 100) - 50) / 250;
-                    if (weapons[weaponids[0]].getType() == staff)weapons[weaponids[0]].damage += .2 + float(abs(Random() % 100) - 50) / 250;
+                    if (weapons[victim->weaponids[0]].getType() == staff)
+                        weapons[victim->weaponids[0]].damage += .2 + float(abs(Random() % 100) - 50) / 250;
+                    if (weapons[weaponids[0]].getType() == staff)
+                        weapons[weaponids[0]].damage += .2 + float(abs(Random() % 100) - 50) / 250;
 
                     emit_sound_at(swordstaffsound, coords);
                 } else {
@@ -999,7 +1065,8 @@ void Person::Reverse()
             num_weapons--;
             if (num_weapons) {
                 weaponids[0] = weaponids[num_weapons];
-                if (weaponstuck == num_weapons)weaponstuck = 0;
+                if (weaponstuck == num_weapons)
+                    weaponstuck = 0;
             }
             weaponactive = -1;
             for (int i = 0; i < numplayers; i++) {
@@ -1021,7 +1088,8 @@ void Person::Reverse()
                 Normalise(&rotatetarget);
                 victim->targetyaw = -asin(0 - rotatetarget.x);
                 victim->targetyaw *= 360 / 6.28;
-                if (rotatetarget.z < 0)victim->targetyaw = 180 - victim->targetyaw;
+                if (rotatetarget.z < 0)
+                    victim->targetyaw = 180 - victim->targetyaw;
 
                 victim->targettilt2 = -asin(rotatetarget.y) * 360 / 6.28; //*-70;
 
@@ -1038,7 +1106,8 @@ void Person::Reverse()
                 Normalise(&rotatetarget);
                 victim->targetyaw = -asin(0 - rotatetarget.x);
                 victim->targetyaw *= 360 / 6.28;
-                if (rotatetarget.z < 0)victim->targetyaw = 180 - victim->targetyaw;
+                if (rotatetarget.z < 0)
+                    victim->targetyaw = 180 - victim->targetyaw;
 
                 victim->targettilt2 = -asin(rotatetarget.y) * 360 / 6.28; //*-70;
 
@@ -1051,36 +1120,54 @@ void Person::Reverse()
     velocity = 0;
     victim->velocity = 0;
 
-    if (aitype != playercontrolled)feint = 0;
-    if (aitype != playercontrolled && Random() % 3 == 0 && escapednum < 2 && difficulty == 2)feint = 1;
-    if (aitype != playercontrolled && Random() % 5 == 0 && escapednum < 2 && difficulty == 1)feint = 1;
-    if (aitype != playercontrolled && Random() % 10 == 0 && escapednum < 2 && difficulty == 0)feint = 1;
+    if (aitype != playercontrolled)
+        feint = 0;
+    if (aitype != playercontrolled && Random() % 3 == 0 && escapednum < 2 && difficulty == 2)
+        feint = 1;
+    if (aitype != playercontrolled && Random() % 5 == 0 && escapednum < 2 && difficulty == 1)
+        feint = 1;
+    if (aitype != playercontrolled && Random() % 10 == 0 && escapednum < 2 && difficulty == 0)
+        feint = 1;
 
-    if (victim->id == 0 && animation[victim->animTarget].attack == reversal)numreversals++;
+    if (victim->id == 0 && animation[victim->animTarget].attack == reversal)
+        numreversals++;
 }
 
 void Person::DoDamage(float howmuch)
 {
-    if (tutoriallevel != 1)damage += howmuch / power;
-    if (id != 0)damagedealt += howmuch / power;
-    if (id == 0)damagetaken += howmuch / power;
+    if (tutoriallevel != 1)
+        damage += howmuch / power;
+    if (id != 0)
+        damagedealt += howmuch / power;
+    if (id == 0)
+        damagetaken += howmuch / power;
 
-    if (id == 0 && (bonus == solidhit || bonus == twoxcombo || bonus == threexcombo || bonus == fourxcombo || bonus == megacombo))bonus = 0;
-    if (tutoriallevel != 1)permanentdamage += howmuch / 2 / power;
-    if (tutoriallevel != 1)superpermanentdamage += howmuch / 4 / power;
-    if (permanentdamage > damagetolerance / 2 && permanentdamage - howmuch < damagetolerance / 2 && Random() % 2)DoBlood(1, 255);
-    if ((permanentdamage > damagetolerance * .8 && Random() % 2 && !deathbleeding) || spurt)DoBlood(1, 255);
+    if (id == 0 && (bonus == solidhit || bonus == twoxcombo || bonus == threexcombo || bonus == fourxcombo || bonus == megacombo))
+        bonus = 0;
+    if (tutoriallevel != 1)
+        permanentdamage += howmuch / 2 / power;
+    if (tutoriallevel != 1)
+        superpermanentdamage += howmuch / 4 / power;
+    if (permanentdamage > damagetolerance / 2 && permanentdamage - howmuch < damagetolerance / 2 && Random() % 2)
+        DoBlood(1, 255);
+    if ((permanentdamage > damagetolerance * .8 && Random() % 2 && !deathbleeding) || spurt)
+        DoBlood(1, 255);
     spurt = 0;
-    if (id == 0)camerashake += howmuch / 100;
-    if (id == 0 && ((howmuch > 50 && damage > damagetolerance / 2)))blackout = damage / damagetolerance;
-    if (blackout > 1)blackout = 1;
+    if (id == 0)
+        camerashake += howmuch / 100;
+    if (id == 0 && ((howmuch > 50 && damage > damagetolerance / 2)))
+        blackout = damage / damagetolerance;
+    if (blackout > 1)
+        blackout = 1;
 
-    if (aitype == passivetype && damage < damagetolerance && ((tutoriallevel != 1 || cananger) && hostile))aitype = attacktypecutoff;
+    if (aitype == passivetype && damage < damagetolerance && ((tutoriallevel != 1 || cananger) && hostile))
+        aitype = attacktypecutoff;
     if (tutoriallevel != 1 && aitype != playercontrolled && damage < damagetolerance && damage > damagetolerance * 2 / 3 && creature == rabbittype) {
         if (abs(Random() % 2) == 0) {
             aitype = gethelptype;
             lastseentime = 12;
-        } else aitype = attacktypecutoff;
+        } else
+            aitype = attacktypecutoff;
         ally = 0;
     }
 
@@ -1088,10 +1175,14 @@ void Person::DoDamage(float howmuch)
         XYZ flatvelocity2;
         XYZ flatfacing2;
         for (int i = 0; i < skeleton.num_joints; i++) {
-            if (!skeleton.free)flatvelocity2 = velocity;
-            if (skeleton.free)flatvelocity2 = skeleton.joints[i].velocity;
-            if (!skeleton.free)flatfacing2 = DoRotation(DoRotation(DoRotation(skeleton.joints[i].position, 0, 0, tilt), tilt2, 0, 0), 0, yaw, 0) * scale + coords;
-            if (skeleton.free)flatfacing2 = skeleton.joints[i].position * scale + coords;
+            if (!skeleton.free)
+                flatvelocity2 = velocity;
+            if (skeleton.free)
+                flatvelocity2 = skeleton.joints[i].velocity;
+            if (!skeleton.free)
+                flatfacing2 = DoRotation(DoRotation(DoRotation(skeleton.joints[i].position, 0, 0, tilt), tilt2, 0, 0), 0, yaw, 0) * scale + coords;
+            if (skeleton.free)
+                flatfacing2 = skeleton.joints[i].position * scale + coords;
             flatvelocity2.x += (float)(abs(Random() % 100) - 50) / 10;
             flatvelocity2.y += (float)(abs(Random() % 100) - 50) / 10;
             flatvelocity2.z += (float)(abs(Random() % 100) - 50) / 10;
@@ -1122,8 +1213,10 @@ void Person::DoDamage(float howmuch)
 
             if (creature == wolftype) {
                 int i = abs(Random() % 2);
-                if (i == 0)whichsound = snarlsound;
-                if (i == 1)whichsound = snarl2sound;
+                if (i == 0)
+                    whichsound = snarlsound;
+                if (i == 1)
+                    whichsound = snarl2sound;
                 envsound[numenvsounds] = coords;
                 envsoundvol[numenvsounds] = 16;
                 envsoundlife[numenvsounds] = .4;
@@ -1131,8 +1224,10 @@ void Person::DoDamage(float howmuch)
             }
             if (creature == rabbittype) {
                 int i = abs(Random() % 2);
-                if (i == 0)whichsound = rabbitpainsound;
-                if (i == 1 && damage > damagetolerance)whichsound = rabbitpain1sound;
+                if (i == 0)
+                    whichsound = rabbitpainsound;
+                if (i == 1 && damage > damagetolerance)
+                    whichsound = rabbitpain1sound;
                 envsound[numenvsounds] = coords;
                 envsoundvol[numenvsounds] = 16;
                 envsoundlife[numenvsounds] = .4;
@@ -1165,32 +1260,47 @@ void Person::DoHead()
         while (targetheadyaw > 180)targetheadyaw -= 360;
         while (targetheadyaw < -180)targetheadyaw += 360;
 
-        if (targetheadyaw > 160)targetheadpitch = targetheadpitch * -1;
-        if (targetheadyaw < -160)targetheadpitch = targetheadpitch * -1;
-        if (targetheadyaw > 160)targetheadyaw = targetheadyaw - 180;
-        if (targetheadyaw < -160)targetheadyaw = targetheadyaw + 180;
+        if (targetheadyaw > 160)
+            targetheadpitch = targetheadpitch * -1;
+        if (targetheadyaw < -160)
+            targetheadpitch = targetheadpitch * -1;
+        if (targetheadyaw > 160)
+            targetheadyaw = targetheadyaw - 180;
+        if (targetheadyaw < -160)
+            targetheadyaw = targetheadyaw + 180;
 
-        if (targetheadpitch > 120)targetheadpitch = 120;
-        if (targetheadpitch < -120)targetheadpitch = -120;
-        if (targetheadyaw > 120)targetheadyaw = 120;
-        if (targetheadyaw < -120)targetheadyaw = -120;
+        if (targetheadpitch > 120)
+            targetheadpitch = 120;
+        if (targetheadpitch < -120)
+            targetheadpitch = -120;
+        if (targetheadyaw > 120)
+            targetheadyaw = 120;
+        if (targetheadyaw < -120)
+            targetheadyaw = -120;
 
-        if (!isIdle())targetheadpitch = 0;
+        if (!isIdle())
+            targetheadpitch = 0;
         if (isIdle()) {
-            if (targetheadyaw > 80)targetheadyaw = 80;
-            if (targetheadyaw < -80)targetheadyaw = -80;
-            if (targetheadpitch > 50)targetheadpitch = 50;
-            if (targetheadpitch < -50)targetheadpitch = -50;
+            if (targetheadyaw > 80)
+                targetheadyaw = 80;
+            if (targetheadyaw < -80)
+                targetheadyaw = -80;
+            if (targetheadpitch > 50)
+                targetheadpitch = 50;
+            if (targetheadpitch < -50)
+                targetheadpitch = -50;
         }
 
-        if (abs(headyaw - targetheadyaw) < multiplier * lookspeed)headyaw = targetheadyaw;
+        if (abs(headyaw - targetheadyaw) < multiplier * lookspeed)
+            headyaw = targetheadyaw;
         else if (headyaw > targetheadyaw) {
             headyaw -= multiplier * lookspeed;
         } else if (headyaw < targetheadyaw) {
             headyaw += multiplier * lookspeed;
         }
 
-        if (abs(headpitch - targetheadpitch) < multiplier * lookspeed / 2)headpitch = targetheadpitch;
+        if (abs(headpitch - targetheadpitch) < multiplier * lookspeed / 2)
+            headpitch = targetheadpitch;
         else if (headpitch > targetheadpitch) {
             headpitch -= multiplier * lookspeed / 2;
         } else if (headpitch < targetheadpitch) {
@@ -1234,8 +1344,10 @@ void Person::RagDoll(bool checkcollision)
     static int l, i, j;
     static float speed;
     if (!skeleton.free) {
-        if (id == 0)numfalls++;
-        if (id == 0 && isFlip())numflipfail++;
+        if (id == 0)
+            numfalls++;
+        if (id == 0 && isFlip())
+            numflipfail++;
 
         escapednum = 0;
 
@@ -1253,21 +1365,21 @@ void Person::RagDoll(bool checkcollision)
         freefall = 1;
         skeleton.freefall = 1;
 
-        if (!isnormal(velocity.x))velocity.x = 0;
-        if (!isnormal(velocity.y))velocity.y = 0;
-        if (!isnormal(velocity.z))velocity.z = 0;
-        if (!isnormal(yaw))yaw = 0;
-        if (!isnormal(coords.x))coords = 0;
-        if (!isnormal(tilt))tilt = 0;
-        if (!isnormal(tilt2))tilt2 = 0;
+        if (!isnormal(velocity.x)) velocity.x = 0;
+        if (!isnormal(velocity.y)) velocity.y = 0;
+        if (!isnormal(velocity.z)) velocity.z = 0;
+        if (!isnormal(yaw)) yaw = 0;
+        if (!isnormal(coords.x)) coords = 0;
+        if (!isnormal(tilt)) tilt = 0;
+        if (!isnormal(tilt2)) tilt2 = 0;
 
         for (i = 0; i < skeleton.num_joints; i++) {
             skeleton.joints[i].delay = 0;
             skeleton.joints[i].locked = 0;
             skeleton.joints[i].position = DoRotation(DoRotation(DoRotation(skeleton.joints[i].position, 0, 0, tilt), tilt2, 0, 0), 0, yaw, 0);
-            if (!isnormal(skeleton.joints[i].position.x))skeleton.joints[i].position = DoRotation(skeleton.joints[i].position, 0, yaw, 0);
-            if (!isnormal(skeleton.joints[i].position.x))skeleton.joints[i].position = skeleton.joints[i].position;
-            if (!isnormal(skeleton.joints[i].position.x))skeleton.joints[i].position = coords;
+            if (!isnormal(skeleton.joints[i].position.x)) skeleton.joints[i].position = DoRotation(skeleton.joints[i].position, 0, yaw, 0);
+            if (!isnormal(skeleton.joints[i].position.x)) skeleton.joints[i].position = skeleton.joints[i].position;
+            if (!isnormal(skeleton.joints[i].position.x)) skeleton.joints[i].position = coords;
             skeleton.joints[i].position.y += .1;
             skeleton.joints[i].oldposition = skeleton.joints[i].position;
             skeleton.joints[i].realoldposition = skeleton.joints[i].position * scale + coords;
@@ -1289,13 +1401,16 @@ void Person::RagDoll(bool checkcollision)
         if (animation[animCurrent].speed[frameCurrent] > animation[animTarget].speed[frameTarget]) {
             speed = animation[animCurrent].speed[frameCurrent] * 2;
         }
-        if (transspeed)speed = transspeed * 2;
+        if (transspeed)
+            speed = transspeed * 2;
 
         speed *= speedmult;
 
         for (i = 0; i < skeleton.num_joints; i++) {
-            if ((animation[animCurrent].attack != reversed || animCurrent == swordslashreversedanim) && animCurrent != rabbitkickanim && !isLanding() && !wasLanding() && animation[animCurrent].height == animation[animTarget].height)skeleton.joints[i].velocity = velocity / scale + facing * 5 + DoRotation(DoRotation(DoRotation((animation[animTarget].position[i][frameTarget] - animation[animCurrent].position[i][frameCurrent]) * speed, 0, 0, tilt), tilt2, 0, 0), 0, yaw, 0);
-            else skeleton.joints[i].velocity = velocity / scale + facing * 5;
+            if ((animation[animCurrent].attack != reversed || animCurrent == swordslashreversedanim) && animCurrent != rabbitkickanim && !isLanding() && !wasLanding() && animation[animCurrent].height == animation[animTarget].height)
+                skeleton.joints[i].velocity = velocity / scale + facing * 5 + DoRotation(DoRotation(DoRotation((animation[animTarget].position[i][frameTarget] - animation[animCurrent].position[i][frameCurrent]) * speed, 0, 0, tilt), tilt2, 0, 0), 0, yaw, 0);
+            else
+                skeleton.joints[i].velocity = velocity / scale + facing * 5;
             change.x = (float)(Random() % 100) / 100;
             change.y = (float)(Random() % 100) / 100;
             change.z = (float)(Random() % 100) / 100;
@@ -1363,7 +1478,8 @@ void Person::RagDoll(bool checkcollision)
                 num_weapons--;
                 if (num_weapons) {
                     weaponids[0] = weaponids[num_weapons];
-                    if (weaponstuck == num_weapons)weaponstuck = 0;
+                    if (weaponstuck == num_weapons)
+                        weaponstuck = 0;
                 }
                 weaponactive = -1;
                 for (i = 0; i < numplayers; i++) {
@@ -1388,43 +1504,68 @@ void Person::FootLand(int which, float opacity)
     if (opacity >= 1 || skiddelay <= 0)
         if (opacity > 1) {
             footvel = 0;
-            if (which == 0)footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position, 0, yaw, 0) * scale + coords;
-            if (which == 1)footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position, 0, yaw, 0) * scale + coords;
+            if (which == 0)
+                footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position, 0, yaw, 0) * scale + coords;
+            if (which == 1)
+                footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position, 0, yaw, 0) * scale + coords;
             //footpoint.y=coords.y;
-            if (distsq(&footpoint, &viewer))Sprite::MakeSprite(cloudsprite, footpoint, footvel, 1, 1, 1, .5, .2 * opacity);
+            if (distsq(&footpoint, &viewer))
+                Sprite::MakeSprite(cloudsprite, footpoint, footvel, 1, 1, 1, .5, .2 * opacity);
         } else if (environment == snowyenvironment && onterrain && terrain.getOpacity(coords.x, coords.z) < .2) {
             footvel = velocity / 5;
-            if (footvel.y < .8)footvel.y = .8;
-            if (which == 0)footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position, 0, yaw, 0) * scale + coords;
-            if (which == 1)footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position, 0, yaw, 0) * scale + coords;
+            if (footvel.y < .8)
+                footvel.y = .8;
+            if (which == 0)
+                footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position, 0, yaw, 0) * scale + coords;
+            if (which == 1)
+                footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position, 0, yaw, 0) * scale + coords;
             footpoint.y = terrain.getHeight(footpoint.x, footpoint.z);
             terrainlight = terrain.getLighting(footpoint.x, footpoint.z);
-            if (distsq(&footpoint, &viewer) < viewdistance * viewdistance / 4)Sprite::MakeSprite(cloudsprite, footpoint, footvel * .6, terrainlight.x, terrainlight.y, terrainlight.z, .5, .7 * opacity);
-            if (opacity >= 1 || detail == 2)if (detail == 2)if (distsq(&footpoint, &viewer) < viewdistance * viewdistance / 4)terrain.MakeDecal(footprintdecal, footpoint, .2, 1 * opacity, yaw);
+            if (distsq(&footpoint, &viewer) < viewdistance * viewdistance / 4)
+                Sprite::MakeSprite(cloudsprite, footpoint, footvel * .6, terrainlight.x, terrainlight.y, terrainlight.z, .5, .7 * opacity);
+            if (opacity >= 1 || detail == 2)
+                if (detail == 2)
+                    if (distsq(&footpoint, &viewer) < viewdistance * viewdistance / 4)
+                        terrain.MakeDecal(footprintdecal, footpoint, .2, 1 * opacity, yaw);
         } else if (environment == grassyenvironment && onterrain && terrain.getOpacity(coords.x, coords.z) < .2) {
             footvel = velocity / 5;
-            if (footvel.y < .8)footvel.y = .8;
-            if (which == 0)footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position, 0, yaw, 0) * scale + coords;
-            if (which == 1)footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position, 0, yaw, 0) * scale + coords;
+            if (footvel.y < .8)
+                footvel.y = .8;
+            if (which == 0)
+                footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position, 0, yaw, 0) * scale + coords;
+            if (which == 1)
+                footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position, 0, yaw, 0) * scale + coords;
             footpoint.y = terrain.getHeight(footpoint.x, footpoint.z);
             terrainlight = terrain.getLighting(footpoint.x, footpoint.z);
-            if (distsq(&footpoint, &viewer) < viewdistance * viewdistance / 4)Sprite::MakeSprite(cloudsprite, footpoint, footvel * .6, terrainlight.x * 90 / 255, terrainlight.y * 70 / 255, terrainlight.z * 8 / 255, .5, .5 * opacity);
+            if (distsq(&footpoint, &viewer) < viewdistance * viewdistance / 4)
+                Sprite::MakeSprite(cloudsprite, footpoint, footvel * .6, terrainlight.x * 90 / 255, terrainlight.y * 70 / 255, terrainlight.z * 8 / 255, .5, .5 * opacity);
         } else if (environment == desertenvironment && onterrain && terrain.getOpacity(coords.x, coords.z) < .2) {
             footvel = velocity / 5;
-            if (footvel.y < .8)footvel.y = .8;
-            if (which == 0)footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position, 0, yaw, 0) * scale + coords;
-            if (which == 1)footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position, 0, yaw, 0) * scale + coords;
+            if (footvel.y < .8)
+                footvel.y = .8;
+            if (which == 0)
+                footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position, 0, yaw, 0) * scale + coords;
+            if (which == 1)
+                footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position, 0, yaw, 0) * scale + coords;
             footpoint.y = terrain.getHeight(footpoint.x, footpoint.z);
             terrainlight = terrain.getLighting(footpoint.x, footpoint.z);
-            if (distsq(&footpoint, &viewer) < viewdistance * viewdistance / 4)Sprite::MakeSprite(cloudsprite, footpoint, footvel * .6, terrainlight.x * 190 / 255, terrainlight.y * 170 / 255, terrainlight.z * 108 / 255, .5, .7 * opacity);
-            if (opacity >= 1 || detail == 2)if (detail == 2)if (distsq(&footpoint, &viewer) < viewdistance * viewdistance / 4)terrain.MakeDecal(footprintdecal, footpoint, .2, .25 * opacity, yaw);
+            if (distsq(&footpoint, &viewer) < viewdistance * viewdistance / 4)
+                Sprite::MakeSprite(cloudsprite, footpoint, footvel * .6, terrainlight.x * 190 / 255, terrainlight.y * 170 / 255, terrainlight.z * 108 / 255, .5, .7 * opacity);
+            if (opacity >= 1 || detail == 2)
+                if (detail == 2)
+                    if (distsq(&footpoint, &viewer) < viewdistance * viewdistance / 4)
+                        terrain.MakeDecal(footprintdecal, footpoint, .2, .25 * opacity, yaw);
         } else if (isLanding() || animTarget == jumpupanim || isLandhard()) {
             footvel = velocity / 5;
-            if (footvel.y < .8)footvel.y = .8;
-            if (which == 0)footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position, 0, yaw, 0) * scale + coords;
-            if (which == 1)footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position, 0, yaw, 0) * scale + coords;
+            if (footvel.y < .8)
+                footvel.y = .8;
+            if (which == 0)
+                footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position, 0, yaw, 0) * scale + coords;
+            if (which == 1)
+                footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position, 0, yaw, 0) * scale + coords;
             //footpoint.y=coords.y;
-            if (distsq(&footpoint, &viewer) < viewdistance * viewdistance / 4)Sprite::MakeSprite(cloudsprite, footpoint, footvel * .6, 1, 1, 1, .5, .2 * opacity);
+            if (distsq(&footpoint, &viewer) < viewdistance * viewdistance / 4)
+                Sprite::MakeSprite(cloudsprite, footpoint, footvel * .6, 1, 1, 1, .5, .2 * opacity);
         }
 }
 
@@ -1455,7 +1596,8 @@ void	Person::DoAnimations()
         int i = 0;
         static float oldtarget;
 
-        if (isIdle() && animCurrent != getIdle())normalsupdatedelay = 0;
+        if (isIdle() && animCurrent != getIdle())
+            normalsupdatedelay = 0;
 
         if (animTarget == tempanim || animCurrent == tempanim) {
             animation[tempanim] = tempanimation;
@@ -1474,8 +1616,10 @@ void	Person::DoAnimations()
                 OPENAL_3D_SetAttributes(channels[whooshsound], gLoc, vel);
                 OPENAL_SetVolume(channels[whooshsound], 64 * findLength(&velocity) / 5);
             }
-            if (((velocity.y < -15) || (crouchkeydown && velocity.y < -8)) && abs(velocity.y) * 4 > fast_sqrt(velocity.x * velocity.x * velocity.z * velocity.z))landhard = 1;
-            if (!crouchkeydown && velocity.y >= -15)landhard = 0;
+            if (((velocity.y < -15) || (crouchkeydown && velocity.y < -8)) && abs(velocity.y) * 4 > fast_sqrt(velocity.x * velocity.x * velocity.z * velocity.z))
+                landhard = 1;
+            if (!crouchkeydown && velocity.y >= -15)
+                landhard = 0;
         }
         if ((animCurrent == jumpupanim || animTarget == jumpdownanim)/*&&velocity.y<40*/ && !isFlip() && (!isLanding() && !isLandhard()) && ((crouchkeydown && !crouchtogglekeydown))) {
             XYZ targfacing;
@@ -1484,27 +1628,35 @@ void	Person::DoAnimations()
 
             targfacing = DoRotation(targfacing, 0, targetyaw, 0);
 
-            if (normaldotproduct(targfacing, velocity) >= -.3)animTarget = flipanim;
-            else animTarget = backflipanim;
+            if (normaldotproduct(targfacing, velocity) >= -.3)
+                animTarget = flipanim;
+            else
+                animTarget = backflipanim;
             crouchtogglekeydown = 1;
             frameTarget = 0;
             target = 0;
 
-            if (id == 0)numflipped++;
+            if (id == 0)
+                numflipped++;
         }
 
-        if (animation[animTarget].attack != reversed)feint = 0;
+        if (animation[animTarget].attack != reversed)
+            feint = 0;
         if (!crouchkeydown || (isLanding() || isLandhard()) || (wasLanding() || wasLandhard())) {
             crouchtogglekeydown = 0;
-            if (aitype == playercontrolled)feint = 0;
+            if (aitype == playercontrolled)
+                feint = 0;
         } else {
-            if (!crouchtogglekeydown && animation[animTarget].attack == reversed && aitype == playercontrolled && (escapednum < 2 || reversaltrain))feint = 1;
-            if (!isFlip())crouchtogglekeydown = 1;
+            if (!crouchtogglekeydown && animation[animTarget].attack == reversed && aitype == playercontrolled && (escapednum < 2 || reversaltrain))
+                feint = 1;
+            if (!isFlip())
+                crouchtogglekeydown = 1;
         }
 
 
         if (animation[animTarget].attack || animCurrent == getupfrombackanim || animCurrent == getupfromfrontanim) {
-            if (detail)normalsupdatedelay = 0;
+            if (detail)
+                normalsupdatedelay = 0;
         }
 
         if (target >= 1) {
@@ -1517,15 +1669,19 @@ void	Person::DoAnimations()
 
             if (animTarget == rabbittacklinganim && frameTarget == 1) {
                 //if(victim->aitype==attacktypecutoff&&Random()%2==0&&victim->stunned<=0&&animation[victim->animTarget].attack==neutral&&victim->id!=0)Reverse();
-                if (victim->aitype == attacktypecutoff && victim->stunned <= 0 && victim->surprised <= 0 && victim->id != 0)Reverse();
+                if (victim->aitype == attacktypecutoff && victim->stunned <= 0 && victim->surprised <= 0 && victim->id != 0)
+                    Reverse();
                 if (animTarget == rabbittacklinganim && frameTarget == 1 && !victim->isCrouch() && victim->animTarget != backhandspringanim) {
-                    if (normaldotproduct(victim->facing, facing) > 0)victim->animTarget = rabbittackledbackanim;
-                    else victim->animTarget = rabbittackledfrontanim;
+                    if (normaldotproduct(victim->facing, facing) > 0)
+                        victim->animTarget = rabbittackledbackanim;
+                    else
+                        victim->animTarget = rabbittackledfrontanim;
                     victim->frameTarget = 2;
                     victim->target = 0;
                     victim->yaw = yaw;
                     victim->targetyaw = yaw;
-                    if (victim->aitype == gethelptype)victim->DoDamage(victim->damagetolerance - victim->damage);
+                    if (victim->aitype == gethelptype)
+                        victim->DoDamage(victim->damagetolerance - victim->damage);
                     //victim->DoDamage(30);
                     if (creature == wolftype) {
                         DoBloodBig(0, 255);
@@ -1540,8 +1696,10 @@ void	Person::DoAnimations()
 
             if (!drawtogglekeydown && drawkeydown && (weaponactive == -1 || num_weapons == 1) && (animation[animTarget].label[frameTarget] || (animTarget != animCurrent && animCurrent == rollanim)) && num_weapons > 0 && creature != wolftype) {
                 if (weapons[weaponids[0]].getType() == knife) {
-                    if (weaponactive == -1)weaponactive = 0;
-                    else if (weaponactive == 0)weaponactive = -1;
+                    if (weaponactive == -1)
+                        weaponactive = 0;
+                    else if (weaponactive == 0)
+                        weaponactive = -1;
 
                     if (weaponactive == -1) {
                         emit_sound_at(knifesheathesound, coords);
@@ -1558,10 +1716,14 @@ void	Person::DoAnimations()
                     int whichsound;
                     if (onterrain) {
                         if (terrain.getOpacity(coords.x, coords.z) < .2) {
-                            if (animation[animTarget].label[frameTarget] == 1)whichsound = footstepsound;
-                            else whichsound = footstepsound2;
-                            if (animation[animTarget].label[frameTarget] == 1)FootLand(0, 1);
-                            if (animation[animTarget].label[frameTarget] == 2)FootLand(1, 1);
+                            if (animation[animTarget].label[frameTarget] == 1)
+                                whichsound = footstepsound;
+                            else
+                                whichsound = footstepsound2;
+                            if (animation[animTarget].label[frameTarget] == 1)
+                                FootLand(0, 1);
+                            if (animation[animTarget].label[frameTarget] == 2)
+                                FootLand(1, 1);
                             if (animation[animTarget].label[frameTarget] == 3 && isRun()) {
                                 FootLand(1, 1);
                                 FootLand(0, 1);
@@ -1569,32 +1731,44 @@ void	Person::DoAnimations()
 
                         }
                         if (terrain.getOpacity(coords.x, coords.z) >= .2) {
-                            if (animation[animTarget].label[frameTarget] == 1)whichsound = footstepsound3;
-                            else whichsound = footstepsound4;
+                            if (animation[animTarget].label[frameTarget] == 1)
+                                whichsound = footstepsound3;
+                            else
+                                whichsound = footstepsound4;
                         }
                     }
                     if (!onterrain) {
-                        if (animation[animTarget].label[frameTarget] == 1)whichsound = footstepsound3;
-                        else whichsound = footstepsound4;
+                        if (animation[animTarget].label[frameTarget] == 1)
+                            whichsound = footstepsound3;
+                        else
+                            whichsound = footstepsound4;
                     }
                     if (animation[animTarget].label[frameTarget] == 4 && (weaponactive == -1 || (animTarget != knifeslashstartanim && animTarget != knifethrowanim && animTarget != crouchstabanim && animTarget != swordgroundstabanim && animTarget != knifefollowanim))) {
                         if (animation[animTarget].attack != neutral) {
                             i = abs(Random() % 3);
-                            if (i == 0)whichsound = lowwhooshsound;
-                            if (i == 1)whichsound = midwhooshsound;
-                            if (i == 2)whichsound = highwhooshsound;
+                            if (i == 0)
+                                whichsound = lowwhooshsound;
+                            if (i == 1)
+                                whichsound = midwhooshsound;
+                            if (i == 2)
+                                whichsound = highwhooshsound;
                         }
-                        if (animation[animTarget].attack == neutral)whichsound = movewhooshsound;
-                    } else if (animation[animTarget].label[frameTarget] == 4)whichsound = knifeswishsound;
-                    if (animation[animTarget].label[frameTarget] == 8 && tutoriallevel != 1)whichsound = landsound2;
+                        if (animation[animTarget].attack == neutral)
+                            whichsound = movewhooshsound;
+                    } else if (animation[animTarget].label[frameTarget] == 4)
+                        whichsound = knifeswishsound;
+                    if (animation[animTarget].label[frameTarget] == 8 && tutoriallevel != 1)
+                        whichsound = landsound2;
 
                     emit_sound_at(whichsound, coords, 256.);
 
                     if (id == 0)
                         if (whichsound == footstepsound || whichsound == footstepsound2 || whichsound == footstepsound3 || whichsound == footstepsound4) {
                             envsound[numenvsounds] = coords;
-                            if (animTarget == wolfrunninganim || animTarget == rabbitrunninganim)envsoundvol[numenvsounds] = 15;
-                            else envsoundvol[numenvsounds] = 6;
+                            if (animTarget == wolfrunninganim || animTarget == rabbitrunninganim)
+                                envsoundvol[numenvsounds] = 15;
+                            else
+                                envsoundvol[numenvsounds] = 6;
                             envsoundlife[numenvsounds] = .4;
                             numenvsounds++;
                         }
@@ -1615,16 +1789,16 @@ void	Person::DoAnimations()
                                 if (animation[animTarget].attack != neutral) {
                                     i = abs(Random() % 4);
                                     if (creature == rabbittype) {
-                                        if (i == 0)whichsound = rabbitattacksound;
-                                        if (i == 1)whichsound = rabbitattack2sound;
-                                        if (i == 2)whichsound = rabbitattack3sound;
-                                        if (i == 3)whichsound = rabbitattack4sound;
+                                        if (i == 0) whichsound = rabbitattacksound;
+                                        if (i == 1) whichsound = rabbitattack2sound;
+                                        if (i == 2) whichsound = rabbitattack3sound;
+                                        if (i == 3) whichsound = rabbitattack4sound;
                                     }
                                     if (creature == wolftype) {
-                                        if (i == 0)whichsound = barksound;
-                                        if (i == 1)whichsound = bark2sound;
-                                        if (i == 2)whichsound = bark3sound;
-                                        if (i == 3)whichsound = barkgrowlsound;
+                                        if (i == 0) whichsound = barksound;
+                                        if (i == 1) whichsound = bark2sound;
+                                        if (i == 2) whichsound = bark3sound;
+                                        if (i == 3) whichsound = barkgrowlsound;
                                     }
                                     speechdelay = .3;
                                 }
@@ -1678,7 +1852,8 @@ void	Person::DoAnimations()
                     if (weapons[i].owner != -1)
                         if (player[weapons[i].owner].weaponstuck != -1)
                             if (player[weapons[i].owner].weaponids[player[weapons[i].owner].weaponstuck] == i)
-                                if (player[weapons[i].owner].num_weapons > 1)willwork = 0;
+                                if (player[weapons[i].owner].num_weapons > 1)
+                                    willwork = 0;
                     if ((weapons[i].owner == -1) || (hasvictim && weapons[i].owner == victim->id && victim->skeleton.free))
                         if (willwork && distsqflat(&coords, &weapons[i].position) < 3 && weaponactive == -1) {
                             if (distsq(&coords, &weapons[i].position) < 1 || hasvictim) {
@@ -1700,8 +1875,10 @@ void	Person::DoAnimations()
                                 if (weapons[i].owner != -1) {
 
                                     victim = &player[weapons[i].owner];
-                                    if (victim->num_weapons == 1)victim->num_weapons = 0;
-                                    else victim->num_weapons = 1;
+                                    if (victim->num_weapons == 1)
+                                        victim->num_weapons = 0;
+                                    else
+                                        victim->num_weapons = 1;
 
                                     //victim->weaponactive=-1;
                                     victim->skeleton.longdead = 0;
@@ -1722,14 +1899,16 @@ void	Person::DoAnimations()
                                     footpoint = weapons[i].position;
                                     if (victim->weaponstuck != -1) {
                                         if (victim->weaponids[victim->weaponstuck] == i) {
-                                            if (bloodtoggle)Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 0, 0, .8, .3);
+                                            if (bloodtoggle)
+                                                Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 0, 0, .8, .3);
                                             weapons[i].bloody = 2;
                                             weapons[i].blooddrip = 5;
                                             victim->weaponstuck = -1;
                                         }
                                     }
                                     if (victim->num_weapons > 0) {
-                                        if (victim->weaponstuck != 0 && victim->weaponstuck != -1)victim->weaponstuck = 0;
+                                        if (victim->weaponstuck != 0 && victim->weaponstuck != -1)
+                                            victim->weaponstuck = 0;
                                         if (victim->weaponids[0] == i)
                                             victim->weaponids[0] = victim->weaponids[victim->num_weapons];
                                     }
@@ -1751,7 +1930,8 @@ void	Person::DoAnimations()
             }
 
             if (animCurrent == drawleftanim && animation[animTarget].label[frameCurrent] == 5) {
-                if (weaponactive == -1)weaponactive = 0;
+                if (weaponactive == -1)
+                    weaponactive = 0;
                 else if (weaponactive == 0) {
                     weaponactive = -1;
                     if (num_weapons == 2) {
@@ -1775,18 +1955,24 @@ void	Person::DoAnimations()
                 Normalise(&rotatetarget);
                 targetyaw = -asin(0 - rotatetarget.x);
                 targetyaw *= 360 / 6.28;
-                if (rotatetarget.z < 0)targetyaw = 180 - targetyaw;
+                if (rotatetarget.z < 0)
+                    targetyaw = 180 - targetyaw;
 
-                if (animTarget == walljumprightkickanim)targetyaw += 40;
-                if (animTarget == walljumpleftkickanim)targetyaw -= 40;
+                if (animTarget == walljumprightkickanim)
+                    targetyaw += 40;
+                if (animTarget == walljumpleftkickanim)
+                    targetyaw -= 40;
             }
 
             bool dojumpattack;
             dojumpattack = 0;
-            if ((animTarget == rabbitrunninganim || animTarget == wolfrunninganim) && frameTarget == 3 && (jumpkeydown || attackkeydown || id != 0))dojumpattack = 1;
+            if ((animTarget == rabbitrunninganim || animTarget == wolfrunninganim) && frameTarget == 3 && (jumpkeydown || attackkeydown || id != 0))
+                dojumpattack = 1;
             if (hasvictim)
-                if (distsq(&victim->coords, &/*player[i].*/coords) < 5 && victim->aitype == gethelptype && (attackkeydown) && !victim->skeleton.free && victim->isRun() && victim->runninghowlong >= 1)dojumpattack = 1;
-            if (!hostile)dojumpattack = 0;
+                if (distsq(&victim->coords, &/*player[i].*/coords) < 5 && victim->aitype == gethelptype && (attackkeydown) && !victim->skeleton.free && victim->isRun() && victim->runninghowlong >= 1)
+                    dojumpattack = 1;
+            if (!hostile)
+                dojumpattack = 0;
             if (dojumpattack) {
                 if ((animTarget == rabbitrunninganim || animTarget == wolfrunninganim) && id == 0) {
                     animTarget = rabbittackleanim;
@@ -1824,7 +2010,8 @@ void	Person::DoAnimations()
                             Normalise(&rotatetarget);
                             targetyaw = -asin(0 - rotatetarget.x);
                             targetyaw *= 360 / 6.28;
-                            if (rotatetarget.z < 0)targetyaw = 180 - targetyaw;
+                            if (rotatetarget.z < 0)
+                                targetyaw = 180 - targetyaw;
                         }
                         if (animTarget != rabbitrunninganim) {
                             emit_sound_at(jumpsound, coords, 128.);
@@ -1834,7 +2021,8 @@ void	Person::DoAnimations()
 
             //Move impacts
             float damagemult = 1 * power;
-            if (creature == wolftype)damagemult = 2.5 * power;
+            if (creature == wolftype)
+                damagemult = 2.5 * power;
             if (hasvictim) {
                 damagemult /= victim->damagetolerance / 200;
             }
@@ -1843,11 +2031,13 @@ void	Person::DoAnimations()
                 if (animTarget == spinkickanim && animation[animTarget].label[frameCurrent] == 5) {
                     if (distsq(&coords, &victim->coords) < (scale * 5) * (scale * 5) * 3 && 3 && animation[victim->animTarget].height != lowheight) {
                         escapednum = 0;
-                        if (id == 0)camerashake += .4;
+                        if (id == 0)
+                            camerashake += .4;
                         if (Random() % 2 || creature == wolftype) {
                             victim->spurt = 1;
                             DoBlood(.2, 250);
-                            if (creature == wolftype)DoBloodBig(0, 250);
+                            if (creature == wolftype)
+                                DoBloodBig(0, 250);
                         }
                         if (tutoriallevel != 1) {
                             emit_sound_at(heavyimpactsound, victim->coords, 128.);
@@ -1878,10 +2068,12 @@ void	Person::DoAnimations()
                 if (animTarget == wolfslapanim && animation[animTarget].label[frameCurrent] == 5) {
                     if (distsq(&coords, &victim->coords) < (scale * 5) * (scale * 5) * 3 && 3 && animation[victim->animTarget].height != lowheight) {
                         escapednum = 0;
-                        if (id == 0)camerashake += .4;
+                        if (id == 0)
+                            camerashake += .4;
                         if (Random() % 2 || creature == wolftype) {
                             victim->spurt = 1;
-                            if (creature == wolftype)DoBloodBig(0, 235);
+                            if (creature == wolftype)
+                                DoBloodBig(0, 235);
                         }
                         emit_sound_at(whooshhitsound, victim->coords);
                         if (creature == wolftype) {
@@ -1910,7 +2102,8 @@ void	Person::DoAnimations()
                 if (animTarget == walljumprightkickanim && animation[animTarget].label[frameCurrent] == 5) {
                     if (distsq(&coords, &victim->coords) < (scale * 5) * (scale * 5) * 3 && animation[victim->animTarget].height != lowheight) {
                         escapednum = 0;
-                        if (id == 0)camerashake += .4;
+                        if (id == 0)
+                            camerashake += .4;
                         victim->spurt = 1;
                         DoBlood(.2, 250);
                         if (tutoriallevel != 1) {
@@ -1945,7 +2138,8 @@ void	Person::DoAnimations()
                 if (animTarget == walljumpleftkickanim && animation[animTarget].label[frameCurrent] == 5) {
                     if (distsq(&coords, &victim->coords) < (scale * 5) * (scale * 5) * 3 && animation[victim->animTarget].height != lowheight) {
                         escapednum = 0;
-                        if (id == 0)camerashake += .4;
+                        if (id == 0)
+                            camerashake += .4;
                         victim->spurt = 1;
                         DoBlood(.2, 250);
                         if (tutoriallevel != 1) {
@@ -1980,7 +2174,8 @@ void	Person::DoAnimations()
                 if (animTarget == blockhighleftstrikeanim && animation[animTarget].label[frameCurrent] == 5) {
                     if (distsq(&coords, &victim->coords) < (scale * 5) * (scale * 5) * 3 && animation[victim->animTarget].height != lowheight) {
                         escapednum = 0;
-                        if (id == 0)camerashake += .4;
+                        if (id == 0)
+                            camerashake += .4;
                         if (Random() % 2) {
                             victim->spurt = 1;
                             DoBlood(.2, 235);
@@ -2004,7 +2199,8 @@ void	Person::DoAnimations()
                 if (animTarget == killanim && animation[animTarget].label[frameCurrent] == 8) {
                     if (distsq(&coords, &victim->coords) < (scale * 5) * (scale * 5) * 3 && victim->dead) {
                         escapednum = 0;
-                        if (id == 0)camerashake += .2;
+                        if (id == 0)
+                            camerashake += .2;
                         emit_sound_at(whooshhitsound, victim->coords, 128.);
 
                         victim->skeleton.longdead = 0;
@@ -2037,7 +2233,8 @@ void	Person::DoAnimations()
                 if (animTarget == killanim && animation[animTarget].label[frameCurrent] == 5) {
                     if (distsq(&coords, &victim->coords) < (scale * 5) * (scale * 5) * 9 && victim->dead) {
                         escapednum = 0;
-                        if (id == 0)camerashake += .4;
+                        if (id == 0)
+                            camerashake += .4;
                         if (tutoriallevel != 1) {
                             emit_sound_at(heavyimpactsound, coords, 128.);
                         }
@@ -2061,7 +2258,8 @@ void	Person::DoAnimations()
                 if (animTarget == dropkickanim && animation[animTarget].label[frameCurrent] == 7) {
                     if (distsq(&coords, &victim->coords) < (scale * 5) * (scale * 5) * 9 && victim->skeleton.free) {
                         escapednum = 0;
-                        if (id == 0)camerashake += .4;
+                        if (id == 0)
+                            camerashake += .4;
                         if (tutoriallevel != 1) {
                             emit_sound_at(thudsound, coords);
                         }
@@ -2091,7 +2289,8 @@ void	Person::DoAnimations()
                         victim->DoDamage(damagemult * 20 / victim->protectionhigh);
                         victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].velocity += relative * damagemult * 200;
                         staggerdelay = .5;
-                        if (!victim->dead)staggerdelay = 1.2;
+                        if (!victim->dead)
+                            staggerdelay = 1.2;
 
 
                     }
@@ -2101,7 +2300,8 @@ void	Person::DoAnimations()
                     //if(id==0)camerashake+=.4;
 
                     if (hasvictim)
-                        if (!victim->skeleton.free)hasvictim = 0;
+                        if (!victim->skeleton.free)
+                            hasvictim = 0;
 
                     if (!hasvictim) {
                         terrain.MakeDecal(blooddecalfast, (weapons[weaponids[weaponactive]].tippoint * .8 + weapons[weaponids[weaponactive]].position * .2), .08, .6, Random() % 360);
@@ -2117,7 +2317,8 @@ void	Person::DoAnimations()
                             if (weapons[weaponids[weaponactive]].getType() == knife) {
                                 where = (weapons[weaponids[weaponactive]].tippoint * .6 + weapons[weaponids[weaponactive]].position * .4);
                                 where -= victim->coords;
-                                if (!victim->skeleton.free)where = DoRotation(where, 0, -victim->yaw, 0);
+                                if (!victim->skeleton.free)
+                                    where = DoRotation(where, 0, -victim->yaw, 0);
                                 //where=scale;
                                 startpoint = where;
                                 startpoint.y += 100;
@@ -2127,21 +2328,25 @@ void	Person::DoAnimations()
                             if (weapons[weaponids[weaponactive]].getType() == sword) {
                                 where = weapons[weaponids[weaponactive]].position;
                                 where -= victim->coords;
-                                if (!victim->skeleton.free)where = DoRotation(where, 0, -victim->yaw, 0);
+                                if (!victim->skeleton.free)
+                                    where = DoRotation(where, 0, -victim->yaw, 0);
                                 startpoint = where;
                                 where = weapons[weaponids[weaponactive]].tippoint;
                                 where -= victim->coords;
-                                if (!victim->skeleton.free)where = DoRotation(where, 0, -victim->yaw, 0);
+                                if (!victim->skeleton.free)
+                                    where = DoRotation(where, 0, -victim->yaw, 0);
                                 endpoint = where;
                             }
                             if (weapons[weaponids[weaponactive]].getType() == staff) {
                                 where = weapons[weaponids[weaponactive]].position;
                                 where -= victim->coords;
-                                if (!victim->skeleton.free)where = DoRotation(where, 0, -victim->yaw, 0);
+                                if (!victim->skeleton.free)
+                                    where = DoRotation(where, 0, -victim->yaw, 0);
                                 startpoint = where;
                                 where = weapons[weaponids[weaponactive]].tippoint;
                                 where -= victim->coords;
-                                if (!victim->skeleton.free)where = DoRotation(where, 0, -victim->yaw, 0);
+                                if (!victim->skeleton.free)
+                                    where = DoRotation(where, 0, -victim->yaw, 0);
                                 endpoint = where;
                             }
                             movepoint = 0;
@@ -2154,7 +2359,8 @@ void	Person::DoAnimations()
                                     if (!victim->dead)
                                         award_bonus(id, FinishedBonus);
                                 }
-                                if (bloodtoggle)weapons[weaponids[weaponactive]].bloody = 2;
+                                if (bloodtoggle)
+                                    weapons[weaponids[weaponactive]].bloody = 2;
 
                                 victim->skeleton.longdead = 0;
                                 victim->skeleton.free = 1;
@@ -2200,11 +2406,13 @@ void	Person::DoAnimations()
 
                             where = weapons[weaponids[weaponactive]].position;
                             where -= victim->coords;
-                            if (!victim->skeleton.free)where = DoRotation(where, 0, -victim->yaw, 0);
+                            if (!victim->skeleton.free)
+                                where = DoRotation(where, 0, -victim->yaw, 0);
                             startpoint = where;
                             where = weapons[weaponids[weaponactive]].tippoint;
                             where -= victim->coords;
-                            if (!victim->skeleton.free)where = DoRotation(where, 0, -victim->yaw, 0);
+                            if (!victim->skeleton.free)
+                                where = DoRotation(where, 0, -victim->yaw, 0);
                             endpoint = where;
 
                             movepoint = 0;
@@ -2223,11 +2431,13 @@ void	Person::DoAnimations()
 
                             where = weapons[weaponids[weaponactive]].position;
                             where -= victim->coords;
-                            if (!victim->skeleton.free)where = DoRotation(where, 0, -victim->yaw, 0);
+                            if (!victim->skeleton.free)
+                                where = DoRotation(where, 0, -victim->yaw, 0);
                             startpoint = where;
                             where = weapons[weaponids[weaponactive]].tippoint;
                             where -= victim->coords;
-                            if (!victim->skeleton.free)where = DoRotation(where, 0, -victim->yaw, 0);
+                            if (!victim->skeleton.free)
+                                where = DoRotation(where, 0, -victim->yaw, 0);
                             endpoint = where;
 
                             movepoint = 0;
@@ -2257,7 +2467,8 @@ void	Person::DoAnimations()
                                 relative.y = 10;
                                 Normalise(&relative);
                                 //victim->Puff(abdomen);
-                                if (bloodtoggle)Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 0, 0, .8, .3);
+                                if (bloodtoggle)
+                                    Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 0, 0, .8, .3);
 
                                 if (victim->bloodloss < victim->damagetolerance) {
                                     victim->bloodloss += 1000;
@@ -2277,7 +2488,8 @@ void	Person::DoAnimations()
                 if (animTarget == upunchanim && animation[animTarget].label[frameCurrent] == 5) {
                     if (distsq(&coords, &victim->coords) < (scale * 5) * (scale * 5) * 3) {
                         escapednum = 0;
-                        if (id == 0)camerashake += .4;
+                        if (id == 0)
+                            camerashake += .4;
                         if (Random() % 2) {
                             victim->spurt = 1;
                             DoBlood(.2, 235);
@@ -2314,7 +2526,8 @@ void	Person::DoAnimations()
                 if (animTarget == winduppunchanim && animation[animTarget].label[frameCurrent] == 5) {
                     if (distsq(&coords, &victim->coords) < (scale * 5) * (scale * 5) * 2) {
                         escapednum = 0;
-                        if (id == 0)camerashake += .4;
+                        if (id == 0)
+                            camerashake += .4;
                         if (victim->damage <= victim->damagetolerance - 60 && normaldotproduct(victim->facing, victim->coords - coords) < (scale * 5) * (scale * 5) * 0 && animation[victim->animTarget].height != lowheight) {
                             if (tutoriallevel != 1) {
                                 emit_sound_at(thudsound, victim->coords);
@@ -2357,7 +2570,8 @@ void	Person::DoAnimations()
 
                 if (animTarget == blockhighleftanim && animation[animTarget].label[frameCurrent] == 5) {
                     if (distsq(&coords, &victim->coords) < (scale * 5) * (scale * 5) * 4) {
-                        if (victim->id == 0)camerashake += .4;
+                        if (victim->id == 0)
+                            camerashake += .4;
                         emit_sound_at(landsound2, victim->coords);
 
                         Puff(righthand);
@@ -2366,12 +2580,15 @@ void	Person::DoAnimations()
 
                 if (animTarget == swordslashparryanim && animation[animTarget].label[frameCurrent] == 5) {
                     if (distsq(&coords, &victim->coords) < (scale * 5) * (scale * 5) * 4) {
-                        if (victim->id == 0)camerashake += .4;
+                        if (victim->id == 0)
+                            camerashake += .4;
 
                         if (weaponactive != -1) {
                             if (weapons[victim->weaponids[0]].getType() == staff || weapons[weaponids[0]].getType() == staff) {
-                                if (weapons[victim->weaponids[0]].getType() == staff)weapons[victim->weaponids[0]].damage += .2 + float(abs(Random() % 100) - 50) / 250;
-                                if (weapons[weaponids[0]].getType() == staff)weapons[weaponids[0]].damage += .2 + float(abs(Random() % 100) - 50) / 250;
+                                if (weapons[victim->weaponids[0]].getType() == staff)
+                                    weapons[victim->weaponids[0]].damage += .2 + float(abs(Random() % 100) - 50) / 250;
+                                if (weapons[weaponids[0]].getType() == staff)
+                                    weapons[weaponids[0]].damage += .2 + float(abs(Random() % 100) - 50) / 250;
 
                                 emit_sound_at(swordstaffsound, victim->coords);
                             } else {
@@ -2412,7 +2629,8 @@ void	Person::DoAnimations()
                     if (hasvictim)
                         if (distsq(&coords, &victim->coords) < (scale * 5) * (scale * 5) * 4.5 &&/*animation[victim->animTarget].height!=lowheight&&*/victim->animTarget != dodgebackanim && victim->animTarget != rollanim) {
                             escapednum = 0;
-                            if (tutoriallevel != 1)victim->DoBloodBig(1.5 / victim->armorhigh, 225);
+                            if (tutoriallevel != 1)
+                                victim->DoBloodBig(1.5 / victim->armorhigh, 225);
 
                             award_bonus(id, Slicebonus);
                             if (tutoriallevel != 1) {
@@ -2429,10 +2647,14 @@ void	Person::DoAnimations()
                             }
                             victim->lowreversaldelay = 0;
                             victim->highreversaldelay = 0;
-                            if (aitype != playercontrolled)weaponmissdelay = .6;
+                            if (aitype != playercontrolled)
+                                weaponmissdelay = .6;
 
-                            if (tutoriallevel != 1)if (bloodtoggle && !weapons[weaponids[weaponactive]].bloody)weapons[weaponids[weaponactive]].bloody = 1;
-                            if (tutoriallevel != 1)weapons[weaponids[weaponactive]].blooddrip += 3;
+                            if (tutoriallevel != 1)
+                                if (bloodtoggle && !weapons[weaponids[weaponactive]].bloody)
+                                    weapons[weaponids[weaponactive]].bloody = 1;
+                            if (tutoriallevel != 1)
+                                weapons[weaponids[weaponactive]].blooddrip += 3;
 
                             XYZ footvel, footpoint;
                             footvel = 0;
@@ -2443,7 +2665,8 @@ void	Person::DoAnimations()
                                 footpoint = DoRotation((victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].position + victim->skeleton.joints[victim->skeleton.jointlabels[neck]].position) / 2, 0, victim->yaw, 0) * victim->scale + victim->coords;
                             }
                             if (tutoriallevel != 1) {
-                                if (bloodtoggle)Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 0, 0, .6, .3);
+                                if (bloodtoggle)
+                                    Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 0, 0, .6, .3);
                                 footvel = DoRotation(facing, 0, 90, 0) * .8;
                                 //footvel.y-=.3;
                                 Sprite::MakeSprite(bloodsprite, footpoint, DoRotation(footvel * 7, (float)(Random() % 20), (float)(Random() % 20), 0), 1, 1, 1, .05, .9);
@@ -2463,8 +2686,10 @@ void	Person::DoAnimations()
                             award_bonus(id, Slashbonus);
                             escapednum = 0;
                             if (tutoriallevel != 1) {
-                                if (normaldotproduct(victim->facing, victim->coords - coords) < 0)victim->DoBloodBig(2 / victim->armorhigh, 190);
-                                else victim->DoBloodBig(2 / victim->armorhigh, 185);
+                                if (normaldotproduct(victim->facing, victim->coords - coords) < 0)
+                                    victim->DoBloodBig(2 / victim->armorhigh, 190);
+                                else
+                                    victim->DoBloodBig(2 / victim->armorhigh, 185);
                                 victim->deathbleeding = 1;
                                 emit_sound_at(swordslicesound, victim->coords);
                             }
@@ -2477,7 +2702,8 @@ void	Person::DoAnimations()
                             }
 
                             if (tutoriallevel != 1) {
-                                if (bloodtoggle && !weapons[weaponids[weaponactive]].bloody)weapons[weaponids[weaponactive]].bloody = 1;
+                                if (bloodtoggle && !weapons[weaponids[weaponactive]].bloody)
+                                    weapons[weaponids[weaponactive]].bloody = 1;
                                 weapons[weaponids[weaponactive]].blooddrip += 3;
 
                                 float bloodlossamount;
@@ -2494,7 +2720,8 @@ void	Person::DoAnimations()
                                 if (!skeleton.free) {
                                     footpoint = DoRotation((victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].position + victim->skeleton.joints[victim->skeleton.jointlabels[neck]].position) / 2, 0, victim->yaw, 0) * victim->scale + victim->coords;
                                 }
-                                if (bloodtoggle)Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 0, 0, .9, .3);
+                                if (bloodtoggle)
+                                    Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 0, 0, .9, .3);
                                 footvel = DoRotation(facing, 0, 90, 0) * .8;
                                 footvel.y -= .3;
                                 Sprite::MakeSprite(bloodsprite, footpoint, DoRotation(footvel * 7, (float)(Random() % 20), (float)(Random() % 20), 0), 1, 1, 1, .05, .9);
@@ -2505,8 +2732,10 @@ void	Person::DoAnimations()
                         } else {
                             if (victim->weaponactive != -1) {
                                 if (weapons[victim->weaponids[0]].getType() == staff || weapons[weaponids[0]].getType() == staff) {
-                                    if (weapons[victim->weaponids[0]].getType() == staff)weapons[victim->weaponids[0]].damage += .2 + float(abs(Random() % 100) - 50) / 250;
-                                    if (weapons[weaponids[0]].getType() == staff)weapons[weaponids[0]].damage += .2 + float(abs(Random() % 100) - 50) / 250;
+                                    if (weapons[victim->weaponids[0]].getType() == staff)
+                                        weapons[victim->weaponids[0]].damage += .2 + float(abs(Random() % 100) - 50) / 250;
+                                    if (weapons[weaponids[0]].getType() == staff)
+                                        weapons[weaponids[0]].damage += .2 + float(abs(Random() % 100) - 50) / 250;
 
                                     emit_sound_at(swordstaffsound, victim->coords);
                                 } else {
@@ -2535,7 +2764,8 @@ void	Person::DoAnimations()
                             victim->num_weapons--;
                             if (victim->num_weapons) {
                                 victim->weaponids[0] = victim->weaponids[num_weapons];
-                                if (victim->weaponstuck == victim->num_weapons)victim->weaponstuck = 0;
+                                if (victim->weaponstuck == victim->num_weapons)
+                                    victim->weaponstuck = 0;
                             }
                             victim->weaponactive = -1;
                             for (i = 0; i < numplayers; i++) {
@@ -2551,7 +2781,8 @@ void	Person::DoAnimations()
                         if (tutoriallevel != 1) {
                             weapons[weaponids[0]].damage += .4 + float(abs(Random() % 100) - 50) / 250;
                             escapednum = 0;
-                            if (id == 0)camerashake += .4;
+                            if (id == 0)
+                                camerashake += .4;
                             if (Random() % 2 || creature == wolftype) {
                                 victim->spurt = 1;
                             }
@@ -2585,7 +2816,8 @@ void	Person::DoAnimations()
                         if (tutoriallevel != 1) {
                             weapons[weaponids[0]].damage += .6 + float(abs(Random() % 100) - 50) / 250;
                             escapednum = 0;
-                            if (id == 0)camerashake += .4;
+                            if (id == 0)
+                                camerashake += .4;
                             if (Random() % 2 || creature == wolftype) {
                                 victim->spurt = 1;
                             }
@@ -2616,8 +2848,10 @@ void	Person::DoAnimations()
                     if (distsq(&coords, &victim->coords) < (scale * 5) * (scale * 5) * 6.5) {
                         escapednum = 0;
                         if (tutoriallevel != 1) {
-                            if (!victim->dead)weapons[weaponids[0]].damage += .4 + float(abs(Random() % 100) - 50) / 500;
-                            if (id == 0)camerashake += .4;
+                            if (!victim->dead)
+                                weapons[weaponids[0]].damage += .4 + float(abs(Random() % 100) - 50) / 500;
+                            if (id == 0)
+                                camerashake += .4;
                             if (Random() % 2 || creature == wolftype) {
                                 victim->spurt = 1;
                             }
@@ -2670,7 +2904,8 @@ void	Person::DoAnimations()
                 if (animTarget == lowkickanim && animation[animTarget].label[frameCurrent] == 5) {
                     if (distsq(&coords, &victim->coords) < (scale * 5) * (scale * 5) * 3 && animation[victim->animTarget].height != highheight) {
                         escapednum = 0;
-                        if (id == 0)camerashake += .4;
+                        if (id == 0)
+                            camerashake += .4;
                         XYZ relative;
                         relative = victim->coords - coords;
                         relative.y = 0;
@@ -2693,14 +2928,16 @@ void	Person::DoAnimations()
                             }
                             victim->Puff(head);
                             victim->DoDamage(damagemult * 100 / victim->protectionhead);
-                            if (victim->howactive == typesleeping)victim->DoDamage(damagemult * 150 / victim->protectionhead);
+                            if (victim->howactive == typesleeping)
+                                victim->DoDamage(damagemult * 150 / victim->protectionhead);
                             if (creature == wolftype) {
                                 emit_sound_at(clawslicesound, victim->coords, 128.);
                                 victim->spurt = 1;
                                 victim->DoBloodBig(2 / victim->armorhead, 175);
                             }
                         } else {
-                            if (victim->damage >= victim->damagetolerance)victim->RagDoll(0);
+                            if (victim->damage >= victim->damagetolerance)
+                                victim->RagDoll(0);
                             for (i = 0; i < victim->skeleton.num_joints; i++) {
                                 victim->skeleton.joints[i].velocity += relative * damagemult * 10;
                             }
@@ -2727,7 +2964,8 @@ void	Person::DoAnimations()
                 if (animTarget == sweepanim && animation[animTarget].label[frameCurrent] == 5) {
                     if (victim->animTarget != jumpupanim && distsq(&coords, &victim->coords) < (scale * 5) * (scale * 5) * 3 && victim != this) {
                         escapednum = 0;
-                        if (id == 0)camerashake += .2;
+                        if (id == 0)
+                            camerashake += .2;
                         if (tutoriallevel != 1) {
                             emit_sound_at(landsound2, victim->coords, 128.);
                         }
@@ -2752,7 +2990,8 @@ void	Person::DoAnimations()
                             victim->Puff(leftankle);
                             victim->DoDamage(damagemult * 40 / victim->protectionlow);
                         } else {
-                            if (victim->damage >= victim->damagetolerance)victim->RagDoll(0);
+                            if (victim->damage >= victim->damagetolerance)
+                                victim->RagDoll(0);
                             for (i = 0; i < victim->skeleton.num_joints; i++) {
                                 victim->skeleton.joints[i].velocity += relative * damagemult * 10;
                             }
@@ -2781,7 +3020,8 @@ void	Person::DoAnimations()
             if (animation[animTarget].attack == reversal && (!victim->feint || (victim->lastattack == victim->lastattack2 && victim->lastattack2 == victim->lastattack3 && Random() % 2) || animTarget == knifefollowanim)) {
                 if (animTarget == spinkickreversalanim && animation[animTarget].label[frameCurrent] == 7) {
                     escapednum = 0;
-                    if (id == 0)camerashake += .4;
+                    if (id == 0)
+                        camerashake += .4;
                     if (Random() % 2) {
                         victim->spurt = 1;
                         DoBlood(.2, 230);
@@ -2833,7 +3073,8 @@ void	Person::DoAnimations()
 
                 if (animTarget == staffhitreversalanim && animation[animTarget].label[frameCurrent] == 5) {
                     escapednum = 0;
-                    if (id == 0)camerashake += .4;
+                    if (id == 0)
+                        camerashake += .4;
                     if (Random() % 2) {
                         victim->spurt = 1;
                         DoBlood(.2, 230);
@@ -2856,7 +3097,8 @@ void	Person::DoAnimations()
 
                 if (animTarget == staffspinhitreversalanim && animation[animTarget].label[frameCurrent] == 7) {
                     escapednum = 0;
-                    if (id == 0)camerashake += .4;
+                    if (id == 0)
+                        camerashake += .4;
                     if (Random() % 2) {
                         victim->spurt = 1;
                         DoBlood(.2, 230);
@@ -2912,13 +3154,17 @@ void	Person::DoAnimations()
 
                     bool doslice;
                     doslice = 0;
-                    if (weaponactive != -1 || creature == wolftype)doslice = 1;
-                    if (creature == rabbittype && weaponactive != -1)if (weapons[weaponids[0]].getType() == staff)doslice = 0;
+                    if (weaponactive != -1 || creature == wolftype)
+                        doslice = 1;
+                    if (creature == rabbittype && weaponactive != -1)
+                        if (weapons[weaponids[0]].getType() == staff)
+                            doslice = 0;
                     if (doslice) {
                         if (weaponactive != -1) {
                             victim->DoBloodBig(2 / victim->armorhigh, 225);
                             emit_sound_at(knifeslicesound, victim->coords);
-                            if (bloodtoggle && !weapons[weaponids[weaponactive]].bloody)weapons[weaponids[weaponactive]].bloody = 1;
+                            if (bloodtoggle && !weapons[weaponids[weaponactive]].bloody)
+                                weapons[weaponids[weaponactive]].bloody = 1;
                             weapons[weaponids[weaponactive]].blooddrip += 3;
                         }
                         if (weaponactive == -1 && creature == wolftype) {
@@ -2958,7 +3204,8 @@ void	Person::DoAnimations()
 
                 if (hasvictim && animTarget == knifeslashreversalanim && animation[animTarget].label[frameCurrent] == 7) {
                     escapednum = 0;
-                    if (id == 0)camerashake += .4;
+                    if (id == 0)
+                        camerashake += .4;
                     if (Random() % 2) {
                         victim->spurt = 1;
                         DoBlood(.2, 230);
@@ -2991,7 +3238,8 @@ void	Person::DoAnimations()
                     relative = facing * -1;
                     relative.y = -3;
                     Normalise(&relative);
-                    if (victim->id == 0)relative /= 30;
+                    if (victim->id == 0)
+                        relative /= 30;
                     for (i = 0; i < victim->skeleton.num_joints; i++) {
                         victim->skeleton.joints[i].velocity += relative * damagemult * 40;
                     }
@@ -3000,13 +3248,17 @@ void	Person::DoAnimations()
                     victim->permanentdamage = victim->damagetolerance - 1;
                     bool doslice;
                     doslice = 0;
-                    if (weaponactive != -1 || creature == wolftype)doslice = 1;
-                    if (creature == rabbittype && weaponactive != -1)if (weapons[weaponids[0]].getType() == staff)doslice = 0;
+                    if (weaponactive != -1 || creature == wolftype)
+                        doslice = 1;
+                    if (creature == rabbittype && weaponactive != -1)
+                        if (weapons[weaponids[0]].getType() == staff)
+                            doslice = 0;
                     if (doslice) {
                         if (weaponactive != -1) {
                             victim->DoBloodBig(200, 225);
                             emit_sound_at(knifeslicesound, victim->coords);
-                            if (bloodtoggle)weapons[weaponids[weaponactive]].bloody = 2;
+                            if (bloodtoggle)
+                                weapons[weaponids[weaponactive]].bloody = 2;
                             weapons[weaponids[weaponactive]].blooddrip += 5;
                         }
 
@@ -3022,7 +3274,8 @@ void	Person::DoAnimations()
                 if (hasvictim && (animTarget == knifefollowanim || animTarget == knifesneakattackanim) && animation[animTarget].label[frameCurrent] == 5) {
                     if (weaponactive != -1 && victim->bloodloss < victim->damagetolerance) {
                         escapednum = 0;
-                        if (animTarget == knifefollowanim)victim->DoBloodBig(200, 210);
+                        if (animTarget == knifefollowanim)
+                            victim->DoBloodBig(200, 210);
                         if (animTarget == knifesneakattackanim) {
                             /*victim->DoBloodBig(200,195);
                             XYZ bloodvel;
@@ -3035,7 +3288,8 @@ void	Person::DoAnimations()
                             XYZ footvel, footpoint;
                             footvel = 0;
                             footpoint = weapons[weaponids[0]].tippoint;
-                            if (bloodtoggle)Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 0, 0, .9, .3);
+                            if (bloodtoggle)
+                                Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 0, 0, .9, .3);
                             footvel = (weapons[weaponids[0]].tippoint - weapons[weaponids[0]].position);
                             Sprite::MakeSprite(bloodsprite, footpoint, DoRotation(footvel * 7, (float)(Random() % 20), (float)(Random() % 20), 0), 1, 1, 1, .05, .9);
                             Sprite::MakeSprite(bloodsprite, footpoint, DoRotation(footvel * 3, (float)(Random() % 20), (float)(Random() % 20), 0), 1, 1, 1, .05, .9);
@@ -3049,7 +3303,8 @@ void	Person::DoAnimations()
                             XYZ footvel, footpoint;
                             footvel = 0;
                             footpoint = weapons[weaponids[0]].tippoint;
-                            if (bloodtoggle)Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 0, 0, .9, .3);
+                            if (bloodtoggle)
+                                Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 0, 0, .9, .3);
                             footvel = (weapons[weaponids[0]].tippoint - weapons[weaponids[0]].position) * -1;
                             Sprite::MakeSprite(bloodsprite, footpoint, DoRotation(footvel * 7, (float)(Random() % 20), (float)(Random() % 20), 0), 1, 1, 1, .05, .9);
                             Sprite::MakeSprite(bloodsprite, footpoint, DoRotation(footvel * 3, (float)(Random() % 20), (float)(Random() % 20), 0), 1, 1, 1, .05, .9);
@@ -3060,7 +3315,8 @@ void	Person::DoAnimations()
                         victim->bloodloss += 10000;
                         victim->velocity = 0;
                         emit_sound_at(fleshstabsound, victim->coords);
-                        if (bloodtoggle)weapons[weaponids[weaponactive]].bloody = 2;
+                        if (bloodtoggle)
+                            weapons[weaponids[weaponactive]].bloody = 2;
                         weapons[weaponids[weaponactive]].blooddrip += 5;
                     }
                 }
@@ -3079,13 +3335,15 @@ void	Person::DoAnimations()
                     }
                     if (weaponactive != -1 && animation[victim->animTarget].attack != reversal) {
                         emit_sound_at(fleshstabremovesound, victim->coords);
-                        if (bloodtoggle)weapons[weaponids[weaponactive]].bloody = 2;
+                        if (bloodtoggle)
+                            weapons[weaponids[weaponactive]].bloody = 2;
                         weapons[weaponids[weaponactive]].blooddrip += 5;
 
                         XYZ footvel, footpoint;
                         footvel = 0;
                         footpoint = weapons[weaponids[0]].tippoint;
-                        if (bloodtoggle)Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 0, 0, .9, .3);
+                        if (bloodtoggle)
+                            Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 0, 0, .9, .3);
                         footvel = (weapons[weaponids[0]].tippoint - weapons[weaponids[0]].position) * -1;
                         Sprite::MakeSprite(bloodsprite, footpoint, DoRotation(footvel * 7, (float)(Random() % 20), (float)(Random() % 20), 0), 1, 1, 1, .05, .9);
                         Sprite::MakeSprite(bloodsprite, footpoint, DoRotation(footvel * 3, (float)(Random() % 20), (float)(Random() % 20), 0), 1, 1, 1, .05, .9);
@@ -3103,7 +3361,8 @@ void	Person::DoAnimations()
                         XYZ footvel, footpoint;
                         footvel = 0;
                         footpoint = (weapons[weaponids[0]].tippoint + weapons[weaponids[0]].position) / 2;
-                        if (bloodtoggle)Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 0, 0, .9, .3);
+                        if (bloodtoggle)
+                            Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 0, 0, .9, .3);
                         footvel = (weapons[weaponids[0]].tippoint - weapons[weaponids[0]].position);
                         Sprite::MakeSprite(bloodsprite, footpoint, DoRotation(footvel * 7, (float)(Random() % 20), (float)(Random() % 20), 0), 1, 1, 1, .05, .9);
                         Sprite::MakeSprite(bloodsprite, footpoint, DoRotation(footvel * 3, (float)(Random() % 20), (float)(Random() % 20), 0), 1, 1, 1, .05, .9);
@@ -3114,7 +3373,8 @@ void	Person::DoAnimations()
                         victim->bloodloss += 10000;
                         victim->velocity = 0;
                         emit_sound_at(fleshstabsound, victim->coords);
-                        if (bloodtoggle)weapons[weaponids[weaponactive]].bloody = 2;
+                        if (bloodtoggle)
+                            weapons[weaponids[weaponactive]].bloody = 2;
                         weapons[weaponids[weaponactive]].blooddrip += 5;
                     }
                 }
@@ -3127,13 +3387,15 @@ void	Person::DoAnimations()
                     }
                     if (weaponactive != -1) {
                         emit_sound_at(fleshstabremovesound, victim->coords);
-                        if (bloodtoggle)weapons[weaponids[weaponactive]].bloody = 2;
+                        if (bloodtoggle)
+                            weapons[weaponids[weaponactive]].bloody = 2;
                         weapons[weaponids[weaponactive]].blooddrip += 5;
 
                         XYZ footvel, footpoint;
                         footvel = 0;
                         footpoint = weapons[weaponids[0]].tippoint;
-                        if (bloodtoggle)Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 0, 0, .9, .3);
+                        if (bloodtoggle)
+                            Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 0, 0, .9, .3);
                         footvel = (weapons[weaponids[0]].tippoint - weapons[weaponids[0]].position) * -1;
                         Sprite::MakeSprite(bloodsprite, footpoint, DoRotation(footvel * 7, (float)(Random() % 20), (float)(Random() % 20), 0), 1, 1, 1, .05, .9);
                         Sprite::MakeSprite(bloodsprite, footpoint, DoRotation(footvel * 3, (float)(Random() % 20), (float)(Random() % 20), 0), 1, 1, 1, .05, .9);
@@ -3144,7 +3406,8 @@ void	Person::DoAnimations()
 
                 if (animTarget == sweepreversalanim && animation[animTarget].label[frameCurrent] == 7) {
                     escapednum = 0;
-                    if (id == 0)camerashake += .4;
+                    if (id == 0)
+                        camerashake += .4;
                     if (Random() % 2) {
                         victim->spurt = 1;
                         DoBlood(.2, 240);
@@ -3156,13 +3419,17 @@ void	Person::DoAnimations()
                     }
                     bool doslice;
                     doslice = 0;
-                    if (weaponactive != -1 || creature == wolftype)doslice = 1;
-                    if (creature == rabbittype && weaponactive != -1)if (weapons[weaponids[0]].getType() == staff)doslice = 0;
+                    if (weaponactive != -1 || creature == wolftype)
+                        doslice = 1;
+                    if (creature == rabbittype && weaponactive != -1)
+                        if (weapons[weaponids[0]].getType() == staff)
+                            doslice = 0;
                     if (doslice) {
                         if (weaponactive != -1) {
                             victim->DoBloodBig(2 / victim->armorhead, 225);
                             emit_sound_at(knifeslicesound, victim->coords);
-                            if (bloodtoggle && !weapons[weaponids[weaponactive]].bloody)weapons[weaponids[weaponactive]].bloody = 1;
+                            if (bloodtoggle && !weapons[weaponids[weaponactive]].bloody)
+                                weapons[weaponids[weaponactive]].bloody = 1;
                             weapons[weaponids[weaponactive]].blooddrip += 3;
                         }
                         if (weaponactive == -1 && creature == wolftype) {
@@ -3188,7 +3455,8 @@ void	Person::DoAnimations()
                         victim->skeleton.joints[i].velocity += relative * damagemult * 20;
                     }
                     victim->skeleton.joints[victim->skeleton.jointlabels[head]].velocity += relative * damagemult * 200;
-                    if (victim->damage < victim->damagetolerance - 100)victim->velocity = relative * 200;
+                    if (victim->damage < victim->damagetolerance - 100)
+                        victim->velocity = relative * 200;
                     victim->DoDamage(damagemult * 100 / victim->protectionhead);
                     victim->velocity = 0;
                 }
@@ -3256,7 +3524,8 @@ void	Person::DoAnimations()
                     if (animCurrent == crouchdrawrightanim) {
                         animTarget = getCrouch();
                     }
-                    if (weaponactive == -1)weaponactive = 0;
+                    if (weaponactive == -1)
+                        weaponactive = 0;
                     else if (weaponactive == 0) {
                         weaponactive = -1;
                         if (num_weapons == 2) {
@@ -3334,7 +3603,8 @@ void	Person::DoAnimations()
                             Normalise(&rotatetarget);
                             yaw = -asin(0 - rotatetarget.x);
                             yaw *= 360 / 6.28;
-                            if (rotatetarget.z < 0)yaw = 180 - yaw;
+                            if (rotatetarget.z < 0)
+                                yaw = 180 - yaw;
                             targettilt2 = -asin(rotatetarget.y) * 360 / 6.28;
                             velocity = (victim->coords - coords) * 4;
                             velocity.y += 2;
@@ -3391,7 +3661,8 @@ void	Person::DoAnimations()
                             Normalise(&rotatetarget);
                             yaw = -asin(0 - rotatetarget.x);
                             yaw *= 360 / 6.28;
-                            if (rotatetarget.z < 0)yaw = 180 - yaw;
+                            if (rotatetarget.z < 0)
+                                yaw = 180 - yaw;
                             targettilt2 = -asin(rotatetarget.y) * 360 / 6.28;
                             velocity = (victim->coords - coords) * 4;
                             velocity.y += 2;
@@ -3421,14 +3692,16 @@ void	Person::DoAnimations()
                     transspeed = 1000000;
                     targetheadyaw += 180;
                     coords -= facing * .7;
-                    if (onterrain)coords.y = terrain.getHeight(coords.x, coords.z);
+                    if (onterrain)
+                        coords.y = terrain.getHeight(coords.x, coords.z);
 
                     lastfeint = 0;
                 }
                 if (animTarget == knifesneakattackanim || animTarget == swordsneakattackanim) {
                     animTarget = getIdle();
                     frameTarget = 0;
-                    if (onterrain)coords.y = terrain.getHeight(coords.x, coords.z);
+                    if (onterrain)
+                        coords.y = terrain.getHeight(coords.x, coords.z);
 
                     lastfeint = 0;
                 }
@@ -3472,8 +3745,10 @@ void	Person::DoAnimations()
                         targettilt2 = 0;
                         tilt2 = 0;
                     }
-                    if (onterrain)oldcoords.y = terrain.getHeight(oldcoords.x, oldcoords.z);
-                    else oldcoords.y = ycoords;
+                    if (onterrain)
+                        oldcoords.y = terrain.getHeight(oldcoords.x, oldcoords.z);
+                    else
+                        oldcoords.y = ycoords;
                     currentoffset = coords - oldcoords;
                     targetoffset = 0;
                     coords = oldcoords;
@@ -3487,7 +3762,8 @@ void	Person::DoAnimations()
                 }
                 if (animation[animTarget].attack == reversed) {
                     escapednum++;
-                    if (animTarget == sweepreversedanim)targetyaw += 90;
+                    if (animTarget == sweepreversedanim)
+                        targetyaw += 90;
                     animTarget = backhandspringanim;
                     frameTarget = 2;
                     emit_sound_at(landsound, coords, 128);
@@ -3512,8 +3788,10 @@ void	Person::DoAnimations()
                 if (wasFlip()) {
                     animTarget = jumpdownanim;
                 }
-                if (wasLanding())animTarget = getIdle();
-                if (wasLandhard())animTarget = getIdle();
+                if (wasLanding())
+                    animTarget = getIdle();
+                if (wasLandhard())
+                    animTarget = getIdle();
                 if (animCurrent == spinkickanim || animCurrent == getupfrombackanim || animCurrent == getupfromfrontanim || animCurrent == lowkickanim) {
                     animTarget = getIdle();
                     oldcoords = coords;
@@ -3521,7 +3799,8 @@ void	Person::DoAnimations()
                     coords.y = oldcoords.y;
                     //coords+=DoRotation(animation[animCurrent].offset,0,yaw,0)*scale;
                     targetoffset.y = coords.y;
-                    if (onterrain)targetoffset.y = terrain.getHeight(coords.x, coords.z);
+                    if (onterrain)
+                        targetoffset.y = terrain.getHeight(coords.x, coords.z);
                     currentoffset = DoRotation(animation[animCurrent].offset * -1, 0, yaw, 0) * scale;
                     currentoffset.y -= (coords.y - targetoffset.y);
                     coords.y = targetoffset.y;
@@ -3537,8 +3816,11 @@ void	Person::DoAnimations()
                     targetyaw = yaw;
                     bool hasstaff;
                     hasstaff = 0;
-                    if (num_weapons > 0)if (weapons[0].getType() == staff)hasstaff = 1;
-                    if (!hasstaff)DoDamage(35);
+                    if (num_weapons > 0)
+                        if (weapons[0].getType() == staff)
+                            hasstaff = 1;
+                    if (!hasstaff)
+                        DoDamage(35);
                     RagDoll(0);
                     lastfeint = 0;
                     rabbitkickragdoll = 1;
@@ -3556,7 +3838,8 @@ void	Person::DoAnimations()
                         escapednum++;
                         animTarget = rollanim;
                         coords += facing;
-                        if (id == 0)pause_sound(whooshsound);
+                        if (id == 0)
+                            pause_sound(whooshsound);
                     }
                     lastfeint = 0;
                 }
@@ -3579,7 +3862,8 @@ void	Person::DoAnimations()
                         escapednum++;
                         animTarget = rollanim;
                         coords += facing * 2;
-                        if (id == 0)pause_sound(whooshsound);
+                        if (id == 0)
+                            pause_sound(whooshsound);
                     }
                     lastfeint = 0;
                 }
@@ -3599,12 +3883,14 @@ void	Person::DoAnimations()
                     lastfeint = 0;
                 }
                 if (animCurrent == spinkickanim && victim->skeleton.free) {
-                    if (creature == rabbittype)animTarget = fightidleanim;
+                    if (creature == rabbittype)
+                        animTarget = fightidleanim;
                 }
             }
             target = 0;
 
-            if (isIdle() && !wasIdle())normalsupdatedelay = 0;
+            if (isIdle() && !wasIdle())
+                normalsupdatedelay = 0;
 
             if (animCurrent == jumpupanim && velocity.y < 0 && !isFlip()) {
                 animTarget = jumpdownanim;
@@ -3622,10 +3908,12 @@ void	Person::DoAnimations()
                 if (isRun() && wasRun()) {
                     float tempspeed;
                     tempspeed = velspeed;
-                    if (tempspeed < 10 * speedmult)tempspeed = 10 * speedmult;
+                    if (tempspeed < 10 * speedmult)
+                        tempspeed = 10 * speedmult;
                     target += multiplier * animation[animTarget].speed[frameCurrent] * speed * 1.7 * tempspeed / (speed * 45 * scale);
                 }
-            } else if (transspeed)target += multiplier * transspeed * speed * 2;
+            } else if (transspeed)
+                target += multiplier * transspeed * speed * 2;
             else {
                 if (!isRun() || !wasRun()) {
                     if (animation[animTarget].speed[frameTarget] > animation[animCurrent].speed[frameCurrent])
@@ -3635,7 +3923,8 @@ void	Person::DoAnimations()
                 }
             }
 
-            if (animCurrent != animTarget)target = (target + oldtarget) / 2;
+            if (animCurrent != animTarget)
+                target = (target + oldtarget) / 2;
 
             if (target > 1) {
                 frameCurrent = frameTarget;
@@ -3664,9 +3953,12 @@ void	Person::DoAnimations()
                 }
                 for (i = 0; i < skeleton.num_muscles; i++) {
                     if (skeleton.muscles[i].visible) {
-                        if (isnormal((float)((int)(skeleton.muscles[i].rotate1 * 100) % 36000) / 100))skeleton.muscles[i].oldrotate1 = (float)((int)(skeleton.muscles[i].rotate1 * 100) % 36000) / 100;
-                        if (isnormal((float)((int)(skeleton.muscles[i].rotate2 * 100) % 36000) / 100))skeleton.muscles[i].oldrotate2 = (float)((int)(skeleton.muscles[i].rotate2 * 100) % 36000) / 100;
-                        if (isnormal((float)((int)(skeleton.muscles[i].rotate3 * 100) % 36000) / 100))skeleton.muscles[i].oldrotate3 = (float)((int)(skeleton.muscles[i].rotate3 * 100) % 36000) / 100;
+                        if (isnormal((float)((int)(skeleton.muscles[i].rotate1 * 100) % 36000) / 100))
+                            skeleton.muscles[i].oldrotate1 = (float)((int)(skeleton.muscles[i].rotate1 * 100) % 36000) / 100;
+                        if (isnormal((float)((int)(skeleton.muscles[i].rotate2 * 100) % 36000) / 100))
+                            skeleton.muscles[i].oldrotate2 = (float)((int)(skeleton.muscles[i].rotate2 * 100) % 36000) / 100;
+                        if (isnormal((float)((int)(skeleton.muscles[i].rotate3 * 100) % 36000) / 100))
+                            skeleton.muscles[i].oldrotate3 = (float)((int)(skeleton.muscles[i].rotate3 * 100) % 36000) / 100;
                     }
                 }
 
@@ -3684,19 +3976,23 @@ void	Person::DoAnimations()
                 }
                 for (i = 0; i < skeleton.num_muscles; i++) {
                     if (skeleton.muscles[i].visible) {
-                        if (isnormal((float)((int)(skeleton.muscles[i].rotate1 * 100) % 36000) / 100))skeleton.muscles[i].newrotate1 = (float)((int)(skeleton.muscles[i].rotate1 * 100) % 36000) / 100;
-                        if (isnormal((float)((int)(skeleton.muscles[i].rotate2 * 100) % 36000) / 100))skeleton.muscles[i].newrotate2 = (float)((int)(skeleton.muscles[i].rotate2 * 100) % 36000) / 100;
-                        if (isnormal((float)((int)(skeleton.muscles[i].rotate3 * 100) % 36000) / 100))skeleton.muscles[i].newrotate3 = (float)((int)(skeleton.muscles[i].rotate3 * 100) % 36000) / 100;
-                        if (skeleton.muscles[i].newrotate3 > skeleton.muscles[i].oldrotate3 + 180)skeleton.muscles[i].newrotate3 -= 360;
-                        if (skeleton.muscles[i].newrotate3 < skeleton.muscles[i].oldrotate3 - 180)skeleton.muscles[i].newrotate3 += 360;
-                        if (skeleton.muscles[i].newrotate2 > skeleton.muscles[i].oldrotate2 + 180)skeleton.muscles[i].newrotate2 -= 360;
-                        if (skeleton.muscles[i].newrotate2 < skeleton.muscles[i].oldrotate2 - 180)skeleton.muscles[i].newrotate2 += 360;
-                        if (skeleton.muscles[i].newrotate1 > skeleton.muscles[i].oldrotate1 + 180)skeleton.muscles[i].newrotate1 -= 360;
-                        if (skeleton.muscles[i].newrotate1 < skeleton.muscles[i].oldrotate1 - 180)skeleton.muscles[i].newrotate1 += 360;
+                        if (isnormal((float)((int)(skeleton.muscles[i].rotate1 * 100) % 36000) / 100))
+                            skeleton.muscles[i].newrotate1 = (float)((int)(skeleton.muscles[i].rotate1 * 100) % 36000) / 100;
+                        if (isnormal((float)((int)(skeleton.muscles[i].rotate2 * 100) % 36000) / 100))
+                            skeleton.muscles[i].newrotate2 = (float)((int)(skeleton.muscles[i].rotate2 * 100) % 36000) / 100;
+                        if (isnormal((float)((int)(skeleton.muscles[i].rotate3 * 100) % 36000) / 100))
+                            skeleton.muscles[i].newrotate3 = (float)((int)(skeleton.muscles[i].rotate3 * 100) % 36000) / 100;
+                        if (skeleton.muscles[i].newrotate3 > skeleton.muscles[i].oldrotate3 + 180) skeleton.muscles[i].newrotate3 -= 360;
+                        if (skeleton.muscles[i].newrotate3 < skeleton.muscles[i].oldrotate3 - 180) skeleton.muscles[i].newrotate3 += 360;
+                        if (skeleton.muscles[i].newrotate2 > skeleton.muscles[i].oldrotate2 + 180) skeleton.muscles[i].newrotate2 -= 360;
+                        if (skeleton.muscles[i].newrotate2 < skeleton.muscles[i].oldrotate2 - 180) skeleton.muscles[i].newrotate2 += 360;
+                        if (skeleton.muscles[i].newrotate1 > skeleton.muscles[i].oldrotate1 + 180) skeleton.muscles[i].newrotate1 -= 360;
+                        if (skeleton.muscles[i].newrotate1 < skeleton.muscles[i].oldrotate1 - 180) skeleton.muscles[i].newrotate1 += 360;
                     }
                 }
             }
-            if (frameCurrent >= animation[animCurrent].numframes)frameCurrent = animation[animCurrent].numframes - 1;
+            if (frameCurrent >= animation[animCurrent].numframes)
+                frameCurrent = animation[animCurrent].numframes - 1;
 
             oldanimCurrent = animCurrent;
             oldanimTarget = animTarget;
@@ -3718,7 +4014,8 @@ void	Person::DoAnimations()
         }
 
         if (isLanding() && landhard) {
-            if (id == 0)camerashake += .4;
+            if (id == 0)
+                camerashake += .4;
             animTarget = getLandhard();
             frameTarget = 0;
             target = 0;
@@ -3752,17 +4049,23 @@ void	Person::DoStuff()
     }
 
     crouchkeydowntime += multiplier;
-    if (!crouchkeydown)crouchkeydowntime = 0;
+    if (!crouchkeydown)
+        crouchkeydowntime = 0;
     jumpkeydowntime += multiplier;
-    if (!jumpkeydown && skeleton.free)jumpkeydowntime = 0;
+    if (!jumpkeydown && skeleton.free)
+        jumpkeydowntime = 0;
 
-    if (hostile || damage > 0 || bloodloss > 0)immobile = 0;
+    if (hostile || damage > 0 || bloodloss > 0)
+        immobile = 0;
 
-    if (isIdle() || isRun())targetoffset = 0;
+    if (isIdle() || isRun())
+        targetoffset = 0;
 
-    if (num_weapons == 1 && weaponactive != -1)weaponstuck = -1;
+    if (num_weapons == 1 && weaponactive != -1)
+        weaponstuck = -1;
 
-    if (id == 0)blooddimamount -= multiplier * .3;
+    if (id == 0)
+        blooddimamount -= multiplier * .3;
     speechdelay -= multiplier;
     texupdatedelay -= multiplier;
     interestdelay -= multiplier;
@@ -3773,13 +4076,17 @@ void	Person::DoStuff()
         hasvictim = 0;
     }
 
-    if (id == 0)speed = 1.1 * speedmult;
-    else speed = 1.0 * speedmult;
-    if (!skeleton.free)rabbitkickragdoll = 0;
+    if (id == 0)
+        speed = 1.1 * speedmult;
+    else
+        speed = 1.0 * speedmult;
+    if (!skeleton.free)
+        rabbitkickragdoll = 0;
 
     speed *= speedmult;
 
-    if (id != 0 && (creature == rabbittype || difficulty != 2))superruntoggle = 0;
+    if (id != 0 && (creature == rabbittype || difficulty != 2))
+        superruntoggle = 0;
     if (id != 0 && creature == wolftype && difficulty == 2) {
         superruntoggle = 0;
         if (aitype != passivetype) {
@@ -3788,7 +4095,8 @@ void	Person::DoStuff()
                 superruntoggle = 0;
             }
         }
-        if (scale < 0.2)superruntoggle = 0;
+        if (scale < 0.2)
+            superruntoggle = 0;
         if (animTarget == wolfrunninganim && !superruntoggle) {
             animTarget = getRun();
             frameTarget = 0;
@@ -3805,7 +4113,8 @@ void	Person::DoStuff()
         /*if(aitype!=playercontrolled)*///deathbleeding=5;
         /*if(aitype!=playercontrolled)*/
         deathbleeding = 1;
-        if (burnt > .6)burnt = .6;
+        if (burnt > .6)
+            burnt = .6;
         OPENAL_SetVolume(channels[stream_firesound], 256 + 256 * findLength(&velocity) / 3);
 
         if (animTarget == jumpupanim || animTarget == jumpdownanim || isFlip()) {
@@ -3827,20 +4136,28 @@ void	Person::DoStuff()
     while (flamedelay < 0 && onfire) {
         flamedelay += .006;
         howmany = abs(Random() % (skeleton.num_joints));
-        if (!skeleton.free)flatvelocity = (coords - oldcoords) / multiplier / 2; //velocity/2;
-        if (skeleton.free)flatvelocity = skeleton.joints[howmany].velocity * scale / 2;
-        if (!skeleton.free)flatfacing = DoRotation(DoRotation(DoRotation(skeleton.joints[howmany].position, 0, 0, tilt), tilt2, 0, 0), 0, yaw, 0) * scale + coords;
-        if (skeleton.free)flatfacing = skeleton.joints[howmany].position * scale + coords;
+        if (!skeleton.free)
+            flatvelocity = (coords - oldcoords) / multiplier / 2; //velocity/2;
+        if (skeleton.free)
+            flatvelocity = skeleton.joints[howmany].velocity * scale / 2;
+        if (!skeleton.free)
+            flatfacing = DoRotation(DoRotation(DoRotation(skeleton.joints[howmany].position, 0, 0, tilt), tilt2, 0, 0), 0, yaw, 0) * scale + coords;
+        if (skeleton.free)
+            flatfacing = skeleton.joints[howmany].position * scale + coords;
         Sprite::MakeSprite(flamesprite, flatfacing, flatvelocity, 1, 1, 1, .6 + (float)abs(Random() % 100) / 200 - .25, 1);
     }
 
     while (flamedelay < 0 && !onfire && tutoriallevel == 1 && id != 0) {
         flamedelay += .05;
         howmany = abs(Random() % (skeleton.num_joints));
-        if (!skeleton.free)flatvelocity = (coords - oldcoords) / multiplier / 2; //velocity/2;
-        if (skeleton.free)flatvelocity = skeleton.joints[howmany].velocity * scale / 2;
-        if (!skeleton.free)flatfacing = DoRotation(DoRotation(DoRotation(skeleton.joints[howmany].position, 0, 0, tilt), tilt2, 0, 0), 0, yaw, 0) * scale + coords;
-        if (skeleton.free)flatfacing = skeleton.joints[howmany].position * scale + coords;
+        if (!skeleton.free)
+            flatvelocity = (coords - oldcoords) / multiplier / 2; //velocity/2;
+        if (skeleton.free)
+            flatvelocity = skeleton.joints[howmany].velocity * scale / 2;
+        if (!skeleton.free)
+            flatfacing = DoRotation(DoRotation(DoRotation(skeleton.joints[howmany].position, 0, 0, tilt), tilt2, 0, 0), 0, yaw, 0) * scale + coords;
+        if (skeleton.free)
+            flatfacing = skeleton.joints[howmany].position * scale + coords;
         Sprite::MakeSprite(breathsprite, flatfacing, flatvelocity, 1, 1, 1, .6 + (float)abs(Random() % 100) / 200 - .25, .3);
     }
 
@@ -3848,7 +4165,8 @@ void	Person::DoStuff()
         bleeding -= multiplier * .3;
         if (bloodtoggle == 2) {
             skeleton.drawmodel.textureptr.bind();
-            if (bleeding <= 0 && (detail != 2 || osx))DoMipmaps();
+            if (bleeding <= 0 && (detail != 2 || osx))
+                DoMipmaps();
         }
     }
 
@@ -3866,10 +4184,14 @@ void	Person::DoStuff()
             if (skeleton.free) {
                 bloodvel -= DoRotation(skeleton.forward * 10 * scale, ((float)(Random() % 100)) / 40, ((float)(Random() % 100)) / 40, 0);
             }
-            if (skeleton.free)bloodvel += DoRotation(skeleton.joints[skeleton.jointlabels[head]].velocity, ((float)(Random() % 100)) / 40, yaw + ((float)(Random() % 100)) / 40, 0) * scale;
-            if (!skeleton.free)bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 40, ((float)(Random() % 100)) / 40, 0) * scale;
-            if (skeleton.free)Sprite::MakeSprite(bloodsprite, (skeleton.joints[skeleton.jointlabels[neck]].position + (skeleton.joints[skeleton.jointlabels[neck]].position - skeleton.joints[skeleton.jointlabels[head]].position) / 5)*scale + coords, bloodvel, 1, 1, 1, .05, .9);
-            if (!skeleton.free)Sprite::MakeSprite(bloodsprite, DoRotation(skeleton.joints[skeleton.jointlabels[neck]].position + (skeleton.joints[skeleton.jointlabels[neck]].position - skeleton.joints[skeleton.jointlabels[head]].position) / 5, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .05, .9);
+            if (skeleton.free)
+                bloodvel += DoRotation(skeleton.joints[skeleton.jointlabels[head]].velocity, ((float)(Random() % 100)) / 40, yaw + ((float)(Random() % 100)) / 40, 0) * scale;
+            if (!skeleton.free)
+                bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 40, ((float)(Random() % 100)) / 40, 0) * scale;
+            if (skeleton.free)
+                Sprite::MakeSprite(bloodsprite, (skeleton.joints[skeleton.jointlabels[neck]].position + (skeleton.joints[skeleton.jointlabels[neck]].position - skeleton.joints[skeleton.jointlabels[head]].position) / 5)*scale + coords, bloodvel, 1, 1, 1, .05, .9);
+            if (!skeleton.free)
+                Sprite::MakeSprite(bloodsprite, DoRotation(skeleton.joints[skeleton.jointlabels[neck]].position + (skeleton.joints[skeleton.jointlabels[neck]].position - skeleton.joints[skeleton.jointlabels[head]].position) / 5, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .05, .9);
             neckspurtparticledelay = .05;
         }
         if (neckspurtdelay < 0) {
@@ -3878,23 +4200,30 @@ void	Person::DoStuff()
     }
 
     if (deathbleeding > 0 && dead != 2) {
-        if (deathbleeding < 5)bleeddelay -= deathbleeding * multiplier / 4;
-        else bleeddelay -= 5 * multiplier / 4;
+        if (deathbleeding < 5)
+            bleeddelay -= deathbleeding * multiplier / 4;
+        else
+            bleeddelay -= 5 * multiplier / 4;
         if (bleeddelay < 0 && bloodtoggle) {
             bleeddelay = 1;
             XYZ bloodvel;
             if (bloodtoggle) {
                 bloodvel = 0;
-                if (skeleton.free)bloodvel += DoRotation(skeleton.joints[skeleton.jointlabels[abdomen]].velocity, ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
-                if (!skeleton.free)bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0) * scale;
-                if (skeleton.free)Sprite::MakeSprite(bloodsprite, skeleton.joints[skeleton.jointlabels[abdomen]].position * scale + coords, bloodvel, 1, 1, 1, .05, 1);
-                if (!skeleton.free)Sprite::MakeSprite(bloodsprite, DoRotation((skeleton.joints[skeleton.jointlabels[abdomen]].position + skeleton.joints[skeleton.jointlabels[abdomen]].position) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .05, 1);
+                if (skeleton.free)
+                    bloodvel += DoRotation(skeleton.joints[skeleton.jointlabels[abdomen]].velocity, ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
+                if (!skeleton.free)
+                    bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0) * scale;
+                if (skeleton.free)
+                    Sprite::MakeSprite(bloodsprite, skeleton.joints[skeleton.jointlabels[abdomen]].position * scale + coords, bloodvel, 1, 1, 1, .05, 1);
+                if (!skeleton.free)
+                    Sprite::MakeSprite(bloodsprite, DoRotation((skeleton.joints[skeleton.jointlabels[abdomen]].position + skeleton.joints[skeleton.jointlabels[abdomen]].position) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .05, 1);
             }
         }
         bloodloss += deathbleeding * multiplier * 80;
         deathbleeding -= multiplier * 1.6;
         //if(id==0)deathbleeding-=multiplier*.2;
-        if (deathbleeding < 0)deathbleeding = 0;
+        if (deathbleeding < 0)
+            deathbleeding = 0;
         if (bloodloss > damagetolerance && animation[animTarget].attack == neutral) {
             if (weaponactive != -1) {
                 weapons[weaponids[0]].owner = -1;
@@ -3909,7 +4238,8 @@ void	Person::DoStuff()
                 num_weapons--;
                 if (num_weapons) {
                     weaponids[0] = weaponids[num_weapons];
-                    if (weaponstuck == num_weapons)weaponstuck = 0;
+                    if (weaponstuck == num_weapons)
+                        weaponstuck = 0;
                 }
                 weaponactive = -1;
                 for (i = 0; i < numplayers; i++) {
@@ -3971,14 +4301,17 @@ void	Person::DoStuff()
             endy = skeleton.skinsize - 1;
             bleeding = 0;
         }
-        if (endx < startx)endx = startx;
-        if (endy < starty)endy = starty;
+        if (endx < startx)
+            endx = startx;
+        if (endy < starty)
+            endy = starty;
 
         for (i = startx; i < endx; i++) {
             for (j = starty; j < endy; j++) {
                 if (Random() % 2 == 0) {
                     color = Random() % 85 + 170;
-                    if (skeleton.skinText[i * skeleton.skinsize * 3 + j * 3 + 0] > color / 2)skeleton.skinText[i * skeleton.skinsize * 3 + j * 3 + 0] = color / 2;
+                    if (skeleton.skinText[i * skeleton.skinsize * 3 + j * 3 + 0] > color / 2)
+                        skeleton.skinText[i * skeleton.skinsize * 3 + j * 3 + 0] = color / 2;
                     skeleton.skinText[i * skeleton.skinsize * 3 + j * 3 + 1] = 0;
                     skeleton.skinText[i * skeleton.skinsize * 3 + j * 3 + 2] = 0;
                 }
@@ -3991,13 +4324,17 @@ void	Person::DoStuff()
 
         if (!skeleton.free) {
             bleedy -= 4 / realtexdetail;
-            if (detail == 2)bleedx += (abs(Random() % 3) - 1) * 2 / realtexdetail;
-            else bleedx += (abs(Random() % 3) - 1) * 4 / realtexdetail;
+            if (detail == 2)
+                bleedx += (abs(Random() % 3) - 1) * 2 / realtexdetail;
+            else
+                bleedx += (abs(Random() % 3) - 1) * 4 / realtexdetail;
         }
         if (skeleton.free) {
             bleedx += 4 * direction / realtexdetail;
-            if (detail == 2)bleedy += (abs(Random() % 3) - 1) * 2 / realtexdetail;
-            else bleedy += (abs(Random() % 3) - 1) * 4 / realtexdetail;
+            if (detail == 2)
+                bleedy += (abs(Random() % 3) - 1) * 2 / realtexdetail;
+            else
+                bleedy += (abs(Random() % 3) - 1) * 4 / realtexdetail;
         }
     }
 
@@ -4092,11 +4429,16 @@ void	Person::DoStuff()
             if (environment == snowyenvironment) {
                 XYZ footpoint;
                 XYZ footvel;
-                if (!skeleton.free)footvel = DoRotation(skeleton.specialforward[0], 0, yaw, 0) * -1;
-                if (skeleton.free)footvel = skeleton.specialforward[0] * -1;
-                if (!skeleton.free)footpoint = DoRotation((skeleton.joints[skeleton.jointlabels[head]].position + skeleton.joints[skeleton.jointlabels[neck]].position) / 2, 0, yaw, 0) * scale + coords;
-                if (skeleton.free)footpoint = ((skeleton.joints[skeleton.jointlabels[head]].position + skeleton.joints[skeleton.jointlabels[neck]].position) / 2) * scale + coords;
-                if (animTarget == sleepanim)footvel = DoRotation(footvel, 0, 90, 0);
+                if (!skeleton.free)
+                    footvel = DoRotation(skeleton.specialforward[0], 0, yaw, 0) * -1;
+                if (skeleton.free)
+                    footvel = skeleton.specialforward[0] * -1;
+                if (!skeleton.free)
+                    footpoint = DoRotation((skeleton.joints[skeleton.jointlabels[head]].position + skeleton.joints[skeleton.jointlabels[neck]].position) / 2, 0, yaw, 0) * scale + coords;
+                if (skeleton.free)
+                    footpoint = ((skeleton.joints[skeleton.jointlabels[head]].position + skeleton.joints[skeleton.jointlabels[neck]].position) / 2) * scale + coords;
+                if (animTarget == sleepanim)
+                    footvel = DoRotation(footvel, 0, 90, 0);
                 Sprite::MakeSprite(breathsprite, footpoint + footvel * .2, footvel * .4, 1, 1, 1, .4, .3);
             }
         }
@@ -4162,8 +4504,10 @@ void	Person::DoStuff()
         }
         if (!dead) {
             if (creature == rabbittype) {
-                if (howactive < typesleeping)twitchdelay2 -= multiplier * 1.5;
-                else twitchdelay2 -= multiplier * 0.5;
+                if (howactive < typesleeping)
+                    twitchdelay2 -= multiplier * 1.5;
+                else
+                    twitchdelay2 -= multiplier * 0.5;
                 if (howactive <= typesleeping) {
                     if (tailmorphstart == 0 && tailmorphend == 0 && twitchdelay2 <= 0) {
                         tailmorphness = 0;
@@ -4230,20 +4574,24 @@ void	Person::DoStuff()
         }
     }
 
-    if (dead != 1)unconscioustime = 0;
+    if (dead != 1)
+        unconscioustime = 0;
 
     if (dead == 1 || howactive == typesleeping) {
         unconscioustime += multiplier;
         //If unconscious, close eyes and mouth
-        if (righthandmorphend != 0)righthandmorphness = 0;
+        if (righthandmorphend != 0)
+            righthandmorphness = 0;
         righthandmorphend = 0;
         targetrighthandmorphness = 1;
 
-        if (lefthandmorphend != 0)lefthandmorphness = 0;
+        if (lefthandmorphend != 0)
+            lefthandmorphness = 0;
         lefthandmorphend = 0;
         targetlefthandmorphness = 1;
 
-        if (headmorphend != 3 && headmorphend != 5)headmorphness = 0;
+        if (headmorphend != 3 && headmorphend != 5)
+            headmorphness = 0;
         headmorphend = 3;
         targetheadmorphness = 1;
     }
@@ -4269,21 +4617,25 @@ void	Person::DoStuff()
 
     if (dead == 2 || howactive > typesleeping) {
         //If dead, open mouth and hands
-        if (righthandmorphend != 0)righthandmorphness = 0;
+        if (righthandmorphend != 0)
+            righthandmorphness = 0;
         righthandmorphend = 0;
         targetrighthandmorphness = 1;
 
-        if (lefthandmorphend != 0)lefthandmorphness = 0;
+        if (lefthandmorphend != 0)
+            lefthandmorphness = 0;
         lefthandmorphend = 0;
         targetlefthandmorphness = 1;
 
-        if (headmorphend != 2)headmorphness = 0;
+        if (headmorphend != 2)
+            headmorphness = 0;
         headmorphend = 2;
         targetheadmorphness = 1;
     }
 
     if (stunned > 0 && !dead && headmorphend != 2) {
-        if (headmorphend != 4)headmorphness = 0;
+        if (headmorphend != 4)
+            headmorphness = 0;
         headmorphend = 4;
         targetheadmorphness = 1;
     }
@@ -4312,7 +4664,8 @@ void	Person::DoStuff()
             num_weapons--;
             if (num_weapons) {
                 weaponids[0] = weaponids[num_weapons];
-                if (weaponstuck == num_weapons)weaponstuck = 0;
+                if (weaponstuck == num_weapons)
+                    weaponstuck = 0;
             }
             weaponactive = -1;
             for (i = 0; i < numplayers; i++) {
@@ -4331,16 +4684,22 @@ void	Person::DoStuff()
     }
 
     //if(dead)damage-=multiplier/4;
-    if (!dead)damage -= multiplier * 13;
+    if (!dead)
+        damage -= multiplier * 13;
     //if(!dead&&deathbleeding<=0&&id==0)bloodloss-=multiplier*4;
-    if (!dead)permanentdamage -= multiplier * 4;
+    if (!dead)
+        permanentdamage -= multiplier * 4;
     if (isIdle() || isCrouch()) {
-        if (!dead)permanentdamage -= multiplier * 4;
+        if (!dead)
+            permanentdamage -= multiplier * 4;
         //if(!dead&&deathbleeding<=0&&id==0)bloodloss-=multiplier*4;
     }
-    if (damage < 0)damage = 0;
-    if (permanentdamage < 0)permanentdamage = 0;
-    if (superpermanentdamage < 0)superpermanentdamage = 0;
+    if (damage < 0)
+        damage = 0;
+    if (permanentdamage < 0)
+        permanentdamage = 0;
+    if (superpermanentdamage < 0)
+        superpermanentdamage = 0;
     if (permanentdamage < superpermanentdamage) {
         permanentdamage = superpermanentdamage;
     }
@@ -4371,7 +4730,8 @@ void	Person::DoStuff()
             num_weapons--;
             if (num_weapons) {
                 weaponids[0] = weaponids[num_weapons];
-                if (weaponstuck == num_weapons)weaponstuck = 0;
+                if (weaponstuck == num_weapons)
+                    weaponstuck = 0;
             }
             weaponactive = -1;
             for (i = 0; i < numplayers; i++) {
@@ -4399,20 +4759,24 @@ void	Person::DoStuff()
     }
 
     if (skeleton.free == 1) {
-        if (id == 0)pause_sound(whooshsound);
+        if (id == 0)
+            pause_sound(whooshsound);
 
         if (!dead) {
             //If knocked over, open hands and close mouth
-            if (righthandmorphend != 0)righthandmorphness = 0;
+            if (righthandmorphend != 0)
+                righthandmorphness = 0;
             righthandmorphend = 0;
             targetrighthandmorphness = 1;
 
-            if (lefthandmorphend != 0)lefthandmorphness = 0;
+            if (lefthandmorphend != 0)
+                lefthandmorphness = 0;
             lefthandmorphend = 0;
             targetlefthandmorphness = 1;
 
             if (headmorphend != 3 && headmorphend != 5 && headmorphstart != 3 && headmorphstart != 5) {
-                if (headmorphend != 0)headmorphness = 0;
+                if (headmorphend != 0)
+                    headmorphness = 0;
                 headmorphend = 0;
                 targetheadmorphness = 1;
             }
@@ -4453,7 +4817,8 @@ void	Person::DoStuff()
             skeleton.longdead += (2000 - findLength(&average)) * multiplier + multiplier;
             if (skeleton.longdead > 2000) {
                 if (skeleton.longdead > 6000) {
-                    if (id == 0)pause_sound(whooshsound);
+                    if (id == 0)
+                        pause_sound(whooshsound);
                     skeleton.free = 3;
                     DrawSkeleton();
                     skeleton.free = 2;
@@ -4479,7 +4844,8 @@ void	Person::DoStuff()
                 if (dead == 2 && bloodloss >= damagetolerance) {
                     XYZ headpoint;
                     headpoint = (skeleton.joints[skeleton.jointlabels[abdomen]].position + skeleton.joints[skeleton.jointlabels[neck]].position) / 2 * scale + coords;
-                    if (bleeding <= 0)DoBlood(1, 255);
+                    if (bleeding <= 0)
+                        DoBlood(1, 255);
                     if (bloodtoggle && !bled) {
                         terrain.MakeDecal(blooddecalslow, headpoint, .8, .5, 0);
                     }
@@ -4503,13 +4869,16 @@ void	Person::DoStuff()
             startpoint = coords;
             endpoint = coords;
             endpoint.y -= .7;
-            if (terrain.lineTerrain(startpoint, endpoint, &colpoint) != -1)canrecover = 0;
-            if (velocity.y < -30)canrecover = 0;
+            if (terrain.lineTerrain(startpoint, endpoint, &colpoint) != -1)
+                canrecover = 0;
+            if (velocity.y < -30)
+                canrecover = 0;
             for (i = 0; i < objects.numobjects; i++) {
                 if (objects.type[i] != treeleavestype && objects.type[i] != bushtype && objects.type[i] != firetype) {
                     colviewer = startpoint;
                     coltarget = endpoint;
-                    if (objects.model[i].LineCheck(&colviewer, &coltarget, &colpoint, &objects.position[i], &objects.yaw[i]) != -1)canrecover = 0;
+                    if (objects.model[i].LineCheck(&colviewer, &coltarget, &colpoint, &objects.position[i], &objects.yaw[i]) != -1)
+                        canrecover = 0;
                 }
             }
             if (canrecover) {
@@ -4534,7 +4903,8 @@ void	Person::DoStuff()
 
                 targetyaw = -asin(0 - terrainnormal.x);
                 targetyaw *= 360 / 6.28;
-                if (terrainnormal.z < 0)targetyaw = 180 - targetyaw;
+                if (terrainnormal.z < 0)
+                    targetyaw = 180 - targetyaw;
                 yaw = targetyaw;
 
                 frameTarget = 0;
@@ -4562,7 +4932,8 @@ void	Person::DoStuff()
         if (findLength(&average) < 10 && !dead && skeleton.free) {
             skeleton.longdead += (2000 - findLength(&average)) * multiplier + multiplier;
             if (skeleton.longdead > (damage + 500) * 1.5) {
-                if (id == 0)pause_sound(whooshsound);
+                if (id == 0)
+                    pause_sound(whooshsound);
                 skeleton.free = 0;
                 velocity = 0;
                 XYZ middle;
@@ -4585,7 +4956,8 @@ void	Person::DoStuff()
 
                 targetyaw = -asin(0 - terrainnormal.x);
                 targetyaw *= 360 / 6.28;
-                if (terrainnormal.z < 0)targetyaw = 180 - targetyaw;
+                if (terrainnormal.z < 0)
+                    targetyaw = 180 - targetyaw;
                 yaw = targetyaw;
 
                 targettilt2 = asin(terrainnormal.y) * 180 / 3.14 * -1;
@@ -4611,13 +4983,17 @@ void	Person::DoStuff()
                     if (id == 0) {
                         if (rightkeydown) {
                             targetyaw -= 90;
-                            if (forwardkeydown)targetyaw += 45;
-                            if (backkeydown)targetyaw -= 45;
+                            if (forwardkeydown)
+                                targetyaw += 45;
+                            if (backkeydown)
+                                targetyaw -= 45;
                         }
                         if (leftkeydown) {
                             targetyaw += 90;
-                            if (forwardkeydown)targetyaw -= 45;
-                            if (backkeydown)targetyaw += 45;
+                            if (forwardkeydown)
+                                targetyaw -= 45;
+                            if (backkeydown)
+                                targetyaw += 45;
                         }
                         if (backkeydown) {
                             if ( !leftkeydown && !rightkeydown)
@@ -4627,13 +5003,15 @@ void	Person::DoStuff()
                     }
                 }
 
-                if (abs(targettilt2) > 50)targettilt2 = 0;
+                if (abs(targettilt2) > 50)
+                    targettilt2 = 0;
                 animCurrent = tempanim;
                 frameCurrent = 0;
                 target = 0;
                 tilt2 = targettilt2;
 
-                if (middle.y > 0 && animTarget != rollanim)targetoffset.y = middle.y + 1;
+                if (middle.y > 0 && animTarget != rollanim)
+                    targetoffset.y = middle.y + 1;
 
                 for (i = 0; i < skeleton.num_joints; i++) {
                     tempanimation.position[i][0] = skeleton.joints[i].position;
@@ -4644,7 +5022,9 @@ void	Person::DoStuff()
 
         bool hasstaff;
         hasstaff = 0;
-        if (num_weapons > 0)if (weapons[0].getType() == staff)hasstaff = 1;
+        if (num_weapons > 0)
+            if (weapons[0].getType() == staff)
+                hasstaff = 1;
         if (!skeleton.freefall && freefall && ((jumpkeydown && jumpkeydowntime < .2) || (hasstaff && rabbitkickragdoll)) && !dead) {
             if (velocity.y > -30) {
                 XYZ tempvelocity;
@@ -4652,7 +5032,8 @@ void	Person::DoStuff()
                 Normalise(&tempvelocity);
                 targetyaw = -asin(0 - tempvelocity.x);
                 targetyaw *= 360 / 6.28;
-                if (velocity.z < 0)targetyaw = 180 - targetyaw;
+                if (velocity.z < 0)
+                    targetyaw = 180 - targetyaw;
                 //targetyaw+=180;
 
                 skeleton.free = 0;
@@ -4681,7 +5062,8 @@ void	Person::DoStuff()
                 targettilt2 = 0;
             }
         }
-        if (skeleton.freefall == 0)freefall = 0;
+        if (skeleton.freefall == 0)
+            freefall = 0;
 
     }
 
@@ -4730,8 +5112,10 @@ void	Person::DoStuff()
                             }
 
                             int howmany;
-                            if (environment == grassyenvironment)howmany = findLength(&velocity) * 4;
-                            if (environment == snowyenvironment)howmany = findLength(&velocity) * 2;
+                            if (environment == grassyenvironment)
+                                howmany = findLength(&velocity) * 4;
+                            if (environment == snowyenvironment)
+                                howmany = findLength(&velocity) * 2;
                             if (detail == 2)
                                 if (environment != desertenvironment)
                                     for (j = 0; j < howmany; j++) {
@@ -4768,7 +5152,8 @@ void	Person::DoStuff()
                     }
                 XYZ tempcoord;
                 if (objects.type[i] == treeleavestype && environment != desertenvironment) {
-                    if (objects.pitch[i] == 0)tempcoord = coords;
+                    if (objects.pitch[i] == 0)
+                        tempcoord = coords;
                     else {
                         tempcoord = coords - objects.position[i];
                         tempcoord = DoRotation(tempcoord, 0, -objects.yaw[i], 0);
@@ -4790,8 +5175,10 @@ void	Person::DoStuff()
                             }
 
                             int howmany;
-                            if (environment == grassyenvironment)howmany = findLength(&velocity) * 4;
-                            if (environment == snowyenvironment)howmany = findLength(&velocity) * 2;
+                            if (environment == grassyenvironment)
+                                howmany = findLength(&velocity) * 4;
+                            if (environment == snowyenvironment)
+                                howmany = findLength(&velocity) * 2;
                             if (detail == 2)
                                 if (environment != desertenvironment)
                                     for (j = 0; j < howmany; j++) {
@@ -4832,21 +5219,28 @@ void	Person::DoStuff()
     if (!skeleton.free) {
         bool play;
         play = 0;
-        if ((stunned > 0 || surprised > 0) && numplayers > 2 && aitype != passivetype)play = 1;
+        if ((stunned > 0 || surprised > 0) && numplayers > 2 && aitype != passivetype)
+            play = 1;
         if (hasvictim)
-            if (aitype != passivetype && victim->skeleton.free && !victim->dead)play = 1;
-        if (tutoriallevel == 1 && id != 0)play = 0;
+            if (aitype != passivetype && victim->skeleton.free && !victim->dead)
+                play = 1;
+        if (tutoriallevel == 1 && id != 0)
+            play = 0;
         if (play && aitype != playercontrolled) {
             int whichsound = -1;
             i = abs(Random() % 4);
             if (speechdelay <= 0) {
                 if (creature == rabbittype) {
-                    if (i == 0)whichsound = rabbitchitter;
-                    if (i == 1)whichsound = rabbitchitter2;
+                    if (i == 0)
+                        whichsound = rabbitchitter;
+                    if (i == 1)
+                        whichsound = rabbitchitter2;
                 }
                 if (creature == wolftype) {
-                    if (i == 0)whichsound = growlsound;
-                    if (i == 1)whichsound = growl2sound;
+                    if (i == 0)
+                        whichsound = growlsound;
+                    if (i == 1)
+                        whichsound = growl2sound;
                 }
             }
             speechdelay = .3;
@@ -4856,11 +5250,15 @@ void	Person::DoStuff()
             }
         }
 
-        if (animTarget == staggerbackhighanim)staggerdelay = 1;
-        if (animTarget == staggerbackhardanim)staggerdelay = 1;
+        if (animTarget == staggerbackhighanim)
+            staggerdelay = 1;
+        if (animTarget == staggerbackhardanim)
+            staggerdelay = 1;
         staggerdelay -= multiplier;
-        if (animTarget != crouchstabanim && animTarget != swordgroundstabanim && animTarget != staffgroundsmashanim)hasvictim = 1;
-        if (velocity.y < -30 && animTarget == jumpdownanim)RagDoll(0);
+        if (animTarget != crouchstabanim && animTarget != swordgroundstabanim && animTarget != staffgroundsmashanim)
+            hasvictim = 1;
+        if (velocity.y < -30 && animTarget == jumpdownanim)
+            RagDoll(0);
         if (animCurrent != getIdle() && wasIdle() && animTarget != getIdle() && isIdle()) {
             animTarget = getIdle();
             frameTarget = 0;
@@ -5014,34 +5412,46 @@ void	Person::DoStuff()
         Normalise(&facing);
 
         if (isRun() || animTarget == sneakanim || animTarget == rollanim || animTarget == walkanim) {
-            if (onterrain)targettilt2 = -facing.y * 20;
-            else targettilt2 = 0;
+            if (onterrain)
+                targettilt2 = -facing.y * 20;
+            else
+                targettilt2 = 0;
         }
         onterrain = 0;
-        if (!isRun() && !animation[animTarget].attack && animTarget != getupfromfrontanim && animTarget != getupfrombackanim && animTarget != sneakanim)targettilt2 = 0;
+        if (!isRun() && !animation[animTarget].attack && animTarget != getupfromfrontanim && animTarget != getupfrombackanim && animTarget != sneakanim)
+            targettilt2 = 0;
         if (animTarget == jumpupanim || animTarget == jumpdownanim || isFlip()) {
             flatvelocity = velocity;
             flatvelocity.y = 0;
             flatvelspeed = findLength(&flatvelocity);
             targettilt = flatvelspeed * fast_sqrt(abs(velocity.y) * .7) * normaldotproduct(DoRotation(flatfacing, 0, -90, 0), flatvelocity);
             targettilt2 = flatvelspeed * fast_sqrt(abs(velocity.y) * .7) * normaldotproduct(flatfacing, flatvelocity);
-            if (velocity.y < 0)targettilt2 *= -1;
-            if (velocity.y < 0)targettilt *= -1;
-            if (targettilt > 25)targettilt = 25;
-            if (targettilt < -25)targettilt = -25;
+            if (velocity.y < 0)
+                targettilt2 *= -1;
+            if (velocity.y < 0)
+                targettilt *= -1;
+            if (targettilt > 25)
+                targettilt = 25;
+            if (targettilt < -25)
+                targettilt = -25;
         }
 
-        if (targettilt2 > 45)targettilt2 = 45;
-        if (targettilt2 < -45)targettilt2 = -45;
-        if (abs(tilt2 - targettilt2) < multiplier * 400)tilt2 = targettilt2;
+        if (targettilt2 > 45)
+            targettilt2 = 45;
+        if (targettilt2 < -45)
+            targettilt2 = -45;
+        if (abs(tilt2 - targettilt2) < multiplier * 400)
+            tilt2 = targettilt2;
         else if (tilt2 > targettilt2) {
             tilt2 -= multiplier * 400;
         } else if (tilt2 < targettilt2) {
             tilt2 += multiplier * 400;
         }
         if (!animation[animTarget].attack && animTarget != getupfrombackanim && animTarget != getupfromfrontanim) {
-            if (tilt2 > 25)tilt2 = 25;
-            if (tilt2 < -25)tilt2 = -25;
+            if (tilt2 > 25)
+                tilt2 = 25;
+            if (tilt2 < -25)
+                tilt2 = -25;
         }
 
         if (!isnormal(targettilt) && targettilt) {
@@ -5078,7 +5488,8 @@ void	Person::DoStuff()
                 velocity.y += gravity * multiplier * 20;
                 ReflectVector(&velocity, terrain.getNormal(coords.x, coords.z));
                 velspeed = findLength(&velocity);
-                if (velspeed < speed * 30 * scale)velspeed = speed * 30 * scale;
+                if (velspeed < speed * 30 * scale)
+                    velspeed = speed * 30 * scale;
                 velocity = flatfacing * velspeed;
             }
         } else if (isRun()) {
@@ -5237,10 +5648,12 @@ void	Person::DoStuff()
             velocity.y += gravity * multiplier;
         }
 
-        if (animTarget != climbanim && animTarget != hanganim && !isWallJump())coords += velocity * multiplier;
+        if (animTarget != climbanim && animTarget != hanganim && !isWallJump())
+            coords += velocity * multiplier;
 
         if (coords.y < terrain.getHeight(coords.x, coords.z) && (animTarget == jumpdownanim || animTarget == jumpupanim || isFlip())) {
-            if (isFlip() && animation[animTarget].label[frameTarget] == 7)RagDoll(0);
+            if (isFlip() && animation[animTarget].label[frameTarget] == 7)
+                RagDoll(0);
 
             if (animTarget == jumpupanim) {
                 jumppower = -4;
@@ -5269,7 +5682,8 @@ void	Person::DoStuff()
             }
         }
 
-        if (animTarget != jumpupanim && animTarget != jumpdownanim && !isFlip() && animTarget != climbanim && animTarget != hanganim && !isWallJump())coords.y += gravity * multiplier * 2;
+        if (animTarget != jumpupanim && animTarget != jumpdownanim && !isFlip() && animTarget != climbanim && animTarget != hanganim && !isWallJump())
+            coords.y += gravity * multiplier * 2;
         if (animTarget != jumpupanim && animTarget != jumpdownanim && !isFlip() && coords.y < terrain.getHeight(coords.x, coords.z)) {
             coords.y = terrain.getHeight(coords.x, coords.z);
             onterrain = 1;
@@ -5281,7 +5695,8 @@ void	Person::DoStuff()
             velocity.y = 0;
             if (velspeed < multiplier * 300 * scale) {
                 velocity = 0;
-            } else velocity -= velocity / velspeed * multiplier * 300 * scale;
+            } else
+                velocity -= velocity / velspeed * multiplier * 300 * scale;
             if (velspeed > 5 && (isLanding() || isLandhard())) {
                 skiddingdelay += multiplier;
                 if (skiddelay <= 0) {
@@ -5289,7 +5704,8 @@ void	Person::DoStuff()
                     FootLand(1, .5);
                     skiddelay = .02;
                 }
-            } else skiddingdelay = 0;
+            } else
+                skiddingdelay = 0;
         }
 
         if (isLandhard()) {
@@ -5297,7 +5713,8 @@ void	Person::DoStuff()
             velocity.y = 0;
             if (velspeed < multiplier * 600 * scale) {
                 velocity = 0;
-            } else velocity -= velocity / velspeed * multiplier * 600 * scale;
+            } else
+                velocity -= velocity / velspeed * multiplier * 600 * scale;
             velocity = 0;
             if (velspeed > 5 && (isLanding() || isLandhard())) {
                 skiddingdelay += multiplier;
@@ -5306,10 +5723,12 @@ void	Person::DoStuff()
                     FootLand(1, .5);
                     skiddelay = .02;
                 }
-            } else skiddingdelay = 0;
+            } else
+                skiddingdelay = 0;
         }
 
-        if (skiddingdelay < 0)skiddingdelay += multiplier;
+        if (skiddingdelay < 0)
+            skiddingdelay += multiplier;
         if (skiddingdelay > .02 && !forwardkeydown && !backkeydown && !leftkeydown && !rightkeydown && !jumpkeydown && isLanding() && !landhard) {
             skiddingdelay = -1;
             if (!onterrain || environment == grassyenvironment) {
@@ -5324,7 +5743,8 @@ void	Person::DoStuff()
             Normalise(&terrainnormal);
             targetyaw = -asin(0 - terrainnormal.x);
             targetyaw *= 360 / 6.28;
-            if (terrainnormal.z < 0)targetyaw = 180 - targetyaw;
+            if (terrainnormal.z < 0)
+                targetyaw = 180 - targetyaw;
             targettilt2 = -asin(terrainnormal.y) * 360 / 6.28; //*-70;
         }
 
@@ -5370,9 +5790,12 @@ int Person::DrawSkeleton()
         XYZ terrainlight;
         float terrainheight;
         float distance;
-        if (!isnormal(yaw))yaw = 0;
-        if (!isnormal(tilt))tilt = 0;
-        if (!isnormal(tilt2))tilt2 = 0;
+        if (!isnormal(yaw))
+            yaw = 0;
+        if (!isnormal(tilt))
+            tilt = 0;
+        if (!isnormal(tilt2))
+            tilt2 = 0;
         oldplayerdetail = playerdetail;
         playerdetail = 0;
         if (distsq(&viewer, &coords) < viewdistance * viewdistance / 32 && detail == 2) {
@@ -5542,7 +5965,8 @@ int Person::DrawSkeleton()
             else {
                 targetheadyaw = -targetyaw;
                 targetheadpitch = 0;
-                if (animation[animTarget].attack == 3)targetheadyaw += 180;
+                if (animation[animTarget].attack == 3)
+                    targetheadyaw += 180;
             }
             for (i = 0; i < skeleton.drawmodel.vertexNum; i++) {
                 skeleton.drawmodel.vertex[i] = 0;
@@ -5586,13 +6010,16 @@ int Person::DrawSkeleton()
                         start = tailmorphstart;
                         endthing = tailmorphend;
                     }
-                    if (calcrot)skeleton.FindRotationMuscle(i, animTarget);
+                    if (calcrot)
+                        skeleton.FindRotationMuscle(i, animTarget);
                     mid = (skeleton.muscles[i].parent1->position + skeleton.muscles[i].parent2->position) / 2;
                     glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
                     glPushMatrix();
                     glLoadIdentity();
-                    if (!skeleton.free)glRotatef(tilt2, 1, 0, 0);
-                    if (!skeleton.free)glRotatef(tilt, 0, 0, 1);
+                    if (!skeleton.free)
+                        glRotatef(tilt2, 1, 0, 0);
+                    if (!skeleton.free)
+                        glRotatef(tilt, 0, 0, 1);
 
 
                     glTranslatef(mid.x, mid.y, mid.z);
@@ -5672,8 +6099,10 @@ int Person::DrawSkeleton()
                     glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
                     glPushMatrix();
                     glLoadIdentity();
-                    if (!skeleton.free)glRotatef(tilt2, 1, 0, 0);
-                    if (!skeleton.free)glRotatef(tilt, 0, 0, 1);
+                    if (!skeleton.free)
+                        glRotatef(tilt2, 1, 0, 0);
+                    if (!skeleton.free)
+                        glRotatef(tilt, 0, 0, 1);
                     glTranslatef(mid.x, mid.y, mid.z);
                     skeleton.muscles[i].lastrotate1 = skeleton.muscles[i].rotate1;
                     glRotatef(-skeleton.muscles[i].lastrotate1 + 90, 0, 1, 0);
@@ -5715,12 +6144,17 @@ int Person::DrawSkeleton()
             }
             if (skeleton.free != 2 && (skeleton.free == 1 || skeleton.free == 3 || id == 0 || (normalsupdatedelay <= 0) || animTarget == getupfromfrontanim || animTarget == getupfrombackanim || animCurrent == getupfromfrontanim || animCurrent == getupfrombackanim)) {
                 normalsupdatedelay = 1;
-                if (playerdetail || skeleton.free == 3)skeleton.drawmodel.CalculateNormals(0);
-                if (!playerdetail || skeleton.free == 3)skeleton.drawmodellow.CalculateNormals(0);
-                if (skeleton.clothes)skeleton.drawmodelclothes.CalculateNormals(0);
+                if (playerdetail || skeleton.free == 3)
+                    skeleton.drawmodel.CalculateNormals(0);
+                if (!playerdetail || skeleton.free == 3)
+                    skeleton.drawmodellow.CalculateNormals(0);
+                if (skeleton.clothes)
+                    skeleton.drawmodelclothes.CalculateNormals(0);
             } else {
-                if (playerdetail || skeleton.free == 3)skeleton.drawmodel.UpdateVertexArrayNoTexNoNorm();
-                if (!playerdetail || skeleton.free == 3)skeleton.drawmodellow.UpdateVertexArrayNoTexNoNorm();
+                if (playerdetail || skeleton.free == 3)
+                    skeleton.drawmodel.UpdateVertexArrayNoTexNoNorm();
+                if (!playerdetail || skeleton.free == 3)
+                    skeleton.drawmodellow.UpdateVertexArrayNoTexNoNorm();
                 if (skeleton.clothes) {
                     skeleton.drawmodelclothes.UpdateVertexArrayNoTexNoNorm();
                 }
@@ -5728,18 +6162,26 @@ int Person::DrawSkeleton()
         }
         framemult = .01;
         updatedelaychange = -framemult * 4 * (45 - findDistance(&viewer, &coords) * 1);
-        if (updatedelaychange > -realmultiplier * 30)updatedelaychange = -realmultiplier * 30;
-        if (updatedelaychange > -framemult * 4)updatedelaychange = -framemult * 4;
-        if (skeleton.free == 1)updatedelaychange *= 6;
-        if (id == 0)updatedelaychange *= 8;
+        if (updatedelaychange > -realmultiplier * 30)
+            updatedelaychange = -realmultiplier * 30;
+        if (updatedelaychange > -framemult * 4)
+            updatedelaychange = -framemult * 4;
+        if (skeleton.free == 1)
+            updatedelaychange *= 6;
+        if (id == 0)
+            updatedelaychange *= 8;
         updatedelay += updatedelaychange;
 
         glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
         glPushMatrix();
-        if (!skeleton.free)glTranslatef(coords.x, coords.y - .02, coords.z);
-        if (skeleton.free)glTranslatef(coords.x, coords.y - .02, coords.z);
-        if (!skeleton.free)glTranslatef(offset.x * scale, offset.y * scale, offset.z * scale);
-        if (!skeleton.free)glRotatef(yaw, 0, 1, 0);
+        if (!skeleton.free)
+            glTranslatef(coords.x, coords.y - .02, coords.z);
+        if (skeleton.free)
+            glTranslatef(coords.x, coords.y - .02, coords.z);
+        if (!skeleton.free)
+            glTranslatef(offset.x * scale, offset.y * scale, offset.z * scale);
+        if (!skeleton.free)
+            glRotatef(yaw, 0, 1, 0);
         if (showpoints) {
             glPointSize(5);
             glColor4f(.4, 1, .4, 1);
@@ -5769,11 +6211,14 @@ int Person::DrawSkeleton()
         terrainlight = terrain.getLighting(coords.x, coords.z);
         distance = distsq(&viewer, &coords);
         distance = (viewdistance * viewdistance - (distance - (viewdistance * viewdistance * fadestart)) * (1 / (1 - fadestart))) / viewdistance / viewdistance;
-        if (distance > 1)distance = 1;
+        if (distance > 1)
+            distance = 1;
         if (distance > 0) {
             terrainheight = (coords.y - terrain.getHeight(coords.x, coords.z)) / 3 + 1;
-            if (terrainheight < 1)terrainheight = 1;
-            if (terrainheight > 1.7)terrainheight = 1.7;
+            if (terrainheight < 1)
+                terrainheight = 1;
+            if (terrainheight > 1.7)
+                terrainheight = 1.7;
 
             //burnt=0;
             glColor4f((1 - (1 - terrainlight.x) / terrainheight) - burnt, (1 - (1 - terrainlight.y) / terrainheight) - burnt, (1 - (1 - terrainlight.z) / terrainheight) - burnt, distance);
@@ -5805,13 +6250,17 @@ int Person::DrawSkeleton()
             }
             if (playerdetail) {
                 if (!showpoints) {
-                    if ((tutoriallevel && id != 0))skeleton.drawmodel.drawdifftex(Sprite::cloudimpacttexture);
-                    else skeleton.drawmodel.draw();
+                    if ((tutoriallevel && id != 0))
+                        skeleton.drawmodel.drawdifftex(Sprite::cloudimpacttexture);
+                    else
+                        skeleton.drawmodel.draw();
                 }
             }
             if (!playerdetail) {
-                if ((tutoriallevel && id != 0))skeleton.drawmodellow.drawdifftex(Sprite::cloudimpacttexture);
-                else skeleton.drawmodellow.drawdifftex(skeleton.drawmodel.textureptr);
+                if ((tutoriallevel && id != 0))
+                    skeleton.drawmodellow.drawdifftex(Sprite::cloudimpacttexture);
+                else
+                    skeleton.drawmodellow.drawdifftex(skeleton.drawmodel.textureptr);
             }
 
             if (!(animation[animTarget].attack == normalattack || animation[animTarget].attack == reversed))
@@ -5834,13 +6283,17 @@ int Person::DrawSkeleton()
                     glTranslatef(smoketex * .6, 0, 0);
                     if (playerdetail) {
                         if (!showpoints) {
-                            if ((tutoriallevel && id != 0))skeleton.drawmodel.drawdifftex(Sprite::cloudimpacttexture);
-                            else skeleton.drawmodel.draw();
+                            if ((tutoriallevel && id != 0))
+                                skeleton.drawmodel.drawdifftex(Sprite::cloudimpacttexture);
+                            else
+                                skeleton.drawmodel.draw();
                         }
                     }
                     if (!playerdetail) {
-                        if ((tutoriallevel && id != 0))skeleton.drawmodellow.drawdifftex(Sprite::cloudimpacttexture);
-                        else skeleton.drawmodellow.drawdifftex(skeleton.drawmodel.textureptr);
+                        if ((tutoriallevel && id != 0))
+                            skeleton.drawmodellow.drawdifftex(Sprite::cloudimpacttexture);
+                        else
+                            skeleton.drawmodellow.drawdifftex(skeleton.drawmodel.textureptr);
                     }
                 }
 
@@ -5853,8 +6306,10 @@ int Person::DrawSkeleton()
             if (skeleton.clothes) {
                 glDepthMask(0);
                 glEnable(GL_BLEND);
-                if (!immediate)skeleton.drawmodelclothes.draw();
-                if (immediate)skeleton.drawmodelclothes.drawimmediate();
+                if (!immediate)
+                    skeleton.drawmodelclothes.draw();
+                if (immediate)
+                    skeleton.drawmodelclothes.drawimmediate();
                 glDepthMask(1);
             }
         }
@@ -5876,7 +6331,8 @@ int Person::DrawSkeleton()
                             }
                         }
                         weaponpoint = (skeleton.muscles[weaponattachmuscle].parent1->position + skeleton.muscles[weaponattachmuscle].parent2->position) / 2;
-                        if (creature == wolftype)weaponpoint = (skeleton.joints[skeleton.jointlabels[rightwrist]].position * .7 + skeleton.joints[skeleton.jointlabels[righthand]].position * .3);
+                        if (creature == wolftype)
+                            weaponpoint = (skeleton.joints[skeleton.jointlabels[rightwrist]].position * .7 + skeleton.joints[skeleton.jointlabels[righthand]].position * .3);
                     }
                     if (weapons[i].getType() == staff) {
                         for (j = 0; j < skeleton.num_muscles; j++) {
@@ -5897,13 +6353,17 @@ int Person::DrawSkeleton()
                         vec2 = (skeleton.joints[skeleton.jointlabels[rightwrist]].position - skeleton.joints[skeleton.jointlabels[rightshoulder]].position);
                         CrossProduct(&vec1, &vec2, &tempnormthing);
                         Normalise(&tempnormthing);
-                        if (animTarget != staffhitanim && animCurrent != staffhitanim && animTarget != staffgroundsmashanim && animCurrent != staffgroundsmashanim && animTarget != staffspinhitanim && animCurrent != staffspinhitanim)weaponpoint += tempnormthing * .1 - skeleton.specialforward[1] * .3 + (skeleton.joints[skeleton.jointlabels[rightwrist]].position - skeleton.joints[skeleton.jointlabels[rightelbow]].position);
+                        if (animTarget != staffhitanim && animCurrent != staffhitanim && animTarget != staffgroundsmashanim && animCurrent != staffgroundsmashanim && animTarget != staffspinhitanim && animCurrent != staffspinhitanim)
+                            weaponpoint += tempnormthing * .1 - skeleton.specialforward[1] * .3 + (skeleton.joints[skeleton.jointlabels[rightwrist]].position - skeleton.joints[skeleton.jointlabels[rightelbow]].position);
                     }
                 }
                 if (weaponactive != k && weaponstuck != k) {
-                    if (weapons[i].getType() == knife)weaponpoint = skeleton.joints[skeleton.jointlabels[abdomen]].position + (skeleton.joints[skeleton.jointlabels[righthip]].position - skeleton.joints[skeleton.jointlabels[lefthip]].position) * .1 + (skeleton.joints[skeleton.jointlabels[rightshoulder]].position - skeleton.joints[skeleton.jointlabels[leftshoulder]].position) * .35;
-                    if (weapons[i].getType() == sword)weaponpoint = skeleton.joints[skeleton.jointlabels[abdomen]].position + (skeleton.joints[skeleton.jointlabels[lefthip]].position - skeleton.joints[skeleton.jointlabels[righthip]].position) * .09 + (skeleton.joints[skeleton.jointlabels[leftshoulder]].position - skeleton.joints[skeleton.jointlabels[rightshoulder]].position) * .33;
-                    if (weapons[i].getType() == staff)weaponpoint = skeleton.joints[skeleton.jointlabels[abdomen]].position + (skeleton.joints[skeleton.jointlabels[lefthip]].position - skeleton.joints[skeleton.jointlabels[righthip]].position) * .09 + (skeleton.joints[skeleton.jointlabels[leftshoulder]].position - skeleton.joints[skeleton.jointlabels[rightshoulder]].position) * .33;
+                    if (weapons[i].getType() == knife)
+                        weaponpoint = skeleton.joints[skeleton.jointlabels[abdomen]].position + (skeleton.joints[skeleton.jointlabels[righthip]].position - skeleton.joints[skeleton.jointlabels[lefthip]].position) * .1 + (skeleton.joints[skeleton.jointlabels[rightshoulder]].position - skeleton.joints[skeleton.jointlabels[leftshoulder]].position) * .35;
+                    if (weapons[i].getType() == sword)
+                        weaponpoint = skeleton.joints[skeleton.jointlabels[abdomen]].position + (skeleton.joints[skeleton.jointlabels[lefthip]].position - skeleton.joints[skeleton.jointlabels[righthip]].position) * .09 + (skeleton.joints[skeleton.jointlabels[leftshoulder]].position - skeleton.joints[skeleton.jointlabels[rightshoulder]].position) * .33;
+                    if (weapons[i].getType() == staff)
+                        weaponpoint = skeleton.joints[skeleton.jointlabels[abdomen]].position + (skeleton.joints[skeleton.jointlabels[lefthip]].position - skeleton.joints[skeleton.jointlabels[righthip]].position) * .09 + (skeleton.joints[skeleton.jointlabels[leftshoulder]].position - skeleton.joints[skeleton.jointlabels[rightshoulder]].position) * .33;
                     for (j = 0; j < skeleton.num_muscles; j++) {
                         if ((skeleton.muscles[j].parent1->label == abdomen || skeleton.muscles[j].parent2->label == abdomen) && (skeleton.muscles[j].parent1->label == neck || skeleton.muscles[j].parent2->label == neck) && skeleton.muscles[j].numvertices > 0) {
                             weaponrotatemuscle = j;
@@ -5911,8 +6371,10 @@ int Person::DrawSkeleton()
                     }
                 }
                 if (weaponstuck == k) {
-                    if (weaponstuckwhere == 0)weaponpoint = skeleton.joints[skeleton.jointlabels[abdomen]].position * .5 + skeleton.joints[skeleton.jointlabels[neck]].position * .5 - skeleton.forward * .8;
-                    else weaponpoint = skeleton.joints[skeleton.jointlabels[abdomen]].position * .5 + skeleton.joints[skeleton.jointlabels[neck]].position * .5 + skeleton.forward * .8;
+                    if (weaponstuckwhere == 0)
+                        weaponpoint = skeleton.joints[skeleton.jointlabels[abdomen]].position * .5 + skeleton.joints[skeleton.jointlabels[neck]].position * .5 - skeleton.forward * .8;
+                    else
+                        weaponpoint = skeleton.joints[skeleton.jointlabels[abdomen]].position * .5 + skeleton.joints[skeleton.jointlabels[neck]].position * .5 + skeleton.forward * .8;
                     for (j = 0; j < skeleton.num_muscles; j++) {
                         if ((skeleton.muscles[j].parent1->label == abdomen || skeleton.muscles[j].parent2->label == abdomen) && (skeleton.muscles[j].parent1->label == neck || skeleton.muscles[j].parent2->label == neck) && skeleton.muscles[j].numvertices > 0) {
                             weaponrotatemuscle = j;
@@ -5959,7 +6421,8 @@ int Person::DrawSkeleton()
                             weapons[i].rotation3 = 0;
                             weapons[i].smallrotation = -90;
                             weapons[i].smallrotation2 = 0;
-                            if (temppoint1.x > temppoint2.x)weapons[i].rotation1 = 360 - weapons[i].rotation1;
+                            if (temppoint1.x > temppoint2.x)
+                                weapons[i].rotation1 = 360 - weapons[i].rotation1;
                         }
                         if ((animCurrent == knifeslashreversalanim && animTarget == knifeslashreversalanim) || (animCurrent == knifeslashreversedanim && animTarget == knifeslashreversedanim)) {
                             XYZ temppoint1, temppoint2, tempforward;
@@ -5977,7 +6440,8 @@ int Person::DrawSkeleton()
                             weapons[i].rotation3 = 0;
                             weapons[i].smallrotation = 90;
                             weapons[i].smallrotation2 = 0;
-                            if (temppoint1.x > temppoint2.x)weapons[i].rotation1 = 360 - weapons[i].rotation1;
+                            if (temppoint1.x > temppoint2.x)
+                                weapons[i].rotation1 = 360 - weapons[i].rotation1;
                         }
                         if (animTarget == knifethrowanim) {
                             weapons[i].smallrotation = 90;
@@ -6020,7 +6484,8 @@ int Person::DrawSkeleton()
                             weapons[i].rotation3 = 0;
                             weapons[i].smallrotation = 90;
                             weapons[i].smallrotation2 = 0;
-                            if (temppoint1.x > temppoint2.x)weapons[i].rotation1 = 360 - weapons[i].rotation1;
+                            if (temppoint1.x > temppoint2.x)
+                                weapons[i].rotation1 = 360 - weapons[i].rotation1;
                         }
                     }
                     if (weapons[i].getType() == staff) {
@@ -6042,7 +6507,8 @@ int Person::DrawSkeleton()
                             weapons[i].rotation3 = 0;
                             weapons[i].smallrotation = 90;
                             weapons[i].smallrotation2 = 0;
-                            if (temppoint1.x > temppoint2.x)weapons[i].rotation1 = 360 - weapons[i].rotation1;
+                            if (temppoint1.x > temppoint2.x)
+                                weapons[i].rotation1 = 360 - weapons[i].rotation1;
                         }
                     }
                 }
@@ -6072,11 +6538,15 @@ int Person::DrawSkeleton()
     }
 
     calcrot = 0;
-    if (skeleton.free)calcrot = 1;
-    if (animation[animTarget].attack || isRun() || animTarget == staggerbackhardanim || isFlip() || animTarget == climbanim || animTarget == sneakanim || animTarget == rollanim || animTarget == walkanim || animTarget == backhandspringanim || isFlip() || isWallJump())calcrot = 1;
-    if (animCurrent != animTarget)calcrot = 1;
+    if (skeleton.free)
+        calcrot = 1;
+    if (animation[animTarget].attack || isRun() || animTarget == staggerbackhardanim || isFlip() || animTarget == climbanim || animTarget == sneakanim || animTarget == rollanim || animTarget == walkanim || animTarget == backhandspringanim || isFlip() || isWallJump())
+        calcrot = 1;
+    if (animCurrent != animTarget)
+        calcrot = 1;
     //if(id==0)calcrot=1;
-    if (skeleton.free == 2)calcrot = 0;
+    if (skeleton.free == 2)
+        calcrot = 0;
 
     return 0;
 }
@@ -6098,8 +6568,10 @@ int Person::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate,
 
     oldp1 = *p1;
     *p1 = *p1 - *move;
-    if (distsq(p1, &model->boundingspherecenter) > radius * radius + model->boundingsphereradius * model->boundingsphereradius)return -1;
-    if (*rotate)*p1 = DoRotation(*p1, 0, -*rotate, 0);
+    if (distsq(p1, &model->boundingspherecenter) > radius * radius + model->boundingsphereradius * model->boundingsphereradius)
+        return -1;
+    if (*rotate)
+        *p1 = DoRotation(*p1, 0, -*rotate, 0);
     for (i = 0; i < 4; i++) {
         for (j = 0; j < model->TriangleNum; j++) {
             if (model->facenormals[j].y <= slopethreshold) {
@@ -6107,14 +6579,18 @@ int Person::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate,
                 distance = abs((model->facenormals[j].x * p1->x) + (model->facenormals[j].y * p1->y) + (model->facenormals[j].z * p1->z) - ((model->facenormals[j].x * model->vertex[model->Triangles[j].vertex[0]].x) + (model->facenormals[j].y * model->vertex[model->Triangles[j].vertex[0]].y) + (model->facenormals[j].z * model->vertex[model->Triangles[j].vertex[0]].z)));
                 if (distance < radius) {
                     point = *p1 - model->facenormals[j] * distance;
-                    if (PointInTriangle( &point, model->facenormals[j], &model->vertex[model->Triangles[j].vertex[0]], &model->vertex[model->Triangles[j].vertex[1]], &model->vertex[model->Triangles[j].vertex[2]]))intersecting = 1;
-                    if (!intersecting)intersecting = sphere_line_intersection(&model->vertex[model->Triangles[j].vertex[0]],
+                    if (PointInTriangle( &point, model->facenormals[j], &model->vertex[model->Triangles[j].vertex[0]], &model->vertex[model->Triangles[j].vertex[1]], &model->vertex[model->Triangles[j].vertex[2]]))
+                        intersecting = 1;
+                    if (!intersecting)
+                        intersecting = sphere_line_intersection(&model->vertex[model->Triangles[j].vertex[0]],
                                                          &model->vertex[model->Triangles[j].vertex[1]],
                                                          p1, &radius);
-                    if (!intersecting)intersecting = sphere_line_intersection(&model->vertex[model->Triangles[j].vertex[1]],
+                    if (!intersecting)
+                        intersecting = sphere_line_intersection(&model->vertex[model->Triangles[j].vertex[1]],
                                                          &model->vertex[model->Triangles[j].vertex[2]],
                                                          p1, &radius);
-                    if (!intersecting)intersecting = sphere_line_intersection(&model->vertex[model->Triangles[j].vertex[0]],
+                    if (!intersecting)
+                        intersecting = sphere_line_intersection(&model->vertex[model->Triangles[j].vertex[0]],
                                                          &model->vertex[model->Triangles[j].vertex[2]],
                                                          p1, &radius);
                     end = *p1 - point;
@@ -6125,7 +6601,8 @@ int Person::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate,
                         if (LineFacetd(&start, &end, &model->vertex[model->Triangles[j].vertex[0]], &model->vertex[model->Triangles[j].vertex[1]], &model->vertex[model->Triangles[j].vertex[2]], &model->facenormals[j], &point)) {
                             p1->y = point.y + radius;
                             if ((animTarget == jumpdownanim || isFlip())) {
-                                if (isFlip() && (frameTarget < 5 || animation[animTarget].label[frameTarget] == 7 || animation[animTarget].label[frameTarget] == 4))RagDoll(0);
+                                if (isFlip() && (frameTarget < 5 || animation[animTarget].label[frameTarget] == 7 || animation[animTarget].label[frameTarget] == 4))
+                                    RagDoll(0);
 
                                 if (animTarget == jumpupanim) {
                                     jumppower = -4;
@@ -6141,7 +6618,8 @@ int Person::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate,
                                 }
 
                                 if ((animTarget == jumpdownanim || isFlip()) && !wasLanding() && !wasLandhard()) {
-                                    if (isFlip())jumppower = -4;
+                                    if (isFlip())
+                                        jumppower = -4;
                                     animTarget = getLanding();
                                     emit_sound_at(landsound, coords, 128.);
 
@@ -6171,14 +6649,18 @@ int Person::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate,
                 distance = abs((model->facenormals[j].x * start.x) + (model->facenormals[j].y * start.y) + (model->facenormals[j].z * start.z) - ((model->facenormals[j].x * model->vertex[model->Triangles[j].vertex[0]].x) + (model->facenormals[j].y * model->vertex[model->Triangles[j].vertex[0]].y) + (model->facenormals[j].z * model->vertex[model->Triangles[j].vertex[0]].z)));
                 if (distance < radius * .5) {
                     point = start - model->facenormals[j] * distance;
-                    if (PointInTriangle( &point, model->facenormals[j], &model->vertex[model->Triangles[j].vertex[0]], &model->vertex[model->Triangles[j].vertex[1]], &model->vertex[model->Triangles[j].vertex[2]]))intersecting = 1;
-                    if (!intersecting)intersecting = sphere_line_intersection(model->vertex[model->Triangles[j].vertex[0]].x, model->vertex[model->Triangles[j].vertex[0]].y, model->vertex[model->Triangles[j].vertex[0]].z,
+                    if (PointInTriangle( &point, model->facenormals[j], &model->vertex[model->Triangles[j].vertex[0]], &model->vertex[model->Triangles[j].vertex[1]], &model->vertex[model->Triangles[j].vertex[2]]))
+                        intersecting = 1;
+                    if (!intersecting)
+                        intersecting = sphere_line_intersection(model->vertex[model->Triangles[j].vertex[0]].x, model->vertex[model->Triangles[j].vertex[0]].y, model->vertex[model->Triangles[j].vertex[0]].z,
                                                          model->vertex[model->Triangles[j].vertex[1]].x, model->vertex[model->Triangles[j].vertex[1]].y, model->vertex[model->Triangles[j].vertex[1]].z,
                                                          p1->x, p1->y, p1->z, radius / 2);
-                    if (!intersecting)intersecting = sphere_line_intersection(model->vertex[model->Triangles[j].vertex[1]].x, model->vertex[model->Triangles[j].vertex[1]].y, model->vertex[model->Triangles[j].vertex[1]].z,
+                    if (!intersecting)
+                        intersecting = sphere_line_intersection(model->vertex[model->Triangles[j].vertex[1]].x, model->vertex[model->Triangles[j].vertex[1]].y, model->vertex[model->Triangles[j].vertex[1]].z,
                                                          model->vertex[model->Triangles[j].vertex[2]].x, model->vertex[model->Triangles[j].vertex[2]].y, model->vertex[model->Triangles[j].vertex[2]].z,
                                                          p1->x, p1->y, p1->z, radius / 2);
-                    if (!intersecting)intersecting = sphere_line_intersection(model->vertex[model->Triangles[j].vertex[0]].x, model->vertex[model->Triangles[j].vertex[0]].y, model->vertex[model->Triangles[j].vertex[0]].z,
+                    if (!intersecting)
+                        intersecting = sphere_line_intersection(model->vertex[model->Triangles[j].vertex[0]].x, model->vertex[model->Triangles[j].vertex[0]].y, model->vertex[model->Triangles[j].vertex[0]].z,
                                                          model->vertex[model->Triangles[j].vertex[2]].x, model->vertex[model->Triangles[j].vertex[2]].y, model->vertex[model->Triangles[j].vertex[2]].z,
                                                          p1->x, p1->y, p1->z, radius / 2);
                     end = *p1 - point;
@@ -6186,7 +6668,8 @@ int Person::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate,
                         if ((animTarget == jumpdownanim || animTarget == jumpupanim || isFlip())) {
                             start = velocity;
                             velocity -= DoRotation(model->facenormals[j], 0, *rotate, 0) * findLength(&velocity) * abs(normaldotproduct(velocity, DoRotation(model->facenormals[j], 0, *rotate, 0))); //(distance-radius*.5)/multiplier;
-                            if (findLengthfast(&start) < findLengthfast(&velocity))velocity = start;
+                            if (findLengthfast(&start) < findLengthfast(&velocity))
+                                velocity = start;
                         }
                         *p1 += model->facenormals[j] * (distance - radius * .5);
                     }
@@ -6199,9 +6682,11 @@ int Person::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate,
             }
         }
     }
-    if (*rotate)*p = DoRotation(*p, 0, *rotate, 0);
+    if (*rotate)
+        *p = DoRotation(*p, 0, *rotate, 0);
     *p = *p + *move;
-    if (*rotate)*p1 = DoRotation(*p1, 0, *rotate, 0);
+    if (*rotate)
+        *p1 = DoRotation(*p1, 0, *rotate, 0);
     *p1 += *move;
     return firstintersecting;
 }
