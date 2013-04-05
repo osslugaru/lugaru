@@ -61,7 +61,7 @@ class Person
 		int animTarget;
 
 		// frameCurrent and frameTarget are used to interpolate between the frames of an animation
-		// (e.g. the crouched animation has only two frames, lerped back and forth).
+		// (e.g. the crouched animation has only two frames, lerped back and forth slowly).
 		// animations advance at various speeds.
 		int frameCurrent;
 		int frameTarget;

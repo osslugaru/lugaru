@@ -85,6 +85,11 @@ extern bool gamestarted;
 
 Person player[maxplayers];
 
+/* EFFECT
+ *
+ * USES:
+ * GameTick/doPlayerCollisions
+ */
 void Person::CheckKick()
 {
     if (!(hasvictim
@@ -93,8 +98,8 @@ void Person::CheckKick()
                 && victim != this
                 && frameCurrent >= 2
                 && animCurrent == rabbitkickanim)
-            && (distsq(&coords, &victim->coords) < 1.2)
-            && (!victim->skeleton.free)))
+            && distsq(&coords, &victim->coords) < 1.2
+            && !victim->skeleton.free))
         return;
 
     if (animation[victim->animTarget].height != lowheight) {
@@ -144,6 +149,13 @@ void Person::CheckKick()
     }
 }
 
+/* EFFECT
+ *
+ * USES:
+ * GameTick/doPlayerCollisions - spread fire between players
+ * GameTick/doDebugKeys - press f to ignite
+ * Person::DoStuff - spread fire from lit campfires and bushes
+ */
 void Person::CatchFire()
 {
     XYZ flatfacing, flatvelocity;
@@ -172,6 +184,9 @@ void Person::CatchFire()
     onfire = 1;
 }
 
+/* FUNCTION
+ * idle animation for this creature (depending on status)
+ */
 int Person::getIdle()
 {
     if (indialogue != -1 && howactive == typeactive && creature == rabbittype)
@@ -211,6 +226,9 @@ int Person::getIdle()
     return 0;
 }
 
+/* FUNCTION
+ * crouch animation for this creature
+ */
 int Person::getCrouch()
 {
     if (creature == rabbittype)
@@ -220,6 +238,9 @@ int Person::getCrouch()
     return 0;
 }
 
+/* FUNCTION
+ * running animation for this creature (can be upright or all fours)
+ */
 int Person::getRun()
 {
     if (creature == rabbittype && (!superruntoggle || weaponactive != -1))
@@ -234,6 +255,8 @@ int Person::getRun()
     return 0;
 }
 
+/* FUNCTION
+ */
 int Person::getStop()
 {
     if (creature == rabbittype)
@@ -243,6 +266,8 @@ int Person::getStop()
     return 0;
 }
 
+/* FUNCTION
+ */
 int Person::getLanding()
 {
     if (creature == rabbittype)
@@ -252,6 +277,8 @@ int Person::getLanding()
     return 0;
 }
 
+/* FUNCTION
+ */
 int Person::getLandhard()
 {
     if (creature == rabbittype)
@@ -261,6 +288,11 @@ int Person::getLandhard()
     return 0;
 }
 
+/* EFFECT
+ *
+ * USES:
+ * Person::DoAnimations
+ */
 static void
 SolidHitBonus(int playerid)
 {
@@ -270,8 +302,12 @@ SolidHitBonus(int playerid)
         award_bonus(playerid, solidhit);
 }
 
+/* EFFECT
+ * spawns blood effects
+ */
 void Person::DoBlood(float howmuch, int which)
 {
+    // FIXME: should abstract out inputs
     static int bleedxint, bleedyint;
     static XYZ bloodvel;
     //if(howmuch&&id==0)blooddimamount=1;
@@ -279,6 +315,7 @@ void Person::DoBlood(float howmuch, int which)
         if (bleeding <= 0 && spurt) {
             spurt = 0;
             for (int i = 0; i < 3; i++) {
+                // emit blood particles
                 bloodvel = 0;
                 if (!skeleton.free) {
                     bloodvel.z = 10;
@@ -300,9 +337,10 @@ void Person::DoBlood(float howmuch, int which)
                     Sprite::MakeSprite(bloodflamesprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position + skeleton.joints[skeleton.jointlabels[neck]].position) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .3, 1);
                 }
             }
-            if (Random() % 2 == 0)
+            if (Random() % 2 == 0) // 50% chance
                 for (int i = 0; i < 3; i++) {
                     if (Random() % 2 != 0) {
+                        // emit teeth particles
                         bloodvel = 0;
                         if (skeleton.free) {
                             bloodvel -= DoRotation(skeleton.forward * 10 * scale, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0);
@@ -318,11 +356,12 @@ void Person::DoBlood(float howmuch, int which)
                         } else {
                             Sprite::MakeSprite(splintersprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position + skeleton.joints[skeleton.jointlabels[neck]].position) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .05, 1);
                         }
-                        Sprite::setLastSpriteSpecial(3);
+                        Sprite::setLastSpriteSpecial(3); // sets it to teeth
                     }
                 }
         }
         if (decals) {
+            // FIXME: manipulating attributes
             bleeding = howmuch + (float)abs(Random() % 100) / 200 - .25;
             bleedxint = 0;
             bleedyint = 0;
@@ -348,6 +387,10 @@ void Person::DoBlood(float howmuch, int which)
         bleeding = 2;
 }
 
+/* EFFECT
+ * spawns big blood effects and ???
+ * modifies character's skin texture
+ */
 void Person::DoBloodBig(float howmuch, int which)
 {
     static int bleedxint, bleedyint, i, j;
@@ -357,8 +400,10 @@ void Person::DoBloodBig(float howmuch, int which)
 
     if (tutoriallevel != 1 || id == 0)
         if (aitype != playercontrolled && howmuch > 0) {
+            // play pain sounds
             int whichsound = -1;
 
+            // FIXME: seems to be spawning sounds by manipulating attributes... MESSY!
             if (creature == wolftype) {
                 int i = abs(Random() % 2);
                 if (i == 0)
@@ -388,6 +433,7 @@ void Person::DoBloodBig(float howmuch, int which)
         }
 
     if (id == 0 && howmuch > 0) {
+        // FIXME: manipulating attributes
         flashamount = .5;
         flashr = 1;
         flashg = 0;
@@ -399,6 +445,8 @@ void Person::DoBloodBig(float howmuch, int which)
         if (bleeding <= 0 && spurt) {
             spurt = 0;
             for (int i = 0; i < 3; i++) {
+                // emit blood particles
+                // FIXME: copypaste from above
                 bloodvel = 0;
                 if (!skeleton.free) {
                     bloodvel.z = 10;
@@ -421,6 +469,11 @@ void Person::DoBloodBig(float howmuch, int which)
                 }
             }
         }
+
+        // weird texture manipulation code follows.
+        // looks like this is painting blood onto the character's skin texture
+        // FIXME: surely there's a better way
+
         int offsetx = 0, offsety = 0;
         if (which == 225) {
             offsety = Random() % 40;
@@ -451,7 +504,7 @@ void Person::DoBloodBig(float howmuch, int which)
         if (creature == rabbittype)
             for (i = 0; i < 512; i++) {
                 for (j = 0; j < 512; j++) {
-                    if (bloodText[i * 512 * 3 + j * 3 + 0] <= which + 4 && bloodText[i * 512 * 3 + j * 3 + 0] >= which - 4) {
+                    if (bloodText[i*512*3 + j*3 + 0] <= which + 4 && bloodText[i*512*3 + j*3 + 0] >= which - 4) {
                         if (i < startx) startx = i;
                         if (j < starty) starty = j;
                         if (i > endx) endx = i;
@@ -462,7 +515,7 @@ void Person::DoBloodBig(float howmuch, int which)
         if (creature == wolftype)
             for (i = 0; i < 512; i++) {
                 for (j = 0; j < 512; j++) {
-                    if (wolfbloodText[i * 512 * 3 + j * 3 + 0] <= which + 4 && wolfbloodText[i * 512 * 3 + j * 3 + 0] >= which - 4) {
+                    if (wolfbloodText[i*512*3 + j*3 + 0] <= which + 4 && wolfbloodText[i*512*3 + j*3 + 0] >= which - 4) {
                         if (i < startx) startx = i;
                         if (j < starty) starty = j;
                         if (i > endx) endx = i;
@@ -562,6 +615,9 @@ void Person::DoBloodBig(float howmuch, int which)
         bleeding = 2;
 }
 
+/* EFFECT
+ * similar to DoBloodBig
+ */
 bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
 {
     static int i, j;
@@ -587,8 +643,10 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
         endpoint.y -= 100;
         movepoint = 0;
         rotationpoint = 0;
+        // ray testing for a tri in the character model
         whichtri = skeleton.drawmodel.LineCheck(&startpoint, &endpoint, &colpoint, &movepoint, &rotationpoint);
         if (whichtri != -1) {
+            // low level geometry math
             p0 = colpoint;
             p1 = skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[whichtri].vertex[0]];
             p2 = skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[whichtri].vertex[1]];
@@ -635,6 +693,8 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
             if (bleeding <= 0 && spurt) {
                 spurt = 0;
                 for (int i = 0; i < 3; i++) {
+                    // emit blood particles
+                    // FIXME: more copypaste code
                     bloodvel = 0;
                     if (!skeleton.free) {
                         bloodvel.z = 10;
@@ -657,6 +717,9 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
                     }
                 }
             }
+
+            // texture manipulation follows
+
             int offsetx = 0, offsety = 0;
             /*if(which==225){
             offsety=Random()%40;
@@ -795,6 +858,9 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
 
 
 
+/* EFFECT
+ * guessing this performs a reversal
+ */
 void Person::Reverse()
 {
     if (!((victim->aitype == playercontrolled
@@ -1133,21 +1199,29 @@ void Person::Reverse()
         numreversals++;
 }
 
+/* EFFECT
+ * get hurt
+ */
 void Person::DoDamage(float howmuch)
 {
+    // subtract health (temporary?)
     if (tutoriallevel != 1)
         damage += howmuch / power;
+    // stats?
     if (id != 0)
         damagedealt += howmuch / power;
     if (id == 0)
         damagetaken += howmuch / power;
 
+    // reset bonuses
     if (id == 0 && (bonus == solidhit || bonus == twoxcombo || bonus == threexcombo || bonus == fourxcombo || bonus == megacombo))
         bonus = 0;
+    // subtract health
     if (tutoriallevel != 1)
         permanentdamage += howmuch / 2 / power;
     if (tutoriallevel != 1)
         superpermanentdamage += howmuch / 4 / power;
+    // visual effects
     if (permanentdamage > damagetolerance / 2 && permanentdamage - howmuch < damagetolerance / 2 && Random() % 2)
         DoBlood(1, 255);
     if ((permanentdamage > damagetolerance * .8 && Random() % 2 && !deathbleeding) || spurt)
@@ -1160,6 +1234,7 @@ void Person::DoDamage(float howmuch)
     if (blackout > 1)
         blackout = 1;
 
+    // cancel attack?
     if (aitype == passivetype && damage < damagetolerance && ((tutoriallevel != 1 || cananger) && hostile))
         aitype = attacktypecutoff;
     if (tutoriallevel != 1 && aitype != playercontrolled && damage < damagetolerance && damage > damagetolerance * 2 / 3 && creature == rabbittype) {
@@ -1207,6 +1282,7 @@ void Person::DoDamage(float howmuch)
         coords = 20;
     }
 
+    // play sounds
     if (tutoriallevel != 1 || id == 0)
         if (speechdelay <= 0 && !dead && aitype != playercontrolled) {
             int whichsound = -1;
@@ -1245,6 +1321,9 @@ void Person::DoDamage(float howmuch)
     //if(damage>=damagetolerance&&howmuch<30&&!dead)damage=damagetolerance-1;
 }
 
+/* EFFECT
+ * calculate/animate head facing direction?
+ */
 void Person::DoHead()
 {
     static XYZ rotatearound;
@@ -1338,6 +1417,9 @@ void Person::DoHead()
     }
 }
 
+/* EFFECT
+ * ragdolls character?
+ */
 void Person::RagDoll(bool checkcollision)
 {
     static XYZ change;
@@ -1464,6 +1546,7 @@ void Person::RagDoll(bool checkcollision)
         }
         velocity /= skeleton.num_joints;
 
+        // drop weapon
         if (Random() % 2 == 0) {
             if (weaponactive != -1 && animTarget != rabbitkickanim && num_weapons > 0) {
                 weapons[weaponids[0]].owner = -1;
@@ -1497,6 +1580,8 @@ void Person::RagDoll(bool checkcollision)
 
 
 
+/* EFFECT
+ */
 void Person::FootLand(int which, float opacity)
 {
     static XYZ terrainlight;
@@ -1569,6 +1654,9 @@ void Person::FootLand(int which, float opacity)
         }
 }
 
+/* EFFECT
+ * make a puff effect at a body part (dust effect?)
+ */
 void Person::Puff(int whichlabel)
 {
     static XYZ footvel, footpoint;
@@ -1578,11 +1666,17 @@ void Person::Puff(int whichlabel)
     Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 1, 1, .9, .3);
 }
 
+/* FUNCTION
+ * convenience function
+ */
 Joint& Person::getJointFor(int bodypart)
 {
     return skeleton.joints[skeleton.jointlabels[bodypart]];
 }
 
+/* EFFECT
+ * I think I added this in an attempt to clean up code
+ */
 void Person::setAnimation(int animation)
 {
     animTarget = animation;
@@ -1590,7 +1684,11 @@ void Person::setAnimation(int animation)
     target = 0;
 }
 
-void	Person::DoAnimations()
+/* EFFECT
+ * MONSTER
+ * TODO: ???
+ */
+void Person::DoAnimations()
 {
     if (!skeleton.free) {
         int i = 0;
@@ -4026,7 +4124,11 @@ void	Person::DoAnimations()
     //skeleton.DoConstraints();
 }
 
-void	Person::DoStuff()
+/* EFFECT
+ * MONSTER
+ * TODO
+ */
+void Person::DoStuff()
 {
     static XYZ terrainnormal;
     static XYZ flatfacing;
@@ -5772,6 +5874,10 @@ void	Person::DoStuff()
     }
 }
 
+/* EFFECT
+ * MONSTER
+ * TODO: ???
+ */
 int Person::DrawSkeleton()
 {
     int oldplayerdetail;
@@ -6552,6 +6658,8 @@ int Person::DrawSkeleton()
 }
 
 
+/* FUNCTION?
+ */
 int Person::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate, Model *model)
 {
     static int i, j;
@@ -6646,23 +6754,25 @@ int Person::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate,
                 intersecting = 0;
                 start = *p1;
                 start.y -= radius / 4;
-                distance = abs((model->facenormals[j].x * start.x) + (model->facenormals[j].y * start.y) + (model->facenormals[j].z * start.z) - ((model->facenormals[j].x * model->vertex[model->Triangles[j].vertex[0]].x) + (model->facenormals[j].y * model->vertex[model->Triangles[j].vertex[0]].y) + (model->facenormals[j].z * model->vertex[model->Triangles[j].vertex[0]].z)));
+                XYZ &v0 = model->vertex[model->Triangles[j].vertex[0]];
+                XYZ &v1 = model->vertex[model->Triangles[j].vertex[1]];
+                XYZ &v2 = model->vertex[model->Triangles[j].vertex[2]];
+                distance = abs((model->facenormals[j].x * start.x)
+                        + (model->facenormals[j].y * start.y)
+                        + (model->facenormals[j].z * start.z)
+                        - ((model->facenormals[j].x * v0.x)
+                            + (model->facenormals[j].y * v0.y)
+                            + (model->facenormals[j].z * v0.z)));
                 if (distance < radius * .5) {
                     point = start - model->facenormals[j] * distance;
-                    if (PointInTriangle( &point, model->facenormals[j], &model->vertex[model->Triangles[j].vertex[0]], &model->vertex[model->Triangles[j].vertex[1]], &model->vertex[model->Triangles[j].vertex[2]]))
+                    if (PointInTriangle( &point, model->facenormals[j], &v0, &v1, &v2))
                         intersecting = 1;
                     if (!intersecting)
-                        intersecting = sphere_line_intersection(model->vertex[model->Triangles[j].vertex[0]].x, model->vertex[model->Triangles[j].vertex[0]].y, model->vertex[model->Triangles[j].vertex[0]].z,
-                                                         model->vertex[model->Triangles[j].vertex[1]].x, model->vertex[model->Triangles[j].vertex[1]].y, model->vertex[model->Triangles[j].vertex[1]].z,
-                                                         p1->x, p1->y, p1->z, radius / 2);
+                        intersecting = sphere_line_intersection(v0.x,v0.y,v0.z, v1.x,v1.y,v1.z, p1->x, p1->y, p1->z, radius / 2);
                     if (!intersecting)
-                        intersecting = sphere_line_intersection(model->vertex[model->Triangles[j].vertex[1]].x, model->vertex[model->Triangles[j].vertex[1]].y, model->vertex[model->Triangles[j].vertex[1]].z,
-                                                         model->vertex[model->Triangles[j].vertex[2]].x, model->vertex[model->Triangles[j].vertex[2]].y, model->vertex[model->Triangles[j].vertex[2]].z,
-                                                         p1->x, p1->y, p1->z, radius / 2);
+                        intersecting = sphere_line_intersection(v1.x,v1.y,v1.z, v2.x,v2.y,v2.z, p1->x, p1->y, p1->z, radius / 2);
                     if (!intersecting)
-                        intersecting = sphere_line_intersection(model->vertex[model->Triangles[j].vertex[0]].x, model->vertex[model->Triangles[j].vertex[0]].y, model->vertex[model->Triangles[j].vertex[0]].z,
-                                                         model->vertex[model->Triangles[j].vertex[2]].x, model->vertex[model->Triangles[j].vertex[2]].y, model->vertex[model->Triangles[j].vertex[2]].z,
-                                                         p1->x, p1->y, p1->z, radius / 2);
+                        intersecting = sphere_line_intersection(v0.x,v0.y,v0.z, v2.x,v2.y,v2.z, p1->x, p1->y, p1->z, radius / 2);
                     end = *p1 - point;
                     if (dotproduct(&model->facenormals[j], &end) > 0 && intersecting) {
                         if ((animTarget == jumpdownanim || animTarget == jumpupanim || isFlip())) {
@@ -6690,3 +6800,4 @@ int Person::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate,
     *p1 += *move;
     return firstintersecting;
 }
+
