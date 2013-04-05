@@ -5938,15 +5938,29 @@ int Person::DrawSkeleton()
             if (!isSleeping() && !isSitting()) {
                 if (onterrain && ((isIdle() || isCrouch() || isLanding() || isLandhard() || animTarget == drawrightanim || animTarget == drawleftanim || animTarget == crouchdrawrightanim) && (wasIdle() || wasCrouch() || wasLanding() || wasLandhard() || animCurrent == drawrightanim || animCurrent == drawleftanim || animCurrent == crouchdrawrightanim)) && !skeleton.free) {
                     XYZ point, newpoint, change, change2;
+
+                    // TODO: all of these code blocks look really similar - what's their purpose?
+                    // looks like inverse kinematics code
+                    // TODO: implement localToWorld and worldToLocal
+                    //       but keep in mind it won't be the same math if player is ragdolled or something
+                    //       - localToWorldStanding / worldToLocalStanding (or crouching or...?)
+                    //       then comb through code for places where to use it
+
+                    // point = localToWorld(jointPos(leftfoot))
                     point = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
+                    // adjust height of foot
                     heightleft = terrain.getHeight(point.x, point.z) + .04;
                     point.y = heightleft;
                     change = jointPos(leftankle) - jointPos(leftfoot);
                     change2 = jointPos(leftknee) - jointPos(leftfoot);
+                    // jointPos(leftfoot) = worldToLocal(point)
                     jointPos(leftfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0);
+                    // move ankle along with foot
                     jointPos(leftankle) = jointPos(leftfoot) + change;
+                    // average knee pos between old and new pos
                     jointPos(leftknee) = (jointPos(leftfoot) + change2) / 2 + (jointPos(leftknee)) / 2;
 
+                    // do same as above for right leg
                     point = DoRotation(jointPos(rightfoot), 0, yaw, 0) * scale + coords;
                     heightright = terrain.getHeight(point.x, point.z) + .04;
                     point.y = heightright;
@@ -5955,9 +5969,12 @@ int Person::DrawSkeleton()
                     jointPos(rightfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0);
                     jointPos(rightankle) = jointPos(rightfoot) + change;
                     jointPos(rightknee) = (jointPos(rightfoot) + change2) / 2 + (jointPos(rightknee)) / 2;
+
+                    // fix up skeleton now that we've moved body parts?
                     skeleton.DoConstraints(&coords, &scale);
 
                     if (creature == wolftype) {
+                        // FIXME: EXACT same code as above
                         point = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
                         heightleft = terrain.getHeight(point.x, point.z) + .04;
                         point.y = heightleft;
@@ -5975,16 +5992,22 @@ int Person::DrawSkeleton()
                         jointPos(rightfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0);
                         jointPos(rightankle) = jointPos(rightfoot) + change;
                         jointPos(rightknee) = (jointPos(rightfoot) + change2) / 2 + (jointPos(rightknee)) / 2;
+
                         skeleton.DoConstraints(&coords, &scale);
                     }
                 }
+                // subtle difference in this conditional: an extra '!' in the middle
                 if (onterrain && ((isIdle() || isCrouch() || isLanding() || isLandhard() || animTarget == drawrightanim || animTarget == drawleftanim || animTarget == crouchdrawrightanim) && !(wasIdle() || wasCrouch() || wasLanding() || wasLandhard() || animCurrent == drawrightanim || animCurrent == drawleftanim || animCurrent == crouchdrawrightanim)) && !skeleton.free) {
                     XYZ point, newpoint, change, change2;
+
                     point = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
                     heightleft = terrain.getHeight(point.x, point.z) + .04;
                     point.y = heightleft;
                     change = jointPos(leftankle) - jointPos(leftfoot);
                     change2 = jointPos(leftknee) - jointPos(leftfoot);
+                    // only change is the addition of:
+                    // * target + jointPos(leftfoot) * (1 - target);
+                    // looks like interpolation
                     jointPos(leftfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0) * target + jointPos(leftfoot) * (1 - target);
                     jointPos(leftankle) = jointPos(leftfoot) + change;
                     jointPos(leftknee) = (jointPos(leftfoot) + change2) / 2 + (jointPos(leftknee)) / 2;
@@ -5994,12 +6017,16 @@ int Person::DrawSkeleton()
                     point.y = heightright;
                     change = jointPos(rightankle) - jointPos(rightfoot);
                     change2 = jointPos(rightknee) - jointPos(rightfoot);
+                    // likewise:
+                    // * target + jointPos(rightfoot) * (1 - target);
                     jointPos(rightfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0) * target + jointPos(rightfoot) * (1 - target);
                     jointPos(rightankle) = jointPos(rightfoot) + change;
                     jointPos(rightknee) = (jointPos(rightfoot) + change2) / 2 + (jointPos(rightknee)) / 2;
+
                     skeleton.DoConstraints(&coords, &scale);
 
                     if (creature == wolftype) {
+                        // once again, copied verbatim from above
                         point = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
                         heightleft = terrain.getHeight(point.x, point.z) + .04;
                         point.y = heightleft;
@@ -6017,17 +6044,21 @@ int Person::DrawSkeleton()
                         jointPos(rightfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0) * target + jointPos(rightfoot) * (1 - target);
                         jointPos(rightankle) = jointPos(rightfoot) + change;
                         jointPos(rightknee) = (jointPos(rightfoot) + change2) / 2 + (jointPos(rightknee)) / 2;
+
                         skeleton.DoConstraints(&coords, &scale);
                     }
                 }
 
+                // this time, an extra '!' toward the beginning
                 if (onterrain && (!(isIdle() || isCrouch() || isLanding() || isLandhard() || animTarget == drawrightanim || animTarget == drawleftanim || animTarget == crouchdrawrightanim) && (wasIdle() || wasCrouch() || wasLanding() || wasLandhard() || animCurrent == drawrightanim || animCurrent == drawleftanim || animCurrent == crouchdrawrightanim)) && !skeleton.free) {
                     XYZ point, newpoint, change, change2;
+
                     point = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
                     heightleft = terrain.getHeight(point.x, point.z) + .04;
                     point.y = heightleft;
                     change = jointPos(leftankle) - jointPos(leftfoot);
                     change2 = jointPos(leftknee) - jointPos(leftfoot);
+                    // interpolation again, but reversed
                     jointPos(leftfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0) * (1 - target) + jointPos(leftfoot) * target;
                     jointPos(leftankle) = jointPos(leftfoot) + change;
                     jointPos(leftknee) = (jointPos(leftfoot) + change2) / 2 + (jointPos(leftknee)) / 2;
@@ -6037,12 +6068,15 @@ int Person::DrawSkeleton()
                     point.y = heightright;
                     change = jointPos(rightankle) - jointPos(rightfoot);
                     change2 = jointPos(rightknee) - jointPos(rightfoot);
+                    // interpolation again, but reversed
                     jointPos(rightfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0) * (1 - target) + jointPos(rightfoot) * target;
                     jointPos(rightankle) = jointPos(rightfoot) + change;
                     jointPos(rightknee) = (jointPos(rightfoot) + change2) / 2 + (jointPos(rightknee)) / 2;
+
                     skeleton.DoConstraints(&coords, &scale);
 
                     if (creature == wolftype) {
+                        // still copied verbatim
                         point = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
                         heightleft = terrain.getHeight(point.x, point.z) + .04;
                         point.y = heightleft;
@@ -6060,10 +6094,12 @@ int Person::DrawSkeleton()
                         jointPos(rightfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0) * (1 - target) + jointPos(rightfoot) * target;
                         jointPos(rightankle) = jointPos(rightfoot) + change;
                         jointPos(rightknee) = (jointPos(rightfoot) + change2) / 2 + (jointPos(rightknee)) / 2;
+
                         skeleton.DoConstraints(&coords, &scale);
                     }
                 }
             }
+
             if (!skeleton.free && (!animation[animTarget].attack && animTarget != getupfrombackanim && ((animTarget != rollanim && !isFlip()) || animation[animTarget].label[frameTarget] == 6) && animTarget != getupfromfrontanim && animTarget != wolfrunninganim && animTarget != rabbitrunninganim && animTarget != backhandspringanim && animTarget != walljumpfrontanim && animTarget != hurtidleanim && !isLandhard() && !isSleeping()))
                 DoHead();
             else {
@@ -6085,31 +6121,36 @@ int Person::DrawSkeleton()
                 skeleton.drawmodelclothes.vertex[i].y = 999;
             }
             for (i = 0; i < skeleton.num_muscles; i++) {
+                // convenience renames
+                const int p1 = skeleton.muscles[i].parent1->label;
+                const int p2 = skeleton.muscles[i].parent2->label;
+
                 if ((skeleton.muscles[i].numvertices > 0 && playerdetail) || (skeleton.muscles[i].numverticeslow > 0 && !playerdetail)) {
                     morphness = 0;
                     start = 0;
                     endthing = 0;
-                    if (skeleton.muscles[i].parent1->label == righthand || skeleton.muscles[i].parent2->label == righthand) {
+
+                    if (p1 == righthand || p2 == righthand) {
                         morphness = righthandmorphness;
                         start = righthandmorphstart;
                         endthing = righthandmorphend;
                     }
-                    if (skeleton.muscles[i].parent1->label == lefthand || skeleton.muscles[i].parent2->label == lefthand) {
+                    if (p1 == lefthand || p2 == lefthand) {
                         morphness = lefthandmorphness;
                         start = lefthandmorphstart;
                         endthing = lefthandmorphend;
                     }
-                    if (skeleton.muscles[i].parent1->label == head || skeleton.muscles[i].parent2->label == head) {
+                    if (p1 == head || p2 == head) {
                         morphness = headmorphness;
                         start = headmorphstart;
                         endthing = headmorphend;
                     }
-                    if ((skeleton.muscles[i].parent1->label == neck && skeleton.muscles[i].parent2->label == abdomen) || (skeleton.muscles[i].parent2->label == neck && skeleton.muscles[i].parent1->label == abdomen)) {
+                    if ((p1 == neck && p2 == abdomen) || (p2 == neck && p1 == abdomen)) {
                         morphness = chestmorphness;
                         start = chestmorphstart;
                         endthing = chestmorphend;
                     }
-                    if ((skeleton.muscles[i].parent1->label == groin && skeleton.muscles[i].parent2->label == abdomen) || (skeleton.muscles[i].parent2->label == groin && skeleton.muscles[i].parent1->label == abdomen)) {
+                    if ((p1 == groin && p2 == abdomen) || (p2 == groin && p1 == abdomen)) {
                         morphness = tailmorphness;
                         start = tailmorphstart;
                         endthing = tailmorphend;
@@ -6117,7 +6158,7 @@ int Person::DrawSkeleton()
                     if (calcrot)
                         skeleton.FindRotationMuscle(i, animTarget);
                     mid = (skeleton.muscles[i].parent1->position + skeleton.muscles[i].parent2->position) / 2;
-                    glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+                    glMatrixMode(GL_MODELVIEW);
                     glPushMatrix();
                     glLoadIdentity();
                     if (!skeleton.free)
@@ -6139,24 +6180,26 @@ int Person::DrawSkeleton()
 
                     if (playerdetail || skeleton.free == 3) {
                         for (j = 0; j < skeleton.muscles[i].numvertices; j++) {
-                            glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+                            XYZ &v0 = skeleton.model[start].vertex[skeleton.muscles[i].vertices[j]];
+                            XYZ &v1 = skeleton.model[endthing].vertex[skeleton.muscles[i].vertices[j]];
+                            glMatrixMode(GL_MODELVIEW);
                             glPushMatrix();
-                            if (skeleton.muscles[i].parent1->label == abdomen || skeleton.muscles[i].parent2->label == abdomen)
-                                glTranslatef((skeleton.model[start].vertex[skeleton.muscles[i].vertices[j]].x * (1 - morphness) + skeleton.model[endthing].vertex[skeleton.muscles[i].vertices[j]].x * morphness)*proportionbody.x,
-                                             (skeleton.model[start].vertex[skeleton.muscles[i].vertices[j]].y * (1 - morphness) + skeleton.model[endthing].vertex[skeleton.muscles[i].vertices[j]].y * morphness)*proportionbody.y,
-                                             (skeleton.model[start].vertex[skeleton.muscles[i].vertices[j]].z * (1 - morphness) + skeleton.model[endthing].vertex[skeleton.muscles[i].vertices[j]].z * morphness)*proportionbody.z);
-                            if (skeleton.muscles[i].parent1->label == lefthand || skeleton.muscles[i].parent1->label == righthand || skeleton.muscles[i].parent1->label == leftwrist || skeleton.muscles[i].parent1->label == rightwrist || skeleton.muscles[i].parent1->label == leftelbow || skeleton.muscles[i].parent1->label == rightelbow || skeleton.muscles[i].parent2->label == leftelbow || skeleton.muscles[i].parent2->label == rightelbow)
-                                glTranslatef((skeleton.model[start].vertex[skeleton.muscles[i].vertices[j]].x * (1 - morphness) + skeleton.model[endthing].vertex[skeleton.muscles[i].vertices[j]].x * morphness)*proportionarms.x,
-                                             (skeleton.model[start].vertex[skeleton.muscles[i].vertices[j]].y * (1 - morphness) + skeleton.model[endthing].vertex[skeleton.muscles[i].vertices[j]].y * morphness)*proportionarms.y,
-                                             (skeleton.model[start].vertex[skeleton.muscles[i].vertices[j]].z * (1 - morphness) + skeleton.model[endthing].vertex[skeleton.muscles[i].vertices[j]].z * morphness)*proportionarms.z);
-                            if (skeleton.muscles[i].parent1->label == leftfoot || skeleton.muscles[i].parent1->label == rightfoot || skeleton.muscles[i].parent1->label == leftankle || skeleton.muscles[i].parent1->label == rightankle || skeleton.muscles[i].parent1->label == leftknee || skeleton.muscles[i].parent1->label == rightknee || skeleton.muscles[i].parent2->label == leftknee || skeleton.muscles[i].parent2->label == rightknee)
-                                glTranslatef((skeleton.model[start].vertex[skeleton.muscles[i].vertices[j]].x * (1 - morphness) + skeleton.model[endthing].vertex[skeleton.muscles[i].vertices[j]].x * morphness)*proportionlegs.x,
-                                             (skeleton.model[start].vertex[skeleton.muscles[i].vertices[j]].y * (1 - morphness) + skeleton.model[endthing].vertex[skeleton.muscles[i].vertices[j]].y * morphness)*proportionlegs.y,
-                                             (skeleton.model[start].vertex[skeleton.muscles[i].vertices[j]].z * (1 - morphness) + skeleton.model[endthing].vertex[skeleton.muscles[i].vertices[j]].z * morphness)*proportionlegs.z);
-                            if (skeleton.muscles[i].parent1->label == head || skeleton.muscles[i].parent2->label == head)
-                                glTranslatef((skeleton.model[start].vertex[skeleton.muscles[i].vertices[j]].x * (1 - morphness) + skeleton.model[endthing].vertex[skeleton.muscles[i].vertices[j]].x * morphness)*proportionhead.x,
-                                             (skeleton.model[start].vertex[skeleton.muscles[i].vertices[j]].y * (1 - morphness) + skeleton.model[endthing].vertex[skeleton.muscles[i].vertices[j]].y * morphness)*proportionhead.y,
-                                             (skeleton.model[start].vertex[skeleton.muscles[i].vertices[j]].z * (1 - morphness) + skeleton.model[endthing].vertex[skeleton.muscles[i].vertices[j]].z * morphness)*proportionhead.z);
+                            if (p1 == abdomen || p2 == abdomen)
+                                glTranslatef((v0.x * (1-morphness) + v1.x * morphness) * proportionbody.x,
+                                             (v0.y * (1-morphness) + v1.y * morphness) * proportionbody.y,
+                                             (v0.z * (1-morphness) + v1.z * morphness) * proportionbody.z);
+                            if (p1 == lefthand || p1 == righthand || p1 == leftwrist || p1 == rightwrist || p1 == leftelbow || p1 == rightelbow || p2 == leftelbow || p2 == rightelbow)
+                                glTranslatef((v0.x * (1-morphness) + v1.x * morphness) * proportionarms.x,
+                                             (v0.y * (1-morphness) + v1.y * morphness) * proportionarms.y,
+                                             (v0.z * (1-morphness) + v1.z * morphness) * proportionarms.z);
+                            if (p1 == leftfoot || p1 == rightfoot || p1 == leftankle || p1 == rightankle || p1 == leftknee || p1 == rightknee || p2 == leftknee || p2 == rightknee)
+                                glTranslatef((v0.x * (1-morphness) + v1.x * morphness) * proportionlegs.x,
+                                             (v0.y * (1-morphness) + v1.y * morphness) * proportionlegs.y,
+                                             (v0.z * (1-morphness) + v1.z * morphness) * proportionlegs.z);
+                            if (p1 == head || p2 == head)
+                                glTranslatef((v0.x * (1-morphness) + v1.x * morphness) * proportionhead.x,
+                                             (v0.y * (1-morphness) + v1.y * morphness) * proportionhead.y,
+                                             (v0.z * (1-morphness) + v1.z * morphness) * proportionhead.z);
                             glGetFloatv(GL_MODELVIEW_MATRIX, M);
                             //if(!isnormal(M[12])||!isnormal(M[13])||!isnormal(M[14]))test=0;
                             //if(!isnormal(scale))test=1;
@@ -6169,24 +6212,25 @@ int Person::DrawSkeleton()
                     }
                     if (!playerdetail || skeleton.free == 3) {
                         for (j = 0; j < skeleton.muscles[i].numverticeslow; j++) {
-                            glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+                            XYZ &v0 = skeleton.modellow.vertex[skeleton.muscles[i].verticeslow[j]];
+                            glMatrixMode(GL_MODELVIEW);
                             glPushMatrix();
-                            if (skeleton.muscles[i].parent1->label == abdomen || skeleton.muscles[i].parent2->label == abdomen)
-                                glTranslatef((skeleton.modellow.vertex[skeleton.muscles[i].verticeslow[j]].x)*proportionbody.x,
-                                             (skeleton.modellow.vertex[skeleton.muscles[i].verticeslow[j]].y)*proportionbody.y,
-                                             (skeleton.modellow.vertex[skeleton.muscles[i].verticeslow[j]].z)*proportionbody.z);
-                            if (skeleton.muscles[i].parent1->label == lefthand || skeleton.muscles[i].parent1->label == righthand || skeleton.muscles[i].parent1->label == leftwrist || skeleton.muscles[i].parent1->label == rightwrist || skeleton.muscles[i].parent1->label == leftelbow || skeleton.muscles[i].parent1->label == rightelbow || skeleton.muscles[i].parent2->label == leftelbow || skeleton.muscles[i].parent2->label == rightelbow)
-                                glTranslatef((skeleton.modellow.vertex[skeleton.muscles[i].verticeslow[j]].x)*proportionarms.x,
-                                             (skeleton.modellow.vertex[skeleton.muscles[i].verticeslow[j]].y)*proportionarms.y,
-                                             (skeleton.modellow.vertex[skeleton.muscles[i].verticeslow[j]].z)*proportionarms.z);
-                            if (skeleton.muscles[i].parent1->label == leftfoot || skeleton.muscles[i].parent1->label == rightfoot || skeleton.muscles[i].parent1->label == leftankle || skeleton.muscles[i].parent1->label == rightankle || skeleton.muscles[i].parent1->label == leftknee || skeleton.muscles[i].parent1->label == rightknee || skeleton.muscles[i].parent2->label == leftknee || skeleton.muscles[i].parent2->label == rightknee)
-                                glTranslatef((skeleton.modellow.vertex[skeleton.muscles[i].verticeslow[j]].x)*proportionlegs.x,
-                                             (skeleton.modellow.vertex[skeleton.muscles[i].verticeslow[j]].y)*proportionlegs.y,
-                                             (skeleton.modellow.vertex[skeleton.muscles[i].verticeslow[j]].z)*proportionlegs.z);
-                            if (skeleton.muscles[i].parent1->label == head || skeleton.muscles[i].parent2->label == head)
-                                glTranslatef((skeleton.modellow.vertex[skeleton.muscles[i].verticeslow[j]].x)*proportionhead.x,
-                                             (skeleton.modellow.vertex[skeleton.muscles[i].verticeslow[j]].y)*proportionhead.y,
-                                             (skeleton.modellow.vertex[skeleton.muscles[i].verticeslow[j]].z)*proportionhead.z);
+                            if (p1 == abdomen || p2 == abdomen)
+                                glTranslatef(v0.x * proportionbody.x,
+                                             v0.y * proportionbody.y,
+                                             v0.z * proportionbody.z);
+                            if (p1 == lefthand || p1 == righthand || p1 == leftwrist || p1 == rightwrist || p1 == leftelbow || p1 == rightelbow || p2 == leftelbow || p2 == rightelbow)
+                                glTranslatef(v0.x * proportionarms.x,
+                                             v0.y * proportionarms.y,
+                                             v0.z * proportionarms.z);
+                            if (p1 == leftfoot || p1 == rightfoot || p1 == leftankle || p1 == rightankle || p1 == leftknee || p1 == rightknee || p2 == leftknee || p2 == rightknee)
+                                glTranslatef(v0.x * proportionlegs.x,
+                                             v0.y * proportionlegs.y,
+                                             v0.z * proportionlegs.z);
+                            if (p1 == head || p2 == head)
+                                glTranslatef(v0.x * proportionhead.x,
+                                             v0.y * proportionhead.y,
+                                             v0.z * proportionhead.z);
 
                             glGetFloatv(GL_MODELVIEW_MATRIX, M);
                             skeleton.drawmodellow.vertex[skeleton.muscles[i].verticeslow[j]].x = M[12] * scale;
@@ -6200,7 +6244,7 @@ int Person::DrawSkeleton()
                 if (skeleton.clothes && skeleton.muscles[i].numverticesclothes > 0) {
                     mid = (skeleton.muscles[i].parent1->position + skeleton.muscles[i].parent2->position) / 2;
 
-                    glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+                    glMatrixMode(GL_MODELVIEW);
                     glPushMatrix();
                     glLoadIdentity();
                     if (!skeleton.free)
@@ -6218,24 +6262,25 @@ int Person::DrawSkeleton()
                     glRotatef(-skeleton.muscles[i].lastrotate3, 0, 1, 0);
 
                     for (j = 0; j < skeleton.muscles[i].numverticesclothes; j++) {
-                        glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+                        XYZ &v0 = skeleton.modelclothes.vertex[skeleton.muscles[i].verticesclothes[j]];
+                        glMatrixMode(GL_MODELVIEW);
                         glPushMatrix();
-                        if (skeleton.muscles[i].parent1->label == abdomen || skeleton.muscles[i].parent2->label == abdomen)
-                            glTranslatef((skeleton.modelclothes.vertex[skeleton.muscles[i].verticesclothes[j]].x)*proportionbody.x,
-                                         (skeleton.modelclothes.vertex[skeleton.muscles[i].verticesclothes[j]].y)*proportionbody.y,
-                                         (skeleton.modelclothes.vertex[skeleton.muscles[i].verticesclothes[j]].z)*proportionbody.z);
-                        if (skeleton.muscles[i].parent1->label == lefthand || skeleton.muscles[i].parent1->label == righthand || skeleton.muscles[i].parent1->label == leftwrist || skeleton.muscles[i].parent1->label == rightwrist || skeleton.muscles[i].parent1->label == leftelbow || skeleton.muscles[i].parent1->label == rightelbow || skeleton.muscles[i].parent2->label == leftelbow || skeleton.muscles[i].parent2->label == rightelbow)
-                            glTranslatef((skeleton.modelclothes.vertex[skeleton.muscles[i].verticesclothes[j]].x)*proportionarms.x,
-                                         (skeleton.modelclothes.vertex[skeleton.muscles[i].verticesclothes[j]].y)*proportionarms.y,
-                                         (skeleton.modelclothes.vertex[skeleton.muscles[i].verticesclothes[j]].z)*proportionarms.z);
-                        if (skeleton.muscles[i].parent1->label == leftfoot || skeleton.muscles[i].parent1->label == rightfoot || skeleton.muscles[i].parent1->label == leftankle || skeleton.muscles[i].parent1->label == rightankle || skeleton.muscles[i].parent1->label == leftknee || skeleton.muscles[i].parent1->label == rightknee || skeleton.muscles[i].parent2->label == leftknee || skeleton.muscles[i].parent2->label == rightknee)
-                            glTranslatef((skeleton.modelclothes.vertex[skeleton.muscles[i].verticesclothes[j]].x)*proportionlegs.x,
-                                         (skeleton.modelclothes.vertex[skeleton.muscles[i].verticesclothes[j]].y)*proportionlegs.y,
-                                         (skeleton.modelclothes.vertex[skeleton.muscles[i].verticesclothes[j]].z)*proportionlegs.z);
-                        if (skeleton.muscles[i].parent1->label == head || skeleton.muscles[i].parent2->label == head)
-                            glTranslatef((skeleton.modelclothes.vertex[skeleton.muscles[i].verticesclothes[j]].x)*proportionhead.x,
-                                         (skeleton.modelclothes.vertex[skeleton.muscles[i].verticesclothes[j]].y)*proportionhead.y,
-                                         (skeleton.modelclothes.vertex[skeleton.muscles[i].verticesclothes[j]].z)*proportionhead.z);
+                        if (p1 == abdomen || p2 == abdomen)
+                            glTranslatef(v0.x * proportionbody.x,
+                                         v0.y * proportionbody.y,
+                                         v0.z * proportionbody.z);
+                        if (p1 == lefthand || p1 == righthand || p1 == leftwrist || p1 == rightwrist || p1 == leftelbow || p1 == rightelbow || p2 == leftelbow || p2 == rightelbow)
+                            glTranslatef(v0.x * proportionarms.x,
+                                         v0.y * proportionarms.y,
+                                         v0.z * proportionarms.z);
+                        if (p1 == leftfoot || p1 == rightfoot || p1 == leftankle || p1 == rightankle || p1 == leftknee || p1 == rightknee || p2 == leftknee || p2 == rightknee)
+                            glTranslatef(v0.x * proportionlegs.x,
+                                         v0.y * proportionlegs.y,
+                                         v0.z * proportionlegs.z);
+                        if (p1 == head || p2 == head)
+                            glTranslatef(v0.x * proportionhead.x,
+                                         v0.y * proportionhead.y,
+                                         v0.z * proportionhead.z);
                         glGetFloatv(GL_MODELVIEW_MATRIX, M);
                         skeleton.drawmodelclothes.vertex[skeleton.muscles[i].verticesclothes[j]].x = M[12] * scale;
                         skeleton.drawmodelclothes.vertex[skeleton.muscles[i].verticesclothes[j]].y = M[13] * scale;
@@ -6276,7 +6321,7 @@ int Person::DrawSkeleton()
             updatedelaychange *= 8;
         updatedelay += updatedelaychange;
 
-        glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+        glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
         if (!skeleton.free)
             glTranslatef(coords.x, coords.y - .02, coords.z);
@@ -6294,19 +6339,23 @@ int Person::DrawSkeleton()
             glBegin(GL_POINTS);
             if (playerdetail)
                 for (i = 0; i < skeleton.drawmodel.vertexNum; i++) {
-                    glVertex3f(skeleton.drawmodel.vertex[i].x, skeleton.drawmodel.vertex[i].y, skeleton.drawmodel.vertex[i].z);
+                    XYZ &v0 = skeleton.drawmodel.vertex[i];
+                    glVertex3f(v0.x, v0.y, v0.z);
                 }
             glEnd();
             glBegin(GL_LINES);
 
             if (playerdetail)
                 for (i = 0; i < skeleton.drawmodel.TriangleNum; i++) {
-                    glVertex3f(skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[0]].x, skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[0]].y, skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[0]].z);
-                    glVertex3f(skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[1]].x, skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[1]].y, skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[1]].z);
-                    glVertex3f(skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[1]].x, skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[1]].y, skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[1]].z);
-                    glVertex3f(skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[2]].x, skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[2]].y, skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[2]].z);
-                    glVertex3f(skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[2]].x, skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[2]].y, skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[2]].z);
-                    glVertex3f(skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[0]].x, skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[0]].y, skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[0]].z);
+                    XYZ &v0 = skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[0]];
+                    XYZ &v1 = skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[1]];
+                    XYZ &v2 = skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[2]];
+                    glVertex3f(v0.x, v0.y, v0.z);
+                    glVertex3f(v1.x, v1.y, v1.z);
+                    glVertex3f(v1.x, v1.y, v1.z);
+                    glVertex3f(v2.x, v2.y, v2.z);
+                    glVertex3f(v2.x, v2.y, v2.z);
+                    glVertex3f(v0.x, v0.y, v0.z);
                 }
 
             glEnd();
