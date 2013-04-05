@@ -85,6 +85,12 @@ extern bool gamestarted;
 
 Person player[maxplayers];
 
+/* convenience functions
+ */
+Joint& Person::joint(int bodypart) { return skeleton.joints[skeleton.jointlabels[bodypart]]; }
+XYZ& Person::jointPos(int bodypart) { return joint(bodypart).position; }
+XYZ& Person::jointVel(int bodypart) { return joint(bodypart).velocity; }
+
 /* EFFECT
  *
  * USES:
@@ -325,16 +331,16 @@ void Person::DoBlood(float howmuch, int which)
                     bloodvel -= DoRotation(skeleton.forward * 10 * scale, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0);
                 }
                 if (skeleton.free)
-                    bloodvel += DoRotation(skeleton.joints[skeleton.jointlabels[head]].velocity, ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
+                    bloodvel += DoRotation(jointVel(head), ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
                 if (!skeleton.free)
                     bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0) * scale;
                 if (skeleton.free) {
-                    Sprite::MakeSprite(bloodsprite, skeleton.joints[skeleton.jointlabels[head]].position * scale + coords, bloodvel, 1, 1, 1, .05, 1);
-                    Sprite::MakeSprite(bloodflamesprite, skeleton.joints[skeleton.jointlabels[head]].position * scale + coords, bloodvel, 1, 1, 1, .3, 1);
+                    Sprite::MakeSprite(bloodsprite, jointPos(head) * scale + coords, bloodvel, 1, 1, 1, .05, 1);
+                    Sprite::MakeSprite(bloodflamesprite, jointPos(head) * scale + coords, bloodvel, 1, 1, 1, .3, 1);
                 }
                 if (!skeleton.free) {
-                    Sprite::MakeSprite(bloodsprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position + skeleton.joints[skeleton.jointlabels[neck]].position) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .05, 1);
-                    Sprite::MakeSprite(bloodflamesprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position + skeleton.joints[skeleton.jointlabels[neck]].position) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .3, 1);
+                    Sprite::MakeSprite(bloodsprite, DoRotation((jointPos(head) + jointPos(neck)) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .05, 1);
+                    Sprite::MakeSprite(bloodflamesprite, DoRotation((jointPos(head) + jointPos(neck)) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .3, 1);
                 }
             }
             if (Random() % 2 == 0) // 50% chance
@@ -344,7 +350,7 @@ void Person::DoBlood(float howmuch, int which)
                         bloodvel = 0;
                         if (skeleton.free) {
                             bloodvel -= DoRotation(skeleton.forward * 10 * scale, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0);
-                            bloodvel += DoRotation(skeleton.joints[skeleton.jointlabels[head]].velocity, ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
+                            bloodvel += DoRotation(jointVel(head), ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
                         } else {
                             bloodvel.z = 10;
                             bloodvel = DoRotation(bloodvel, ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
@@ -352,9 +358,9 @@ void Person::DoBlood(float howmuch, int which)
                         }
                         bloodvel *= .2;
                         if (skeleton.free) {
-                            Sprite::MakeSprite(splintersprite, skeleton.joints[skeleton.jointlabels[head]].position * scale + coords, bloodvel, 1, 1, 1, .05, 1);
+                            Sprite::MakeSprite(splintersprite, jointPos(head) * scale + coords, bloodvel, 1, 1, 1, .05, 1);
                         } else {
-                            Sprite::MakeSprite(splintersprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position + skeleton.joints[skeleton.jointlabels[neck]].position) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .05, 1);
+                            Sprite::MakeSprite(splintersprite, DoRotation((jointPos(head) + jointPos(neck)) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .05, 1);
                         }
                         Sprite::setLastSpriteSpecial(3); // sets it to teeth
                     }
@@ -456,16 +462,16 @@ void Person::DoBloodBig(float howmuch, int which)
                     bloodvel -= DoRotation(skeleton.forward * 10 * scale, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0);
                 }
                 if (skeleton.free)
-                    bloodvel += DoRotation(skeleton.joints[skeleton.jointlabels[head]].velocity, ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
+                    bloodvel += DoRotation(jointVel(head), ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
                 if (!skeleton.free)
                     bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0) * scale;
                 if (skeleton.free) {
-                    Sprite::MakeSprite(bloodsprite, skeleton.joints[skeleton.jointlabels[head]].position * scale + coords, bloodvel, 1, 1, 1, .05, 1);
-                    Sprite::MakeSprite(bloodflamesprite, skeleton.joints[skeleton.jointlabels[head]].position * scale + coords, bloodvel, 1, 1, 1, .3, 1);
+                    Sprite::MakeSprite(bloodsprite, jointPos(head) * scale + coords, bloodvel, 1, 1, 1, .05, 1);
+                    Sprite::MakeSprite(bloodflamesprite, jointPos(head) * scale + coords, bloodvel, 1, 1, 1, .3, 1);
                 }
                 if (!skeleton.free) {
-                    Sprite::MakeSprite(bloodsprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position + skeleton.joints[skeleton.jointlabels[neck]].position) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .05, 1);
-                    Sprite::MakeSprite(bloodflamesprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position + skeleton.joints[skeleton.jointlabels[neck]].position) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .3, 1);
+                    Sprite::MakeSprite(bloodsprite, DoRotation((jointPos(head) + jointPos(neck)) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .05, 1);
+                    Sprite::MakeSprite(bloodflamesprite, DoRotation((jointPos(head) + jointPos(neck)) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .3, 1);
                 }
             }
         }
@@ -704,16 +710,16 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
                         bloodvel -= DoRotation(skeleton.forward * 10 * scale, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0);
                     }
                     if (skeleton.free)
-                        bloodvel += DoRotation(skeleton.joints[skeleton.jointlabels[head]].velocity, ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
+                        bloodvel += DoRotation(jointVel(head), ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
                     if (!skeleton.free)
                         bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0) * scale;
                     if (skeleton.free) {
-                        Sprite::MakeSprite(bloodsprite, skeleton.joints[skeleton.jointlabels[head]].position * scale + coords, bloodvel, 1, 1, 1, .05, 1);
-                        Sprite::MakeSprite(bloodflamesprite, skeleton.joints[skeleton.jointlabels[head]].position * scale + coords, bloodvel, 1, 1, 1, .3, 1);
+                        Sprite::MakeSprite(bloodsprite, jointPos(head) * scale + coords, bloodvel, 1, 1, 1, .05, 1);
+                        Sprite::MakeSprite(bloodflamesprite, jointPos(head) * scale + coords, bloodvel, 1, 1, 1, .3, 1);
                     }
                     if (!skeleton.free) {
-                        Sprite::MakeSprite(bloodsprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position + skeleton.joints[skeleton.jointlabels[neck]].position) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .05, 1);
-                        Sprite::MakeSprite(bloodflamesprite, DoRotation((skeleton.joints[skeleton.jointlabels[head]].position + skeleton.joints[skeleton.jointlabels[neck]].position) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .3, 1);
+                        Sprite::MakeSprite(bloodsprite, DoRotation((jointPos(head) + jointPos(neck)) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .05, 1);
+                        Sprite::MakeSprite(bloodflamesprite, DoRotation((jointPos(head) + jointPos(neck)) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .3, 1);
                     }
                 }
             }
@@ -1386,8 +1392,8 @@ void Person::DoHead()
             headpitch += multiplier * lookspeed / 2;
         }
 
-        rotatearound = skeleton.joints[skeleton.jointlabels[neck]].position;
-        skeleton.joints[skeleton.jointlabels[head]].position = rotatearound + DoRotation(skeleton.joints[skeleton.jointlabels[head]].position - rotatearound, headpitch, 0, 0);
+        rotatearound = jointPos(neck);
+        jointPos(head) = rotatearound + DoRotation(jointPos(head) - rotatearound, headpitch, 0, 0);
 
         facing = 0;
         facing.z = -1;
@@ -1551,9 +1557,9 @@ void Person::RagDoll(bool checkcollision)
             if (weaponactive != -1 && animTarget != rabbitkickanim && num_weapons > 0) {
                 weapons[weaponids[0]].owner = -1;
                 weapons[weaponids[0]].hitsomething = 0;
-                weapons[weaponids[0]].velocity = skeleton.joints[skeleton.jointlabels[righthand]].velocity * scale * -.3;
+                weapons[weaponids[0]].velocity = jointVel(righthand) * scale * -.3;
                 weapons[weaponids[0]].velocity.x += .01;
-                weapons[weaponids[0]].tipvelocity = skeleton.joints[skeleton.jointlabels[righthand]].velocity * scale;
+                weapons[weaponids[0]].tipvelocity = jointVel(righthand) * scale;
                 weapons[weaponids[0]].missed = 1;
                 weapons[weaponids[0]].freetime = 0;
                 weapons[weaponids[0]].firstfree = 1;
@@ -1590,9 +1596,9 @@ void Person::FootLand(int which, float opacity)
         if (opacity > 1) {
             footvel = 0;
             if (which == 0)
-                footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position, 0, yaw, 0) * scale + coords;
+                footpoint = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
             if (which == 1)
-                footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position, 0, yaw, 0) * scale + coords;
+                footpoint = DoRotation(jointPos(rightfoot), 0, yaw, 0) * scale + coords;
             //footpoint.y=coords.y;
             if (distsq(&footpoint, &viewer))
                 Sprite::MakeSprite(cloudsprite, footpoint, footvel, 1, 1, 1, .5, .2 * opacity);
@@ -1601,9 +1607,9 @@ void Person::FootLand(int which, float opacity)
             if (footvel.y < .8)
                 footvel.y = .8;
             if (which == 0)
-                footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position, 0, yaw, 0) * scale + coords;
+                footpoint = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
             if (which == 1)
-                footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position, 0, yaw, 0) * scale + coords;
+                footpoint = DoRotation(jointPos(rightfoot), 0, yaw, 0) * scale + coords;
             footpoint.y = terrain.getHeight(footpoint.x, footpoint.z);
             terrainlight = terrain.getLighting(footpoint.x, footpoint.z);
             if (distsq(&footpoint, &viewer) < viewdistance * viewdistance / 4)
@@ -1617,9 +1623,9 @@ void Person::FootLand(int which, float opacity)
             if (footvel.y < .8)
                 footvel.y = .8;
             if (which == 0)
-                footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position, 0, yaw, 0) * scale + coords;
+                footpoint = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
             if (which == 1)
-                footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position, 0, yaw, 0) * scale + coords;
+                footpoint = DoRotation(jointPos(rightfoot), 0, yaw, 0) * scale + coords;
             footpoint.y = terrain.getHeight(footpoint.x, footpoint.z);
             terrainlight = terrain.getLighting(footpoint.x, footpoint.z);
             if (distsq(&footpoint, &viewer) < viewdistance * viewdistance / 4)
@@ -1629,9 +1635,9 @@ void Person::FootLand(int which, float opacity)
             if (footvel.y < .8)
                 footvel.y = .8;
             if (which == 0)
-                footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position, 0, yaw, 0) * scale + coords;
+                footpoint = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
             if (which == 1)
-                footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position, 0, yaw, 0) * scale + coords;
+                footpoint = DoRotation(jointPos(rightfoot), 0, yaw, 0) * scale + coords;
             footpoint.y = terrain.getHeight(footpoint.x, footpoint.z);
             terrainlight = terrain.getLighting(footpoint.x, footpoint.z);
             if (distsq(&footpoint, &viewer) < viewdistance * viewdistance / 4)
@@ -1645,9 +1651,9 @@ void Person::FootLand(int which, float opacity)
             if (footvel.y < .8)
                 footvel.y = .8;
             if (which == 0)
-                footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position, 0, yaw, 0) * scale + coords;
+                footpoint = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
             if (which == 1)
-                footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position, 0, yaw, 0) * scale + coords;
+                footpoint = DoRotation(jointPos(rightfoot), 0, yaw, 0) * scale + coords;
             //footpoint.y=coords.y;
             if (distsq(&footpoint, &viewer) < viewdistance * viewdistance / 4)
                 Sprite::MakeSprite(cloudsprite, footpoint, footvel * .6, 1, 1, 1, .5, .2 * opacity);
@@ -1662,16 +1668,8 @@ void Person::Puff(int whichlabel)
     static XYZ footvel, footpoint;
 
     footvel = 0;
-    footpoint = DoRotation(skeleton.joints[skeleton.jointlabels[whichlabel]].position, 0, yaw, 0) * scale + coords;
+    footpoint = DoRotation(jointPos(whichlabel), 0, yaw, 0) * scale + coords;
     Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 1, 1, .9, .3);
-}
-
-/* FUNCTION
- * convenience function
- */
-Joint& Person::getJointFor(int bodypart)
-{
-    return skeleton.joints[skeleton.jointlabels[bodypart]];
 }
 
 /* EFFECT
@@ -2703,7 +2701,7 @@ void Person::DoAnimations()
                         escapednum = 0;
                         XYZ aim;
                         weapons[weaponids[0]].owner = -1;
-                        aim = victim->coords + DoRotation(victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].position, 0, victim->yaw, 0) * victim->scale + victim->velocity * findDistance(&victim->coords, &coords) / 50 - (coords + DoRotation(skeleton.joints[skeleton.jointlabels[righthand]].position, 0, yaw, 0) * scale);
+                        aim = victim->coords + DoRotation(victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].position, 0, victim->yaw, 0) * victim->scale + victim->velocity * findDistance(&victim->coords, &coords) / 50 - (coords + DoRotation(jointPos(righthand), 0, yaw, 0) * scale);
                         Normalise(&aim);
                         /*if(victim->animTarget==jumpupanim||victim->animTarget==jumpdownanim){
                         aim=DoRotation(aim,(float)abs(Random()%15)-7,(float)abs(Random()%15)-7,0);
@@ -3381,7 +3379,7 @@ void Person::DoAnimations()
                             bloodvel.z=20;
                             bloodvel.y=5;
                             bloodvel=DoRotation(bloodvel,((float)(Random()%100))/4,yaw+((float)(Random()%100))/4,0)*scale;
-                            Sprite::MakeSprite(bloodsprite, DoRotation(skeleton.joints[skeleton.jointlabels[neck]].position,0,yaw,0)*scale+coords,bloodvel, 1,1,1, .05, 1);
+                            Sprite::MakeSprite(bloodsprite, DoRotation(jointPos(neck),0,yaw,0)*scale+coords,bloodvel, 1,1,1, .05, 1);
                             */
                             XYZ footvel, footpoint;
                             footvel = 0;
@@ -3870,7 +3868,7 @@ void Person::DoAnimations()
                         animTarget = rollanim;
                         frameTarget = 5;
                         oldcoords = coords;
-                        coords += (DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position, 0, yaw, 0) + DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position, 0, yaw, 0)) / 2 * scale;
+                        coords += (DoRotation(jointPos(leftfoot), 0, yaw, 0) + DoRotation(jointPos(rightfoot), 0, yaw, 0)) / 2 * scale;
                         coords.y = oldcoords.y;
                     }
                     if (animCurrent == knifeslashreversedanim) {
@@ -3879,7 +3877,7 @@ void Person::DoAnimations()
                         targetyaw += 90;
                         yaw += 90;
                         oldcoords = coords;
-                        coords += (DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position, 0, yaw, 0) + DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position, 0, yaw, 0)) / 2 * scale;
+                        coords += (DoRotation(jointPos(leftfoot), 0, yaw, 0) + DoRotation(jointPos(rightfoot), 0, yaw, 0)) / 2 * scale;
                         coords.y = oldcoords.y;
                     }
                 }
@@ -3893,7 +3891,7 @@ void Person::DoAnimations()
                 if (animCurrent == spinkickanim || animCurrent == getupfrombackanim || animCurrent == getupfromfrontanim || animCurrent == lowkickanim) {
                     animTarget = getIdle();
                     oldcoords = coords;
-                    coords += (DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position, 0, yaw, 0) + DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position, 0, yaw, 0)) / 2 * scale;
+                    coords += (DoRotation(jointPos(leftfoot), 0, yaw, 0) + DoRotation(jointPos(rightfoot), 0, yaw, 0)) / 2 * scale;
                     coords.y = oldcoords.y;
                     //coords+=DoRotation(animation[animCurrent].offset,0,yaw,0)*scale;
                     targetoffset.y = coords.y;
@@ -4287,13 +4285,13 @@ void Person::DoStuff()
                 bloodvel -= DoRotation(skeleton.forward * 10 * scale, ((float)(Random() % 100)) / 40, ((float)(Random() % 100)) / 40, 0);
             }
             if (skeleton.free)
-                bloodvel += DoRotation(skeleton.joints[skeleton.jointlabels[head]].velocity, ((float)(Random() % 100)) / 40, yaw + ((float)(Random() % 100)) / 40, 0) * scale;
+                bloodvel += DoRotation(jointVel(head), ((float)(Random() % 100)) / 40, yaw + ((float)(Random() % 100)) / 40, 0) * scale;
             if (!skeleton.free)
                 bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 40, ((float)(Random() % 100)) / 40, 0) * scale;
             if (skeleton.free)
-                Sprite::MakeSprite(bloodsprite, (skeleton.joints[skeleton.jointlabels[neck]].position + (skeleton.joints[skeleton.jointlabels[neck]].position - skeleton.joints[skeleton.jointlabels[head]].position) / 5)*scale + coords, bloodvel, 1, 1, 1, .05, .9);
+                Sprite::MakeSprite(bloodsprite, (jointPos(neck) + (jointPos(neck) - jointPos(head)) / 5)*scale + coords, bloodvel, 1, 1, 1, .05, .9);
             if (!skeleton.free)
-                Sprite::MakeSprite(bloodsprite, DoRotation(skeleton.joints[skeleton.jointlabels[neck]].position + (skeleton.joints[skeleton.jointlabels[neck]].position - skeleton.joints[skeleton.jointlabels[head]].position) / 5, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .05, .9);
+                Sprite::MakeSprite(bloodsprite, DoRotation(jointPos(neck) + (jointPos(neck) - jointPos(head)) / 5, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .05, .9);
             neckspurtparticledelay = .05;
         }
         if (neckspurtdelay < 0) {
@@ -4312,13 +4310,13 @@ void Person::DoStuff()
             if (bloodtoggle) {
                 bloodvel = 0;
                 if (skeleton.free)
-                    bloodvel += DoRotation(skeleton.joints[skeleton.jointlabels[abdomen]].velocity, ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
+                    bloodvel += DoRotation(jointVel(abdomen), ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
                 if (!skeleton.free)
                     bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0) * scale;
                 if (skeleton.free)
-                    Sprite::MakeSprite(bloodsprite, skeleton.joints[skeleton.jointlabels[abdomen]].position * scale + coords, bloodvel, 1, 1, 1, .05, 1);
+                    Sprite::MakeSprite(bloodsprite, jointPos(abdomen) * scale + coords, bloodvel, 1, 1, 1, .05, 1);
                 if (!skeleton.free)
-                    Sprite::MakeSprite(bloodsprite, DoRotation((skeleton.joints[skeleton.jointlabels[abdomen]].position + skeleton.joints[skeleton.jointlabels[abdomen]].position) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .05, 1);
+                    Sprite::MakeSprite(bloodsprite, DoRotation((jointPos(abdomen) + jointPos(abdomen)) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .05, 1);
             }
         }
         bloodloss += deathbleeding * multiplier * 80;
@@ -4536,9 +4534,9 @@ void Person::DoStuff()
                 if (skeleton.free)
                     footvel = skeleton.specialforward[0] * -1;
                 if (!skeleton.free)
-                    footpoint = DoRotation((skeleton.joints[skeleton.jointlabels[head]].position + skeleton.joints[skeleton.jointlabels[neck]].position) / 2, 0, yaw, 0) * scale + coords;
+                    footpoint = DoRotation((jointPos(head) + jointPos(neck)) / 2, 0, yaw, 0) * scale + coords;
                 if (skeleton.free)
-                    footpoint = ((skeleton.joints[skeleton.jointlabels[head]].position + skeleton.joints[skeleton.jointlabels[neck]].position) / 2) * scale + coords;
+                    footpoint = ((jointPos(head) + jointPos(neck)) / 2) * scale + coords;
                 if (animTarget == sleepanim)
                     footvel = DoRotation(footvel, 0, 90, 0);
                 Sprite::MakeSprite(breathsprite, footpoint + footvel * .2, footvel * .4, 1, 1, 1, .4, .3);
@@ -4904,7 +4902,7 @@ void Person::DoStuff()
         }
         average /= multiplier;
 
-        //velocity=skeleton.joints[skeleton.jointlabels[groin]].velocity*scale;
+        //velocity=jointVel(groin)*scale;
         velocity = 0;
         for (i = 0; i < skeleton.num_joints; i++) {
             velocity += skeleton.joints[i].velocity * scale;
@@ -4927,7 +4925,7 @@ void Person::DoStuff()
                 }
                 if (dead == 2 && bloodloss < damagetolerance) {
                     XYZ headpoint;
-                    headpoint = (skeleton.joints[skeleton.jointlabels[head]].position + skeleton.joints[skeleton.jointlabels[neck]].position) / 2 * scale + coords;
+                    headpoint = (jointPos(head) + jointPos(neck)) / 2 * scale + coords;
                     DoBlood(1, 255);
                     if (bloodtoggle && !bled) {
                         terrain.MakeDecal(blooddecal, headpoint, .2 * 1.2, .5, 0);
@@ -4945,7 +4943,7 @@ void Person::DoStuff()
                 }
                 if (dead == 2 && bloodloss >= damagetolerance) {
                     XYZ headpoint;
-                    headpoint = (skeleton.joints[skeleton.jointlabels[abdomen]].position + skeleton.joints[skeleton.jointlabels[neck]].position) / 2 * scale + coords;
+                    headpoint = (jointPos(abdomen) + jointPos(neck)) / 2 * scale + coords;
                     if (bleeding <= 0)
                         DoBlood(1, 255);
                     if (bloodtoggle && !bled) {
@@ -4988,18 +4986,18 @@ void Person::DoStuff()
                 XYZ middle;
                 middle = 0;
 
-                terrainnormal = skeleton.joints[skeleton.jointlabels[groin]].position - skeleton.joints[skeleton.jointlabels[abdomen]].position;
-                if (skeleton.joints[skeleton.jointlabels[groin]].locked && skeleton.joints[skeleton.jointlabels[abdomen]].locked) {
-                    terrainnormal = skeleton.joints[skeleton.jointlabels[groin]].position - skeleton.joints[skeleton.jointlabels[abdomen]].position;
-                    middle = (skeleton.joints[skeleton.jointlabels[groin]].position + skeleton.joints[skeleton.jointlabels[abdomen]].position) / 2;
+                terrainnormal = jointPos(groin) - jointPos(abdomen);
+                if (joint(groin).locked && joint(abdomen).locked) {
+                    terrainnormal = jointPos(groin) - jointPos(abdomen);
+                    middle = (jointPos(groin) + jointPos(abdomen)) / 2;
                 }
-                if (skeleton.joints[skeleton.jointlabels[abdomen]].locked && skeleton.joints[skeleton.jointlabels[neck]].locked) {
-                    terrainnormal = skeleton.joints[skeleton.jointlabels[abdomen]].position - skeleton.joints[skeleton.jointlabels[neck]].position;
-                    middle = (skeleton.joints[skeleton.jointlabels[neck]].position + skeleton.joints[skeleton.jointlabels[abdomen]].position) / 2;
+                if (joint(abdomen).locked && joint(neck).locked) {
+                    terrainnormal = jointPos(abdomen) - jointPos(neck);
+                    middle = (jointPos(neck) + jointPos(abdomen)) / 2;
                 }
-                if (skeleton.joints[skeleton.jointlabels[groin]].locked && skeleton.joints[skeleton.jointlabels[neck]].locked) {
-                    terrainnormal = skeleton.joints[skeleton.jointlabels[groin]].position - skeleton.joints[skeleton.jointlabels[neck]].position;
-                    middle = (skeleton.joints[skeleton.jointlabels[groin]].position + skeleton.joints[skeleton.jointlabels[neck]].position) / 2;
+                if (joint(groin).locked && joint(neck).locked) {
+                    terrainnormal = jointPos(groin) - jointPos(neck);
+                    middle = (jointPos(groin) + jointPos(neck)) / 2;
                 }
                 Normalise(&terrainnormal);
 
@@ -5041,18 +5039,18 @@ void Person::DoStuff()
                 XYZ middle;
                 middle = 0;
 
-                terrainnormal = skeleton.joints[skeleton.jointlabels[groin]].position - skeleton.joints[skeleton.jointlabels[abdomen]].position;
-                if (skeleton.joints[skeleton.jointlabels[groin]].locked && skeleton.joints[skeleton.jointlabels[abdomen]].locked) {
-                    terrainnormal = skeleton.joints[skeleton.jointlabels[groin]].position - skeleton.joints[skeleton.jointlabels[abdomen]].position;
-                    middle = (skeleton.joints[skeleton.jointlabels[groin]].position + skeleton.joints[skeleton.jointlabels[abdomen]].position) / 2;
+                terrainnormal = jointPos(groin) - jointPos(abdomen);
+                if (joint(groin).locked && joint(abdomen).locked) {
+                    terrainnormal = jointPos(groin) - jointPos(abdomen);
+                    middle = (jointPos(groin) + jointPos(abdomen)) / 2;
                 }
-                if (skeleton.joints[skeleton.jointlabels[abdomen]].locked && skeleton.joints[skeleton.jointlabels[neck]].locked) {
-                    terrainnormal = skeleton.joints[skeleton.jointlabels[abdomen]].position - skeleton.joints[skeleton.jointlabels[neck]].position;
-                    middle = (skeleton.joints[skeleton.jointlabels[neck]].position + skeleton.joints[skeleton.jointlabels[abdomen]].position) / 2;
+                if (joint(abdomen).locked && joint(neck).locked) {
+                    terrainnormal = jointPos(abdomen) - jointPos(neck);
+                    middle = (jointPos(neck) + jointPos(abdomen)) / 2;
                 }
-                if (skeleton.joints[skeleton.jointlabels[groin]].locked && skeleton.joints[skeleton.jointlabels[neck]].locked) {
-                    terrainnormal = skeleton.joints[skeleton.jointlabels[groin]].position - skeleton.joints[skeleton.jointlabels[neck]].position;
-                    middle = (skeleton.joints[skeleton.jointlabels[groin]].position + skeleton.joints[skeleton.jointlabels[neck]].position) / 2;
+                if (joint(groin).locked && joint(neck).locked) {
+                    terrainnormal = jointPos(groin) - jointPos(neck);
+                    middle = (jointPos(groin) + jointPos(neck)) / 2;
                 }
                 Normalise(&terrainnormal);
 
@@ -5940,128 +5938,128 @@ int Person::DrawSkeleton()
             if (!isSleeping() && !isSitting()) {
                 if (onterrain && ((isIdle() || isCrouch() || isLanding() || isLandhard() || animTarget == drawrightanim || animTarget == drawleftanim || animTarget == crouchdrawrightanim) && (wasIdle() || wasCrouch() || wasLanding() || wasLandhard() || animCurrent == drawrightanim || animCurrent == drawleftanim || animCurrent == crouchdrawrightanim)) && !skeleton.free) {
                     XYZ point, newpoint, change, change2;
-                    point = DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position, 0, yaw, 0) * scale + coords;
+                    point = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
                     heightleft = terrain.getHeight(point.x, point.z) + .04;
                     point.y = heightleft;
-                    change = skeleton.joints[skeleton.jointlabels[leftankle]].position - skeleton.joints[skeleton.jointlabels[leftfoot]].position;
-                    change2 = skeleton.joints[skeleton.jointlabels[leftknee]].position - skeleton.joints[skeleton.jointlabels[leftfoot]].position;
-                    skeleton.joints[skeleton.jointlabels[leftfoot]].position = DoRotation((point - coords) / scale, 0, -yaw, 0);
-                    skeleton.joints[skeleton.jointlabels[leftankle]].position = skeleton.joints[skeleton.jointlabels[leftfoot]].position + change;
-                    skeleton.joints[skeleton.jointlabels[leftknee]].position = (skeleton.joints[skeleton.jointlabels[leftfoot]].position + change2) / 2 + (skeleton.joints[skeleton.jointlabels[leftknee]].position) / 2;
+                    change = jointPos(leftankle) - jointPos(leftfoot);
+                    change2 = jointPos(leftknee) - jointPos(leftfoot);
+                    jointPos(leftfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0);
+                    jointPos(leftankle) = jointPos(leftfoot) + change;
+                    jointPos(leftknee) = (jointPos(leftfoot) + change2) / 2 + (jointPos(leftknee)) / 2;
 
-                    point = DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position, 0, yaw, 0) * scale + coords;
+                    point = DoRotation(jointPos(rightfoot), 0, yaw, 0) * scale + coords;
                     heightright = terrain.getHeight(point.x, point.z) + .04;
                     point.y = heightright;
-                    change = skeleton.joints[skeleton.jointlabels[rightankle]].position - skeleton.joints[skeleton.jointlabels[rightfoot]].position;
-                    change2 = skeleton.joints[skeleton.jointlabels[rightknee]].position - skeleton.joints[skeleton.jointlabels[rightfoot]].position;
-                    skeleton.joints[skeleton.jointlabels[rightfoot]].position = DoRotation((point - coords) / scale, 0, -yaw, 0);
-                    skeleton.joints[skeleton.jointlabels[rightankle]].position = skeleton.joints[skeleton.jointlabels[rightfoot]].position + change;
-                    skeleton.joints[skeleton.jointlabels[rightknee]].position = (skeleton.joints[skeleton.jointlabels[rightfoot]].position + change2) / 2 + (skeleton.joints[skeleton.jointlabels[rightknee]].position) / 2;
+                    change = jointPos(rightankle) - jointPos(rightfoot);
+                    change2 = jointPos(rightknee) - jointPos(rightfoot);
+                    jointPos(rightfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0);
+                    jointPos(rightankle) = jointPos(rightfoot) + change;
+                    jointPos(rightknee) = (jointPos(rightfoot) + change2) / 2 + (jointPos(rightknee)) / 2;
                     skeleton.DoConstraints(&coords, &scale);
 
                     if (creature == wolftype) {
-                        point = DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position, 0, yaw, 0) * scale + coords;
+                        point = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
                         heightleft = terrain.getHeight(point.x, point.z) + .04;
                         point.y = heightleft;
-                        change = skeleton.joints[skeleton.jointlabels[leftankle]].position - skeleton.joints[skeleton.jointlabels[leftfoot]].position;
-                        change2 = skeleton.joints[skeleton.jointlabels[leftknee]].position - skeleton.joints[skeleton.jointlabels[leftfoot]].position;
-                        skeleton.joints[skeleton.jointlabels[leftfoot]].position = DoRotation((point - coords) / scale, 0, -yaw, 0);
-                        skeleton.joints[skeleton.jointlabels[leftankle]].position = skeleton.joints[skeleton.jointlabels[leftfoot]].position + change;
-                        skeleton.joints[skeleton.jointlabels[leftknee]].position = (skeleton.joints[skeleton.jointlabels[leftfoot]].position + change2) / 2 + (skeleton.joints[skeleton.jointlabels[leftknee]].position) / 2;
+                        change = jointPos(leftankle) - jointPos(leftfoot);
+                        change2 = jointPos(leftknee) - jointPos(leftfoot);
+                        jointPos(leftfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0);
+                        jointPos(leftankle) = jointPos(leftfoot) + change;
+                        jointPos(leftknee) = (jointPos(leftfoot) + change2) / 2 + (jointPos(leftknee)) / 2;
 
-                        point = DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position, 0, yaw, 0) * scale + coords;
+                        point = DoRotation(jointPos(rightfoot), 0, yaw, 0) * scale + coords;
                         heightright = terrain.getHeight(point.x, point.z) + .04;
                         point.y = heightright;
-                        change = skeleton.joints[skeleton.jointlabels[rightankle]].position - skeleton.joints[skeleton.jointlabels[rightfoot]].position;
-                        change2 = skeleton.joints[skeleton.jointlabels[rightknee]].position - skeleton.joints[skeleton.jointlabels[rightfoot]].position;
-                        skeleton.joints[skeleton.jointlabels[rightfoot]].position = DoRotation((point - coords) / scale, 0, -yaw, 0);
-                        skeleton.joints[skeleton.jointlabels[rightankle]].position = skeleton.joints[skeleton.jointlabels[rightfoot]].position + change;
-                        skeleton.joints[skeleton.jointlabels[rightknee]].position = (skeleton.joints[skeleton.jointlabels[rightfoot]].position + change2) / 2 + (skeleton.joints[skeleton.jointlabels[rightknee]].position) / 2;
+                        change = jointPos(rightankle) - jointPos(rightfoot);
+                        change2 = jointPos(rightknee) - jointPos(rightfoot);
+                        jointPos(rightfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0);
+                        jointPos(rightankle) = jointPos(rightfoot) + change;
+                        jointPos(rightknee) = (jointPos(rightfoot) + change2) / 2 + (jointPos(rightknee)) / 2;
                         skeleton.DoConstraints(&coords, &scale);
                     }
                 }
                 if (onterrain && ((isIdle() || isCrouch() || isLanding() || isLandhard() || animTarget == drawrightanim || animTarget == drawleftanim || animTarget == crouchdrawrightanim) && !(wasIdle() || wasCrouch() || wasLanding() || wasLandhard() || animCurrent == drawrightanim || animCurrent == drawleftanim || animCurrent == crouchdrawrightanim)) && !skeleton.free) {
                     XYZ point, newpoint, change, change2;
-                    point = DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position, 0, yaw, 0) * scale + coords;
+                    point = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
                     heightleft = terrain.getHeight(point.x, point.z) + .04;
                     point.y = heightleft;
-                    change = skeleton.joints[skeleton.jointlabels[leftankle]].position - skeleton.joints[skeleton.jointlabels[leftfoot]].position;
-                    change2 = skeleton.joints[skeleton.jointlabels[leftknee]].position - skeleton.joints[skeleton.jointlabels[leftfoot]].position;
-                    skeleton.joints[skeleton.jointlabels[leftfoot]].position = DoRotation((point - coords) / scale, 0, -yaw, 0) * target + skeleton.joints[skeleton.jointlabels[leftfoot]].position * (1 - target);
-                    skeleton.joints[skeleton.jointlabels[leftankle]].position = skeleton.joints[skeleton.jointlabels[leftfoot]].position + change;
-                    skeleton.joints[skeleton.jointlabels[leftknee]].position = (skeleton.joints[skeleton.jointlabels[leftfoot]].position + change2) / 2 + (skeleton.joints[skeleton.jointlabels[leftknee]].position) / 2;
+                    change = jointPos(leftankle) - jointPos(leftfoot);
+                    change2 = jointPos(leftknee) - jointPos(leftfoot);
+                    jointPos(leftfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0) * target + jointPos(leftfoot) * (1 - target);
+                    jointPos(leftankle) = jointPos(leftfoot) + change;
+                    jointPos(leftknee) = (jointPos(leftfoot) + change2) / 2 + (jointPos(leftknee)) / 2;
 
-                    point = DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position, 0, yaw, 0) * scale + coords;
+                    point = DoRotation(jointPos(rightfoot), 0, yaw, 0) * scale + coords;
                     heightright = terrain.getHeight(point.x, point.z) + .04;
                     point.y = heightright;
-                    change = skeleton.joints[skeleton.jointlabels[rightankle]].position - skeleton.joints[skeleton.jointlabels[rightfoot]].position;
-                    change2 = skeleton.joints[skeleton.jointlabels[rightknee]].position - skeleton.joints[skeleton.jointlabels[rightfoot]].position;
-                    skeleton.joints[skeleton.jointlabels[rightfoot]].position = DoRotation((point - coords) / scale, 0, -yaw, 0) * target + skeleton.joints[skeleton.jointlabels[rightfoot]].position * (1 - target);
-                    skeleton.joints[skeleton.jointlabels[rightankle]].position = skeleton.joints[skeleton.jointlabels[rightfoot]].position + change;
-                    skeleton.joints[skeleton.jointlabels[rightknee]].position = (skeleton.joints[skeleton.jointlabels[rightfoot]].position + change2) / 2 + (skeleton.joints[skeleton.jointlabels[rightknee]].position) / 2;
+                    change = jointPos(rightankle) - jointPos(rightfoot);
+                    change2 = jointPos(rightknee) - jointPos(rightfoot);
+                    jointPos(rightfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0) * target + jointPos(rightfoot) * (1 - target);
+                    jointPos(rightankle) = jointPos(rightfoot) + change;
+                    jointPos(rightknee) = (jointPos(rightfoot) + change2) / 2 + (jointPos(rightknee)) / 2;
                     skeleton.DoConstraints(&coords, &scale);
 
                     if (creature == wolftype) {
-                        point = DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position, 0, yaw, 0) * scale + coords;
+                        point = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
                         heightleft = terrain.getHeight(point.x, point.z) + .04;
                         point.y = heightleft;
-                        change = skeleton.joints[skeleton.jointlabels[leftankle]].position - skeleton.joints[skeleton.jointlabels[leftfoot]].position;
-                        change2 = skeleton.joints[skeleton.jointlabels[leftknee]].position - skeleton.joints[skeleton.jointlabels[leftfoot]].position;
-                        skeleton.joints[skeleton.jointlabels[leftfoot]].position = DoRotation((point - coords) / scale, 0, -yaw, 0) * target + skeleton.joints[skeleton.jointlabels[leftfoot]].position * (1 - target);
-                        skeleton.joints[skeleton.jointlabels[leftankle]].position = skeleton.joints[skeleton.jointlabels[leftfoot]].position + change;
-                        skeleton.joints[skeleton.jointlabels[leftknee]].position = (skeleton.joints[skeleton.jointlabels[leftfoot]].position + change2) / 2 + (skeleton.joints[skeleton.jointlabels[leftknee]].position) / 2;
+                        change = jointPos(leftankle) - jointPos(leftfoot);
+                        change2 = jointPos(leftknee) - jointPos(leftfoot);
+                        jointPos(leftfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0) * target + jointPos(leftfoot) * (1 - target);
+                        jointPos(leftankle) = jointPos(leftfoot) + change;
+                        jointPos(leftknee) = (jointPos(leftfoot) + change2) / 2 + (jointPos(leftknee)) / 2;
 
-                        point = DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position, 0, yaw, 0) * scale + coords;
+                        point = DoRotation(jointPos(rightfoot), 0, yaw, 0) * scale + coords;
                         heightright = terrain.getHeight(point.x, point.z) + .04;
                         point.y = heightright;
-                        change = skeleton.joints[skeleton.jointlabels[rightankle]].position - skeleton.joints[skeleton.jointlabels[rightfoot]].position;
-                        change2 = skeleton.joints[skeleton.jointlabels[rightknee]].position - skeleton.joints[skeleton.jointlabels[rightfoot]].position;
-                        skeleton.joints[skeleton.jointlabels[rightfoot]].position = DoRotation((point - coords) / scale, 0, -yaw, 0) * target + skeleton.joints[skeleton.jointlabels[rightfoot]].position * (1 - target);
-                        skeleton.joints[skeleton.jointlabels[rightankle]].position = skeleton.joints[skeleton.jointlabels[rightfoot]].position + change;
-                        skeleton.joints[skeleton.jointlabels[rightknee]].position = (skeleton.joints[skeleton.jointlabels[rightfoot]].position + change2) / 2 + (skeleton.joints[skeleton.jointlabels[rightknee]].position) / 2;
+                        change = jointPos(rightankle) - jointPos(rightfoot);
+                        change2 = jointPos(rightknee) - jointPos(rightfoot);
+                        jointPos(rightfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0) * target + jointPos(rightfoot) * (1 - target);
+                        jointPos(rightankle) = jointPos(rightfoot) + change;
+                        jointPos(rightknee) = (jointPos(rightfoot) + change2) / 2 + (jointPos(rightknee)) / 2;
                         skeleton.DoConstraints(&coords, &scale);
                     }
                 }
 
                 if (onterrain && (!(isIdle() || isCrouch() || isLanding() || isLandhard() || animTarget == drawrightanim || animTarget == drawleftanim || animTarget == crouchdrawrightanim) && (wasIdle() || wasCrouch() || wasLanding() || wasLandhard() || animCurrent == drawrightanim || animCurrent == drawleftanim || animCurrent == crouchdrawrightanim)) && !skeleton.free) {
                     XYZ point, newpoint, change, change2;
-                    point = DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position, 0, yaw, 0) * scale + coords;
+                    point = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
                     heightleft = terrain.getHeight(point.x, point.z) + .04;
                     point.y = heightleft;
-                    change = skeleton.joints[skeleton.jointlabels[leftankle]].position - skeleton.joints[skeleton.jointlabels[leftfoot]].position;
-                    change2 = skeleton.joints[skeleton.jointlabels[leftknee]].position - skeleton.joints[skeleton.jointlabels[leftfoot]].position;
-                    skeleton.joints[skeleton.jointlabels[leftfoot]].position = DoRotation((point - coords) / scale, 0, -yaw, 0) * (1 - target) + skeleton.joints[skeleton.jointlabels[leftfoot]].position * target;
-                    skeleton.joints[skeleton.jointlabels[leftankle]].position = skeleton.joints[skeleton.jointlabels[leftfoot]].position + change;
-                    skeleton.joints[skeleton.jointlabels[leftknee]].position = (skeleton.joints[skeleton.jointlabels[leftfoot]].position + change2) / 2 + (skeleton.joints[skeleton.jointlabels[leftknee]].position) / 2;
+                    change = jointPos(leftankle) - jointPos(leftfoot);
+                    change2 = jointPos(leftknee) - jointPos(leftfoot);
+                    jointPos(leftfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0) * (1 - target) + jointPos(leftfoot) * target;
+                    jointPos(leftankle) = jointPos(leftfoot) + change;
+                    jointPos(leftknee) = (jointPos(leftfoot) + change2) / 2 + (jointPos(leftknee)) / 2;
 
-                    point = DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position, 0, yaw, 0) * scale + coords;
+                    point = DoRotation(jointPos(rightfoot), 0, yaw, 0) * scale + coords;
                     heightright = terrain.getHeight(point.x, point.z) + .04;
                     point.y = heightright;
-                    change = skeleton.joints[skeleton.jointlabels[rightankle]].position - skeleton.joints[skeleton.jointlabels[rightfoot]].position;
-                    change2 = skeleton.joints[skeleton.jointlabels[rightknee]].position - skeleton.joints[skeleton.jointlabels[rightfoot]].position;
-                    skeleton.joints[skeleton.jointlabels[rightfoot]].position = DoRotation((point - coords) / scale, 0, -yaw, 0) * (1 - target) + skeleton.joints[skeleton.jointlabels[rightfoot]].position * target;
-                    skeleton.joints[skeleton.jointlabels[rightankle]].position = skeleton.joints[skeleton.jointlabels[rightfoot]].position + change;
-                    skeleton.joints[skeleton.jointlabels[rightknee]].position = (skeleton.joints[skeleton.jointlabels[rightfoot]].position + change2) / 2 + (skeleton.joints[skeleton.jointlabels[rightknee]].position) / 2;
+                    change = jointPos(rightankle) - jointPos(rightfoot);
+                    change2 = jointPos(rightknee) - jointPos(rightfoot);
+                    jointPos(rightfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0) * (1 - target) + jointPos(rightfoot) * target;
+                    jointPos(rightankle) = jointPos(rightfoot) + change;
+                    jointPos(rightknee) = (jointPos(rightfoot) + change2) / 2 + (jointPos(rightknee)) / 2;
                     skeleton.DoConstraints(&coords, &scale);
 
                     if (creature == wolftype) {
-                        point = DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position, 0, yaw, 0) * scale + coords;
+                        point = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
                         heightleft = terrain.getHeight(point.x, point.z) + .04;
                         point.y = heightleft;
-                        change = skeleton.joints[skeleton.jointlabels[leftankle]].position - skeleton.joints[skeleton.jointlabels[leftfoot]].position;
-                        change2 = skeleton.joints[skeleton.jointlabels[leftknee]].position - skeleton.joints[skeleton.jointlabels[leftfoot]].position;
-                        skeleton.joints[skeleton.jointlabels[leftfoot]].position = DoRotation((point - coords) / scale, 0, -yaw, 0) * (1 - target) + skeleton.joints[skeleton.jointlabels[leftfoot]].position * target;
-                        skeleton.joints[skeleton.jointlabels[leftankle]].position = skeleton.joints[skeleton.jointlabels[leftfoot]].position + change;
-                        skeleton.joints[skeleton.jointlabels[leftknee]].position = (skeleton.joints[skeleton.jointlabels[leftfoot]].position + change2) / 2 + (skeleton.joints[skeleton.jointlabels[leftknee]].position) / 2;
+                        change = jointPos(leftankle) - jointPos(leftfoot);
+                        change2 = jointPos(leftknee) - jointPos(leftfoot);
+                        jointPos(leftfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0) * (1 - target) + jointPos(leftfoot) * target;
+                        jointPos(leftankle) = jointPos(leftfoot) + change;
+                        jointPos(leftknee) = (jointPos(leftfoot) + change2) / 2 + (jointPos(leftknee)) / 2;
 
-                        point = DoRotation(skeleton.joints[skeleton.jointlabels[rightfoot]].position, 0, yaw, 0) * scale + coords;
+                        point = DoRotation(jointPos(rightfoot), 0, yaw, 0) * scale + coords;
                         heightright = terrain.getHeight(point.x, point.z) + .04;
                         point.y = heightright;
-                        change = skeleton.joints[skeleton.jointlabels[rightankle]].position - skeleton.joints[skeleton.jointlabels[rightfoot]].position;
-                        change2 = skeleton.joints[skeleton.jointlabels[rightknee]].position - skeleton.joints[skeleton.jointlabels[rightfoot]].position;
-                        skeleton.joints[skeleton.jointlabels[rightfoot]].position = DoRotation((point - coords) / scale, 0, -yaw, 0) * (1 - target) + skeleton.joints[skeleton.jointlabels[rightfoot]].position * target;
-                        skeleton.joints[skeleton.jointlabels[rightankle]].position = skeleton.joints[skeleton.jointlabels[rightfoot]].position + change;
-                        skeleton.joints[skeleton.jointlabels[rightknee]].position = (skeleton.joints[skeleton.jointlabels[rightfoot]].position + change2) / 2 + (skeleton.joints[skeleton.jointlabels[rightknee]].position) / 2;
+                        change = jointPos(rightankle) - jointPos(rightfoot);
+                        change2 = jointPos(rightknee) - jointPos(rightfoot);
+                        jointPos(rightfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0) * (1 - target) + jointPos(rightfoot) * target;
+                        jointPos(rightankle) = jointPos(rightfoot) + change;
+                        jointPos(rightknee) = (jointPos(rightfoot) + change2) / 2 + (jointPos(rightknee)) / 2;
                         skeleton.DoConstraints(&coords, &scale);
                     }
                 }
@@ -6438,7 +6436,7 @@ int Person::DrawSkeleton()
                         }
                         weaponpoint = (skeleton.muscles[weaponattachmuscle].parent1->position + skeleton.muscles[weaponattachmuscle].parent2->position) / 2;
                         if (creature == wolftype)
-                            weaponpoint = (skeleton.joints[skeleton.jointlabels[rightwrist]].position * .7 + skeleton.joints[skeleton.jointlabels[righthand]].position * .3);
+                            weaponpoint = (jointPos(rightwrist) * .7 + jointPos(righthand) * .3);
                     }
                     if (weapons[i].getType() == staff) {
                         for (j = 0; j < skeleton.num_muscles; j++) {
@@ -6451,25 +6449,25 @@ int Person::DrawSkeleton()
                                 weaponrotatemuscle = j;
                             }
                         }
-                        //weaponpoint=skeleton.joints[skeleton.jointlabels[rightwrist]].position;
+                        //weaponpoint=jointPos(rightwrist);
                         weaponpoint = (skeleton.muscles[weaponattachmuscle].parent1->position + skeleton.muscles[weaponattachmuscle].parent2->position) / 2;
-                        //weaponpoint+=skeleton.specialforward[1]*.1+(skeleton.joints[skeleton.jointlabels[rightwrist]].position-skeleton.joints[skeleton.jointlabels[rightelbow]].position);
+                        //weaponpoint+=skeleton.specialforward[1]*.1+(jointPos(rightwrist)-jointPos(rightelbow));
                         XYZ tempnormthing, vec1, vec2;
-                        vec1 = (skeleton.joints[skeleton.jointlabels[rightwrist]].position - skeleton.joints[skeleton.jointlabels[rightelbow]].position);
-                        vec2 = (skeleton.joints[skeleton.jointlabels[rightwrist]].position - skeleton.joints[skeleton.jointlabels[rightshoulder]].position);
+                        vec1 = (jointPos(rightwrist) - jointPos(rightelbow));
+                        vec2 = (jointPos(rightwrist) - jointPos(rightshoulder));
                         CrossProduct(&vec1, &vec2, &tempnormthing);
                         Normalise(&tempnormthing);
                         if (animTarget != staffhitanim && animCurrent != staffhitanim && animTarget != staffgroundsmashanim && animCurrent != staffgroundsmashanim && animTarget != staffspinhitanim && animCurrent != staffspinhitanim)
-                            weaponpoint += tempnormthing * .1 - skeleton.specialforward[1] * .3 + (skeleton.joints[skeleton.jointlabels[rightwrist]].position - skeleton.joints[skeleton.jointlabels[rightelbow]].position);
+                            weaponpoint += tempnormthing * .1 - skeleton.specialforward[1] * .3 + (jointPos(rightwrist) - jointPos(rightelbow));
                     }
                 }
                 if (weaponactive != k && weaponstuck != k) {
                     if (weapons[i].getType() == knife)
-                        weaponpoint = skeleton.joints[skeleton.jointlabels[abdomen]].position + (skeleton.joints[skeleton.jointlabels[righthip]].position - skeleton.joints[skeleton.jointlabels[lefthip]].position) * .1 + (skeleton.joints[skeleton.jointlabels[rightshoulder]].position - skeleton.joints[skeleton.jointlabels[leftshoulder]].position) * .35;
+                        weaponpoint = jointPos(abdomen) + (jointPos(righthip) - jointPos(lefthip)) * .1 + (jointPos(rightshoulder) - jointPos(leftshoulder)) * .35;
                     if (weapons[i].getType() == sword)
-                        weaponpoint = skeleton.joints[skeleton.jointlabels[abdomen]].position + (skeleton.joints[skeleton.jointlabels[lefthip]].position - skeleton.joints[skeleton.jointlabels[righthip]].position) * .09 + (skeleton.joints[skeleton.jointlabels[leftshoulder]].position - skeleton.joints[skeleton.jointlabels[rightshoulder]].position) * .33;
+                        weaponpoint = jointPos(abdomen) + (jointPos(lefthip) - jointPos(righthip)) * .09 + (jointPos(leftshoulder) - jointPos(rightshoulder)) * .33;
                     if (weapons[i].getType() == staff)
-                        weaponpoint = skeleton.joints[skeleton.jointlabels[abdomen]].position + (skeleton.joints[skeleton.jointlabels[lefthip]].position - skeleton.joints[skeleton.jointlabels[righthip]].position) * .09 + (skeleton.joints[skeleton.jointlabels[leftshoulder]].position - skeleton.joints[skeleton.jointlabels[rightshoulder]].position) * .33;
+                        weaponpoint = jointPos(abdomen) + (jointPos(lefthip) - jointPos(righthip)) * .09 + (jointPos(leftshoulder) - jointPos(rightshoulder)) * .33;
                     for (j = 0; j < skeleton.num_muscles; j++) {
                         if ((skeleton.muscles[j].parent1->label == abdomen || skeleton.muscles[j].parent2->label == abdomen) && (skeleton.muscles[j].parent1->label == neck || skeleton.muscles[j].parent2->label == neck) && skeleton.muscles[j].numvertices > 0) {
                             weaponrotatemuscle = j;
@@ -6478,9 +6476,9 @@ int Person::DrawSkeleton()
                 }
                 if (weaponstuck == k) {
                     if (weaponstuckwhere == 0)
-                        weaponpoint = skeleton.joints[skeleton.jointlabels[abdomen]].position * .5 + skeleton.joints[skeleton.jointlabels[neck]].position * .5 - skeleton.forward * .8;
+                        weaponpoint = jointPos(abdomen) * .5 + jointPos(neck) * .5 - skeleton.forward * .8;
                     else
-                        weaponpoint = skeleton.joints[skeleton.jointlabels[abdomen]].position * .5 + skeleton.joints[skeleton.jointlabels[neck]].position * .5 + skeleton.forward * .8;
+                        weaponpoint = jointPos(abdomen) * .5 + jointPos(neck) * .5 + skeleton.forward * .8;
                     for (j = 0; j < skeleton.num_muscles; j++) {
                         if ((skeleton.muscles[j].parent1->label == abdomen || skeleton.muscles[j].parent2->label == abdomen) && (skeleton.muscles[j].parent1->label == neck || skeleton.muscles[j].parent2->label == neck) && skeleton.muscles[j].numvertices > 0) {
                             weaponrotatemuscle = j;
@@ -6515,7 +6513,7 @@ int Person::DrawSkeleton()
                             XYZ temppoint1, temppoint2, tempforward;
                             float distance;
 
-                            temppoint1 = skeleton.joints[skeleton.jointlabels[righthand]].position;
+                            temppoint1 = jointPos(righthand);
                             temppoint2 = animation[animCurrent].weapontarget[frameCurrent] * (1 - target) + animation[animTarget].weapontarget[frameTarget] * (target);
                             distance = findDistance(&temppoint1, &temppoint2);
                             weapons[i].rotation2 = asin((temppoint1.y - temppoint2.y) / distance);
@@ -6534,7 +6532,7 @@ int Person::DrawSkeleton()
                             XYZ temppoint1, temppoint2, tempforward;
                             float distance;
 
-                            temppoint1 = skeleton.joints[skeleton.jointlabels[righthand]].position;
+                            temppoint1 = jointPos(righthand);
                             temppoint2 = animation[animCurrent].weapontarget[frameCurrent] * (1 - target) + animation[animTarget].weapontarget[frameTarget] * (target);
                             distance = findDistance(&temppoint1, &temppoint2);
                             weapons[i].rotation2 = asin((temppoint1.y - temppoint2.y) / distance);
@@ -6578,7 +6576,7 @@ int Person::DrawSkeleton()
                             XYZ temppoint1, temppoint2, tempforward;
                             float distance;
 
-                            temppoint1 = animation[animCurrent].position[skeleton.jointlabels[righthand]][frameCurrent] * (1 - target) + animation[animTarget].position[skeleton.jointlabels[righthand]][frameTarget] * (target); //skeleton.joints[skeleton.jointlabels[righthand]].position;
+                            temppoint1 = animation[animCurrent].position[skeleton.jointlabels[righthand]][frameCurrent] * (1 - target) + animation[animTarget].position[skeleton.jointlabels[righthand]][frameTarget] * (target); //jointPos(righthand);
                             temppoint2 = animation[animCurrent].weapontarget[frameCurrent] * (1 - target) + animation[animTarget].weapontarget[frameTarget] * (target);
                             distance = findDistance(&temppoint1, &temppoint2);
                             weapons[i].rotation2 = asin((temppoint1.y - temppoint2.y) / distance);
@@ -6601,7 +6599,7 @@ int Person::DrawSkeleton()
                             XYZ temppoint1, temppoint2, tempforward;
                             float distance;
 
-                            temppoint1 = animation[animCurrent].position[skeleton.jointlabels[righthand]][frameCurrent] * (1 - target) + animation[animTarget].position[skeleton.jointlabels[righthand]][frameTarget] * (target); //skeleton.joints[skeleton.jointlabels[righthand]].position;
+                            temppoint1 = animation[animCurrent].position[skeleton.jointlabels[righthand]][frameCurrent] * (1 - target) + animation[animTarget].position[skeleton.jointlabels[righthand]][frameTarget] * (target); //jointPos(righthand);
                             temppoint2 = animation[animCurrent].weapontarget[frameCurrent] * (1 - target) + animation[animTarget].weapontarget[frameTarget] * (target);
                             distance = findDistance(&temppoint1, &temppoint2);
                             weapons[i].rotation2 = asin((temppoint1.y - temppoint2.y) / distance);

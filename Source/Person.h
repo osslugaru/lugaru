@@ -329,6 +329,11 @@ class Person
 
 
 
+		// convenience
+		Joint& joint(int);
+		XYZ& jointPos(int);
+		XYZ& jointVel(int);
+
 		void CheckKick();
 		void CatchFire();
 		void DoBlood(float howmuch, int which);
@@ -386,7 +391,6 @@ class Person
 		void Puff(int whichlabel);
 		void FootLand(int which, float opacity);
 		void DoStuff();
-		Joint& getJointFor(int);
 		void setAnimation(int);
 		void DoAnimations();
 		void RagDoll(bool checkcollision);

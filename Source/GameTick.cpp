@@ -2814,7 +2814,7 @@ void doDebugKeys(){
                 blah = player[closest].coords;
                 XYZ headspurtdirection;
                 //int i = player[closest].skeleton.jointlabels[head];
-                Joint& headjoint= player[closest].getJointFor(head);
+                Joint& headjoint= player[closest].joint(head);
                 for(int k=0;k<player[closest].skeleton.num_joints; k++){
                     if(!player[closest].skeleton.free)
                         flatvelocity2=player[closest].velocity;
@@ -2827,7 +2827,7 @@ void doDebugKeys(){
                     flatvelocity2.x+=(float)(abs(Random()%100)-50)/10;
                     flatvelocity2.y+=(float)(abs(Random()%100)-50)/10;
                     flatvelocity2.z+=(float)(abs(Random()%100)-50)/10;
-                    headspurtdirection=headjoint.position-player[closest].getJointFor(neck).position;
+                    headspurtdirection=headjoint.position-player[closest].jointPos(neck);
                     Normalise(&headspurtdirection);
                     Sprite::MakeSprite(bloodflamesprite, flatfacing2,flatvelocity2, 1,1,1, .6, 1);
                     flatvelocity2+=headspurtdirection*8;
@@ -4233,8 +4233,8 @@ void doAttacks(){
                                     if(player[k].animTarget==crouchstabanim||
                                             player[k].animTarget==swordgroundstabanim||
                                             player[k].animTarget==staffgroundsmashanim){
-                                        targetpoint+=(player[i].getJointFor(abdomen).position+
-                                                 player[i].getJointFor(neck).position)/2*
+                                        targetpoint+=(player[i].jointPos(abdomen)+
+                                                 player[i].jointPos(neck))/2*
                                                 player[i].scale;
                                     }
                                     player[k].targetyaw=roughDirectionTo(player[k].coords,targetpoint);
@@ -4354,9 +4354,9 @@ void doPlayerCollisions(){
                     XYZ tempcoords1=player[i].coords;
                     XYZ tempcoords2=player[k].coords;
                     if(!player[i].skeleton.oldfree)
-                        tempcoords1.y+=player[i].getJointFor(abdomen).position.y*player[i].scale;
+                        tempcoords1.y+=player[i].jointPos(abdomen).y*player[i].scale;
                     if(!player[k].skeleton.oldfree)
-                        tempcoords2.y+=player[k].getJointFor(abdomen).position.y*player[k].scale;
+                        tempcoords2.y+=player[k].jointPos(abdomen).y*player[k].scale;
                     collisionradius=1.2*sq((player[i].scale+player[k].scale)*2.5);
                     if(player[0].hasvictim)
                         if(player[0].animTarget==rabbitkickanim&&(k==0||i==0)&&!player[0].victim->skeleton.free)
@@ -4677,9 +4677,9 @@ void doAI(int i){
                                     if(normaldotproduct(player[i].facing,player[j].coords-player[i].coords)>0)
                                         if(player[j].coords.y<player[i].coords.y+5||player[j].onterrain)
                                             if(!player[j].isWallJump()&&-1==checkcollide(
-                                                            DoRotation(player[i].getJointFor(head).position,0,player[i].yaw,0)
+                                                            DoRotation(player[i].jointPos(head),0,player[i].yaw,0)
                                                                 *player[i].scale+player[i].coords,
-                                                            DoRotation(player[j].getJointFor(head).position,0,player[j].yaw,0)
+                                                            DoRotation(player[j].jointPos(head),0,player[j].yaw,0)
                                                                 *player[j].scale+player[j].coords)||
                                                     (player[j].animTarget==hanganim&&
                                                      normaldotproduct(player[j].facing,player[i].coords-player[j].coords)<0)){
@@ -4820,9 +4820,9 @@ void doAI(int i){
                                 if(distsq(&player[i].coords,&player[j].coords)<400)
                                     if(normaldotproduct(player[i].facing,player[j].coords-player[i].coords)>0)
                                         if((-1==checkcollide(
-                                                        DoRotation(player[i].getJointFor(head).position,0,player[i].yaw,0)*
+                                                        DoRotation(player[i].jointPos(head),0,player[i].yaw,0)*
                                                             player[i].scale+player[i].coords,
-                                                        DoRotation(player[j].getJointFor(head).position,0,player[j].yaw,0)*
+                                                        DoRotation(player[j].jointPos(head),0,player[j].yaw,0)*
                                                             player[j].scale+player[j].coords)&&
                                                     !player[j].isWallJump())||
                                                 (player[j].animTarget==hanganim&&
@@ -4956,9 +4956,9 @@ void doAI(int i){
                     if(distsq(&player[i].coords,&player[0].coords)<400)
                         if(normaldotproduct(player[i].facing,player[0].coords-player[i].coords)>0)
                             if((checkcollide(
-                                        DoRotation(player[i].getJointFor(head).position,0,player[i].yaw,0)*
+                                        DoRotation(player[i].jointPos(head),0,player[i].yaw,0)*
                                             player[i].scale+player[i].coords,
-                                        DoRotation(player[0].getJointFor(head).position,0,player[0].yaw,0)*
+                                        DoRotation(player[0].jointPos(head),0,player[0].yaw,0)*
                                             player[0].scale+player[0].coords)==-1)||
                                     (player[0].animTarget==hanganim&&normaldotproduct(
                                         player[0].facing,player[i].coords-player[0].coords)<0)){
@@ -5027,8 +5027,8 @@ void doAI(int i){
 
                 XYZ facing=player[i].coords;
                 XYZ flatfacing=player[player[i].ally].coords;
-                facing.y+=player[i].getJointFor(head).position.y*player[i].scale;
-                flatfacing.y+=player[player[i].ally].getJointFor(head).position.y*player[player[i].ally].scale;
+                facing.y+=player[i].jointPos(head).y*player[i].scale;
+                flatfacing.y+=player[player[i].ally].jointPos(head).y*player[player[i].ally].scale;
                 if(-1!=checkcollide(facing,flatfacing))
                     player[i].lastseentime-=.1;
 
@@ -5411,8 +5411,8 @@ void doAI(int i){
 
                 XYZ facing=player[i].coords;
                 XYZ flatfacing=player[0].coords;
-                facing.y+=player[i].getJointFor(head).position.y*player[i].scale;
-                flatfacing.y+=player[0].getJointFor(head).position.y*player[0].scale;
+                facing.y+=player[i].jointPos(head).y*player[i].scale;
+                flatfacing.y+=player[0].jointPos(head).y*player[0].scale;
                 if(player[i].occluded>=2)
                     if(-1!=checkcollide(facing,flatfacing)){
                         if(!player[i].pause)
@@ -7091,10 +7091,10 @@ void Game::Tick(){
 
                                                                 player[i].victim->weaponactive=-1;
 
-                                                                player[i].victim->getJointFor(abdomen).velocity+=relative*6;
-                                                                player[i].victim->getJointFor(neck).velocity+=relative*6;
-                                                                player[i].victim->getJointFor(rightshoulder).velocity+=relative*6;
-                                                                player[i].victim->getJointFor(leftshoulder).velocity+=relative*6;
+                                                                player[i].victim->jointVel(abdomen)+=relative*6;
+                                                                player[i].victim->jointVel(neck)+=relative*6;
+                                                                player[i].victim->jointVel(rightshoulder)+=relative*6;
+                                                                player[i].victim->jointVel(leftshoulder)+=relative*6;
                                                             }
                                                             weapons[k].owner=i;
                                                             if(player[i].num_weapons>0){
@@ -7124,7 +7124,7 @@ void Game::Tick(){
                                                                 distsq(&player[i].coords,&player[j].coords)<100&&
                                                                 distsq(&player[i].coords,&player[j].coords)>1.5&&
                                                                 !player[j].skeleton.free&&
-                                                                -1==checkcollide(DoRotation(player[j].getJointFor(head).position,0,player[j].yaw,0)*player[j].scale+player[j].coords,DoRotation(player[i].getJointFor(head).position,0,player[i].yaw,0)*player[i].scale+player[i].coords)){
+                                                                -1==checkcollide(DoRotation(player[j].jointPos(head),0,player[j].yaw,0)*player[j].scale+player[j].coords,DoRotation(player[i].jointPos(head),0,player[i].yaw,0)*player[i].scale+player[i].coords)){
                                                             if(!player[i].isFlip()){
                                                                 player[i].throwtogglekeydown=1;
                                                                 player[i].victim=&player[j];
@@ -7138,7 +7138,7 @@ void Game::Tick(){
                                                                     player[i].victim=&player[j];
                                                                     XYZ aim;
                                                                     weapons[player[i].weaponids[0]].owner=-1;
-                                                                    aim=player[i].victim->coords+DoRotation(player[i].victim->getJointFor(abdomen).position,0,player[i].victim->yaw,0)*player[i].victim->scale+player[i].victim->velocity*findDistance(&player[i].victim->coords,&player[i].coords)/50-(player[i].coords+DoRotation(player[i].getJointFor(righthand).position,0,player[i].yaw,0)*player[i].scale);
+                                                                    aim=player[i].victim->coords+DoRotation(player[i].victim->jointPos(abdomen),0,player[i].victim->yaw,0)*player[i].victim->scale+player[i].victim->velocity*findDistance(&player[i].victim->coords,&player[i].coords)/50-(player[i].coords+DoRotation(player[i].jointPos(righthand),0,player[i].yaw,0)*player[i].scale);
                                                                     Normalise(&aim);
 
                                                                     aim=DoRotation(aim,(float)abs(Random()%30)-15,(float)abs(Random()%30)-15,0);
