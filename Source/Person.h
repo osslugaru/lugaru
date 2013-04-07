@@ -94,9 +94,6 @@ class Person
 		XYZ proportionarms;
 		XYZ proportionbody;
 		
-		float heightleft;
-		float heightright;
-		
 		float unconscioustime;
 		
 		bool immobile;

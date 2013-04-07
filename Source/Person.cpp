@@ -5872,6 +5872,47 @@ void Person::DoStuff()
     }
 }
 
+
+/* EFFECT
+ * inverse kinematics helper function
+ */
+void IKHelper(Person *p, float interp){
+    XYZ point, newpoint, change, change2;
+    float heightleft, heightright;
+
+    // TODO: implement localToWorld and worldToLocal
+    //       but keep in mind it won't be the same math if player is ragdolled or something
+    //       - localToWorldStanding / worldToLocalStanding (or crouching or...?)
+    //       then comb through code for places where to use it
+
+    // point = localToWorld(jointPos(leftfoot))
+    point = DoRotation(p->jointPos(leftfoot), 0, p->yaw, 0) * p->scale + p->coords;
+    // adjust height of foot
+    heightleft = terrain.getHeight(point.x, point.z) + .04;
+    point.y = heightleft;
+    change = p->jointPos(leftankle) - p->jointPos(leftfoot);
+    change2 = p->jointPos(leftknee) - p->jointPos(leftfoot);
+    // jointPos(leftfoot) = interpolate(worldToLocal(point), jointPos(leftfoot), interp)
+    p->jointPos(leftfoot) = DoRotation((point - p->coords) / p->scale, 0, -p->yaw, 0) * interp + p->jointPos(leftfoot) * (1 - interp);
+    // move ankle along with foot
+    p->jointPos(leftankle) = p->jointPos(leftfoot) + change;
+    // average knee pos between old and new pos
+    p->jointPos(leftknee) = (p->jointPos(leftfoot) + change2) / 2 + (p->jointPos(leftknee)) / 2;
+
+    // do same as above for right leg
+    point = DoRotation(p->jointPos(rightfoot), 0, p->yaw, 0) * p->scale + p->coords;
+    heightright = terrain.getHeight(point.x, point.z) + .04;
+    point.y = heightright;
+    change = p->jointPos(rightankle) - p->jointPos(rightfoot);
+    change2 = p->jointPos(rightknee) - p->jointPos(rightfoot);
+    p->jointPos(rightfoot) = DoRotation((point - p->coords) / p->scale, 0, -p->yaw, 0) * interp + p->jointPos(rightfoot) * (1 - interp);
+    p->jointPos(rightankle) = p->jointPos(rightfoot) + change;
+    p->jointPos(rightknee) = (p->jointPos(rightfoot) + change2) / 2 + (p->jointPos(rightknee)) / 2;
+
+    // fix up skeleton now that we've moved body parts?
+    p->skeleton.DoConstraints(&p->coords, &p->scale);
+}
+
 /* EFFECT
  * MONSTER
  * TODO: ???
@@ -5936,167 +5977,28 @@ int Person::DrawSkeleton()
         static int start, endthing;
         if ((dead != 2 || skeleton.free != 2) && updatedelay <= 0) {
             if (!isSleeping() && !isSitting()) {
-                if (onterrain && ((isIdle() || isCrouch() || isLanding() || isLandhard() || animTarget == drawrightanim || animTarget == drawleftanim || animTarget == crouchdrawrightanim) && (wasIdle() || wasCrouch() || wasLanding() || wasLandhard() || animCurrent == drawrightanim || animCurrent == drawleftanim || animCurrent == crouchdrawrightanim)) && !skeleton.free) {
-                    XYZ point, newpoint, change, change2;
+                // TODO: give these meaningful names
+                const bool cond1 = (isIdle() || isCrouch() || isLanding() || isLandhard()
+                        || animTarget == drawrightanim || animTarget == drawleftanim || animTarget == crouchdrawrightanim);
+                const bool cond2 = (wasIdle() || wasCrouch() || wasLanding() || wasLandhard()
+                        || animCurrent == drawrightanim || animCurrent == drawleftanim || animCurrent == crouchdrawrightanim);
 
-                    // TODO: all of these code blocks look really similar - what's their purpose?
-                    // looks like inverse kinematics code
-                    // TODO: implement localToWorld and worldToLocal
-                    //       but keep in mind it won't be the same math if player is ragdolled or something
-                    //       - localToWorldStanding / worldToLocalStanding (or crouching or...?)
-                    //       then comb through code for places where to use it
-
-                    // point = localToWorld(jointPos(leftfoot))
-                    point = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
-                    // adjust height of foot
-                    heightleft = terrain.getHeight(point.x, point.z) + .04;
-                    point.y = heightleft;
-                    change = jointPos(leftankle) - jointPos(leftfoot);
-                    change2 = jointPos(leftknee) - jointPos(leftfoot);
-                    // jointPos(leftfoot) = worldToLocal(point)
-                    jointPos(leftfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0);
-                    // move ankle along with foot
-                    jointPos(leftankle) = jointPos(leftfoot) + change;
-                    // average knee pos between old and new pos
-                    jointPos(leftknee) = (jointPos(leftfoot) + change2) / 2 + (jointPos(leftknee)) / 2;
-
-                    // do same as above for right leg
-                    point = DoRotation(jointPos(rightfoot), 0, yaw, 0) * scale + coords;
-                    heightright = terrain.getHeight(point.x, point.z) + .04;
-                    point.y = heightright;
-                    change = jointPos(rightankle) - jointPos(rightfoot);
-                    change2 = jointPos(rightknee) - jointPos(rightfoot);
-                    jointPos(rightfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0);
-                    jointPos(rightankle) = jointPos(rightfoot) + change;
-                    jointPos(rightknee) = (jointPos(rightfoot) + change2) / 2 + (jointPos(rightknee)) / 2;
-
-                    // fix up skeleton now that we've moved body parts?
-                    skeleton.DoConstraints(&coords, &scale);
-
-                    if (creature == wolftype) {
-                        // FIXME: EXACT same code as above
-                        point = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
-                        heightleft = terrain.getHeight(point.x, point.z) + .04;
-                        point.y = heightleft;
-                        change = jointPos(leftankle) - jointPos(leftfoot);
-                        change2 = jointPos(leftknee) - jointPos(leftfoot);
-                        jointPos(leftfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0);
-                        jointPos(leftankle) = jointPos(leftfoot) + change;
-                        jointPos(leftknee) = (jointPos(leftfoot) + change2) / 2 + (jointPos(leftknee)) / 2;
-
-                        point = DoRotation(jointPos(rightfoot), 0, yaw, 0) * scale + coords;
-                        heightright = terrain.getHeight(point.x, point.z) + .04;
-                        point.y = heightright;
-                        change = jointPos(rightankle) - jointPos(rightfoot);
-                        change2 = jointPos(rightknee) - jointPos(rightfoot);
-                        jointPos(rightfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0);
-                        jointPos(rightankle) = jointPos(rightfoot) + change;
-                        jointPos(rightknee) = (jointPos(rightfoot) + change2) / 2 + (jointPos(rightknee)) / 2;
-
-                        skeleton.DoConstraints(&coords, &scale);
-                    }
-                }
-                // subtle difference in this conditional: an extra '!' in the middle
-                if (onterrain && ((isIdle() || isCrouch() || isLanding() || isLandhard() || animTarget == drawrightanim || animTarget == drawleftanim || animTarget == crouchdrawrightanim) && !(wasIdle() || wasCrouch() || wasLanding() || wasLandhard() || animCurrent == drawrightanim || animCurrent == drawleftanim || animCurrent == crouchdrawrightanim)) && !skeleton.free) {
-                    XYZ point, newpoint, change, change2;
-
-                    point = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
-                    heightleft = terrain.getHeight(point.x, point.z) + .04;
-                    point.y = heightleft;
-                    change = jointPos(leftankle) - jointPos(leftfoot);
-                    change2 = jointPos(leftknee) - jointPos(leftfoot);
-                    // only change is the addition of:
-                    // * target + jointPos(leftfoot) * (1 - target);
-                    // looks like interpolation
-                    jointPos(leftfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0) * target + jointPos(leftfoot) * (1 - target);
-                    jointPos(leftankle) = jointPos(leftfoot) + change;
-                    jointPos(leftknee) = (jointPos(leftfoot) + change2) / 2 + (jointPos(leftknee)) / 2;
-
-                    point = DoRotation(jointPos(rightfoot), 0, yaw, 0) * scale + coords;
-                    heightright = terrain.getHeight(point.x, point.z) + .04;
-                    point.y = heightright;
-                    change = jointPos(rightankle) - jointPos(rightfoot);
-                    change2 = jointPos(rightknee) - jointPos(rightfoot);
-                    // likewise:
-                    // * target + jointPos(rightfoot) * (1 - target);
-                    jointPos(rightfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0) * target + jointPos(rightfoot) * (1 - target);
-                    jointPos(rightankle) = jointPos(rightfoot) + change;
-                    jointPos(rightknee) = (jointPos(rightfoot) + change2) / 2 + (jointPos(rightknee)) / 2;
-
-                    skeleton.DoConstraints(&coords, &scale);
-
-                    if (creature == wolftype) {
-                        // once again, copied verbatim from above
-                        point = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
-                        heightleft = terrain.getHeight(point.x, point.z) + .04;
-                        point.y = heightleft;
-                        change = jointPos(leftankle) - jointPos(leftfoot);
-                        change2 = jointPos(leftknee) - jointPos(leftfoot);
-                        jointPos(leftfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0) * target + jointPos(leftfoot) * (1 - target);
-                        jointPos(leftankle) = jointPos(leftfoot) + change;
-                        jointPos(leftknee) = (jointPos(leftfoot) + change2) / 2 + (jointPos(leftknee)) / 2;
-
-                        point = DoRotation(jointPos(rightfoot), 0, yaw, 0) * scale + coords;
-                        heightright = terrain.getHeight(point.x, point.z) + .04;
-                        point.y = heightright;
-                        change = jointPos(rightankle) - jointPos(rightfoot);
-                        change2 = jointPos(rightknee) - jointPos(rightfoot);
-                        jointPos(rightfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0) * target + jointPos(rightfoot) * (1 - target);
-                        jointPos(rightankle) = jointPos(rightfoot) + change;
-                        jointPos(rightknee) = (jointPos(rightfoot) + change2) / 2 + (jointPos(rightknee)) / 2;
-
-                        skeleton.DoConstraints(&coords, &scale);
-                    }
+                if (onterrain && (cond1 && cond2) && !skeleton.free) {
+                    IKHelper(this, 1);
+                    if (creature == wolftype)
+                        IKHelper(this, 1);
                 }
 
-                // this time, an extra '!' toward the beginning
-                if (onterrain && (!(isIdle() || isCrouch() || isLanding() || isLandhard() || animTarget == drawrightanim || animTarget == drawleftanim || animTarget == crouchdrawrightanim) && (wasIdle() || wasCrouch() || wasLanding() || wasLandhard() || animCurrent == drawrightanim || animCurrent == drawleftanim || animCurrent == crouchdrawrightanim)) && !skeleton.free) {
-                    XYZ point, newpoint, change, change2;
+                if (onterrain && (cond1 && !cond2) && !skeleton.free) {
+                    IKHelper(this, target);
+                    if (creature == wolftype)
+                        IKHelper(this, target);
+                }
 
-                    point = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
-                    heightleft = terrain.getHeight(point.x, point.z) + .04;
-                    point.y = heightleft;
-                    change = jointPos(leftankle) - jointPos(leftfoot);
-                    change2 = jointPos(leftknee) - jointPos(leftfoot);
-                    // interpolation again, but reversed
-                    jointPos(leftfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0) * (1 - target) + jointPos(leftfoot) * target;
-                    jointPos(leftankle) = jointPos(leftfoot) + change;
-                    jointPos(leftknee) = (jointPos(leftfoot) + change2) / 2 + (jointPos(leftknee)) / 2;
-
-                    point = DoRotation(jointPos(rightfoot), 0, yaw, 0) * scale + coords;
-                    heightright = terrain.getHeight(point.x, point.z) + .04;
-                    point.y = heightright;
-                    change = jointPos(rightankle) - jointPos(rightfoot);
-                    change2 = jointPos(rightknee) - jointPos(rightfoot);
-                    // interpolation again, but reversed
-                    jointPos(rightfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0) * (1 - target) + jointPos(rightfoot) * target;
-                    jointPos(rightankle) = jointPos(rightfoot) + change;
-                    jointPos(rightknee) = (jointPos(rightfoot) + change2) / 2 + (jointPos(rightknee)) / 2;
-
-                    skeleton.DoConstraints(&coords, &scale);
-
-                    if (creature == wolftype) {
-                        // still copied verbatim
-                        point = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
-                        heightleft = terrain.getHeight(point.x, point.z) + .04;
-                        point.y = heightleft;
-                        change = jointPos(leftankle) - jointPos(leftfoot);
-                        change2 = jointPos(leftknee) - jointPos(leftfoot);
-                        jointPos(leftfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0) * (1 - target) + jointPos(leftfoot) * target;
-                        jointPos(leftankle) = jointPos(leftfoot) + change;
-                        jointPos(leftknee) = (jointPos(leftfoot) + change2) / 2 + (jointPos(leftknee)) / 2;
-
-                        point = DoRotation(jointPos(rightfoot), 0, yaw, 0) * scale + coords;
-                        heightright = terrain.getHeight(point.x, point.z) + .04;
-                        point.y = heightright;
-                        change = jointPos(rightankle) - jointPos(rightfoot);
-                        change2 = jointPos(rightknee) - jointPos(rightfoot);
-                        jointPos(rightfoot) = DoRotation((point - coords) / scale, 0, -yaw, 0) * (1 - target) + jointPos(rightfoot) * target;
-                        jointPos(rightankle) = jointPos(rightfoot) + change;
-                        jointPos(rightknee) = (jointPos(rightfoot) + change2) / 2 + (jointPos(rightknee)) / 2;
-
-                        skeleton.DoConstraints(&coords, &scale);
-                    }
+                if (onterrain && (!cond1 && cond2) && !skeleton.free) {
+                    IKHelper(this, 1 - target);
+                    if (creature == wolftype)
+                        IKHelper(this, 1 - target);
                 }
             }
 
