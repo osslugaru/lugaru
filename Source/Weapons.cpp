@@ -214,7 +214,7 @@ void Weapon::DoStuff(int i) {
 		if(velocity.x||velocity.y||velocity.z) {
 			for(int j=0;j<numplayers;j++) {
 				footvel=0;
-				footpoint=DoRotation((player[j].skeleton.joints[player[j].skeleton.jointlabels[abdomen]].position+player[j].skeleton.joints[player[j].skeleton.jointlabels[neck]].position)/2,0,player[j].yaw,0)*player[j].scale+player[j].coords;
+				footpoint=DoRotation((player[j].jointPos(abdomen)+player[j].jointPos(neck))/2,0,player[j].yaw,0)*player[j].scale+player[j].coords;
 				if(owner==-1 && distsqflat(&position,&player[j].coords)<1.5 && 
 				distsq(&position,&player[j].coords)<4 && player[j].weaponstuck==-1 &&
 				!player[j].skeleton.free && j!=oldowner) {
@@ -248,10 +248,10 @@ void Weapon::DoStuff(int i) {
 							player[j].weaponids[player[j].num_weapons-1]=i;
 
 							player[j].RagDoll(0);
-							player[j].skeleton.joints[player[j].skeleton.jointlabels[abdomen]].velocity+=velocity*2;
-							player[j].skeleton.joints[player[j].skeleton.jointlabels[neck]].velocity+=velocity*2;
-							player[j].skeleton.joints[player[j].skeleton.jointlabels[rightshoulder]].velocity+=velocity*2;
-							player[j].skeleton.joints[player[j].skeleton.jointlabels[leftshoulder]].velocity+=velocity*2;
+							player[j].jointVel(abdomen)+=velocity*2;
+							player[j].jointVel(neck)+=velocity*2;
+							player[j].jointVel(rightshoulder)+=velocity*2;
+							player[j].jointVel(leftshoulder)+=velocity*2;
 							if(bloodtoggle&&tutoriallevel!=1)
 								Sprite::MakeSprite(cloudimpactsprite, footpoint,footvel, 1,0,0, .8, .3);
 							if(tutoriallevel==1)
