@@ -137,7 +137,6 @@ public:
     Animation & operator = (const Animation & ani);
 
     void Load(const char *fileName, int aheight, int aattack);
-    void Move(XYZ how);
 
 protected:
     void deallocate();
@@ -198,24 +197,33 @@ public:
     bool freefall;
 
     void FindForwards();
-    void FindForwardsfirst();
     float DoConstraints(XYZ *coords, float *scale);
     void DoGravity(float *scale);
-    void DoBalance();
-    void MusclesSet();
+    void FindRotationJoint(int which);
+    void FindRotationJointSameTwist(int which);
+    void FindRotationMuscle(int which, int animation);
+    void Load(const char *fileName, const char *lowfileName, const char *clothesfileName, const char *modelfileName, const char *model2fileName, const char *model3fileName, const char *model4fileName, const char *model5fileNamee, const char *model6fileName, const char *model7fileName, const char *modellowfileName, const char *modelclothesfileName, bool aclothes);
+
+    /*
+    // unused
+    void FindForwardsfirst();
     void Draw(int muscleview);
     void AddJoint(float x, float y, float z, int which);
     void SetJoint(float x, float y, float z, int which, int whichjoint);
     void DeleteJoint(int whichjoint);
     void AddMuscle(int attach1, int attach2, float maxlength, float minlength, int type);
     void DeleteMuscle(int whichmuscle);
-    void FindRotationJoint(int which);
-    void FindRotationJointSameTwist(int which);
-    void FindRotationMuscle(int which, int animation);
-    void Load(const char *fileName, const char *lowfileName, const char *clothesfileName, const char *modelfileName, const char *model2fileName, const char *model3fileName, const char *model4fileName, const char *model5fileNamee, const char *model6fileName, const char *model7fileName, const char *modellowfileName, const char *modelclothesfileName, bool aclothes);
+    void DoBalance();
+    void MusclesSet();
+    */
 
     Skeleton();
     ~Skeleton();
+
+private:
+    Joint& joint(int bodypart);
+    XYZ& jointPos(int bodypart);
+    XYZ& jointVel(int bodypart);
 };
 
 #endif

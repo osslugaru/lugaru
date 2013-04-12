@@ -45,24 +45,40 @@ extern int whichjointendarray[26];
 
 extern bool visibleloading;
 
+/* convenience functions
+ */
+Joint& Skeleton::joint(int bodypart) { return joints[jointlabels[bodypart]]; }
+XYZ& Skeleton::jointPos(int bodypart) { return joint(bodypart).position; }
+XYZ& Skeleton::jointVel(int bodypart) { return joint(bodypart).velocity; }
+
+
+/* EFFECT
+ */
 void dealloc2(void* param)
 {
     free(param);
-    param = 0;
+    param = 0; // FIXME: does this *do* anything???
 }
 
 enum {boneconnect, constraint, muscle};
 
+
+/* EFFECT
+ * sets strength, length,
+ *      parent1->position, parent2->position,
+ *      parent1->velocity, parent2->velocity
+ * used for ragdolls?
+ *
+ * USES:
+ * Skeleton::DoConstraints
+ */
 void Muscle::DoConstraint(bool spinny)
 {
-    static XYZ vel;
-    static XYZ midp;
-    static XYZ newpoint1, newpoint2;
-
-    static float oldlength;
+    // FIXME: relaxlength shouldn't be static, but may not always be set
+    // so I don't want to change the existing behavior even though it's probably a bug
     static float relaxlength;
 
-    oldlength = length;
+    float oldlength = length;
 
     if (type != boneconnect)
         relaxlength = findDistance(&parent1->position, &parent2->position);
@@ -72,6 +88,7 @@ void Muscle::DoConstraint(bool spinny)
     if (type == constraint)
         strength = 0;
 
+    // clamp strength
     if (strength < 0)
         strength = 0;
     if (strength > 1)
@@ -85,30 +102,29 @@ void Muscle::DoConstraint(bool spinny)
     if ((relaxlength - length > 0 && relaxlength - oldlength < 0) || (relaxlength - length < 0 && relaxlength - oldlength > 0))
         length = relaxlength;
 
-    //if(!broken){
+    // clamp length
     if (length < minlength)
         length = minlength;
     if (length > maxlength)
         length = maxlength;
-    //}
-    /*
-    if(broken){
-    if(length<minlength*.6)length=minlength*.6;
-    if(length>maxlength*1.4)length=maxlength*1.4;
-    }
-    */
+
     if (length == relaxlength)
         return;
 
+    // relax muscle?
+
     //Find midpoint
-    midp = (parent1->position * parent1->mass + parent2->position * parent2->mass) / (parent1->mass + parent2->mass);
+    XYZ midp = (parent1->position * parent1->mass + parent2->position * parent2->mass) / (parent1->mass + parent2->mass);
+
     //Find vector from midpoint to second vector
-    vel = parent2->position - midp;
+    XYZ vel = parent2->position - midp;
+
     //Change to unit vector
     Normalise(&vel);
+
     //Apply velocity change
-    newpoint1 = midp - vel * length * (parent2->mass / (parent1->mass + parent2->mass));
-    newpoint2 = midp + vel * length * (parent1->mass / (parent1->mass + parent2->mass));
+    XYZ newpoint1 = midp - vel * length * (parent2->mass / (parent1->mass + parent2->mass));
+    XYZ newpoint2 = midp + vel * length * (parent1->mass / (parent1->mass + parent2->mass));
     if (!freeze && spinny) {
         parent1->velocity = parent1->velocity + (newpoint1 - parent1->position) / multiplier / 4;
         parent2->velocity = parent2->velocity + (newpoint2 - parent2->position) / multiplier / 4;
@@ -116,28 +132,20 @@ void Muscle::DoConstraint(bool spinny)
         parent1->velocity = parent1->velocity + (newpoint1 - parent1->position);
         parent2->velocity = parent2->velocity + (newpoint2 - parent2->position);
     }
+
     //Move child point to within certain distance of parent point
     parent1->position = newpoint1;
     parent2->position = newpoint2;
 }
 
-void Skeleton::FindForwardsfirst()
-{
-    //Find forward vectors
-    CrossProduct(joints[forwardjoints[1]].position - joints[forwardjoints[0]].position, joints[forwardjoints[2]].position - joints[forwardjoints[0]].position, &forward);
-    Normalise(&forward);
-
-    CrossProduct(joints[lowforwardjoints[1]].position - joints[lowforwardjoints[0]].position, joints[lowforwardjoints[2]].position - joints[lowforwardjoints[0]].position, &lowforward);
-    Normalise(&lowforward);
-
-    //Special forwards
-    specialforward[0] = forward;
-    specialforward[1] = forward;
-    specialforward[2] = forward;
-    specialforward[3] = forward;
-    specialforward[4] = forward;
-
-}
+/* EFFECT
+ * sets forward, lowforward, specialforward[]
+ *
+ * USES:
+ * Skeleton::Load
+ * Person/Person::DoAnimations
+ * Person/Person::DrawSkeleton
+ */
 void Skeleton::FindForwards()
 {
     //Find forward vectors
@@ -150,53 +158,50 @@ void Skeleton::FindForwards()
     //Special forwards
     specialforward[0] = forward;
 
-    specialforward[1] = joints[jointlabels[rightshoulder]].position + joints[jointlabels[rightwrist]].position;
-    specialforward[1] = joints[jointlabels[rightelbow]].position - specialforward[1] / 2;
+    specialforward[1] = jointPos(rightshoulder) + jointPos(rightwrist);
+    specialforward[1] = jointPos(rightelbow) - specialforward[1] / 2;
     specialforward[1] += forward * .4;
     Normalise(&specialforward[1]);
-    specialforward[2] = joints[jointlabels[leftshoulder]].position + joints[jointlabels[leftwrist]].position;
-    specialforward[2] = joints[jointlabels[leftelbow]].position - specialforward[2] / 2;
+    specialforward[2] = jointPos(leftshoulder) + jointPos(leftwrist);
+    specialforward[2] = jointPos(leftelbow) - specialforward[2] / 2;
     specialforward[2] += forward * .4;
     Normalise(&specialforward[2]);
 
-    specialforward[3] = joints[jointlabels[righthip]].position + joints[jointlabels[rightankle]].position;
-    specialforward[3] = specialforward[3] / 2 - joints[jointlabels[rightknee]].position;
+    specialforward[3] = jointPos(righthip) + jointPos(rightankle);
+    specialforward[3] = specialforward[3] / 2 - jointPos(rightknee);
     specialforward[3] += lowforward * .4;
     Normalise(&specialforward[3]);
-    specialforward[4] = joints[jointlabels[lefthip]].position + joints[jointlabels[leftankle]].position;
-    specialforward[4] = specialforward[4] / 2 - joints[jointlabels[leftknee]].position;
+    specialforward[4] = jointPos(lefthip) + jointPos(leftankle);
+    specialforward[4] = specialforward[4] / 2 - jointPos(leftknee);
     specialforward[4] += lowforward * .4;
     Normalise(&specialforward[4]);
 }
 
+/* EFFECT
+ * TODO
+ *
+ * USES:
+ * Person/Person::RagDoll
+ * Person/Person::DoStuff
+ * Person/IKHelper
+ */
 float Skeleton::DoConstraints(XYZ *coords, float *scale)
 {
-    static float friction = 1.5;
-    static float elasticity = .3;
-    static XYZ bounceness;
-    static XYZ oldpos[100];
-    static int numrepeats = 3;
-    static float groundlevel = .15;
-    static float soundvolume;
-    static int i, j, k, l, m;
-    static XYZ temp, start, end;
-    static XYZ terrainnormal;
-    static float r = .05;
-    static float r2 = .08;
-    static int whichhit;
-    //static int whichjointstart,whichjointend;
-    static float distance;
-    static float frictionness;
-    static XYZ terrainlight;
-    static int whichpatchx;
-    static int whichpatchz;
-    static float damage;
-    static bool freely;
-    static float tempmult;
-    static bool breaking;
-    breaking = 0;
-
-    damage = 0;
+    float friction = 1.5;
+    const float elasticity = .3;
+    XYZ bounceness;
+    const int numrepeats = 3;
+    float groundlevel = .15;
+    int i, j, k, l, m;
+    XYZ temp;
+    XYZ terrainnormal;
+    int whichhit;
+    float frictionness;
+    XYZ terrainlight;
+    int whichpatchx;
+    int whichpatchz;
+    float damage = 0; // eventually returned from function
+    bool breaking = false;
 
     if (free) {
         freetime += multiplier;
@@ -206,103 +211,103 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
 
         terrainlight = *coords;
         objects.SphereCheckPossible(&terrainlight, 1);
-        /*
-        for(i=0; i<num_joints; i++){
-        oldpos[i]=joints[i].position;
-        }*/
 
         //Add velocity
         for (i = 0; i < num_joints; i++) {
-            //if(!isnormal(joints[i].velocity.x)||!isnormal(joints[i].velocity.y)||!isnormal(joints[i].velocity.z))joints[i].velocity=0;
             joints[i].position = joints[i].position + joints[i].velocity * multiplier;
-            groundlevel = .15;
-            if (joints[i].label == head)
-                groundlevel = .8;
-            if (joints[i].label == righthand || joints[i].label == rightwrist || joints[i].label == rightelbow)
-                groundlevel = .2;
-            if (joints[i].label == lefthand || joints[i].label == leftwrist || joints[i].label == leftelbow)
-                groundlevel = .2;
+
+            switch (joints[i].label) {
+                case head:
+                    groundlevel = .8; break;
+                case righthand:
+                case rightwrist:
+                case rightelbow:
+                case lefthand:
+                case leftwrist:
+                case leftelbow:
+                    groundlevel = .2; break;
+                default:
+                    groundlevel = .15; break;
+            }
+
             joints[i].position.y -= groundlevel;
-            //if(!joints[i].locked&&!broken)joints[i].velocity+=joints[i].velchange*multiplier*10*(500-longdead)/500;
             joints[i].oldvelocity = joints[i].velocity;
         }
-        tempmult = multiplier;
+
+        float tempmult = multiplier;
         //multiplier/=numrepeats;
+
         for (j = 0; j < numrepeats; j++) {
-            if (!joints[jointlabels[rightknee]].locked && !joints[jointlabels[righthip]].locked) {
-                temp = joints[jointlabels[rightknee]].position - (joints[jointlabels[righthip]].position + joints[jointlabels[rightankle]].position) / 2;
-                while (normaldotproduct(temp, lowforward) > -.1 && !sphere_line_intersection(&joints[jointlabels[righthip]].position, &joints[jointlabels[rightankle]].position, &joints[jointlabels[rightknee]].position, &r)) {
-                    joints[jointlabels[rightknee]].position -= lowforward * .05;
+            float r = .05;
+            // right leg constraints?
+            if (!joint(rightknee).locked && !joint(righthip).locked) {
+                temp = jointPos(rightknee) - (jointPos(righthip) + jointPos(rightankle)) / 2;
+                while (normaldotproduct(temp, lowforward) > -.1 && !sphere_line_intersection(&jointPos(righthip), &jointPos(rightankle), &jointPos(rightknee), &r)) {
+                    jointPos(rightknee) -= lowforward * .05;
                     if (spinny)
-                        joints[jointlabels[rightknee]].velocity -= lowforward * .05 / multiplier / 4;
+                        jointVel(rightknee) -= lowforward * .05 / multiplier / 4;
                     else
-                        joints[jointlabels[rightknee]].velocity -= lowforward * .05;
-                    joints[jointlabels[rightankle]].position += lowforward * .025;
+                        jointVel(rightknee) -= lowforward * .05;
+                    jointPos(rightankle) += lowforward * .025;
                     if (spinny)
-                        joints[jointlabels[rightankle]].velocity += lowforward * .025 / multiplier / 4;
+                        jointVel(rightankle) += lowforward * .025 / multiplier / 4;
                     else
-                        joints[jointlabels[rightankle]].velocity += lowforward * .25;
-                    joints[jointlabels[righthip]].position += lowforward * .025;
+                        jointVel(rightankle) += lowforward * .25;
+                    jointPos(righthip) += lowforward * .025;
                     if (spinny)
-                        joints[jointlabels[righthip]].velocity += lowforward * .025 / multiplier / 4;
+                        jointVel(righthip) += lowforward * .025 / multiplier / 4;
                     else
-                        joints[jointlabels[righthip]].velocity += lowforward * .025;
-                    temp = joints[jointlabels[rightknee]].position - (joints[jointlabels[righthip]].position + joints[jointlabels[rightankle]].position) / 2;
+                        jointVel(righthip) += lowforward * .025;
+                    temp = jointPos(rightknee) - (jointPos(righthip) + jointPos(rightankle)) / 2;
                 }
             }
-            if (!joints[jointlabels[leftknee]].locked && !joints[jointlabels[righthip]].locked) {
-                temp = joints[jointlabels[leftknee]].position - (joints[jointlabels[lefthip]].position + joints[jointlabels[leftankle]].position) / 2;
-                while (normaldotproduct(temp, lowforward) > -.1 && !sphere_line_intersection(&joints[jointlabels[lefthip]].position, &joints[jointlabels[leftankle]].position, &joints[jointlabels[leftknee]].position, &r)) {
-                    joints[jointlabels[leftknee]].position -= lowforward * .05;
+
+            // left leg constraints?
+            if (!joint(leftknee).locked && !joint(lefthip).locked) {
+                temp = jointPos(leftknee) - (jointPos(lefthip) + jointPos(leftankle)) / 2;
+                while (normaldotproduct(temp, lowforward) > -.1 && !sphere_line_intersection(&jointPos(lefthip), &jointPos(leftankle), &jointPos(leftknee), &r)) {
+                    jointPos(leftknee) -= lowforward * .05;
                     if (spinny)
-                        joints[jointlabels[leftknee]].velocity -= lowforward * .05 / multiplier / 4;
+                        jointVel(leftknee) -= lowforward * .05 / multiplier / 4;
                     else
-                        joints[jointlabels[leftknee]].velocity -= lowforward * .05;
-                    joints[jointlabels[leftankle]].position += lowforward * .025;
+                        jointVel(leftknee) -= lowforward * .05;
+                    jointPos(leftankle) += lowforward * .025;
                     if (spinny)
-                        joints[jointlabels[leftankle]].velocity += lowforward * .025 / multiplier / 4;
+                        jointVel(leftankle) += lowforward * .025 / multiplier / 4;
                     else
-                        joints[jointlabels[leftankle]].velocity += lowforward * .25;
-                    joints[jointlabels[lefthip]].position += lowforward * .025;
+                        jointVel(leftankle) += lowforward * .25;
+                    jointPos(lefthip) += lowforward * .025;
                     if (spinny)
-                        joints[jointlabels[lefthip]].velocity += lowforward * .025 / multiplier / 4;
+                        jointVel(lefthip) += lowforward * .025 / multiplier / 4;
                     else
-                        joints[jointlabels[lefthip]].velocity += lowforward * .025;
-                    temp = joints[jointlabels[leftknee]].position - (joints[jointlabels[lefthip]].position + joints[jointlabels[leftankle]].position) / 2;
+                        jointVel(lefthip) += lowforward * .025;
+                    temp = jointPos(leftknee) - (jointPos(lefthip) + jointPos(leftankle)) / 2;
                 }
             }
 
             for (i = 0; i < num_joints; i++) {
-                //joints[i].delay-=multiplier/1.5;
-                if (joints[i].locked)
-                    if (!spinny)
-                        if (findLengthfast(&joints[i].velocity) > 320)
-                            joints[i].locked = 0;
-                if (spinny)
-                    if (findLengthfast(&joints[i].velocity) > 600)
-                        joints[i].locked = 0;
+                if (joints[i].locked && !spinny && findLengthfast(&joints[i].velocity) > 320)
+                    joints[i].locked = 0;
+                if (spinny && findLengthfast(&joints[i].velocity) > 600)
+                    joints[i].locked = 0;
                 if (joints[i].delay > 0) {
-                    freely = 1;
+                    bool freely = true;
                     for (j = 0; j < num_joints; j++) {
                         if (joints[j].locked)
-                            freely = 0;
+                            freely = false;
                     }
                     if (freely)
                         joints[i].delay -= multiplier * 3;
                 }
-                //if(joints[i].delay>0)
-                //if(findLengthfast(&joints[i].velocity)>700&&joints[i].label!=head)joints[i].delay-=multiplier;
             }
 
             if (num_muscles)
                 for (i = 0; i < num_muscles; i++) {
                     //Length constraints
-                    //muscles[i].DoConstraint(broken);
                     muscles[i].DoConstraint(spinny);
                 }
 
             for (i = 0; i < num_joints; i++) {
-                //joints[i].delay-=multiplier/1.5;
                 //Length constraints
                 //Ground constraint
                 groundlevel = 0;
@@ -315,7 +320,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                         if (tutoriallevel != 1 || id == 0) {
                             emit_sound_at(landsound1, joints[i].position * (*scale) + *coords, 128.);
                         }
-                        breaking = 1;
+                        breaking = true;
                     }
 
                     if (joints[i].label == head && !joints[i].locked && joints[i].delay <= 0) {
@@ -333,7 +338,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                         damage += findLengthfast(&bounceness) / 4000;
                     if (findLengthfast(&joints[i].velocity) < findLengthfast(&bounceness))
                         bounceness = 0;
-                    frictionness = abs(normaldotproduct(joints[i].velocity, terrainnormal)); //findLength(&bounceness)/findLength(&joints[i].velocity);
+                    frictionness = abs(normaldotproduct(joints[i].velocity, terrainnormal));
                     joints[i].velocity -= bounceness;
                     if (1 - friction * frictionness > 0)
                         joints[i].velocity *= 1 - friction * frictionness;
@@ -344,8 +349,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                         if (findLengthfast(&bounceness) > 8000 && breaking) {
                             objects.model[k].MakeDecal(breakdecal, DoRotation(temp - objects.position[k], 0, -objects.yaw[k], 0), .4, .5, Random() % 360);
                             Sprite::MakeSprite(cloudsprite, joints[i].position * (*scale) + *coords, joints[i].velocity * .06, 1, 1, 1, 4, .2);
-                            //Sprite::MakeSprite(cloudsprite, joints[i].position*(*scale)+*coords,joints[i].velocity*.06, 1,1,1, 1, .2);
-                            breaking = 0;
+                            breaking = false;
                             camerashake += .6;
 
                             emit_sound_at(breaksound2, joints[i].position * (*scale) + *coords);
@@ -400,8 +404,8 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                         if (k < objects.numobjects && k >= 0)
                             if (objects.possible[k]) {
                                 friction = objects.friction[k];
-                                start = joints[i].realoldposition;
-                                end = joints[i].position * (*scale) + *coords;
+                                XYZ start = joints[i].realoldposition;
+                                XYZ end = joints[i].position * (*scale) + *coords;
                                 whichhit = objects.model[k].LineCheckPossible(&start, &end, &temp, &objects.position[k], &objects.yaw[k]);
                                 if (whichhit != -1) {
                                     if (joints[i].label == groin && !joints[i].locked && joints[i].delay <= 0) {
@@ -410,7 +414,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                                         if (tutoriallevel != 1 || id == 0) {
                                             emit_sound_at(landsound1, joints[i].position * (*scale) + *coords, 128.);
                                         }
-                                        breaking = 1;
+                                        breaking = true;
                                     }
 
                                     if (joints[i].label == head && !joints[i].locked && joints[i].delay <= 0) {
@@ -433,7 +437,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                                         if (findLengthfast(&bounceness) > 4000 && breaking) {
                                             objects.model[k].MakeDecal(breakdecal, DoRotation(temp - objects.position[k], 0, -objects.yaw[k], 0), .4, .5, Random() % 360);
                                             Sprite::MakeSprite(cloudsprite, joints[i].position * (*scale) + *coords, joints[i].velocity * .06, 1, 1, 1, 4, .2);
-                                            breaking = 0;
+                                            breaking = false;
                                             camerashake += .6;
 
                                             emit_sound_at(breaksound2, joints[i].position * (*scale) + *coords);
@@ -444,25 +448,6 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                                             numenvsounds++;
                                         }
                                     if (objects.type[k] == treetrunktype) {
-                                        //if(objects.rotx[k]==0||objects.roty[k]==0){
-                                        /*int howmany;
-                                        XYZ tempvel;
-                                        XYZ pos;
-                                        if(environment==grassyenvironment)howmany=findLength(&joints[i].velocity)*4/10;
-                                        if(environment==snowyenvironment)howmany=findLength(&joints[i].velocity)*1/10;
-                                        if(environment!=desertenvironment)
-                                        for(j=0;j<howmany;j++){
-                                        tempvel.x=float(abs(Random()%100)-50)/20;
-                                        tempvel.y=float(abs(Random()%100)-50)/20;
-                                        tempvel.z=float(abs(Random()%100)-50)/20;
-                                        pos=objects.position[k];
-                                        pos.y+=objects.scale[k]*15;
-                                        pos.x+=float(abs(Random()%100)-50)/100*objects.scale[k]*5;
-                                        pos.y+=float(abs(Random()%100)-50)/100*objects.scale[k]*15;
-                                        pos.z+=float(abs(Random()%100)-50)/100*objects.scale[k]*5;
-                                        Sprite::MakeSprite(splintersprite, pos,tempvel*.5, 165/255+float(abs(Random()%100)-50)/400,0,0, .2+float(abs(Random()%100)-50)/1300, 1);
-                                        Sprite::special[Sprite::numsprites-1]=1;
-                                        }*/
                                         objects.rotx[k] += joints[i].velocity.x * multiplier * .4;
                                         objects.roty[k] += joints[i].velocity.z * multiplier * .4;
                                         objects.rotx[k + 1] += joints[i].velocity.x * multiplier * .4;
@@ -471,7 +456,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                                     if (!joints[i].locked)
                                         damage += findLengthfast(&bounceness) / 2500;
                                     ReflectVector(&joints[i].velocity, &terrainnormal);
-                                    frictionness = abs(normaldotproduct(joints[i].velocity, terrainnormal)); //findLength(&bounceness)/findLength(&joints[i].velocity);
+                                    frictionness = abs(normaldotproduct(joints[i].velocity, terrainnormal));
                                     joints[i].velocity -= bounceness;
                                     if (1 - friction * frictionness > 0)
                                         joints[i].velocity *= 1 - friction * frictionness;
@@ -487,7 +472,6 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                                     if (!joints[i].locked)
                                         if (findLengthfast(&joints[i].velocity) < 1) {
                                             joints[i].locked = 1;
-                                            //joints[i].velocity*=3;
                                         }
                                     if (findLengthfast(&bounceness) > 500)
                                         Sprite::MakeSprite(cloudsprite, joints[i].position * (*scale) + *coords, joints[i].velocity * .06, 1, 1, 1, .5, .2);
@@ -509,8 +493,8 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                 if (objects.possible[k]) {
                     for (i = 0; i < 26; i++) {
                         //Make this less stupid
-                        start = joints[jointlabels[whichjointstartarray[i]]].position * (*scale) + *coords;
-                        end = joints[jointlabels[whichjointendarray[i]]].position * (*scale) + *coords;
+                        XYZ start = joints[jointlabels[whichjointstartarray[i]]].position * (*scale) + *coords;
+                        XYZ end = joints[jointlabels[whichjointendarray[i]]].position * (*scale) + *coords;
                         whichhit = objects.model[k].LineCheckSlidePossible(&start, &end, &temp, &objects.position[k], &objects.yaw[k]);
                         if (whichhit != -1) {
                             joints[jointlabels[whichjointendarray[i]]].position = (end - *coords) / (*scale);
@@ -524,13 +508,19 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
             }
 
         for (i = 0; i < num_joints; i++) {
-            groundlevel = .15;
-            if (joints[i].label == head)
-                groundlevel = .8;
-            if (joints[i].label == righthand || joints[i].label == rightwrist || joints[i].label == rightelbow)
-                groundlevel = .2;
-            if (joints[i].label == lefthand || joints[i].label == leftwrist || joints[i].label == leftelbow)
-                groundlevel = .2;
+            switch (joints[i].label) {
+                case head:
+                    groundlevel = .8; break;
+                case righthand:
+                case rightwrist:
+                case rightelbow:
+                case lefthand:
+                case leftwrist:
+                case leftelbow:
+                    groundlevel = .2; break;
+                default:
+                    groundlevel = .15; break;
+            }
             joints[i].position.y += groundlevel;
             joints[i].mass = 1;
             if (joints[i].label == lefthip || joints[i].label == leftknee || joints[i].label == leftankle || joints[i].label == righthip || joints[i].label == rightknee || joints[i].label == rightankle)
@@ -542,15 +532,23 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
 
         return damage;
     }
+
     if (!free) {
         for (i = 0; i < num_muscles; i++) {
             if (muscles[i].type == boneconnect)
                 muscles[i].DoConstraint(0);
         }
     }
+
     return 0;
 }
 
+/* EFFECT
+ * applies gravity to the skeleton
+ *
+ * USES:
+ * Person/Person::DoStuff
+ */
 void Skeleton::DoGravity(float *scale)
 {
     static int i;
@@ -560,340 +558,126 @@ void Skeleton::DoGravity(float *scale)
     }
 }
 
-void Skeleton::Draw(int  muscleview)
-{
-    static float jointcolor[4];
-
-    if (muscleview != 2) {
-        jointcolor[0] = 0;
-        jointcolor[1] = 0;
-        jointcolor[2] = .5;
-        jointcolor[3] = 1;
-    }
-
-    if (muscleview == 2) {
-        jointcolor[0] = 0;
-        jointcolor[1] = 0;
-        jointcolor[2] = 0;
-        jointcolor[3] = .5;
-    }
-    //Calc motionblur-ness
-    for (int i = 0; i < num_joints; i++) {
-        joints[i].oldposition = joints[i].position;
-        joints[i].blurred = findDistance(&joints[i].position, &joints[i].oldposition) * 100;
-        if (joints[i].blurred < 1)
-            joints[i].blurred = 1;
-    }
-
-    //Do Motionblur
-    glDepthMask(0);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glBegin(GL_QUADS);
-    for (int i = 0; i < num_joints; i++) {
-        if (joints[i].hasparent) {
-            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / joints[i].blurred);
-            glVertex3f(joints[i].position.x, joints[i].position.y, joints[i].position.z);
-            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / joints[i].parent->blurred);
-            glVertex3f(joints[i].parent->position.x, joints[i].parent->position.y, joints[i].parent->position.z);
-            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / joints[i].parent->blurred);
-            glVertex3f(joints[i].parent->oldposition.x, joints[i].parent->oldposition.y, joints[i].parent->oldposition.z);
-            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / joints[i].blurred);
-            glVertex3f(joints[i].oldposition.x, joints[i].oldposition.y, joints[i].oldposition.z);
-        }
-    }
-    for (int i = 0; i < num_muscles; i++) {
-        if (muscles[i].type == boneconnect) {
-            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / muscles[i].parent2->blurred);
-            glVertex3f(muscles[i].parent1->position.x, muscles[i].parent1->position.y, muscles[i].parent1->position.z);
-            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / muscles[i].parent2->blurred);
-            glVertex3f(muscles[i].parent2->position.x, muscles[i].parent2->position.y, muscles[i].parent2->position.z);
-            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / muscles[i].parent2->blurred);
-            glVertex3f(muscles[i].parent2->oldposition.x, muscles[i].parent2->oldposition.y, muscles[i].parent2->oldposition.z);
-            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / muscles[i].parent1->blurred);
-            glVertex3f(muscles[i].parent1->oldposition.x, muscles[i].parent1->oldposition.y, muscles[i].parent1->oldposition.z);
-        }
-    }
-    glEnd();
-
-    glBegin(GL_LINES);
-    for (int i = 0; i < num_joints; i++) {
-        if (joints[i].hasparent) {
-            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / joints[i].blurred);
-            glVertex3f(joints[i].position.x, joints[i].position.y, joints[i].position.z);
-            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / joints[i].parent->blurred);
-            glVertex3f(joints[i].parent->position.x, joints[i].parent->position.y, joints[i].parent->position.z);
-        }
-    }
-    /*for(int i=0; i<num_joints; i++){
-    if(joints[i].hasparent){
-    glColor4f(jointcolor[0],jointcolor[1],jointcolor[2],1);
-    glVertex3f(joints[i].position.x,joints[i].position.y,joints[i].position.z);
-    glColor4f(jointcolor[0],jointcolor[1],jointcolor[2],1);
-    glVertex3f(joints[i].position.x+forward.x,joints[i].position.y+forward.y,joints[i].position.z+forward.z);
-    }
-    }*/
-    for (int i = 0; i < num_muscles; i++) {
-        if (muscles[i].type == boneconnect) {
-            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / muscles[i].parent1->blurred);
-            glVertex3f(muscles[i].parent1->position.x, muscles[i].parent1->position.y, muscles[i].parent1->position.z);
-            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / muscles[i].parent2->blurred);
-            glVertex3f(muscles[i].parent2->position.x, muscles[i].parent2->position.y, muscles[i].parent2->position.z);
-        }
-    }
-    glColor3f(.6, .6, 0);
-    if (muscleview == 1)
-        for (int i = 0; i < num_muscles; i++) {
-            if (muscles[i].type != boneconnect) {
-                glVertex3f(muscles[i].parent1->position.x, muscles[i].parent1->position.y, muscles[i].parent1->position.z);
-                glVertex3f(muscles[i].parent2->position.x, muscles[i].parent2->position.y, muscles[i].parent2->position.z);
-            }
-        }
-    glEnd();
-
-    if (muscleview != 2) {
-        glPointSize(3);
-        glBegin(GL_POINTS);
-        for (int i = 0; i < num_joints; i++) {
-            if (i != selected)
-                glColor4f(0, 0, .5, 1);
-            if (i == selected)
-                glColor4f(1, 1, 0, 1);
-            if (joints[i].locked && i != selected)
-                glColor4f(1, 0, 0, 1);
-            glVertex3f(joints[i].position.x, joints[i].position.y, joints[i].position.z);
-        }
-        glEnd();
-    }
-
-    //Set old position to current position
-    if (muscleview == 2)
-        for (int i = 0; i < num_joints; i++) {
-            joints[i].oldposition = joints[i].position;
-        }
-    glDepthMask(1);
-}
-
-void Skeleton::AddJoint(float x, float y, float z, int which)
-{
-    if (num_joints < max_joints - 1) {
-        joints[num_joints].velocity = 0;
-        joints[num_joints].position.x = x;
-        joints[num_joints].position.y = y;
-        joints[num_joints].position.z = z;
-        joints[num_joints].mass = 1;
-        joints[num_joints].locked = 0;
-
-        /*if(which>=num_joints||which<0)*/
-        joints[num_joints].hasparent = 0;
-        /*if(which<num_joints&&which>=0){
-        joints[num_joints].parent=&joints[which];
-        joints[num_joints].hasparent=1;
-        joints[num_joints].length=findDistance(joints[num_joints].position,joints[num_joints].parent->position);
-        }*/
-        num_joints++;
-        if (which < num_joints && which >= 0)
-            AddMuscle(num_joints - 1, which, 0, 10, boneconnect);
-    }
-}
-
-void Skeleton::DeleteJoint(int whichjoint)
-{
-    if (whichjoint < num_joints && whichjoint >= 0) {
-        joints[whichjoint].velocity = joints[num_joints - 1].velocity;
-        joints[whichjoint].position = joints[num_joints - 1].position;
-        joints[whichjoint].oldposition = joints[num_joints - 1].oldposition;
-        joints[whichjoint].hasparent = joints[num_joints - 1].hasparent;
-        joints[whichjoint].parent = joints[num_joints - 1].parent;
-        joints[whichjoint].length = joints[num_joints - 1].length;
-        joints[whichjoint].locked = joints[num_joints - 1].locked;
-        joints[whichjoint].modelnum = joints[num_joints - 1].modelnum;
-        joints[whichjoint].visible = joints[num_joints - 1].visible;
-
-        for (int i = 0; i < num_muscles; i++) {
-            while (muscles[i].parent1 == &joints[whichjoint] && i < num_muscles)DeleteMuscle(i);
-            while (muscles[i].parent2 == &joints[whichjoint] && i < num_muscles)DeleteMuscle(i);
-        }
-        for (int i = 0; i < num_muscles; i++) {
-            while (muscles[i].parent1 == &joints[num_joints - 1] && i < num_muscles)muscles[i].parent1 = &joints[whichjoint];
-            while (muscles[i].parent2 == &joints[num_joints - 1] && i < num_muscles)muscles[i].parent2 = &joints[whichjoint];
-        }
-        for (int i = 0; i < num_joints; i++) {
-            if (joints[i].parent == &joints[whichjoint])
-                joints[i].hasparent = 0;
-        }
-        for (int i = 0; i < num_joints; i++) {
-            if (joints[i].parent == &joints[num_joints - 1])
-                joints[i].parent = &joints[whichjoint];
-        }
-
-        num_joints--;
-    }
-}
-
-void Skeleton::DeleteMuscle(int whichmuscle)
-{
-    if (whichmuscle < num_muscles) {
-        muscles[whichmuscle].minlength = muscles[num_muscles - 1].minlength;
-        muscles[whichmuscle].maxlength = muscles[num_muscles - 1].maxlength;
-        muscles[whichmuscle].strength = muscles[num_muscles - 1].strength;
-        muscles[whichmuscle].parent1 = muscles[num_muscles - 1].parent1;
-        muscles[whichmuscle].parent2 = muscles[num_muscles - 1].parent2;
-        muscles[whichmuscle].length = muscles[num_muscles - 1].length;
-        muscles[whichmuscle].visible = muscles[num_muscles - 1].visible;
-        muscles[whichmuscle].type = muscles[num_muscles - 1].type;
-        muscles[whichmuscle].targetlength = muscles[num_muscles - 1].targetlength;
-
-        num_muscles--;
-    }
-}
-
-void Skeleton::SetJoint(float x, float y, float z, int which, int whichjoint)
-{
-    if (whichjoint < num_joints) {
-        joints[whichjoint].velocity = 0;
-        joints[whichjoint].position.x = x;
-        joints[whichjoint].position.y = y;
-        joints[whichjoint].position.z = z;
-
-        if (which >= num_joints || which < 0)
-            joints[whichjoint].hasparent = 0;
-        if (which < num_joints && which >= 0) {
-            joints[whichjoint].parent = &joints[which];
-            joints[whichjoint].hasparent = 1;
-            joints[whichjoint].length = findDistance(&joints[whichjoint].position, &joints[whichjoint].parent->position);
-        }
-    }
-}
-
-void Skeleton::AddMuscle(int attach1, int attach2, float minlength, float maxlength, int type)
-{
-    const int max_muscles = 100; // FIXME: Probably can be dropped
-    if (num_muscles < max_muscles - 1 && attach1 < num_joints && attach1 >= 0 && attach2 < num_joints && attach2 >= 0 && attach1 != attach2) {
-        muscles[num_muscles].parent1 = &joints[attach1];
-        muscles[num_muscles].parent2 = &joints[attach2];
-        muscles[num_muscles].length = findDistance(&muscles[num_muscles].parent1->position, &muscles[num_muscles].parent2->position);
-        muscles[num_muscles].targetlength = findDistance(&muscles[num_muscles].parent1->position, &muscles[num_muscles].parent2->position);
-        muscles[num_muscles].strength = .7;
-        muscles[num_muscles].type = type;
-        muscles[num_muscles].minlength = minlength;
-        muscles[num_muscles].maxlength = maxlength;
-
-        num_muscles++;
-    }
-}
-
-void Skeleton::MusclesSet()
-{
-    for (int i = 0; i < num_muscles; i++) {
-        muscles[i].length = findDistance(&muscles[i].parent1->position, &muscles[i].parent2->position);
-    }
-}
-
-void Skeleton::DoBalance()
-{
-    /*XYZ newpoint;
-    newpoint=joints[0].position;
-    newpoint.x=(joints[2].position.x+joints[4].position.x)/2;
-    newpoint.z=(joints[2].position.z+joints[4].position.z)/2;
-    joints[0].velocity=joints[0].velocity+(newpoint-joints[0].position);
-    //Move child point to within certain distance of parent point
-    joints[0].position=newpoint;
-
-    MusclesSet();*/
-}
-
+/* EFFECT
+ * set muscles[which].rotate1
+ *     .rotate2
+ *     .rotate3
+ *
+ * special case if animation == hanganim
+ */
 void Skeleton::FindRotationMuscle(int which, int animation)
 {
-    static XYZ temppoint1, temppoint2, tempforward;
-    static float distance;
+    XYZ p1, p2, fwd;
+    float dist;
 
-    temppoint1 = muscles[which].parent1->position;
-    temppoint2 = muscles[which].parent2->position;
-    distance = sqrt((temppoint1.x - temppoint2.x) * (temppoint1.x - temppoint2.x) + (temppoint1.y - temppoint2.y) * (temppoint1.y - temppoint2.y) + (temppoint1.z - temppoint2.z) * (temppoint1.z - temppoint2.z));
-    if ((temppoint1.y - temppoint2.y) <= distance)
-        muscles[which].rotate2 = asin((temppoint1.y - temppoint2.y) / distance);
-    if ((temppoint1.y - temppoint2.y) > distance)
+    p1 = muscles[which].parent1->position;
+    p2 = muscles[which].parent2->position;
+    dist = findDistance(&p1, &p2);
+    if (p1.y - p2.y <= dist)
+        muscles[which].rotate2 = asin((p1.y - p2.y) / dist);
+    if (p1.y - p2.y > dist)
         muscles[which].rotate2 = asin(1.f);
-    muscles[which].rotate2 *= 360 / 6.28;
-    temppoint1.y = 0;
-    temppoint2.y = 0;
-    distance = sqrt((temppoint1.x - temppoint2.x) * (temppoint1.x - temppoint2.x) + (temppoint1.y - temppoint2.y) * (temppoint1.y - temppoint2.y) + (temppoint1.z - temppoint2.z) * (temppoint1.z - temppoint2.z));
-    if ((temppoint1.z - temppoint2.z) <= distance)
-        muscles[which].rotate1 = acos((temppoint1.z - temppoint2.z) / distance);
-    if ((temppoint1.z - temppoint2.z) > distance)
+    muscles[which].rotate2 *= 360.0 / 6.2831853;
+
+    p1.y = 0;
+    p2.y = 0;
+    dist = findDistance(&p1, &p2);
+    if (p1.z - p2.z <= dist)
+        muscles[which].rotate1 = acos((p1.z - p2.z) / dist);
+    if (p1.z - p2.z > dist)
         muscles[which].rotate1 = acos(1.f);
-    muscles[which].rotate1 *= 360 / 6.28;
-    if (temppoint1.x > temppoint2.x)
+    muscles[which].rotate1 *= 360.0 / 6.2831853;
+    if (p1.x > p2.x)
         muscles[which].rotate1 = 360 - muscles[which].rotate1;
     if (!isnormal(muscles[which].rotate1))
         muscles[which].rotate1 = 0;
     if (!isnormal(muscles[which].rotate2))
         muscles[which].rotate2 = 0;
 
-    if (muscles[which].parent1->label == head)
-        tempforward = specialforward[0];
-    else if (muscles[which].parent1->label == rightshoulder || muscles[which].parent1->label == rightelbow || muscles[which].parent1->label == rightwrist || muscles[which].parent1->label == righthand)
-        tempforward = specialforward[1];
-    else if (muscles[which].parent1->label == leftshoulder || muscles[which].parent1->label == leftelbow || muscles[which].parent1->label == leftwrist || muscles[which].parent1->label == lefthand)
-        tempforward = specialforward[2];
-    else if (muscles[which].parent1->label == righthip || muscles[which].parent1->label == rightknee || muscles[which].parent1->label == rightankle || muscles[which].parent1->label == rightfoot)
-        tempforward = specialforward[3];
-    else if (muscles[which].parent1->label == lefthip || muscles[which].parent1->label == leftknee || muscles[which].parent1->label == leftankle || muscles[which].parent1->label == leftfoot)
-        tempforward = specialforward[4];
-    else if (!muscles[which].parent1->lower)
-        tempforward = forward;
-    else if (muscles[which].parent1->lower)
-        tempforward = lowforward;
+    const int label1 = muscles[which].parent1->label;
+    const int label2 = muscles[which].parent2->label;
+    switch (label1) {
+        case head:
+            fwd = specialforward[0]; break;
+        case rightshoulder:
+        case rightelbow:
+        case rightwrist:
+        case righthand:
+            fwd = specialforward[1]; break;
+        case leftshoulder:
+        case leftelbow:
+        case leftwrist:
+        case lefthand:
+            fwd = specialforward[2]; break;
+        case righthip:
+        case rightknee:
+        case rightankle:
+        case rightfoot:
+            fwd = specialforward[3]; break;
+        case lefthip:
+        case leftknee:
+        case leftankle:
+        case leftfoot:
+            fwd = specialforward[4]; break;
+        default:
+            if (muscles[which].parent1->lower)
+                fwd = lowforward;
+            else
+                fwd = forward;
+            break;
+    }
 
     if (animation == hanganim) {
-        if (muscles[which].parent1->label == righthand || muscles[which].parent2->label == righthand) {
-            tempforward = 0;
-            tempforward.x = -1;
+        if (label1 == righthand || label2 == righthand) {
+            fwd = 0;
+            fwd.x = -1;
         }
-        if (muscles[which].parent1->label == lefthand || muscles[which].parent2->label == lefthand) {
-            tempforward = 0;
-            tempforward.x = 1;
+        if (label1 == lefthand || label2 == lefthand) {
+            fwd = 0;
+            fwd.x = 1;
         }
     }
 
     if (free == 0) {
-        if (muscles[which].parent1->label == rightfoot || muscles[which].parent2->label == rightfoot) {
-            tempforward.y -= .3;
+        if (label1 == rightfoot || label2 == rightfoot) {
+            fwd.y -= .3;
         }
-        if (muscles[which].parent1->label == leftfoot || muscles[which].parent2->label == leftfoot) {
-            tempforward.y -= .3;
+        if (label1 == leftfoot || label2 == leftfoot) {
+            fwd.y -= .3;
         }
     }
 
-
-    tempforward = DoRotation(tempforward, 0, muscles[which].rotate1 - 90, 0);
-    tempforward = DoRotation(tempforward, 0, 0, muscles[which].rotate2 - 90);
-    tempforward.y = 0;
-    tempforward /= sqrt(tempforward.x * tempforward.x + tempforward.y * tempforward.y + tempforward.z * tempforward.z);
-    if (tempforward.z <= 1 && tempforward.z >= -1)
-        muscles[which].rotate3 = acos(0 - tempforward.z);
+    fwd = DoRotation(fwd, 0, muscles[which].rotate1 - 90, 0);
+    fwd = DoRotation(fwd, 0, 0, muscles[which].rotate2 - 90);
+    fwd.y = 0;
+    fwd /= findLength(&fwd);
+    if (fwd.z <= 1 && fwd.z >= -1)
+        muscles[which].rotate3 = acos(0 - fwd.z);
     else
         muscles[which].rotate3 = acos(-1.f);
-    muscles[which].rotate3 *= 360 / 6.28;
-    if (0 > tempforward.x)
+    muscles[which].rotate3 *= 360.0 / 6.2831853;
+    if (0 > fwd.x)
         muscles[which].rotate3 = 360 - muscles[which].rotate3;
     if (!isnormal(muscles[which].rotate3))
         muscles[which].rotate3 = 0;
 }
 
+/* EFFECT
+ * load an animation from file
+ */
 void Animation::Load(const char *filename, int aheight, int aattack)
 {
-    static FILE *tfile;
-    static int i, j;
-    static XYZ startoffset, endoffset;
-    static int howmany;
+    FILE *tfile;
+    int i, j;
+    XYZ startoffset, endoffset;
 
-    static const char *anim_prefix = ":Data:Animations:";
+    // path to dir
+    const char *anim_prefix = ":Data:Animations:";
 
 
     LOGFUNC;
 
+    // concatenate anim_prefix + filename
     int len = strlen(anim_prefix) + strlen(filename);
     char *buf = new char[len + 1];
     snprintf(buf, len + 1, "%s%s", anim_prefix, filename);
@@ -903,6 +687,7 @@ void Animation::Load(const char *filename, int aheight, int aattack)
 
     LOG(std::string("Loading animation...") + fixedFN);
 
+    // clear existing data
     deallocate();
 
     height = aheight;
@@ -911,8 +696,10 @@ void Animation::Load(const char *filename, int aheight, int aattack)
     if (visibleloading)
         Game::LoadingScreen();
 
+    // read file in binary mode
     tfile = fopen( fixedFN, "rb" );
     if (tfile) {
+        // read numframes, joints to know how much memory to allocate
         funpackf(tfile, "Bi Bi", &numframes, &joints);
         /*
         for(i = 0; i < joints; i++){
@@ -931,21 +718,24 @@ void Animation::Load(const char *filename, int aheight, int aattack)
         if(weapontarget)dealloc2(weapontarget);
         if(label)dealloc2(label);*/
 
-        position = (XYZ**)malloc(sizeof(XYZ*)*joints);
+
+        // allocate memory for everything
+
+        position = (XYZ**)malloc(sizeof(XYZ*) * joints);
         for (i = 0; i < joints; i++)
             position[i] = (XYZ*)malloc(sizeof(XYZ) * numframes);
 
-        twist = (float**)malloc(sizeof(float*)*joints);
+        twist = (float**)malloc(sizeof(float*) * joints);
         for (i = 0; i < joints; i++)
             twist[i] = (float*)malloc(sizeof(float) * numframes);
 
-        twist2 = (float**)malloc(sizeof(float*)*joints);
+        twist2 = (float**)malloc(sizeof(float*) * joints);
         for (i = 0; i < joints; i++)
             twist2[i] = (float*)malloc(sizeof(float) * numframes);
 
         speed = (float*)malloc(sizeof(float) * numframes);
 
-        onground = (bool**)malloc(sizeof(bool*)*joints);
+        onground = (bool**)malloc(sizeof(bool*) * joints);
         for (i = 0; i < joints; i++)
             onground[i] = (bool*)malloc(sizeof(bool) * numframes);
 
@@ -961,29 +751,42 @@ void Animation::Load(const char *filename, int aheight, int aattack)
         forward = new XYZ[numframes];
         label = new int[numframes];*/
 
+
+        // read binary data as animation
+
+        // for each frame...
         for (i = 0; i < numframes; i++) {
+            // for each joint in the skeleton...
             for (j = 0; j < joints; j++) {
+                // read joint position
                 funpackf(tfile, "Bf Bf Bf", &position[j][i].x, &position[j][i].y, &position[j][i].z);
             }
             for (j = 0; j < joints; j++) {
+                // read twist
                 funpackf(tfile, "Bf", &twist[j][i]);
             }
             for (j = 0; j < joints; j++) {
+                // read onground (boolean)
                 unsigned char uch;
                 funpackf(tfile, "Bb", &uch);
                 onground[j][i] = (uch != 0);
             }
+            // read frame speed (?)
             funpackf(tfile, "Bf", &speed[i]);
         }
+        // read twist2 for whole animation
         for (i = 0; i < numframes; i++) {
             for (j = 0; j < joints; j++) {
                 funpackf(tfile, "Bf", &twist2[j][i]);
             }
         }
+        // read label for each frame
         for (i = 0; i < numframes; i++) {
             funpackf(tfile, "Bf", &label[i]);
         }
+        // read weapontargetnum
         funpackf(tfile, "Bi", &weapontargetnum);
+        // read weapontarget positions for each frame
         for (i = 0; i < numframes; i++) {
             funpackf(tfile, "Bf Bf Bf", &weapontarget[i].x, &weapontarget[i].y, &weapontarget[i].z);
         }
@@ -993,43 +796,39 @@ void Animation::Load(const char *filename, int aheight, int aattack)
 
     startoffset = 0;
     endoffset = 0;
-    howmany = 0;
+    // find average position of certain joints on first and last frames
+    // and save in startoffset, endoffset
+    // (not sure what exactly this accomplishes. the y < 1 test confuses me.)
     for (j = 0; j < joints; j++) {
         if (position[j][0].y < 1)
             startoffset += position[j][0];
         if (position[j][numframes - 1].y < 1)
             endoffset += position[j][numframes - 1];
-        howmany++;
     }
-    startoffset /= howmany;
-    endoffset /= howmany;
+    startoffset /= joints;
+    endoffset /= joints;
     offset = endoffset;
     offset.y = 0;
 }
 
 
-void Animation::Move(XYZ how)
-{
-    static int i, j, joints;
-    for (i = 0; i < numframes; i++) {
-        for (j = 0; j < joints; j++) {
-            position[j][i] = 0;
-        }
-    }
-}
-
+/* EFFECT
+ * load skeleton
+ * takes filenames for three skeleton files and various models
+ */
 void Skeleton::Load(const char *filename,       const char *lowfilename, const char *clothesfilename,
                     const char *modelfilename,  const char *model2filename,
                     const char *model3filename, const char *model4filename,
                     const char *model5filename, const char *model6filename,
                     const char *model7filename, const char *modellowfilename,
-                    const char *modelclothesfilename, bool aclothes)
+                    const char *modelclothesfilename, bool clothes)
 {
-    static GLfloat M[16];
-    static int parentID;
-    static FILE *tfile;
-    static float lSize;
-    static int i, j, tempmuscle;
+    GLfloat M[16];
+    int parentID;
+    FILE *tfile;
+    float lSize;
+    int i, j, tempmuscle;
+
     int newload;
     int edit;
 
@@ -1040,16 +839,18 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 
     num_models = 7;
 
-    clothes = aclothes;
+    // load various models
+    // rotate, scale, do normals, do texcoords for each as needed
+
+    model[0].loadnotex(modelfilename);
+    model[1].loadnotex(model2filename);
+    model[2].loadnotex(model3filename);
+    model[3].loadnotex(model4filename);
+    model[4].loadnotex(model5filename);
+    model[5].loadnotex(model6filename);
+    model[6].loadnotex(model7filename);
 
     for (i = 0; i < num_models; i++) {
-        if (i == 0) model[i].loadnotex(modelfilename);
-        if (i == 1) model[i].loadnotex(model2filename);
-        if (i == 2) model[i].loadnotex(model3filename);
-        if (i == 3) model[i].loadnotex(model4filename);
-        if (i == 4) model[i].loadnotex(model5filename);
-        if (i == 5) model[i].loadnotex(model6filename);
-        if (i == 6) model[i].loadnotex(model7filename);
         model[i].Rotate(180, 0, 0);
         model[i].Scale(.04, .04, .04);
         model[i].CalculateNormals(0);
@@ -1093,14 +894,24 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
         drawmodelclothes.CalculateNormals(0);
     }
 
+    // FIXME: three similar blocks follow, one for each of:
+    // filename, lowfilename, clothesfilename
+
+    // load skeleton
+
     tfile = fopen( ConvertFileName(filename), "rb" );
-    if (1) {
+
+    if (1) { // FIXME: should this be if(tfile) ?
+        // read num_joints
         funpackf(tfile, "Bi", &num_joints);
+
+        // allocate memory
         //joints.resize(num_joints);
         if (joints)
             delete [] joints; //dealloc2(joints);
         joints = (Joint*)new Joint[num_joints]; //malloc(sizeof(Joint)*num_joints);
 
+        // read info for each joint
         for (i = 0; i < num_joints; i++) {
             funpackf(tfile, "Bf Bf Bf Bf Bf", &joints[i].position.x, &joints[i].position.y, &joints[i].position.z, &joints[i].length, &joints[i].mass);
             funpackf(tfile, "Bb Bb", &joints[i].hasparent, &joints[i].locked);
@@ -1114,21 +925,32 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
             joints[i].velocity = 0;
             joints[i].oldposition = joints[i].position;
         }
+
+        // read num_muscles
         tempmuscle = num_muscles;
         funpackf(tfile, "Bi", &num_muscles);
+
+        // allocate memory
         //muscles.clear();
         if (muscles)
             delete [] muscles; //dealloc2(muscles);
         muscles = (Muscle*)new Muscle[num_muscles]; //malloc(sizeof(Muscle)*num_muscles);
+
         newload = 1;
+
+        // for each muscle... 
         for (i = 0; i < num_muscles; i++) {
+            // read info
             tempmuscle = muscles[i].numvertices;
             funpackf(tfile, "Bf Bf Bf Bf Bf Bi Bi", &muscles[i].length, &muscles[i].targetlength, &muscles[i].minlength, &muscles[i].maxlength, &muscles[i].strength, &muscles[i].type, &muscles[i].numvertices);
+
+            // allocate memory for vertices
             //muscles[i].vertices.clear();
             //muscles[i].vertices.resize(muscles[i].numvertices);
             //if(muscles[i].vertices)dealloc2(muscles[i].vertices);
             muscles[i].vertices = (int*)malloc(sizeof(int) * muscles[i].numvertices);
 
+            // read vertices
             edit = 0;
             for (j = 0; j < muscles[i].numvertices - edit; j++) {
                 funpackf(tfile, "Bi", &muscles[i].vertices[j + edit]);
@@ -1137,17 +959,24 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
                     edit--;
                 }
             }
+
+            // read more info
             funpackf(tfile, "Bb Bi", &muscles[i].visible, &parentID);
             muscles[i].parent1 = &joints[parentID];
             funpackf(tfile, "Bi", &parentID);
             muscles[i].parent2 = &joints[parentID];
         }
+
+        // read forwardjoints (?)
         for (j = 0; j < 3; j++) {
             funpackf(tfile, "Bi", &forwardjoints[j]);
         }
+        // read lowforwardjoints (?)
         for (j = 0; j < 3; j++) {
             funpackf(tfile, "Bi", &lowforwardjoints[j]);
         }
+
+        // ???
         for (j = 0; j < num_muscles; j++) {
             for (i = 0; i < muscles[j].numvertices; i++) {
                 for (int k = 0; k < num_models; k++) {
@@ -1156,6 +985,8 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
                 }
             }
         }
+
+        // calculate some stuff
         FindForwards();
         for (i = 0; i < num_joints; i++) {
             joints[i].startpos = joints[i].position;
@@ -1163,10 +994,11 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
         for (i = 0; i < num_muscles; i++) {
             FindRotationMuscle(i, -1);
         }
+        // this seems to use opengl purely for matrix calculations
         for (int k = 0; k < num_models; k++) {
             for (i = 0; i < model[k].vertexNum; i++) {
                 model[k].vertex[i] = model[k].vertex[i] - (muscles[model[k].owner[i]].parent1->position + muscles[model[k].owner[i]].parent2->position) / 2;
-                glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+                glMatrixMode(GL_MODELVIEW);
                 glPushMatrix();
                 glLoadIdentity();
                 glRotatef(muscles[model[k].owner[i]].rotate3, 0, 1, 0);
@@ -1184,64 +1016,65 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
     }
     fclose(tfile);
 
+    // load ???
+
     tfile = fopen( ConvertFileName(lowfilename), "rb" );
-    if (1) {
+
+    if (1) { // FIXME: should this be if(tfile) ?
+        // skip joints section
+
         lSize = sizeof(num_joints);
-        fseek ( tfile, lSize, SEEK_CUR);
+        fseek(tfile, lSize, SEEK_CUR);
         //joints = new Joint[num_joints];
         //jointlabels = new int[num_joints];
         for (i = 0; i < num_joints; i++) {
-            lSize = sizeof(XYZ);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = sizeof(float);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = sizeof(float);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = 1; //sizeof(bool);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = 1; //sizeof(bool);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = sizeof(int);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = 1; //sizeof(bool);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = 1; //sizeof(bool);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = sizeof(int);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = sizeof(int);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = 1; //sizeof(bool);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = sizeof(int);
-            fseek ( tfile, lSize, SEEK_CUR);
+            // skip joint info
+            lSize = sizeof(XYZ)
+                    + sizeof(float)
+                    + sizeof(float)
+                    + 1 //sizeof(bool)
+                    + 1 //sizeof(bool)
+                    + sizeof(int)
+                    + 1 //sizeof(bool)
+                    + 1 //sizeof(bool)
+                    + sizeof(int)
+                    + sizeof(int)
+                    + 1 //sizeof(bool)
+                    + sizeof(int);
+            fseek(tfile, lSize, SEEK_CUR);
+
             if (joints[i].hasparent)
                 joints[i].parent = &joints[parentID];
             joints[i].velocity = 0;
             joints[i].oldposition = joints[i].position;
         }
+
+        // read num_muscles
         funpackf(tfile, "Bi", &num_muscles);
         //muscles = new Muscle[num_muscles];
+
         for (i = 0; i < num_muscles; i++) {
-            lSize = sizeof(float);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = sizeof(float);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = sizeof(float);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = sizeof(float);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = sizeof(float);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = sizeof(int);
-            fseek ( tfile, lSize, SEEK_CUR);
+            // skip muscle info
+            lSize = sizeof(float)
+                    + sizeof(float)
+                    + sizeof(float)
+                    + sizeof(float)
+                    + sizeof(float)
+                    + sizeof(int);
+            fseek(tfile, lSize, SEEK_CUR);
+
+            // read numverticeslow
             tempmuscle = muscles[i].numverticeslow;
             funpackf(tfile, "Bi", &muscles[i].numverticeslow);
+
             if (muscles[i].numverticeslow) {
+                // allocate memory
                 //muscles[i].verticeslow.clear();
                 //muscles[i].verticeslow.resize(muscles[i].numverticeslow);
                 //if(muscles[i].verticeslow)dealloc2(muscles[i].verticeslow);
                 muscles[i].verticeslow = (int*)malloc(sizeof(int) * muscles[i].numverticeslow);
+
+                // read verticeslow
                 edit = 0;
                 for (j = 0; j < muscles[i].numverticeslow - edit; j++) {
                     funpackf(tfile, "Bi", &muscles[i].verticeslow[j + edit]);
@@ -1250,15 +1083,17 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
                         edit--;
                     }
                 }
-
-
             }
+
+            // skip more stuff
             lSize = 1; //sizeof(bool);
             fseek ( tfile, lSize, SEEK_CUR);
             lSize = sizeof(int);
             fseek ( tfile, lSize, SEEK_CUR);
             fseek ( tfile, lSize, SEEK_CUR);
         }
+
+        // ???
         lSize = sizeof(int);
         for (j = 0; j < num_muscles; j++) {
             for (i = 0; i < muscles[j].numverticeslow; i++) {
@@ -1266,6 +1101,7 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
                     modellow.owner[muscles[j].verticeslow[i]] = j;
             }
         }
+
         /*FindForwards();
         for(i=0;i<num_joints;i++){
         joints[i].startpos=joints[i].position;
@@ -1273,9 +1109,11 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
         for(i=0;i<num_muscles;i++){
         FindRotationMuscle(i,-1);
         }*/
+
+        // use opengl for its matrix math
         for (i = 0; i < modellow.vertexNum; i++) {
             modellow.vertex[i] = modellow.vertex[i] - (muscles[modellow.owner[i]].parent1->position + muscles[modellow.owner[i]].parent2->position) / 2;
-            glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+            glMatrixMode(GL_MODELVIEW);
             glPushMatrix();
             glLoadIdentity();
             glRotatef(muscles[modellow.owner[i]].rotate3, 0, 1, 0);
@@ -1288,62 +1126,62 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
             modellow.vertex[i].z = M[14];
             glPopMatrix();
         }
+
         modellow.CalculateNormals(0);
     }
 
+    // load clothes
+
     if (clothes) {
-        tfile = fopen( ConvertFileName(clothesfilename), "rb" );
+        tfile = fopen( ConvertFileName(clothesfilename), "rb" ); // FIXME: where's the check for valid load
+
+        // skip num_joints
         lSize = sizeof(num_joints);
         fseek ( tfile, lSize, SEEK_CUR);
         //joints = new Joint[num_joints];
         //jointlabels = new int[num_joints];
+
         for (i = 0; i < num_joints; i++) {
-            lSize = sizeof(XYZ);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = sizeof(float);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = sizeof(float);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = 1; //sizeof(bool);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = 1; //sizeof(bool);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = sizeof(int);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = 1; //sizeof(bool);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = 1; //sizeof(bool);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = sizeof(int);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = sizeof(int);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = 1; //sizeof(bool);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = sizeof(int);
-            fseek ( tfile, lSize, SEEK_CUR);
+            // skip joint info
+            lSize = sizeof(XYZ)
+                    + sizeof(float)
+                    + sizeof(float)
+                    + 1 //sizeof(bool)
+                    + 1 //sizeof(bool)
+                    + sizeof(int)
+                    + 1 //sizeof(bool)
+                    + 1 //sizeof(bool)
+                    + sizeof(int)
+                    + sizeof(int)
+                    + 1 //sizeof(bool)
+                    + sizeof(int);
+            fseek(tfile, lSize, SEEK_CUR);
+
             if (joints[i].hasparent)
                 joints[i].parent = &joints[parentID];
             joints[i].velocity = 0;
             joints[i].oldposition = joints[i].position;
         }
+
+        // read num_muscles
         funpackf(tfile, "Bi", &num_muscles);
         //muscles = new Muscle[num_muscles];
+
         for (i = 0; i < num_muscles; i++) {
-            lSize = sizeof(float);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = sizeof(float);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = sizeof(float);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = sizeof(float);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = sizeof(float);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = sizeof(int);
-            fseek ( tfile, lSize, SEEK_CUR);
+            // skip muscle info
+            lSize = sizeof(float)
+                    + sizeof(float)
+                    + sizeof(float)
+                    + sizeof(float)
+                    + sizeof(float)
+                    + sizeof(int);
+            fseek(tfile, lSize, SEEK_CUR);
+
+            // read numverticesclothes
             tempmuscle = muscles[i].numverticesclothes;
             funpackf(tfile, "Bi", &muscles[i].numverticesclothes);
+
+            // read verticesclothes
             if (muscles[i].numverticesclothes) {
                 //muscles[i].verticesclothes.clear();
                 //muscles[i].verticesclothes.resize(muscles[i].numverticesclothes);
@@ -1358,12 +1196,16 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
                     }
                 }
             }
+
+            // skip more stuff
             lSize = 1; //sizeof(bool);
             fseek ( tfile, lSize, SEEK_CUR);
             lSize = sizeof(int);
             fseek ( tfile, lSize, SEEK_CUR);
             fseek ( tfile, lSize, SEEK_CUR);
         }
+
+        // ???
         lSize = sizeof(int);
         for (j = 0; j < num_muscles; j++) {
             for (i = 0; i < muscles[j].numverticesclothes; i++) {
@@ -1371,6 +1213,7 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
                     modelclothes.owner[muscles[j].verticesclothes[i]] = j;
             }
         }
+
         /*FindForwards();
         for(i=0;i<num_joints;i++){
         joints[i].startpos=joints[i].position;
@@ -1378,9 +1221,11 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
         for(i=0;i<num_muscles;i++){
         FindRotationMuscle(i,-1);
         }*/
+
+        // use opengl for its matrix math
         for (i = 0; i < modelclothes.vertexNum; i++) {
             modelclothes.vertex[i] = modelclothes.vertex[i] - (muscles[modelclothes.owner[i]].parent1->position + muscles[modelclothes.owner[i]].parent2->position) / 2;
-            glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+            glMatrixMode(GL_MODELVIEW);
             glPushMatrix();
             glLoadIdentity();
             glRotatef(muscles[modelclothes.owner[i]].rotate3, 0, 1, 0);
@@ -1393,6 +1238,7 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
             modelclothes.vertex[i].z = M[14];
             glPopMatrix();
         }
+
         modelclothes.CalculateNormals(0);
     }
     fclose(tfile);
@@ -1645,4 +1491,320 @@ Animation & Animation::operator = (const Animation & ani)
 
     return (*this);
 }
+
+
+
+
+#if 0
+
+// the following functions are not used anywhere
+
+/* EFFECT
+ * sets forward, lowforward, specialforward[]
+ *
+ * USES:
+ * NONE
+ */
+void Skeleton::FindForwardsfirst()
+{
+    //Find forward vectors
+    CrossProduct(joints[forwardjoints[1]].position - joints[forwardjoints[0]].position, joints[forwardjoints[2]].position - joints[forwardjoints[0]].position, &forward);
+    Normalise(&forward);
+
+    CrossProduct(joints[lowforwardjoints[1]].position - joints[lowforwardjoints[0]].position, joints[lowforwardjoints[2]].position - joints[lowforwardjoints[0]].position, &lowforward);
+    Normalise(&lowforward);
+
+    //Special forwards
+    specialforward[0] = forward;
+    specialforward[1] = forward;
+    specialforward[2] = forward;
+    specialforward[3] = forward;
+    specialforward[4] = forward;
+
+}
+
+/* EFFECT
+ *
+ * USES:
+ * NONE
+ */
+void Skeleton::Draw(int muscleview)
+{
+    static float jointcolor[4];
+
+    if (muscleview != 2) {
+        jointcolor[0] = 0;
+        jointcolor[1] = 0;
+        jointcolor[2] = .5;
+        jointcolor[3] = 1;
+    }
+
+    if (muscleview == 2) {
+        jointcolor[0] = 0;
+        jointcolor[1] = 0;
+        jointcolor[2] = 0;
+        jointcolor[3] = .5;
+    }
+    //Calc motionblur-ness
+    for (int i = 0; i < num_joints; i++) {
+        joints[i].oldposition = joints[i].position;
+        joints[i].blurred = findDistance(&joints[i].position, &joints[i].oldposition) * 100;
+        if (joints[i].blurred < 1)
+            joints[i].blurred = 1;
+    }
+
+    //Do Motionblur
+    glDepthMask(0);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBegin(GL_QUADS);
+    for (int i = 0; i < num_joints; i++) {
+        if (joints[i].hasparent) {
+            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / joints[i].blurred);
+            glVertex3f(joints[i].position.x, joints[i].position.y, joints[i].position.z);
+            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / joints[i].parent->blurred);
+            glVertex3f(joints[i].parent->position.x, joints[i].parent->position.y, joints[i].parent->position.z);
+            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / joints[i].parent->blurred);
+            glVertex3f(joints[i].parent->oldposition.x, joints[i].parent->oldposition.y, joints[i].parent->oldposition.z);
+            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / joints[i].blurred);
+            glVertex3f(joints[i].oldposition.x, joints[i].oldposition.y, joints[i].oldposition.z);
+        }
+    }
+    for (int i = 0; i < num_muscles; i++) {
+        if (muscles[i].type == boneconnect) {
+            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / muscles[i].parent2->blurred);
+            glVertex3f(muscles[i].parent1->position.x, muscles[i].parent1->position.y, muscles[i].parent1->position.z);
+            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / muscles[i].parent2->blurred);
+            glVertex3f(muscles[i].parent2->position.x, muscles[i].parent2->position.y, muscles[i].parent2->position.z);
+            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / muscles[i].parent2->blurred);
+            glVertex3f(muscles[i].parent2->oldposition.x, muscles[i].parent2->oldposition.y, muscles[i].parent2->oldposition.z);
+            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / muscles[i].parent1->blurred);
+            glVertex3f(muscles[i].parent1->oldposition.x, muscles[i].parent1->oldposition.y, muscles[i].parent1->oldposition.z);
+        }
+    }
+    glEnd();
+
+    glBegin(GL_LINES);
+    for (int i = 0; i < num_joints; i++) {
+        if (joints[i].hasparent) {
+            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / joints[i].blurred);
+            glVertex3f(joints[i].position.x, joints[i].position.y, joints[i].position.z);
+            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / joints[i].parent->blurred);
+            glVertex3f(joints[i].parent->position.x, joints[i].parent->position.y, joints[i].parent->position.z);
+        }
+    }
+    /*for(int i=0; i<num_joints; i++){
+    if(joints[i].hasparent){
+    glColor4f(jointcolor[0],jointcolor[1],jointcolor[2],1);
+    glVertex3f(joints[i].position.x,joints[i].position.y,joints[i].position.z);
+    glColor4f(jointcolor[0],jointcolor[1],jointcolor[2],1);
+    glVertex3f(joints[i].position.x+forward.x,joints[i].position.y+forward.y,joints[i].position.z+forward.z);
+    }
+    }*/
+    for (int i = 0; i < num_muscles; i++) {
+        if (muscles[i].type == boneconnect) {
+            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / muscles[i].parent1->blurred);
+            glVertex3f(muscles[i].parent1->position.x, muscles[i].parent1->position.y, muscles[i].parent1->position.z);
+            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / muscles[i].parent2->blurred);
+            glVertex3f(muscles[i].parent2->position.x, muscles[i].parent2->position.y, muscles[i].parent2->position.z);
+        }
+    }
+    glColor3f(.6, .6, 0);
+    if (muscleview == 1)
+        for (int i = 0; i < num_muscles; i++) {
+            if (muscles[i].type != boneconnect) {
+                glVertex3f(muscles[i].parent1->position.x, muscles[i].parent1->position.y, muscles[i].parent1->position.z);
+                glVertex3f(muscles[i].parent2->position.x, muscles[i].parent2->position.y, muscles[i].parent2->position.z);
+            }
+        }
+    glEnd();
+
+    if (muscleview != 2) {
+        glPointSize(3);
+        glBegin(GL_POINTS);
+        for (int i = 0; i < num_joints; i++) {
+            if (i != selected)
+                glColor4f(0, 0, .5, 1);
+            if (i == selected)
+                glColor4f(1, 1, 0, 1);
+            if (joints[i].locked && i != selected)
+                glColor4f(1, 0, 0, 1);
+            glVertex3f(joints[i].position.x, joints[i].position.y, joints[i].position.z);
+        }
+        glEnd();
+    }
+
+    //Set old position to current position
+    if (muscleview == 2)
+        for (int i = 0; i < num_joints; i++) {
+            joints[i].oldposition = joints[i].position;
+        }
+    glDepthMask(1);
+}
+
+/* EFFECT
+ *
+ * USES:
+ * NONE
+ */
+void Skeleton::AddJoint(float x, float y, float z, int which)
+{
+    if (num_joints < max_joints - 1) {
+        joints[num_joints].velocity = 0;
+        joints[num_joints].position.x = x;
+        joints[num_joints].position.y = y;
+        joints[num_joints].position.z = z;
+        joints[num_joints].mass = 1;
+        joints[num_joints].locked = 0;
+
+        /*if(which>=num_joints||which<0)*/
+        joints[num_joints].hasparent = 0;
+        /*if(which<num_joints&&which>=0){
+        joints[num_joints].parent=&joints[which];
+        joints[num_joints].hasparent=1;
+        joints[num_joints].length=findDistance(joints[num_joints].position,joints[num_joints].parent->position);
+        }*/
+        num_joints++;
+        if (which < num_joints && which >= 0)
+            AddMuscle(num_joints - 1, which, 0, 10, boneconnect);
+    }
+}
+
+/* EFFECT
+ *
+ * USES:
+ * NONE
+ */
+void Skeleton::DeleteJoint(int whichjoint)
+{
+    if (whichjoint < num_joints && whichjoint >= 0) {
+        joints[whichjoint].velocity = joints[num_joints - 1].velocity;
+        joints[whichjoint].position = joints[num_joints - 1].position;
+        joints[whichjoint].oldposition = joints[num_joints - 1].oldposition;
+        joints[whichjoint].hasparent = joints[num_joints - 1].hasparent;
+        joints[whichjoint].parent = joints[num_joints - 1].parent;
+        joints[whichjoint].length = joints[num_joints - 1].length;
+        joints[whichjoint].locked = joints[num_joints - 1].locked;
+        joints[whichjoint].modelnum = joints[num_joints - 1].modelnum;
+        joints[whichjoint].visible = joints[num_joints - 1].visible;
+
+        for (int i = 0; i < num_muscles; i++) {
+            while (muscles[i].parent1 == &joints[whichjoint] && i < num_muscles)DeleteMuscle(i);
+            while (muscles[i].parent2 == &joints[whichjoint] && i < num_muscles)DeleteMuscle(i);
+        }
+        for (int i = 0; i < num_muscles; i++) {
+            while (muscles[i].parent1 == &joints[num_joints - 1] && i < num_muscles)muscles[i].parent1 = &joints[whichjoint];
+            while (muscles[i].parent2 == &joints[num_joints - 1] && i < num_muscles)muscles[i].parent2 = &joints[whichjoint];
+        }
+        for (int i = 0; i < num_joints; i++) {
+            if (joints[i].parent == &joints[whichjoint])
+                joints[i].hasparent = 0;
+        }
+        for (int i = 0; i < num_joints; i++) {
+            if (joints[i].parent == &joints[num_joints - 1])
+                joints[i].parent = &joints[whichjoint];
+        }
+
+        num_joints--;
+    }
+}
+
+/* EFFECT
+ *
+ * USES:
+ * Skeleton::DeleteJoint - UNUSED
+ */
+void Skeleton::DeleteMuscle(int whichmuscle)
+{
+    if (whichmuscle < num_muscles) {
+        muscles[whichmuscle].minlength = muscles[num_muscles - 1].minlength;
+        muscles[whichmuscle].maxlength = muscles[num_muscles - 1].maxlength;
+        muscles[whichmuscle].strength = muscles[num_muscles - 1].strength;
+        muscles[whichmuscle].parent1 = muscles[num_muscles - 1].parent1;
+        muscles[whichmuscle].parent2 = muscles[num_muscles - 1].parent2;
+        muscles[whichmuscle].length = muscles[num_muscles - 1].length;
+        muscles[whichmuscle].visible = muscles[num_muscles - 1].visible;
+        muscles[whichmuscle].type = muscles[num_muscles - 1].type;
+        muscles[whichmuscle].targetlength = muscles[num_muscles - 1].targetlength;
+
+        num_muscles--;
+    }
+}
+
+/* EFFECT
+ *
+ * USES:
+ * NONE
+ */
+void Skeleton::SetJoint(float x, float y, float z, int which, int whichjoint)
+{
+    if (whichjoint < num_joints) {
+        joints[whichjoint].velocity = 0;
+        joints[whichjoint].position.x = x;
+        joints[whichjoint].position.y = y;
+        joints[whichjoint].position.z = z;
+
+        if (which >= num_joints || which < 0)
+            joints[whichjoint].hasparent = 0;
+        if (which < num_joints && which >= 0) {
+            joints[whichjoint].parent = &joints[which];
+            joints[whichjoint].hasparent = 1;
+            joints[whichjoint].length = findDistance(&joints[whichjoint].position, &joints[whichjoint].parent->position);
+        }
+    }
+}
+
+/* EFFECT
+ *
+ * USES:
+ * Skeleton::AddJoint - UNUSED
+ */
+void Skeleton::AddMuscle(int attach1, int attach2, float minlength, float maxlength, int type)
+{
+    const int max_muscles = 100; // FIXME: Probably can be dropped
+    if (num_muscles < max_muscles - 1 && attach1 < num_joints && attach1 >= 0 && attach2 < num_joints && attach2 >= 0 && attach1 != attach2) {
+        muscles[num_muscles].parent1 = &joints[attach1];
+        muscles[num_muscles].parent2 = &joints[attach2];
+        muscles[num_muscles].length = findDistance(&muscles[num_muscles].parent1->position, &muscles[num_muscles].parent2->position);
+        muscles[num_muscles].targetlength = findDistance(&muscles[num_muscles].parent1->position, &muscles[num_muscles].parent2->position);
+        muscles[num_muscles].strength = .7;
+        muscles[num_muscles].type = type;
+        muscles[num_muscles].minlength = minlength;
+        muscles[num_muscles].maxlength = maxlength;
+
+        num_muscles++;
+    }
+}
+
+/* EFFECT
+ *
+ * USES:
+ * NONE
+ */
+void Skeleton::MusclesSet()
+{
+    for (int i = 0; i < num_muscles; i++) {
+        muscles[i].length = findDistance(&muscles[i].parent1->position, &muscles[i].parent2->position);
+    }
+}
+
+/* EFFECT
+ *
+ * USES:
+ * NONE
+ */
+void Skeleton::DoBalance()
+{
+    /*XYZ newpoint;
+    newpoint=joints[0].position;
+    newpoint.x=(joints[2].position.x+joints[4].position.x)/2;
+    newpoint.z=(joints[2].position.z+joints[4].position.z)/2;
+    joints[0].velocity=joints[0].velocity+(newpoint-joints[0].position);
+    //Move child point to within certain distance of parent point
+    joints[0].position=newpoint;
+
+    MusclesSet();*/
+}
+
+#endif
 
