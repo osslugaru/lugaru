@@ -448,8 +448,8 @@ void Model::UpdateVertexArrayNoTexNoNorm()
 
 bool Model::loadnotex(const char *filename )
 {
-    FILE			*tfile;
-    long				i;
+    FILE *tfile;
+    long i;
 
     int oldvertexNum, oldTriangleNum;
     oldvertexNum = vertexNum;
@@ -480,7 +480,7 @@ bool Model::loadnotex(const char *filename )
     }
 
     for (i = 0; i < TriangleNum; i++) {
-        //		funpackf(tfile, "Bi Bi Bi", &Triangles[i].vertex[0], &Triangles[i].vertex[1], &Triangles[i].vertex[2]);
+        //funpackf(tfile, "Bi Bi Bi", &Triangles[i].vertex[0], &Triangles[i].vertex[1], &Triangles[i].vertex[2]);
         short vertex[ 6];
         funpackf(tfile, "Bs Bs Bs Bs Bs Bs", &vertex[ 0], &vertex[ 1], &vertex[ 2], &vertex[ 3], &vertex[ 4], &vertex[ 5]);
         Triangles[i].vertex[ 0] = vertex[ 0];
@@ -516,8 +516,8 @@ bool Model::loadnotex(const char *filename )
 
 bool Model::load(const char *filename, bool texture )
 {
-    FILE			*tfile;
-    long				i;
+    FILE *tfile;
+    long i;
 
     LOGFUNC;
 
@@ -558,7 +558,7 @@ bool Model::load(const char *filename, bool texture )
     }
 
     for (i = 0; i < TriangleNum; i++) {
-        //		funpackf(tfile, "Bi Bi Bi", &Triangles[i].vertex[0], &Triangles[i].vertex[1], &Triangles[i].vertex[2]);
+        //funpackf(tfile, "Bi Bi Bi", &Triangles[i].vertex[0], &Triangles[i].vertex[1], &Triangles[i].vertex[2]);
         short vertex[ 6];
         funpackf(tfile, "Bs Bs Bs Bs Bs Bs", &vertex[ 0], &vertex[ 1], &vertex[ 2], &vertex[ 3], &vertex[ 4], &vertex[ 5]);
         Triangles[i].vertex[ 0] = vertex[ 0];
@@ -595,8 +595,8 @@ bool Model::load(const char *filename, bool texture )
 
 bool Model::loaddecal(const char *filename, bool texture )
 {
-    FILE			*tfile;
-    long				i, j;
+    FILE *tfile;
+    long i, j;
 
     LOGFUNC;
 
@@ -640,7 +640,7 @@ bool Model::loaddecal(const char *filename, bool texture )
     }
 
     for (i = 0; i < TriangleNum; i++) {
-        //		funpackf(tfile, "Bi Bi Bi", &Triangles[i].vertex[0], &Triangles[i].vertex[1], &Triangles[i].vertex[2]);
+        //funpackf(tfile, "Bi Bi Bi", &Triangles[i].vertex[0], &Triangles[i].vertex[1], &Triangles[i].vertex[2]);
         short vertex[ 6];
         funpackf(tfile, "Bs Bs Bs Bs Bs Bs", &vertex[ 0], &vertex[ 1], &vertex[ 2], &vertex[ 3], &vertex[ 4], &vertex[ 5]);
         Triangles[i].vertex[ 0] = vertex[ 0];
@@ -699,8 +699,8 @@ bool Model::loaddecal(const char *filename, bool texture )
 
 bool Model::loadraw(char *filename )
 {
-    FILE			*tfile;
-    long				i;
+    FILE *tfile;
+    long i;
 
     LOGFUNC;
 
@@ -737,7 +737,7 @@ bool Model::loadraw(char *filename )
     }
 
     for (i = 0; i < TriangleNum; i++) {
-        //		funpackf(tfile, "Bi Bi Bi", &Triangles[i].vertex[0], &Triangles[i].vertex[1], &Triangles[i].vertex[2]);
+        //funpackf(tfile, "Bi Bi Bi", &Triangles[i].vertex[0], &Triangles[i].vertex[1], &Triangles[i].vertex[2]);
         short vertex[ 6];
         funpackf(tfile, "Bs Bs Bs Bs Bs Bs", &vertex[ 0], &vertex[ 1], &vertex[ 2], &vertex[ 3], &vertex[ 4], &vertex[ 5]);
         Triangles[i].vertex[ 0] = vertex[ 0];
@@ -1184,7 +1184,7 @@ void Model::drawdecals(Texture shadowtexture, Texture bloodtexture, Texture bloo
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
-            glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+            glMatrixMode(GL_MODELVIEW);
             glPushMatrix();
             glBegin(GL_TRIANGLES);
             for (int j = 0; j < 3; j++) {

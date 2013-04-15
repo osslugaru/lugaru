@@ -36,7 +36,7 @@ GetFrustum()
     glGetFloatv(GL_MODELVIEW_MATRIX, mvmatrix);
 
     // Combine the matrices
-    clip[0]	= mvmatrix[0] * projmatrix[0] + mvmatrix[1] * projmatrix[4] + mvmatrix[2] * projmatrix[8] + mvmatrix[3] * projmatrix[12];
+    clip[0] = mvmatrix[0] * projmatrix[0] + mvmatrix[1] * projmatrix[4] + mvmatrix[2] * projmatrix[8] + mvmatrix[3] * projmatrix[12];
     clip[1] = mvmatrix[0] * projmatrix[1] + mvmatrix[1] * projmatrix[5] + mvmatrix[2] * projmatrix[9] + mvmatrix[3] * projmatrix[13];
     clip[2] = mvmatrix[0] * projmatrix[2] + mvmatrix[1] * projmatrix[6] + mvmatrix[2] * projmatrix[10] + mvmatrix[3] * projmatrix[14];
     clip[3] = mvmatrix[0] * projmatrix[3] + mvmatrix[1] * projmatrix[7] + mvmatrix[2] * projmatrix[11] + mvmatrix[3] * projmatrix[15];

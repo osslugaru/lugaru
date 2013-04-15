@@ -68,7 +68,7 @@ public:
         QueryPerformanceFrequency( (LARGE_INTEGER*)&counterRate);
         QueryPerformanceCounter( (LARGE_INTEGER*)&baseCounter);
     }
-    __int64 counterRate;		// LARGE_INTEGER type has no math functions so use int64
+    __int64 counterRate; // LARGE_INTEGER type has no math functions so use int64
     __int64 baseCounter;
 };
 static AppTime g_appTime;

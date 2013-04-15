@@ -19,8 +19,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef	_TGA_LOADER_H_
-#define	_TGA_LOADER_H_
+#ifndef _TGA_LOADER_H_
+#define _TGA_LOADER_H_
 
 #ifdef _MSC_VER
 #pragma once
@@ -39,7 +39,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "GL/gl.h"
 #else
 #include "gamegl.h"
-//	#include "MoreFilesX.h"
+// #include "MoreFilesX.h"
 #endif
 
 //#include <stdbool.h>
@@ -47,11 +47,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /**> DATA STRUCTURES <**/
 typedef struct TGAImageRec {
-    GLubyte	*data;		// Image Data (Up To 32 Bits)
-    GLuint	bpp;		// Image Color Depth In Bits Per Pixel.
-    GLuint	sizeX;
-    GLuint	sizeY;
-}	TGAImageRec;
+    GLubyte *data; // Image Data (Up To 32 Bits)
+    GLuint bpp; // Image Color Depth In Bits Per Pixel.
+    GLuint sizeX;
+    GLuint sizeY;
+} TGAImageRec;
 
 bool upload_image(const unsigned char* filePath, bool hasalpha);
 

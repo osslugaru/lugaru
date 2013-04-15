@@ -1360,24 +1360,24 @@ Skeleton::Skeleton()
     selected = 0;
 
     memset(forwardjoints, 0, sizeof(forwardjoints));
-    //		XYZ forward;
+    // XYZ forward;
 
     id = 0;
 
     memset(lowforwardjoints, 0, sizeof(lowforwardjoints));
-    //		XYZ lowforward;
+    // XYZ lowforward;
 
-    //		XYZ specialforward[5];
+    // XYZ specialforward[5];
     memset(jointlabels, 0, sizeof(jointlabels));
 
-    //		Model model[7];
-    //		Model modellow;
-    //		Model modelclothes;
+    // Model model[7];
+    // Model modellow;
+    // Model modelclothes;
     num_models = 0;
 
-    //		Model drawmodel;
-    //		Model drawmodellow;
-    //		Model drawmodelclothes;
+    // Model drawmodel;
+    // Model drawmodellow;
+    // Model drawmodelclothes;
 
     clothes = 0;
     spinny = 0;

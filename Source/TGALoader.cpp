@@ -42,16 +42,16 @@ bool upload_image(const unsigned char* filePath, bool hasalpha)
     char fileName[256];
     CopyPascalStringToC( filePath, fileName);
     /*
-    	// change extension to .TGA
-    	int len = strlen( fileName);
-    	if (len > 3)
-    	{
-    		fileName[ len - 3] = 't';
-    		fileName[ len - 2] = 'g';
-    		fileName[ len - 1] = 'a';
-    	}
+        // change extension to .TGA
+        int len = strlen( fileName);
+        if (len > 3)
+        {
+            fileName[ len - 3] = 't';
+            fileName[ len - 2] = 'g';
+            fileName[ len - 1] = 'a';
+        }
     */
-//	return (LoadTGA( fileName) != NULL);
+//return (LoadTGA( fileName) != NULL);
     return (LoadImage(fileName, texture));
 
 #else
@@ -120,18 +120,18 @@ bool upload_image(const unsigned char* filePath, bool hasalpha)
     DisposeGWorld(gw);
 
     // Loop Through The Image Data
-    GLuint			imageSize;									// Used To Store The Image Size When Setting Aside Ram
-    GLuint			temp;										// Temporary Variable
-    GLuint			bytesPerPixel;										// Temporary Variable
+    GLuint imageSize; // Used To Store The Image Size When Setting Aside Ram
+    GLuint temp; // Temporary Variable
+    GLuint bytesPerPixel; // Temporary Variable
     bytesPerPixel = texture.bpp / 8;
     imageSize = texture.sizeX * texture.sizeY * bytesPerPixel;
     //~ int alltrans=10;
 
     for ( GLuint i = 0; i < int( imageSize ); i += 4 ) {
         // Swaps The 1st And 3rd Bytes ('R'ed and 'B'lue)
-        temp = texture.data[i];					// Temporarily Store The Value At Image Data 'i'
-        texture.data[i] = texture.data[i + 1];	// Set The 1st Byte To The Value Of The 3rd Byte
-        texture.data[i + 1] = texture.data[i + 2];				// Set The 3rd Byte To The Value In 'temp' (1st Byte Value)
+        temp = texture.data[i]; // Temporarily Store The Value At Image Data 'i'
+        texture.data[i] = texture.data[i + 1]; // Set The 1st Byte To The Value Of The 3rd Byte
+        texture.data[i + 1] = texture.data[i + 2]; // Set The 3rd Byte To The Value In 'temp' (1st Byte Value)
         texture.data[i + 2] = texture.data[i + 3];
         texture.data[i + 3] = temp;
     }
@@ -141,8 +141,8 @@ bool upload_image(const unsigned char* filePath, bool hasalpha)
     if (!hasalpha) {
         for ( GLuint i = 0; i < int( imageSize ); i += 4 ) {
             texture.data[i + 3] = 255;
-            /*texture.data[tempplace] = texture.data[i];	// Set The 1st Byte To The Value Of The 3rd Byte
-            texture.data[tempplace + 1] = texture.data[i + 1];				// Set The 3rd Byte To The Value In 'temp' (1st Byte Value)
+            /*texture.data[tempplace] = texture.data[i]; // Set The 1st Byte To The Value Of The 3rd Byte
+            texture.data[tempplace + 1] = texture.data[i + 1]; // Set The 3rd Byte To The Value In 'temp' (1st Byte Value)
             texture.data[tempplace + 2] = texture.data[i + 2];
             tempplace+=3;*/
         }
@@ -159,7 +159,7 @@ bool upload_image(const unsigned char* filePath, bool hasalpha)
                     howmany = 0;
                     for ( GLuint l = 0; l < texdetail * texture.sizeX ; l += texture.sizeX ) {
                         for ( GLuint j = 0; j < texdetail ; j ++ ) {
-                            temp += (int)texture.data[k + i + j * bytesPerPixel + l * bytesPerPixel + b];	// Set The 1st Byte To The Value Of The 3rd Byte
+                            temp += (int)texture.data[k + i + j * bytesPerPixel + l * bytesPerPixel + b]; // Set The 1st Byte To The Value Of The 3rd Byte
                             howmany++;
                         }
                     }

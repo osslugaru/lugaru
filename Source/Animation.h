@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #ifndef ANIMATION_H
-#define	ANIMATION_H
+#define ANIMATION_H
 
 enum anim_attack_type {
     neutral, normalattack, reversed, reversal

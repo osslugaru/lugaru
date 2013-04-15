@@ -221,8 +221,8 @@ void Weapon::DoStuff(int i)
                         distsq(&position, &player[j].coords) < 4 && player[j].weaponstuck == -1 &&
                         !player[j].skeleton.free && j != oldowner) {
                     if ((player[j].aitype != attacktypecutoff || abs(Random() % 6) == 0 || (player[j].animTarget != backhandspringanim && player[j].animTarget != rollanim && player[j].animTarget != flipanim && Random() % 2 == 0)) && !missed) {
-                        if ( (player[j].creature == wolftype	&&	Random() % 3 != 0 && player[j].weaponactive == -1 && (player[j].isIdle() || player[j].isRun() || player[j].animTarget == walkanim)) ||
-                                (player[j].creature == rabbittype	&&	Random() % 2 == 0 && player[j].aitype == attacktypecutoff && player[j].weaponactive == -1)) {
+                        if ( (player[j].creature == wolftype && Random() % 3 != 0 && player[j].weaponactive == -1 && (player[j].isIdle() || player[j].isRun() || player[j].animTarget == walkanim)) ||
+                                (player[j].creature == rabbittype && Random() % 2 == 0 && player[j].aitype == attacktypecutoff && player[j].weaponactive == -1)) {
                             emit_sound_at(knifedrawsound, player[j].coords, 128.);
 
                             player[j].weaponactive = 0;
@@ -301,7 +301,7 @@ void Weapon::DoStuff(int i)
                 terrain.MakeDecal(shadowdecalpermanent, position, .06, .5, 0);
                 normalrot = terrain.getNormal(position.x, position.z) * -1;
                 velocity = 0;
-                glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+                glMatrixMode(GL_MODELVIEW);
                 glPushMatrix();
                 GLfloat M[16];
                 glLoadIdentity();
@@ -948,15 +948,15 @@ void Weapon::Draw()
             if (player[owner].occluded < 25)
                 if ((frustum.SphereInFrustum(player[owner].coords.x, player[owner].coords.y + player[owner].scale * 3, player[owner].coords.z, player[owner].scale * 8) && distsq(&viewer, &player[owner].coords) < viewdistance * viewdistance) || player[owner].skeleton.free == 3)
                     draw = true;
-            if	(
+            if (
                 (player[owner].animTarget == knifeslashstartanim ||
                  player[owner].animTarget == swordsneakattackanim ||
-                 (player[owner].animCurrent == staffhitanim	&&				player[owner].frameCurrent > 1) ||
-                 (player[owner].animCurrent == staffhitreversedanim	&&		player[owner].frameCurrent > 1) ||
-                 (player[owner].animCurrent == staffspinhitanim	&&			player[owner].frameCurrent > 1) ||
-                 (player[owner].animCurrent == staffspinhitreversedanim	&&	player[owner].frameCurrent > 1) ||
-                 (player[owner].animCurrent == staffgroundsmashanim	&&		player[owner].frameCurrent > 1) ||
-                 (player[owner].animTarget == swordslashanim	&&				player[owner].frameTarget < 7) ||
+                 (player[owner].animCurrent == staffhitanim && player[owner].frameCurrent > 1) ||
+                 (player[owner].animCurrent == staffhitreversedanim && player[owner].frameCurrent > 1) ||
+                 (player[owner].animCurrent == staffspinhitanim && player[owner].frameCurrent > 1) ||
+                 (player[owner].animCurrent == staffspinhitreversedanim && player[owner].frameCurrent > 1) ||
+                 (player[owner].animCurrent == staffgroundsmashanim && player[owner].frameCurrent > 1) ||
+                 (player[owner].animTarget == swordslashanim && player[owner].frameTarget < 7) ||
                  player[owner].animTarget == crouchstabanim ||
                  player[owner].animTarget == swordslashreversalanim ||
                  player[owner].animTarget == swordslashreversedanim ||
@@ -987,7 +987,7 @@ void Weapon::Draw()
                 glAlphaFunc(GL_GREATER, 0.01);
             }
             for (int j = drawhowmany; j > 0; j--) {
-                glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+                glMatrixMode(GL_MODELVIEW);
                 glPushMatrix();
                 glColor4f(terrainlight.x, terrainlight.y, terrainlight.z, j / drawhowmany);
                 if (owner == -1)
@@ -1056,7 +1056,7 @@ void Weapon::Draw()
                 lastdrawnanim = player[owner].animCurrent;
         }
         if (owner != -1) {
-            glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+            glMatrixMode(GL_MODELVIEW);
             glPushMatrix();
             glLoadIdentity();
             glTranslatef(position.x, position.y - .02, position.z);

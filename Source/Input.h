@@ -28,8 +28,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Game.h"
 
 /**> CONSTANT DECLARATIONS <**/
-#define MOUSEBUTTON1 		SDLK_LAST+SDL_BUTTON_LEFT
-#define MOUSEBUTTON2 		SDLK_LAST+SDL_BUTTON_RIGHT
+#define MOUSEBUTTON1 SDLK_LAST+SDL_BUTTON_LEFT
+#define MOUSEBUTTON2 SDLK_LAST+SDL_BUTTON_RIGHT
 
 /**> FUNCTION PROTOTYPES <**/
 class Input
@@ -39,7 +39,7 @@ public:
     static bool isKeyDown(int k);
     static bool isKeyPressed(int k);
     static const char* keyToChar(unsigned short which);
-    static unsigned short 	CharToKey(const char* which);
+    static unsigned short CharToKey(const char* which);
     static Boolean MouseClicked();
 };
 

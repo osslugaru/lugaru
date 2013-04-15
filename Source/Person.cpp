@@ -5017,7 +5017,7 @@ void Person::DoStuff()
                 yaw = targetyaw;
 
                 frameTarget = 0;
-                //	frameTarget=2;
+                // frameTarget=2;
                 animTarget = flipanim;
                 crouchtogglekeydown = 1;
                 target = 0;

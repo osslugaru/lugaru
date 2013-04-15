@@ -30,9 +30,8 @@ extern float skyboxr;
 extern float skyboxg;
 extern float skyboxb;
 
-void
-SkyBox::load (const char *ffront, const char *fleft, const char *fback,
-              const char *fright, const char *fup,   const char *fdown)
+void SkyBox::load (const char *ffront, const char *fleft, const char *fback,
+                   const char *fright, const char *fup,   const char *fdown)
 {
     front.load(ffront, true, false);
     left.load(fleft, true, false);
@@ -42,7 +41,7 @@ SkyBox::load (const char *ffront, const char *fleft, const char *fback,
     down.load(fdown, true, false);
 }
 
-void	SkyBox::draw()
+void SkyBox::draw()
 {
     static float size = viewdistance / 4;
     glPushMatrix();

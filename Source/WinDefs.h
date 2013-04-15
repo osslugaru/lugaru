@@ -63,7 +63,7 @@ typedef struct AbsoluteTime {
     unsigned long   lo;
 } AbsoluteTime;
 
-AbsoluteTime UpTime();		// NOTE: returns time since app started, not system start
+AbsoluteTime UpTime(); // NOTE: returns time since app started, not system start
 
 typedef long Duration;
 
@@ -84,8 +84,8 @@ Duration AbsoluteDeltaToDuration( AbsoluteTime& a, AbsoluteTime& b);
 /*
 inline bool isnormal( double x)
 {
-	int ret = _fpclass( x);
-	return (ret == _FPCLASS_NN || ret == _FPCLASS_PN);
+    int ret = _fpclass( x);
+    return (ret == _FPCLASS_NN || ret == _FPCLASS_PN);
 }
 */
 

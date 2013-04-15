@@ -30,10 +30,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Quaternions.h"
 #include "Texture.h"
 
-#define max_terrain_size			256
-#define curr_terrain_size			size
-#define subdivision 				64
-#define max_patch_elements			(max_terrain_size/subdivision)*(max_terrain_size/subdivision)*54
+#define max_terrain_size        256
+#define curr_terrain_size       size
+#define subdivision             64
+#define max_patch_elements      (max_terrain_size/subdivision)*(max_terrain_size/subdivision)*54
 
 #define allfirst 0
 #define mixed 1
@@ -67,7 +67,7 @@ public:
     Texture bodyprinttexture;
     Texture breaktexture;
     Texture terraintexture;
-    short	size;
+    short size;
 
     int patchobjectnum[subdivision][subdivision];
     int patchobjects[subdivision][subdivision][300];

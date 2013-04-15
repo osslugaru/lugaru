@@ -76,7 +76,7 @@ typedef struct AbsoluteTime {
     unsigned long   lo;
 } AbsoluteTime;
 
-AbsoluteTime UpTime();		// NOTE: returns time since app started, not system start
+AbsoluteTime UpTime(); // NOTE: returns time since app started, not system start
 
 typedef long Duration;
 

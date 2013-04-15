@@ -255,7 +255,7 @@ inline float fast_sqrt (register float arg)
         return 0.0;
 
     asm {
-        frsqrte		result, arg			// Calculate Square root
+        frsqrte     result, arg         // Calculate Square root
     }
 
     // Newton Rhapson iterations.

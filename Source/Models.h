@@ -40,9 +40,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 // Textures List
 //
-typedef struct		{
-    long			xsz, ysz;
-    GLubyte				*txt;
+typedef struct {
+    long xsz, ysz;
+    GLubyte *txt;
 } ModelTexture;
 
 //
@@ -52,7 +52,7 @@ typedef struct		{
 class TexturedTriangle
 {
 public:
-    short			vertex[3];
+    short vertex[3];
     float gx[3], gy[3];
 };
 
@@ -67,7 +67,7 @@ public:
 class Model
 {
 public:
-    short	vertexNum, TriangleNum;
+    short vertexNum, TriangleNum;
     bool hastexture;
 
     int type, oldtype;

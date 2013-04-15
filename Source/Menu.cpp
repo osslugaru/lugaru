@@ -242,10 +242,10 @@ void Menu::drawItems()
             glPushMatrix();
             glTranslatef(2, -5, 0); //from old code
             glBegin(GL_QUADS);
-            glVertex3f(linestart.x - offset.x * it->linestartsize,	linestart.y - offset.y * it->linestartsize, 	 0.0f);
-            glVertex3f(linestart.x + offset.x * it->linestartsize,	linestart.y + offset.y * it->linestartsize, 	 0.0f);
-            glVertex3f(lineend.x + offset.x * it->lineendsize,		lineend.y + offset.y * it->lineendsize, 0.0f);
-            glVertex3f(lineend.x - offset.x * it->lineendsize, 		lineend.y - offset.y * it->lineendsize, 0.0f);
+            glVertex3f(linestart.x - offset.x * it->linestartsize, linestart.y - offset.y * it->linestartsize, 0.0f);
+            glVertex3f(linestart.x + offset.x * it->linestartsize, linestart.y + offset.y * it->linestartsize, 0.0f);
+            glVertex3f(lineend.x + offset.x * it->lineendsize, lineend.y + offset.y * it->lineendsize, 0.0f);
+            glVertex3f(lineend.x - offset.x * it->lineendsize, lineend.y - offset.y * it->lineendsize, 0.0f);
             glEnd();
             glPopMatrix();
             glEnable(GL_TEXTURE_2D);

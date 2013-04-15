@@ -404,7 +404,7 @@ void Terrain::UpdateVertexArray(int whichx, int whichy)
 
 bool Terrain::load(const char *fileName)
 {
-    static long				i, j;
+    static long i, j;
     static long x, y;
     static float patch_size;
 
@@ -548,14 +548,14 @@ bool Terrain::load(const char *fileName)
     for(j=0;j<size;j++){
     total=0;
     todivide=0;
-    if(i!=0){				total+=opacityother[j][i-1]; todivide++;}
-    if(i!=size-1){				total+=opacityother[j][i+1]; todivide++;}
-    if(j!=0){				total+=opacityother[j-1][i]; todivide++;}
-    if(j!=size-1){				total+=opacityother[j+1][i]; todivide++;}
-    if(i!=0&&j!=0){			total+=opacityother[j-1][i-1]; todivide++;}
-    if(i!=size-1&&j!=0){		total+=opacityother[j-1][i+1]; todivide++;}
-    if(j!=size-1&&i!=size-1){		total+=opacityother[j+1][i+1]; todivide++;}
-    if(j!=size-1&&i!=0){		total+=opacityother[j+1][i-1]; todivide++;}
+    if(i!=0){total+=opacityother[j][i-1]; todivide++;}
+    if(i!=size-1){total+=opacityother[j][i+1]; todivide++;}
+    if(j!=0){total+=opacityother[j-1][i]; todivide++;}
+    if(j!=size-1){total+=opacityother[j+1][i]; todivide++;}
+    if(i!=0&&j!=0){total+=opacityother[j-1][i-1]; todivide++;}
+    if(i!=size-1&&j!=0){total+=opacityother[j-1][i+1]; todivide++;}
+    if(j!=size-1&&i!=size-1){total+=opacityother[j+1][i+1]; todivide++;}
+    if(j!=size-1&&i!=0){total+=opacityother[j+1][i-1]; todivide++;}
     total+=opacityother[j][i]; todivide++;
 
     opacityother[j][i]=total/(float)todivide;
@@ -1106,7 +1106,7 @@ void Terrain::draw(int layer)
                 if (opacity == 1 && j != subdivision && i != subdivision)
                     if (distance[i + 1][j + 1] > viewdistsquared * fadestart - viewdistsquared)
                         opacity = 0;
-                glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+                glMatrixMode(GL_MODELVIEW);
                 glPushMatrix();
                 if (frustum.CubeInFrustum(i * patch_size + patch_size * .5, avgypatch[i][j], j * patch_size + patch_size * .5, heightypatch[i][j] / 2)) {
                     if (environment == desertenvironment && distance[i][j] > viewdistsquared / 4)
@@ -1232,7 +1232,7 @@ void Terrain::drawdecals()
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
-            glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+            glMatrixMode(GL_MODELVIEW);
             glPushMatrix();
             glBegin(GL_TRIANGLES);
             for (int j = 0; j < 3; j++) {

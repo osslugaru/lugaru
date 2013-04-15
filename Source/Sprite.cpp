@@ -209,7 +209,7 @@ void Sprite::Draw()
         }
         lasttype = sprites[i]->type;
         lastspecial = sprites[i]->special;
-        glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+        glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
         glTranslatef(sprites[i]->position.x, sprites[i]->position.y, sprites[i]->position.z);
         if ((sprites[i]->type == flamesprite || sprites[i]->type == weaponflamesprite || sprites[i]->type == weaponshinesprite)) {

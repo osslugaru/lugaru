@@ -1311,11 +1311,11 @@ static void cmd_dispatch(const string cmd)
 
 /********************> Tick() <*****/
 extern bool save_image(const char * fname);
-void Screenshot	(void)
+void Screenshot (void)
 {
     char temp[1024];
-    time_t	t = time(NULL);
-    struct	tm *tme = localtime(&t);
+    time_t t = time(NULL);
+    struct tm *tme = localtime(&t);
     sprintf(temp, "Screenshots/Screenshot_%04d_%02d_%02d--%02d_%02d_%02d.png", tme->tm_year + 1900, tme->tm_mon + 1, tme->tm_mday, tme->tm_hour, tme->tm_min, tme->tm_sec);
 
 #if defined(_WIN32)
@@ -1509,7 +1509,7 @@ void Setenvironment(int which)
         temptexdetail = texdetail;
         if (texdetail > 1)
             texdetail = 4;
-        skybox->load(	":Data:Textures:Skybox(snow):Front.jpg",
+        skybox->load(   ":Data:Textures:Skybox(snow):Front.jpg",
                         ":Data:Textures:Skybox(snow):Left.jpg",
                         ":Data:Textures:Skybox(snow):Back.jpg",
                         ":Data:Textures:Skybox(snow):Right.jpg",
@@ -1547,7 +1547,7 @@ void Setenvironment(int which)
         temptexdetail = texdetail;
         if (texdetail > 1)
             texdetail = 4;
-        skybox->load(	":Data:Textures:Skybox(sand):Front.jpg",
+        skybox->load(   ":Data:Textures:Skybox(sand):Front.jpg",
                         ":Data:Textures:Skybox(sand):Left.jpg",
                         ":Data:Textures:Skybox(sand):Back.jpg",
                         ":Data:Textures:Skybox(sand):Right.jpg",
@@ -1584,7 +1584,7 @@ void Setenvironment(int which)
         temptexdetail = texdetail;
         if (texdetail > 1)
             texdetail = 4;
-        skybox->load(	":Data:Textures:Skybox(grass):Front.jpg",
+        skybox->load(   ":Data:Textures:Skybox(grass):Front.jpg",
                         ":Data:Textures:Skybox(grass):Left.jpg",
                         ":Data:Textures:Skybox(grass):Back.jpg",
                         ":Data:Textures:Skybox(grass):Right.jpg",
@@ -8507,33 +8507,33 @@ void Game::TickOnceAfter()
         /*
         //what did autocam do?
         if(player[0].skeleton.free!=2&&autocam){
-        	cameraspeed=20;
-        	if(findLengthfast(&player[0].velocity)>400){
-        		cameraspeed=20+(findLength(&player[0].velocity)-20)*.96;
-        	}
-        	if(player[0].skeleton.free==0&&player[0].animTarget!=hanganim&&player[0].animTarget!=climbanim)target.y+=1.4;
-        	cameradist+=multiplier*5;
-        	if(cameradist>3.3)cameradist=3.3;
-        	coltarget=target-cameraloc;
-        	if(findLengthfast(&coltarget)<multiplier*multiplier*400)cameraloc=target;
-        	else if(findLengthfast(&coltarget)>1)
-        	{
-        		Normalise(&coltarget);
-        		if(player[0].animTarget!=hanganim&&player[0].animTarget!=climbanim&&player[0].animCurrent!=climbanim&&player[0].currentoffset.x==0)cameraloc=cameraloc+coltarget*multiplier*cameraspeed;
-        		else cameraloc=cameraloc+coltarget*multiplier*8;
-        	}
-        	if(editorenabled)cameraloc=target;
-        	viewer=cameraloc;
-        	colviewer=viewer;
-        	coltarget=cameraloc;
-        	objects.SphereCheckPossible(&colviewer, findDistance(&colviewer,&coltarget));
-        	if(terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz])
-        		for(int j=0;j<terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz];j++){
-        			int i=terrain.patchobjects[player[0].whichpatchx][player[0].whichpatchz][j];
-        			colviewer=viewer;
-        			coltarget=cameraloc;
-        			if(objects.model[i].LineCheckPossible(&colviewer,&coltarget,&col,&objects.position[i],&objects.yaw[i])!=-1)viewer=col;
-        		}
+            cameraspeed=20;
+            if(findLengthfast(&player[0].velocity)>400){
+                cameraspeed=20+(findLength(&player[0].velocity)-20)*.96;
+            }
+            if(player[0].skeleton.free==0&&player[0].animTarget!=hanganim&&player[0].animTarget!=climbanim)target.y+=1.4;
+            cameradist+=multiplier*5;
+            if(cameradist>3.3)cameradist=3.3;
+            coltarget=target-cameraloc;
+            if(findLengthfast(&coltarget)<multiplier*multiplier*400)cameraloc=target;
+            else if(findLengthfast(&coltarget)>1)
+            {
+                Normalise(&coltarget);
+                if(player[0].animTarget!=hanganim&&player[0].animTarget!=climbanim&&player[0].animCurrent!=climbanim&&player[0].currentoffset.x==0)cameraloc=cameraloc+coltarget*multiplier*cameraspeed;
+                else cameraloc=cameraloc+coltarget*multiplier*8;
+            }
+            if(editorenabled)cameraloc=target;
+            viewer=cameraloc;
+            colviewer=viewer;
+            coltarget=cameraloc;
+            objects.SphereCheckPossible(&colviewer, findDistance(&colviewer,&coltarget));
+            if(terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz])
+                for(int j=0;j<terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz];j++){
+                    int i=terrain.patchobjects[player[0].whichpatchx][player[0].whichpatchz][j];
+                    colviewer=viewer;
+                    coltarget=cameraloc;
+                    if(objects.model[i].LineCheckPossible(&colviewer,&coltarget,&col,&objects.position[i],&objects.yaw[i])!=-1)viewer=col;
+                }
             if(terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz])
                 for(int j=0;j<terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz];j++){
                     int i=terrain.patchobjects[player[0].whichpatchx][player[0].whichpatchz][j];

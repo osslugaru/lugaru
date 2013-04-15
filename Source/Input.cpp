@@ -71,7 +71,7 @@ const char* Input::keyToChar(unsigned short i)
         return "unknown";
 }
 
-unsigned short 	Input::CharToKey(const char* which)
+unsigned short Input::CharToKey(const char* which)
 {
     for (unsigned short i = 0; i < SDLK_LAST; i++) {
         if (!strcasecmp(which, SDL_GetKeyName(SDLKey(i))))

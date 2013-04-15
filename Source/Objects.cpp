@@ -39,7 +39,7 @@ extern bool skyboxtexture;
 
 //Functions
 
-bool 	Objects::checkcollide(XYZ startpoint, XYZ endpoint, int which)
+bool Objects::checkcollide(XYZ startpoint, XYZ endpoint, int which)
 {
     static XYZ colpoint, colviewer, coltarget;
     static int i;
@@ -111,7 +111,7 @@ void Objects::Draw()
                         }
                         else occluded[i]=0;*/
                         if (occluded[i] < 6) {
-                            glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+                            glMatrixMode(GL_MODELVIEW);
                             glPushMatrix();
                             if (!model[i].color)
                                 glEnable(GL_LIGHTING);
@@ -366,7 +366,7 @@ void Objects::Draw()
                     distance = 1;
                     if (distance > 0) {
                         if (1 == 1 || occluded[i] < 6) {
-                            glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+                            glMatrixMode(GL_MODELVIEW);
                             glPushMatrix();
                             glEnable(GL_LIGHTING);
                             glDepthMask(1);

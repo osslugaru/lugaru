@@ -194,7 +194,7 @@ void initGL()
     glDisable( GL_ALPHA_TEST);
     glDisable( GL_BLEND);
     glDisable( GL_DEPTH_TEST);
-    //	glDisable( GL_DITHER);
+    //glDisable( GL_DITHER);
     glDisable( GL_FOG);
     glDisable( GL_LIGHTING);
     glDisable( GL_LOGIC_OP);
@@ -215,13 +215,13 @@ void initGL()
     glClearDepth( 1.0f);
     glDepthFunc( GL_LEQUAL);
     glDepthMask( GL_TRUE);
-    //	glDepthRange( FRONT_CLIP, BACK_CLIP);
+    //glDepthRange( FRONT_CLIP, BACK_CLIP);
     glEnable( GL_DEPTH_TEST);
     glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     glCullFace( GL_FRONT);
     glEnable( GL_CULL_FACE);
     glEnable( GL_LIGHTING);
-//	glEnable( GL_LIGHT_MODEL_AMBIENT);
+    //glEnable( GL_LIGHT_MODEL_AMBIENT);
     glEnable( GL_DITHER);
     glEnable( GL_COLOR_MATERIAL);
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -446,9 +446,9 @@ void DoFrameRate (int update)
     AbsoluteTime currTime = UpTime ();
     double deltaTime = (float) AbsoluteDeltaToDuration (currTime, frametime);
 
-    if (0 > deltaTime)	// if negative microseconds
+    if (0 > deltaTime) // if negative microseconds
         deltaTime /= -1000000.0;
-    else				// else milliseconds
+    else // else milliseconds
         deltaTime /= 1000.0;
 
     multiplier = deltaTime;
@@ -457,18 +457,18 @@ void DoFrameRate (int update)
     if (multiplier > 10)
         multiplier = 10;
     if (update)
-        frametime = currTime;	// reset for next time interval
+        frametime = currTime; // reset for next time interval
 
     deltaTime = (float) AbsoluteDeltaToDuration (currTime, time);
 
-    if (0 > deltaTime)	// if negative microseconds
+    if (0 > deltaTime) // if negative microseconds
         deltaTime /= -1000000.0;
-    else				// else milliseconds
+    else // else milliseconds
         deltaTime /= 1000.0;
     frames++;
-    if (0.001 <= deltaTime) {	// has update interval passed
+    if (0.001 <= deltaTime) { // has update interval passed
         if (update) {
-            time = currTime;	// reset for next time interval
+            time = currTime; // reset for next time interval
             frames = 0;
         }
     }
@@ -516,38 +516,38 @@ void DoUpdate ()
 
     TickOnceAfter();
     /* - Debug code to test how many channels were active on average per frame
-    	static long frames = 0;
+        static long frames = 0;
 
-    	static AbsoluteTime start = {0,0};
-    	AbsoluteTime currTime = UpTime ();
-    	static int num_channels = 0;
+        static AbsoluteTime start = {0,0};
+        AbsoluteTime currTime = UpTime ();
+        static int num_channels = 0;
 
-    	num_channels += OPENAL_GetChannelsPlaying();
-    	double deltaTime = (float) AbsoluteDeltaToDuration (currTime, start);
+        num_channels += OPENAL_GetChannelsPlaying();
+        double deltaTime = (float) AbsoluteDeltaToDuration (currTime, start);
 
-    	if (0 > deltaTime)	// if negative microseconds
-    		deltaTime /= -1000000.0;
-    	else				// else milliseconds
-    		deltaTime /= 1000.0;
+        if (0 > deltaTime)  // if negative microseconds
+            deltaTime /= -1000000.0;
+        else                // else milliseconds
+            deltaTime /= 1000.0;
 
-    	++frames;
+        ++frames;
 
-    	if (deltaTime >= 1)
-    	{
-    		start = currTime;
-    		float avg_channels = (float)num_channels / (float)frames;
+        if (deltaTime >= 1)
+        {
+            start = currTime;
+            float avg_channels = (float)num_channels / (float)frames;
 
-    		ofstream opstream("log.txt",ios::app);
-    		opstream << "Average frame count: ";
-    		opstream << frames;
-    		opstream << " frames - ";
-    		opstream << avg_channels;
-    		opstream << " per frame.\n";
-    		opstream.close();
+            ofstream opstream("log.txt",ios::app);
+            opstream << "Average frame count: ";
+            opstream << frames;
+            opstream << " frames - ";
+            opstream << avg_channels;
+            opstream << " per frame.\n";
+            opstream.close();
 
-    		frames = 0;
-    		num_channels = 0;
-    	}
+            frames = 0;
+            num_channels = 0;
+        }
     */
     if ( stereomode == stereoNone ) {
         DrawGLScene(stereoCenter);
@@ -803,8 +803,8 @@ static bool load_image(const char *file_name, TGAImageRec &tex)
 
 
 struct my_error_mgr {
-    struct jpeg_error_mgr pub;	/* "public" fields */
-    jmp_buf setjmp_buffer;	/* for return to caller */
+    struct jpeg_error_mgr pub; /* "public" fields */
+    jmp_buf setjmp_buffer; /* for return to caller */
 };
 typedef struct my_error_mgr * my_error_ptr;
 
@@ -820,8 +820,8 @@ static bool load_jpg(const char *file_name, TGAImageRec &tex)
 {
     struct jpeg_decompress_struct cinfo;
     struct my_error_mgr jerr;
-    JSAMPROW buffer[1];		/* Output row buffer */
-    int row_stride;		/* physical row width in output buffer */
+    JSAMPROW buffer[1]; /* Output row buffer */
+    int row_stride; /* physical row width in output buffer */
     FILE *infile = fopen(file_name, "rb");
 
     if (infile == NULL)

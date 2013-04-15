@@ -31,9 +31,9 @@ void SetUpLight(Light* whichsource, int whichlight)
 
     //Initialize lights
     if (whichlight == 0) {
-        GLfloat LightAmbient[] =		{ whichsource->ambient[0], whichsource->ambient[1], whichsource->ambient[2], 1.0f};
-        GLfloat LightDiffuse[] =		{ whichsource->color[0], whichsource->color[1], whichsource->color[2], 1.0f };
-        GLfloat LightPosition[] =	{ whichsource->location.x, whichsource->location.y, whichsource->location.z, 0.0f };
+        GLfloat LightAmbient[] = { whichsource->ambient[0], whichsource->ambient[1], whichsource->ambient[2], 1.0f};
+        GLfloat LightDiffuse[] = { whichsource->color[0], whichsource->color[1], whichsource->color[2], 1.0f };
+        GLfloat LightPosition[] = { whichsource->location.x, whichsource->location.y, whichsource->location.z, 0.0f };
 
         //glLightfv(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, qattenuation);
         glLightfv(GL_LIGHT0, GL_POSITION, LightPosition);
@@ -63,9 +63,9 @@ void SetUpLight(Light* whichsource, int whichlight)
             break;
         }
 
-        GLfloat LightAmbient[] =		{ 0, 0, 0, 1.0f};
-        GLfloat LightDiffuse[] =		{ whichsource->color[0], whichsource->color[1], whichsource->color[2], 1.0f };
-        GLfloat LightPosition[] =	{ whichsource->location.x, whichsource->location.y, whichsource->location.z, 1.0f };
+        GLfloat LightAmbient[] = { 0, 0, 0, 1.0f};
+        GLfloat LightDiffuse[] = { whichsource->color[0], whichsource->color[1], whichsource->color[2], 1.0f };
+        GLfloat LightPosition[] = { whichsource->location.x, whichsource->location.y, whichsource->location.z, 1.0f };
 
         glLightfv(lightselect, GL_QUADRATIC_ATTENUATION, qattenuation);
         glLightfv(lightselect, GL_POSITION, LightPosition);
@@ -83,9 +83,9 @@ void SetUpMainLight(Light* whichsource, int whichlight, float ambientr, float am
     //Initialize lights
 
     if (whichlight == 0) {
-        GLfloat LightAmbient[] =		{ ambientr, ambientg, ambientb, 1.0f};
-        GLfloat LightDiffuse[] =		{ whichsource->color[0], whichsource->color[1], whichsource->color[2], 1.0f };
-        GLfloat LightPosition[] =	{ whichsource->location.x, whichsource->location.y, whichsource->location.z, 1.0f };
+        GLfloat LightAmbient[] = { ambientr, ambientg, ambientb, 1.0f};
+        GLfloat LightDiffuse[] = { whichsource->color[0], whichsource->color[1], whichsource->color[2], 1.0f };
+        GLfloat LightPosition[] = { whichsource->location.x, whichsource->location.y, whichsource->location.z, 1.0f };
 
         glLightfv(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, qattenuation);
         glLightfv(GL_LIGHT0, GL_POSITION, LightPosition);

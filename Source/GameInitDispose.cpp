@@ -229,9 +229,9 @@ void Game::LoadingScreen()
     AbsoluteTime currTime = UpTime ();
     double deltaTime = (float) AbsoluteDeltaToDuration (currTime, frametime);
 
-    if (0 > deltaTime)	// if negative microseconds
+    if (0 > deltaTime) // if negative microseconds
         deltaTime /= -1000000.0;
-    else				// else milliseconds
+    else // else milliseconds
         deltaTime /= 1000.0;
 
     multiplier = deltaTime;
@@ -240,7 +240,7 @@ void Game::LoadingScreen()
     if (multiplier > 10)
         multiplier = 10;
     if (multiplier > .05) {
-        frametime = currTime;	// reset for next time interval
+        frametime = currTime; // reset for next time interval
 
         glLoadIdentity();
         //Clear to black
@@ -262,17 +262,17 @@ void Game::LoadingScreen()
         loadscreentexture.bind();
         glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
         glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
-        glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
+        glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
         glDisable(GL_LIGHTING);
         glDepthMask(0);
-        glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-        glPushMatrix();										// Store The Projection Matrix
-        glLoadIdentity();									// Reset The Projection Matrix
-        glOrtho(0, screenwidth, 0, screenheight, -100, 100);						// Set Up An Ortho Screen
-        glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-        glPushMatrix();										// Store The Modelview Matrix
-        glLoadIdentity();								// Reset The Modelview Matrix
+        glMatrixMode(GL_PROJECTION);
+        glPushMatrix();
+        glLoadIdentity();
+        glOrtho(0, screenwidth, 0, screenheight, -100, 100);
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glLoadIdentity();
         glTranslatef(screenwidth / 2, screenheight / 2, 0);
         glScalef((float)screenwidth / 2, (float)screenheight / 2, 1);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -282,13 +282,13 @@ void Game::LoadingScreen()
         //glScalef(.25,.25,.25);
         glBegin(GL_QUADS);
         glTexCoord2f(.1 - loadprogress / 100, 0 + loadprogress / 100 + .3);
-        glVertex3f(-1,		-1,	 0.0f);
+        glVertex3f(-1, -1, 0.0f);
         glTexCoord2f(.1 - loadprogress / 100, 0 + loadprogress / 100 + .3);
-        glVertex3f(1,	-1,	 0.0f);
+        glVertex3f(1, -1, 0.0f);
         glTexCoord2f(.1 - loadprogress / 100, 1 + loadprogress / 100 + .3);
-        glVertex3f(1,	1, 0.0f);
+        glVertex3f(1, 1, 0.0f);
         glTexCoord2f(.1 - loadprogress / 100, 1 + loadprogress / 100 + .3);
-        glVertex3f(-1,	1, 0.0f);
+        glVertex3f(-1, 1, 0.0f);
         glEnd();
         glPopMatrix();
         glEnable(GL_BLEND);
@@ -296,20 +296,20 @@ void Game::LoadingScreen()
         //glScalef(.25,.25,.25);
         glBegin(GL_QUADS);
         glTexCoord2f(.4 + loadprogress / 100, 0 + loadprogress / 100);
-        glVertex3f(-1,		-1,	 0.0f);
+        glVertex3f(-1, -1, 0.0f);
         glTexCoord2f(.4 + loadprogress / 100, 0 + loadprogress / 100);
-        glVertex3f(1,	-1,	 0.0f);
+        glVertex3f(1, -1, 0.0f);
         glTexCoord2f(.4 + loadprogress / 100, 1 + loadprogress / 100);
-        glVertex3f(1,	1, 0.0f);
+        glVertex3f(1, 1, 0.0f);
         glTexCoord2f(.4 + loadprogress / 100, 1 + loadprogress / 100);
-        glVertex3f(-1,	1, 0.0f);
+        glVertex3f(-1, 1, 0.0f);
         glEnd();
         glPopMatrix();
         glDisable(GL_TEXTURE_2D);
-        glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-        glPopMatrix();										// Restore The Old Projection Matrix
-        glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-        glPopMatrix();										// Restore The Old Projection Matrix
+        glMatrixMode(GL_PROJECTION);
+        glPopMatrix();
+        glMatrixMode(GL_MODELVIEW);
+        glPopMatrix();
         glDisable(GL_BLEND);
         glDepthMask(1);
 
@@ -317,17 +317,17 @@ void Game::LoadingScreen()
         loadscreentexture.bind();
         glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
         glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
-        glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
+        glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
         glDisable(GL_LIGHTING);
         glDepthMask(0);
-        glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-        glPushMatrix();										// Store The Projection Matrix
-        glLoadIdentity();									// Reset The Projection Matrix
-        glOrtho(0, screenwidth, 0, screenheight, -100, 100);						// Set Up An Ortho Screen
-        glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-        glPushMatrix();										// Store The Modelview Matrix
-        glLoadIdentity();								// Reset The Modelview Matrix
+        glMatrixMode(GL_PROJECTION);
+        glPushMatrix();
+        glLoadIdentity();
+        glOrtho(0, screenwidth, 0, screenheight, -100, 100);
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glLoadIdentity();
         glTranslatef(screenwidth / 2, screenheight / 2, 0);
         glScalef((float)screenwidth / 2 * (1.5 - (loadprogress) / 200), (float)screenheight / 2 * (1.5 - (loadprogress) / 200), 1);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE);
@@ -338,20 +338,20 @@ void Game::LoadingScreen()
         //glScalef(.25,.25,.25);
         glBegin(GL_QUADS);
         glTexCoord2f(0 + .5, 0 + .5);
-        glVertex3f(-1,		-1,	 0.0f);
+        glVertex3f(-1, -1, 0.0f);
         glTexCoord2f(1 + .5, 0 + .5);
-        glVertex3f(1,	-1,	 0.0f);
+        glVertex3f(1, -1, 0.0f);
         glTexCoord2f(1 + .5, 1 + .5);
-        glVertex3f(1,	1, 0.0f);
+        glVertex3f(1, 1, 0.0f);
         glTexCoord2f(0 + .5, 1 + .5);
-        glVertex3f(-1,	1, 0.0f);
+        glVertex3f(-1, 1, 0.0f);
         glEnd();
         glPopMatrix();
         glDisable(GL_TEXTURE_2D);
-        glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-        glPopMatrix();										// Restore The Old Projection Matrix
-        glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-        glPopMatrix();										// Restore The Old Projection Matrix
+        glMatrixMode(GL_PROJECTION);
+        glPopMatrix();
+        glMatrixMode(GL_MODELVIEW);
+        glPopMatrix();
         glDisable(GL_BLEND);
         glDepthMask(1);
 
@@ -359,17 +359,17 @@ void Game::LoadingScreen()
         loadscreentexture.bind();
         glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
         glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
-        glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
+        glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
         glDisable(GL_LIGHTING);
         glDepthMask(0);
-        glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-        glPushMatrix();										// Store The Projection Matrix
-        glLoadIdentity();									// Reset The Projection Matrix
-        glOrtho(0, screenwidth, 0, screenheight, -100, 100);						// Set Up An Ortho Screen
-        glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-        glPushMatrix();										// Store The Modelview Matrix
-        glLoadIdentity();								// Reset The Modelview Matrix
+        glMatrixMode(GL_PROJECTION);
+        glPushMatrix();
+        glLoadIdentity();
+        glOrtho(0, screenwidth, 0, screenheight, -100, 100);
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glLoadIdentity();
         glTranslatef(screenwidth / 2, screenheight / 2, 0);
         glScalef((float)screenwidth / 2 * (100 + loadprogress) / 100, (float)screenheight / 2 * (100 + loadprogress) / 100, 1);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE);
@@ -379,20 +379,20 @@ void Game::LoadingScreen()
         //glScalef(.25,.25,.25);
         glBegin(GL_QUADS);
         glTexCoord2f(0 + .2, 0 + .8);
-        glVertex3f(-1,		-1,	 0.0f);
+        glVertex3f(-1, -1, 0.0f);
         glTexCoord2f(1 + .2, 0 + .8);
-        glVertex3f(1,	-1,	 0.0f);
+        glVertex3f(1, -1, 0.0f);
         glTexCoord2f(1 + .2, 1 + .8);
-        glVertex3f(1,	1, 0.0f);
+        glVertex3f(1, 1, 0.0f);
         glTexCoord2f(0 + .2, 1 + .8);
-        glVertex3f(-1,	1, 0.0f);
+        glVertex3f(-1, 1, 0.0f);
         glEnd();
         glPopMatrix();
         glDisable(GL_TEXTURE_2D);
-        glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-        glPopMatrix();										// Restore The Old Projection Matrix
-        glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-        glPopMatrix();										// Restore The Old Projection Matrix
+        glMatrixMode(GL_PROJECTION);
+        glPopMatrix();
+        glMatrixMode(GL_MODELVIEW);
+        glPopMatrix();
         glDisable(GL_BLEND);
         glDepthMask(1);
 
@@ -406,33 +406,33 @@ void Game::LoadingScreen()
             flashdelay--;
             if (flashamount < 0)
                 flashamount = 0;
-            glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
+            glDisable(GL_DEPTH_TEST);
             glDisable(GL_CULL_FACE);
             glDisable(GL_LIGHTING);
             glDisable(GL_TEXTURE_2D);
             glDepthMask(0);
-            glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-            glPushMatrix();										// Store The Projection Matrix
-            glLoadIdentity();									// Reset The Projection Matrix
-            glOrtho(0, screenwidth, 0, screenheight, -100, 100);						// Set Up An Ortho Screen
-            glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-            glPushMatrix();										// Store The Modelview Matrix
-            glLoadIdentity();								// Reset The Modelview Matrix
+            glMatrixMode(GL_PROJECTION);
+            glPushMatrix();
+            glLoadIdentity();
+            glOrtho(0, screenwidth, 0, screenheight, -100, 100);
+            glMatrixMode(GL_MODELVIEW);
+            glPushMatrix();
+            glLoadIdentity();
             glScalef(screenwidth, screenheight, 1);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glEnable(GL_BLEND);
             glColor4f(flashr, flashg, flashb, flashamount);
             glBegin(GL_QUADS);
-            glVertex3f(0,		0,	 0.0f);
-            glVertex3f(256,	0,	 0.0f);
-            glVertex3f(256,	256, 0.0f);
-            glVertex3f(0,	256, 0.0f);
+            glVertex3f(0, 0, 0.0f);
+            glVertex3f(256, 0, 0.0f);
+            glVertex3f(256, 256, 0.0f);
+            glVertex3f(0, 256, 0.0f);
             glEnd();
-            glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-            glPopMatrix();										// Restore The Old Projection Matrix
-            glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-            glPopMatrix();										// Restore The Old Projection Matrix
-            glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
+            glMatrixMode(GL_PROJECTION);
+            glPopMatrix();
+            glMatrixMode(GL_MODELVIEW);
+            glPopMatrix();
+            glEnable(GL_DEPTH_TEST);
             glEnable(GL_CULL_FACE);
             glDisable(GL_BLEND);
             glDepthMask(1);
@@ -462,17 +462,17 @@ void FadeLoadingScreen(float howmuch)
     //glBindTexture( GL_TEXTURE_2D, loadscreentexture);
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-    glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
+    glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
     glDisable(GL_LIGHTING);
     glDepthMask(0);
-    glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-    glPushMatrix();										// Store The Projection Matrix
-    glLoadIdentity();									// Reset The Projection Matrix
-    glOrtho(0, screenwidth, 0, screenheight, -100, 100);						// Set Up An Ortho Screen
-    glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-    glPushMatrix();										// Store The Modelview Matrix
-    glLoadIdentity();								// Reset The Modelview Matrix
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(0, screenwidth, 0, screenheight, -100, 100);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
     glTranslatef(screenwidth / 2, screenheight / 2, 0);
     glScalef((float)screenwidth / 2, (float)screenheight / 2, 1);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -482,20 +482,20 @@ void FadeLoadingScreen(float howmuch)
     //glScalef(.25,.25,.25);
     glBegin(GL_QUADS);
     glTexCoord2f(0, 0);
-    glVertex3f(-1,		-1,	 0.0f);
+    glVertex3f(-1, -1, 0.0f);
     glTexCoord2f(1, 0);
-    glVertex3f(1,	-1,	 0.0f);
+    glVertex3f(1, -1, 0.0f);
     glTexCoord2f(1, 1);
-    glVertex3f(1,	1, 0.0f);
+    glVertex3f(1, 1, 0.0f);
     glTexCoord2f(0, 1);
-    glVertex3f(-1,	1, 0.0f);
+    glVertex3f(-1, 1, 0.0f);
     glEnd();
     glPopMatrix();
     glDisable(GL_TEXTURE_2D);
-    glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-    glPopMatrix();										// Restore The Old Projection Matrix
-    glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-    glPopMatrix();										// Restore The Old Projection Matrix
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
     glDisable(GL_BLEND);
     glDepthMask(1);
     //Text
