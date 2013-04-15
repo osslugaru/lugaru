@@ -22,11 +22,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Skeleton.h"
 #include "Animation.h"
 
-struct animation_data_elt
-{
-  const char *filename;
-  int height;
-  int attack;
+struct animation_data_elt {
+    const char *filename;
+    int height;
+    int attack;
 };
 
 static animation_data_elt animation_data[animation_count] = {
@@ -37,9 +36,8 @@ static animation_data_elt animation_data[animation_count] = {
 
 void loadAllAnimations()
 {
-  for (int i = 0; i < loadable_anim_end; i++)
-    {
-      animation_data_elt *e = animation_data + i;
-      animation[i].Load(e->filename, e->height, e->attack);
+    for (int i = 0; i < loadable_anim_end; i++) {
+        animation_data_elt *e = animation_data + i;
+        animation[i].Load(e->filename, e->height, e->attack);
     }
 }

@@ -10,7 +10,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -34,15 +34,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Game.h"
 extern "C" {
-	#include "zlib.h"
-	#include "png.h"
-   #ifdef WIN32
-		#define INT32 INT32_jpeg
-		#include "jpeglib.h"
-		#undef INT32
-	#else
-		#include "jpeglib.h"
-	#endif
+#include "zlib.h"
+#include "png.h"
+#ifdef WIN32
+#define INT32 INT32_jpeg
+#include "jpeglib.h"
+#undef INT32
+#else
+#include "jpeglib.h"
+#endif
 }
 
 using namespace Game;
@@ -67,7 +67,8 @@ extern bool osx;
 extern bool freeze;
 extern bool stillloading;
 extern int mainmenu;
-/*extern*/ bool gameFocused;
+/*extern*/
+bool gameFocused;
 
 extern float slomospeed;
 extern float slomofreq;
@@ -128,8 +129,7 @@ void CleanUp (void);
 static bool lookup_glsym(const char *funcname, void **func)
 {
     *func = SDL_GL_GetProcAddress(funcname);
-    if (*func == NULL)
-    {
+    if (*func == NULL) {
         fprintf(stderr, "Failed to find OpenGL symbol \"%s\"\n", funcname);
         return false;
     }
@@ -139,10 +139,10 @@ static bool lookup_glsym(const char *funcname, void **func)
 static bool lookup_all_glsyms(void)
 {
     bool retval = true;
-    #define GL_FUNC(ret,fn,params,call,rt) \
+#define GL_FUNC(ret,fn,params,call,rt) \
         if (!lookup_glsym(#fn, (void **) &p##fn)) retval = false;
-    #include "glstubs.h"
-    #undef GL_FUNC
+#include "glstubs.h"
+#undef GL_FUNC
     return retval;
 }
 
@@ -170,8 +170,7 @@ static char **_argv = NULL;
 
 bool cmdline(const char *cmd)
 {
-    for (int i = 1; i < _argc; i++)
-    {
+    for (int i = 1; i < _argc; i++) {
         char *arg = _argv[i];
         while (*arg == '-')
             arg++;
@@ -186,95 +185,97 @@ bool cmdline(const char *cmd)
 
 // OpenGL Drawing
 
-void initGL(){
-	glClear( GL_COLOR_BUFFER_BIT );
-	swap_gl_buffers();
+void initGL()
+{
+    glClear( GL_COLOR_BUFFER_BIT );
+    swap_gl_buffers();
 
-	// clear all states
-	glDisable( GL_ALPHA_TEST);
-	glDisable( GL_BLEND);
-	glDisable( GL_DEPTH_TEST);
-	//	glDisable( GL_DITHER);
-	glDisable( GL_FOG);
-	glDisable( GL_LIGHTING);
-	glDisable( GL_LOGIC_OP);
-	glDisable( GL_TEXTURE_1D);
-	glDisable( GL_TEXTURE_2D);
-	glPixelTransferi( GL_MAP_COLOR, GL_FALSE);
-	glPixelTransferi( GL_RED_SCALE, 1);
-	glPixelTransferi( GL_RED_BIAS, 0);
-	glPixelTransferi( GL_GREEN_SCALE, 1);
-	glPixelTransferi( GL_GREEN_BIAS, 0);
-	glPixelTransferi( GL_BLUE_SCALE, 1);
-	glPixelTransferi( GL_BLUE_BIAS, 0);
-	glPixelTransferi( GL_ALPHA_SCALE, 1);
-	glPixelTransferi( GL_ALPHA_BIAS, 0);
+    // clear all states
+    glDisable( GL_ALPHA_TEST);
+    glDisable( GL_BLEND);
+    glDisable( GL_DEPTH_TEST);
+    //	glDisable( GL_DITHER);
+    glDisable( GL_FOG);
+    glDisable( GL_LIGHTING);
+    glDisable( GL_LOGIC_OP);
+    glDisable( GL_TEXTURE_1D);
+    glDisable( GL_TEXTURE_2D);
+    glPixelTransferi( GL_MAP_COLOR, GL_FALSE);
+    glPixelTransferi( GL_RED_SCALE, 1);
+    glPixelTransferi( GL_RED_BIAS, 0);
+    glPixelTransferi( GL_GREEN_SCALE, 1);
+    glPixelTransferi( GL_GREEN_BIAS, 0);
+    glPixelTransferi( GL_BLUE_SCALE, 1);
+    glPixelTransferi( GL_BLUE_BIAS, 0);
+    glPixelTransferi( GL_ALPHA_SCALE, 1);
+    glPixelTransferi( GL_ALPHA_BIAS, 0);
 
-	// set initial rendering states
-	glShadeModel( GL_SMOOTH);
-	glClearDepth( 1.0f);
-	glDepthFunc( GL_LEQUAL);
-	glDepthMask( GL_TRUE);
-	//	glDepthRange( FRONT_CLIP, BACK_CLIP);
-	glEnable( GL_DEPTH_TEST);
-	glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-	glCullFace( GL_FRONT);
-	glEnable( GL_CULL_FACE);
-	glEnable( GL_LIGHTING);
+    // set initial rendering states
+    glShadeModel( GL_SMOOTH);
+    glClearDepth( 1.0f);
+    glDepthFunc( GL_LEQUAL);
+    glDepthMask( GL_TRUE);
+    //	glDepthRange( FRONT_CLIP, BACK_CLIP);
+    glEnable( GL_DEPTH_TEST);
+    glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    glCullFace( GL_FRONT);
+    glEnable( GL_CULL_FACE);
+    glEnable( GL_LIGHTING);
 //	glEnable( GL_LIGHT_MODEL_AMBIENT);
-	glEnable( GL_DITHER);
-	glEnable( GL_COLOR_MATERIAL);
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glAlphaFunc( GL_GREATER, 0.5f);
+    glEnable( GL_DITHER);
+    glEnable( GL_COLOR_MATERIAL);
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glAlphaFunc( GL_GREATER, 0.5f);
 
-	if ( CanInitStereo(stereomode) ) {
-		InitStereo(stereomode);
-	} else {
-		fprintf(stderr, "Failed to initialize stereo, disabling.\n");
-		stereomode = stereoNone;
-	}
+    if ( CanInitStereo(stereomode) ) {
+        InitStereo(stereomode);
+    } else {
+        fprintf(stderr, "Failed to initialize stereo, disabling.\n");
+        stereomode = stereoNone;
+    }
 }
 
-static void toggleFullscreen(){
-	if(!SDL_WM_ToggleFullScreen(SDL_GetVideoSurface())){
-        SDL_Surface* screen=SDL_GetVideoSurface();
-        Uint32 flags=screen->flags;
-        screen=SDL_SetVideoMode(0,0,0,flags^SDL_FULLSCREEN);
-        if(!screen)
-            screen=SDL_SetVideoMode(0,0,0,flags);
-        if(!screen)
+static void toggleFullscreen()
+{
+    if (!SDL_WM_ToggleFullScreen(SDL_GetVideoSurface())) {
+        SDL_Surface* screen = SDL_GetVideoSurface();
+        Uint32 flags = screen->flags;
+        screen = SDL_SetVideoMode(0, 0, 0, flags ^ SDL_FULLSCREEN);
+        if (!screen)
+            screen = SDL_SetVideoMode(0, 0, 0, flags);
+        if (!screen)
             exit(1);
         //reload opengl state
         initGL();
         Texture::reloadAll();
-        if(text)
+        if (text)
             text->BuildFont();
-        if(firstload){
-            screentexture=0;
+        if (firstload) {
+            screentexture = 0;
             LoadScreenTexture();
         }
-        screentexture2=0;
+        screentexture2 = 0;
     }
 }
 
 static void sdlEventProc(const SDL_Event &e)
 {
-    switch(e.type) {
-        case SDL_MOUSEMOTION:
-            deltah += e.motion.xrel;
-            deltav += e.motion.yrel;
-            break;
+    switch (e.type) {
+    case SDL_MOUSEMOTION:
+        deltah += e.motion.xrel;
+        deltav += e.motion.yrel;
+        break;
 
-        case SDL_KEYDOWN:
-            if ((e.key.keysym.sym == SDLK_g) &&
-                                (e.key.keysym.mod & KMOD_CTRL) &&
-                                !(SDL_GetVideoSurface()->flags & SDL_FULLSCREEN) ) {
-                                SDL_WM_GrabInput( ((SDL_WM_GrabInput(SDL_GRAB_QUERY)==SDL_GRAB_ON) ? SDL_GRAB_OFF:SDL_GRAB_ON) );
-            } else if ( (e.key.keysym.sym == SDLK_RETURN) && (e.key.keysym.mod & KMOD_ALT) ) {
-                                toggleFullscreen();
-            }
-            break;
+    case SDL_KEYDOWN:
+        if ((e.key.keysym.sym == SDLK_g) &&
+                (e.key.keysym.mod & KMOD_CTRL) &&
+                !(SDL_GetVideoSurface()->flags & SDL_FULLSCREEN) ) {
+            SDL_WM_GrabInput( ((SDL_WM_GrabInput(SDL_GRAB_QUERY) == SDL_GRAB_ON) ? SDL_GRAB_OFF : SDL_GRAB_ON) );
+        } else if ( (e.key.keysym.sym == SDLK_RETURN) && (e.key.keysym.mod & KMOD_ALT) ) {
+            toggleFullscreen();
+        }
+        break;
     }
 }
 
@@ -286,78 +287,72 @@ static Point gMidPoint;
 
 Boolean SetUp ()
 {
-	char string[10];
+    char string[10];
 
-	LOGFUNC;
+    LOGFUNC;
 
-	osx = 0;
-	cellophane=0;
-	texdetail=4;
-	slomospeed=0.25;
-	slomofreq=8012;
-	numplayers=1;
-	
-	DefaultSettings();
+    osx = 0;
+    cellophane = 0;
+    texdetail = 4;
+    slomospeed = 0.25;
+    slomofreq = 8012;
+    numplayers = 1;
+
+    DefaultSettings();
 
     if (!SDL_WasInit(SDL_INIT_VIDEO))
-        if (SDL_Init(SDL_INIT_VIDEO) == -1)
-        {
+        if (SDL_Init(SDL_INIT_VIDEO) == -1) {
             fprintf(stderr, "SDL_Init() failed: %s\n", SDL_GetError());
             return false;
         }
-	if(!LoadSettings()) {
-		fprintf(stderr, "Failed to load config, creating default\n");
-		SaveSettings();
-	}
-	if(kBitsPerPixel!=32&&kBitsPerPixel!=16){
-		kBitsPerPixel=16;
-	}
+    if (!LoadSettings()) {
+        fprintf(stderr, "Failed to load config, creating default\n");
+        SaveSettings();
+    }
+    if (kBitsPerPixel != 32 && kBitsPerPixel != 16) {
+        kBitsPerPixel = 16;
+    }
 
-	if (SDL_GL_LoadLibrary(NULL) == -1)
-	{
-		fprintf(stderr, "SDL_GL_LoadLibrary() failed: %s\n", SDL_GetError());
-		SDL_Quit();
-		return false;
-	}
+    if (SDL_GL_LoadLibrary(NULL) == -1) {
+        fprintf(stderr, "SDL_GL_LoadLibrary() failed: %s\n", SDL_GetError());
+        SDL_Quit();
+        return false;
+    }
 
-	SDL_Rect **res = SDL_ListModes(NULL, SDL_FULLSCREEN|SDL_OPENGL);
-	if ( (res == NULL) || (res == ((SDL_Rect **)-1)) || (res[0] == NULL) || (res[0]->w < 640) || (res[0]->h < 480) )
-		res = hardcoded_resolutions;
+    SDL_Rect **res = SDL_ListModes(NULL, SDL_FULLSCREEN | SDL_OPENGL);
+    if ( (res == NULL) || (res == ((SDL_Rect **) - 1)) || (res[0] == NULL) || (res[0]->w < 640) || (res[0]->h < 480) )
+        res = hardcoded_resolutions;
 
-	// reverse list (it was sorted biggest to smallest by SDL)...
-	int count;
-	for (count = 0; res[count]; count++)
-	{
-		if ((res[count]->w < 640) || (res[count]->h < 480))
-			break;   // sane lower limit.
-	}
+    // reverse list (it was sorted biggest to smallest by SDL)...
+    int count;
+    for (count = 0; res[count]; count++) {
+        if ((res[count]->w < 640) || (res[count]->h < 480))
+            break;   // sane lower limit.
+    }
 
-	static SDL_Rect *resolutions_block = NULL;
-	resolutions_block = (SDL_Rect*) realloc(resolutions_block, sizeof (SDL_Rect) * count);
-	resolutions = (SDL_Rect**) realloc(resolutions, sizeof (SDL_Rect *) * (count + 1));
-	if ((resolutions_block == NULL) || (resolutions == NULL))
-	{
-		SDL_Quit();
-		fprintf(stderr, "Out of memory!\n");
-		return false;
-	}
+    static SDL_Rect *resolutions_block = NULL;
+    resolutions_block = (SDL_Rect*) realloc(resolutions_block, sizeof (SDL_Rect) * count);
+    resolutions = (SDL_Rect**) realloc(resolutions, sizeof (SDL_Rect *) * (count + 1));
+    if ((resolutions_block == NULL) || (resolutions == NULL)) {
+        SDL_Quit();
+        fprintf(stderr, "Out of memory!\n");
+        return false;
+    }
 
-	resolutions[count--] = NULL;
-	for (int i = 0; count >= 0; i++, count--)
-	{
-		memcpy(&resolutions_block[count], res[i], sizeof (SDL_Rect));
-		resolutions[count] = &resolutions_block[count];
-	}
+    resolutions[count--] = NULL;
+    for (int i = 0; count >= 0; i++, count--) {
+        memcpy(&resolutions_block[count], res[i], sizeof (SDL_Rect));
+        resolutions[count] = &resolutions_block[count];
+    }
 
-	if (cmdline("showresolutions"))
-	{
-		printf("Resolutions we think are okay:\n");
-		for (int i = 0; resolutions[i]; i++)
-			printf("  %d x %d\n", (int) resolutions[i]->w, (int) resolutions[i]->h);
-	}
+    if (cmdline("showresolutions")) {
+        printf("Resolutions we think are okay:\n");
+        for (int i = 0; resolutions[i]; i++)
+            printf("  %d x %d\n", (int) resolutions[i]->w, (int) resolutions[i]->h);
+    }
 
     Uint32 sdlflags = SDL_OPENGL;
-    
+
     if (!cmdline("windowed"))
         sdlflags |= SDL_FULLSCREEN;
 
@@ -370,20 +365,17 @@ Boolean SetUp ()
 #if SDL_VERSION_ATLEAST(1, 2, 10)
     SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, vblsync);
 #endif
-    
-    if (SDL_SetVideoMode(kContextWidth, kContextHeight, 0, sdlflags) == NULL)
-    {
+
+    if (SDL_SetVideoMode(kContextWidth, kContextHeight, 0, sdlflags) == NULL) {
         fprintf(stderr, "SDL_SetVideoMode() failed: %s\n", SDL_GetError());
         fprintf(stderr, "forcing 640x480...\n");
         kContextWidth = 640;
         kContextHeight = 480;
-        if (SDL_SetVideoMode(kContextWidth, kContextHeight, 0, sdlflags) == NULL)
-        {
+        if (SDL_SetVideoMode(kContextWidth, kContextHeight, 0, sdlflags) == NULL) {
             fprintf(stderr, "SDL_SetVideoMode() failed: %s\n", SDL_GetError());
             fprintf(stderr, "forcing 640x480 windowed mode...\n");
             sdlflags &= ~SDL_FULLSCREEN;
-            if (SDL_SetVideoMode(kContextWidth, kContextHeight, 0, sdlflags) == NULL)
-            {
+            if (SDL_SetVideoMode(kContextWidth, kContextHeight, 0, sdlflags) == NULL) {
                 fprintf(stderr, "SDL_SetVideoMode() failed: %s\n", SDL_GetError());
                 return false;
             }
@@ -391,15 +383,13 @@ Boolean SetUp ()
     }
 
     int dblbuf = 0;
-    if ((SDL_GL_GetAttribute(SDL_GL_DOUBLEBUFFER, &dblbuf) == -1) || (!dblbuf))
-    {
+    if ((SDL_GL_GetAttribute(SDL_GL_DOUBLEBUFFER, &dblbuf) == -1) || (!dblbuf)) {
         fprintf(stderr, "Failed to get double buffered GL context!\n");
         SDL_Quit();
         return false;
     }
 
-    if (!lookup_all_glsyms())
-    {
+    if (!lookup_all_glsyms()) {
         SDL_Quit();
         return false;
     }
@@ -410,32 +400,31 @@ Boolean SetUp ()
 
     initGL();
 
-	GLint width = kContextWidth;
-	GLint height = kContextHeight;
-	gMidPoint.h = width / 2;
-	gMidPoint.v = height / 2;
-	screenwidth=width;
-	screenheight=height;
+    GLint width = kContextWidth;
+    GLint height = kContextHeight;
+    gMidPoint.h = width / 2;
+    gMidPoint.v = height / 2;
+    screenwidth = width;
+    screenheight = height;
 
-	newdetail=detail;
-	newscreenwidth=screenwidth;
-	newscreenheight=screenheight;
+    newdetail = detail;
+    newscreenwidth = screenwidth;
+    newscreenheight = screenheight;
 
-	InitGame();
+    InitGame();
 
-	return true;
+    return true;
 }
 
 
 static void DoMouse()
 {
 
-	if(mainmenu|| ( (abs(deltah)<10*realmultiplier*1000) && (abs(deltav)<10*realmultiplier*1000) ))
-	{
-		deltah *= usermousesensitivity;
-		deltav *= usermousesensitivity;
-		mousecoordh += deltah;
-		mousecoordv += deltav;
+    if (mainmenu || ( (abs(deltah) < 10 * realmultiplier * 1000) && (abs(deltav) < 10 * realmultiplier * 1000) )) {
+        deltah *= usermousesensitivity;
+        deltav *= usermousesensitivity;
+        mousecoordh += deltah;
+        mousecoordv += deltav;
         if (mousecoordh < 0)
             mousecoordh = 0;
         else if (mousecoordh >= kContextWidth)
@@ -444,121 +433,119 @@ static void DoMouse()
             mousecoordv = 0;
         else if (mousecoordv >= kContextHeight)
             mousecoordv = kContextHeight - 1;
-	}
+    }
 
 }
 
 void DoFrameRate (int update)
-{	
-	static long frames = 0;
+{
+    static long frames = 0;
 
-	static AbsoluteTime time = {0,0};
-	static AbsoluteTime frametime = {0,0};
-	AbsoluteTime currTime = UpTime ();
-	double deltaTime = (float) AbsoluteDeltaToDuration (currTime, frametime);
+    static AbsoluteTime time = {0, 0};
+    static AbsoluteTime frametime = {0, 0};
+    AbsoluteTime currTime = UpTime ();
+    double deltaTime = (float) AbsoluteDeltaToDuration (currTime, frametime);
 
-	if (0 > deltaTime)	// if negative microseconds
-		deltaTime /= -1000000.0;
-	else				// else milliseconds
-		deltaTime /= 1000.0;
+    if (0 > deltaTime)	// if negative microseconds
+        deltaTime /= -1000000.0;
+    else				// else milliseconds
+        deltaTime /= 1000.0;
 
-	multiplier=deltaTime;
-	if(multiplier<.001) multiplier=.001;
-	if(multiplier>10) multiplier=10;
-	if(update) frametime = currTime;	// reset for next time interval
+    multiplier = deltaTime;
+    if (multiplier < .001) multiplier = .001;
+    if (multiplier > 10) multiplier = 10;
+    if (update) frametime = currTime;	// reset for next time interval
 
-	deltaTime = (float) AbsoluteDeltaToDuration (currTime, time);
+    deltaTime = (float) AbsoluteDeltaToDuration (currTime, time);
 
-	if (0 > deltaTime)	// if negative microseconds
-		deltaTime /= -1000000.0;
-	else				// else milliseconds
-		deltaTime /= 1000.0;
-	frames++;
-	if (0.001 <= deltaTime)	// has update interval passed
-	{
-		if(update){
-			time = currTime;	// reset for next time interval
-			frames = 0;
-		}
-	}
+    if (0 > deltaTime)	// if negative microseconds
+        deltaTime /= -1000000.0;
+    else				// else milliseconds
+        deltaTime /= 1000.0;
+    frames++;
+    if (0.001 <= deltaTime) {	// has update interval passed
+        if (update) {
+            time = currTime;	// reset for next time interval
+            frames = 0;
+        }
+    }
 }
 
 
 void DoUpdate ()
 {
-	static float sps=200;
-	static int count;
-	static float oldmult;
+    static float sps = 200;
+    static int count;
+    static float oldmult;
 
-	DoFrameRate(1);
-	if(multiplier>.6)multiplier=.6;
+    DoFrameRate(1);
+    if (multiplier > .6)multiplier = .6;
 
-	fps=1/multiplier;
+    fps = 1 / multiplier;
 
-	count = multiplier*sps;
-	if(count<2)count=2;
+    count = multiplier * sps;
+    if (count < 2)count = 2;
 
-	realmultiplier=multiplier;
-	multiplier*=gamespeed;
-	if(difficulty==1)multiplier*=.9;
-	if(difficulty==0)multiplier*=.8;
+    realmultiplier = multiplier;
+    multiplier *= gamespeed;
+    if (difficulty == 1)multiplier *= .9;
+    if (difficulty == 0)multiplier *= .8;
 
-	if(loading==4)multiplier*=.00001;
-	if(slomo&&!mainmenu)multiplier*=slomospeed;
-	oldmult=multiplier;
-	multiplier/=(float)count;
+    if (loading == 4)multiplier *= .00001;
+    if (slomo && !mainmenu)multiplier *= slomospeed;
+    oldmult = multiplier;
+    multiplier /= (float)count;
 
-	DoMouse();
+    DoMouse();
 
-	TickOnce();
+    TickOnce();
 
-	for(int i=0;i<count;i++)
-	{
-		Tick();
-	}
-	multiplier=oldmult;
+    for (int i = 0; i < count; i++) {
+        Tick();
+    }
+    multiplier = oldmult;
 
-	TickOnceAfter();
-/* - Debug code to test how many channels were active on average per frame
-	static long frames = 0;
+    TickOnceAfter();
+    /* - Debug code to test how many channels were active on average per frame
+    	static long frames = 0;
 
-	static AbsoluteTime start = {0,0};
-	AbsoluteTime currTime = UpTime ();
-	static int num_channels = 0;
-	
-	num_channels += OPENAL_GetChannelsPlaying();
-	double deltaTime = (float) AbsoluteDeltaToDuration (currTime, start);
+    	static AbsoluteTime start = {0,0};
+    	AbsoluteTime currTime = UpTime ();
+    	static int num_channels = 0;
 
-	if (0 > deltaTime)	// if negative microseconds
-		deltaTime /= -1000000.0;
-	else				// else milliseconds
-		deltaTime /= 1000.0;
+    	num_channels += OPENAL_GetChannelsPlaying();
+    	double deltaTime = (float) AbsoluteDeltaToDuration (currTime, start);
 
-	++frames;
+    	if (0 > deltaTime)	// if negative microseconds
+    		deltaTime /= -1000000.0;
+    	else				// else milliseconds
+    		deltaTime /= 1000.0;
 
-	if (deltaTime >= 1)
-	{
-		start = currTime;
-		float avg_channels = (float)num_channels / (float)frames;
+    	++frames;
 
-		ofstream opstream("log.txt",ios::app); 
-		opstream << "Average frame count: ";
-		opstream << frames;
-		opstream << " frames - ";
-		opstream << avg_channels;
-		opstream << " per frame.\n";
-		opstream.close();
+    	if (deltaTime >= 1)
+    	{
+    		start = currTime;
+    		float avg_channels = (float)num_channels / (float)frames;
 
-		frames = 0;
-		num_channels = 0;
-	}
-*/
-	if ( stereomode == stereoNone ) {
-		DrawGLScene(stereoCenter);
-	} else {
-		DrawGLScene(stereoLeft);
-		DrawGLScene(stereoRight);
-	}
+    		ofstream opstream("log.txt",ios::app);
+    		opstream << "Average frame count: ";
+    		opstream << frames;
+    		opstream << " frames - ";
+    		opstream << avg_channels;
+    		opstream << " per frame.\n";
+    		opstream.close();
+
+    		frames = 0;
+    		num_channels = 0;
+    	}
+    */
+    if ( stereomode == stereoNone ) {
+        DrawGLScene(stereoCenter);
+    } else {
+        DrawGLScene(stereoLeft);
+        DrawGLScene(stereoRight);
+    }
 }
 
 // --------------------------------------------------------------------------
@@ -566,12 +553,12 @@ void DoUpdate ()
 
 void CleanUp (void)
 {
-	LOGFUNC;
+    LOGFUNC;
 
     SDL_Quit();
-    #define GL_FUNC(ret,fn,params,call,rt) p##fn = NULL;
-    #include "glstubs.h"
-    #undef GL_FUNC
+#define GL_FUNC(ret,fn,params,call,rt) p##fn = NULL;
+#include "glstubs.h"
+#undef GL_FUNC
     // cheat here...static destructors are calling glDeleteTexture() after
     //  the context is destroyed and libGL unloaded by SDL_Quit().
     pglDeleteTextures = glDeleteTextures_doNothing;
@@ -596,19 +583,16 @@ static char *findBinaryInPath(const char *bin, char *envr)
     char *start = envr;
     char *ptr;
 
-    do
-    {
+    do {
         size_t size;
         ptr = strchr(start, ':');  /* find next $PATH separator. */
         if (ptr)
             *ptr = '\0';
 
         size = strlen(start) + strlen(bin) + 2;
-        if (size > alloc_size)
-        {
+        if (size > alloc_size) {
             char *x = (char *) realloc(exe, size);
-            if (x == NULL)
-            {
+            if (x == NULL) {
                 if (exe != NULL)
                     free(exe);
                 return(NULL);
@@ -624,8 +608,7 @@ static char *findBinaryInPath(const char *bin, char *envr)
             strcat(exe, "/");
         strcat(exe, bin);
 
-        if (access(exe, X_OK) == 0)  /* Exists as executable? We're done. */
-        {
+        if (access(exe, X_OK) == 0) { /* Exists as executable? We're done. */
             strcpy(exe, start);  /* i'm lazy. piss off. */
             return(exe);
         } /* if */
@@ -647,8 +630,7 @@ char *calcBaseDir(const char *argv0)
     char *envr;
 
     const char *ptr = strrchr((char *)argv0, '/');
-    if (strchr(argv0, '/'))
-    {
+    if (strchr(argv0, '/')) {
         retval = strdup(argv0);
         if (retval)
             *((char *) strrchr(retval, '/')) = '\0';
@@ -667,21 +649,19 @@ char *calcBaseDir(const char *argv0)
 static inline void chdirToAppPath(const char *argv0)
 {
     char *dir = calcBaseDir(argv0);
-    if (dir)
-    {
-        #if (defined(__APPLE__) && defined(__MACH__))
+    if (dir) {
+#if (defined(__APPLE__) && defined(__MACH__))
         // Chop off /Contents/MacOS if it's at the end of the string, so we
         //  land in the base of the app bundle.
         const size_t len = strlen(dir);
         const char *bundledirs = "/Contents/MacOS";
         const size_t bundledirslen = strlen(bundledirs);
-        if (len > bundledirslen)
-        {
+        if (len > bundledirslen) {
             char *ptr = (dir + len) - bundledirslen;
             if (strcasecmp(ptr, bundledirs) == 0)
                 *ptr = '\0';
         }
-        #endif
+#endif
         chdir(dir);
         free(dir);
     }
@@ -701,89 +681,79 @@ int main(int argc, char **argv)
     chdirToAppPath(argv[0]);
 #endif
 
-	LOGFUNC;
+    LOGFUNC;
 
-	try
-	{
-		{
-			newGame();
+    try {
+        {
+            newGame();
 
-			//ofstream os("error.txt");
-			//os.close();
-			//ofstream os("log.txt");
-			//os.close();
+            //ofstream os("error.txt");
+            //os.close();
+            //ofstream os("log.txt");
+            //os.close();
 
-			if (!SetUp ())
+            if (!SetUp ())
                 return 42;
 
-			while (!gDone&&!tryquit)
-			{
-					if (IsFocused())
-					{
-							gameFocused = true;
+            while (!gDone && !tryquit) {
+                if (IsFocused()) {
+                    gameFocused = true;
 
-							// check windows messages
-			
-							deltah = 0;
-							deltav = 0;
-							SDL_Event e;
-							if(!waiting) {
-									// message pump
-									while( SDL_PollEvent( &e ) )
-									{
-											if( e.type == SDL_QUIT )
-											{
-													gDone=true;
-													break;
-											}
-											sdlEventProc(e);
-									}
-							}
+                    // check windows messages
 
-							// game
-							DoUpdate();
-					}
-					else
-					{
-							if (gameFocused)
-							{
-									// allow game chance to pause
-									gameFocused = false;
-									DoUpdate();
-							}
+                    deltah = 0;
+                    deltav = 0;
+                    SDL_Event e;
+                    if (!waiting) {
+                        // message pump
+                        while ( SDL_PollEvent( &e ) ) {
+                            if ( e.type == SDL_QUIT ) {
+                                gDone = true;
+                                break;
+                            }
+                            sdlEventProc(e);
+                        }
+                    }
 
-							// game is not in focus, give CPU time to other apps by waiting for messages instead of 'peeking'
-							SDL_ActiveEvent evt;
-							SDL_WaitEvent((SDL_Event*)&evt);
-							if (evt.type == SDL_ACTIVEEVENT && evt.gain == 1)
-									gameFocused = true;
-							else if (evt.type == SDL_QUIT)
-									gDone = true;
-					}
-			}
+                    // game
+                    DoUpdate();
+                } else {
+                    if (gameFocused) {
+                        // allow game chance to pause
+                        gameFocused = false;
+                        DoUpdate();
+                    }
+
+                    // game is not in focus, give CPU time to other apps by waiting for messages instead of 'peeking'
+                    SDL_ActiveEvent evt;
+                    SDL_WaitEvent((SDL_Event*)&evt);
+                    if (evt.type == SDL_ACTIVEEVENT && evt.gain == 1)
+                        gameFocused = true;
+                    else if (evt.type == SDL_QUIT)
+                        gDone = true;
+                }
+            }
 
             deleteGame();
-		}
+        }
 
-		CleanUp ();
+        CleanUp ();
 
-		return 0;
-	}
-	catch (const std::exception& error)
-	{
-		CleanUp();
+        return 0;
+    } catch (const std::exception& error) {
+        CleanUp();
 
-		std::string e = "Caught exception: ";
-		e += error.what();
+        std::string e = "Caught exception: ";
+        e += error.what();
 
-		LOG(e);
+        LOG(e);
 
-		MessageBox(g_windowHandle, error.what(), "ERROR", MB_OK | MB_ICONEXCLAMATION);
-	}
+        MessageBox(g_windowHandle, error.what(), "ERROR", MB_OK | MB_ICONEXCLAMATION);
+    }
 
-	CleanUp();
+    CleanUp();
 
-	return -1;
+    return -1;
 }
 
 
@@ -793,15 +763,15 @@ int main(int argc, char **argv)
 
 bool LoadImage(const char * fname, TGAImageRec & tex)
 {
-	if ( tex.data == NULL )
-		return false;
-	else
-		return load_image(fname, tex);
+    if ( tex.data == NULL )
+        return false;
+    else
+        return load_image(fname, tex);
 }
 
 void ScreenShot(const char * fname)
 {
-	
+
 }
 
 
@@ -809,11 +779,10 @@ void ScreenShot(const char * fname)
 static bool load_image(const char *file_name, TGAImageRec &tex)
 {
     const char *ptr = strrchr((char *)file_name, '.');
-    if (ptr)
-    {
-        if (strcasecmp(ptr+1, "png") == 0)
+    if (ptr) {
+        if (strcasecmp(ptr + 1, "png") == 0)
             return load_png(file_name, tex);
-        else if (strcasecmp(ptr+1, "jpg") == 0)
+        else if (strcasecmp(ptr + 1, "jpg") == 0)
             return load_jpg(file_name, tex);
     }
 
@@ -823,16 +792,16 @@ static bool load_image(const char *file_name, TGAImageRec &tex)
 
 
 struct my_error_mgr {
-  struct jpeg_error_mgr pub;	/* "public" fields */
-  jmp_buf setjmp_buffer;	/* for return to caller */
+    struct jpeg_error_mgr pub;	/* "public" fields */
+    jmp_buf setjmp_buffer;	/* for return to caller */
 };
 typedef struct my_error_mgr * my_error_ptr;
 
 
 static void my_error_exit(j_common_ptr cinfo)
 {
-	struct my_error_mgr *err = (struct my_error_mgr *)cinfo->err;
-	longjmp(err->setjmp_buffer, 1);
+    struct my_error_mgr *err = (struct my_error_mgr *)cinfo->err;
+    longjmp(err->setjmp_buffer, 1);
 }
 
 /* stolen from public domain example.c code in libjpg distribution. */
@@ -871,7 +840,7 @@ static bool load_jpg(const char *file_name, TGAImageRec &tex)
 
     while (cinfo.output_scanline < cinfo.output_height) {
         buffer[0] = (JSAMPROW)(char *)tex.data +
-                        ((cinfo.output_height-1) - cinfo.output_scanline) * row_stride;
+                    ((cinfo.output_height - 1) - cinfo.output_scanline) * row_stride;
         (void) jpeg_read_scanlines(&cinfo, buffer, 1);
     }
 
@@ -897,9 +866,9 @@ static bool load_png(const char *file_name, TGAImageRec &tex)
     FILE *fp = fopen(file_name, "rb");
 
     if (fp == NULL) {
-		cerr << file_name << " not found" << endl;
+        cerr << file_name << " not found" << endl;
         return(NULL);
-	}
+    }
 
     png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
     if (png_ptr == NULL)
@@ -933,14 +902,11 @@ static bool load_png(const char *file_name, TGAImageRec &tex)
     if (!row_pointers)
         goto png_done;
 
-    if (!hasalpha)
-    {
+    if (!hasalpha) {
         png_byte *dst = tex.data;
-        for (int i = height-1; i >= 0; i--)
-        {
+        for (int i = height - 1; i >= 0; i--) {
             png_byte *src = row_pointers[i];
-            for (int j = 0; j < width; j++)
-            {
+            for (int j = 0; j < width; j++) {
                 dst[0] = src[0];
                 dst[1] = src[1];
                 dst[2] = src[2];
@@ -951,11 +917,10 @@ static bool load_png(const char *file_name, TGAImageRec &tex)
         }
     }
 
-    else
-    {
+    else {
         png_byte *dst = tex.data;
         int pitch = width * 4;
-        for (int i = height-1; i >= 0; i--, dst += pitch)
+        for (int i = height - 1; i >= 0; i--, dst += pitch)
             memcpy(dst, row_pointers[i], pitch);
     }
 
@@ -963,11 +928,11 @@ static bool load_png(const char *file_name, TGAImageRec &tex)
     tex.sizeY = height;
     tex.bpp = 32;
     retval = true;
-    
+
 png_done:
-	if(!retval) {
-		cerr << "There was a problem loading " << file_name << endl;
-	}
+    if (!retval) {
+        cerr << "There was a problem loading " << file_name << endl;
+    }
     png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
     if (fp)
         fclose(fp);
@@ -978,9 +943,8 @@ png_done:
 bool save_image(const char *file_name)
 {
     const char *ptr = strrchr((char *)file_name, '.');
-    if (ptr)
-    {
-        if (strcasecmp(ptr+1, "png") == 0)
+    if (ptr) {
+        if (strcasecmp(ptr + 1, "png") == 0)
             return save_png(file_name);
     }
 
@@ -1012,7 +976,7 @@ static bool save_png(const char *file_name)
         goto save_png_done;
 
     for (int i = 0; i < kContextHeight; i++)
-        row_pointers[i] = screenshot + ((kContextWidth * ((kContextHeight-1) - i)) * 3);
+        row_pointers[i] = screenshot + ((kContextWidth * ((kContextHeight - 1) - i)) * 3);
 
     png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
     if (png_ptr == NULL)
@@ -1039,9 +1003,9 @@ static bool save_png(const char *file_name)
     if (setjmp(png_jmpbuf(png_ptr)))
         goto save_png_done;
 
-	png_write_image(png_ptr, row_pointers);
+    png_write_image(png_ptr, row_pointers);
 
-	if (setjmp(png_jmpbuf(png_ptr)))
+    if (setjmp(png_jmpbuf(png_ptr)))
         goto save_png_done;
 
     png_write_end(png_ptr, NULL);

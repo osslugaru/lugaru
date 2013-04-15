@@ -10,7 +10,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -31,25 +31,26 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "TGALoader.h"
 #include "Texture.h"
 
-class Text{
+class Text
+{
 public:
-	Texture FontTexture;
-	GLuint base;
+    Texture FontTexture;
+    GLuint base;
 
-	void LoadFontTexture(const char *fileName);
-	void BuildFont();
-	void glPrint(float x, float y, const char *string, int set, float size, float width, float height);
-	void glPrintOutline(float x, float y, const char *string, int set, float size, float width, float height);
-	void glPrint(float x, float y, const char *string, int set, float size, float width, float height,int start,int end);
-	void glPrintOutline(float x, float y, const char *string, int set, float size, float width, float height,int start,int end);
-	void glPrintOutlined(float x, float y, const char *string, int set, float size, float width, float height);
-	void glPrintOutlined(float r, float g, float b, float x, float y, const char *string, int set, float size, float width, float height);
+    void LoadFontTexture(const char *fileName);
+    void BuildFont();
+    void glPrint(float x, float y, const char *string, int set, float size, float width, float height);
+    void glPrintOutline(float x, float y, const char *string, int set, float size, float width, float height);
+    void glPrint(float x, float y, const char *string, int set, float size, float width, float height, int start, int end);
+    void glPrintOutline(float x, float y, const char *string, int set, float size, float width, float height, int start, int end);
+    void glPrintOutlined(float x, float y, const char *string, int set, float size, float width, float height);
+    void glPrintOutlined(float r, float g, float b, float x, float y, const char *string, int set, float size, float width, float height);
 
-	Text();
-	~Text();
+    Text();
+    ~Text();
 
 private:
-	void _glPrint(float x, float y, const char *string, int set, float size, float width, float height, int start, int end, int offset);
+    void _glPrint(float x, float y, const char *string, int set, float size, float width, float height, int start, int end, int offset);
 };
 
 #endif

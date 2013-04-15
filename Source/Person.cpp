@@ -87,9 +87,18 @@ Person player[maxplayers];
 
 /* convenience functions
  */
-Joint& Person::joint(int bodypart) { return skeleton.joints[skeleton.jointlabels[bodypart]]; }
-XYZ& Person::jointPos(int bodypart) { return joint(bodypart).position; }
-XYZ& Person::jointVel(int bodypart) { return joint(bodypart).velocity; }
+Joint& Person::joint(int bodypart)
+{
+    return skeleton.joints[skeleton.jointlabels[bodypart]];
+}
+XYZ& Person::jointPos(int bodypart)
+{
+    return joint(bodypart).position;
+}
+XYZ& Person::jointVel(int bodypart)
+{
+    return joint(bodypart).velocity;
+}
 
 /* EFFECT
  *
@@ -510,7 +519,7 @@ void Person::DoBloodBig(float howmuch, int which)
         if (creature == rabbittype)
             for (i = 0; i < 512; i++) {
                 for (j = 0; j < 512; j++) {
-                    if (bloodText[i*512*3 + j*3 + 0] <= which + 4 && bloodText[i*512*3 + j*3 + 0] >= which - 4) {
+                    if (bloodText[i * 512 * 3 + j * 3 + 0] <= which + 4 && bloodText[i * 512 * 3 + j * 3 + 0] >= which - 4) {
                         if (i < startx) startx = i;
                         if (j < starty) starty = j;
                         if (i > endx) endx = i;
@@ -521,7 +530,7 @@ void Person::DoBloodBig(float howmuch, int which)
         if (creature == wolftype)
             for (i = 0; i < 512; i++) {
                 for (j = 0; j < 512; j++) {
-                    if (wolfbloodText[i*512*3 + j*3 + 0] <= which + 4 && wolfbloodText[i*512*3 + j*3 + 0] >= which - 4) {
+                    if (wolfbloodText[i * 512 * 3 + j * 3 + 0] <= which + 4 && wolfbloodText[i * 512 * 3 + j * 3 + 0] >= which - 4) {
                         if (i < startx) startx = i;
                         if (j < starty) starty = j;
                         if (i > endx) endx = i;
@@ -5876,7 +5885,8 @@ void Person::DoStuff()
 /* EFFECT
  * inverse kinematics helper function
  */
-void IKHelper(Person *p, float interp){
+void IKHelper(Person *p, float interp)
+{
     XYZ point, newpoint, change, change2;
     float heightleft, heightright;
 
@@ -5979,9 +5989,9 @@ int Person::DrawSkeleton()
             if (!isSleeping() && !isSitting()) {
                 // TODO: give these meaningful names
                 const bool cond1 = (isIdle() || isCrouch() || isLanding() || isLandhard()
-                        || animTarget == drawrightanim || animTarget == drawleftanim || animTarget == crouchdrawrightanim);
+                                    || animTarget == drawrightanim || animTarget == drawleftanim || animTarget == crouchdrawrightanim);
                 const bool cond2 = (wasIdle() || wasCrouch() || wasLanding() || wasLandhard()
-                        || animCurrent == drawrightanim || animCurrent == drawleftanim || animCurrent == crouchdrawrightanim);
+                                    || animCurrent == drawrightanim || animCurrent == drawleftanim || animCurrent == crouchdrawrightanim);
 
                 if (onterrain && (cond1 && cond2) && !skeleton.free) {
                     IKHelper(this, 1);
@@ -6087,21 +6097,21 @@ int Person::DrawSkeleton()
                             glMatrixMode(GL_MODELVIEW);
                             glPushMatrix();
                             if (p1 == abdomen || p2 == abdomen)
-                                glTranslatef((v0.x * (1-morphness) + v1.x * morphness) * proportionbody.x,
-                                             (v0.y * (1-morphness) + v1.y * morphness) * proportionbody.y,
-                                             (v0.z * (1-morphness) + v1.z * morphness) * proportionbody.z);
+                                glTranslatef((v0.x * (1 - morphness) + v1.x * morphness) * proportionbody.x,
+                                             (v0.y * (1 - morphness) + v1.y * morphness) * proportionbody.y,
+                                             (v0.z * (1 - morphness) + v1.z * morphness) * proportionbody.z);
                             if (p1 == lefthand || p1 == righthand || p1 == leftwrist || p1 == rightwrist || p1 == leftelbow || p1 == rightelbow || p2 == leftelbow || p2 == rightelbow)
-                                glTranslatef((v0.x * (1-morphness) + v1.x * morphness) * proportionarms.x,
-                                             (v0.y * (1-morphness) + v1.y * morphness) * proportionarms.y,
-                                             (v0.z * (1-morphness) + v1.z * morphness) * proportionarms.z);
+                                glTranslatef((v0.x * (1 - morphness) + v1.x * morphness) * proportionarms.x,
+                                             (v0.y * (1 - morphness) + v1.y * morphness) * proportionarms.y,
+                                             (v0.z * (1 - morphness) + v1.z * morphness) * proportionarms.z);
                             if (p1 == leftfoot || p1 == rightfoot || p1 == leftankle || p1 == rightankle || p1 == leftknee || p1 == rightknee || p2 == leftknee || p2 == rightknee)
-                                glTranslatef((v0.x * (1-morphness) + v1.x * morphness) * proportionlegs.x,
-                                             (v0.y * (1-morphness) + v1.y * morphness) * proportionlegs.y,
-                                             (v0.z * (1-morphness) + v1.z * morphness) * proportionlegs.z);
+                                glTranslatef((v0.x * (1 - morphness) + v1.x * morphness) * proportionlegs.x,
+                                             (v0.y * (1 - morphness) + v1.y * morphness) * proportionlegs.y,
+                                             (v0.z * (1 - morphness) + v1.z * morphness) * proportionlegs.z);
                             if (p1 == head || p2 == head)
-                                glTranslatef((v0.x * (1-morphness) + v1.x * morphness) * proportionhead.x,
-                                             (v0.y * (1-morphness) + v1.y * morphness) * proportionhead.y,
-                                             (v0.z * (1-morphness) + v1.z * morphness) * proportionhead.z);
+                                glTranslatef((v0.x * (1 - morphness) + v1.x * morphness) * proportionhead.x,
+                                             (v0.y * (1 - morphness) + v1.y * morphness) * proportionhead.y,
+                                             (v0.z * (1 - morphness) + v1.z * morphness) * proportionhead.z);
                             glGetFloatv(GL_MODELVIEW_MATRIX, M);
                             //if(!isnormal(M[12])||!isnormal(M[13])||!isnormal(M[14]))test=0;
                             //if(!isnormal(scale))test=1;
@@ -6640,16 +6650,16 @@ int Person::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate,
                         intersecting = 1;
                     if (!intersecting)
                         intersecting = sphere_line_intersection(&model->vertex[model->Triangles[j].vertex[0]],
-                                                         &model->vertex[model->Triangles[j].vertex[1]],
-                                                         p1, &radius);
+                                                                &model->vertex[model->Triangles[j].vertex[1]],
+                                                                p1, &radius);
                     if (!intersecting)
                         intersecting = sphere_line_intersection(&model->vertex[model->Triangles[j].vertex[1]],
-                                                         &model->vertex[model->Triangles[j].vertex[2]],
-                                                         p1, &radius);
+                                                                &model->vertex[model->Triangles[j].vertex[2]],
+                                                                p1, &radius);
                     if (!intersecting)
                         intersecting = sphere_line_intersection(&model->vertex[model->Triangles[j].vertex[0]],
-                                                         &model->vertex[model->Triangles[j].vertex[2]],
-                                                         p1, &radius);
+                                                                &model->vertex[model->Triangles[j].vertex[2]],
+                                                                p1, &radius);
                     end = *p1 - point;
                     if (dotproduct(&model->facenormals[j], &end) > 0 && intersecting) {
                         start = *p1;
@@ -6707,21 +6717,21 @@ int Person::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate,
                 XYZ &v1 = model->vertex[model->Triangles[j].vertex[1]];
                 XYZ &v2 = model->vertex[model->Triangles[j].vertex[2]];
                 distance = abs((model->facenormals[j].x * start.x)
-                        + (model->facenormals[j].y * start.y)
-                        + (model->facenormals[j].z * start.z)
-                        - ((model->facenormals[j].x * v0.x)
-                            + (model->facenormals[j].y * v0.y)
-                            + (model->facenormals[j].z * v0.z)));
+                               + (model->facenormals[j].y * start.y)
+                               + (model->facenormals[j].z * start.z)
+                               - ((model->facenormals[j].x * v0.x)
+                                  + (model->facenormals[j].y * v0.y)
+                                  + (model->facenormals[j].z * v0.z)));
                 if (distance < radius * .5) {
                     point = start - model->facenormals[j] * distance;
                     if (PointInTriangle( &point, model->facenormals[j], &v0, &v1, &v2))
                         intersecting = 1;
                     if (!intersecting)
-                        intersecting = sphere_line_intersection(v0.x,v0.y,v0.z, v1.x,v1.y,v1.z, p1->x, p1->y, p1->z, radius / 2);
+                        intersecting = sphere_line_intersection(v0.x, v0.y, v0.z, v1.x, v1.y, v1.z, p1->x, p1->y, p1->z, radius / 2);
                     if (!intersecting)
-                        intersecting = sphere_line_intersection(v1.x,v1.y,v1.z, v2.x,v2.y,v2.z, p1->x, p1->y, p1->z, radius / 2);
+                        intersecting = sphere_line_intersection(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z, p1->x, p1->y, p1->z, radius / 2);
                     if (!intersecting)
-                        intersecting = sphere_line_intersection(v0.x,v0.y,v0.z, v2.x,v2.y,v2.z, p1->x, p1->y, p1->z, radius / 2);
+                        intersecting = sphere_line_intersection(v0.x, v0.y, v0.z, v2.x, v2.y, v2.z, p1->x, p1->y, p1->z, radius / 2);
                     end = *p1 - point;
                     if (dotproduct(&model->facenormals[j], &end) > 0 && intersecting) {
                         if ((animTarget == jumpdownanim || animTarget == jumpupanim || isFlip())) {

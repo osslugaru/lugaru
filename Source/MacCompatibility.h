@@ -10,7 +10,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -55,10 +55,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 typedef bool Boolean;
 
 
-struct Point
-{
-	short v;
-	short h;
+struct Point {
+    short v;
+    short h;
 };
 
 typedef signed char SInt8;
@@ -72,35 +71,33 @@ void CopyCStringToPascal( const char* src, unsigned char dst[256]);
 void CopyPascalStringToC( const unsigned char* src, char* dst);
 
 
-typedef struct AbsoluteTime
-{
-	unsigned long   hi;
-	unsigned long   lo;
-} AbsoluteTime; 
+typedef struct AbsoluteTime {
+    unsigned long   hi;
+    unsigned long   lo;
+} AbsoluteTime;
 
 AbsoluteTime UpTime();		// NOTE: returns time since app started, not system start
 
-typedef long Duration; 
+typedef long Duration;
 
-enum
-{
-	durationMicrosecond             = -1,
-	durationMillisecond             = 1,
-	durationSecond                  = 1000,
-	durationMinute                  = 1000 * 60,
-	durationHour                    = 1000 * 60 * 60,
-	durationDay                     = 1000 * 60 * 60 * 24,
-	durationForever                 = 0x7FFFFFFF,
-	durationImmediate               = 0,
-}; 
+enum {
+    durationMicrosecond             = -1,
+    durationMillisecond             = 1,
+    durationSecond                  = 1000,
+    durationMinute                  = 1000 * 60,
+    durationHour                    = 1000 * 60 * 60,
+    durationDay                     = 1000 * 60 * 60 * 24,
+    durationForever                 = 0x7FFFFFFF,
+    durationImmediate               = 0,
+};
 
 Duration AbsoluteDeltaToDuration( AbsoluteTime& a, AbsoluteTime& b);
 
 #ifdef _MSC_VER
 inline bool isnormal( double x)
 {
-	int ret = _fpclass( x);
-	return (ret == _FPCLASS_NN || ret == _FPCLASS_PN);
+    int ret = _fpclass( x);
+    return (ret == _FPCLASS_NN || ret == _FPCLASS_PN);
 }
 #else
 #include <stdint.h>

@@ -24,7 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Animation.h"
 #include "Texture.h"
 
-extern float screenwidth,screenheight;
+extern float screenwidth, screenheight;
 extern float viewdistance;
 extern XYZ viewer;
 extern XYZ lightlocation;
@@ -43,8 +43,8 @@ extern float volume;
 extern Objects objects;
 extern int detail;
 extern bool cellophane;
-extern GLubyte bloodText[512*512*3];
-extern GLubyte wolfbloodText[512*512*3];
+extern GLubyte bloodText[512 * 512 * 3];
+extern GLubyte wolfbloodText[512 * 512 * 3];
 extern bool ismotionblur;
 extern bool trilinear;
 extern bool osx;
@@ -60,12 +60,12 @@ extern short vRefNum;
 extern long dirID;
 extern int mainmenu;
 extern bool visibleloading;
-extern float flashamount,flashr,flashg,flashb;
+extern float flashamount, flashr, flashg, flashb;
 extern int flashdelay;
 extern int whichjointstartarray[26];
 extern int whichjointendarray[26];
 extern int difficulty;
-extern float tintr,tintg,tintb;
+extern float tintr, tintg, tintb;
 extern float slomospeed;
 extern bool gamestarted;
 
@@ -99,47 +99,47 @@ void LOG(const std::string &fmt, ...)
 
 void Dispose()
 {
-	LOGFUNC;
+    LOGFUNC;
 
-	if(Game::endgame==2){
+    if (Game::endgame == 2) {
         Game::accountactive->endGame();
-        Game::endgame=0;
-	}
+        Game::endgame = 0;
+    }
 
-	Account::saveFile(":Data:Users", Game::accountactive);
+    Account::saveFile(":Data:Users", Game::accountactive);
 
-	//textures.clear();
+    //textures.clear();
 
-	LOG("Shutting down sound system...");
+    LOG("Shutting down sound system...");
 
-	OPENAL_StopSound(OPENAL_ALL);
+    OPENAL_StopSound(OPENAL_ALL);
 
 // this is causing problems on Linux, but we'll force an _exit() a little
 //  later in the shutdown process.  --ryan.
 #if !PLATFORM_LINUX
 
-	for (int i=0; i < sounds_count; ++i)
-	{
-		OPENAL_Sample_Free(samp[i]);
-	}
+    for (int i = 0; i < sounds_count; ++i) {
+        OPENAL_Sample_Free(samp[i]);
+    }
 
-	OPENAL_Close();
-	if (texture.data)
-	{
-		free(texture.data);
-	}
-	texture.data = 0;
+    OPENAL_Close();
+    if (texture.data) {
+        free(texture.data);
+    }
+    texture.data = 0;
 #endif
 }
 
-void Game::newGame(){
+void Game::newGame()
+{
     text = new Text();
     skybox = new SkyBox();
 }
 
-void Game::deleteGame(){
-    if(skybox) delete skybox;
-    if(text) delete text;
+void Game::deleteGame()
+{
+    if (skybox) delete skybox;
+    if (text) delete text;
     terraintexture.destroy();
     terraintexture2.destroy();
     cursortexture.destroy();
@@ -149,54 +149,54 @@ void Game::deleteGame(){
     hawktexture.destroy();
     loadscreentexture.destroy();
 
-    for(int i=0;i<10;i++)
+    for (int i = 0; i < 10; i++)
         Mainmenuitems[i].destroy();
 
-    glDeleteTextures(1,&screentexture);
-    glDeleteTextures(1,&screentexture2);
+    glDeleteTextures(1, &screentexture);
+    glDeleteTextures(1, &screentexture2);
 
     Dispose();
 }
 
 
 
-void LoadSave(const char *fileName, GLuint *textureid,bool mipmap,GLubyte *array, int *skinsize)
+void LoadSave(const char *fileName, GLuint *textureid, bool mipmap, GLubyte *array, int *skinsize)
 {
-	int i;
-	int bytesPerPixel;
+    int i;
+    int bytesPerPixel;
 
-	LOGFUNC;
+    LOGFUNC;
 
-	LOG(std::string("Loading (S)...") + fileName);
+    LOG(std::string("Loading (S)...") + fileName);
 
-	//Load Image
-	float temptexdetail=texdetail;
-	texdetail=1;
-	//upload_image( fileName );
-	//LoadTGA( fileName );
+    //Load Image
+    float temptexdetail = texdetail;
+    texdetail = 1;
+    //upload_image( fileName );
+    //LoadTGA( fileName );
 
-	// Converting file to something os specific
-	char * fixedFN = ConvertFileName(fileName);
+    // Converting file to something os specific
+    char * fixedFN = ConvertFileName(fileName);
 
-	//Load Image
-	unsigned char fileNamep[256];
-	CopyCStringToPascal(fixedFN, fileNamep);
-	//Load Image
-	upload_image( fileNamep ,0);
-	texdetail=temptexdetail;
+    //Load Image
+    unsigned char fileNamep[256];
+    CopyCStringToPascal(fixedFN, fileNamep);
+    //Load Image
+    upload_image( fileNamep , 0);
+    texdetail = temptexdetail;
 
-	//Is it valid?
-	if(1==1){
-		bytesPerPixel=texture.bpp/8;
+    //Is it valid?
+    if (1 == 1) {
+        bytesPerPixel = texture.bpp / 8;
 
-		int tempnum=0;
-		for(i=0;i<(int)(texture.sizeY*texture.sizeX*bytesPerPixel);i++){
-			if((i+1)%4||bytesPerPixel==3){
-				array[tempnum]=texture.data[i];
-				tempnum++;
-			}
-		}
-	}
+        int tempnum = 0;
+        for (i = 0; i < (int)(texture.sizeY * texture.sizeX * bytesPerPixel); i++) {
+            if ((i + 1) % 4 || bytesPerPixel == 3) {
+                array[tempnum] = texture.data[i];
+                tempnum++;
+            }
+        }
+    }
 }
 
 
@@ -204,439 +204,438 @@ void LoadSave(const char *fileName, GLuint *textureid,bool mipmap,GLubyte *array
 //***************> ResizeGLScene() <******/
 GLvoid Game::ReSizeGLScene(float fov, float pnear)
 {
-	if (screenheight==0)
-	{
-		screenheight=1;
-	}
+    if (screenheight == 0) {
+        screenheight = 1;
+    }
 
-	glViewport(0,0,screenwidth,screenheight);
+    glViewport(0, 0, screenwidth, screenheight);
 
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
 
-	gluPerspective(fov,(GLfloat)screenwidth/(GLfloat)screenheight,pnear,viewdistance);
+    gluPerspective(fov, (GLfloat)screenwidth / (GLfloat)screenheight, pnear, viewdistance);
 
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 }
 
 void Game::LoadingScreen()
 {
-	static float loadprogress;
-	static AbsoluteTime time = {0,0};
-	static AbsoluteTime frametime = {0,0};
-	AbsoluteTime currTime = UpTime ();
-	double deltaTime = (float) AbsoluteDeltaToDuration (currTime, frametime);
+    static float loadprogress;
+    static AbsoluteTime time = {0, 0};
+    static AbsoluteTime frametime = {0, 0};
+    AbsoluteTime currTime = UpTime ();
+    double deltaTime = (float) AbsoluteDeltaToDuration (currTime, frametime);
 
-	if (0 > deltaTime)	// if negative microseconds
-		deltaTime /= -1000000.0;
-	else				// else milliseconds
-		deltaTime /= 1000.0;
+    if (0 > deltaTime)	// if negative microseconds
+        deltaTime /= -1000000.0;
+    else				// else milliseconds
+        deltaTime /= 1000.0;
 
-	multiplier=deltaTime;
-	if(multiplier<.001)multiplier=.001;
-	if(multiplier>10)multiplier=10;
-	if(multiplier>.05){
-		frametime = currTime;	// reset for next time interval
+    multiplier = deltaTime;
+    if (multiplier < .001)multiplier = .001;
+    if (multiplier > 10)multiplier = 10;
+    if (multiplier > .05) {
+        frametime = currTime;	// reset for next time interval
 
-		glLoadIdentity();
-		//Clear to black
-		glClearColor(0,0,0,1);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glLoadIdentity();
+        //Clear to black
+        glClearColor(0, 0, 0, 1);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-		loadtime+=multiplier*4;
+        loadtime += multiplier * 4;
 
-		loadprogress=loadtime;
-		if(loadprogress>100)loadprogress=100;
+        loadprogress = loadtime;
+        if (loadprogress > 100)loadprogress = 100;
 
-		//loadprogress=abs(Random()%100);
+        //loadprogress=abs(Random()%100);
 
-		//Background
+        //Background
 
-		glEnable(GL_TEXTURE_2D);
+        glEnable(GL_TEXTURE_2D);
         loadscreentexture.bind();
-		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
-		glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
-		glDisable(GL_CULL_FACE);
-		glDisable(GL_LIGHTING);
-		glDepthMask(0);
-		glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-		glPushMatrix();										// Store The Projection Matrix
-		glLoadIdentity();									// Reset The Projection Matrix
-		glOrtho(0,screenwidth,0,screenheight,-100,100);						// Set Up An Ortho Screen
-		glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-		glPushMatrix();										// Store The Modelview Matrix
-		glLoadIdentity();								// Reset The Modelview Matrix
-		glTranslatef(screenwidth/2,screenheight/2,0);
-		glScalef((float)screenwidth/2,(float)screenheight/2,1);
-		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-		glDisable(GL_BLEND);
-		glColor4f(loadprogress/100,loadprogress/100,loadprogress/100,1);
-		glPushMatrix();
-		//glScalef(.25,.25,.25);
-		glBegin(GL_QUADS);
-		glTexCoord2f(.1-loadprogress/100,0+loadprogress/100+.3);
-		glVertex3f(-1,		-1,	 0.0f);
-		glTexCoord2f(.1-loadprogress/100,0+loadprogress/100+.3);
-		glVertex3f(1,	-1,	 0.0f);
-		glTexCoord2f(.1-loadprogress/100,1+loadprogress/100+.3);
-		glVertex3f(1,	1, 0.0f);
-		glTexCoord2f(.1-loadprogress/100,1+loadprogress/100+.3);
-		glVertex3f(-1,	1, 0.0f);
-		glEnd();
-		glPopMatrix();
-		glEnable(GL_BLEND);
-		glPushMatrix();
-		//glScalef(.25,.25,.25);
-		glBegin(GL_QUADS);
-		glTexCoord2f(.4+loadprogress/100,0+loadprogress/100);
-		glVertex3f(-1,		-1,	 0.0f);
-		glTexCoord2f(.4+loadprogress/100,0+loadprogress/100);
-		glVertex3f(1,	-1,	 0.0f);
-		glTexCoord2f(.4+loadprogress/100,1+loadprogress/100);
-		glVertex3f(1,	1, 0.0f);
-		glTexCoord2f(.4+loadprogress/100,1+loadprogress/100);
-		glVertex3f(-1,	1, 0.0f);
-		glEnd();
-		glPopMatrix();
-		glDisable(GL_TEXTURE_2D);
-		glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-		glPopMatrix();										// Restore The Old Projection Matrix
-		glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-		glPopMatrix();										// Restore The Old Projection Matrix
-		glDisable(GL_BLEND);
-		glDepthMask(1);
+        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+        glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
+        glDisable(GL_CULL_FACE);
+        glDisable(GL_LIGHTING);
+        glDepthMask(0);
+        glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+        glPushMatrix();										// Store The Projection Matrix
+        glLoadIdentity();									// Reset The Projection Matrix
+        glOrtho(0, screenwidth, 0, screenheight, -100, 100);						// Set Up An Ortho Screen
+        glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+        glPushMatrix();										// Store The Modelview Matrix
+        glLoadIdentity();								// Reset The Modelview Matrix
+        glTranslatef(screenwidth / 2, screenheight / 2, 0);
+        glScalef((float)screenwidth / 2, (float)screenheight / 2, 1);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glDisable(GL_BLEND);
+        glColor4f(loadprogress / 100, loadprogress / 100, loadprogress / 100, 1);
+        glPushMatrix();
+        //glScalef(.25,.25,.25);
+        glBegin(GL_QUADS);
+        glTexCoord2f(.1 - loadprogress / 100, 0 + loadprogress / 100 + .3);
+        glVertex3f(-1,		-1,	 0.0f);
+        glTexCoord2f(.1 - loadprogress / 100, 0 + loadprogress / 100 + .3);
+        glVertex3f(1,	-1,	 0.0f);
+        glTexCoord2f(.1 - loadprogress / 100, 1 + loadprogress / 100 + .3);
+        glVertex3f(1,	1, 0.0f);
+        glTexCoord2f(.1 - loadprogress / 100, 1 + loadprogress / 100 + .3);
+        glVertex3f(-1,	1, 0.0f);
+        glEnd();
+        glPopMatrix();
+        glEnable(GL_BLEND);
+        glPushMatrix();
+        //glScalef(.25,.25,.25);
+        glBegin(GL_QUADS);
+        glTexCoord2f(.4 + loadprogress / 100, 0 + loadprogress / 100);
+        glVertex3f(-1,		-1,	 0.0f);
+        glTexCoord2f(.4 + loadprogress / 100, 0 + loadprogress / 100);
+        glVertex3f(1,	-1,	 0.0f);
+        glTexCoord2f(.4 + loadprogress / 100, 1 + loadprogress / 100);
+        glVertex3f(1,	1, 0.0f);
+        glTexCoord2f(.4 + loadprogress / 100, 1 + loadprogress / 100);
+        glVertex3f(-1,	1, 0.0f);
+        glEnd();
+        glPopMatrix();
+        glDisable(GL_TEXTURE_2D);
+        glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+        glPopMatrix();										// Restore The Old Projection Matrix
+        glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+        glPopMatrix();										// Restore The Old Projection Matrix
+        glDisable(GL_BLEND);
+        glDepthMask(1);
 
-		glEnable(GL_TEXTURE_2D);
+        glEnable(GL_TEXTURE_2D);
         loadscreentexture.bind();
-		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
-		glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
-		glDisable(GL_CULL_FACE);
-		glDisable(GL_LIGHTING);
-		glDepthMask(0);
-		glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-		glPushMatrix();										// Store The Projection Matrix
-		glLoadIdentity();									// Reset The Projection Matrix
-		glOrtho(0,screenwidth,0,screenheight,-100,100);						// Set Up An Ortho Screen
-		glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-		glPushMatrix();										// Store The Modelview Matrix
-		glLoadIdentity();								// Reset The Modelview Matrix
-		glTranslatef(screenwidth/2,screenheight/2,0);
-		glScalef((float)screenwidth/2*(1.5-(loadprogress)/200),(float)screenheight/2*(1.5-(loadprogress)/200),1);
-		glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-		glEnable(GL_BLEND);
-		//glColor4f(loadprogress/100,loadprogress/100,loadprogress/100,1);
-		glColor4f(loadprogress/100,loadprogress/100,loadprogress/100,1);
-		glPushMatrix();
-		//glScalef(.25,.25,.25);
-		glBegin(GL_QUADS);
-		glTexCoord2f(0+.5,0+.5);
-		glVertex3f(-1,		-1,	 0.0f);
-		glTexCoord2f(1+.5,0+.5);
-		glVertex3f(1,	-1,	 0.0f);
-		glTexCoord2f(1+.5,1+.5);
-		glVertex3f(1,	1, 0.0f);
-		glTexCoord2f(0+.5,1+.5);
-		glVertex3f(-1,	1, 0.0f);
-		glEnd();
-		glPopMatrix();
-		glDisable(GL_TEXTURE_2D);
-		glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-		glPopMatrix();										// Restore The Old Projection Matrix
-		glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-		glPopMatrix();										// Restore The Old Projection Matrix
-		glDisable(GL_BLEND);
-		glDepthMask(1);
+        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+        glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
+        glDisable(GL_CULL_FACE);
+        glDisable(GL_LIGHTING);
+        glDepthMask(0);
+        glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+        glPushMatrix();										// Store The Projection Matrix
+        glLoadIdentity();									// Reset The Projection Matrix
+        glOrtho(0, screenwidth, 0, screenheight, -100, 100);						// Set Up An Ortho Screen
+        glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+        glPushMatrix();										// Store The Modelview Matrix
+        glLoadIdentity();								// Reset The Modelview Matrix
+        glTranslatef(screenwidth / 2, screenheight / 2, 0);
+        glScalef((float)screenwidth / 2 * (1.5 - (loadprogress) / 200), (float)screenheight / 2 * (1.5 - (loadprogress) / 200), 1);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+        glEnable(GL_BLEND);
+        //glColor4f(loadprogress/100,loadprogress/100,loadprogress/100,1);
+        glColor4f(loadprogress / 100, loadprogress / 100, loadprogress / 100, 1);
+        glPushMatrix();
+        //glScalef(.25,.25,.25);
+        glBegin(GL_QUADS);
+        glTexCoord2f(0 + .5, 0 + .5);
+        glVertex3f(-1,		-1,	 0.0f);
+        glTexCoord2f(1 + .5, 0 + .5);
+        glVertex3f(1,	-1,	 0.0f);
+        glTexCoord2f(1 + .5, 1 + .5);
+        glVertex3f(1,	1, 0.0f);
+        glTexCoord2f(0 + .5, 1 + .5);
+        glVertex3f(-1,	1, 0.0f);
+        glEnd();
+        glPopMatrix();
+        glDisable(GL_TEXTURE_2D);
+        glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+        glPopMatrix();										// Restore The Old Projection Matrix
+        glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+        glPopMatrix();										// Restore The Old Projection Matrix
+        glDisable(GL_BLEND);
+        glDepthMask(1);
 
-		glEnable(GL_TEXTURE_2D);
+        glEnable(GL_TEXTURE_2D);
         loadscreentexture.bind();
-		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
-		glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
-		glDisable(GL_CULL_FACE);
-		glDisable(GL_LIGHTING);
-		glDepthMask(0);
-		glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-		glPushMatrix();										// Store The Projection Matrix
-		glLoadIdentity();									// Reset The Projection Matrix
-		glOrtho(0,screenwidth,0,screenheight,-100,100);						// Set Up An Ortho Screen
-		glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-		glPushMatrix();										// Store The Modelview Matrix
-		glLoadIdentity();								// Reset The Modelview Matrix
-		glTranslatef(screenwidth/2,screenheight/2,0);
-		glScalef((float)screenwidth/2*(100+loadprogress)/100,(float)screenheight/2*(100+loadprogress)/100,1);
-		glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-		glEnable(GL_BLEND);
-		glColor4f(loadprogress/100,loadprogress/100,loadprogress/100,.4);
-		glPushMatrix();
-		//glScalef(.25,.25,.25);
-		glBegin(GL_QUADS);
-		glTexCoord2f(0+.2,0+.8);
-		glVertex3f(-1,		-1,	 0.0f);
-		glTexCoord2f(1+.2,0+.8);
-		glVertex3f(1,	-1,	 0.0f);
-		glTexCoord2f(1+.2,1+.8);
-		glVertex3f(1,	1, 0.0f);
-		glTexCoord2f(0+.2,1+.8);
-		glVertex3f(-1,	1, 0.0f);
-		glEnd();
-		glPopMatrix();
-		glDisable(GL_TEXTURE_2D);
-		glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-		glPopMatrix();										// Restore The Old Projection Matrix
-		glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-		glPopMatrix();										// Restore The Old Projection Matrix
-		glDisable(GL_BLEND);
-		glDepthMask(1);
+        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+        glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
+        glDisable(GL_CULL_FACE);
+        glDisable(GL_LIGHTING);
+        glDepthMask(0);
+        glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+        glPushMatrix();										// Store The Projection Matrix
+        glLoadIdentity();									// Reset The Projection Matrix
+        glOrtho(0, screenwidth, 0, screenheight, -100, 100);						// Set Up An Ortho Screen
+        glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+        glPushMatrix();										// Store The Modelview Matrix
+        glLoadIdentity();								// Reset The Modelview Matrix
+        glTranslatef(screenwidth / 2, screenheight / 2, 0);
+        glScalef((float)screenwidth / 2 * (100 + loadprogress) / 100, (float)screenheight / 2 * (100 + loadprogress) / 100, 1);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+        glEnable(GL_BLEND);
+        glColor4f(loadprogress / 100, loadprogress / 100, loadprogress / 100, .4);
+        glPushMatrix();
+        //glScalef(.25,.25,.25);
+        glBegin(GL_QUADS);
+        glTexCoord2f(0 + .2, 0 + .8);
+        glVertex3f(-1,		-1,	 0.0f);
+        glTexCoord2f(1 + .2, 0 + .8);
+        glVertex3f(1,	-1,	 0.0f);
+        glTexCoord2f(1 + .2, 1 + .8);
+        glVertex3f(1,	1, 0.0f);
+        glTexCoord2f(0 + .2, 1 + .8);
+        glVertex3f(-1,	1, 0.0f);
+        glEnd();
+        glPopMatrix();
+        glDisable(GL_TEXTURE_2D);
+        glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+        glPopMatrix();										// Restore The Old Projection Matrix
+        glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+        glPopMatrix();										// Restore The Old Projection Matrix
+        glDisable(GL_BLEND);
+        glDepthMask(1);
 
-		//Text
+        //Text
 
-		if(flashamount>0){
-			if(flashamount>1)flashamount=1;
-			if(flashdelay<=0)flashamount-=multiplier;
-			flashdelay--;
-			if(flashamount<0)flashamount=0;
-			glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
-			glDisable(GL_CULL_FACE);
-			glDisable(GL_LIGHTING);
-			glDisable(GL_TEXTURE_2D);
-			glDepthMask(0);
-			glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-			glPushMatrix();										// Store The Projection Matrix
-			glLoadIdentity();									// Reset The Projection Matrix
-			glOrtho(0,screenwidth,0,screenheight,-100,100);						// Set Up An Ortho Screen
-			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-			glPushMatrix();										// Store The Modelview Matrix
-			glLoadIdentity();								// Reset The Modelview Matrix
-			glScalef(screenwidth,screenheight,1);
-			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-			glEnable(GL_BLEND);
-			glColor4f(flashr,flashg,flashb,flashamount);
-			glBegin(GL_QUADS);
-			glVertex3f(0,		0,	 0.0f);
-			glVertex3f(256,	0,	 0.0f);
-			glVertex3f(256,	256, 0.0f);
-			glVertex3f(0,	256, 0.0f);
-			glEnd();
-			glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-			glPopMatrix();										// Restore The Old Projection Matrix
-			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-			glPopMatrix();										// Restore The Old Projection Matrix
-			glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
-			glEnable(GL_CULL_FACE);
-			glDisable(GL_BLEND);
-			glDepthMask(1);
-		}
+        if (flashamount > 0) {
+            if (flashamount > 1)flashamount = 1;
+            if (flashdelay <= 0)flashamount -= multiplier;
+            flashdelay--;
+            if (flashamount < 0)flashamount = 0;
+            glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
+            glDisable(GL_CULL_FACE);
+            glDisable(GL_LIGHTING);
+            glDisable(GL_TEXTURE_2D);
+            glDepthMask(0);
+            glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+            glPushMatrix();										// Store The Projection Matrix
+            glLoadIdentity();									// Reset The Projection Matrix
+            glOrtho(0, screenwidth, 0, screenheight, -100, 100);						// Set Up An Ortho Screen
+            glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+            glPushMatrix();										// Store The Modelview Matrix
+            glLoadIdentity();								// Reset The Modelview Matrix
+            glScalef(screenwidth, screenheight, 1);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glEnable(GL_BLEND);
+            glColor4f(flashr, flashg, flashb, flashamount);
+            glBegin(GL_QUADS);
+            glVertex3f(0,		0,	 0.0f);
+            glVertex3f(256,	0,	 0.0f);
+            glVertex3f(256,	256, 0.0f);
+            glVertex3f(0,	256, 0.0f);
+            glEnd();
+            glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+            glPopMatrix();										// Restore The Old Projection Matrix
+            glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+            glPopMatrix();										// Restore The Old Projection Matrix
+            glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
+            glEnable(GL_CULL_FACE);
+            glDisable(GL_BLEND);
+            glDepthMask(1);
+        }
 
-		swap_gl_buffers();
-	}
+        swap_gl_buffers();
+    }
 }
 
 void FadeLoadingScreen(float howmuch)
 {
-	static float loadprogress;
+    static float loadprogress;
 
-	glLoadIdentity();
-	//Clear to black
-	glClearColor(0,0,0,1);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glLoadIdentity();
+    //Clear to black
+    glClearColor(0, 0, 0, 1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	loadprogress=howmuch;
+    loadprogress = howmuch;
 
-	//loadprogress=abs(Random()%100);
+    //loadprogress=abs(Random()%100);
 
-	//Background
+    //Background
 
-	//glEnable(GL_TEXTURE_2D);
-	glDisable(GL_TEXTURE_2D);
-	//glBindTexture( GL_TEXTURE_2D, loadscreentexture);
-	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-	glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
-	glDisable(GL_CULL_FACE);
-	glDisable(GL_LIGHTING);
-	glDepthMask(0);
-	glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-	glPushMatrix();										// Store The Projection Matrix
-	glLoadIdentity();									// Reset The Projection Matrix
-	glOrtho(0,screenwidth,0,screenheight,-100,100);						// Set Up An Ortho Screen
-	glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-	glPushMatrix();										// Store The Modelview Matrix
-	glLoadIdentity();								// Reset The Modelview Matrix
-	glTranslatef(screenwidth/2,screenheight/2,0);
-	glScalef((float)screenwidth/2,(float)screenheight/2,1);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	glDisable(GL_BLEND);
-	glColor4f(loadprogress/100,0,0,1);
-	glPushMatrix();
-	//glScalef(.25,.25,.25);
-	glBegin(GL_QUADS);
-	glTexCoord2f(0,0);
-	glVertex3f(-1,		-1,	 0.0f);
-	glTexCoord2f(1,0);
-	glVertex3f(1,	-1,	 0.0f);
-	glTexCoord2f(1,1);
-	glVertex3f(1,	1, 0.0f);
-	glTexCoord2f(0,1);
-	glVertex3f(-1,	1, 0.0f);
-	glEnd();
-	glPopMatrix();
-	glDisable(GL_TEXTURE_2D);
-	glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-	glPopMatrix();										// Restore The Old Projection Matrix
-	glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-	glPopMatrix();										// Restore The Old Projection Matrix
-	glDisable(GL_BLEND);
-	glDepthMask(1);
-	//Text
-	swap_gl_buffers();
+    //glEnable(GL_TEXTURE_2D);
+    glDisable(GL_TEXTURE_2D);
+    //glBindTexture( GL_TEXTURE_2D, loadscreentexture);
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+    glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
+    glDisable(GL_CULL_FACE);
+    glDisable(GL_LIGHTING);
+    glDepthMask(0);
+    glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+    glPushMatrix();										// Store The Projection Matrix
+    glLoadIdentity();									// Reset The Projection Matrix
+    glOrtho(0, screenwidth, 0, screenheight, -100, 100);						// Set Up An Ortho Screen
+    glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+    glPushMatrix();										// Store The Modelview Matrix
+    glLoadIdentity();								// Reset The Modelview Matrix
+    glTranslatef(screenwidth / 2, screenheight / 2, 0);
+    glScalef((float)screenwidth / 2, (float)screenheight / 2, 1);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDisable(GL_BLEND);
+    glColor4f(loadprogress / 100, 0, 0, 1);
+    glPushMatrix();
+    //glScalef(.25,.25,.25);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0);
+    glVertex3f(-1,		-1,	 0.0f);
+    glTexCoord2f(1, 0);
+    glVertex3f(1,	-1,	 0.0f);
+    glTexCoord2f(1, 1);
+    glVertex3f(1,	1, 0.0f);
+    glTexCoord2f(0, 1);
+    glVertex3f(-1,	1, 0.0f);
+    glEnd();
+    glPopMatrix();
+    glDisable(GL_TEXTURE_2D);
+    glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+    glPopMatrix();										// Restore The Old Projection Matrix
+    glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+    glPopMatrix();										// Restore The Old Projection Matrix
+    glDisable(GL_BLEND);
+    glDepthMask(1);
+    //Text
+    swap_gl_buffers();
 }
 
 
 extern bool cmdline(const char *cmd);
-    
+
 void Game::InitGame()
 {
 #if PLATFORM_MACOSX
-	ProcessSerialNumber PSN;
-	ProcessInfoRec pinfo;
-	FSSpec pspec;
-	OSStatus err;
-	/* set up process serial number */
-	PSN.highLongOfPSN = 0;
-	PSN.lowLongOfPSN = kCurrentProcess;
-	/* set up info block */
-	pinfo.processInfoLength = sizeof(pinfo);
-	pinfo.processName = NULL;
-	pinfo.processAppSpec = &pspec;
-	/* grab the vrefnum and directory */
-	err = GetProcessInformation(&PSN, &pinfo);
-	if (err == noErr) {
-		vRefNum = pspec.vRefNum;
-		dirID = pspec.parID;
-	}
+    ProcessSerialNumber PSN;
+    ProcessInfoRec pinfo;
+    FSSpec pspec;
+    OSStatus err;
+    /* set up process serial number */
+    PSN.highLongOfPSN = 0;
+    PSN.lowLongOfPSN = kCurrentProcess;
+    /* set up info block */
+    pinfo.processInfoLength = sizeof(pinfo);
+    pinfo.processName = NULL;
+    pinfo.processAppSpec = &pspec;
+    /* grab the vrefnum and directory */
+    err = GetProcessInformation(&PSN, &pinfo);
+    if (err == noErr) {
+        vRefNum = pspec.vRefNum;
+        dirID = pspec.parID;
+    }
 #endif
 
-	LOGFUNC;
+    LOGFUNC;
 
-	numchallengelevels=14;
+    numchallengelevels = 14;
 
-	accountactive=Account::loadFile(":Data:Users");
+    accountactive = Account::loadFile(":Data:Users");
 
-	tintr=1;
-	tintg=1;
-	tintb=1;
+    tintr = 1;
+    tintg = 1;
+    tintb = 1;
 
-	whichjointstartarray[0]=righthip;
-	whichjointendarray[0]=rightfoot;
+    whichjointstartarray[0] = righthip;
+    whichjointendarray[0] = rightfoot;
 
-	whichjointstartarray[1]=righthip;
-	whichjointendarray[1]=rightankle;
+    whichjointstartarray[1] = righthip;
+    whichjointendarray[1] = rightankle;
 
-	whichjointstartarray[2]=righthip;
-	whichjointendarray[2]=rightknee;
+    whichjointstartarray[2] = righthip;
+    whichjointendarray[2] = rightknee;
 
-	whichjointstartarray[3]=rightknee;
-	whichjointendarray[3]=rightankle;
+    whichjointstartarray[3] = rightknee;
+    whichjointendarray[3] = rightankle;
 
-	whichjointstartarray[4]=rightankle;
-	whichjointendarray[4]=rightfoot;
+    whichjointstartarray[4] = rightankle;
+    whichjointendarray[4] = rightfoot;
 
-	whichjointstartarray[5]=lefthip;
-	whichjointendarray[5]=leftfoot;
+    whichjointstartarray[5] = lefthip;
+    whichjointendarray[5] = leftfoot;
 
-	whichjointstartarray[6]=lefthip;
-	whichjointendarray[6]=leftankle;
+    whichjointstartarray[6] = lefthip;
+    whichjointendarray[6] = leftankle;
 
-	whichjointstartarray[7]=lefthip;
-	whichjointendarray[7]=leftknee;
+    whichjointstartarray[7] = lefthip;
+    whichjointendarray[7] = leftknee;
 
-	whichjointstartarray[8]=leftknee;
-	whichjointendarray[8]=leftankle;
+    whichjointstartarray[8] = leftknee;
+    whichjointendarray[8] = leftankle;
 
-	whichjointstartarray[9]=leftankle;
-	whichjointendarray[9]=leftfoot;
+    whichjointstartarray[9] = leftankle;
+    whichjointendarray[9] = leftfoot;
 
-	whichjointstartarray[10]=abdomen;
-	whichjointendarray[10]=rightshoulder;
+    whichjointstartarray[10] = abdomen;
+    whichjointendarray[10] = rightshoulder;
 
-	whichjointstartarray[11]=abdomen;
-	whichjointendarray[11]=rightelbow;
+    whichjointstartarray[11] = abdomen;
+    whichjointendarray[11] = rightelbow;
 
-	whichjointstartarray[12]=abdomen;
-	whichjointendarray[12]=rightwrist;
+    whichjointstartarray[12] = abdomen;
+    whichjointendarray[12] = rightwrist;
 
-	whichjointstartarray[13]=abdomen;
-	whichjointendarray[13]=righthand;
+    whichjointstartarray[13] = abdomen;
+    whichjointendarray[13] = righthand;
 
-	whichjointstartarray[14]=rightshoulder;
-	whichjointendarray[14]=rightelbow;
+    whichjointstartarray[14] = rightshoulder;
+    whichjointendarray[14] = rightelbow;
 
-	whichjointstartarray[15]=rightelbow;
-	whichjointendarray[15]=rightwrist;
+    whichjointstartarray[15] = rightelbow;
+    whichjointendarray[15] = rightwrist;
 
-	whichjointstartarray[16]=rightwrist;
-	whichjointendarray[16]=righthand;
+    whichjointstartarray[16] = rightwrist;
+    whichjointendarray[16] = righthand;
 
-	whichjointstartarray[17]=abdomen;
-	whichjointendarray[17]=leftshoulder;
+    whichjointstartarray[17] = abdomen;
+    whichjointendarray[17] = leftshoulder;
 
-	whichjointstartarray[18]=abdomen;
-	whichjointendarray[18]=leftelbow;
+    whichjointstartarray[18] = abdomen;
+    whichjointendarray[18] = leftelbow;
 
-	whichjointstartarray[19]=abdomen;
-	whichjointendarray[19]=leftwrist;
+    whichjointstartarray[19] = abdomen;
+    whichjointendarray[19] = leftwrist;
 
-	whichjointstartarray[20]=abdomen;
-	whichjointendarray[20]=lefthand;
+    whichjointstartarray[20] = abdomen;
+    whichjointendarray[20] = lefthand;
 
-	whichjointstartarray[21]=leftshoulder;
-	whichjointendarray[21]=leftelbow;
+    whichjointstartarray[21] = leftshoulder;
+    whichjointendarray[21] = leftelbow;
 
-	whichjointstartarray[22]=leftelbow;
-	whichjointendarray[22]=leftwrist;
+    whichjointstartarray[22] = leftelbow;
+    whichjointendarray[22] = leftwrist;
 
-	whichjointstartarray[23]=leftwrist;
-	whichjointendarray[23]=lefthand;
+    whichjointstartarray[23] = leftwrist;
+    whichjointendarray[23] = lefthand;
 
-	whichjointstartarray[24]=abdomen;
-	whichjointendarray[24]=neck;
+    whichjointstartarray[24] = abdomen;
+    whichjointendarray[24] = neck;
 
-	whichjointstartarray[25]=neck;
-	whichjointendarray[25]=head;
+    whichjointstartarray[25] = neck;
+    whichjointendarray[25] = head;
 
-	FadeLoadingScreen(0);
+    FadeLoadingScreen(0);
 
-	stillloading=1;
+    stillloading = 1;
 
-	texture.data = ( GLubyte* )malloc( 1024*1024*4 );
+    texture.data = ( GLubyte* )malloc( 1024 * 1024 * 4 );
 
-	int temptexdetail=texdetail;
-	texdetail=1;
-	text->LoadFontTexture(":Data:Textures:Font.png");
-	text->BuildFont();
-	texdetail=temptexdetail;
+    int temptexdetail = texdetail;
+    texdetail = 1;
+    text->LoadFontTexture(":Data:Textures:Font.png");
+    text->BuildFont();
+    texdetail = temptexdetail;
 
-	FadeLoadingScreen(10);
+    FadeLoadingScreen(10);
 
-	if(detail==2){
-		texdetail=1;
-	}
-	if(detail==1){
-		texdetail=2;
-	}
-	if(detail==0){
-		texdetail=4;
-	}
+    if (detail == 2) {
+        texdetail = 1;
+    }
+    if (detail == 1) {
+        texdetail = 2;
+    }
+    if (detail == 0) {
+        texdetail = 4;
+    }
 
-	LOG("Initializing sound system...");
+    LOG("Initializing sound system...");
 
-    #if PLATFORM_LINUX
+#if PLATFORM_LINUX
     int output = -1;
-    
+
     unsigned char rc = 0;
     output = OPENAL_OUTPUT_ALSA;  // Try alsa first...
     if (cmdline("forceoss"))      //  ...but let user override that.
@@ -645,76 +644,74 @@ void Game::InitGame()
         output = OPENAL_OUTPUT_NOSOUND;
 
     OPENAL_SetOutput(output);
-	if ((rc = OPENAL_Init(44100, 32, 0)) == false)
-    {
+    if ((rc = OPENAL_Init(44100, 32, 0)) == false) {
         // if we tried ALSA and failed, fall back to OSS.
-        if ( (output == OPENAL_OUTPUT_ALSA) && (!cmdline("forcealsa")) )
-        {
+        if ( (output == OPENAL_OUTPUT_ALSA) && (!cmdline("forcealsa")) ) {
             OPENAL_Close();
             output = OPENAL_OUTPUT_OSS;
             OPENAL_SetOutput(output);
-	        rc = OPENAL_Init(44100, 32, 0);
+            rc = OPENAL_Init(44100, 32, 0);
         }
     }
 
-    if (rc == false)
-    {
+    if (rc == false) {
         OPENAL_Close();
         output = OPENAL_OUTPUT_NOSOUND;  // we tried! just do silence.
         OPENAL_SetOutput(output);
-	    rc = OPENAL_Init(44100, 32, 0);
+        rc = OPENAL_Init(44100, 32, 0);
     }
-    #else
-	OPENAL_Init(44100, 32, 0);
-    #endif
+#else
+    OPENAL_Init(44100, 32, 0);
+#endif
 
-	OPENAL_SetSFXMasterVolume((int)(volume*255));
-	loadAllSounds();
+    OPENAL_SetSFXMasterVolume((int)(volume * 255));
+    loadAllSounds();
 
-	if(musictoggle)
-	  emit_stream_np(stream_menutheme);
+    if (musictoggle)
+        emit_stream_np(stream_menutheme);
 
-	cursortexture.load(":Data:Textures:Cursor.png",0,1);
+    cursortexture.load(":Data:Textures:Cursor.png", 0, 1);
 
-	Mapcircletexture.load(":Data:Textures:MapCircle.png",0,1);
-	Mapboxtexture.load(":Data:Textures:MapBox.png",0,1);
-	Maparrowtexture.load(":Data:Textures:MapArrow.png",0,1);
+    Mapcircletexture.load(":Data:Textures:MapCircle.png", 0, 1);
+    Mapboxtexture.load(":Data:Textures:MapBox.png", 0, 1);
+    Maparrowtexture.load(":Data:Textures:MapArrow.png", 0, 1);
 
-	temptexdetail=texdetail;
-	if(texdetail>2)texdetail=2;
-	Mainmenuitems[0].load(":Data:Textures:Lugaru.png",0,0);
-	Mainmenuitems[1].load(":Data:Textures:Newgame.png",0,0);
-	Mainmenuitems[2].load(":Data:Textures:Options.png",0,0);
-	Mainmenuitems[3].load(":Data:Textures:Quit.png",0,0);
-	Mainmenuitems[4].load(":Data:Textures:Eyelid.png",0,1);
-	Mainmenuitems[5].load(":Data:Textures:Resume.png",0,0);
-	Mainmenuitems[6].load(":Data:Textures:Endgame.png",0,0);
-	
-	//LoadTexture(":Data:Textures:Eye.jpg",&Mainmenuitems[5],0,1);
-	//~ LoadTexture(":Data:Textures:World.png",&Mainmenuitems[7],0,0); // LoadCampaign will take care of that
-	texdetail=temptexdetail;
+    temptexdetail = texdetail;
+    if (texdetail > 2)texdetail = 2;
+    Mainmenuitems[0].load(":Data:Textures:Lugaru.png", 0, 0);
+    Mainmenuitems[1].load(":Data:Textures:Newgame.png", 0, 0);
+    Mainmenuitems[2].load(":Data:Textures:Options.png", 0, 0);
+    Mainmenuitems[3].load(":Data:Textures:Quit.png", 0, 0);
+    Mainmenuitems[4].load(":Data:Textures:Eyelid.png", 0, 1);
+    Mainmenuitems[5].load(":Data:Textures:Resume.png", 0, 0);
+    Mainmenuitems[6].load(":Data:Textures:Endgame.png", 0, 0);
 
-	FadeLoadingScreen(95);
+    //LoadTexture(":Data:Textures:Eye.jpg",&Mainmenuitems[5],0,1);
+    //~ LoadTexture(":Data:Textures:World.png",&Mainmenuitems[7],0,0); // LoadCampaign will take care of that
+    texdetail = temptexdetail;
+
+    FadeLoadingScreen(95);
 
 
-	gameon=0;
-	mainmenu=1;
+    gameon = 0;
+    mainmenu = 1;
 
-	stillloading=0;
-	firstload=0;
+    stillloading = 0;
+    firstload = 0;
 
-	newdetail=detail;
-	newscreenwidth=screenwidth;
-	newscreenheight=screenheight;
+    newdetail = detail;
+    newscreenwidth = screenwidth;
+    newscreenheight = screenheight;
 
     LoadMenu();
 }
 
 
-void Game::LoadScreenTexture() {
+void Game::LoadScreenTexture()
+{
     glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 
-    if(!Game::screentexture)
+    if (!Game::screentexture)
         glGenTextures( 1, &Game::screentexture );
     glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 
@@ -730,255 +727,255 @@ void Game::LoadScreenTexture() {
 //TODO: move LoadStuff() closer to GameTick.cpp to get rid of various vars shared in Game.h
 void Game::LoadStuff()
 {
-	static float temptexdetail;
-	static float viewdistdetail;
-	static int i,j;
-	float megascale =1;
+    static float temptexdetail;
+    static float viewdistdetail;
+    static int i, j;
+    float megascale = 1;
 
-	LOGFUNC;
+    LOGFUNC;
 
-	loadtime=0;
+    loadtime = 0;
 
-	stillloading=1;
+    stillloading = 1;
 
-	for(i=0;i<maxplayers;i++)
-		player[i].skeleton.drawmodel.textureptr.destroy();
+    for (i = 0; i < maxplayers; i++)
+        player[i].skeleton.drawmodel.textureptr.destroy();
 
-	i=abs(Random()%4);
-	visibleloading=0; //don't use loadscreentexture yet
-	loadscreentexture.load(":Data:Textures:fire.jpg",1,0);
-	visibleloading=1;
+    i = abs(Random() % 4);
+    visibleloading = 0; //don't use loadscreentexture yet
+    loadscreentexture.load(":Data:Textures:fire.jpg", 1, 0);
+    visibleloading = 1;
 
-	temptexdetail=texdetail;
-	texdetail=1;
-	text->LoadFontTexture(":Data:Textures:Font.png");
-	text->BuildFont();
-	texdetail=temptexdetail;
+    temptexdetail = texdetail;
+    texdetail = 1;
+    text->LoadFontTexture(":Data:Textures:Font.png");
+    text->BuildFont();
+    texdetail = temptexdetail;
 
-	numsounds=71;
+    numsounds = 71;
 
-	viewdistdetail=2;
-	viewdistance=50*megascale*viewdistdetail;
+    viewdistdetail = 2;
+    viewdistance = 50 * megascale * viewdistdetail;
 
-	if(detail==2){
-		texdetail=1;
-	}
-	if(detail==1){
-		texdetail=2;
-	}
-	if(detail==0){
-		texdetail=4;
-	}
+    if (detail == 2) {
+        texdetail = 1;
+    }
+    if (detail == 1) {
+        texdetail = 2;
+    }
+    if (detail == 0) {
+        texdetail = 4;
+    }
 
-	realtexdetail=texdetail;
+    realtexdetail = texdetail;
 
-	numplayers=1;
-
-
-	LOG("Loading weapon data...");
-
-	Weapon::knifetextureptr.load(":Data:Textures:knife.png",0,1);
-	Weapon::bloodknifetextureptr.load(":Data:Textures:bloodknife.png",0,1);
-	Weapon::lightbloodknifetextureptr.load(":Data:Textures:lightbloodknife.png",0,1);
-	Weapon::swordtextureptr.load(":Data:Textures:sword.jpg",1,0);
-	Weapon::bloodswordtextureptr.load(":Data:Textures:Swordblood.jpg",1,0);
-	Weapon::lightbloodswordtextureptr.load(":Data:Textures:Swordbloodlight.jpg",1,0);
-	Weapon::stafftextureptr.load(":Data:Textures:Staff.jpg",1,0);
-
-	Weapon::throwingknifemodel.load((char *)":Data:Models:throwingknife.solid",1);
-	Weapon::throwingknifemodel.Scale(.001,.001,.001);
-	//Weapon::throwingknifemodel.Rotate(0,0,-90);
-	Weapon::throwingknifemodel.Rotate(90,0,0);
-	Weapon::throwingknifemodel.Rotate(0,90,0);
-	Weapon::throwingknifemodel.flat=0;
-	Weapon::throwingknifemodel.CalculateNormals(1);
-	//Weapon::throwingknifemodel.ScaleNormals(-1,-1,-1);
-
-	Weapon::swordmodel.load((char *)":Data:Models:sword.solid",1);
-	Weapon::swordmodel.Scale(.001,.001,.001);
-	//Weapon::swordmodel.Rotate(0,0,-90);
-	Weapon::swordmodel.Rotate(90,0,0);
-	Weapon::swordmodel.Rotate(0,90,0);
-	Weapon::swordmodel.Rotate(0,0,90);
-	Weapon::swordmodel.flat=1;
-	Weapon::swordmodel.CalculateNormals(1);
-	//Weapon::swordmodel.ScaleNormals(-1,-1,-1);
-
-	Weapon::staffmodel.load((char *)":Data:Models:staff.solid",1);
-	Weapon::staffmodel.Scale(.005,.005,.005);
-	//Weapon::staffmodel.Rotate(0,0,-90);
-	Weapon::staffmodel.Rotate(90,0,0);
-	Weapon::staffmodel.Rotate(0,90,0);
-	Weapon::staffmodel.Rotate(0,0,90);
-	Weapon::staffmodel.flat=1;
-	Weapon::staffmodel.CalculateNormals(1);
-	//Weapon::staffmodel.ScaleNormals(-1,-1,-1);
-
-	terrain.shadowtexture.load(":Data:Textures:shadow.png",0,1);
-	terrain.bloodtexture.load(":Data:Textures:blood.png",0,1);
-	terrain.breaktexture.load(":Data:Textures:break.png",0,1);
-	terrain.bloodtexture2.load(":Data:Textures:blood.png",0,1);
+    numplayers = 1;
 
 
-	terrain.footprinttexture.load(":Data:Textures:footprint.png",0,1);
-	terrain.bodyprinttexture.load(":Data:Textures:bodyprint.png",0,1);
-	hawktexture.load(":Data:Textures:hawk.png",0,1);
+    LOG("Loading weapon data...");
+
+    Weapon::knifetextureptr.load(":Data:Textures:knife.png", 0, 1);
+    Weapon::bloodknifetextureptr.load(":Data:Textures:bloodknife.png", 0, 1);
+    Weapon::lightbloodknifetextureptr.load(":Data:Textures:lightbloodknife.png", 0, 1);
+    Weapon::swordtextureptr.load(":Data:Textures:sword.jpg", 1, 0);
+    Weapon::bloodswordtextureptr.load(":Data:Textures:Swordblood.jpg", 1, 0);
+    Weapon::lightbloodswordtextureptr.load(":Data:Textures:Swordbloodlight.jpg", 1, 0);
+    Weapon::stafftextureptr.load(":Data:Textures:Staff.jpg", 1, 0);
+
+    Weapon::throwingknifemodel.load((char *)":Data:Models:throwingknife.solid", 1);
+    Weapon::throwingknifemodel.Scale(.001, .001, .001);
+    //Weapon::throwingknifemodel.Rotate(0,0,-90);
+    Weapon::throwingknifemodel.Rotate(90, 0, 0);
+    Weapon::throwingknifemodel.Rotate(0, 90, 0);
+    Weapon::throwingknifemodel.flat = 0;
+    Weapon::throwingknifemodel.CalculateNormals(1);
+    //Weapon::throwingknifemodel.ScaleNormals(-1,-1,-1);
+
+    Weapon::swordmodel.load((char *)":Data:Models:sword.solid", 1);
+    Weapon::swordmodel.Scale(.001, .001, .001);
+    //Weapon::swordmodel.Rotate(0,0,-90);
+    Weapon::swordmodel.Rotate(90, 0, 0);
+    Weapon::swordmodel.Rotate(0, 90, 0);
+    Weapon::swordmodel.Rotate(0, 0, 90);
+    Weapon::swordmodel.flat = 1;
+    Weapon::swordmodel.CalculateNormals(1);
+    //Weapon::swordmodel.ScaleNormals(-1,-1,-1);
+
+    Weapon::staffmodel.load((char *)":Data:Models:staff.solid", 1);
+    Weapon::staffmodel.Scale(.005, .005, .005);
+    //Weapon::staffmodel.Rotate(0,0,-90);
+    Weapon::staffmodel.Rotate(90, 0, 0);
+    Weapon::staffmodel.Rotate(0, 90, 0);
+    Weapon::staffmodel.Rotate(0, 0, 90);
+    Weapon::staffmodel.flat = 1;
+    Weapon::staffmodel.CalculateNormals(1);
+    //Weapon::staffmodel.ScaleNormals(-1,-1,-1);
+
+    terrain.shadowtexture.load(":Data:Textures:shadow.png", 0, 1);
+    terrain.bloodtexture.load(":Data:Textures:blood.png", 0, 1);
+    terrain.breaktexture.load(":Data:Textures:break.png", 0, 1);
+    terrain.bloodtexture2.load(":Data:Textures:blood.png", 0, 1);
 
 
-	Sprite::cloudtexture.load(":Data:Textures:cloud.png",1,1);
-	Sprite::cloudimpacttexture.load(":Data:Textures:cloudimpact.png",1,1);
-	Sprite::bloodtexture.load(":Data:Textures:bloodparticle.png",1,1);
-	Sprite::snowflaketexture.load(":Data:Textures:snowflake.png",1,1);
-	Sprite::flametexture.load(":Data:Textures:flame.png",1,1);
-	Sprite::bloodflametexture.load(":Data:Textures:bloodflame.png",1,1);
-	Sprite::smoketexture.load(":Data:Textures:smoke.png",1,1);
-	Sprite::shinetexture.load(":Data:Textures:shine.png",1,0);
-	Sprite::splintertexture.load(":Data:Textures:splinter.png",1,1);
-	Sprite::leaftexture.load(":Data:Textures:leaf.png",1,1);
-	Sprite::toothtexture.load(":Data:Textures:tooth.png",1,1);
-
-	yaw=0;
-	pitch=0;
-	ReSizeGLScene(90,.01);
-
-	viewer=0;
+    terrain.footprinttexture.load(":Data:Textures:footprint.png", 0, 1);
+    terrain.bodyprinttexture.load(":Data:Textures:bodyprint.png", 0, 1);
+    hawktexture.load(":Data:Textures:hawk.png", 0, 1);
 
 
-	if(detail)kTextureSize=1024;
-	if(detail==1)kTextureSize=512;
-	if(detail==0)kTextureSize=256;
-	
-	//Set up distant light
-	light.color[0]=.95;
-	light.color[1]=.95;
-	light.color[2]=1;
-	light.ambient[0]=.2;
-	light.ambient[1]=.2;
-	light.ambient[2]=.24;
-	light.location.x=1;
-	light.location.y=1;
-	light.location.z=-.2;
-	Normalise(&light.location);
+    Sprite::cloudtexture.load(":Data:Textures:cloud.png", 1, 1);
+    Sprite::cloudimpacttexture.load(":Data:Textures:cloudimpact.png", 1, 1);
+    Sprite::bloodtexture.load(":Data:Textures:bloodparticle.png", 1, 1);
+    Sprite::snowflaketexture.load(":Data:Textures:snowflake.png", 1, 1);
+    Sprite::flametexture.load(":Data:Textures:flame.png", 1, 1);
+    Sprite::bloodflametexture.load(":Data:Textures:bloodflame.png", 1, 1);
+    Sprite::smoketexture.load(":Data:Textures:smoke.png", 1, 1);
+    Sprite::shinetexture.load(":Data:Textures:shine.png", 1, 0);
+    Sprite::splintertexture.load(":Data:Textures:splinter.png", 1, 1);
+    Sprite::leaftexture.load(":Data:Textures:leaf.png", 1, 1);
+    Sprite::toothtexture.load(":Data:Textures:tooth.png", 1, 1);
 
-	LoadingScreen();
+    yaw = 0;
+    pitch = 0;
+    ReSizeGLScene(90, .01);
 
-	SetUpLighting();
+    viewer = 0;
 
 
-	fadestart=.6;
-	gravity=-10;
+    if (detail)kTextureSize = 1024;
+    if (detail == 1)kTextureSize = 512;
+    if (detail == 0)kTextureSize = 256;
 
-	texscale=.2/megascale/viewdistdetail;
-	terrain.scale=3*megascale*viewdistdetail;
+    //Set up distant light
+    light.color[0] = .95;
+    light.color[1] = .95;
+    light.color[2] = 1;
+    light.ambient[0] = .2;
+    light.ambient[1] = .2;
+    light.ambient[2] = .24;
+    light.location.x = 1;
+    light.location.y = 1;
+    light.location.z = -.2;
+    Normalise(&light.location);
 
-	viewer.x=terrain.size/2*terrain.scale;
-	viewer.z=terrain.size/2*terrain.scale;
+    LoadingScreen();
 
-	hawk.load((char *)":Data:Models:hawk.solid",1);
-	hawk.Scale(.03,.03,.03);
-	hawk.Rotate(90,1,1);
-	hawk.CalculateNormals(0);
-	hawk.ScaleNormals(-1,-1,-1);
-	hawkcoords.x=terrain.size/2*terrain.scale-5-7;
-	hawkcoords.z=terrain.size/2*terrain.scale-5-7;
-	hawkcoords.y=terrain.getHeight(hawkcoords.x,hawkcoords.z)+25;
+    SetUpLighting();
 
-	eye.load((char *)":Data:Models:eye.solid",1);
-	eye.Scale(.03,.03,.03);
-	eye.CalculateNormals(0);
 
-	cornea.load((char *)":Data:Models:cornea.solid",1);
-	cornea.Scale(.03,.03,.03);
-	cornea.CalculateNormals(0);
+    fadestart = .6;
+    gravity = -10;
 
-	iris.load((char *)":Data:Models:iris.solid",1);
-	iris.Scale(.03,.03,.03);
-	iris.CalculateNormals(0);
+    texscale = .2 / megascale / viewdistdetail;
+    terrain.scale = 3 * megascale * viewdistdetail;
 
-	LoadSave(":Data:Textures:Bloodfur.png",0,1,&bloodText[0],0);
-	LoadSave(":Data:Textures:Wolfbloodfur.png",0,1,&wolfbloodText[0],0);
+    viewer.x = terrain.size / 2 * terrain.scale;
+    viewer.z = terrain.size / 2 * terrain.scale;
 
-	oldenvironment=-4;
+    hawk.load((char *)":Data:Models:hawk.solid", 1);
+    hawk.Scale(.03, .03, .03);
+    hawk.Rotate(90, 1, 1);
+    hawk.CalculateNormals(0);
+    hawk.ScaleNormals(-1, -1, -1);
+    hawkcoords.x = terrain.size / 2 * terrain.scale - 5 - 7;
+    hawkcoords.z = terrain.size / 2 * terrain.scale - 5 - 7;
+    hawkcoords.y = terrain.getHeight(hawkcoords.x, hawkcoords.z) + 25;
 
-	gameon=1;
-	mainmenu=0;
+    eye.load((char *)":Data:Models:eye.solid", 1);
+    eye.Scale(.03, .03, .03);
+    eye.CalculateNormals(0);
 
-	firstload=0;
+    cornea.load((char *)":Data:Models:cornea.solid", 1);
+    cornea.Scale(.03, .03, .03);
+    cornea.CalculateNormals(0);
 
-	loadAllAnimations();
-	//Fix knife stab, too lazy to do it manually
-	XYZ moveamount;
-	moveamount=0;
-	moveamount.z=2;
-	for(i=0;i<player[0].skeleton.num_joints;i++){
-		for(j=0;j<animation[knifesneakattackanim].numframes;j++){
-			animation[knifesneakattackanim].position[i][j]+=moveamount;
-		}
-	}
+    iris.load((char *)":Data:Models:iris.solid", 1);
+    iris.Scale(.03, .03, .03);
+    iris.CalculateNormals(0);
 
-	LoadingScreen();
+    LoadSave(":Data:Textures:Bloodfur.png", 0, 1, &bloodText[0], 0);
+    LoadSave(":Data:Textures:Wolfbloodfur.png", 0, 1, &wolfbloodText[0], 0);
 
-	for(i=0;i<player[0].skeleton.num_joints;i++){
-		for(j=0;j<animation[knifesneakattackedanim].numframes;j++){
-			animation[knifesneakattackedanim].position[i][j]+=moveamount;
-		}
-	}
+    oldenvironment = -4;
 
-	LoadingScreen();
+    gameon = 1;
+    mainmenu = 0;
 
-	for(i=0;i<player[0].skeleton.num_joints;i++){
-		animation[dead1anim].position[i][1]=animation[dead1anim].position[i][0];
-		animation[dead2anim].position[i][1]=animation[dead2anim].position[i][0];
-		animation[dead3anim].position[i][1]=animation[dead3anim].position[i][0];
-		animation[dead4anim].position[i][1]=animation[dead4anim].position[i][0];
-	}
-	animation[dead1anim].speed[0]=0.001;
-	animation[dead2anim].speed[0]=0.001;
-	animation[dead3anim].speed[0]=0.001;
-	animation[dead4anim].speed[0]=0.001;
+    firstload = 0;
 
-	animation[dead1anim].speed[1]=0.001;
-	animation[dead2anim].speed[1]=0.001;
-	animation[dead3anim].speed[1]=0.001;
-	animation[dead4anim].speed[1]=0.001;
+    loadAllAnimations();
+    //Fix knife stab, too lazy to do it manually
+    XYZ moveamount;
+    moveamount = 0;
+    moveamount.z = 2;
+    for (i = 0; i < player[0].skeleton.num_joints; i++) {
+        for (j = 0; j < animation[knifesneakattackanim].numframes; j++) {
+            animation[knifesneakattackanim].position[i][j] += moveamount;
+        }
+    }
 
-	for(i=0;i<player[0].skeleton.num_joints;i++){
-		for(j=0;j<animation[swordsneakattackanim].numframes;j++){
-			animation[swordsneakattackanim].position[i][j]+=moveamount;
-		}
-	}
-	LoadingScreen();
-	for(j=0;j<animation[swordsneakattackanim].numframes;j++){
-		animation[swordsneakattackanim].weapontarget[j]+=moveamount;
-	}
+    LoadingScreen();
 
-	LoadingScreen();
+    for (i = 0; i < player[0].skeleton.num_joints; i++) {
+        for (j = 0; j < animation[knifesneakattackedanim].numframes; j++) {
+            animation[knifesneakattackedanim].position[i][j] += moveamount;
+        }
+    }
 
-	for(i=0;i<player[0].skeleton.num_joints;i++){
-		for(j=0;j<animation[swordsneakattackedanim].numframes;j++){
-			animation[swordsneakattackedanim].position[i][j]+=moveamount;
-		}
-	}
-	
-	LoadingScreen();
-	temptexdetail=texdetail;
-	texdetail=1;
-	texdetail=temptexdetail;
+    LoadingScreen();
 
-	LoadingScreen();
+    for (i = 0; i < player[0].skeleton.num_joints; i++) {
+        animation[dead1anim].position[i][1] = animation[dead1anim].position[i][0];
+        animation[dead2anim].position[i][1] = animation[dead2anim].position[i][0];
+        animation[dead3anim].position[i][1] = animation[dead3anim].position[i][0];
+        animation[dead4anim].position[i][1] = animation[dead4anim].position[i][0];
+    }
+    animation[dead1anim].speed[0] = 0.001;
+    animation[dead2anim].speed[0] = 0.001;
+    animation[dead3anim].speed[0] = 0.001;
+    animation[dead4anim].speed[0] = 0.001;
 
-	if(!screentexture){
+    animation[dead1anim].speed[1] = 0.001;
+    animation[dead2anim].speed[1] = 0.001;
+    animation[dead3anim].speed[1] = 0.001;
+    animation[dead4anim].speed[1] = 0.001;
+
+    for (i = 0; i < player[0].skeleton.num_joints; i++) {
+        for (j = 0; j < animation[swordsneakattackanim].numframes; j++) {
+            animation[swordsneakattackanim].position[i][j] += moveamount;
+        }
+    }
+    LoadingScreen();
+    for (j = 0; j < animation[swordsneakattackanim].numframes; j++) {
+        animation[swordsneakattackanim].weapontarget[j] += moveamount;
+    }
+
+    LoadingScreen();
+
+    for (i = 0; i < player[0].skeleton.num_joints; i++) {
+        for (j = 0; j < animation[swordsneakattackedanim].numframes; j++) {
+            animation[swordsneakattackedanim].position[i][j] += moveamount;
+        }
+    }
+
+    LoadingScreen();
+    temptexdetail = texdetail;
+    texdetail = 1;
+    texdetail = temptexdetail;
+
+    LoadingScreen();
+
+    if (!screentexture) {
         LoadScreenTexture();
-	}
+    }
 
-	if(targetlevel!=7){
-		emit_sound_at(fireendsound);
-	}
+    if (targetlevel != 7) {
+        emit_sound_at(fireendsound);
+    }
 
-	stillloading=0;
-	loading=0;
-	changedelay=1;
+    stillloading = 0;
+    loading = 0;
+    changedelay = 1;
 
-	visibleloading=0;
+    visibleloading = 0;
 }
 

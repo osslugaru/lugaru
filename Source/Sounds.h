@@ -26,7 +26,7 @@ enum sound_types {
 #define DECLARE_SOUND(id, filename) id,
 #include "Sounds.def"
 #undef DECLARE_SOUND
-sounds_count
+    sounds_count
 };
 
 extern struct OPENAL_SAMPLE *samp[sounds_count];

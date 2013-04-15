@@ -10,7 +10,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -37,75 +37,76 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define max_sprites 20000
 
 enum {
-	cloudsprite = 0,
-	bloodsprite,
-	flamesprite,
-	smoketype,
-	weaponflamesprite,
-	cloudimpactsprite,
-	snowsprite,
-	weaponshinesprite,
-	bloodflamesprite,
-	breathsprite,
-	splintersprite,
-	spritenumber
+    cloudsprite = 0,
+    bloodsprite,
+    flamesprite,
+    smoketype,
+    weaponflamesprite,
+    cloudimpactsprite,
+    snowsprite,
+    weaponshinesprite,
+    bloodflamesprite,
+    breathsprite,
+    splintersprite,
+    spritenumber
 };
 
-class Sprite{
-	private:
-		XYZ oldposition;
-		XYZ position;
-		XYZ velocity;
-		float size;
-		float initialsize;
-		int type;
-		int special;
-		float color[3];
-		float opacity;
-		float rotation;
-		float alivetime;
-		float speed;
-		float rotatespeed;
-		
-		static float checkdelay;
-	
-		static vector<Sprite*> sprites;
-	
-	public:
-		static void DeleteSprite(int which);
-		static void MakeSprite(int atype, XYZ where, XYZ avelocity, float red, float green, float blue, float asize, float aopacity);
-		static void Draw();
-		static void deleteSprites() {
-			sprites.clear();
-		}
-		static void setLastSpriteSpecial(int s) {
-			sprites.back()->special = s;
-		}
-		static void setLastSpriteSpeed(int s) {
-			sprites.back()->speed = s;
-		}
-		static void setLastSpriteAlivetime(float al) {
-			sprites.back()->alivetime = al;
-		}
-		static void clearTextures();
-		
-		static Texture cloudtexture;
-		static Texture bloodtexture;
-		static Texture flametexture;
-		static Texture smoketexture;
-		
-		static Texture cloudimpacttexture;
-		static Texture snowflaketexture;
-		static Texture shinetexture;
-		static Texture bloodflametexture;
-		
-		static Texture splintertexture;
-		
-		static Texture leaftexture;
-		static Texture toothtexture;
+class Sprite
+{
+private:
+    XYZ oldposition;
+    XYZ position;
+    XYZ velocity;
+    float size;
+    float initialsize;
+    int type;
+    int special;
+    float color[3];
+    float opacity;
+    float rotation;
+    float alivetime;
+    float speed;
+    float rotatespeed;
 
-		Sprite();
-		~Sprite();
+    static float checkdelay;
+
+    static vector<Sprite*> sprites;
+
+public:
+    static void DeleteSprite(int which);
+    static void MakeSprite(int atype, XYZ where, XYZ avelocity, float red, float green, float blue, float asize, float aopacity);
+    static void Draw();
+    static void deleteSprites() {
+        sprites.clear();
+    }
+    static void setLastSpriteSpecial(int s) {
+        sprites.back()->special = s;
+    }
+    static void setLastSpriteSpeed(int s) {
+        sprites.back()->speed = s;
+    }
+    static void setLastSpriteAlivetime(float al) {
+        sprites.back()->alivetime = al;
+    }
+    static void clearTextures();
+
+    static Texture cloudtexture;
+    static Texture bloodtexture;
+    static Texture flametexture;
+    static Texture smoketexture;
+
+    static Texture cloudimpacttexture;
+    static Texture snowflaketexture;
+    static Texture shinetexture;
+    static Texture bloodflametexture;
+
+    static Texture splintertexture;
+
+    static Texture leaftexture;
+    static Texture toothtexture;
+
+    Sprite();
+    ~Sprite();
 };
 
 #endif

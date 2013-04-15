@@ -62,123 +62,124 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define NB_CAMPAIGN_MENU_ITEM 7
 
-namespace Game {
-    extern Texture terraintexture;
-    extern Texture terraintexture2;
-    extern Texture loadscreentexture;
-    extern Texture Maparrowtexture;
-    extern Texture Mapboxtexture;
-    extern Texture Mapcircletexture;
-    extern Texture cursortexture;
-    extern GLuint screentexture;
-    extern GLuint screentexture2;
-    extern Texture Mainmenuitems[10];
+namespace Game
+{
+extern Texture terraintexture;
+extern Texture terraintexture2;
+extern Texture loadscreentexture;
+extern Texture Maparrowtexture;
+extern Texture Mapboxtexture;
+extern Texture Mapcircletexture;
+extern Texture cursortexture;
+extern GLuint screentexture;
+extern GLuint screentexture2;
+extern Texture Mainmenuitems[10];
 
-    extern int selected;
-    extern int keyselect;
+extern int selected;
+extern int keyselect;
 
-    extern int newdetail;
-    extern int newscreenwidth;
-    extern int newscreenheight;
+extern int newdetail;
+extern int newscreenwidth;
+extern int newscreenheight;
 
-    extern bool gameon;
-    extern float deltah,deltav;
-    extern int mousecoordh,mousecoordv;
-    extern int oldmousecoordh,oldmousecoordv;
-    extern float yaw,pitch;
-    extern SkyBox *skybox;
-    extern bool cameramode;
-    extern bool firstload;
+extern bool gameon;
+extern float deltah, deltav;
+extern int mousecoordh, mousecoordv;
+extern int oldmousecoordh, oldmousecoordv;
+extern float yaw, pitch;
+extern SkyBox *skybox;
+extern bool cameramode;
+extern bool firstload;
 
-    extern float leveltime;
-    extern float loadtime;
+extern float leveltime;
+extern float loadtime;
 
-    extern Model hawk;
-    extern XYZ hawkcoords;
-    extern XYZ realhawkcoords;
-    extern Texture hawktexture;
-    extern float hawkyaw;
-    extern float hawkcalldelay;
+extern Model hawk;
+extern XYZ hawkcoords;
+extern XYZ realhawkcoords;
+extern Texture hawktexture;
+extern float hawkyaw;
+extern float hawkcalldelay;
 
-    extern Model eye;
-    extern Model iris;
-    extern Model cornea;
+extern Model eye;
+extern Model iris;
+extern Model cornea;
 
-    extern bool stealthloading;
-    extern int loading;
+extern bool stealthloading;
+extern int loading;
 
-    extern int musictype;
+extern int musictype;
 
-    extern XYZ mapcenter;
-    extern float mapradius;
+extern XYZ mapcenter;
+extern float mapradius;
 
-    extern Text *text;
-    extern float fps;
+extern Text *text;
+extern float fps;
 
-    extern bool editorenabled;
-    extern int editortype;
-    extern float editorsize;
-    extern float editoryaw;
-    extern float editorpitch;
+extern bool editorenabled;
+extern int editortype;
+extern float editorsize;
+extern float editoryaw;
+extern float editorpitch;
 
-    extern int tryquit;
+extern int tryquit;
 
-    extern XYZ pathpoint[30];
-    extern int numpathpoints;
-    extern int numpathpointconnect[30];
-    extern int pathpointconnect[30][30];
-    extern int pathpointselected;
+extern XYZ pathpoint[30];
+extern int numpathpoints;
+extern int numpathpointconnect[30];
+extern int pathpointconnect[30][30];
+extern int pathpointselected;
 
-    extern int endgame;
-    extern bool scoreadded;
-    extern int numchallengelevels;
+extern int endgame;
+extern bool scoreadded;
+extern int numchallengelevels;
 
-    extern bool console;
-    extern char consoletext[15][256];
-    extern int consolechars[15];
-    extern bool chatting;
-    extern char displaytext[15][256];
-    extern int displaychars[15];
-    extern float displaytime[15];
-    extern float displayblinkdelay;
-    extern bool displayblink;
-    extern int displayselected;
-    extern float consoleblinkdelay;
-    extern bool consoleblink;
-    extern int consoleselected;
+extern bool console;
+extern char consoletext[15][256];
+extern int consolechars[15];
+extern bool chatting;
+extern char displaytext[15][256];
+extern int displaychars[15];
+extern float displaytime[15];
+extern float displayblinkdelay;
+extern bool displayblink;
+extern int displayselected;
+extern float consoleblinkdelay;
+extern bool consoleblink;
+extern int consoleselected;
 
-    extern int oldenvironment;
-    extern int targetlevel;
-    extern float changedelay;
+extern int oldenvironment;
+extern int targetlevel;
+extern float changedelay;
 
-    extern bool waiting;
-    extern Account* accountactive;
+extern bool waiting;
+extern Account* accountactive;
 
-    extern unsigned short crouchkey,jumpkey,forwardkey,chatkey,backkey,leftkey,rightkey,drawkey,throwkey,attackkey;
-    extern unsigned short consolekey;
+extern unsigned short crouchkey, jumpkey, forwardkey, chatkey, backkey, leftkey, rightkey, drawkey, throwkey, attackkey;
+extern unsigned short consolekey;
 
-    void newGame();
-    void deleteGame();
+void newGame();
+void deleteGame();
 
-    void InitGame();
-    void LoadStuff();
-    void LoadScreenTexture();
-    void LoadingScreen();
-    int DrawGLScene(StereoSide side);
-    void LoadMenu();
-    void Tick();
-    void TickOnce();
-    void TickOnceAfter();
-    void SetUpLighting();
-    GLvoid ReSizeGLScene(float fov, float near);
-    int checkcollide(XYZ startpoint, XYZ endpoint);
-    int checkcollide(XYZ startpoint, XYZ endpoint, int what);
-    
-    void fireSound(int sound=fireendsound);
-    void setKeySelected();
+void InitGame();
+void LoadStuff();
+void LoadScreenTexture();
+void LoadingScreen();
+int DrawGLScene(StereoSide side);
+void LoadMenu();
+void Tick();
+void TickOnce();
+void TickOnceAfter();
+void SetUpLighting();
+GLvoid ReSizeGLScene(float fov, float near);
+int checkcollide(XYZ startpoint, XYZ endpoint);
+int checkcollide(XYZ startpoint, XYZ endpoint, int what);
 
-    void inputText(char* str, int* charselected, int* nb_chars);
-    void flash();
+void fireSound(int sound = fireendsound);
+void setKeySelected();
+
+void inputText(char* str, int* charselected, int* nb_chars);
+void flash();
 }
 
 #ifndef __forceinline
@@ -192,7 +193,9 @@ static __forceinline void swap_gl_buffers(void)
     SDL_GL_SwapBuffers();
 }
 
-extern "C" { void UndefinedSymbolToExposeStubbedCode(void); }
+extern "C" {
+    void UndefinedSymbolToExposeStubbedCode(void);
+}
 //#define STUBBED(x) UndefinedSymbolToExposeStubbedCode();
 #define STUBBED(x) { static bool seen = false; if (!seen) { seen = true; fprintf(stderr, "STUBBED: %s at %s:%d\n", x, __FILE__, __LINE__); } }
 //#define STUBBED(x)
@@ -224,8 +227,8 @@ extern float dialoguetime;
 extern int dialoguegonethrough[20];
 
 enum maptypes {
-  mapkilleveryone, mapgosomewhere,
-  mapkillsomeone, mapkillmost // These two are unused
+    mapkilleveryone, mapgosomewhere,
+    mapkillsomeone, mapkillmost // These two are unused
 };
 
 enum pathtypes {wpkeepwalking, wppause};
@@ -233,11 +236,12 @@ enum pathtypes {wpkeepwalking, wppause};
 static const char *pathtypenames[] = {"keepwalking", "pause"};
 
 enum editortypes {typeactive, typesitting, typesittingwall, typesleeping,
-		  typedead1, typedead2, typedead3, typedead4};
+                  typedead1, typedead2, typedead3, typedead4
+                 };
 
 static const char *editortypenames[] = {
-  "active", "sitting", "sitting wall", "sleeping",
-  "dead1", "dead2", "dead3", "dead4"
+    "active", "sitting", "sitting wall", "sleeping",
+    "dead1", "dead2", "dead3", "dead4"
 };
 
 #endif

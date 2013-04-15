@@ -10,7 +10,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -28,16 +28,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamegl.h"
 #include "Texture.h"
 
-class SkyBox{
+class SkyBox
+{
 public:
-	Texture front, left, back, right, up, down;
+    Texture front, left, back, right, up, down;
 
-	void load(const char *ffront, const char *fleft, const char *fback,
-		  const char *fright, const char *fup,   const char *fdown);
-	void draw();
+    void load(const char *ffront, const char *fleft, const char *fback,
+              const char *fright, const char *fup,   const char *fdown);
+    void draw();
 
-	SkyBox() {}
-	~SkyBox();
+    SkyBox() {}
+    ~SkyBox();
 };
 
 #endif

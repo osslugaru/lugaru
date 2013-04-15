@@ -8,7 +8,8 @@ using namespace std;
 
 class TextureRes;
 
-class Texture {
+class Texture
+{
 private:
     TextureRes* tex;
 public:

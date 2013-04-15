@@ -39,11 +39,11 @@ static const int bonus_values[bonus_count] = {
 void
 award_bonus(int playerid, int bonusid, int alt_value)
 {
-  if (playerid != 0)
-    return;
-  bonus = bonusid;
-  bonustime = 0;
-  bonusvalue = alt_value ? alt_value : bonus_values[bonusid];
+    if (playerid != 0)
+        return;
+    bonus = bonusid;
+    bonustime = 0;
+    bonusvalue = alt_value ? alt_value : bonus_values[bonusid];
 }
 
 // FIXME: make these per-player
@@ -67,78 +67,78 @@ int maxalarmed;
 
 int award_awards(int *awards)
 {
-  int numawards = 0, i;
-  if(damagetaken==0&&player[0].bloodloss==0){
-    awards[numawards]=awardflawless;
-    numawards++;
-  }
-  bool alldead = true;
-  for(i=1;i<numplayers;i++){
-    if(player[i].dead!=2)alldead=0;
-  }
-  if(alldead){
-    awards[numawards]=awardalldead;
-    numawards++;
-  }
-  alldead=1;
-  for(i=1;i<numplayers;i++){
-    if(player[i].dead!=1)alldead=0;
-  }
-  if(alldead){
-    awards[numawards]=awardnodead;
-    numawards++;
-  }
-  if(numresponded==0&&!numthrowkill){
-    awards[numawards]=awardstealth;
-    numawards++;
-  }
-  if(numattacks==numstaffattack&&numattacks>0){
-    awards[numawards]=awardbojutsu;
-    numawards++;
-  }
-  if(numattacks==numswordattack&&numattacks>0){
-    awards[numawards]=awardswordsman;
-    numawards++;
-  }
-  if(numattacks==numknifeattack&&numattacks>0){
-    awards[numawards]=awardknifefighter;
-    numawards++;
-  }
-  if(numattacks==numunarmedattack&&numthrowkill==0&&weapons.size()>0){
-    awards[numawards]=awardkungfu;
-    numawards++;
-  }
-  if(numescaped>0){
-    awards[numawards]=awardevasion;
-    numawards++;
-  }
-  if(numflipfail==0&&numflipped+numwallflipped*2>20){
-    awards[numawards]=awardacrobat;
-    numawards++;
-  }
-  if(numthrowkill==numplayers-1){
-    awards[numawards]=awardlongrange;
-    numawards++;
-  }
-  alldead=1;
-  for(i=1;i<numplayers;i++){
-    if(player[i].dead!=2)alldead=0;
-  }
-  if(numafterkill>0&&alldead){
-    awards[numawards]=awardbrutal;
-    numawards++;
-  }
-  if(numreversals>((float)numattacks)*.8&&numreversals>3){
-    awards[numawards]=awardaikido;
-    numawards++;
-  }
-  if(maxalarmed==1&&numplayers>2){
-    awards[numawards]=awardstrategy;
-    numawards++;
-  }
-  if(numflipfail>3){
-    awards[numawards]=awardklutz;
-    numawards++;
-  }
-  return numawards;
+    int numawards = 0, i;
+    if (damagetaken == 0 && player[0].bloodloss == 0) {
+        awards[numawards] = awardflawless;
+        numawards++;
+    }
+    bool alldead = true;
+    for (i = 1; i < numplayers; i++) {
+        if (player[i].dead != 2)alldead = 0;
+    }
+    if (alldead) {
+        awards[numawards] = awardalldead;
+        numawards++;
+    }
+    alldead = 1;
+    for (i = 1; i < numplayers; i++) {
+        if (player[i].dead != 1)alldead = 0;
+    }
+    if (alldead) {
+        awards[numawards] = awardnodead;
+        numawards++;
+    }
+    if (numresponded == 0 && !numthrowkill) {
+        awards[numawards] = awardstealth;
+        numawards++;
+    }
+    if (numattacks == numstaffattack && numattacks > 0) {
+        awards[numawards] = awardbojutsu;
+        numawards++;
+    }
+    if (numattacks == numswordattack && numattacks > 0) {
+        awards[numawards] = awardswordsman;
+        numawards++;
+    }
+    if (numattacks == numknifeattack && numattacks > 0) {
+        awards[numawards] = awardknifefighter;
+        numawards++;
+    }
+    if (numattacks == numunarmedattack && numthrowkill == 0 && weapons.size() > 0) {
+        awards[numawards] = awardkungfu;
+        numawards++;
+    }
+    if (numescaped > 0) {
+        awards[numawards] = awardevasion;
+        numawards++;
+    }
+    if (numflipfail == 0 && numflipped + numwallflipped * 2 > 20) {
+        awards[numawards] = awardacrobat;
+        numawards++;
+    }
+    if (numthrowkill == numplayers - 1) {
+        awards[numawards] = awardlongrange;
+        numawards++;
+    }
+    alldead = 1;
+    for (i = 1; i < numplayers; i++) {
+        if (player[i].dead != 2)alldead = 0;
+    }
+    if (numafterkill > 0 && alldead) {
+        awards[numawards] = awardbrutal;
+        numawards++;
+    }
+    if (numreversals > ((float)numattacks)*.8 && numreversals > 3) {
+        awards[numawards] = awardaikido;
+        numawards++;
+    }
+    if (maxalarmed == 1 && numplayers > 2) {
+        awards[numawards] = awardstrategy;
+        numawards++;
+    }
+    if (numflipfail > 3) {
+        awards[numawards] = awardklutz;
+        numawards++;
+    }
+    return numawards;
 }

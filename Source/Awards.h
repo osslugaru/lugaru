@@ -26,7 +26,7 @@ enum bonus_types {
 #define DECLARE_BONUS(id, ...) id,
 #include "Bonuses.def"
 #undef DECLARE_BONUS
-bonus_count
+    bonus_count
 };
 
 static const char *bonus_names[bonus_count] = {
@@ -48,7 +48,7 @@ enum award_types {
 #define DECLARE_AWARD(id, name) id,
 #include "Awards.def"
 #undef DECLARE_AWARD
-award_count
+    award_count
 };
 
 static const char *award_names[award_count] = {

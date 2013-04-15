@@ -10,7 +10,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -49,9 +49,9 @@ typedef unsigned char      uint8_t;
 typedef unsigned short     uint16_t;
 typedef unsigned long      uint32_t;
 #ifdef WIN32
-	typedef unsigned __int64	uint64_t;
+typedef unsigned __int64	uint64_t;
 #else
-	typedef unsigned long long uint64_t;
+typedef unsigned long long uint64_t;
 #endif
 typedef float              float32_t;
 typedef double             float64_t;
@@ -107,15 +107,12 @@ BinIO_INLINE void BinIOSwap8(const uint8_t *src, uint8_t *dst)
 
 BinIO_INLINE int BinIONormalizeByteOrder(int byte_order)
 {
-    if (byte_order == BinIO_HOST_BYTE_ORDER)
-    {
+    if (byte_order == BinIO_HOST_BYTE_ORDER) {
         byte_order = BinIO_BYTE_ORDER;
-    }
-    else if (byte_order == BinIO_NETWORK_BYTE_ORDER)
-    {
+    } else if (byte_order == BinIO_NETWORK_BYTE_ORDER) {
         byte_order = BinIO_BIG_ENDIAN_BYTE_ORDER;
     }
-    
+
     return byte_order;
 }
 
@@ -132,8 +129,7 @@ extern void BinIOConvert8(int from_byte_order, int to_byte_order,
                           const uint8_t *src, uint8_t *dst,
                           unsigned int count);
 
-struct BinIOFormatCursor
-{
+struct BinIOFormatCursor {
     const char *cursor;
     int         byte_order;
     int         count;

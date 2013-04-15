@@ -10,7 +10,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -54,46 +54,47 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define firetype 13
 
 
-class Objects{
+class Objects
+{
 public:
-	XYZ center;
-	float radius;
-	XYZ position[max_objects];
-	int type[max_objects];
-	float yaw[max_objects];
-	float pitch[max_objects];
-	float rotx[max_objects];
-	float rotxvel[max_objects];
-	float roty[max_objects];
-	float rotyvel[max_objects];
-	int numobjects;
-	bool possible[max_objects];
-	Model model[max_objects];
-	Model displaymodel[max_objects];
-	float friction[max_objects];
-	float scale[max_objects];
-	float messedwith[max_objects];
-	float checked[max_objects];
-	Texture boxtextureptr;
-	Texture treetextureptr;
-	Texture bushtextureptr;
-	Texture rocktextureptr;
-	float shadowed[max_objects];
-	float occluded[max_objects];
-	bool checkcollide(XYZ startpoint, XYZ endpoint,int which);
-	bool onfire[max_objects];
-	float flamedelay[max_objects];
+    XYZ center;
+    float radius;
+    XYZ position[max_objects];
+    int type[max_objects];
+    float yaw[max_objects];
+    float pitch[max_objects];
+    float rotx[max_objects];
+    float rotxvel[max_objects];
+    float roty[max_objects];
+    float rotyvel[max_objects];
+    int numobjects;
+    bool possible[max_objects];
+    Model model[max_objects];
+    Model displaymodel[max_objects];
+    float friction[max_objects];
+    float scale[max_objects];
+    float messedwith[max_objects];
+    float checked[max_objects];
+    Texture boxtextureptr;
+    Texture treetextureptr;
+    Texture bushtextureptr;
+    Texture rocktextureptr;
+    float shadowed[max_objects];
+    float occluded[max_objects];
+    bool checkcollide(XYZ startpoint, XYZ endpoint, int which);
+    bool onfire[max_objects];
+    float flamedelay[max_objects];
 
-	void SphereCheckPossible(XYZ *p1,float radius);
-	void DeleteObject(int which);
-	void MakeObject(int atype, XYZ where, float ayaw, float ascale);
-	void MakeObject(int atype, XYZ where, float ayaw, float apitch, float ascale);
-	void Draw();
-	void DoShadows();
-	void DoStuff();
+    void SphereCheckPossible(XYZ *p1, float radius);
+    void DeleteObject(int which);
+    void MakeObject(int atype, XYZ where, float ayaw, float ascale);
+    void MakeObject(int atype, XYZ where, float ayaw, float apitch, float ascale);
+    void Draw();
+    void DoShadows();
+    void DoStuff();
 
-	Objects();
-	~Objects();
+    Objects();
+    ~Objects();
 };
 
 #endif

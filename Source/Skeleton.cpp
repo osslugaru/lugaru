@@ -47,9 +47,18 @@ extern bool visibleloading;
 
 /* convenience functions
  */
-Joint& Skeleton::joint(int bodypart) { return joints[jointlabels[bodypart]]; }
-XYZ& Skeleton::jointPos(int bodypart) { return joint(bodypart).position; }
-XYZ& Skeleton::jointVel(int bodypart) { return joint(bodypart).velocity; }
+Joint& Skeleton::joint(int bodypart)
+{
+    return joints[jointlabels[bodypart]];
+}
+XYZ& Skeleton::jointPos(int bodypart)
+{
+    return joint(bodypart).position;
+}
+XYZ& Skeleton::jointVel(int bodypart)
+{
+    return joint(bodypart).velocity;
+}
 
 
 /* EFFECT
@@ -217,17 +226,20 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
             joints[i].position = joints[i].position + joints[i].velocity * multiplier;
 
             switch (joints[i].label) {
-                case head:
-                    groundlevel = .8; break;
-                case righthand:
-                case rightwrist:
-                case rightelbow:
-                case lefthand:
-                case leftwrist:
-                case leftelbow:
-                    groundlevel = .2; break;
-                default:
-                    groundlevel = .15; break;
+            case head:
+                groundlevel = .8;
+                break;
+            case righthand:
+            case rightwrist:
+            case rightelbow:
+            case lefthand:
+            case leftwrist:
+            case leftelbow:
+                groundlevel = .2;
+                break;
+            default:
+                groundlevel = .15;
+                break;
             }
 
             joints[i].position.y -= groundlevel;
@@ -509,17 +521,20 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
 
         for (i = 0; i < num_joints; i++) {
             switch (joints[i].label) {
-                case head:
-                    groundlevel = .8; break;
-                case righthand:
-                case rightwrist:
-                case rightelbow:
-                case lefthand:
-                case leftwrist:
-                case leftelbow:
-                    groundlevel = .2; break;
-                default:
-                    groundlevel = .15; break;
+            case head:
+                groundlevel = .8;
+                break;
+            case righthand:
+            case rightwrist:
+            case rightelbow:
+            case lefthand:
+            case leftwrist:
+            case leftelbow:
+                groundlevel = .2;
+                break;
+            default:
+                groundlevel = .15;
+                break;
             }
             joints[i].position.y += groundlevel;
             joints[i].mass = 1;
@@ -597,34 +612,39 @@ void Skeleton::FindRotationMuscle(int which, int animation)
     const int label1 = muscles[which].parent1->label;
     const int label2 = muscles[which].parent2->label;
     switch (label1) {
-        case head:
-            fwd = specialforward[0]; break;
-        case rightshoulder:
-        case rightelbow:
-        case rightwrist:
-        case righthand:
-            fwd = specialforward[1]; break;
-        case leftshoulder:
-        case leftelbow:
-        case leftwrist:
-        case lefthand:
-            fwd = specialforward[2]; break;
-        case righthip:
-        case rightknee:
-        case rightankle:
-        case rightfoot:
-            fwd = specialforward[3]; break;
-        case lefthip:
-        case leftknee:
-        case leftankle:
-        case leftfoot:
-            fwd = specialforward[4]; break;
-        default:
-            if (muscles[which].parent1->lower)
-                fwd = lowforward;
-            else
-                fwd = forward;
-            break;
+    case head:
+        fwd = specialforward[0];
+        break;
+    case rightshoulder:
+    case rightelbow:
+    case rightwrist:
+    case righthand:
+        fwd = specialforward[1];
+        break;
+    case leftshoulder:
+    case leftelbow:
+    case leftwrist:
+    case lefthand:
+        fwd = specialforward[2];
+        break;
+    case righthip:
+    case rightknee:
+    case rightankle:
+    case rightfoot:
+        fwd = specialforward[3];
+        break;
+    case lefthip:
+    case leftknee:
+    case leftankle:
+    case leftfoot:
+        fwd = specialforward[4];
+        break;
+    default:
+        if (muscles[which].parent1->lower)
+            fwd = lowforward;
+        else
+            fwd = forward;
+        break;
     }
 
     if (animation == hanganim) {
@@ -938,7 +958,7 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 
         newload = 1;
 
-        // for each muscle... 
+        // for each muscle...
         for (i = 0; i < num_muscles; i++) {
             // read info
             tempmuscle = muscles[i].numvertices;

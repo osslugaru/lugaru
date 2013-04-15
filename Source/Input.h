@@ -11,7 +11,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -32,14 +32,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define MOUSEBUTTON2 		SDLK_LAST+SDL_BUTTON_RIGHT
 
 /**> FUNCTION PROTOTYPES <**/
-class Input {
-	public:
-		static void Tick();
-		static bool isKeyDown(int k);
-		static bool isKeyPressed(int k);
-		static const char* keyToChar(unsigned short which);
-		static unsigned short 	CharToKey(const char* which);
-		static Boolean MouseClicked();
+class Input
+{
+public:
+    static void Tick();
+    static bool isKeyDown(int k);
+    static bool isKeyPressed(int k);
+    static const char* keyToChar(unsigned short which);
+    static unsigned short 	CharToKey(const char* which);
+    static Boolean MouseClicked();
 };
 
 #endif

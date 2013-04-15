@@ -32,7 +32,7 @@ extern int detail;
 extern int kBitsPerPixel;
 extern int kContextWidth;
 extern int kContextHeight;
-extern float screenwidth,screenheight;
+extern float screenwidth, screenheight;
 
 void DefaultSettings();
 void SaveSettings();

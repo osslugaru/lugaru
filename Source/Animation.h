@@ -23,11 +23,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	ANIMATION_H
 
 enum anim_attack_type {
-  neutral, normalattack, reversed, reversal
+    neutral, normalattack, reversed, reversal
 };
 
 enum anim_height_type {
-  lowheight, middleheight, highheight
+    lowheight, middleheight, highheight
 };
 
 
@@ -35,14 +35,14 @@ enum animation_types {
 #define DECLARE_ANIM(id, ...) id,
 #include "Animation.def"
 #undef DECLARE_ANIM
-animation_count
+    animation_count
 };
 
 enum animation_bit_offsets {
 #define DECLARE_ANIM_BIT(bit) o_##bit,
 #include "Animation.def"
 #undef DECLARE_ANIM_BIT
-animation_bit_count
+    animation_bit_count
 };
 
 enum animation_bits_def {

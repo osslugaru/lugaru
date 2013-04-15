@@ -10,7 +10,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -54,11 +54,11 @@ float windvar = 0;
 float precipdelay = 0;
 float gamespeed = 0;
 float oldgamespeed = 0;
-float tintr = 0,tintg = 0,tintb = 0;
+float tintr = 0, tintg = 0, tintb = 0;
 int difficulty = 0;
 float multiplier = 0;
 float realmultiplier = 0;
-float screenwidth = 0,screenheight = 0;
+float screenwidth = 0, screenheight = 0;
 float viewdistance = 0;
 XYZ viewer;
 XYZ viewerfacing;
@@ -85,8 +85,8 @@ float playerdist = 0;
 Objects objects;
 int slomo = 0;
 float slomodelay = 0;
-GLubyte bloodText[512*512*3] = {0};
-GLubyte wolfbloodText[512*512*3] = {0};
+GLubyte bloodText[512 * 512 * 3] = {0};
+GLubyte wolfbloodText[512 * 512 * 3] = {0};
 float colors[3] = {0};
 int bloodtoggle = 0;
 bool osx = false;
@@ -103,7 +103,7 @@ bool ambientsound = false;
 bool mousejump = false;
 bool freeze = false;
 bool winfreeze = false;
-float flashamount = 0,flashr = 0,flashg = 0,flashb = 0;
+float flashamount = 0, flashr = 0, flashg = 0, flashb = 0;
 int flashdelay = 0;
 bool vblsync = false;
 float motionbluramount = 0;
@@ -129,7 +129,7 @@ XYZ hotspot[40];
 int hotspottype[40] = {0};
 float hotspotsize[40] = {0};
 char hotspottext[40][256] = {0};
-int currenthotspot = 0;	
+int currenthotspot = 0;
 int killhotspot = 0;
 
 float menupulse = 0;

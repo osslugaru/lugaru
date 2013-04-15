@@ -42,10 +42,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 typedef bool Boolean;
 
-struct Point
-{
-	short v;
-	short h;
+struct Point {
+    short v;
+    short h;
 };
 
 typedef signed char SInt8;
@@ -59,8 +58,7 @@ void CopyCStringToPascal( const char* src, unsigned char dst[256]);
 void CopyPascalStringToC( const unsigned char* src, char* dst);
 
 
-typedef struct AbsoluteTime
-{
+typedef struct AbsoluteTime {
     unsigned long   hi;
     unsigned long   lo;
 } AbsoluteTime;
@@ -69,8 +67,7 @@ AbsoluteTime UpTime();		// NOTE: returns time since app started, not system star
 
 typedef long Duration;
 
-enum
-{
+enum {
     durationMicrosecond             = -1,
     durationMillisecond             = 1,
     durationSecond                  = 1000,
@@ -104,16 +101,16 @@ char* ConvertFileName( const char* orgfilename, const char* junk);
 
 inline float abs(float f)
 {
-	if (f < 0)
-		return -f;
-	return f;
+    if (f < 0)
+        return -f;
+    return f;
 }
 
 inline double abs(double f)
 {
-	if (f < 0)
-		return -f;
-	return f;
+    if (f < 0)
+        return -f;
+    return f;
 }
 
 
