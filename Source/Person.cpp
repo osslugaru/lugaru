@@ -85,21 +85,6 @@ extern bool gamestarted;
 
 Person player[maxplayers];
 
-/* convenience functions
- */
-Joint& Person::joint(int bodypart)
-{
-    return skeleton.joints[skeleton.jointlabels[bodypart]];
-}
-XYZ& Person::jointPos(int bodypart)
-{
-    return joint(bodypart).position;
-}
-XYZ& Person::jointVel(int bodypart)
-{
-    return joint(bodypart).velocity;
-}
-
 /* EFFECT
  *
  * USES:

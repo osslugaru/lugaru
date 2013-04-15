@@ -326,10 +326,11 @@ public:
 
 
 
-    // convenience
-    Joint& joint(int);
-    XYZ& jointPos(int);
-    XYZ& jointVel(int);
+    // convenience functions
+    inline Joint& joint(int bodypart) { return skeleton.joints[skeleton.jointlabels[bodypart]]; }
+    inline XYZ& jointPos(int bodypart) { return joint(bodypart).position; }
+    inline XYZ& jointVel(int bodypart) { return joint(bodypart).velocity; }
+
 
     void CheckKick();
     void CatchFire();
@@ -394,4 +395,5 @@ public:
 
 const int maxplayers = 10;
 extern Person player[maxplayers];
+
 #endif

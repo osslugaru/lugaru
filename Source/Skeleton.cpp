@@ -45,22 +45,6 @@ extern int whichjointendarray[26];
 
 extern bool visibleloading;
 
-/* convenience functions
- */
-Joint& Skeleton::joint(int bodypart)
-{
-    return joints[jointlabels[bodypart]];
-}
-XYZ& Skeleton::jointPos(int bodypart)
-{
-    return joint(bodypart).position;
-}
-XYZ& Skeleton::jointVel(int bodypart)
-{
-    return joint(bodypart).velocity;
-}
-
-
 /* EFFECT
  */
 void dealloc2(void* param)

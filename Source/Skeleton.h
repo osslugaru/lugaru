@@ -221,9 +221,12 @@ public:
     ~Skeleton();
 
 private:
-    Joint& joint(int bodypart);
-    XYZ& jointPos(int bodypart);
-    XYZ& jointVel(int bodypart);
+    // convenience functions
+    // only for Skeleton.cpp
+    inline Joint& joint(int bodypart) { return joints[jointlabels[bodypart]]; }
+    inline XYZ& jointPos(int bodypart) { return joint(bodypart).position; }
+    inline XYZ& jointVel(int bodypart) { return joint(bodypart).velocity; }
+
 };
 
 #endif
