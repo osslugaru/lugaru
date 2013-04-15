@@ -53,7 +53,8 @@ bool 	Objects::checkcollide(XYZ startpoint, XYZ endpoint, int which)
         if (type[i] != treeleavestype && type[i] != treetrunktype && type[i] != bushtype && type[i] != firetype && i != which) {
             colviewer = startpoint;
             coltarget = endpoint;
-            if (model[i].LineCheck(&colviewer, &coltarget, &colpoint, &position[i], &yaw[i]) != -1)return 1;
+            if (model[i].LineCheck(&colviewer, &coltarget, &colpoint, &position[i], &yaw[i]) != -1)
+                return 1;
         }
     }
 
@@ -96,10 +97,13 @@ void Objects::Draw()
                 hidden = !(distsqflat(&viewer, &position[i]) > playerdist + 3 || (type[i] != bushtype && type[i] != treeleavestype));
                 if (!hidden) {
 
-                    if (detail == 2 && distance > viewdistance * viewdistance / 4 && environment == desertenvironment)glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, blurness );
-                    else glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, 0 );
+                    if (detail == 2 && distance > viewdistance * viewdistance / 4 && environment == desertenvironment)
+                        glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, blurness );
+                    else
+                        glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, 0 );
                     distance = (viewdistance * viewdistance - (distance - (viewdistance * viewdistance * fadestart)) * (1 / (1 - fadestart))) / viewdistance / viewdistance;
-                    if (distance > 1)distance = 1;
+                    if (distance > 1)
+                        distance = 1;
                     if (distance > 0) {
 
                         /*if(checkcollide(viewer,DoRotation(model[i].vertex[model[i].vertexNum],0,yaw[i],0)*scale[i]+position[i],i)){
@@ -109,33 +113,39 @@ void Objects::Draw()
                         if (occluded[i] < 6) {
                             glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
                             glPushMatrix();
-                            if (!model[i].color)glEnable(GL_LIGHTING);
-                            else glDisable(GL_LIGHTING);
+                            if (!model[i].color)
+                                glEnable(GL_LIGHTING);
+                            else
+                                glDisable(GL_LIGHTING);
                             glDepthMask(1);
                             glTranslatef(position[i].x, position[i].y, position[i].z);
                             if (type[i] == bushtype) {
                                 messedwith[i] -= multiplier;
                                 if (rotxvel[i] || rotx[i]) {
-                                    if (rotx[i] > 0)rotxvel[i] -= multiplier * 8 * fabs(rotx[i]);
-                                    if (rotx[i] < 0)rotxvel[i] += multiplier * 8 * fabs(rotx[i]);
-                                    if (rotx[i] > 0)rotxvel[i] -= multiplier * 4;
-                                    if (rotx[i] < 0)rotxvel[i] += multiplier * 4;
-                                    if (rotxvel[i] > 0)rotxvel[i] -= multiplier * 4;
-                                    if (rotxvel[i] < 0)rotxvel[i] += multiplier * 4;
-                                    if (fabs(rotx[i]) < multiplier * 4)rotx[i] = 0;
-                                    if (fabs(rotxvel[i]) < multiplier * 4)rotxvel[i] = 0;
+                                    if (rotx[i] > 0) rotxvel[i] -= multiplier * 8 * fabs(rotx[i]);
+                                    if (rotx[i] < 0) rotxvel[i] += multiplier * 8 * fabs(rotx[i]);
+                                    if (rotx[i] > 0) rotxvel[i] -= multiplier * 4;
+                                    if (rotx[i] < 0) rotxvel[i] += multiplier * 4;
+                                    if (rotxvel[i] > 0) rotxvel[i] -= multiplier * 4;
+                                    if (rotxvel[i] < 0) rotxvel[i] += multiplier * 4;
+                                    if (fabs(rotx[i]) < multiplier * 4)
+                                        rotx[i] = 0;
+                                    if (fabs(rotxvel[i]) < multiplier * 4)
+                                        rotxvel[i] = 0;
 
                                     rotx[i] += rotxvel[i] * multiplier * 4;
                                 }
                                 if (rotyvel[i] || roty[i]) {
-                                    if (roty[i] > 0)rotyvel[i] -= multiplier * 8 * fabs(roty[i]);
-                                    if (roty[i] < 0)rotyvel[i] += multiplier * 8 * fabs(roty[i]);
-                                    if (roty[i] > 0)rotyvel[i] -= multiplier * 4;
-                                    if (roty[i] < 0)rotyvel[i] += multiplier * 4;
-                                    if (rotyvel[i] > 0)rotyvel[i] -= multiplier * 4;
-                                    if (rotyvel[i] < 0)rotyvel[i] += multiplier * 4;
-                                    if (fabs(roty[i]) < multiplier * 4)roty[i] = 0;
-                                    if (fabs(rotyvel[i]) < multiplier * 4)rotyvel[i] = 0;
+                                    if (roty[i] > 0) rotyvel[i] -= multiplier * 8 * fabs(roty[i]);
+                                    if (roty[i] < 0) rotyvel[i] += multiplier * 8 * fabs(roty[i]);
+                                    if (roty[i] > 0) rotyvel[i] -= multiplier * 4;
+                                    if (roty[i] < 0) rotyvel[i] += multiplier * 4;
+                                    if (rotyvel[i] > 0) rotyvel[i] -= multiplier * 4;
+                                    if (rotyvel[i] < 0) rotyvel[i] += multiplier * 4;
+                                    if (fabs(roty[i]) < multiplier * 4)
+                                        roty[i] = 0;
+                                    if (fabs(rotyvel[i]) < multiplier * 4)
+                                        rotyvel[i] = 0;
 
                                     roty[i] += rotyvel[i] * multiplier * 4;
                                 }
@@ -145,35 +155,43 @@ void Objects::Draw()
                                 if (rotx[i]) {
                                     glRotatef(-rotx[i], 0, 0, 1);
                                 }
-                                if (rotx[i] > 10)rotx[i] = 10;
-                                if (rotx[i] < -10)rotx[i] = -10;
-                                if (roty[i] > 10)roty[i] = 10;
-                                if (roty[i] < -10)roty[i] = -10;
+                                if (rotx[i] > 10)
+                                    rotx[i] = 10;
+                                if (rotx[i] < -10)
+                                    rotx[i] = -10;
+                                if (roty[i] > 10)
+                                    roty[i] = 10;
+                                if (roty[i] < -10)
+                                    roty[i] = -10;
                             }
                             if (type[i] == treetrunktype || type[i] == treeleavestype) {
                                 if (type[i] == treetrunktype || environment == 2) {
                                     messedwith[i] -= multiplier;
                                     if (rotxvel[i] || rotx[i]) {
-                                        if (rotx[i] > 0)rotxvel[i] -= multiplier * 8 * fabs(rotx[i]);
-                                        if (rotx[i] < 0)rotxvel[i] += multiplier * 8 * fabs(rotx[i]);
-                                        if (rotx[i] > 0)rotxvel[i] -= multiplier * 4;
-                                        if (rotx[i] < 0)rotxvel[i] += multiplier * 4;
-                                        if (rotxvel[i] > 0)rotxvel[i] -= multiplier * 4;
-                                        if (rotxvel[i] < 0)rotxvel[i] += multiplier * 4;
-                                        if (fabs(rotx[i]) < multiplier * 4)rotx[i] = 0;
-                                        if (fabs(rotxvel[i]) < multiplier * 4)rotxvel[i] = 0;
+                                        if (rotx[i] > 0) rotxvel[i] -= multiplier * 8 * fabs(rotx[i]);
+                                        if (rotx[i] < 0) rotxvel[i] += multiplier * 8 * fabs(rotx[i]);
+                                        if (rotx[i] > 0) rotxvel[i] -= multiplier * 4;
+                                        if (rotx[i] < 0) rotxvel[i] += multiplier * 4;
+                                        if (rotxvel[i] > 0) rotxvel[i] -= multiplier * 4;
+                                        if (rotxvel[i] < 0) rotxvel[i] += multiplier * 4;
+                                        if (fabs(rotx[i]) < multiplier * 4)
+                                            rotx[i] = 0;
+                                        if (fabs(rotxvel[i]) < multiplier * 4)
+                                            rotxvel[i] = 0;
 
                                         rotx[i] += rotxvel[i] * multiplier * 4;
                                     }
                                     if (rotyvel[i] || roty[i]) {
-                                        if (roty[i] > 0)rotyvel[i] -= multiplier * 8 * fabs(roty[i]);
-                                        if (roty[i] < 0)rotyvel[i] += multiplier * 8 * fabs(roty[i]);
-                                        if (roty[i] > 0)rotyvel[i] -= multiplier * 4;
-                                        if (roty[i] < 0)rotyvel[i] += multiplier * 4;
-                                        if (rotyvel[i] > 0)rotyvel[i] -= multiplier * 4;
-                                        if (rotyvel[i] < 0)rotyvel[i] += multiplier * 4;
-                                        if (fabs(roty[i]) < multiplier * 4)roty[i] = 0;
-                                        if (fabs(rotyvel[i]) < multiplier * 4)rotyvel[i] = 0;
+                                        if (roty[i] > 0) rotyvel[i] -= multiplier * 8 * fabs(roty[i]);
+                                        if (roty[i] < 0) rotyvel[i] += multiplier * 8 * fabs(roty[i]);
+                                        if (roty[i] > 0) rotyvel[i] -= multiplier * 4;
+                                        if (roty[i] < 0) rotyvel[i] += multiplier * 4;
+                                        if (rotyvel[i] > 0) rotyvel[i] -= multiplier * 4;
+                                        if (rotyvel[i] < 0) rotyvel[i] += multiplier * 4;
+                                        if (fabs(roty[i]) < multiplier * 4)
+                                            roty[i] = 0;
+                                        if (fabs(rotyvel[i]) < multiplier * 4)
+                                            rotyvel[i] = 0;
 
                                         roty[i] += rotyvel[i] * multiplier * 4;
                                     }
@@ -183,33 +201,41 @@ void Objects::Draw()
                                     if (rotx[i]) {
                                         glRotatef(-rotx[i] / 6, 0, 0, 1);
                                     }
-                                    if (rotx[i] > 10)rotx[i] = 10;
-                                    if (rotx[i] < -10)rotx[i] = -10;
-                                    if (roty[i] > 10)roty[i] = 10;
-                                    if (roty[i] < -10)roty[i] = -10;
+                                    if (rotx[i] > 10)
+                                        rotx[i] = 10;
+                                    if (rotx[i] < -10)
+                                        rotx[i] = -10;
+                                    if (roty[i] > 10)
+                                        roty[i] = 10;
+                                    if (roty[i] < -10)
+                                        roty[i] = -10;
                                 } else {
                                     messedwith[i] -= multiplier;
                                     if (rotxvel[i] || rotx[i]) {
-                                        if (rotx[i] > 0)rotxvel[i] -= multiplier * 8 * fabs(rotx[i]);
-                                        if (rotx[i] < 0)rotxvel[i] += multiplier * 8 * fabs(rotx[i]);
-                                        if (rotx[i] > 0)rotxvel[i] -= multiplier * 4;
-                                        if (rotx[i] < 0)rotxvel[i] += multiplier * 4;
-                                        if (rotxvel[i] > 0)rotxvel[i] -= multiplier * 4;
-                                        if (rotxvel[i] < 0)rotxvel[i] += multiplier * 4;
-                                        if (fabs(rotx[i]) < multiplier * 4)rotx[i] = 0;
-                                        if (fabs(rotxvel[i]) < multiplier * 4)rotxvel[i] = 0;
+                                        if (rotx[i] > 0) rotxvel[i] -= multiplier * 8 * fabs(rotx[i]);
+                                        if (rotx[i] < 0) rotxvel[i] += multiplier * 8 * fabs(rotx[i]);
+                                        if (rotx[i] > 0) rotxvel[i] -= multiplier * 4;
+                                        if (rotx[i] < 0) rotxvel[i] += multiplier * 4;
+                                        if (rotxvel[i] > 0) rotxvel[i] -= multiplier * 4;
+                                        if (rotxvel[i] < 0) rotxvel[i] += multiplier * 4;
+                                        if (fabs(rotx[i]) < multiplier * 4)
+                                            rotx[i] = 0;
+                                        if (fabs(rotxvel[i]) < multiplier * 4)
+                                            rotxvel[i] = 0;
 
                                         rotx[i] += rotxvel[i] * multiplier * 4;
                                     }
                                     if (rotyvel[i] || roty[i]) {
-                                        if (roty[i] > 0)rotyvel[i] -= multiplier * 8 * fabs(roty[i]);
-                                        if (roty[i] < 0)rotyvel[i] += multiplier * 8 * fabs(roty[i]);
-                                        if (roty[i] > 0)rotyvel[i] -= multiplier * 4;
-                                        if (roty[i] < 0)rotyvel[i] += multiplier * 4;
-                                        if (rotyvel[i] > 0)rotyvel[i] -= multiplier * 4;
-                                        if (rotyvel[i] < 0)rotyvel[i] += multiplier * 4;
-                                        if (fabs(roty[i]) < multiplier * 4)roty[i] = 0;
-                                        if (fabs(rotyvel[i]) < multiplier * 4)rotyvel[i] = 0;
+                                        if (roty[i] > 0) rotyvel[i] -= multiplier * 8 * fabs(roty[i]);
+                                        if (roty[i] < 0) rotyvel[i] += multiplier * 8 * fabs(roty[i]);
+                                        if (roty[i] > 0) rotyvel[i] -= multiplier * 4;
+                                        if (roty[i] < 0) rotyvel[i] += multiplier * 4;
+                                        if (rotyvel[i] > 0) rotyvel[i] -= multiplier * 4;
+                                        if (rotyvel[i] < 0) rotyvel[i] += multiplier * 4;
+                                        if (fabs(roty[i]) < multiplier * 4)
+                                            roty[i] = 0;
+                                        if (fabs(rotyvel[i]) < multiplier * 4)
+                                            rotyvel[i] = 0;
 
                                         roty[i] += rotyvel[i] * multiplier * 4;
                                     }
@@ -219,10 +245,14 @@ void Objects::Draw()
                                     if (rotx[i]) {
                                         glRotatef(-rotx[i] / 4, 0, 0, 1);
                                     }
-                                    if (rotx[i] > 10)rotx[i] = 10;
-                                    if (rotx[i] < -10)rotx[i] = -10;
-                                    if (roty[i] > 10)roty[i] = 10;
-                                    if (roty[i] < -10)roty[i] = -10;
+                                    if (rotx[i] > 10)
+                                        rotx[i] = 10;
+                                    if (rotx[i] < -10)
+                                        rotx[i] = -10;
+                                    if (roty[i] > 10)
+                                        roty[i] = 10;
+                                    if (roty[i] < -10)
+                                        roty[i] = -10;
                                 }
 
                             }
@@ -254,7 +284,8 @@ void Objects::Draw()
                                 }
                             }
                             glRotatef(yaw[i], 0, 1, 0);
-                            if (distance > 1)distance = 1;
+                            if (distance > 1)
+                                distance = 1;
                             glColor4f((1 - shadowed[i]) / 2 + .5, (1 - shadowed[i]) / 2 + .5, (1 - shadowed[i]) / 2 + .5, distance);
                             if (distance >= 1) {
                                 glDisable(GL_BLEND);
@@ -283,7 +314,8 @@ void Objects::Draw()
                                 terrainlight = terrain.getLighting(position[i].x, position[i].z);
                                 if (!hidden) {
                                     glColor4f(terrainlight.x, terrainlight.y, terrainlight.z, distance);
-                                    if (distance < 1)glAlphaFunc(GL_GREATER, 0.2);
+                                    if (distance < 1)
+                                        glAlphaFunc(GL_GREATER, 0.2);
                                 }
                                 if (hidden) {
                                     glDepthMask(0);
@@ -299,7 +331,8 @@ void Objects::Draw()
                                 terrainlight = terrain.getLighting(position[i].x, position[i].z);
                                 if (!hidden) {
                                     glColor4f(terrainlight.x, terrainlight.y, terrainlight.z, distance);
-                                    if (distance < 1)glAlphaFunc(GL_GREATER, 0.2);
+                                    if (distance < 1)
+                                        glAlphaFunc(GL_GREATER, 0.2);
                                 }
                                 if (hidden) {
                                     glDepthMask(0);
@@ -341,26 +374,30 @@ void Objects::Draw()
                             if (type[i] == bushtype) {
                                 messedwith[i] -= multiplier;
                                 if (rotxvel[i] || rotx[i]) {
-                                    if (rotx[i] > 0)rotxvel[i] -= multiplier * 8 * fabs(rotx[i]);
-                                    if (rotx[i] < 0)rotxvel[i] += multiplier * 8 * fabs(rotx[i]);
-                                    if (rotx[i] > 0)rotxvel[i] -= multiplier * 4;
-                                    if (rotx[i] < 0)rotxvel[i] += multiplier * 4;
-                                    if (rotxvel[i] > 0)rotxvel[i] -= multiplier * 4;
-                                    if (rotxvel[i] < 0)rotxvel[i] += multiplier * 4;
-                                    if (fabs(rotx[i]) < multiplier * 4)rotx[i] = 0;
-                                    if (fabs(rotxvel[i]) < multiplier * 4)rotxvel[i] = 0;
+                                    if (rotx[i] > 0) rotxvel[i] -= multiplier * 8 * fabs(rotx[i]);
+                                    if (rotx[i] < 0) rotxvel[i] += multiplier * 8 * fabs(rotx[i]);
+                                    if (rotx[i] > 0) rotxvel[i] -= multiplier * 4;
+                                    if (rotx[i] < 0) rotxvel[i] += multiplier * 4;
+                                    if (rotxvel[i] > 0) rotxvel[i] -= multiplier * 4;
+                                    if (rotxvel[i] < 0) rotxvel[i] += multiplier * 4;
+                                    if (fabs(rotx[i]) < multiplier * 4)
+                                        rotx[i] = 0;
+                                    if (fabs(rotxvel[i]) < multiplier * 4)
+                                        rotxvel[i] = 0;
 
                                     rotx[i] += rotxvel[i] * multiplier * 4;
                                 }
                                 if (rotyvel[i] || roty[i]) {
-                                    if (roty[i] > 0)rotyvel[i] -= multiplier * 8 * fabs(roty[i]);
-                                    if (roty[i] < 0)rotyvel[i] += multiplier * 8 * fabs(roty[i]);
-                                    if (roty[i] > 0)rotyvel[i] -= multiplier * 4;
-                                    if (roty[i] < 0)rotyvel[i] += multiplier * 4;
-                                    if (rotyvel[i] > 0)rotyvel[i] -= multiplier * 4;
-                                    if (rotyvel[i] < 0)rotyvel[i] += multiplier * 4;
-                                    if (fabs(roty[i]) < multiplier * 4)roty[i] = 0;
-                                    if (fabs(rotyvel[i]) < multiplier * 4)rotyvel[i] = 0;
+                                    if (roty[i] > 0) rotyvel[i] -= multiplier * 8 * fabs(roty[i]);
+                                    if (roty[i] < 0) rotyvel[i] += multiplier * 8 * fabs(roty[i]);
+                                    if (roty[i] > 0) rotyvel[i] -= multiplier * 4;
+                                    if (roty[i] < 0) rotyvel[i] += multiplier * 4;
+                                    if (rotyvel[i] > 0) rotyvel[i] -= multiplier * 4;
+                                    if (rotyvel[i] < 0) rotyvel[i] += multiplier * 4;
+                                    if (fabs(roty[i]) < multiplier * 4)
+                                        roty[i] = 0;
+                                    if (fabs(rotyvel[i]) < multiplier * 4)
+                                        rotyvel[i] = 0;
 
                                     roty[i] += rotyvel[i] * multiplier * 4;
                                 }
@@ -370,34 +407,42 @@ void Objects::Draw()
                                 if (rotx[i]) {
                                     glRotatef(-rotx[i], 0, 0, 1);
                                 }
-                                if (rotx[i] > 10)rotx[i] = 10;
-                                if (rotx[i] < -10)rotx[i] = -10;
-                                if (roty[i] > 10)roty[i] = 10;
-                                if (roty[i] < -10)roty[i] = -10;
+                                if (rotx[i] > 10)
+                                    rotx[i] = 10;
+                                if (rotx[i] < -10)
+                                    rotx[i] = -10;
+                                if (roty[i] > 10)
+                                    roty[i] = 10;
+                                if (roty[i] < -10)
+                                    roty[i] = -10;
                             }
                             if (type[i] == treetrunktype || type[i] == treeleavestype) {
                                 messedwith[i] -= multiplier;
                                 if (rotxvel[i] || rotx[i]) {
-                                    if (rotx[i] > 0)rotxvel[i] -= multiplier * 8 * fabs(rotx[i]);
-                                    if (rotx[i] < 0)rotxvel[i] += multiplier * 8 * fabs(rotx[i]);
-                                    if (rotx[i] > 0)rotxvel[i] -= multiplier * 4;
-                                    if (rotx[i] < 0)rotxvel[i] += multiplier * 4;
-                                    if (rotxvel[i] > 0)rotxvel[i] -= multiplier * 4;
-                                    if (rotxvel[i] < 0)rotxvel[i] += multiplier * 4;
-                                    if (fabs(rotx[i]) < multiplier * 4)rotx[i] = 0;
-                                    if (fabs(rotxvel[i]) < multiplier * 4)rotxvel[i] = 0;
+                                    if (rotx[i] > 0) rotxvel[i] -= multiplier * 8 * fabs(rotx[i]);
+                                    if (rotx[i] < 0) rotxvel[i] += multiplier * 8 * fabs(rotx[i]);
+                                    if (rotx[i] > 0) rotxvel[i] -= multiplier * 4;
+                                    if (rotx[i] < 0) rotxvel[i] += multiplier * 4;
+                                    if (rotxvel[i] > 0) rotxvel[i] -= multiplier * 4;
+                                    if (rotxvel[i] < 0) rotxvel[i] += multiplier * 4;
+                                    if (fabs(rotx[i]) < multiplier * 4)
+                                        rotx[i] = 0;
+                                    if (fabs(rotxvel[i]) < multiplier * 4)
+                                        rotxvel[i] = 0;
 
                                     rotx[i] += rotxvel[i] * multiplier * 4;
                                 }
                                 if (rotyvel[i] || roty[i]) {
-                                    if (roty[i] > 0)rotyvel[i] -= multiplier * 8 * fabs(roty[i]);
-                                    if (roty[i] < 0)rotyvel[i] += multiplier * 8 * fabs(roty[i]);
-                                    if (roty[i] > 0)rotyvel[i] -= multiplier * 4;
-                                    if (roty[i] < 0)rotyvel[i] += multiplier * 4;
-                                    if (rotyvel[i] > 0)rotyvel[i] -= multiplier * 4;
-                                    if (rotyvel[i] < 0)rotyvel[i] += multiplier * 4;
-                                    if (fabs(roty[i]) < multiplier * 4)roty[i] = 0;
-                                    if (fabs(rotyvel[i]) < multiplier * 4)rotyvel[i] = 0;
+                                    if (roty[i] > 0) rotyvel[i] -= multiplier * 8 * fabs(roty[i]);
+                                    if (roty[i] < 0) rotyvel[i] += multiplier * 8 * fabs(roty[i]);
+                                    if (roty[i] > 0) rotyvel[i] -= multiplier * 4;
+                                    if (roty[i] < 0) rotyvel[i] += multiplier * 4;
+                                    if (rotyvel[i] > 0) rotyvel[i] -= multiplier * 4;
+                                    if (rotyvel[i] < 0) rotyvel[i] += multiplier * 4;
+                                    if (fabs(roty[i]) < multiplier * 4)
+                                        roty[i] = 0;
+                                    if (fabs(rotyvel[i]) < multiplier * 4)
+                                        rotyvel[i] = 0;
 
                                     roty[i] += rotyvel[i] * multiplier * 4;
                                 }
@@ -407,10 +452,14 @@ void Objects::Draw()
                                 if (rotx[i]) {
                                     glRotatef(-rotx[i] / 2, 0, 0, 1);
                                 }
-                                if (rotx[i] > 10)rotx[i] = 10;
-                                if (rotx[i] < -10)rotx[i] = -10;
-                                if (roty[i] > 10)roty[i] = 10;
-                                if (roty[i] < -10)roty[i] = -10;
+                                if (rotx[i] > 10)
+                                    rotx[i] = 10;
+                                if (rotx[i] < -10)
+                                    rotx[i] = -10;
+                                if (roty[i] > 10)
+                                    roty[i] = 10;
+                                if (roty[i] < -10)
+                                    roty[i] = -10;
                             }
                             if (environment == snowyenvironment) {
                                 if (type[i] == treeleavestype) {
@@ -465,7 +514,8 @@ void Objects::Draw()
             }
         }
     }
-    if (environment == desertenvironment)glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, 0 );
+    if (environment == desertenvironment)
+        glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, 0 );
     glEnable(GL_ALPHA_TEST);
     SetUpLight(&light, 0);
 }
@@ -485,16 +535,19 @@ void Objects::MakeObject(int atype, XYZ where, float ayaw, float ascale)
 {
     if ((atype != treeleavestype && atype != bushtype) || foliage == 1) {
         scale[numobjects] = ascale;
-        if (atype == treeleavestype)scale[numobjects] += fabs((float)(Random() % 100) / 900) * ascale;
+        if (atype == treeleavestype)
+            scale[numobjects] += fabs((float)(Random() % 100) / 900) * ascale;
 
         onfire[numobjects] = 0;
         flamedelay[numobjects] = 0;
         type[numobjects] = atype;
 
-        if (atype == firetype)onfire[numobjects] = 1;
+        if (atype == firetype)
+            onfire[numobjects] = 1;
 
         position[numobjects] = where;
-        if (atype == bushtype)position[numobjects].y = terrain.getHeight(position[numobjects].x, position[numobjects].z) - .3;
+        if (atype == bushtype)
+            position[numobjects].y = terrain.getHeight(position[numobjects].x, position[numobjects].z) - .3;
         yaw[numobjects] = ayaw;
 
         rotxvel[numobjects] = 0;
@@ -502,30 +555,30 @@ void Objects::MakeObject(int atype, XYZ where, float ayaw, float ascale)
         rotx[numobjects] = 0;
         roty[numobjects] = 0;
 
-        if (atype == boxtype)model[numobjects].loaddecal((char *)":Data:Models:Box.solid", 0);
-        if (atype == cooltype)model[numobjects].loaddecal((char *)":Data:Models:Cool.solid", 0);
-        if (atype == walltype)model[numobjects].loaddecal((char *)":Data:Models:Wall.solid", 0);
-        if (atype == tunneltype)model[numobjects].loaddecal((char *)":Data:Models:Tunnel.solid", 0);
-        if (atype == chimneytype)model[numobjects].loaddecal((char *)":Data:Models:Chimney.solid", 0);
-        if (atype == spiketype)model[numobjects].load((char *)":Data:Models:Spike.solid", 0);
-        if (atype == weirdtype)model[numobjects].loaddecal((char *)":Data:Models:Weird.solid", 0);
-        if (atype == rocktype)model[numobjects].loaddecal((char *)":Data:Models:Rock.solid", 0);
-        if (atype == treetrunktype)model[numobjects].load((char *)":Data:Models:Treetrunk.solid", 0);
-        if (atype == treeleavestype)model[numobjects].load((char *)":Data:Models:Leaves.solid", 0);
-        if (atype == bushtype)model[numobjects].load((char *)":Data:Models:Bush.solid", 0);
+        if (atype == boxtype)           model[numobjects].loaddecal((char *)":Data:Models:Box.solid", 0);
+        if (atype == cooltype)          model[numobjects].loaddecal((char *)":Data:Models:Cool.solid", 0);
+        if (atype == walltype)          model[numobjects].loaddecal((char *)":Data:Models:Wall.solid", 0);
+        if (atype == tunneltype)        model[numobjects].loaddecal((char *)":Data:Models:Tunnel.solid", 0);
+        if (atype == chimneytype)       model[numobjects].loaddecal((char *)":Data:Models:Chimney.solid", 0);
+        if (atype == spiketype)         model[numobjects].load((char *)":Data:Models:Spike.solid", 0);
+        if (atype == weirdtype)         model[numobjects].loaddecal((char *)":Data:Models:Weird.solid", 0);
+        if (atype == rocktype)          model[numobjects].loaddecal((char *)":Data:Models:Rock.solid", 0);
+        if (atype == treetrunktype)     model[numobjects].load((char *)":Data:Models:Treetrunk.solid", 0);
+        if (atype == treeleavestype)    model[numobjects].load((char *)":Data:Models:Leaves.solid", 0);
+        if (atype == bushtype)          model[numobjects].load((char *)":Data:Models:Bush.solid", 0);
 
-        if (atype == boxtype)friction[numobjects] = 1.5;
-        if (atype == cooltype)friction[numobjects] = 1.5;
-        if (atype == walltype)friction[numobjects] = 1.5;
-        if (atype == platformtype)friction[numobjects] = 1.5;
-        if (atype == tunneltype)friction[numobjects] = 1.5;
-        if (atype == chimneytype)friction[numobjects] = 1.5;
-        if (atype == rocktype)friction[numobjects] = .5;
-        if (atype == rocktype && ascale > .5)friction[numobjects] = 1.5;
-        if (atype == weirdtype)friction[numobjects] = 1.5;
-        if (atype == spiketype)friction[numobjects] = .4;
-        if (atype == treetrunktype)friction[numobjects] = .4;
-        if (atype == treeleavestype)friction[numobjects] = 0;
+        if (atype == boxtype)           friction[numobjects] = 1.5;
+        if (atype == cooltype)          friction[numobjects] = 1.5;
+        if (atype == walltype)          friction[numobjects] = 1.5;
+        if (atype == platformtype)      friction[numobjects] = 1.5;
+        if (atype == tunneltype)        friction[numobjects] = 1.5;
+        if (atype == chimneytype)       friction[numobjects] = 1.5;
+        if (atype == rocktype)          friction[numobjects] = .5;
+        if (atype == rocktype && ascale>.5) friction[numobjects] = 1.5;
+        if (atype == weirdtype)         friction[numobjects] = 1.5;
+        if (atype == spiketype)         friction[numobjects] = .4;
+        if (atype == treetrunktype)     friction[numobjects] = .4;
+        if (atype == treeleavestype)    friction[numobjects] = 0;
 
         if (atype == platformtype) {
             model[numobjects].loaddecal((char *)":Data:Models:Platform.solid", 0);
@@ -551,11 +604,13 @@ void Objects::MakeObject(int atype, XYZ where, float ayaw, float ascale)
         model[numobjects].ScaleNormals(-1, -1, -1);
 
         if (atype == treetrunktype && position[numobjects].y < terrain.getHeight(position[numobjects].x, position[numobjects].z) + 1) {
-            if (detail == 2)terrain.MakeDecal(shadowdecalpermanent, position[numobjects], 2, .4, 0);
+            if (detail == 2)
+                terrain.MakeDecal(shadowdecalpermanent, position[numobjects], 2, .4, 0);
         }
 
         if (atype == bushtype && position[numobjects].y < terrain.getHeight(position[numobjects].x, position[numobjects].z) + 1) {
-            if (detail == 2)terrain.MakeDecal(shadowdecalpermanent, position[numobjects], 1, .4, 0);
+            if (detail == 2)
+                terrain.MakeDecal(shadowdecalpermanent, position[numobjects], 1, .4, 0);
         }
 
         if (atype != treeleavestype && atype != bushtype && atype != firetype)
@@ -569,16 +624,19 @@ void Objects::MakeObject(int atype, XYZ where, float ayaw, float apitch, float a
 {
     if ((atype != treeleavestype && atype != bushtype) || foliage == 1) {
         scale[numobjects] = ascale;
-        if (atype == treeleavestype)scale[numobjects] += fabs((float)(Random() % 100) / 900) * ascale;
+        if (atype == treeleavestype)
+            scale[numobjects] += fabs((float)(Random() % 100) / 900) * ascale;
 
         onfire[numobjects] = 0;
         flamedelay[numobjects] = 0;
         type[numobjects] = atype;
 
-        if (atype == firetype)onfire[numobjects] = 1;
+        if (atype == firetype)
+            onfire[numobjects] = 1;
 
         position[numobjects] = where;
-        if (atype == bushtype)position[numobjects].y = terrain.getHeight(position[numobjects].x, position[numobjects].z) - .3;
+        if (atype == bushtype)
+            position[numobjects].y = terrain.getHeight(position[numobjects].x, position[numobjects].z) - .3;
         /*if(atype==firetype){
         if(position[numobjects].y<terrain.getHeight(position[numobjects].x,position[numobjects].z)-.3)
         position[numobjects].y=terrain.getHeight(position[numobjects].x,position[numobjects].z)-.3;
@@ -591,32 +649,33 @@ void Objects::MakeObject(int atype, XYZ where, float ayaw, float apitch, float a
         rotx[numobjects] = 0;
         roty[numobjects] = 0;
 
-        if (atype == boxtype)model[numobjects].loaddecal((char *)":Data:Models:Box.solid", 0);
-        if (atype == cooltype)model[numobjects].loaddecal((char *)":Data:Models:Cool.solid", 0);
-        if (atype == walltype)model[numobjects].loaddecal((char *)":Data:Models:Wall.solid", 0);
-        if (atype == tunneltype)model[numobjects].loaddecal((char *)":Data:Models:Tunnel.solid", 0);
-        if (atype == chimneytype)model[numobjects].loaddecal((char *)":Data:Models:Chimney.solid", 0);
-        if (atype == spiketype)model[numobjects].load((char *)":Data:Models:Spike.solid", 0);
-        if (atype == weirdtype)model[numobjects].loaddecal((char *)":Data:Models:Weird.solid", 0);
-        if (atype == rocktype)model[numobjects].loaddecal((char *)":Data:Models:Rock.solid", 0);
-        if (atype == treetrunktype)model[numobjects].load((char *)":Data:Models:Treetrunk.solid", 0);
-        if (atype == treeleavestype)model[numobjects].load((char *)":Data:Models:Leaves.solid", 0);
-        if (atype == bushtype)model[numobjects].load((char *)":Data:Models:Bush.solid", 0);
+        if (atype == boxtype)           model[numobjects].loaddecal((char *)":Data:Models:Box.solid", 0);
+        if (atype == cooltype)          model[numobjects].loaddecal((char *)":Data:Models:Cool.solid", 0);
+        if (atype == walltype)          model[numobjects].loaddecal((char *)":Data:Models:Wall.solid", 0);
+        if (atype == tunneltype)        model[numobjects].loaddecal((char *)":Data:Models:Tunnel.solid", 0);
+        if (atype == chimneytype)       model[numobjects].loaddecal((char *)":Data:Models:Chimney.solid", 0);
+        if (atype == spiketype)         model[numobjects].load((char *)":Data:Models:Spike.solid", 0);
+        if (atype == weirdtype)         model[numobjects].loaddecal((char *)":Data:Models:Weird.solid", 0);
+        if (atype == rocktype)          model[numobjects].loaddecal((char *)":Data:Models:Rock.solid", 0);
+        if (atype == treetrunktype)     model[numobjects].load((char *)":Data:Models:Treetrunk.solid", 0);
+        if (atype == treeleavestype)    model[numobjects].load((char *)":Data:Models:Leaves.solid", 0);
+        if (atype == bushtype)          model[numobjects].load((char *)":Data:Models:Bush.solid", 0);
 
-        if (atype == boxtype)friction[numobjects] = 1.5;
-        if (atype == cooltype)friction[numobjects] = 1.5;
-        if (atype == walltype)friction[numobjects] = 1.5;
-        if (atype == platformtype)friction[numobjects] = 1.5;
-        if (atype == tunneltype)friction[numobjects] = 1.5;
-        if (atype == chimneytype)friction[numobjects] = 1.5;
-        if (atype == rocktype)friction[numobjects] = .5;
-        if (atype == rocktype && ascale > .5)friction[numobjects] = 1.5;
-        if (atype == weirdtype)friction[numobjects] = 1.5;
-        if (atype == spiketype)friction[numobjects] = .4;
-        if (atype == treetrunktype)friction[numobjects] = .4;
-        if (atype == treeleavestype)friction[numobjects] = 0;
+        if (atype == boxtype)           friction[numobjects] = 1.5;
+        if (atype == cooltype)          friction[numobjects] = 1.5;
+        if (atype == walltype)          friction[numobjects] = 1.5;
+        if (atype == platformtype)      friction[numobjects] = 1.5;
+        if (atype == tunneltype)        friction[numobjects] = 1.5;
+        if (atype == chimneytype)       friction[numobjects] = 1.5;
+        if (atype == rocktype)          friction[numobjects] = .5;
+        if (atype == rocktype && ascale>.5) friction[numobjects] = 1.5;
+        if (atype == weirdtype)         friction[numobjects] = 1.5;
+        if (atype == spiketype)         friction[numobjects] = .4;
+        if (atype == treetrunktype)     friction[numobjects] = .4;
+        if (atype == treeleavestype)    friction[numobjects] = 0;
 
-        if (friction[numobjects] == 1.5 && fabs(apitch) > 5)friction[numobjects] = .5;
+        if (friction[numobjects] == 1.5 && fabs(apitch) > 5)
+            friction[numobjects] = .5;
 
         if (atype == platformtype) {
             model[numobjects].loaddecal((char *)":Data:Models:Platform.solid", 0);
@@ -643,11 +702,13 @@ void Objects::MakeObject(int atype, XYZ where, float ayaw, float apitch, float a
         model[numobjects].ScaleNormals(-1, -1, -1);
 
         if (atype == treetrunktype && position[numobjects].y < terrain.getHeight(position[numobjects].x, position[numobjects].z) + 1) {
-            if (detail == 2)terrain.MakeDecal(shadowdecalpermanent, position[numobjects], 2, .4, 0);
+            if (detail == 2)
+                terrain.MakeDecal(shadowdecalpermanent, position[numobjects], 2, .4, 0);
         }
 
         if (atype == bushtype && position[numobjects].y < terrain.getHeight(position[numobjects].x, position[numobjects].z) + 1) {
-            if (detail == 2)terrain.MakeDecal(shadowdecalpermanent, position[numobjects], 1, .4, 0);
+            if (detail == 2)
+                terrain.MakeDecal(shadowdecalpermanent, position[numobjects], 1, .4, 0);
         }
 
         if (atype != treeleavestype && atype != bushtype && atype != firetype)
@@ -665,11 +726,15 @@ void Objects::DoStuff()
         Sprite::MakeSprite(weaponshinesprite, position[i],position[i]*0, 1,1,1, 5, 1);
         }*/
 
-        if (type[i] == firetype)onfire[i] = 1;
+        if (type[i] == firetype)
+            onfire[i] = 1;
         if (onfire[i]) {
-            if (type[i] == bushtype)flamedelay[i] -= multiplier * 3;
-            if (type[i] == firetype)flamedelay[i] -= multiplier * 3;
-            if (type[i] == treeleavestype)flamedelay[i] -= multiplier * 4;
+            if (type[i] == bushtype)
+                flamedelay[i] -= multiplier * 3;
+            if (type[i] == firetype)
+                flamedelay[i] -= multiplier * 3;
+            if (type[i] == treeleavestype)
+                flamedelay[i] -= multiplier * 4;
             while (flamedelay[i] < 0 && onfire[i]) {
                 flamedelay[i] += .006;
                 if (type[i] == bushtype || type[i] == firetype) {
@@ -699,7 +764,8 @@ void Objects::DoShadows()
     int i, j, k, l;
     static XYZ testpoint, testpoint2, terrainpoint, lightloc, col;
     lightloc = light.location;
-    if (!skyboxtexture)lightloc = 0;
+    if (!skyboxtexture)
+        lightloc = 0;
     lightloc.y += 10;
     Normalise(&lightloc);
     int patchx, patchz;

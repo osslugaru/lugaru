@@ -52,9 +52,12 @@ void	SkyBox::draw()
     M[13] = 0;
     M[14] = 0;
     glLoadMatrixf(M);
-    if (environment == 2)glScalef(1 + blurness / 1000, 1, 1 + blurness / 1000);
-    if (environment != 2)glColor3f(.85 * skyboxr, .85 * skyboxg, .95 * skyboxb);
-    else glColor3f(1 * skyboxr, .95 * skyboxg, .95 * skyboxb);
+    if (environment == 2)
+        glScalef(1 + blurness / 1000, 1, 1 + blurness / 1000);
+    if (environment != 2)
+        glColor3f(.85 * skyboxr, .85 * skyboxg, .95 * skyboxb);
+    else
+        glColor3f(1 * skyboxr, .95 * skyboxg, .95 * skyboxb);
 
     if (!skyboxtexture) {
         glDisable(GL_TEXTURE_2D);
@@ -64,7 +67,8 @@ void	SkyBox::draw()
     glDisable(GL_CULL_FACE);
     glEnable(GL_BLEND);
     glDisable(GL_LIGHTING);
-    if (skyboxtexture)glEnable(GL_TEXTURE_2D);
+    if (skyboxtexture)
+        glEnable(GL_TEXTURE_2D);
     glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
     front.bind();
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );

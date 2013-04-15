@@ -74,11 +74,13 @@ bool upload_image(const unsigned char* filePath, bool hasalpha)
     //err = FSMakeFSSpec (0, 0, (const unsigned char*)filePath, &fsspec);
     err = FSMakeFSSpec (0, 0, filePath, &fsspec);
     //err=FSPathMakeFSSpec((const UInt8*)filePath,&fsspec,&isdir);*/
-    if (err)return;
+    if (err)
+        return;
 
     GraphicsImportComponent gi;
     err = GetGraphicsImporterForFile(&fsspec, &gi);
-    if (err)return;
+    if (err)
+        return;
 
     Rect natbounds;
     cr = GraphicsImportGetNaturalBounds(gi, &natbounds);
@@ -94,7 +96,8 @@ bool upload_image(const unsigned char* filePath, bool hasalpha)
     GWorldPtr gw;
     err = QTNewGWorldFromPtr(&gw, k32ARGBPixelFormat, &natbounds, NULL, NULL,
                              0, texture.data, 4 * natbounds.right);
-    if (err)return;
+    if (err)
+        return;
 
     cr = GraphicsImportSetGWorld(gi, gw, NULL);
 
@@ -106,7 +109,8 @@ bool upload_image(const unsigned char* filePath, bool hasalpha)
     cr = GraphicsImportDraw(gi);
 
     err = CloseComponent(gi);
-    if (err)return;
+    if (err)
+        return;
 
     /*glTexImage2D(textureTarget, 0, GL_RGBA, natbounds.right, natbounds.top, 0,
     GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);

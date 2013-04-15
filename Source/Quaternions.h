@@ -226,7 +226,8 @@ inline void XYZ::vec(Vector add)
 
 inline bool XYZ::operator==(XYZ add)
 {
-    if (x == add.x && y == add.y && z == add.z)return 1;
+    if (x == add.x && y == add.y && z == add.z)
+        return 1;
     return 0;
 }
 
@@ -250,7 +251,8 @@ inline float fast_sqrt (register float arg)
     // Can replace with slower return std::sqrt(arg);
     register float result;
 
-    if (arg == 0.0) return 0.0;
+    if (arg == 0.0)
+        return 0.0;
 
     asm {
         frsqrte		result, arg			// Calculate Square root
@@ -401,12 +403,12 @@ inline bool sphere_line_intersection (
     //~ static float x , y , z;
     static float a, b, c, /*mu,*/ i ;
 
-    if (x1 > x3 + r && x2 > x3 + r)return(0);
-    if (x1 < x3 - r && x2 < x3 - r)return(0);
-    if (y1 > y3 + r && y2 > y3 + r)return(0);
-    if (y1 < y3 - r && y2 < y3 - r)return(0);
-    if (z1 > z3 + r && z2 > z3 + r)return(0);
-    if (z1 < z3 - r && z2 < z3 - r)return(0);
+    if (x1 > x3 + r && x2 > x3 + r) return(0);
+    if (x1 < x3 - r && x2 < x3 - r) return(0);
+    if (y1 > y3 + r && y2 > y3 + r) return(0);
+    if (y1 < y3 - r && y2 < y3 - r) return(0);
+    if (z1 > z3 + r && z2 > z3 + r) return(0);
+    if (z1 < z3 - r && z2 < z3 - r) return(0);
     a =  square(x2 - x1) + square(y2 - y1) + square(z2 - z1);
     b =  2 * ( (x2 - x1) * (x1 - x3)
                + (y2 - y1) * (y1 - y3)
@@ -439,12 +441,12 @@ inline bool sphere_line_intersection (
     //~ static float x , y , z;
     static float a, b, c, /*mu,*/ i ;
 
-    if (p1->x > p3->x + *r && p2->x > p3->x + *r)return(0);
-    if (p1->x < p3->x - *r && p2->x < p3->x - *r)return(0);
-    if (p1->y > p3->y + *r && p2->y > p3->y + *r)return(0);
-    if (p1->y < p3->y - *r && p2->y < p3->y - *r)return(0);
-    if (p1->z > p3->z + *r && p2->z > p3->z + *r)return(0);
-    if (p1->z < p3->z - *r && p2->z < p3->z - *r)return(0);
+    if (p1->x > p3->x + *r && p2->x > p3->x + *r) return(0);
+    if (p1->x < p3->x - *r && p2->x < p3->x - *r) return(0);
+    if (p1->y > p3->y + *r && p2->y > p3->y + *r) return(0);
+    if (p1->y < p3->y - *r && p2->y < p3->y - *r) return(0);
+    if (p1->z > p3->z + *r && p2->z > p3->z + *r) return(0);
+    if (p1->z < p3->z - *r && p2->z < p3->z - *r) return(0);
     a =  square(p2->x - p1->x) + square(p2->y - p1->y) + square(p2->z - p1->z);
     b =  2 * ( (p2->x - p1->x) * (p1->x - p3->x)
                + (p2->y - p1->y) * (p1->y - p3->y)

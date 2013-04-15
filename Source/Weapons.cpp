@@ -238,7 +238,8 @@ void Weapon::DoStuff(int i)
 
                             player[j].aitype = attacktypecutoff;
                         } else {
-                            if (j != 0) numthrowkill++;
+                            if (j != 0)
+                                numthrowkill++;
                             player[j].num_weapons++;
                             player[j].weaponstuck = player[j].num_weapons - 1;
                             if (normaldotproduct(player[j].facing, velocity) > 0)
@@ -282,7 +283,9 @@ void Weapon::DoStuff(int i)
                             else
                                 award_bonus(0, Bullseyebonus);
                         }
-                    } else missed = 1;
+                    } else {
+                        missed = 1;
+                    }
                 }
             }
         }
@@ -371,7 +374,8 @@ void Weapon::DoStuff(int i)
             bigtilt = 0;
             bigtilt2 = 0;
             bigrotation = 0;
-            if (temppoint1.x > temppoint2.x) rotation1 = 360 - rotation1;
+            if (temppoint1.x > temppoint2.x)
+                rotation1 = 360 - rotation1;
         }
 
     }
@@ -462,8 +466,10 @@ void Weapon::DoStuff(int i)
                                 bounceness = 0;
                             frictionness = abs(normaldotproduct(velocity, terrainnormal));
                             velocity -= bounceness;
-                            if (1 - friction * frictionness > 0)velocity *= 1 - friction * frictionness;
-                            else velocity = 0;
+                            if (1 - friction * frictionness > 0)
+                                velocity *= 1 - friction * frictionness;
+                            else
+                                velocity = 0;
                             velocity += bounceness * elasticity;
 
                             if (findLengthfast(&bounceness) > 1) {
@@ -486,11 +492,14 @@ void Weapon::DoStuff(int i)
                             tippoint += terrainnormal * .002;
 
                             bounceness = terrainnormal * findLength(&tipvelocity) * (abs(normaldotproduct(tipvelocity, terrainnormal)));
-                            if (findLengthfast(&tipvelocity) < findLengthfast(&bounceness))bounceness = 0;
+                            if (findLengthfast(&tipvelocity) < findLengthfast(&bounceness))
+                                bounceness = 0;
                             frictionness = abs(normaldotproduct(tipvelocity, terrainnormal));
                             tipvelocity -= bounceness;
-                            if (1 - friction * frictionness > 0)tipvelocity *= 1 - friction * frictionness;
-                            else tipvelocity = 0;
+                            if (1 - friction * frictionness > 0)
+                                tipvelocity *= 1 - friction * frictionness;
+                            else
+                                tipvelocity = 0;
                             tipvelocity += bounceness * elasticity;
 
                             if (findLengthfast(&bounceness) > 1) {
@@ -519,11 +528,14 @@ void Weapon::DoStuff(int i)
                                     ReflectVector(&velocity, &terrainnormal);
 
                                     bounceness = terrainnormal * findLength(&velocity) * (abs(normaldotproduct(velocity, terrainnormal)));
-                                    if (findLengthfast(&velocity) < findLengthfast(&bounceness))bounceness = 0;
+                                    if (findLengthfast(&velocity) < findLengthfast(&bounceness))
+                                        bounceness = 0;
                                     frictionness = abs(normaldotproduct(velocity, terrainnormal));
                                     velocity -= bounceness;
-                                    if (1 - friction * frictionness > 0)velocity *= 1 - friction * frictionness;
-                                    else velocity = 0;
+                                    if (1 - friction * frictionness > 0)
+                                        velocity *= 1 - friction * frictionness;
+                                    else
+                                        velocity = 0;
                                     velocity += bounceness * elasticity;
 
                                     if (findLengthfast(&bounceness) > 1) {
@@ -551,11 +563,14 @@ void Weapon::DoStuff(int i)
                                     ReflectVector(&tipvelocity, &terrainnormal);
 
                                     bounceness = terrainnormal * findLength(&tipvelocity) * (abs(normaldotproduct(tipvelocity, terrainnormal)));
-                                    if (findLengthfast(&tipvelocity) < findLengthfast(&bounceness))bounceness = 0;
+                                    if (findLengthfast(&tipvelocity) < findLengthfast(&bounceness))
+                                        bounceness = 0;
                                     frictionness = abs(normaldotproduct(tipvelocity, terrainnormal));
                                     tipvelocity -= bounceness;
-                                    if (1 - friction * frictionness > 0)tipvelocity *= 1 - friction * frictionness;
-                                    else tipvelocity = 0;
+                                    if (1 - friction * frictionness > 0)
+                                        tipvelocity *= 1 - friction * frictionness;
+                                    else
+                                        tipvelocity = 0;
                                     tipvelocity += bounceness * elasticity;
 
                                     if (findLengthfast(&bounceness) > 1) {
@@ -624,13 +639,18 @@ void Weapon::DoStuff(int i)
                 ReflectVector(&velocity, &terrainnormal);
                 position += terrainnormal * .002;
                 bounceness = terrainnormal * findLength(&velocity) * (abs(normaldotproduct(velocity, terrainnormal)));
-                if (findLengthfast(&velocity) < findLengthfast(&bounceness))bounceness = 0;
+                if (findLengthfast(&velocity) < findLengthfast(&bounceness))
+                    bounceness = 0;
                 frictionness = abs(normaldotproduct(velocity, terrainnormal));
                 velocity -= bounceness;
-                if (1 - friction * frictionness > 0)velocity *= 1 - friction * frictionness;
-                else velocity = 0;
-                if (terrain.getOpacity(position.x, position.z) < .2)velocity += bounceness * elasticity * .3;
-                else velocity += bounceness * elasticity;
+                if (1 - friction * frictionness > 0)
+                    velocity *= 1 - friction * frictionness;
+                else
+                    velocity = 0;
+                if (terrain.getOpacity(position.x, position.z) < .2)
+                    velocity += bounceness * elasticity * .3;
+                else
+                    velocity += bounceness * elasticity;
 
                 if (findLengthfast(&bounceness) > 1) {
                     int whichsound;
@@ -673,13 +693,18 @@ void Weapon::DoStuff(int i)
                 ReflectVector(&tipvelocity, &terrainnormal);
                 tippoint += terrainnormal * .002;
                 bounceness = terrainnormal * findLength(&tipvelocity) * (abs(normaldotproduct(tipvelocity, terrainnormal)));
-                if (findLengthfast(&tipvelocity) < findLengthfast(&bounceness))bounceness = 0;
+                if (findLengthfast(&tipvelocity) < findLengthfast(&bounceness))
+                    bounceness = 0;
                 frictionness = abs(normaldotproduct(tipvelocity, terrainnormal));
                 tipvelocity -= bounceness;
-                if (1 - friction * frictionness > 0)tipvelocity *= 1 - friction * frictionness;
-                else tipvelocity = 0;
-                if (terrain.getOpacity(tippoint.x, tippoint.z) < .2)tipvelocity += bounceness * elasticity * .3;
-                else tipvelocity += bounceness * elasticity;
+                if (1 - friction * frictionness > 0)
+                    tipvelocity *= 1 - friction * frictionness;
+                else
+                    tipvelocity = 0;
+                if (terrain.getOpacity(tippoint.x, tippoint.z) < .2)
+                    tipvelocity += bounceness * elasticity * .3;
+                else
+                    tipvelocity += bounceness * elasticity;
 
                 if (findLengthfast(&bounceness) > 1) {
                     int whichsound;
@@ -725,20 +750,29 @@ void Weapon::DoStuff(int i)
                 ReflectVector(&velocity, &terrainnormal);
                 //mid+=terrainnormal*.002;
                 bounceness = terrainnormal * findLength(&velocity) * (abs(normaldotproduct(velocity, terrainnormal)));
-                if (findLengthfast(&velocity) < findLengthfast(&bounceness))bounceness = 0;
+                if (findLengthfast(&velocity) < findLengthfast(&bounceness))
+                    bounceness = 0;
                 frictionness = abs(normaldotproduct(velocity, terrainnormal));
                 velocity -= bounceness;
-                if (1 - friction * frictionness > 0)velocity *= 1 - friction * frictionness;
-                else velocity = 0;
-                if (terrain.getOpacity(mid.x, mid.z) < .2)velocity += bounceness * elasticity * .3;
-                else velocity += bounceness * elasticity;
+                if (1 - friction * frictionness > 0)
+                    velocity *= 1 - friction * frictionness;
+                else
+                    velocity = 0;
+                if (terrain.getOpacity(mid.x, mid.z) < .2)
+                    velocity += bounceness * elasticity * .3;
+                else
+                    velocity += bounceness * elasticity;
 
                 if (findLengthfast(&bounceness) > 1) {
                     int whichsound;
                     if (terrain.getOpacity(mid.x, mid.z) > .2) {
-                        if (type == staff)whichsound = footstepsound3 + abs(Random() % 2);
-                        if (type != staff)whichsound = clank1sound + abs(Random() % 4);
-                    } else whichsound = footstepsound + abs(Random() % 2);
+                        if (type == staff)
+                            whichsound = footstepsound3 + abs(Random() % 2);
+                        if (type != staff)
+                            whichsound = clank1sound + abs(Random() % 4);
+                    } else {
+                        whichsound = footstepsound + abs(Random() % 2);
+                    }
                     emit_sound_at(whichsound, mid,
                                   findLengthfast(&bounceness)
                                   * (terrain.getOpacity(position.x, position.z) > .2
@@ -760,20 +794,29 @@ void Weapon::DoStuff(int i)
                 ReflectVector(&tipvelocity, &terrainnormal);
                 //mid+=terrainnormal*.002;
                 bounceness = terrainnormal * findLength(&tipvelocity) * (abs(normaldotproduct(tipvelocity, terrainnormal)));
-                if (findLengthfast(&tipvelocity) < findLengthfast(&bounceness))bounceness = 0;
+                if (findLengthfast(&tipvelocity) < findLengthfast(&bounceness))
+                    bounceness = 0;
                 frictionness = abs(normaldotproduct(tipvelocity, terrainnormal));
                 tipvelocity -= bounceness;
-                if (1 - friction * frictionness > 0)tipvelocity *= 1 - friction * frictionness;
-                else tipvelocity = 0;
-                if (terrain.getOpacity(mid.x, mid.z) < .2)tipvelocity += bounceness * elasticity * .3;
-                else tipvelocity += bounceness * elasticity;
+                if (1 - friction * frictionness > 0)
+                    tipvelocity *= 1 - friction * frictionness;
+                else
+                    tipvelocity = 0;
+                if (terrain.getOpacity(mid.x, mid.z) < .2)
+                    tipvelocity += bounceness * elasticity * .3;
+                else
+                    tipvelocity += bounceness * elasticity;
 
                 if (findLengthfast(&bounceness) > 1) {
                     int whichsound;
                     if (terrain.getOpacity(mid.x, mid.z) > .2) {
-                        if (type == staff)whichsound = footstepsound3 + abs(Random() % 2);
-                        if (type != staff)whichsound = clank1sound + abs(Random() % 4);
-                    } else whichsound = footstepsound + abs(Random() % 2);
+                        if (type == staff)
+                            whichsound = footstepsound3 + abs(Random() % 2);
+                        if (type != staff)
+                            whichsound = clank1sound + abs(Random() % 4);
+                    } else {
+                        whichsound = footstepsound + abs(Random() % 2);
+                    }
                     emit_sound_at(whichsound, mid,
                                   findLengthfast(&bounceness)
                                   * (terrain.getOpacity(position.x, position.z) > .2
@@ -805,7 +848,8 @@ void Weapon::DoStuff(int i)
             bigtilt = 0;
             bigtilt2 = 0;
             bigrotation = 0;
-            if (temppoint1.x > temppoint2.x)rotation1 = 360 - rotation1;
+            if (temppoint1.x > temppoint2.x)
+                rotation1 = 360 - rotation1;
 
             //Stop moving
             if (findLengthfast(&velocity) < .3 && findLengthfast(&tipvelocity) < .3 && hitsomething) {
@@ -823,8 +867,10 @@ void Weapon::DoStuff(int i)
     if (blooddrip && bloody) {
         blooddripdelay -= blooddrip * multiplier / 2;
         blooddrip -= multiplier;
-        if (blooddrip < 0) blooddrip = 0;
-        if (blooddrip > 5) blooddrip = 5;
+        if (blooddrip < 0)
+            blooddrip = 0;
+        if (blooddrip > 5)
+            blooddrip = 5;
         if (blooddripdelay < 0 && bloodtoggle) {
             blooddripdelay = 1;
             XYZ bloodvel;
@@ -1006,7 +1052,8 @@ void Weapon::Draw()
             lastdrawnbigtilt2 = bigtilt2;
             lastdrawnsmallrotation = smallrotation;
             lastdrawnsmallrotation2 = smallrotation2;
-            if (owner != -1)lastdrawnanim = player[owner].animCurrent;
+            if (owner != -1)
+                lastdrawnanim = player[owner].animCurrent;
         }
         if (owner != -1) {
             glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix

@@ -49,12 +49,18 @@ void DefaultSettings()
 
 void SaveSettings()
 {
-    if (newdetail < 0) newdetail = 0;
-    if (newdetail > 2) newdetail = 2;
-    if (newscreenwidth > 3000) newscreenwidth = screenwidth;
-    if (newscreenwidth < 0) newscreenwidth = screenwidth;
-    if (newscreenheight > 3000) newscreenheight = screenheight;
-    if (newscreenheight < 0) newscreenheight = screenheight;
+    if (newdetail < 0)
+        newdetail = 0;
+    if (newdetail > 2)
+        newdetail = 2;
+    if (newscreenwidth > 3000)
+        newscreenwidth = screenwidth;
+    if (newscreenwidth < 0)
+        newscreenwidth = screenwidth;
+    if (newscreenheight > 3000)
+        newscreenheight = screenheight;
+    if (newscreenheight < 0)
+        newscreenheight = screenheight;
     ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
     opstream << "Screenwidth:\n";
     opstream << newscreenwidth;
@@ -87,7 +93,8 @@ void SaveSettings()
     opstream << "\nInvert mouse:\n";
     opstream << invertmouse;
     opstream << "\nGamespeed:\n";
-    if (oldgamespeed == 0)oldgamespeed = 1;
+    if (oldgamespeed == 0)
+        oldgamespeed = 1;
     opstream << oldgamespeed;
     opstream << "\nDifficulty(0,1,2) higher=harder:\n";
     opstream << difficulty;
@@ -158,7 +165,8 @@ bool LoadSettings()
 
         // skip blank lines
         // assume lines starting with spaces are all blank
-        if ( strlen(setting) == 0 || setting[0] == ' ' || setting[0] == '\t') continue;
+        if ( strlen(setting) == 0 || setting[0] == ' ' || setting[0] == '\t')
+            continue;
         //~ printf("setting : %s\n",setting);
 
         if ( ipstream.eof() || ipstream.fail() ) {
@@ -178,8 +186,10 @@ bool LoadSettings()
             ipstream >> ismotionblur;
         } else if ( !strncmp(setting, "Overall Detail", 14) ) {
             ipstream >> detail;
-            if (detail != 0)kBitsPerPixel = 32;
-            else kBitsPerPixel = 16;
+            if (detail != 0)
+                kBitsPerPixel = 32;
+            else
+                kBitsPerPixel = 16;
         } else if ( !strncmp(setting, "Floating jump", 13) ) {
             ipstream >> floatjump;
         } else if ( !strncmp(setting, "Mouse jump", 10) ) {
@@ -290,10 +300,14 @@ bool LoadSettings()
 
     ipstream.close();
 
-    if (detail > 2)detail = 2;
-    if (detail < 0)detail = 0;
-    if (screenwidth < 0)screenwidth = 640;
-    if (screenheight < 0)screenheight = 480;
+    if (detail > 2)
+        detail = 2;
+    if (detail < 0)
+        detail = 0;
+    if (screenwidth < 0)
+        screenwidth = 640;
+    if (screenheight < 0)
+        screenheight = 480;
 
     return true;
 }

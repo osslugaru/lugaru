@@ -138,8 +138,10 @@ void Game::newGame()
 
 void Game::deleteGame()
 {
-    if (skybox) delete skybox;
-    if (text) delete text;
+    if (skybox)
+        delete skybox;
+    if (text)
+        delete text;
     terraintexture.destroy();
     terraintexture2.destroy();
     cursortexture.destroy();
@@ -233,8 +235,10 @@ void Game::LoadingScreen()
         deltaTime /= 1000.0;
 
     multiplier = deltaTime;
-    if (multiplier < .001)multiplier = .001;
-    if (multiplier > 10)multiplier = 10;
+    if (multiplier < .001)
+        multiplier = .001;
+    if (multiplier > 10)
+        multiplier = 10;
     if (multiplier > .05) {
         frametime = currTime;	// reset for next time interval
 
@@ -247,7 +251,8 @@ void Game::LoadingScreen()
         loadtime += multiplier * 4;
 
         loadprogress = loadtime;
-        if (loadprogress > 100)loadprogress = 100;
+        if (loadprogress > 100)
+            loadprogress = 100;
 
         //loadprogress=abs(Random()%100);
 
@@ -394,10 +399,13 @@ void Game::LoadingScreen()
         //Text
 
         if (flashamount > 0) {
-            if (flashamount > 1)flashamount = 1;
-            if (flashdelay <= 0)flashamount -= multiplier;
+            if (flashamount > 1)
+                flashamount = 1;
+            if (flashdelay <= 0)
+                flashamount -= multiplier;
             flashdelay--;
-            if (flashamount < 0)flashamount = 0;
+            if (flashamount < 0)
+                flashamount = 0;
             glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
             glDisable(GL_CULL_FACE);
             glDisable(GL_LIGHTING);
@@ -677,7 +685,8 @@ void Game::InitGame()
     Maparrowtexture.load(":Data:Textures:MapArrow.png", 0, 1);
 
     temptexdetail = texdetail;
-    if (texdetail > 2)texdetail = 2;
+    if (texdetail > 2)
+        texdetail = 2;
     Mainmenuitems[0].load(":Data:Textures:Lugaru.png", 0, 0);
     Mainmenuitems[1].load(":Data:Textures:Newgame.png", 0, 0);
     Mainmenuitems[2].load(":Data:Textures:Options.png", 0, 0);
@@ -841,9 +850,12 @@ void Game::LoadStuff()
     viewer = 0;
 
 
-    if (detail)kTextureSize = 1024;
-    if (detail == 1)kTextureSize = 512;
-    if (detail == 0)kTextureSize = 256;
+    if (detail)
+        kTextureSize = 1024;
+    if (detail == 1)
+        kTextureSize = 512;
+    if (detail == 0)
+        kTextureSize = 256;
 
     //Set up distant light
     light.color[0] = .95;

@@ -172,7 +172,8 @@ int Game::DrawGLScene(StereoSide side)
     if (!mainmenu) {
         if (editorenabled) {
             numboundaries = mapradius * 2;
-            if (numboundaries > 360)numboundaries = 360;
+            if (numboundaries > 360)
+                numboundaries = 360;
             for (i = 0; i < numboundaries; i++) {
                 boundary[i] = 0;
                 boundary[i].z = 1;
@@ -227,7 +228,8 @@ int Game::DrawGLScene(StereoSide side)
         if ((freeze || winfreeze) && ismotionblur && !mainmenu)
             drawmode = radialzoommode;
 
-        if (winfreeze || mainmenu)drawmode = normalmode;
+        if (winfreeze || mainmenu)
+            drawmode = normalmode;
 
 #if PLATFORM_MACOSX
         if (drawmode == glowmode) {
@@ -372,8 +374,10 @@ int Game::DrawGLScene(StereoSide side)
                             for (l = 0; l < terrain.patchobjectnum[player[k].whichpatchx][player[k].whichpatchz]; l++) {
                                 j = terrain.patchobjects[player[k].whichpatchx][player[k].whichpatchz][l];
                                 if (objects.position[j].y < player[k].coords.y || objects.type[j] == tunneltype || objects.type[j] == weirdtype) {
-                                    if (player[k].skeleton.free)point = DoRotation(player[k].skeleton.joints[i].position * player[k].scale + player[k].coords - objects.position[j], 0, -objects.yaw[j], 0);
-                                    else point = DoRotation(DoRotation(player[k].skeleton.joints[i].position, 0, player[k].yaw, 0) * player[k].scale + player[k].coords - objects.position[j], 0, -objects.yaw[j], 0);
+                                    if (player[k].skeleton.free)
+                                        point = DoRotation(player[k].skeleton.joints[i].position * player[k].scale + player[k].coords - objects.position[j], 0, -objects.yaw[j], 0);
+                                    else
+                                        point = DoRotation(DoRotation(player[k].skeleton.joints[i].position, 0, player[k].yaw, 0) * player[k].scale + player[k].coords - objects.position[j], 0, -objects.yaw[j], 0);
                                     size = .4f;
                                     opacity = .4f;
                                     if (k != 0 && tutoriallevel == 1) {
@@ -465,8 +469,9 @@ int Game::DrawGLScene(StereoSide side)
                         if (i != -1) {
                             player[k].occluded += 1;
                             player[k].lastoccluded = i;
-                        } else
+                        } else {
                             player[k].occluded = 0;
+                        }
                         if (player[k].occluded < 25)
                             player[k].DrawSkeleton();
                     }
@@ -528,8 +533,9 @@ int Game::DrawGLScene(StereoSide side)
                     if (i != -1) {
                         player[k].occluded += 1;
                         player[k].lastoccluded = i;
-                    } else
+                    } else {
                         player[k].occluded = 0;
+                    }
                     if (player[k].occluded < 25)
                         player[k].DrawSkeleton();
                 }
@@ -621,8 +627,10 @@ int Game::DrawGLScene(StereoSide side)
 
             if (tutoriallevel == 1) {
                 tutorialopac = tutorialmaxtime - tutorialstagetime;
-                if (tutorialopac > 1)tutorialopac = 1;
-                if (tutorialopac < 0)tutorialopac = 0;
+                if (tutorialopac > 1)
+                    tutorialopac = 1;
+                if (tutorialopac < 0)
+                    tutorialopac = 0;
 
                 sprintf (string, " ");
                 sprintf (string2, " ");
@@ -703,8 +711,10 @@ int Game::DrawGLScene(StereoSide side)
                     sprintf (string3, " ");
                 }
                 if (tutorialstage == 15) {
-                    if (attackkey == MOUSEBUTTON1)sprintf (string, "Click to attack when you are near an enemy.");
-                    else sprintf (string, "Press %s to attack when you are near an enemy.", Input::keyToChar(attackkey));
+                    if (attackkey == MOUSEBUTTON1)
+                        sprintf (string, "Click to attack when you are near an enemy.");
+                    else
+                        sprintf (string, "Press %s to attack when you are near an enemy.", Input::keyToChar(attackkey));
                     sprintf (string2, "You can punch by standing still near an enemy and attacking.");
                     sprintf (string3, " ");
                 }
@@ -730,15 +740,19 @@ int Game::DrawGLScene(StereoSide side)
                 }
                 if (tutorialstage == 20) {
                     sprintf (string, "Your most powerful individual attack is the rabbit kick.");
-                    if (attackkey == MOUSEBUTTON1)sprintf (string2, "Run at the enemy while holding the mouse button, and press");
-                    else sprintf (string2, "Run at the enemy while holding %s, and press", Input::keyToChar(attackkey));
+                    if (attackkey == MOUSEBUTTON1)
+                        sprintf (string2, "Run at the enemy while holding the mouse button, and press");
+                    else
+                        sprintf (string2, "Run at the enemy while holding %s, and press", Input::keyToChar(attackkey));
                     sprintf (string3, "the jump key (%s) to attack.", Input::keyToChar(jumpkey));
                 }
                 if (tutorialstage == 21) {
                     sprintf (string, "This attack is devastating if timed correctly.");
                     sprintf (string2, "Even if timed incorrectly, it will knock the enemy over.");
-                    if (againbonus)sprintf (string3, "Try rabbit-kicking the imaginary enemy again.");
-                    else sprintf (string3, "Try rabbit-kicking the imaginary enemy.");
+                    if (againbonus)
+                        sprintf (string3, "Try rabbit-kicking the imaginary enemy again.");
+                    else
+                        sprintf (string3, "Try rabbit-kicking the imaginary enemy.");
                 }
                 if (tutorialstage == 22) {
                     sprintf (string, "If you sneak behind an enemy unnoticed, you can kill");
@@ -752,8 +766,10 @@ int Game::DrawGLScene(StereoSide side)
                 }
                 if (tutorialstage == 24) {
                     sprintf (string, "You can tackle enemies by running at them animal-style");
-                    if (attackkey == MOUSEBUTTON1)sprintf (string2, "and pressing jump (%s) or attack(mouse button).", Input::keyToChar(jumpkey));
-                    else sprintf (string2, "and pressing jump (%s) or attack(%s).", Input::keyToChar(jumpkey), Input::keyToChar(attackkey));
+                    if (attackkey == MOUSEBUTTON1)
+                        sprintf (string2, "and pressing jump (%s) or attack(mouse button).", Input::keyToChar(jumpkey));
+                    else
+                        sprintf (string2, "and pressing jump (%s) or attack(%s).", Input::keyToChar(jumpkey), Input::keyToChar(attackkey));
                     sprintf (string3, "This is especially useful when they are running away.");
                 }
                 if (tutorialstage == 25) {
@@ -938,8 +954,10 @@ int Game::DrawGLScene(StereoSide side)
                             tutorialstagetime = 0;
                         tutorialmaxtime = 1;
                         tutorialopac = tutorialmaxtime - tutorialstagetime;
-                        if (tutorialopac > 1)tutorialopac = 1;
-                        if (tutorialopac < 0)tutorialopac = 0;
+                        if (tutorialopac > 1)
+                            tutorialopac = 1;
+                        if (tutorialopac < 0)
+                            tutorialopac = 0;
 
                         sprintf (string, "%s", hotspottext[closest]);
 
@@ -955,9 +973,11 @@ int Game::DrawGLScene(StereoSide side)
                                 text->glPrint(screenwidth / 2 - 7.6 * (i - lastline)*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 20 * screenwidth / 1024 * line, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight, lastline, i);
                                 lastline = i + 1;
                                 line++;
-                                if (string[i] == '\0')done = 1;
+                                if (string[i] == '\0')
+                                    done = 1;
                             }
-                            if (i >= 255)done = 1;
+                            if (i >= 255)
+                                done = 1;
                             i++;
                         }
                     } else if (hotspottype[closest] >= 20 && dialoguegonethrough[hotspottype[closest] - 20] == 0) {
@@ -975,26 +995,26 @@ int Game::DrawGLScene(StereoSide side)
                         dialoguegonethrough[whichdialogue]++;
                         if (dialogueboxsound[whichdialogue][indialogue] != 0) {
                             int whichsoundplay;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 1)whichsoundplay = rabbitchitter;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 2)whichsoundplay = rabbitchitter2;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 3)whichsoundplay = rabbitpainsound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 4)whichsoundplay = rabbitpain1sound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 5)whichsoundplay = rabbitattacksound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 6)whichsoundplay = rabbitattack2sound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 7)whichsoundplay = rabbitattack3sound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 8)whichsoundplay = rabbitattack4sound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 9)whichsoundplay = growlsound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 10)whichsoundplay = growl2sound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 11)whichsoundplay = snarlsound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 12)whichsoundplay = snarl2sound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 13)whichsoundplay = barksound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 14)whichsoundplay = bark2sound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 15)whichsoundplay = bark3sound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 16)whichsoundplay = barkgrowlsound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == -1)whichsoundplay = fireendsound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == -2)whichsoundplay = firestartsound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == -3)whichsoundplay = consolesuccesssound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == -4)whichsoundplay = consolefailsound;
+                            if (dialogueboxsound[whichdialogue][indialogue] == 1) whichsoundplay = rabbitchitter;
+                            if (dialogueboxsound[whichdialogue][indialogue] == 2) whichsoundplay = rabbitchitter2;
+                            if (dialogueboxsound[whichdialogue][indialogue] == 3) whichsoundplay = rabbitpainsound;
+                            if (dialogueboxsound[whichdialogue][indialogue] == 4) whichsoundplay = rabbitpain1sound;
+                            if (dialogueboxsound[whichdialogue][indialogue] == 5) whichsoundplay = rabbitattacksound;
+                            if (dialogueboxsound[whichdialogue][indialogue] == 6) whichsoundplay = rabbitattack2sound;
+                            if (dialogueboxsound[whichdialogue][indialogue] == 7) whichsoundplay = rabbitattack3sound;
+                            if (dialogueboxsound[whichdialogue][indialogue] == 8) whichsoundplay = rabbitattack4sound;
+                            if (dialogueboxsound[whichdialogue][indialogue] == 9) whichsoundplay = growlsound;
+                            if (dialogueboxsound[whichdialogue][indialogue] == 10) whichsoundplay = growl2sound;
+                            if (dialogueboxsound[whichdialogue][indialogue] == 11) whichsoundplay = snarlsound;
+                            if (dialogueboxsound[whichdialogue][indialogue] == 12) whichsoundplay = snarl2sound;
+                            if (dialogueboxsound[whichdialogue][indialogue] == 13) whichsoundplay = barksound;
+                            if (dialogueboxsound[whichdialogue][indialogue] == 14) whichsoundplay = bark2sound;
+                            if (dialogueboxsound[whichdialogue][indialogue] == 15) whichsoundplay = bark3sound;
+                            if (dialogueboxsound[whichdialogue][indialogue] == 16) whichsoundplay = barkgrowlsound;
+                            if (dialogueboxsound[whichdialogue][indialogue] == -1) whichsoundplay = fireendsound;
+                            if (dialogueboxsound[whichdialogue][indialogue] == -2) whichsoundplay = firestartsound;
+                            if (dialogueboxsound[whichdialogue][indialogue] == -3) whichsoundplay = consolesuccesssound;
+                            if (dialogueboxsound[whichdialogue][indialogue] == -4) whichsoundplay = consolefailsound;
                             emit_sound_at(whichsoundplay, player[participantfocus[whichdialogue][indialogue]].coords);
                         }
                     }
@@ -1014,7 +1034,8 @@ int Game::DrawGLScene(StereoSide side)
                 glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
                 glPushMatrix();										// Store The Modelview Matrix
                 glLoadIdentity();								// Reset The Modelview Matrix
-                if (dialogueboxlocation[whichdialogue][indialogue] == 1)glTranslatef(0, screenheight * 3 / 4, 0);
+                if (dialogueboxlocation[whichdialogue][indialogue] == 1)
+                    glTranslatef(0, screenheight * 3 / 4, 0);
                 glScalef(screenwidth, screenheight / 4, 1);
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 glEnable(GL_BLEND);
@@ -1057,7 +1078,8 @@ int Game::DrawGLScene(StereoSide side)
                 for (i = 0; i < (int)strlen(dialoguename[whichdialogue][indialogue]); i++) {
                     tempname[tempnum] = dialoguename[whichdialogue][indialogue][i];
                     goodchar = 1;
-                    if (dialoguename[whichdialogue][indialogue][i] == '#' || dialoguename[whichdialogue][indialogue][i] == '\0')goodchar = 0;
+                    if (dialoguename[whichdialogue][indialogue][i] == '#' || dialoguename[whichdialogue][indialogue][i] == '\0')
+                        goodchar = 0;
                     if (goodchar)
                         tempnum++;
                     else
@@ -1079,7 +1101,8 @@ int Game::DrawGLScene(StereoSide side)
                 tempnum = 0;
                 for (i = 0; i < (int)strlen(dialoguetext[whichdialogue][indialogue]) + 1; i++) {
                     tempname[tempnum] = dialoguetext[whichdialogue][indialogue][i];
-                    if (dialoguetext[whichdialogue][indialogue][i] != '#')tempnum++;
+                    if (dialoguetext[whichdialogue][indialogue][i] != '#')
+                        tempnum++;
                 }
 
                 sprintf (string, "%s", tempname);
@@ -1101,9 +1124,11 @@ int Game::DrawGLScene(StereoSide side)
                         }
                         lastline = i + 1;
                         line++;
-                        if (string[i] == '\0')done = 1;
+                        if (string[i] == '\0')
+                            done = 1;
                     }
-                    if (i >= 255)done = 1;
+                    if (i >= 255)
+                        done = 1;
                     i++;
                 }
             }
@@ -1115,7 +1140,8 @@ int Game::DrawGLScene(StereoSide side)
                     else
                         sprintf (string, "Score: %d", (int)accountactive->getCampaignScore() + (int)bonustotal);
                 }
-                if (!campaign)sprintf (string, "Score: %d", (int)bonustotal);
+                if (!campaign)
+                    sprintf (string, "Score: %d", (int)bonustotal);
                 glColor4f(0, 0, 0, 1);
                 text->glPrintOutline(1024 / 40 - 4, 768 / 16 - 4 + 768 * 14 / 16, string, 1, 1.5 * 1.25, 1024, 768);
                 glColor4f(1, 0, 0, 1);
@@ -1221,11 +1247,15 @@ int Game::DrawGLScene(StereoSide side)
                 if (editorenabled) {
                     sprintf (string, "Object size: %f", editorsize);
                     text->glPrint(10, 75, string, 0, .8, 1024, 768);
-                    if (editoryaw >= 0)sprintf (string, "Object yaw: %f", editoryaw);
-                    else sprintf (string, "Object yaw: Random");
+                    if (editoryaw >= 0)
+                        sprintf (string, "Object yaw: %f", editoryaw);
+                    else
+                        sprintf (string, "Object yaw: Random");
                     text->glPrint(10, 90, string, 0, .8, 1024, 768);
-                    if (editorpitch >= 0)sprintf (string, "Object pitch: %f", editorpitch);
-                    else sprintf (string, "Object pitch: Random");
+                    if (editorpitch >= 0)
+                        sprintf (string, "Object pitch: %f", editorpitch);
+                    else
+                        sprintf (string, "Object pitch: Random");
                     text->glPrint(10, 105, string, 0, .8, 1024, 768);
                     sprintf (string, "Object type: %d", editortype);
                     text->glPrint(10, 120, string, 0, .8, 1024, 768);
@@ -1329,9 +1359,12 @@ int Game::DrawGLScene(StereoSide side)
             glScalef(screenwidth, screenheight, 1);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glEnable(GL_BLEND);
-            if (player[0].dead)blackout += multiplier * 3;
-            if (player[0].dead == 1)blackout = .4f;
-            if (player[0].dead == 2 && blackout > .6)blackout = .6;
+            if (player[0].dead)
+                blackout += multiplier * 3;
+            if (player[0].dead == 1)
+                blackout = .4f;
+            if (player[0].dead == 2 && blackout > .6)
+                blackout = .6;
             glColor4f(0, 0, 0, blackout);
             if (!player[0].dead) {
                 if ((player[0].bloodloss / player[0].damagetolerance * (sin(woozy) / 4 + .5))*.3 < .3) {
@@ -1342,7 +1375,8 @@ int Game::DrawGLScene(StereoSide side)
                     blackout = player[0].blooddimamount * .3;
                 }
             }
-            if (console)glColor4f(.7, 0, 0, .2);
+            if (console)
+                glColor4f(.7, 0, 0, .2);
             glBegin(GL_QUADS);
             glVertex3f(0,		0, 	 0.0f);
             glVertex3f(256,	0, 	 0.0f);
@@ -1360,10 +1394,13 @@ int Game::DrawGLScene(StereoSide side)
         }
 
         if (flashamount > 0 && damageeffects) {
-            if (flashamount > 1)flashamount = 1;
-            if (flashdelay <= 0)flashamount -= multiplier;
+            if (flashamount > 1)
+                flashamount = 1;
+            if (flashdelay <= 0)
+                flashamount -= multiplier;
             flashdelay--;
-            if (flashamount < 0)flashamount = 0;
+            if (flashamount < 0)
+                flashamount = 0;
             glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
             glDisable(GL_CULL_FACE);
             glDisable(GL_LIGHTING);
@@ -1451,7 +1488,8 @@ int Game::DrawGLScene(StereoSide side)
             int numliveplayers = 0;
             center = 0;
             for (i = 0; i < numplayers; i++) {
-                if (!player[i].dead) numliveplayers++;
+                if (!player[i].dead)
+                    numliveplayers++;
             }
 
             int numadd = 0;
@@ -1463,7 +1501,8 @@ int Game::DrawGLScene(StereoSide side)
                 }
             }
             for (i = 0; i < numplayers; i++) {
-                if (!player[i].dead)center += player[i].coords;
+                if (!player[i].dead)
+                    center += player[i].coords;
             }
             center /= numadd + numliveplayers;
 
@@ -1569,12 +1608,18 @@ int Game::DrawGLScene(StereoSide side)
                 if (distcheck < mapviewdist) {
                     glPushMatrix();
                     Maparrowtexture.bind();
-                    if (i == 0)glColor4f(1, 1, 1, opac);
-                    else if (player[i].dead == 2 || player[i].howactive > typesleeping)glColor4f(0, 0, 0, opac * (1 - distcheck / mapviewdist));
-                    else if (player[i].dead)glColor4f(.3, .3, .3, opac * (1 - distcheck / mapviewdist));
-                    else if (player[i].aitype == attacktypecutoff)glColor4f(1, 0, 0, opac * (1 - distcheck / mapviewdist));
-                    else if (player[i].aitype == passivetype)glColor4f(0, 1, 0, opac * (1 - distcheck / mapviewdist));
-                    else glColor4f(1, 1, 0, 1);
+                    if (i == 0)
+                        glColor4f(1, 1, 1, opac);
+                    else if (player[i].dead == 2 || player[i].howactive > typesleeping)
+                        glColor4f(0, 0, 0, opac * (1 - distcheck / mapviewdist));
+                    else if (player[i].dead)
+                        glColor4f(.3, .3, .3, opac * (1 - distcheck / mapviewdist));
+                    else if (player[i].aitype == attacktypecutoff)
+                        glColor4f(1, 0, 0, opac * (1 - distcheck / mapviewdist));
+                    else if (player[i].aitype == passivetype)
+                        glColor4f(0, 1, 0, opac * (1 - distcheck / mapviewdist));
+                    else
+                        glColor4f(1, 1, 0, 1);
                     glTranslatef(player[i].coords.x / terrain.scale / 256 * -2 + 1, player[i].coords.z / terrain.scale / 256 * 2 - 1, 0);
                     glRotatef(player[i].yaw + 180, 0, 0, 1);
                     glScalef(.005, .005, .005);
@@ -1713,7 +1758,8 @@ int Game::DrawGLScene(StereoSide side)
             for (i = 0; i < 255; i++)string[i] = '\0';
             sprintf (temp, "Time:      %d:", (int)(((int)leveltime - (int)(leveltime) % 60) / 60));
             strcat(string, temp);
-            if ((int)(leveltime) % 60 < 10)strcat(string, "0");
+            if ((int)(leveltime) % 60 < 10)
+                strcat(string, "0");
             sprintf (temp, "%d", (int)(leveltime) % 60);
             strcat(string, temp);
             text->glPrintOutlined(1024 / 30, 768 * 6 / 8 - 40, string, 1, 2, 1024, 768);
@@ -1798,7 +1844,8 @@ int Game::DrawGLScene(StereoSide side)
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glEnable(GL_BLEND);
             if (drawmode == motionblurmode) {
-                if (motionbluramount < .2)motionbluramount = .2;
+                if (motionbluramount < .2)
+                    motionbluramount = .2;
                 //glColor4f(1,1,1,fast_sqrt(multiplier)*2.9*motionbluramount);
                 glColor4f(1, 1, 1, motionbluramount);
                 glPushMatrix();
@@ -1851,8 +1898,10 @@ int Game::DrawGLScene(StereoSide side)
             if (drawmode == doublevisionmode) {
                 static float crosseyedness;
                 crosseyedness = abs(player[0].damage - player[0].superpermanentdamage - (player[0].damagetolerance - player[0].superpermanentdamage) * 1 / 2) / 30;
-                if (crosseyedness > 1)crosseyedness = 1;
-                if (crosseyedness < 0)crosseyedness = 0;
+                if (crosseyedness > 1)
+                    crosseyedness = 1;
+                if (crosseyedness < 0)
+                    crosseyedness = 0;
                 glColor4f(1, 1, 1, 1);
                 glDisable(GL_BLEND);
                 glPushMatrix();
@@ -2024,7 +2073,8 @@ int Game::DrawGLScene(StereoSide side)
 
     weapons.DoStuff();
 
-    if (drawtoggle == 2)drawtoggle = 0;
+    if (drawtoggle == 2)
+        drawtoggle = 0;
 
     if (freeze || winfreeze || (mainmenu && gameon) || (!gameon && gamestarted)) {
         multiplier = tempmult;
@@ -2162,10 +2212,13 @@ void DrawMenu()
 
     //draw screen flash
     if (flashamount > 0) {
-        if (flashamount > 1)flashamount = 1;
-        if (flashdelay <= 0)flashamount -= multiplier;
+        if (flashamount > 1)
+            flashamount = 1;
+        if (flashdelay <= 0)
+            flashamount -= multiplier;
         flashdelay--;
-        if (flashamount < 0)flashamount = 0;
+        if (flashamount < 0)
+            flashamount = 0;
         glDisable(GL_DEPTH_TEST);							// Disables Depth Testing
         glDisable(GL_CULL_FACE);
         glDisable(GL_LIGHTING);

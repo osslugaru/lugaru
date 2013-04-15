@@ -74,7 +74,8 @@ int award_awards(int *awards)
     }
     bool alldead = true;
     for (i = 1; i < numplayers; i++) {
-        if (player[i].dead != 2)alldead = 0;
+        if (player[i].dead != 2)
+            alldead = 0;
     }
     if (alldead) {
         awards[numawards] = awardalldead;
@@ -82,7 +83,8 @@ int award_awards(int *awards)
     }
     alldead = 1;
     for (i = 1; i < numplayers; i++) {
-        if (player[i].dead != 1)alldead = 0;
+        if (player[i].dead != 1)
+            alldead = 0;
     }
     if (alldead) {
         awards[numawards] = awardnodead;
@@ -122,7 +124,8 @@ int award_awards(int *awards)
     }
     alldead = 1;
     for (i = 1; i < numplayers; i++) {
-        if (player[i].dead != 2)alldead = 0;
+        if (player[i].dead != 2)
+            alldead = 0;
     }
     if (numafterkill > 0 && alldead) {
         awards[numawards] = awardbrutal;

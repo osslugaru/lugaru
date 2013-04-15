@@ -128,14 +128,18 @@ inline	float Vector::Magnitude(void)
 inline	void  Vector::Normalize(void)
 {
     float m = (float) sqrt(x * x + y * y + z * z);
-    if (m <= tol) m = 1;
+    if (m <= tol)
+        m = 1;
     x /= m;
     y /= m;
     z /= m;
 
-    if (fabs(x) < tol) x = 0.0f;
-    if (fabs(y) < tol) y = 0.0f;
-    if (fabs(z) < tol) z = 0.0f;
+    if (fabs(x) < tol)
+        x = 0.0f;
+    if (fabs(y) < tol)
+        y = 0.0f;
+    if (fabs(z) < tol)
+        z = 0.0f;
 }
 
 inline	void  Vector::Reverse(void)
@@ -324,7 +328,8 @@ inline	Matrix3x3	Matrix3x3::Inverse(void)
                 e31 * e12 * e23 -
                 e31 * e22 * e13;
 
-    if (d == 0) d = 1;
+    if (d == 0)
+        d = 1;
 
     return	Matrix3x3(	(e22 * e33 - e23 * e32) / d,
                         -(e12 * e33 - e13 * e32) / d,

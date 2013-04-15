@@ -82,20 +82,28 @@ int Terrain::lineTerrain(XYZ p1, XYZ p2, XYZ *p)
         starty = i;
     }
 
-    if (startx < 0)startx = 0;
-    if (starty < 0)starty = 0;
-    if (endx > size - 1)endx = size - 1;
-    if (endy > size - 1)endy = size - 1;
+    if (startx < 0)
+        startx = 0;
+    if (starty < 0)
+        starty = 0;
+    if (endx > size - 1)
+        endx = size - 1;
+    if (endy > size - 1)
+        endy = size - 1;
 
     for (i = startx; i <= endx; i++) {
         for (j = starty; j <= endy; j++) {
             highest = -1000;
             lowest = 1000;
             for (k = 0; k < 2; k++) {
-                if (heightmap[i + k][j] > highest)highest = heightmap[i + k][j];
-                if (heightmap[i + k][j] < lowest)lowest = heightmap[i + k][j];
-                if (heightmap[i + k][j + 1] > highest)highest = heightmap[i + k][j + 1];
-                if (heightmap[i + k][j + 1] < lowest)lowest = heightmap[i + k][j + 1];
+                if (heightmap[i + k][j] > highest)
+                    highest = heightmap[i + k][j];
+                if (heightmap[i + k][j] < lowest)
+                    lowest = heightmap[i + k][j];
+                if (heightmap[i + k][j + 1] > highest)
+                    highest = heightmap[i + k][j + 1];
+                if (heightmap[i + k][j + 1] < lowest)
+                    lowest = heightmap[i + k][j + 1];
             }
             if ((p1.y <= highest || p2.y <= highest) && (p1.y >= lowest || p2.y >= lowest)) {
                 triangles[0].x = i;
@@ -164,7 +172,8 @@ void Terrain::UpdateTransparency(int whichx, int whichy)
                 vertex.z = j * scale;
                 vertex.y = heightmap[i][j] * scale;
                 distance = distsq(&viewer, &vertex);
-                if (distance > viewdistsquared)distance = viewdistsquared;
+                if (distance > viewdistsquared)
+                    distance = viewdistsquared;
                 colors[i][j][3] = (viewdistsquared - (distance - (viewdistsquared * fadestart)) * (1 / (1 - fadestart))) / viewdistsquared;
             }
         }
@@ -242,7 +251,8 @@ void Terrain::UpdateTransparencyotherother(int whichx, int whichy)
                 vertex.z = j * scale;
                 vertex.y = heightmap[i][j] * scale;
                 distance = distsq(&viewer, &vertex);
-                if (distance > viewdistsquared)distance = viewdistsquared;
+                if (distance > viewdistsquared)
+                    distance = viewdistsquared;
                 colors[i][j][3] = (viewdistsquared - (distance - (viewdistsquared * fadestart)) * (1 / (1 - fadestart))) / viewdistsquared;
             }
         }
@@ -350,12 +360,15 @@ void Terrain::UpdateVertexArray(int whichx, int whichy)
     minypatch[whichx][whichy] = 10000;
     for (a = 0; a < size / subdivision; a++) {
         for (b = 0; b < size / subdivision; b++) {
-            if (heightmap[(size / subdivision)*whichx + a][(size / subdivision)*whichy + b]*scale > maxypatch[whichx][whichy]) maxypatch[whichx][whichy] = heightmap[(size / subdivision) * whichx + a][(size / subdivision) * whichy + b] * scale;
-            if (heightmap[(size / subdivision)*whichx + a][(size / subdivision)*whichy + b]*scale < minypatch[whichx][whichy]) minypatch[whichx][whichy] = heightmap[(size / subdivision) * whichx + a][(size / subdivision) * whichy + b] * scale;
+            if (heightmap[(size / subdivision)*whichx + a][(size / subdivision)*whichy + b]*scale > maxypatch[whichx][whichy])
+                maxypatch[whichx][whichy] = heightmap[(size / subdivision) * whichx + a][(size / subdivision) * whichy + b] * scale;
+            if (heightmap[(size / subdivision)*whichx + a][(size / subdivision)*whichy + b]*scale < minypatch[whichx][whichy])
+                minypatch[whichx][whichy] = heightmap[(size / subdivision) * whichx + a][(size / subdivision) * whichy + b] * scale;
         }
     }
     heightypatch[whichx][whichy] = (maxypatch[whichx][whichy] - minypatch[whichx][whichy]);
-    if (heightypatch[whichx][whichy] < size / subdivision * scale)heightypatch[whichx][whichy] = size / subdivision * scale;
+    if (heightypatch[whichx][whichy] < size / subdivision * scale)
+        heightypatch[whichx][whichy] = size / subdivision * scale;
     avgypatch[whichx][whichy] = (minypatch[whichx][whichy] + maxypatch[whichx][whichy]) / 2;
 
     for (i = whichx * size / subdivision; i < (whichx + 1)*size / subdivision - 1; i++) {
@@ -419,7 +432,8 @@ bool Terrain::load(const char *fileName)
         }
     }
     texture.bpp = 24;
-    if (visibleloading) Game::LoadingScreen();
+    if (visibleloading)
+        Game::LoadingScreen();
 
     texdetail = temptexdetail;
 
@@ -451,7 +465,8 @@ bool Terrain::load(const char *fileName)
         }
 
     }
-    if (visibleloading) Game::LoadingScreen();
+    if (visibleloading)
+        Game::LoadingScreen();
 
     float slopeness;
 
@@ -460,7 +475,8 @@ bool Terrain::load(const char *fileName)
             textureness[i][j] = -1;
         }
     }
-    if (visibleloading) Game::LoadingScreen();
+    if (visibleloading)
+        Game::LoadingScreen();
 
 
     for (i = 0; i < size; i++) {
@@ -476,7 +492,8 @@ bool Terrain::load(const char *fileName)
                     slopeness = heightmap[i][j] - heightmap[i][j - 1];
                 }
                 opacityother[i][j] = slopeness * slopeness * 2;
-                if (opacityother[i][j] > 1)opacityother[i][j] = 1;
+                if (opacityother[i][j] > 1)
+                    opacityother[i][j] = 1;
                 opacityother[i][j] -= (float)abs(Random() % 100) / 300;
             }
             if (environment == desertenvironment) {
@@ -484,7 +501,8 @@ bool Terrain::load(const char *fileName)
                     slopeness = heightmap[i][j] - heightmap[i][j - 1];
                 }
                 opacityother[i][j] = slopeness * slopeness * 2;
-                if (opacityother[i][j] > 1)opacityother[i][j] = 1;
+                if (opacityother[i][j] > 1)
+                    opacityother[i][j] = 1;
                 opacityother[i][j] -= (float)abs(Random() % 100) / 300;
             }
             if (environment == grassyenvironment) {
@@ -501,12 +519,14 @@ bool Terrain::load(const char *fileName)
                     slopeness = heightmap[i][j] - heightmap[i][j + 1];
                 }
                 opacityother[i][j] = slopeness * slopeness * 10;
-                if (opacityother[i][j] > 1)opacityother[i][j] = 1;
+                if (opacityother[i][j] > 1)
+                    opacityother[i][j] = 1;
                 opacityother[i][j] -= (float)abs(Random() % 100) / 100;
             }
         }
     }
-    if (visibleloading) Game::LoadingScreen();
+    if (visibleloading)
+        Game::LoadingScreen();
 
     for (i = 0; i < size; i++) {
         for (j = 0; j < size; j++) {
@@ -518,7 +538,8 @@ bool Terrain::load(const char *fileName)
             }
         }
     }
-    if (visibleloading) Game::LoadingScreen();
+    if (visibleloading)
+        Game::LoadingScreen();
 
     /*float total;
     int todivide;
@@ -544,38 +565,55 @@ bool Terrain::load(const char *fileName)
 
     for (i = 0; i < size; i++) {
         for (j = 0; j < size; j++) {
-            if (opacityother[i][j] < .1)opacityother[i][j] = 0;
+            if (opacityother[i][j] < .1)
+                opacityother[i][j] = 0;
             if (textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == -1) {
-                if (!opacityother[i][j])textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = allfirst;
-                if (opacityother[i][j] == 1)textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = allsecond;
+                if (!opacityother[i][j])
+                    textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = allfirst;
+                if (opacityother[i][j] == 1)
+                    textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = allsecond;
             }
-            if (opacityother[i][j] && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allfirst)textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
-            if (opacityother[i][j] != 1 && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allsecond)textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
+            if (opacityother[i][j] && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allfirst)
+                textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
+            if (opacityother[i][j] != 1 && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allsecond)
+                textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
 
             x = i;
             y = j;
             if (i > 0) {
                 i--;
-                if (opacityother[x][y] && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allfirst)textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
-                if (opacityother[x][y] != 1 && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allsecond)textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
-                if (opacityother[i][j] && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allfirst)textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
-                if (opacityother[i][j] != 1 && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allsecond)textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
+                if (opacityother[x][y] && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allfirst)
+                    textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
+                if (opacityother[x][y] != 1 && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allsecond)
+                    textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
+                if (opacityother[i][j] && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allfirst)
+                    textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
+                if (opacityother[i][j] != 1 && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allsecond)
+                    textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
 
                 if (j > 0) {
                     j--;
-                    if (opacityother[x][y] && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allfirst)textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
-                    if (opacityother[x][y] != 1 && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allsecond)textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
-                    if (opacityother[i][j] && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allfirst)textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
-                    if (opacityother[i][j] != 1 && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allsecond)textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
+                    if (opacityother[x][y] && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allfirst)
+                        textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
+                    if (opacityother[x][y] != 1 && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allsecond)
+                        textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
+                    if (opacityother[i][j] && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allfirst)
+                        textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
+                    if (opacityother[i][j] != 1 && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allsecond)
+                        textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
                     j++;
                 }
 
                 if (j < size - 1) {
                     j++;
-                    if (opacityother[x][y] && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allfirst)textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
-                    if (opacityother[x][y] != 1 && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allsecond)textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
-                    if (opacityother[i][j] && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allfirst)textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
-                    if (opacityother[i][j] != 1 && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allsecond)textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
+                    if (opacityother[x][y] && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allfirst)
+                        textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
+                    if (opacityother[x][y] != 1 && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allsecond)
+                        textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
+                    if (opacityother[i][j] && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allfirst)
+                        textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
+                    if (opacityother[i][j] != 1 && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allsecond)
+                        textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
                     j--;
                 }
                 i++;
@@ -583,26 +621,38 @@ bool Terrain::load(const char *fileName)
 
             if (i < size - 1) {
                 i++;
-                if (opacityother[x][y] && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allfirst)textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
-                if (opacityother[x][y] != 1 && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allsecond)textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
-                if (opacityother[i][j] && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allfirst)textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
-                if (opacityother[i][j] != 1 && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allsecond)textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
+                if (opacityother[x][y] && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allfirst)
+                    textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
+                if (opacityother[x][y] != 1 && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allsecond)
+                    textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
+                if (opacityother[i][j] && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allfirst)
+                    textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
+                if (opacityother[i][j] != 1 && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allsecond)
+                    textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
 
                 if (j > 0) {
                     j--;
-                    if (opacityother[x][y] && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allfirst)textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
-                    if (opacityother[x][y] != 1 && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allsecond)textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
-                    if (opacityother[i][j] && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allfirst)textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
-                    if (opacityother[i][j] != 1 && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allsecond)textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
+                    if (opacityother[x][y] && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allfirst)
+                        textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
+                    if (opacityother[x][y] != 1 && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allsecond)
+                        textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
+                    if (opacityother[i][j] && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allfirst)
+                        textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
+                    if (opacityother[i][j] != 1 && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allsecond)
+                        textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
                     j++;
                 }
 
                 if (j < size - 1) {
                     j++;
-                    if (opacityother[x][y] && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allfirst)textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
-                    if (opacityother[x][y] != 1 && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allsecond)textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
-                    if (opacityother[i][j] && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allfirst)textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
-                    if (opacityother[i][j] != 1 && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allsecond)textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
+                    if (opacityother[x][y] && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allfirst)
+                        textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
+                    if (opacityother[x][y] != 1 && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allsecond)
+                        textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
+                    if (opacityother[i][j] && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allfirst)
+                        textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
+                    if (opacityother[i][j] != 1 && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allsecond)
+                        textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
                     j--;
                 }
                 i--;
@@ -610,25 +660,34 @@ bool Terrain::load(const char *fileName)
 
             if (j > 0) {
                 j--;
-                if (opacityother[x][y] && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allfirst)textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
-                if (opacityother[x][y] != 1 && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allsecond)textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
-                if (opacityother[i][j] && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allfirst)textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
-                if (opacityother[i][j] != 1 && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allsecond)textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
+                if (opacityother[x][y] && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allfirst)
+                    textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
+                if (opacityother[x][y] != 1 && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allsecond)
+                    textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
+                if (opacityother[i][j] && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allfirst)
+                    textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
+                if (opacityother[i][j] != 1 && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allsecond)
+                    textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
                 j++;
             }
 
             if (j < size - 1) {
                 j++;
-                if (opacityother[x][y] && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allfirst)textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
-                if (opacityother[x][y] != 1 && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allsecond)textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
-                if (opacityother[i][j] && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allfirst)textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
-                if (opacityother[i][j] != 1 && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allsecond)textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
+                if (opacityother[x][y] && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allfirst)
+                    textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
+                if (opacityother[x][y] != 1 && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allsecond)
+                    textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
+                if (opacityother[i][j] && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allfirst)
+                    textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
+                if (opacityother[i][j] != 1 && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allsecond)
+                    textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
                 j--;
 
             }
         }
     }
-    if (visibleloading) Game::LoadingScreen();
+    if (visibleloading)
+        Game::LoadingScreen();
 
     patch_size = size / subdivision;
     patch_elements = (patch_size) * (patch_size) * 54;
@@ -723,7 +782,8 @@ void Terrain::CalculateNormals()
 
 void Terrain::drawpatch(int whichx, int whichy, float opacity)
 {
-    if (opacity >= 1)glDisable(GL_BLEND);
+    if (opacity >= 1)
+        glDisable(GL_BLEND);
     if (opacity < 1) {
         glEnable(GL_BLEND);
         UpdateTransparency(whichx, whichy);
@@ -809,7 +869,8 @@ float Terrain::getHeight(float pointx, float pointz)
     pointx /= scale;
     pointz /= scale;
 
-    if (pointx >= size - 1 || pointz >= size - 1 || pointx <= 0 || pointz <= 0)return 0;
+    if (pointx >= size - 1 || pointz >= size - 1 || pointx <= 0 || pointz <= 0)
+        return 0;
 
     startpoint.x = pointx;
     startpoint.y = -1000;
@@ -866,8 +927,10 @@ float Terrain::getHeightExtrude(float pointx, float pointz, float point2x, float
     point2x /= scale;
     point2z /= scale;
 
-    if (pointx >= size - 1 || pointz >= size - 1 || pointx <= 0 || pointz <= 0)return 0;
-    if (point2x >= size - 1 || point2z >= size - 1 || point2x <= 0 || point2z <= 0)return 0;
+    if (pointx >= size - 1 || pointz >= size - 1 || pointx <= 0 || pointz <= 0)
+        return 0;
+    if (point2x >= size - 1 || point2z >= size - 1 || point2x <= 0 || point2z <= 0)
+        return 0;
 
     startpoint.x = point2x;
     startpoint.y = -1000;
@@ -931,7 +994,8 @@ float Terrain::getOpacity(float pointx, float pointz)
     pointx /= scale;
     pointz /= scale;
 
-    if (pointx >= size - 1 || pointz >= size - 1 || pointx <= 0 || pointz <= 0)return 0;
+    if (pointx >= size - 1 || pointz >= size - 1 || pointx <= 0 || pointz <= 0)
+        return 0;
 
     tilex = pointx;
     tiley = pointz;
@@ -951,7 +1015,8 @@ XYZ Terrain::getNormal(float pointx, float pointz)
     pointz /= scale;
 
     height1 = 0;
-    if (pointx >= size - 1 || pointz >= size - 1 || pointx <= 0 || pointz <= 0)return height1;
+    if (pointx >= size - 1 || pointz >= size - 1 || pointx <= 0 || pointz <= 0)
+        return height1;
     tilex = pointx;
     tiley = pointz;
 
@@ -971,7 +1036,8 @@ XYZ Terrain::getLighting(float pointx, float pointz)
     pointz /= scale;
 
     height1 = 0;
-    if (pointx >= size - 1 || pointz >= size - 1 || pointx <= 0 || pointz <= 0)return height1;
+    if (pointx >= size - 1 || pointz >= size - 1 || pointx <= 0 || pointz <= 0)
+        return height1;
     tilex = pointx;
     tiley = pointz;
 
@@ -1002,14 +1068,18 @@ void Terrain::draw(int layer)
 
     //Only nearby blocks
     beginx = (viewer.x - viewdistance) / (patch_size) - 1;
-    if (beginx < 0)beginx = 0;
+    if (beginx < 0)
+        beginx = 0;
     beginz = (viewer.z - viewdistance) / (patch_size) - 1;
-    if (beginz < 0)beginz = 0;
+    if (beginz < 0)
+        beginz = 0;
 
     endx = (viewer.x + viewdistance) / (patch_size) + 1;
-    if (endx > subdivision)endx = subdivision;
+    if (endx > subdivision)
+        endx = subdivision;
     endz = (viewer.z + viewdistance) / (patch_size) + 1;
-    if (endz > subdivision)endz = subdivision;
+    if (endz > subdivision)
+        endz = subdivision;
 
     if (!layer) {
         for (i = beginx; i < endx; i++) {
@@ -1079,7 +1149,8 @@ void Terrain::drawdecals()
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glDepthMask(0);
         for (i = 0; i < numdecals; i++) {
-            if (decaltype[i] == blooddecalfast && decalalivetime[i] < 2)decalalivetime[i] = 2;
+            if (decaltype[i] == blooddecalfast && decalalivetime[i] < 2)
+                decalalivetime[i] = 2;
             if ((decaltype[i] == shadowdecal || decaltype[i] == shadowdecalpermanent) && decaltype[i] != lasttype) {
                 shadowtexture.bind();
                 if (!blend) {
@@ -1122,31 +1193,39 @@ void Terrain::drawdecals()
             }
             if (decaltype[i] == shadowdecal || decaltype[i] == shadowdecalpermanent) {
                 distancemult = (viewdistsquared - (distsq(&viewer, &decalposition[i]) - (viewdistsquared * fadestart)) * (1 / (1 - fadestart))) / viewdistsquared;
-                if (distancemult >= 1)glColor4f(1, 1, 1, decalopacity[i]);
-                if (distancemult < 1)glColor4f(1, 1, 1, decalopacity[i]*distancemult);
+                if (distancemult >= 1)
+                    glColor4f(1, 1, 1, decalopacity[i]);
+                if (distancemult < 1)
+                    glColor4f(1, 1, 1, decalopacity[i]*distancemult);
             }
             if (decaltype[i] == footprintdecal || decaltype[i] == bodyprintdecal) {
                 distancemult = (viewdistsquared - (distsq(&viewer, &decalposition[i]) - (viewdistsquared * fadestart)) * (1 / (1 - fadestart))) / viewdistsquared;
                 if (distancemult >= 1) {
                     glColor4f(1, 1, 1, decalopacity[i]);
-                    if (decalalivetime[i] > 3)glColor4f(1, 1, 1, decalopacity[i] * (5 - decalalivetime[i]) / 2);
+                    if (decalalivetime[i] > 3)
+                        glColor4f(1, 1, 1, decalopacity[i] * (5 - decalalivetime[i]) / 2);
                 }
                 if (distancemult < 1) {
                     glColor4f(1, 1, 1, decalopacity[i]*distancemult);
-                    if (decalalivetime[i] > 3)glColor4f(1, 1, 1, decalopacity[i] * (5 - decalalivetime[i]) / 2 * distancemult);
+                    if (decalalivetime[i] > 3)
+                        glColor4f(1, 1, 1, decalopacity[i] * (5 - decalalivetime[i]) / 2 * distancemult);
                 }
             }
             if ((decaltype[i] == blooddecal || decaltype[i] == blooddecalfast || decaltype[i] == blooddecalslow)) {
                 distancemult = (viewdistsquared - (distsq(&viewer, &decalposition[i]) - (viewdistsquared * fadestart)) * (1 / (1 - fadestart))) / viewdistsquared;
                 if (distancemult >= 1) {
                     glColor4f(decalbrightness[i], decalbrightness[i], decalbrightness[i], decalopacity[i]);
-                    if (decalalivetime[i] < 4)glColor4f(decalbrightness[i], decalbrightness[i], decalbrightness[i], decalopacity[i]*decalalivetime[i]*.25);
-                    if (decalalivetime[i] > 58)glColor4f(decalbrightness[i], decalbrightness[i], decalbrightness[i], decalopacity[i] * (60 - decalalivetime[i]) / 2);
+                    if (decalalivetime[i] < 4)
+                        glColor4f(decalbrightness[i], decalbrightness[i], decalbrightness[i], decalopacity[i]*decalalivetime[i]*.25);
+                    if (decalalivetime[i] > 58)
+                        glColor4f(decalbrightness[i], decalbrightness[i], decalbrightness[i], decalopacity[i] * (60 - decalalivetime[i]) / 2);
                 }
                 if (distancemult < 1) {
                     glColor4f(decalbrightness[i], decalbrightness[i], decalbrightness[i], decalopacity[i]*distancemult);
-                    if (decalalivetime[i] < 4)glColor4f(decalbrightness[i], decalbrightness[i], decalbrightness[i], decalopacity[i]*decalalivetime[i]*distancemult * .25);
-                    if (decalalivetime[i] > 58)glColor4f(decalbrightness[i], decalbrightness[i], decalbrightness[i], decalopacity[i] * (60 - decalalivetime[i]) / 2 * distancemult);
+                    if (decalalivetime[i] < 4)
+                        glColor4f(decalbrightness[i], decalbrightness[i], decalbrightness[i], decalopacity[i]*decalalivetime[i]*distancemult * .25);
+                    if (decalalivetime[i] > 58)
+                        glColor4f(decalbrightness[i], decalbrightness[i], decalbrightness[i], decalopacity[i] * (60 - decalalivetime[i]) / 2 * distancemult);
                 }
             }
             lasttype = decaltype[i];
@@ -1165,12 +1244,18 @@ void Terrain::drawdecals()
         }
         for (i = numdecals - 1; i >= 0; i--) {
             decalalivetime[i] += multiplier;
-            if (decaltype[i] == blooddecalslow)decalalivetime[i] -= multiplier * 2 / 3;
-            if (decaltype[i] == blooddecalfast)decalalivetime[i] += multiplier * 4;
-            if (decaltype[i] == shadowdecal)DeleteDecal(i);
-            if (decaltype[i] == footprintdecal && decalalivetime[i] >= 5)DeleteDecal(i);
-            if (decaltype[i] == bodyprintdecal && decalalivetime[i] >= 5)DeleteDecal(i);
-            if ((decaltype[i] == blooddecal || decaltype[i] == blooddecalfast || decaltype[i] == blooddecalslow) && decalalivetime[i] >= 60)DeleteDecal(i);
+            if (decaltype[i] == blooddecalslow)
+                decalalivetime[i] -= multiplier * 2 / 3;
+            if (decaltype[i] == blooddecalfast)
+                decalalivetime[i] += multiplier * 4;
+            if (decaltype[i] == shadowdecal)
+                DeleteDecal(i);
+            if (decaltype[i] == footprintdecal && decalalivetime[i] >= 5)
+                DeleteDecal(i);
+            if (decaltype[i] == bodyprintdecal && decalalivetime[i] >= 5)
+                DeleteDecal(i);
+            if ((decaltype[i] == blooddecal || decaltype[i] == blooddecalfast || decaltype[i] == blooddecalslow) && decalalivetime[i] >= 60)
+                DeleteDecal(i);
         }
         glAlphaFunc(GL_GREATER, 0.0001);
     }
@@ -1282,13 +1367,15 @@ void Terrain::MakeDecalLock(int type, XYZ where, int whichx, int whichy, float s
 
         rot = getLighting(where.x, where.z);
         decalbrightness[numdecals] = (rot.x + rot.y + rot.z) / 3;
-        if (decalbrightness[numdecals] < .4)decalbrightness[numdecals] = .4;
+        if (decalbrightness[numdecals] < .4)
+            decalbrightness[numdecals] = .4;
 
         if (environment == grassyenvironment) {
             decalbrightness[numdecals] *= .6;
         }
 
-        if (decalbrightness[numdecals] > 1)decalbrightness[numdecals] = 1;
+        if (decalbrightness[numdecals] > 1)
+            decalbrightness[numdecals] = 1;
         decalbright = decalbrightness[numdecals];
 
         decalposition[numdecals] = where;
@@ -1344,7 +1431,8 @@ void Terrain::MakeDecalLock(int type, XYZ where, int whichx, int whichy, float s
             if (!(decaltexcoords[numdecals][0][1] < 0 && decaltexcoords[numdecals][1][1] < 0 && decaltexcoords[numdecals][2][1] < 0))
                 if (!(decaltexcoords[numdecals][0][0] > 1 && decaltexcoords[numdecals][1][0] > 1 && decaltexcoords[numdecals][2][0] > 1))
                     if (!(decaltexcoords[numdecals][0][1] > 1 && decaltexcoords[numdecals][1][1] > 1 && decaltexcoords[numdecals][2][1] > 1))
-                        if (numdecals < max_decals - 1)numdecals++;
+                        if (numdecals < max_decals - 1)
+                            numdecals++;
 
         decalbrightness[numdecals] = decalbright;
 
@@ -1401,7 +1489,8 @@ void Terrain::MakeDecalLock(int type, XYZ where, int whichx, int whichy, float s
             if (!(decaltexcoords[numdecals][0][1] < 0 && decaltexcoords[numdecals][1][1] < 0 && decaltexcoords[numdecals][2][1] < 0))
                 if (!(decaltexcoords[numdecals][0][0] > 1 && decaltexcoords[numdecals][1][0] > 1 && decaltexcoords[numdecals][2][0] > 1))
                     if (!(decaltexcoords[numdecals][0][1] > 1 && decaltexcoords[numdecals][1][1] > 1 && decaltexcoords[numdecals][2][1] > 1))
-                        if (numdecals < max_decals - 1)numdecals++;
+                        if (numdecals < max_decals - 1)
+                            numdecals++;
     }
 }
 
@@ -1423,19 +1512,21 @@ void Terrain::DoLighting()
             */
             brightness = dotproduct(&lightloc, &normals[i][j]);
 
-            if (brightness > 1)brightness = 1;
-            if (brightness < 0)brightness = 0;
+            if (brightness > 1)
+                brightness = 1;
+            if (brightness < 0)
+                brightness = 0;
 
             colors[i][j][0] = light.color[0] * brightness + light.ambient[0];
             colors[i][j][1] = light.color[1] * brightness + light.ambient[1];
             colors[i][j][2] = light.color[2] * brightness + light.ambient[2];
 
-            if (colors[i][j][0] > 1)colors[i][j][0] = 1;
-            if (colors[i][j][1] > 1)colors[i][j][1] = 1;
-            if (colors[i][j][2] > 1)colors[i][j][2] = 1;
-            if (colors[i][j][0] < 0)colors[i][j][0] = 0;
-            if (colors[i][j][1] < 0)colors[i][j][1] = 0;
-            if (colors[i][j][2] < 0)colors[i][j][2] = 0;
+            if (colors[i][j][0] > 1) colors[i][j][0] = 1;
+            if (colors[i][j][1] > 1) colors[i][j][1] = 1;
+            if (colors[i][j][2] > 1) colors[i][j][2] = 1;
+            if (colors[i][j][0] < 0) colors[i][j][0] = 0;
+            if (colors[i][j][1] < 0) colors[i][j][1] = 0;
+            if (colors[i][j][2] < 0) colors[i][j][2] = 0;
         }
     }
 
@@ -1524,28 +1615,33 @@ void Terrain::DoShadows()
                         }
                     }
                 }
-                if (visibleloading) Game::LoadingScreen();
+                if (visibleloading)
+                    Game::LoadingScreen();
             }
             brightness = dotproduct(&lightloc, &normals[i][j]);
-            if (shadowed)brightness *= 1 - shadowed;
+            if (shadowed)
+                brightness *= 1 - shadowed;
 
-            if (brightness > 1)brightness = 1;
-            if (brightness < 0)brightness = 0;
+            if (brightness > 1)
+                brightness = 1;
+            if (brightness < 0)
+                brightness = 0;
 
             colors[i][j][0] = light.color[0] * brightness + light.ambient[0];
             colors[i][j][1] = light.color[1] * brightness + light.ambient[1];
             colors[i][j][2] = light.color[2] * brightness + light.ambient[2];
 
-            if (colors[i][j][0] > 1)colors[i][j][0] = 1;
-            if (colors[i][j][1] > 1)colors[i][j][1] = 1;
-            if (colors[i][j][2] > 1)colors[i][j][2] = 1;
-            if (colors[i][j][0] < 0)colors[i][j][0] = 0;
-            if (colors[i][j][1] < 0)colors[i][j][1] = 0;
-            if (colors[i][j][2] < 0)colors[i][j][2] = 0;
+            if (colors[i][j][0] > 1) colors[i][j][0] = 1;
+            if (colors[i][j][1] > 1) colors[i][j][1] = 1;
+            if (colors[i][j][2] > 1) colors[i][j][2] = 1;
+            if (colors[i][j][0] < 0) colors[i][j][0] = 0;
+            if (colors[i][j][1] < 0) colors[i][j][1] = 0;
+            if (colors[i][j][2] < 0) colors[i][j][2] = 0;
         }
     }
 
-    if (visibleloading) Game::LoadingScreen();
+    if (visibleloading)
+        Game::LoadingScreen();
 
     //Smooth shadows
     for (i = 0; i < size; i++) {

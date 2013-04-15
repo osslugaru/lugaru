@@ -42,10 +42,12 @@ int Model::LineCheck(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate)
 
     *p1 = *p1 - *move;
     *p2 = *p2 - *move;
-    if (*rotate)*p1 = DoRotation(*p1, 0, -*rotate, 0);
-    if (*rotate)*p2 = DoRotation(*p2, 0, -*rotate, 0);
-    if (!sphere_line_intersection(p1, p2, &boundingspherecenter,
-                                  &boundingsphereradius))return -1;
+    if (*rotate)
+        *p1 = DoRotation(*p1, 0, -*rotate, 0);
+    if (*rotate)
+        *p2 = DoRotation(*p2, 0, -*rotate, 0);
+    if (!sphere_line_intersection(p1, p2, &boundingspherecenter, &boundingsphereradius))
+        return -1;
     firstintersecting = -1;
 
     for (j = 0; j < TriangleNum; j++) {
@@ -58,7 +60,8 @@ int Model::LineCheck(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate)
         }
     }
 
-    if (*rotate)*p = DoRotation(*p, 0, *rotate, 0);
+    if (*rotate)
+        *p = DoRotation(*p, 0, *rotate, 0);
     *p = *p + *move;
     return firstintersecting;
 }
@@ -74,11 +77,13 @@ int Model::LineCheckSlide(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate)
 
     *p1 = *p1 - *move;
     *p2 = *p2 - *move;
-    if (!sphere_line_intersection(p1, p2, &boundingspherecenter,
-                                  &boundingsphereradius))return -1;
+    if (!sphere_line_intersection(p1, p2, &boundingspherecenter, &boundingsphereradius))
+        return -1;
     firstintersecting = -1;
-    if (*rotate)*p1 = DoRotation(*p1, 0, -*rotate, 0);
-    if (*rotate)*p2 = DoRotation(*p2, 0, -*rotate, 0);
+    if (*rotate)
+        *p1 = DoRotation(*p1, 0, -*rotate, 0);
+    if (*rotate)
+        *p2 = DoRotation(*p2, 0, -*rotate, 0);
 
     for (j = 0; j < TriangleNum; j++) {
         intersecting = LineFacetd(p1, p2, &vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[1]], &vertex[Triangles[j].vertex[2]], &facenormals[j], &point);
@@ -92,7 +97,8 @@ int Model::LineCheckSlide(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate)
     distance = abs((facenormals[firstintersecting].x * p2->x) + (facenormals[firstintersecting].y * p2->y) + (facenormals[firstintersecting].z * p2->z) - ((facenormals[firstintersecting].x * vertex[Triangles[firstintersecting].vertex[0]].x) + (facenormals[firstintersecting].y * vertex[Triangles[firstintersecting].vertex[0]].y) + (facenormals[firstintersecting].z * vertex[Triangles[firstintersecting].vertex[0]].z)));
     *p2 -= facenormals[firstintersecting] * distance;
 
-    if (*rotate)*p2 = DoRotation(*p2, 0, *rotate, 0);
+    if (*rotate)
+        *p2 = DoRotation(*p2, 0, *rotate, 0);
     *p2 = *p2 + *move;
     return firstintersecting;
 }
@@ -108,11 +114,13 @@ int Model::LineCheckPossible(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate)
 
     *p1 = *p1 - *move;
     *p2 = *p2 - *move;
-    if (!sphere_line_intersection(p1, p2, &boundingspherecenter,
-                                  &boundingsphereradius))return -1;
+    if (!sphere_line_intersection(p1, p2, &boundingspherecenter, &boundingsphereradius))
+        return -1;
     firstintersecting = -1;
-    if (*rotate)*p1 = DoRotation(*p1, 0, -*rotate, 0);
-    if (*rotate)*p2 = DoRotation(*p2, 0, -*rotate, 0);
+    if (*rotate)
+        *p1 = DoRotation(*p1, 0, -*rotate, 0);
+    if (*rotate)
+        *p2 = DoRotation(*p2, 0, -*rotate, 0);
 
     if (numpossible > 0 && numpossible < TriangleNum)
         for (j = 0; j < numpossible; j++) {
@@ -127,7 +135,8 @@ int Model::LineCheckPossible(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate)
             }
         }
 
-    if (*rotate)*p = DoRotation(*p, 0, *rotate, 0);
+    if (*rotate)
+        *p = DoRotation(*p, 0, *rotate, 0);
     *p = *p + *move;
     return firstintersecting;
 }
@@ -143,11 +152,13 @@ int Model::LineCheckSlidePossible(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *ro
 
     *p1 = *p1 - *move;
     *p2 = *p2 - *move;
-    if (!sphere_line_intersection(p1, p2, &boundingspherecenter,
-                                  &boundingsphereradius))return -1;
+    if (!sphere_line_intersection(p1, p2, &boundingspherecenter, &boundingsphereradius))
+        return -1;
     firstintersecting = -1;
-    if (*rotate)*p1 = DoRotation(*p1, 0, -*rotate, 0);
-    if (*rotate)*p2 = DoRotation(*p2, 0, -*rotate, 0);
+    if (*rotate)
+        *p1 = DoRotation(*p1, 0, -*rotate, 0);
+    if (*rotate)
+        *p2 = DoRotation(*p2, 0, -*rotate, 0);
 
     if (numpossible)
         for (j = 0; j < numpossible; j++) {
@@ -166,7 +177,8 @@ int Model::LineCheckSlidePossible(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *ro
         *p2 -= facenormals[firstintersecting] * distance;
     }
 
-    if (*rotate)*p2 = DoRotation(*p2, 0, *rotate, 0);
+    if (*rotate)
+        *p2 = DoRotation(*p2, 0, *rotate, 0);
     *p2 = *p2 + *move;
     return firstintersecting;
 }
@@ -186,8 +198,10 @@ int Model::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate)
 
     oldp1 = *p1;
     *p1 = *p1 - *move;
-    if (*rotate)*p1 = DoRotation(*p1, 0, -*rotate, 0);
-    if (distsq(p1, &boundingspherecenter) > radius * radius + boundingsphereradius * boundingsphereradius)return -1;
+    if (*rotate)
+        *p1 = DoRotation(*p1, 0, -*rotate, 0);
+    if (distsq(p1, &boundingspherecenter) > radius * radius + boundingsphereradius * boundingsphereradius)
+        return -1;
 
     for (i = 0; i < 4; i++) {
         for (j = 0; j < TriangleNum; j++) {
@@ -195,16 +209,14 @@ int Model::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate)
             distance = abs((facenormals[j].x * p1->x) + (facenormals[j].y * p1->y) + (facenormals[j].z * p1->z) - ((facenormals[j].x * vertex[Triangles[j].vertex[0]].x) + (facenormals[j].y * vertex[Triangles[j].vertex[0]].y) + (facenormals[j].z * vertex[Triangles[j].vertex[0]].z)));
             if (distance < radius) {
                 point = *p1 - facenormals[j] * distance;
-                if (PointInTriangle( &point, facenormals[j], &vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[1]], &vertex[Triangles[j].vertex[2]]))intersecting = 1;
-                if (!intersecting)intersecting = sphere_line_intersection(&vertex[Triangles[j].vertex[0]],
-                                                     &vertex[Triangles[j].vertex[1]],
-                                                     p1, &radius);
-                if (!intersecting)intersecting = sphere_line_intersection(&vertex[Triangles[j].vertex[1]],
-                                                     &vertex[Triangles[j].vertex[2]],
-                                                     p1, &radius);
-                if (!intersecting)intersecting = sphere_line_intersection(&vertex[Triangles[j].vertex[0]],
-                                                     &vertex[Triangles[j].vertex[2]],
-                                                     p1, &radius);
+                if (PointInTriangle( &point, facenormals[j], &vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[1]], &vertex[Triangles[j].vertex[2]]))
+                    intersecting = 1;
+                if (!intersecting)
+                    intersecting = sphere_line_intersection(&vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[1]], p1, &radius);
+                if (!intersecting)
+                    intersecting = sphere_line_intersection(&vertex[Triangles[j].vertex[1]], &vertex[Triangles[j].vertex[2]], p1, &radius);
+                if (!intersecting)
+                    intersecting = sphere_line_intersection(&vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[2]], p1, &radius);
                 if (intersecting) {
                     *p1 += facenormals[j] * (distance - radius);
                     /*start=*p1;
@@ -222,9 +234,11 @@ int Model::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate)
             }
         }
     }
-    if (*rotate)*p = DoRotation(*p, 0, *rotate, 0);
+    if (*rotate)
+        *p = DoRotation(*p, 0, *rotate, 0);
     *p = *p + *move;
-    if (*rotate)*p1 = DoRotation(*p1, 0, *rotate, 0);
+    if (*rotate)
+        *p1 = DoRotation(*p1, 0, *rotate, 0);
     *p1 += *move;
     return firstintersecting;
 }
@@ -247,7 +261,8 @@ int Model::SphereCheckPossible(XYZ *p1, float radius, XYZ *move, float *rotate)
 
     numpossible = 0;
 
-    if (*rotate)*p1 = DoRotation(*p1, 0, -*rotate, 0);
+    if (*rotate)
+        *p1 = DoRotation(*p1, 0, -*rotate, 0);
     if (distsq(p1, &boundingspherecenter) > radius * radius + boundingsphereradius * boundingsphereradius) {
         *p1 = oldp1;
         return -1;
@@ -258,16 +273,14 @@ int Model::SphereCheckPossible(XYZ *p1, float radius, XYZ *move, float *rotate)
         distance = abs((facenormals[j].x * p1->x) + (facenormals[j].y * p1->y) + (facenormals[j].z * p1->z) - ((facenormals[j].x * vertex[Triangles[j].vertex[0]].x) + (facenormals[j].y * vertex[Triangles[j].vertex[0]].y) + (facenormals[j].z * vertex[Triangles[j].vertex[0]].z)));
         if (distance < radius) {
             point = *p1 - facenormals[j] * distance;
-            if (PointInTriangle( &point, facenormals[j], &vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[1]], &vertex[Triangles[j].vertex[2]]))intersecting = 1;
-            if (!intersecting)intersecting = sphere_line_intersection(&vertex[Triangles[j].vertex[0]],
-                                                 &vertex[Triangles[j].vertex[1]],
-                                                 p1, &radius);
-            if (!intersecting)intersecting = sphere_line_intersection(&vertex[Triangles[j].vertex[1]],
-                                                 &vertex[Triangles[j].vertex[2]],
-                                                 p1, &radius);
-            if (!intersecting)intersecting = sphere_line_intersection(&vertex[Triangles[j].vertex[0]],
-                                                 &vertex[Triangles[j].vertex[2]],
-                                                 p1, &radius);
+            if (PointInTriangle( &point, facenormals[j], &vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[1]], &vertex[Triangles[j].vertex[2]]))
+                intersecting = 1;
+            if (!intersecting)
+                intersecting = sphere_line_intersection(&vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[1]], p1, &radius);
+            if (!intersecting)
+                intersecting = sphere_line_intersection(&vertex[Triangles[j].vertex[1]], &vertex[Triangles[j].vertex[2]], p1, &radius);
+            if (!intersecting)
+                intersecting = sphere_line_intersection(&vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[2]], p1, &radius);
             if (intersecting) {
                 //if(j>=0&&j<TriangleNum)
                 possible[numpossible] = j;
@@ -279,7 +292,8 @@ int Model::SphereCheckPossible(XYZ *p1, float radius, XYZ *move, float *rotate)
             firstintersecting = j;
         }
     }
-    if (*rotate)*p1 = DoRotation(*p1, 0, *rotate, 0);
+    if (*rotate)
+        *p1 = DoRotation(*p1, 0, *rotate, 0);
     *p1 += *move;
     return firstintersecting;
 }
@@ -287,7 +301,8 @@ int Model::SphereCheckPossible(XYZ *p1, float radius, XYZ *move, float *rotate)
 
 void Model::UpdateVertexArray()
 {
-    if (type != normaltype && type != decalstype)return;
+    if (type != normaltype && type != decalstype)
+        return;
     static int i;
     static int j;
     if (!flat)
@@ -355,7 +370,8 @@ void Model::UpdateVertexArray()
 
 void Model::UpdateVertexArrayNoTex()
 {
-    if (type != normaltype && type != decalstype)return;
+    if (type != normaltype && type != decalstype)
+        return;
     static int i;
     static int j;
     if (!flat)
@@ -410,7 +426,8 @@ void Model::UpdateVertexArrayNoTex()
 
 void Model::UpdateVertexArrayNoTexNoNorm()
 {
-    if (type != normaltype && type != decalstype)return;
+    if (type != normaltype && type != decalstype)
+        return;
     static int i;
     static int j;
     for (i = 0; i < TriangleNum; i++) {
@@ -807,7 +824,8 @@ void Model::Scale(float xscale, float yscale, float zscale)
 
 void Model::ScaleNormals(float xscale, float yscale, float zscale)
 {
-    if (type != normaltype && type != decalstype)return;
+    if (type != normaltype && type != decalstype)
+        return;
     static int i;
     for (i = 0; i < vertexNum; i++) {
         normals[i].x *= xscale;
@@ -872,7 +890,8 @@ void Model::CalculateNormals(bool facenormalise)
     if (visibleloading)
         Game::LoadingScreen();
     static int i;
-    if (type != normaltype && type != decalstype)return;
+    if (type != normaltype && type != decalstype)
+        return;
 
     for (i = 0; i < vertexNum; i++) {
         normals[i].x = 0;
@@ -894,7 +913,8 @@ void Model::CalculateNormals(bool facenormalise)
         normals[Triangles[i].vertex[2]].x += facenormals[i].x;
         normals[Triangles[i].vertex[2]].y += facenormals[i].y;
         normals[Triangles[i].vertex[2]].z += facenormals[i].z;
-        if (facenormalise)Normalise(&facenormals[i]);
+        if (facenormalise)
+            Normalise(&facenormals[i]);
     }
     for (i = 0; i < vertexNum; i++) {
         Normalise(&normals[i]);
@@ -914,21 +934,30 @@ void Model::drawimmediate()
         &&isnormal(vertex[Triangles[i].vertex[2]].x)&&isnormal(vertex[Triangles[i].vertex[2]].y)&&isnormal(vertex[Triangles[i].vertex[2]].z)){
         */
         glTexCoord2f(Triangles[i].gx[0], Triangles[i].gy[0]);
-        if (color)glColor3f(normals[Triangles[i].vertex[0]].x, normals[Triangles[i].vertex[0]].y, normals[Triangles[i].vertex[0]].z);
-        if (!color && !flat)glNormal3f(normals[Triangles[i].vertex[0]].x, normals[Triangles[i].vertex[0]].y, normals[Triangles[i].vertex[0]].z);
-        if (!color && flat)glNormal3f(facenormals[i].x, facenormals[i].y, facenormals[i].y);
+        if (color)
+            glColor3f(normals[Triangles[i].vertex[0]].x, normals[Triangles[i].vertex[0]].y, normals[Triangles[i].vertex[0]].z);
+        if (!color && !flat)
+            glNormal3f(normals[Triangles[i].vertex[0]].x, normals[Triangles[i].vertex[0]].y, normals[Triangles[i].vertex[0]].z);
+        if (!color && flat)
+            glNormal3f(facenormals[i].x, facenormals[i].y, facenormals[i].y);
         glVertex3f(vertex[Triangles[i].vertex[0]].x, vertex[Triangles[i].vertex[0]].y, vertex[Triangles[i].vertex[0]].z);
 
         glTexCoord2f(Triangles[i].gx[1], Triangles[i].gy[1]);
-        if (color)glColor3f(normals[Triangles[i].vertex[1]].x, normals[Triangles[i].vertex[1]].y, normals[Triangles[i].vertex[1]].z);
-        if (!color && !flat)glNormal3f(normals[Triangles[i].vertex[1]].x, normals[Triangles[i].vertex[1]].y, normals[Triangles[i].vertex[1]].z);
-        if (!color && flat)glNormal3f(facenormals[i].x, facenormals[i].y, facenormals[i].y);
+        if (color)
+            glColor3f(normals[Triangles[i].vertex[1]].x, normals[Triangles[i].vertex[1]].y, normals[Triangles[i].vertex[1]].z);
+        if (!color && !flat)
+            glNormal3f(normals[Triangles[i].vertex[1]].x, normals[Triangles[i].vertex[1]].y, normals[Triangles[i].vertex[1]].z);
+        if (!color && flat)
+            glNormal3f(facenormals[i].x, facenormals[i].y, facenormals[i].y);
         glVertex3f(vertex[Triangles[i].vertex[1]].x, vertex[Triangles[i].vertex[1]].y, vertex[Triangles[i].vertex[1]].z);
 
         glTexCoord2f(Triangles[i].gx[2], Triangles[i].gy[2]);
-        if (color)glColor3f(normals[Triangles[i].vertex[2]].x, normals[Triangles[i].vertex[2]].y, normals[Triangles[i].vertex[2]].z);
-        if (!color && !flat)glNormal3f(normals[Triangles[i].vertex[2]].x, normals[Triangles[i].vertex[2]].y, normals[Triangles[i].vertex[2]].z);
-        if (!color && flat)glNormal3f(facenormals[i].x, facenormals[i].y, facenormals[i].y);
+        if (color)
+            glColor3f(normals[Triangles[i].vertex[2]].x, normals[Triangles[i].vertex[2]].y, normals[Triangles[i].vertex[2]].z);
+        if (!color && !flat)
+            glNormal3f(normals[Triangles[i].vertex[2]].x, normals[Triangles[i].vertex[2]].y, normals[Triangles[i].vertex[2]].z);
+        if (!color && flat)
+            glNormal3f(facenormals[i].x, facenormals[i].y, facenormals[i].y);
         glVertex3f(vertex[Triangles[i].vertex[2]].x, vertex[Triangles[i].vertex[2]].y, vertex[Triangles[i].vertex[2]].z);
         //}
         //}
@@ -938,14 +967,17 @@ void Model::drawimmediate()
 
 void Model::draw()
 {
-    if (type != normaltype && type != decalstype)return;
+    if (type != normaltype && type != decalstype)
+        return;
 
     glEnableClientState(GL_NORMAL_ARRAY);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-    if (!color)glInterleavedArrays( GL_T2F_N3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
-    if (color)glInterleavedArrays( GL_T2F_C3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
+    if (!color)
+        glInterleavedArrays( GL_T2F_N3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
+    if (color)
+        glInterleavedArrays( GL_T2F_C3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
     textureptr.bind();
 
 #if PLATFORM_MACOSX
@@ -957,8 +989,10 @@ void Model::draw()
 #endif
 
 
-    if (!color)glDisableClientState(GL_NORMAL_ARRAY);
-    if (color)glDisableClientState(GL_COLOR_ARRAY);
+    if (!color)
+        glDisableClientState(GL_NORMAL_ARRAY);
+    if (color)
+        glDisableClientState(GL_COLOR_ARRAY);
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     //drawimmediate();
@@ -970,8 +1004,10 @@ void Model::drawdifftex(GLuint texture)
     glEnableClientState(GL_NORMAL_ARRAY);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    if (!color)glInterleavedArrays( GL_T2F_N3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
-    if (color)glInterleavedArrays( GL_T2F_C3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
+    if (!color)
+        glInterleavedArrays( GL_T2F_N3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
+    if (color)
+        glInterleavedArrays( GL_T2F_C3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
 
     glBindTexture(GL_TEXTURE_2D, (unsigned long)texture);
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
@@ -987,8 +1023,10 @@ void Model::drawdifftex(GLuint texture)
 #endif
 
 
-    if (!color)glDisableClientState(GL_NORMAL_ARRAY);
-    if (color)glDisableClientState(GL_COLOR_ARRAY);
+    if (!color)
+        glDisableClientState(GL_NORMAL_ARRAY);
+    if (color)
+        glDisableClientState(GL_COLOR_ARRAY);
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     //drawdiffteximmediate(texture);
@@ -999,8 +1037,10 @@ void Model::drawdifftex(Texture texture)
     glEnableClientState(GL_NORMAL_ARRAY);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    if (!color)glInterleavedArrays( GL_T2F_N3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
-    if (color)glInterleavedArrays( GL_T2F_C3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
+    if (!color)
+        glInterleavedArrays( GL_T2F_N3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
+    if (color)
+        glInterleavedArrays( GL_T2F_C3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
 
     texture.bind();
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
@@ -1016,8 +1056,10 @@ void Model::drawdifftex(Texture texture)
 #endif
 
 
-    if (!color)glDisableClientState(GL_NORMAL_ARRAY);
-    if (color)glDisableClientState(GL_COLOR_ARRAY);
+    if (!color)
+        glDisableClientState(GL_NORMAL_ARRAY);
+    if (color)
+        glDisableClientState(GL_COLOR_ARRAY);
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     //drawdiffteximmediate(texture);
@@ -1034,21 +1076,30 @@ void Model::drawdiffteximmediate(GLuint texture)
         &&isnormal(vertex[Triangles[i].vertex[1]].x)&&isnormal(vertex[Triangles[i].vertex[1]].y)&&isnormal(vertex[Triangles[i].vertex[1]].z)
         &&isnormal(vertex[Triangles[i].vertex[2]].x)&&isnormal(vertex[Triangles[i].vertex[2]].y)&&isnormal(vertex[Triangles[i].vertex[2]].z)){
         */glTexCoord2f(Triangles[i].gx[0], Triangles[i].gy[0]);
-        if (color)glColor3f(normals[Triangles[i].vertex[0]].x, normals[Triangles[i].vertex[0]].y, normals[Triangles[i].vertex[0]].z);
-        if (!color && !flat)glNormal3f(normals[Triangles[i].vertex[0]].x, normals[Triangles[i].vertex[0]].y, normals[Triangles[i].vertex[0]].z);
-        if (!color && flat)glNormal3f(facenormals[i].x, facenormals[i].y, facenormals[i].y);
+        if (color)
+            glColor3f(normals[Triangles[i].vertex[0]].x, normals[Triangles[i].vertex[0]].y, normals[Triangles[i].vertex[0]].z);
+        if (!color && !flat)
+            glNormal3f(normals[Triangles[i].vertex[0]].x, normals[Triangles[i].vertex[0]].y, normals[Triangles[i].vertex[0]].z);
+        if (!color && flat)
+            glNormal3f(facenormals[i].x, facenormals[i].y, facenormals[i].y);
         glVertex3f(vertex[Triangles[i].vertex[0]].x, vertex[Triangles[i].vertex[0]].y, vertex[Triangles[i].vertex[0]].z);
 
         glTexCoord2f(Triangles[i].gx[1], Triangles[i].gy[1]);
-        if (color)glColor3f(normals[Triangles[i].vertex[1]].x, normals[Triangles[i].vertex[1]].y, normals[Triangles[i].vertex[1]].z);
-        if (!color && !flat)glNormal3f(normals[Triangles[i].vertex[1]].x, normals[Triangles[i].vertex[1]].y, normals[Triangles[i].vertex[1]].z);
-        if (!color && flat)glNormal3f(facenormals[i].x, facenormals[i].y, facenormals[i].y);
+        if (color)
+            glColor3f(normals[Triangles[i].vertex[1]].x, normals[Triangles[i].vertex[1]].y, normals[Triangles[i].vertex[1]].z);
+        if (!color && !flat)
+            glNormal3f(normals[Triangles[i].vertex[1]].x, normals[Triangles[i].vertex[1]].y, normals[Triangles[i].vertex[1]].z);
+        if (!color && flat)
+            glNormal3f(facenormals[i].x, facenormals[i].y, facenormals[i].y);
         glVertex3f(vertex[Triangles[i].vertex[1]].x, vertex[Triangles[i].vertex[1]].y, vertex[Triangles[i].vertex[1]].z);
 
         glTexCoord2f(Triangles[i].gx[2], Triangles[i].gy[2]);
-        if (color)glColor3f(normals[Triangles[i].vertex[2]].x, normals[Triangles[i].vertex[2]].y, normals[Triangles[i].vertex[2]].z);
-        if (!color && !flat)glNormal3f(normals[Triangles[i].vertex[2]].x, normals[Triangles[i].vertex[2]].y, normals[Triangles[i].vertex[2]].z);
-        if (!color && flat)glNormal3f(facenormals[i].x, facenormals[i].y, facenormals[i].y);
+        if (color)
+            glColor3f(normals[Triangles[i].vertex[2]].x, normals[Triangles[i].vertex[2]].y, normals[Triangles[i].vertex[2]].z);
+        if (!color && !flat)
+            glNormal3f(normals[Triangles[i].vertex[2]].x, normals[Triangles[i].vertex[2]].y, normals[Triangles[i].vertex[2]].z);
+        if (!color && flat)
+            glNormal3f(facenormals[i].x, facenormals[i].y, facenormals[i].y);
         glVertex3f(vertex[Triangles[i].vertex[2]].x, vertex[Triangles[i].vertex[2]].y, vertex[Triangles[i].vertex[2]].z);
         //}
         //}
@@ -1059,7 +1110,8 @@ void Model::drawdiffteximmediate(GLuint texture)
 void Model::drawdecals(Texture shadowtexture, Texture bloodtexture, Texture bloodtexture2, Texture breaktexture)
 {
     if (decals) {
-        if (type != decalstype)return;
+        if (type != decalstype)
+            return;
         static int i, j;
         static float distancemult;
         static int lasttype;
@@ -1075,9 +1127,11 @@ void Model::drawdecals(Texture shadowtexture, Texture bloodtexture, Texture bloo
         glDisable(GL_CULL_FACE);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glDepthMask(0);
-        if (numdecals > max_model_decals)numdecals = max_model_decals;
+        if (numdecals > max_model_decals)
+            numdecals = max_model_decals;
         for (i = 0; i < numdecals; i++) {
-            if (decaltype[i] == blooddecalfast && decalalivetime[i] < 2)decalalivetime[i] = 2;
+            if (decaltype[i] == blooddecalfast && decalalivetime[i] < 2)
+                decalalivetime[i] = 2;
 
             if (decaltype[i] == shadowdecal && decaltype[i] != lasttype) {
                 shadowtexture.bind();
@@ -1116,12 +1170,15 @@ void Model::drawdecals(Texture shadowtexture, Texture bloodtexture, Texture bloo
             }
             if (decaltype[i] == breakdecal) {
                 glColor4f(1, 1, 1, decalopacity[i]);
-                if (decalalivetime[i] > 58)glColor4f(1, 1, 1, decalopacity[i] * (60 - decalalivetime[i]) / 2);
+                if (decalalivetime[i] > 58)
+                    glColor4f(1, 1, 1, decalopacity[i] * (60 - decalalivetime[i]) / 2);
             }
             if ((decaltype[i] == blooddecal || decaltype[i] == blooddecalfast || decaltype[i] == blooddecalslow)) {
                 glColor4f(1, 1, 1, decalopacity[i]);
-                if (decalalivetime[i] < 4)glColor4f(1, 1, 1, decalopacity[i]*decalalivetime[i]*.25);
-                if (decalalivetime[i] > 58)glColor4f(1, 1, 1, decalopacity[i] * (60 - decalalivetime[i]) / 2);
+                if (decalalivetime[i] < 4)
+                    glColor4f(1, 1, 1, decalopacity[i]*decalalivetime[i]*.25);
+                if (decalalivetime[i] > 58)
+                    glColor4f(1, 1, 1, decalopacity[i] * (60 - decalalivetime[i]) / 2);
             }
             lasttype = decaltype[i];
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -1139,10 +1196,14 @@ void Model::drawdecals(Texture shadowtexture, Texture bloodtexture, Texture bloo
         }
         for (i = numdecals - 1; i >= 0; i--) {
             decalalivetime[i] += multiplier;
-            if (decaltype[i] == blooddecalslow)decalalivetime[i] -= multiplier * 2 / 3;
-            if (decaltype[i] == blooddecalfast)decalalivetime[i] += multiplier * 4;
-            if (decaltype[i] == shadowdecal)DeleteDecal(i);
-            if ((decaltype[i] == blooddecal || decaltype[i] == blooddecalfast || decaltype[i] == blooddecalslow) && decalalivetime[i] >= 60)DeleteDecal(i);
+            if (decaltype[i] == blooddecalslow)
+                decalalivetime[i] -= multiplier * 2 / 3;
+            if (decaltype[i] == blooddecalfast)
+                decalalivetime[i] += multiplier * 4;
+            if (decaltype[i] == shadowdecal)
+                DeleteDecal(i);
+            if ((decaltype[i] == blooddecal || decaltype[i] == blooddecalfast || decaltype[i] == blooddecalslow) && decalalivetime[i] >= 60)
+                DeleteDecal(i);
         }
         glAlphaFunc(GL_GREATER, 0.0001);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -1152,7 +1213,8 @@ void Model::drawdecals(Texture shadowtexture, Texture bloodtexture, Texture bloo
 void Model::DeleteDecal(int which)
 {
     if (decals) {
-        if (type != decalstype)return;
+        if (type != decalstype)
+            return;
         decaltype[which] = decaltype[numdecals - 1];
         decalposition[which] = decalposition[numdecals - 1];
         for (int i = 0; i < 3; i++) {
@@ -1170,7 +1232,8 @@ void Model::DeleteDecal(int which)
 void Model::MakeDecal(int atype, XYZ *where, float *size, float *opacity, float *rotation)
 {
     if (decals) {
-        if (type != decalstype)return;
+        if (type != decalstype)
+            return;
 
         static float placex, placez;
         static XYZ rot;
@@ -1236,7 +1299,8 @@ void Model::MakeDecal(int atype, XYZ *where, float *size, float *opacity, float 
                                                     decaltexcoords[numdecals][j][1] = rot.z + .5;
                                                 }
                                             }
-                                            if (numdecals < max_model_decals - 1)numdecals++;
+                                            if (numdecals < max_model_decals - 1)
+                                                numdecals++;
                                         }
                         }
                     }
@@ -1247,7 +1311,8 @@ void Model::MakeDecal(int atype, XYZ *where, float *size, float *opacity, float 
 void Model::MakeDecal(int atype, XYZ where, float size, float opacity, float rotation)
 {
     if (decals) {
-        if (type != decalstype)return;
+        if (type != decalstype)
+            return;
 
         static float placex, placez;
         static XYZ rot;
@@ -1313,7 +1378,8 @@ void Model::MakeDecal(int atype, XYZ where, float size, float opacity, float rot
                                                     decaltexcoords[numdecals][j][1] = rot.z + .5;
                                                 }
                                             }
-                                            if (numdecals < max_model_decals - 1)numdecals++;
+                                            if (numdecals < max_model_decals - 1)
+                                                numdecals++;
                                         }
                         }
                     } else if (distance < .02 && abs(facenormals[i].x) > abs(facenormals[i].y) && abs(facenormals[i].x) > abs(facenormals[i].z)) {
@@ -1370,7 +1436,8 @@ void Model::MakeDecal(int atype, XYZ where, float size, float opacity, float rot
                                                     decaltexcoords[numdecals][j][1] = rot.z + .5;
                                                 }
                                             }
-                                            if (numdecals < max_model_decals - 1)numdecals++;
+                                            if (numdecals < max_model_decals - 1)
+                                                numdecals++;
                                         }
                         }
                     } else if (distance < .02 && abs(facenormals[i].z) > abs(facenormals[i].y) && abs(facenormals[i].z) > abs(facenormals[i].x)) {
@@ -1427,7 +1494,8 @@ void Model::MakeDecal(int atype, XYZ where, float size, float opacity, float rot
                                                     decaltexcoords[numdecals][j][1] = rot.z + .5;
                                                 }
                                             }
-                                            if (numdecals < max_model_decals - 1)numdecals++;
+                                            if (numdecals < max_model_decals - 1)
+                                                numdecals++;
                                         }
                         }
                     }
@@ -1445,25 +1513,32 @@ void Model::deallocate()
 {
     int i = 0, j = 0;
 
-    if (owner)free(owner);
+    if (owner)
+        free(owner);
     owner = 0;
 
-    if (possible)free(possible);
+    if (possible)
+        free(possible);
     possible = 0;
 
-    if (vertex)free(vertex);
+    if (vertex)
+        free(vertex);
     vertex = 0;
 
-    if (normals)free(normals);
+    if (normals)
+        free(normals);
     normals = 0;
 
-    if (facenormals)free(facenormals);
+    if (facenormals)
+        free(facenormals);
     facenormals = 0;
 
-    if (Triangles)free(Triangles);
+    if (Triangles)
+        free(Triangles);
     Triangles = 0;
 
-    if (vArray)free(vArray);
+    if (vArray)
+        free(vArray);
     vArray = 0;
 
 

@@ -452,9 +452,12 @@ void DoFrameRate (int update)
         deltaTime /= 1000.0;
 
     multiplier = deltaTime;
-    if (multiplier < .001) multiplier = .001;
-    if (multiplier > 10) multiplier = 10;
-    if (update) frametime = currTime;	// reset for next time interval
+    if (multiplier < .001)
+        multiplier = .001;
+    if (multiplier > 10)
+        multiplier = 10;
+    if (update)
+        frametime = currTime;	// reset for next time interval
 
     deltaTime = (float) AbsoluteDeltaToDuration (currTime, time);
 
@@ -479,20 +482,26 @@ void DoUpdate ()
     static float oldmult;
 
     DoFrameRate(1);
-    if (multiplier > .6)multiplier = .6;
+    if (multiplier > .6)
+        multiplier = .6;
 
     fps = 1 / multiplier;
 
     count = multiplier * sps;
-    if (count < 2)count = 2;
+    if (count < 2)
+        count = 2;
 
     realmultiplier = multiplier;
     multiplier *= gamespeed;
-    if (difficulty == 1)multiplier *= .9;
-    if (difficulty == 0)multiplier *= .8;
+    if (difficulty == 1)
+        multiplier *= .9;
+    if (difficulty == 0)
+        multiplier *= .8;
 
-    if (loading == 4)multiplier *= .00001;
-    if (slomo && !mainmenu)multiplier *= slomospeed;
+    if (loading == 4)
+        multiplier *= .00001;
+    if (slomo && !mainmenu)
+        multiplier *= slomospeed;
     oldmult = multiplier;
     multiplier /= (float)count;
 
@@ -638,9 +647,11 @@ char *calcBaseDir(const char *argv0)
     }
 
     envr = getenv("PATH");
-    if (!envr) return NULL;
+    if (!envr)
+        return NULL;
     envr = strdup(envr);
-    if (!envr) return NULL;
+    if (!envr)
+        return NULL;
     retval = findBinaryInPath(argv0, envr);
     free(envr);
     return(retval);
