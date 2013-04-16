@@ -343,7 +343,10 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
 
                     if (tutoriallevel != 1 || id == 0)
                         if (findLengthfast(&bounceness) > 8000 && breaking) {
-                            objects.model[k].MakeDecal(breakdecal, DoRotation(temp - objects.position[k], 0, -objects.yaw[k], 0), .4, .5, Random() % 360);
+                            // FIXME: this crashes because k is not initialized!
+                            // to reproduce, type 'wolfie' in console and play a while
+                            // I'll just comment it out for now
+                            //objects.model[k].MakeDecal(breakdecal, DoRotation(temp - objects.position[k], 0, -objects.yaw[k], 0), .4, .5, Random() % 360);
                             Sprite::MakeSprite(cloudsprite, joints[i].position * (*scale) + *coords, joints[i].velocity * .06, 1, 1, 1, 4, .2);
                             breaking = false;
                             camerashake += .6;
