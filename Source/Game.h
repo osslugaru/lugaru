@@ -200,8 +200,6 @@ extern "C" {
 #define STUBBED(x) { static bool seen = false; if (!seen) { seen = true; fprintf(stderr, "STUBBED: %s at %s:%d\n", x, __FILE__, __LINE__); } }
 //#define STUBBED(x)
 
-extern int numplayers;
-
 extern int numdialogues;
 const int max_dialogues = 20;
 const int max_dialoguelength = 20;

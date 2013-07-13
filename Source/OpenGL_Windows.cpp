@@ -296,7 +296,6 @@ Boolean SetUp ()
     texdetail = 4;
     slomospeed = 0.25;
     slomofreq = 8012;
-    numplayers = 1;
 
     DefaultSettings();
 

@@ -397,6 +397,5 @@ public:
 };
 
 const int maxplayers = 10;
-//~ extern Person player[maxplayers];
 
 #endif

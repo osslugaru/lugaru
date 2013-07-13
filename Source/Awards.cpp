@@ -73,7 +73,7 @@ int award_awards(int *awards)
         numawards++;
     }
     bool alldead = true;
-    for (i = 1; i < numplayers; i++) {
+    for (i = 1; i < Person::players.size(); i++) {
         if (Person::players[i]->dead != 2)
             alldead = 0;
     }
@@ -82,7 +82,7 @@ int award_awards(int *awards)
         numawards++;
     }
     alldead = 1;
-    for (i = 1; i < numplayers; i++) {
+    for (i = 1; i < Person::players.size(); i++) {
         if (Person::players[i]->dead != 1)
             alldead = 0;
     }
@@ -118,12 +118,12 @@ int award_awards(int *awards)
         awards[numawards] = awardacrobat;
         numawards++;
     }
-    if (numthrowkill == numplayers - 1) {
+    if (numthrowkill == Person::players.size() - 1) {
         awards[numawards] = awardlongrange;
         numawards++;
     }
     alldead = 1;
-    for (i = 1; i < numplayers; i++) {
+    for (i = 1; i < Person::players.size(); i++) {
         if (Person::players[i]->dead != 2)
             alldead = 0;
     }
@@ -135,7 +135,7 @@ int award_awards(int *awards)
         awards[numawards] = awardaikido;
         numawards++;
     }
-    if (maxalarmed == 1 && numplayers > 2) {
+    if (maxalarmed == 1 && Person::players.size() > 2) {
         awards[numawards] = awardstrategy;
         numawards++;
     }

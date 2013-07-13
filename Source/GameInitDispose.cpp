@@ -779,9 +779,6 @@ void Game::LoadStuff()
 
     realtexdetail = texdetail;
 
-    numplayers = 1;
-
-
     LOG("Loading weapon data...");
 
     Weapon::knifetextureptr.load(":Data:Textures:knife.png", 0, 1);

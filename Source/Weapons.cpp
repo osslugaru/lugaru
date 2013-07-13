@@ -214,7 +214,7 @@ void Weapon::DoStuff(int i)
         }
 
         if (velocity.x || velocity.y || velocity.z) {
-            for (int j = 0; j < numplayers; j++) {
+            for (int j = 0; j < Person::players.size(); j++) {
                 footvel = 0;
                 footpoint = DoRotation((Person::players[j]->jointPos(abdomen) + Person::players[j]->jointPos(neck)) / 2, 0, Person::players[j]->yaw, 0) * Person::players[j]->scale + Person::players[j]->coords;
                 if (owner == -1 && distsqflat(&position, &Person::players[j]->coords) < 1.5 &&

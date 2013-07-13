@@ -333,7 +333,7 @@ int Game::DrawGLScene(StereoSide side)
         static XYZ point;
         static float size, opacity, rotation;
         rotation = 0;
-        for (k = 0; k < numplayers; k++) {
+        for (k = 0; k < Person::players.size(); k++) {
             if (!Person::players[k]->skeleton.free && Person::players[k]->playerdetail && Person::players[k]->howactive < typesleeping)
                 if (frustum.SphereInFrustum(Person::players[k]->coords.x, Person::players[k]->coords.y + Person::players[k]->scale * 3, Person::players[k]->coords.z, Person::players[k]->scale * 7) && Person::players[k]->occluded < 25)
                     for (i = 0; i < Person::players[k]->skeleton.num_joints; i++) {
@@ -451,7 +451,7 @@ int Game::DrawGLScene(StereoSide side)
             glEnable(GL_CULL_FACE);
             glCullFace(GL_FRONT);
             glDepthMask(1);
-            for (k = 0; k < numplayers; k++) {
+            for (k = 0; k < Person::players.size(); k++) {
                 if (k == 0 || tutoriallevel != 1) {
                     glEnable(GL_BLEND);
                     glEnable(GL_LIGHTING);
@@ -515,7 +515,7 @@ int Game::DrawGLScene(StereoSide side)
         glEnable(GL_CULL_FACE);
         glCullFace(GL_FRONT);
         glDepthMask(1);
-        for (k = 0; k < numplayers; k++) {
+        for (k = 0; k < Person::players.size(); k++) {
             if (!(k == 0 || tutoriallevel != 1)) {
                 glEnable(GL_BLEND);
                 glEnable(GL_LIGHTING);
@@ -567,7 +567,7 @@ int Game::DrawGLScene(StereoSide side)
             glDisable(GL_COLOR_MATERIAL);
             glColor4f(1, 1, 0, 1);
 
-            for (k = 0; k < numplayers; k++) {
+            for (k = 0; k < Person::players.size(); k++) {
                 if (Person::players[k]->numwaypoints > 1) {
                     glBegin(GL_LINE_LOOP);
                     for (i = 0; i < Person::players[k]->numwaypoints; i++) {
@@ -1301,9 +1301,9 @@ int Game::DrawGLScene(StereoSide side)
                     }
                     text->glPrint(130, 120, string, 0, .8, 1024, 768);
 
-                    sprintf (string, "Numplayers: %d", numplayers);
+                    sprintf (string, "Numplayers: %d", Person::players.size());
                     text->glPrint(10, 155, string, 0, .8, 1024, 768);
-                    sprintf (string, "Player %d: numwaypoints: %d", numplayers, Person::players[numplayers - 1]->numwaypoints);
+                    sprintf (string, "Player %d: numwaypoints: %d", Person::players.size()-1, Person::players.back()->numwaypoints);
                     text->glPrint(10, 140, string, 0, .8, 1024, 768);
                 }
                 sprintf (string, "Difficulty: %d", difficulty);
@@ -1489,7 +1489,7 @@ int Game::DrawGLScene(StereoSide side)
             float distcheck;
             int numliveplayers = 0;
             center = 0;
-            for (i = 0; i < numplayers; i++) {
+            for (i = 0; i < Person::players.size(); i++) {
                 if (!Person::players[i]->dead)
                     numliveplayers++;
             }
@@ -1502,7 +1502,7 @@ int Game::DrawGLScene(StereoSide side)
                     numadd++;
                 }
             }
-            for (i = 0; i < numplayers; i++) {
+            for (i = 0; i < Person::players.size(); i++) {
                 if (!Person::players[i]->dead)
                     center += Person::players[i]->coords;
             }
@@ -1520,7 +1520,7 @@ int Game::DrawGLScene(StereoSide side)
                     maxdistance = tempdist;
                 }
             }
-            for (i = 0; i < numplayers; i++) {
+            for (i = 0; i < Person::players.size(); i++) {
                 if (!Person::players[i]->dead) {
                     tempdist = distsq(&center, &Person::players[i]->coords);
                     if (tempdist > maxdistance) {
@@ -1605,7 +1605,7 @@ int Game::DrawGLScene(StereoSide side)
                     glPopMatrix();
                 }
             }
-            for (i = 0; i < numplayers; i++) {
+            for (i = 0; i < Person::players.size(); i++) {
                 distcheck = distsq(&Person::players[0]->coords, &Person::players[i]->coords);
                 if (distcheck < mapviewdist) {
                     glPushMatrix();

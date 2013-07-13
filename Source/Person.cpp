@@ -83,7 +83,6 @@ extern int indialogue;
 
 extern bool gamestarted;
 
-//~ Person player[maxplayers];
 std::vector<std::shared_ptr<Person>> Person::players(1, std::shared_ptr<Person>(new Person()));
 
 /* EFFECT
@@ -193,7 +192,9 @@ int Person::getIdle()
     if (indialogue != -1 && howactive == typeactive && creature == rabbittype)
         return talkidleanim;
     if (hasvictim && (victim != this->shared_from_this())/*||(id==0&&attackkeydown)*/)
-        if (/*(id==0&&attackkeydown)||*/(!victim->dead && victim->aitype != passivetype && victim->aitype != searchtype && aitype != passivetype && aitype != searchtype && victim->id < numplayers)) {
+        if (/*(id==0&&attackkeydown)||*/(!victim->dead && victim->aitype != passivetype &&
+            victim->aitype != searchtype && aitype != passivetype && aitype != searchtype &&
+            victim->id < Person::players.size())) {
             if ((aitype == playercontrolled && stunned <= 0 && weaponactive == -1) || pause) {
                 if (creature == rabbittype)
                     return fightidleanim;
@@ -922,7 +923,7 @@ void Person::Reverse()
             }
 
             victim->weaponactive = -1;
-            for (int j = 0; j < numplayers; j++) {
+            for (int j = 0; j < Person::players.size(); j++) {
                 Person::players[j]->wentforweapon = 0;
             }
         }
@@ -952,7 +953,7 @@ void Person::Reverse()
             }
 
             victim->weaponactive = -1;
-            for (int j = 0; j < numplayers; j++) {
+            for (int j = 0; j < Person::players.size(); j++) {
                 Person::players[j]->wentforweapon = 0;
             }
         }
@@ -981,7 +982,7 @@ void Person::Reverse()
             }
 
             victim->weaponactive = -1;
-            for (int j = 0; j < numplayers; j++) {
+            for (int j = 0; j < Person::players.size(); j++) {
                 Person::players[j]->wentforweapon = 0;
             }
         }
@@ -1010,7 +1011,7 @@ void Person::Reverse()
             }
 
             victim->weaponactive = -1;
-            for (int j = 0; j < numplayers; j++) {
+            for (int j = 0; j < Person::players.size(); j++) {
                 Person::players[j]->wentforweapon = 0;
             }
         }
@@ -1093,7 +1094,7 @@ void Person::Reverse()
                     victim->weaponstuck = 0;
             }
             victim->weaponactive = -1;
-            for (int i = 0; i < numplayers; i++) {
+            for (int i = 0; i < Person::players.size(); i++) {
                 Person::players[i]->wentforweapon = 0;
             }
         }
@@ -1136,7 +1137,7 @@ void Person::Reverse()
                     weaponstuck = 0;
             }
             weaponactive = -1;
-            for (int i = 0; i < numplayers; i++) {
+            for (int i = 0; i < Person::players.size(); i++) {
                 Person::players[i]->wentforweapon = 0;
             }
 
@@ -1566,7 +1567,7 @@ void Person::RagDoll(bool checkcollision)
                         weaponstuck = 0;
                 }
                 weaponactive = -1;
-                for (i = 0; i < numplayers; i++) {
+                for (i = 0; i < Person::players.size(); i++) {
                     Person::players[i]->wentforweapon = 0;
                 }
             }
@@ -2079,7 +2080,7 @@ void Person::DoAnimations()
                 targetloc = velocity;
                 Normalise(&targetloc);
                 targetloc += coords;
-                for (i = 0; i < numplayers; i++) {
+                for (i = 0; i < Person::players.size(); i++) {
                     if (i != id)
                         if (distsq(&targetloc, &Person::players[i]->coords) < closestdist || closestdist == 0) {
                             closestdist = distsq(&targetloc, &Person::players[i]->coords);
@@ -2859,7 +2860,7 @@ void Person::DoAnimations()
                                     victim->weaponstuck = 0;
                             }
                             victim->weaponactive = -1;
-                            for (i = 0; i < numplayers; i++) {
+                            for (i = 0; i < Person::players.size(); i++) {
                                 Person::players[i]->wentforweapon = 0;
                             }
 
@@ -3678,8 +3679,8 @@ void Person::DoAnimations()
                         int closest = -1;
                         float closestdist = -1;
                         float distance;
-                        if (numplayers > 1)
-                            for (i = 0; i < numplayers; i++) {
+                        if (Person::players.size() > 1)
+                            for (i = 0; i < Person::players.size(); i++) {
                                 if (id != i && Person::players[i]->coords.y < coords.y && !Person::players[i]->skeleton.free) {
                                     distance = distsq(&Person::players[i]->coords, &coords);
                                     if (closestdist == -1 || distance < closestdist) {
@@ -3736,8 +3737,8 @@ void Person::DoAnimations()
                         int closest = -1;
                         float closestdist = -1;
                         float distance;
-                        if (numplayers > 1)
-                            for (i = 0; i < numplayers; i++) {
+                        if (Person::players.size() > 1)
+                            for (i = 0; i < Person::players.size(); i++) {
                                 if (id != i && Person::players[i]->coords.y < coords.y && !Person::players[i]->skeleton.free) {
                                     distance = distsq(&Person::players[i]->coords, &coords);
                                     if (closestdist == -1 || distance < closestdist) {
@@ -4339,7 +4340,7 @@ void Person::DoStuff()
                         weaponstuck = 0;
                 }
                 weaponactive = -1;
-                for (i = 0; i < numplayers; i++) {
+                for (i = 0; i < Person::players.size(); i++) {
                     Person::players[i]->wentforweapon = 0;
                 }
 
@@ -4765,7 +4766,7 @@ void Person::DoStuff()
                     weaponstuck = 0;
             }
             weaponactive = -1;
-            for (i = 0; i < numplayers; i++) {
+            for (i = 0; i < Person::players.size(); i++) {
                 Person::players[i]->wentforweapon = 0;
             }
         }
@@ -4831,7 +4832,7 @@ void Person::DoStuff()
                     weaponstuck = 0;
             }
             weaponactive = -1;
-            for (i = 0; i < numplayers; i++) {
+            for (i = 0; i < Person::players.size(); i++) {
                 Person::players[i]->wentforweapon = 0;
             }
         }
@@ -5316,7 +5317,7 @@ void Person::DoStuff()
     if (!skeleton.free) {
         bool play;
         play = 0;
-        if ((stunned > 0 || surprised > 0) && numplayers > 2 && aitype != passivetype)
+        if ((stunned > 0 || surprised > 0) && Person::players.size() > 2 && aitype != passivetype)
             play = 1;
         if (hasvictim)
             if (aitype != passivetype && victim->skeleton.free && !victim->dead)
@@ -5468,7 +5469,7 @@ void Person::DoStuff()
         if (hasvictim) {
             if ((victim != this->shared_from_this()) && !victim->dead && (victim->aitype != passivetype) &&
                 (victim->aitype != searchtype) && (aitype != passivetype) &&
-                (aitype != searchtype) && (victim->id < numplayers) && (aitype != passivetype)) {
+                (aitype != searchtype) && (victim->id < Person::players.size()) && (aitype != passivetype)) {
                 behind = (normaldotproduct(facing, coords - victim->coords) > 0);
             }
         }

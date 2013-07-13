@@ -330,7 +330,7 @@ void Sprite::Draw()
                 float rotationpoint;
                 int whichtri;
 
-                for (j = 0; j < numplayers; j++) {
+                for (j = 0; j < Person::players.size(); j++) {
                     if (!spritehit && Person::players[j]->dead && sprites[i]->alivetime > .1) {
                         where = sprites[i]->oldposition;
                         where -= Person::players[j]->coords;

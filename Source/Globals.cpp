@@ -98,7 +98,6 @@ bool musictoggle = false;
 bool trilinear;
 Weapons weapons;
 bool damageeffects = false;
-int numplayers = 0;
 bool ambientsound = false;
 bool mousejump = false;
 bool freeze = false;
