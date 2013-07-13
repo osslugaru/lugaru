@@ -68,13 +68,13 @@ int maxalarmed;
 int award_awards(int *awards)
 {
     int numawards = 0, i;
-    if (damagetaken == 0 && player[0].bloodloss == 0) {
+    if (damagetaken == 0 && Person::players[0]->bloodloss == 0) {
         awards[numawards] = awardflawless;
         numawards++;
     }
     bool alldead = true;
     for (i = 1; i < numplayers; i++) {
-        if (player[i].dead != 2)
+        if (Person::players[i]->dead != 2)
             alldead = 0;
     }
     if (alldead) {
@@ -83,7 +83,7 @@ int award_awards(int *awards)
     }
     alldead = 1;
     for (i = 1; i < numplayers; i++) {
-        if (player[i].dead != 1)
+        if (Person::players[i]->dead != 1)
             alldead = 0;
     }
     if (alldead) {
@@ -124,7 +124,7 @@ int award_awards(int *awards)
     }
     alldead = 1;
     for (i = 1; i < numplayers; i++) {
-        if (player[i].dead != 2)
+        if (Person::players[i]->dead != 2)
             alldead = 0;
     }
     if (numafterkill > 0 && alldead) {

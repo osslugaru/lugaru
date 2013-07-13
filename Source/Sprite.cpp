@@ -331,24 +331,24 @@ void Sprite::Draw()
                 int whichtri;
 
                 for (j = 0; j < numplayers; j++) {
-                    if (!spritehit && player[j].dead && sprites[i]->alivetime > .1) {
+                    if (!spritehit && Person::players[j]->dead && sprites[i]->alivetime > .1) {
                         where = sprites[i]->oldposition;
-                        where -= player[j].coords;
-                        if (!player[j].skeleton.free)
-                            where = DoRotation(where, 0, -player[j].yaw, 0);
+                        where -= Person::players[j]->coords;
+                        if (!Person::players[j]->skeleton.free)
+                            where = DoRotation(where, 0, -Person::players[j]->yaw, 0);
                         startpoint = where;
                         where = sprites[i]->position;
-                        where -= player[j].coords;
-                        if (!player[j].skeleton.free)
-                            where = DoRotation(where, 0, -player[j].yaw, 0);
+                        where -= Person::players[j]->coords;
+                        if (!Person::players[j]->skeleton.free)
+                            where = DoRotation(where, 0, -Person::players[j]->yaw, 0);
                         endpoint = where;
 
                         movepoint = 0;
                         rotationpoint = 0;
-                        whichtri = player[j].skeleton.drawmodel.LineCheck(&startpoint, &endpoint, &footpoint, &movepoint, &rotationpoint);
+                        whichtri = Person::players[j]->skeleton.drawmodel.LineCheck(&startpoint, &endpoint, &footpoint, &movepoint, &rotationpoint);
                         if (whichtri != -1) {
                             spritehit = 1;
-                            player[j].DoBloodBigWhere(0, 160, sprites[i]->oldposition);
+                            Person::players[j]->DoBloodBigWhere(0, 160, sprites[i]->oldposition);
                             DeleteSprite(i);
                         }
                     }

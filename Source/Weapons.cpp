@@ -133,12 +133,12 @@ void Weapon::DoStuff(int i)
             Sprite::MakeSprite(splintersprite, position + (tippoint - position) * ((float)j - 8) / 32, tempvel * .5, 115 / 255, 73 / 255, 12 / 255, .1, 1);
         }
         if (owner != -1) {
-            player[owner].weaponactive = -1;
-            player[owner].num_weapons--;
-            if (player[owner].num_weapons) {
-                player[owner].weaponids[0] = player[owner].weaponids[player[owner].num_weapons];
-                if (player[owner].weaponstuck == player[owner].num_weapons)
-                    player[owner].weaponstuck = 0;
+            Person::players[owner]->weaponactive = -1;
+            Person::players[owner]->num_weapons--;
+            if (Person::players[owner]->num_weapons) {
+                Person::players[owner]->weaponids[0] = Person::players[owner]->weaponids[Person::players[owner]->num_weapons];
+                if (Person::players[owner]->weaponstuck == Person::players[owner]->num_weapons)
+                    Person::players[owner]->weaponstuck = 0;
             }
         }
         owner = -1;
@@ -216,44 +216,44 @@ void Weapon::DoStuff(int i)
         if (velocity.x || velocity.y || velocity.z) {
             for (int j = 0; j < numplayers; j++) {
                 footvel = 0;
-                footpoint = DoRotation((player[j].jointPos(abdomen) + player[j].jointPos(neck)) / 2, 0, player[j].yaw, 0) * player[j].scale + player[j].coords;
-                if (owner == -1 && distsqflat(&position, &player[j].coords) < 1.5 &&
-                        distsq(&position, &player[j].coords) < 4 && player[j].weaponstuck == -1 &&
-                        !player[j].skeleton.free && j != oldowner) {
-                    if ((player[j].aitype != attacktypecutoff || abs(Random() % 6) == 0 || (player[j].animTarget != backhandspringanim && player[j].animTarget != rollanim && player[j].animTarget != flipanim && Random() % 2 == 0)) && !missed) {
-                        if ( (player[j].creature == wolftype && Random() % 3 != 0 && player[j].weaponactive == -1 && (player[j].isIdle() || player[j].isRun() || player[j].animTarget == walkanim)) ||
-                                (player[j].creature == rabbittype && Random() % 2 == 0 && player[j].aitype == attacktypecutoff && player[j].weaponactive == -1)) {
-                            emit_sound_at(knifedrawsound, player[j].coords, 128.);
+                footpoint = DoRotation((Person::players[j]->jointPos(abdomen) + Person::players[j]->jointPos(neck)) / 2, 0, Person::players[j]->yaw, 0) * Person::players[j]->scale + Person::players[j]->coords;
+                if (owner == -1 && distsqflat(&position, &Person::players[j]->coords) < 1.5 &&
+                        distsq(&position, &Person::players[j]->coords) < 4 && Person::players[j]->weaponstuck == -1 &&
+                        !Person::players[j]->skeleton.free && j != oldowner) {
+                    if ((Person::players[j]->aitype != attacktypecutoff || abs(Random() % 6) == 0 || (Person::players[j]->animTarget != backhandspringanim && Person::players[j]->animTarget != rollanim && Person::players[j]->animTarget != flipanim && Random() % 2 == 0)) && !missed) {
+                        if ( (Person::players[j]->creature == wolftype && Random() % 3 != 0 && Person::players[j]->weaponactive == -1 && (Person::players[j]->isIdle() || Person::players[j]->isRun() || Person::players[j]->animTarget == walkanim)) ||
+                                (Person::players[j]->creature == rabbittype && Random() % 2 == 0 && Person::players[j]->aitype == attacktypecutoff && Person::players[j]->weaponactive == -1)) {
+                            emit_sound_at(knifedrawsound, Person::players[j]->coords, 128.);
 
-                            player[j].weaponactive = 0;
-                            player[j].animTarget = removeknifeanim;
-                            player[j].frameTarget = 1;
-                            player[j].target = 1;
-                            owner = player[j].id;
-                            if (player[j].num_weapons > 0) {
-                                player[j].weaponids[player[j].num_weapons] = player[j].weaponids[0];
+                            Person::players[j]->weaponactive = 0;
+                            Person::players[j]->animTarget = removeknifeanim;
+                            Person::players[j]->frameTarget = 1;
+                            Person::players[j]->target = 1;
+                            owner = Person::players[j]->id;
+                            if (Person::players[j]->num_weapons > 0) {
+                                Person::players[j]->weaponids[Person::players[j]->num_weapons] = Person::players[j]->weaponids[0];
                             }
-                            player[j].num_weapons++;
-                            player[j].weaponids[0] = i;
+                            Person::players[j]->num_weapons++;
+                            Person::players[j]->weaponids[0] = i;
 
-                            player[j].aitype = attacktypecutoff;
+                            Person::players[j]->aitype = attacktypecutoff;
                         } else {
                             if (j != 0)
                                 numthrowkill++;
-                            player[j].num_weapons++;
-                            player[j].weaponstuck = player[j].num_weapons - 1;
-                            if (normaldotproduct(player[j].facing, velocity) > 0)
-                                player[j].weaponstuckwhere = 1;
+                            Person::players[j]->num_weapons++;
+                            Person::players[j]->weaponstuck = Person::players[j]->num_weapons - 1;
+                            if (normaldotproduct(Person::players[j]->facing, velocity) > 0)
+                                Person::players[j]->weaponstuckwhere = 1;
                             else
-                                player[j].weaponstuckwhere = 0;
+                                Person::players[j]->weaponstuckwhere = 0;
 
-                            player[j].weaponids[player[j].num_weapons - 1] = i;
+                            Person::players[j]->weaponids[Person::players[j]->num_weapons - 1] = i;
 
-                            player[j].RagDoll(0);
-                            player[j].jointVel(abdomen) += velocity * 2;
-                            player[j].jointVel(neck) += velocity * 2;
-                            player[j].jointVel(rightshoulder) += velocity * 2;
-                            player[j].jointVel(leftshoulder) += velocity * 2;
+                            Person::players[j]->RagDoll(0);
+                            Person::players[j]->jointVel(abdomen) += velocity * 2;
+                            Person::players[j]->jointVel(neck) += velocity * 2;
+                            Person::players[j]->jointVel(rightshoulder) += velocity * 2;
+                            Person::players[j]->jointVel(leftshoulder) += velocity * 2;
                             if (bloodtoggle && tutoriallevel != 1)
                                 Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 0, 0, .8, .3);
                             if (tutoriallevel == 1)
@@ -264,13 +264,13 @@ void Weapon::DoStuff(int i)
                                 Sprite::MakeSprite(bloodflamesprite, footpoint, footvel * -1, 1, 0, 0, .6, 1);
 
                             if (tutoriallevel != 1) {
-                                if (player[j].weaponstuckwhere == 0)
-                                    player[j].DoBloodBig(2, 205);
-                                if (player[j].weaponstuckwhere == 1)
-                                    player[j].DoBloodBig(2, 200);
-                                player[j].damage += 200 / player[j].armorhigh;
-                                player[j].deathbleeding = 1;
-                                player[j].bloodloss += (200 + abs((float)(Random() % 40)) - 20) / player[j].armorhigh;
+                                if (Person::players[j]->weaponstuckwhere == 0)
+                                    Person::players[j]->DoBloodBig(2, 205);
+                                if (Person::players[j]->weaponstuckwhere == 1)
+                                    Person::players[j]->DoBloodBig(2, 200);
+                                Person::players[j]->damage += 200 / Person::players[j]->armorhigh;
+                                Person::players[j]->deathbleeding = 1;
+                                Person::players[j]->bloodloss += (200 + abs((float)(Random() % 40)) - 20) / Person::players[j]->armorhigh;
                                 owner = j;
                                 bloody = 2;
                                 blooddrip = 5;
@@ -278,7 +278,7 @@ void Weapon::DoStuff(int i)
 
                             emit_sound_at(fleshstabsound, position, 128.);
 
-                            if (animation[player[0].animTarget].height == highheight)
+                            if (animation[Person::players[0]->animTarget].height == highheight)
                                 award_bonus(0, ninja);
                             else
                                 award_bonus(0, Bullseyebonus);
@@ -890,11 +890,11 @@ void Weapon::DoStuff(int i)
             flamedelay -= multiplier;
             normalrot = 0;
             if (owner != -1) {
-                normalrot = player[owner].velocity;
+                normalrot = Person::players[owner]->velocity;
             }
             normalrot.y += 1;
             if (owner != -1) {
-                if (player[owner].onterrain) {
+                if (Person::players[owner]->onterrain) {
                     normalrot.y = 1;
                 }
             }
@@ -945,32 +945,32 @@ void Weapon::Draw()
             else
                 drawhowmany = 1;
         } else {
-            if (player[owner].occluded < 25)
-                if ((frustum.SphereInFrustum(player[owner].coords.x, player[owner].coords.y + player[owner].scale * 3, player[owner].coords.z, player[owner].scale * 8) && distsq(&viewer, &player[owner].coords) < viewdistance * viewdistance) || player[owner].skeleton.free == 3)
+            if (Person::players[owner]->occluded < 25)
+                if ((frustum.SphereInFrustum(Person::players[owner]->coords.x, Person::players[owner]->coords.y + Person::players[owner]->scale * 3, Person::players[owner]->coords.z, Person::players[owner]->scale * 8) && distsq(&viewer, &Person::players[owner]->coords) < viewdistance * viewdistance) || Person::players[owner]->skeleton.free == 3)
                     draw = true;
             if (
-                (player[owner].animTarget == knifeslashstartanim ||
-                 player[owner].animTarget == swordsneakattackanim ||
-                 (player[owner].animCurrent == staffhitanim && player[owner].frameCurrent > 1) ||
-                 (player[owner].animCurrent == staffhitreversedanim && player[owner].frameCurrent > 1) ||
-                 (player[owner].animCurrent == staffspinhitanim && player[owner].frameCurrent > 1) ||
-                 (player[owner].animCurrent == staffspinhitreversedanim && player[owner].frameCurrent > 1) ||
-                 (player[owner].animCurrent == staffgroundsmashanim && player[owner].frameCurrent > 1) ||
-                 (player[owner].animTarget == swordslashanim && player[owner].frameTarget < 7) ||
-                 player[owner].animTarget == crouchstabanim ||
-                 player[owner].animTarget == swordslashreversalanim ||
-                 player[owner].animTarget == swordslashreversedanim ||
-                 player[owner].animTarget == knifefollowanim ||
-                 player[owner].animTarget == swordgroundstabanim ||
-                 player[owner].animTarget == knifethrowanim) &&
-                player[owner].animTarget == lastdrawnanim &&
-                !player[owner].skeleton.free
+                (Person::players[owner]->animTarget == knifeslashstartanim ||
+                 Person::players[owner]->animTarget == swordsneakattackanim ||
+                 (Person::players[owner]->animCurrent == staffhitanim && Person::players[owner]->frameCurrent > 1) ||
+                 (Person::players[owner]->animCurrent == staffhitreversedanim && Person::players[owner]->frameCurrent > 1) ||
+                 (Person::players[owner]->animCurrent == staffspinhitanim && Person::players[owner]->frameCurrent > 1) ||
+                 (Person::players[owner]->animCurrent == staffspinhitreversedanim && Person::players[owner]->frameCurrent > 1) ||
+                 (Person::players[owner]->animCurrent == staffgroundsmashanim && Person::players[owner]->frameCurrent > 1) ||
+                 (Person::players[owner]->animTarget == swordslashanim && Person::players[owner]->frameTarget < 7) ||
+                 Person::players[owner]->animTarget == crouchstabanim ||
+                 Person::players[owner]->animTarget == swordslashreversalanim ||
+                 Person::players[owner]->animTarget == swordslashreversedanim ||
+                 Person::players[owner]->animTarget == knifefollowanim ||
+                 Person::players[owner]->animTarget == swordgroundstabanim ||
+                 Person::players[owner]->animTarget == knifethrowanim) &&
+                Person::players[owner]->animTarget == lastdrawnanim &&
+                !Person::players[owner]->skeleton.free
             ) {
                 drawhowmany = 10;
             } else {
                 drawhowmany = 1;
             }
-            if (player[owner].animTarget == swordgroundstabanim) {
+            if (Person::players[owner]->animTarget == swordgroundstabanim) {
                 lastdrawnrotation1 = rotation1;
                 lastdrawnrotation2 = rotation2;
                 lastdrawnrotation3 = rotation3;
@@ -1004,10 +1004,10 @@ void Weapon::Draw()
                 glRotatef(smallrotation2 * (((float)(j)) / drawhowmany) + lastdrawnsmallrotation2 * (1 - ((float)(j)) / drawhowmany), 0, 1, 0);
 
                 if (owner != -1) {
-                    if (player[owner].animTarget == staffhitanim || player[owner].animCurrent == staffhitanim || player[owner].animTarget == staffhitreversedanim || player[owner].animCurrent == staffhitreversedanim) {
+                    if (Person::players[owner]->animTarget == staffhitanim || Person::players[owner]->animCurrent == staffhitanim || Person::players[owner]->animTarget == staffhitreversedanim || Person::players[owner]->animCurrent == staffhitreversedanim) {
                         glTranslatef(0, 0, -.3);
                     }
-                    if (player[owner].animTarget == staffgroundsmashanim || player[owner].animCurrent == staffgroundsmashanim || player[owner].animTarget == staffspinhitreversedanim || player[owner].animCurrent == staffspinhitreversedanim || player[owner].animTarget == staffspinhitanim || player[owner].animCurrent == staffspinhitanim) {
+                    if (Person::players[owner]->animTarget == staffgroundsmashanim || Person::players[owner]->animCurrent == staffgroundsmashanim || Person::players[owner]->animTarget == staffspinhitreversedanim || Person::players[owner]->animCurrent == staffspinhitreversedanim || Person::players[owner]->animTarget == staffspinhitanim || Person::players[owner]->animCurrent == staffspinhitanim) {
                         glTranslatef(0, 0, -.1);
                     }
                 }
@@ -1053,7 +1053,7 @@ void Weapon::Draw()
             lastdrawnsmallrotation = smallrotation;
             lastdrawnsmallrotation2 = smallrotation2;
             if (owner != -1)
-                lastdrawnanim = player[owner].animCurrent;
+                lastdrawnanim = Person::players[owner]->animCurrent;
         }
         if (owner != -1) {
             glMatrixMode(GL_MODELVIEW);

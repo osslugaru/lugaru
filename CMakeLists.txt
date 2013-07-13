@@ -5,11 +5,9 @@ cmake_minimum_required(VERSION 2.6)
 set(SRCDIR "${CMAKE_CURRENT_SOURCE_DIR}/Source")
 set(DEPDIR "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies")
 
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
-      "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel"
-      FORCE)
-endif(NOT CMAKE_BUILD_TYPE)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 --std=c++11")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -pg --std=c++11")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -O2 -std=c++11")
 
 if(NOT LUGARU_INSTALL_PREFIX)
   if(WIN32)
@@ -32,9 +30,9 @@ endif(MINGW)
 
 if(APPLE)
 	set(CMAKE_OSX_ARCHITECTURES "i386;x86_64;ppc" CACHE STRING "Build architectures for OSX")
-	set(CMAKE_OSX_DEPLOYMENT_TARGET "10.5" CACHE STRING 
+	set(CMAKE_OSX_DEPLOYMENT_TARGET "10.5" CACHE STRING
 		"Minimum OS X version to target for deployment (at runtime); newer APIs weak linked. Set to empty string for default value")
-	set(CMAKE_OSX_SYSROOT "/Developer/SDKs/MacOSX10.5.sdk" CACHE PATH 
+	set(CMAKE_OSX_SYSROOT "/Developer/SDKs/MacOSX10.5.sdk" CACHE PATH
 		"The product will be built against the headers and libraries located inside the indicated SDK.")
 endif(APPLE)
 

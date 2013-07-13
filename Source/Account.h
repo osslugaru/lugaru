@@ -81,7 +81,7 @@ public:
     };
     void setCampaignFinalTime(float t) {
         campaignProgress[currentCampaign].time = t;
-        if ((t < campaignProgress[currentCampaign].fasttime) || (campaignProgress[currentCampaign].fasttime == 0) && (t != 0))
+        if ((t < campaignProgress[currentCampaign].fasttime) || ((campaignProgress[currentCampaign].fasttime == 0) && (t != 0)))
             campaignProgress[currentCampaign].fasttime = t;
     };
     float getCampaignFasttime() {

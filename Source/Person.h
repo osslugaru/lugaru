@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Terrain.h"
 #include "Sprite.h"
 #include <cmath>
+#include <memory>
 #include "Weapons.h"
 #include "Animation.h"
 
@@ -47,9 +48,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define rabbittype 0
 #define wolftype 1
 
-class Person
+class Person : public enable_shared_from_this<Person>
 {
 public:
+    static std::vector<std::shared_ptr<Person>> players;
+
     int whichpatchx;
     int whichpatchz;
 
@@ -153,7 +156,7 @@ public:
 
     float grabdelay;
 
-    Person *victim;
+    std::shared_ptr<Person> victim;
     bool hasvictim;
 
     float updatedelay;
@@ -394,6 +397,6 @@ public:
 };
 
 const int maxplayers = 10;
-extern Person player[maxplayers];
+//~ extern Person player[maxplayers];
 
 #endif

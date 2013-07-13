@@ -451,9 +451,9 @@ bool Model::loadnotex(const char *filename )
     FILE *tfile;
     long i;
 
-    int oldvertexNum, oldTriangleNum;
-    oldvertexNum = vertexNum;
-    oldTriangleNum = TriangleNum;
+    //~ int oldvertexNum, oldTriangleNum;
+    //~ oldvertexNum = vertexNum;
+    //~ oldTriangleNum = TriangleNum;
 
     type = notextype;
     color = 0;
@@ -526,9 +526,9 @@ bool Model::load(const char *filename, bool texture )
     if (visibleloading)
         Game::LoadingScreen();
 
-    int oldvertexNum, oldTriangleNum;
-    oldvertexNum = vertexNum;
-    oldTriangleNum = TriangleNum;
+    //~ int oldvertexNum, oldTriangleNum;
+    //~ oldvertexNum = vertexNum;
+    //~ oldTriangleNum = TriangleNum;
 
     type = normaltype;
     color = 0;
@@ -605,9 +605,9 @@ bool Model::loaddecal(const char *filename, bool texture )
 
     LOG(std::string("Loading decal...") + FixedFN);
 
-    int oldvertexNum, oldTriangleNum;
-    oldvertexNum = vertexNum;
-    oldTriangleNum = TriangleNum;
+    //~ int oldvertexNum, oldTriangleNum;
+    //~ oldvertexNum = vertexNum;
+    //~ oldTriangleNum = TriangleNum;
 
     type = decalstype;
     numdecals = 0;
@@ -706,9 +706,9 @@ bool Model::loadraw(char *filename )
 
     LOG(std::string("Loading raw...") + filename);
 
-    int oldvertexNum, oldTriangleNum;
-    oldvertexNum = vertexNum;
-    oldTriangleNum = TriangleNum;
+    //~ int oldvertexNum, oldTriangleNum;
+    //~ oldvertexNum = vertexNum;
+    //~ oldTriangleNum = TriangleNum;
 
     type = rawtype;
     color = 0;
@@ -1112,13 +1112,13 @@ void Model::drawdecals(Texture shadowtexture, Texture bloodtexture, Texture bloo
     if (decals) {
         if (type != decalstype)
             return;
-        static int i, j;
-        static float distancemult;
+        static int i;
+        //~ static float distancemult;
         static int lasttype;
-        static float viewdistsquared;
+        //~ static float viewdistsquared;
         static bool blend;
 
-        viewdistsquared = viewdistance * viewdistance;
+        //~ viewdistsquared = viewdistance * viewdistance;
         blend = 1;
 
         lasttype = -1;

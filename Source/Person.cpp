@@ -83,7 +83,8 @@ extern int indialogue;
 
 extern bool gamestarted;
 
-Person player[maxplayers];
+//~ Person player[maxplayers];
+std::vector<std::shared_ptr<Person>> Person::players(1, std::shared_ptr<Person>(new Person()));
 
 /* EFFECT
  *
@@ -95,7 +96,7 @@ void Person::CheckKick()
     if (!(hasvictim
             && (animTarget == rabbitkickanim
                 && victim
-                && victim != this
+                && victim != this->shared_from_this()
                 && frameCurrent >= 2
                 && animCurrent == rabbitkickanim)
             && distsq(&coords, &victim->coords) < 1.2
@@ -145,7 +146,7 @@ void Person::CheckKick()
         victim->oldcoords = victim->coords;
         coords = victim->coords;
         victim->targetyaw = targetyaw;
-        victim->victim = this;
+        victim->victim = this->shared_from_this();
     }
 }
 
@@ -191,7 +192,7 @@ int Person::getIdle()
 {
     if (indialogue != -1 && howactive == typeactive && creature == rabbittype)
         return talkidleanim;
-    if (hasvictim && victim != this/*||(id==0&&attackkeydown)*/)
+    if (hasvictim && (victim != this->shared_from_this())/*||(id==0&&attackkeydown)*/)
         if (/*(id==0&&attackkeydown)||*/(!victim->dead && victim->aitype != passivetype && victim->aitype != searchtype && aitype != passivetype && aitype != searchtype && victim->id < numplayers)) {
             if ((aitype == playercontrolled && stunned <= 0 && weaponactive == -1) || pause) {
                 if (creature == rabbittype)
@@ -922,7 +923,7 @@ void Person::Reverse()
 
             victim->weaponactive = -1;
             for (int j = 0; j < numplayers; j++) {
-                player[j].wentforweapon = 0;
+                Person::players[j]->wentforweapon = 0;
             }
         }
 
@@ -952,7 +953,7 @@ void Person::Reverse()
 
             victim->weaponactive = -1;
             for (int j = 0; j < numplayers; j++) {
-                player[j].wentforweapon = 0;
+                Person::players[j]->wentforweapon = 0;
             }
         }
         animTarget = staffspinhitreversedanim;
@@ -981,7 +982,7 @@ void Person::Reverse()
 
             victim->weaponactive = -1;
             for (int j = 0; j < numplayers; j++) {
-                player[j].wentforweapon = 0;
+                Person::players[j]->wentforweapon = 0;
             }
         }
         animTarget = swordslashreversedanim;
@@ -1010,7 +1011,7 @@ void Person::Reverse()
 
             victim->weaponactive = -1;
             for (int j = 0; j < numplayers; j++) {
-                player[j].wentforweapon = 0;
+                Person::players[j]->wentforweapon = 0;
             }
         }
         animTarget = knifeslashreversedanim;
@@ -1028,14 +1029,14 @@ void Person::Reverse()
         victim->coords = coords;
         victim->targetyaw = targetyaw;
         victim->yaw = targetyaw;
-        victim->victim = this;
+        victim->victim = this->shared_from_this();
     }
     if (animTarget == winduppunchanim) {
         animTarget = winduppunchblockedanim;
         victim->animTarget = blockhighleftanim;
         victim->frameTarget = 1;
         victim->target = .5;
-        victim->victim = this;
+        victim->victim = this->shared_from_this();
         victim->targetyaw = targetyaw + 180;
     }
     if (animTarget == wolfslapanim) {
@@ -1043,7 +1044,7 @@ void Person::Reverse()
         victim->animTarget = blockhighleftanim;
         victim->frameTarget = 1;
         victim->target = .5;
-        victim->victim = this;
+        victim->victim = this->shared_from_this();
         victim->targetyaw = targetyaw + 180;
     }
     if ((animTarget == swordslashanim || animTarget == staffhitanim || animTarget == staffspinhitanim) && victim->weaponactive != -1) {
@@ -1053,7 +1054,7 @@ void Person::Reverse()
         victim->animTarget = swordslashparryanim;
         victim->frameTarget = 1;
         victim->target = .5;
-        victim->victim = this;
+        victim->victim = this->shared_from_this();
         victim->targetyaw = targetyaw + 180;
 
         if (abs(Random() % 20) == 0 || weapons[victim->weaponids[victim->weaponactive]].getType() == knife) {
@@ -1093,7 +1094,7 @@ void Person::Reverse()
             }
             victim->weaponactive = -1;
             for (int i = 0; i < numplayers; i++) {
-                player[i].wentforweapon = 0;
+                Person::players[i]->wentforweapon = 0;
             }
         }
 
@@ -1136,7 +1137,7 @@ void Person::Reverse()
             }
             weaponactive = -1;
             for (int i = 0; i < numplayers; i++) {
-                player[i].wentforweapon = 0;
+                Person::players[i]->wentforweapon = 0;
             }
 
 
@@ -1566,7 +1567,7 @@ void Person::RagDoll(bool checkcollision)
                 }
                 weaponactive = -1;
                 for (i = 0; i < numplayers; i++) {
-                    player[i].wentforweapon = 0;
+                    Person::players[i]->wentforweapon = 0;
                 }
             }
         }
@@ -1940,9 +1941,9 @@ void Person::DoAnimations()
                 for (i = 0; i < weapons.size(); i++) {
                     bool willwork = true;
                     if (weapons[i].owner != -1)
-                        if (player[weapons[i].owner].weaponstuck != -1)
-                            if (player[weapons[i].owner].weaponids[player[weapons[i].owner].weaponstuck] == i)
-                                if (player[weapons[i].owner].num_weapons > 1)
+                        if (Person::players[weapons[i].owner]->weaponstuck != -1)
+                            if (Person::players[weapons[i].owner]->weaponids[Person::players[weapons[i].owner]->weaponstuck] == i)
+                                if (Person::players[weapons[i].owner]->num_weapons > 1)
                                     willwork = 0;
                     if ((weapons[i].owner == -1) || (hasvictim && weapons[i].owner == victim->id && victim->skeleton.free))
                         if (willwork && distsqflat(&coords, &weapons[i].position) < 3 && weaponactive == -1) {
@@ -1964,7 +1965,7 @@ void Person::DoAnimations()
                                 weaponactive = 0;
                                 if (weapons[i].owner != -1) {
 
-                                    victim = &player[weapons[i].owner];
+                                    victim = Person::players[weapons[i].owner];
                                     if (victim->num_weapons == 1)
                                         victim->num_weapons = 0;
                                     else
@@ -2059,7 +2060,7 @@ void Person::DoAnimations()
             if ((animTarget == rabbitrunninganim || animTarget == wolfrunninganim) && frameTarget == 3 && (jumpkeydown || attackkeydown || id != 0))
                 dojumpattack = 1;
             if (hasvictim)
-                if (distsq(&victim->coords, &/*player[i].*/coords) < 5 && victim->aitype == gethelptype && (attackkeydown) && !victim->skeleton.free && victim->isRun() && victim->runninghowlong >= 1)
+                if (distsq(&victim->coords, &/*Person::players[i]->*/coords) < 5 && victim->aitype == gethelptype && (attackkeydown) && !victim->skeleton.free && victim->isRun() && victim->runninghowlong >= 1)
                     dojumpattack = 1;
             if (!hostile)
                 dojumpattack = 0;
@@ -2080,15 +2081,15 @@ void Person::DoAnimations()
                 targetloc += coords;
                 for (i = 0; i < numplayers; i++) {
                     if (i != id)
-                        if (distsq(&targetloc, &player[i].coords) < closestdist || closestdist == 0) {
-                            closestdist = distsq(&targetloc, &player[i].coords);
+                        if (distsq(&targetloc, &Person::players[i]->coords) < closestdist || closestdist == 0) {
+                            closestdist = distsq(&targetloc, &Person::players[i]->coords);
                             closestid = i;
                         }
                 }
                 if (closestid != -1)
-                    if (closestdist < 5 && !player[closestid].dead && animation[player[closestid].animTarget].height != lowheight && player[closestid].animTarget != backhandspringanim) {
+                    if (closestdist < 5 && !Person::players[closestid]->dead && animation[Person::players[closestid]->animTarget].height != lowheight && Person::players[closestid]->animTarget != backhandspringanim) {
                         hasvictim = 1;
-                        victim = &player[closestid];
+                        victim = Person::players[closestid];
                         coords = victim->coords;
                         animCurrent = rabbittacklinganim;
                         animTarget = rabbittacklinganim;
@@ -2859,7 +2860,7 @@ void Person::DoAnimations()
                             }
                             victim->weaponactive = -1;
                             for (i = 0; i < numplayers; i++) {
-                                player[i].wentforweapon = 0;
+                                Person::players[i]->wentforweapon = 0;
                             }
 
                         }
@@ -3052,7 +3053,9 @@ void Person::DoAnimations()
                 }
 
                 if (animTarget == sweepanim && animation[animTarget].label[frameCurrent] == 5) {
-                    if (victim->animTarget != jumpupanim && distsq(&coords, &victim->coords) < (scale * 5) * (scale * 5) * 3 && victim != this) {
+                    if ((victim->animTarget != jumpupanim) &&
+                        (distsq(&coords, &victim->coords) < (scale * 5) * (scale * 5) * 3) &&
+                        (victim != this->shared_from_this())) {
                         escapednum = 0;
                         if (id == 0)
                             camerashake += .2;
@@ -3677,8 +3680,8 @@ void Person::DoAnimations()
                         float distance;
                         if (numplayers > 1)
                             for (i = 0; i < numplayers; i++) {
-                                if (id != i && player[i].coords.y < coords.y && !player[i].skeleton.free) {
-                                    distance = distsq(&player[i].coords, &coords);
+                                if (id != i && Person::players[i]->coords.y < coords.y && !Person::players[i]->skeleton.free) {
+                                    distance = distsq(&Person::players[i]->coords, &coords);
                                     if (closestdist == -1 || distance < closestdist) {
                                         closestdist = distance;
                                         closest = i;
@@ -3686,7 +3689,7 @@ void Person::DoAnimations()
                                 }
                             }
                         if (closestdist > 0 && closest >= 0 && closestdist < 16) {
-                            victim = &player[closest];
+                            victim = Person::players[closest];
                             animTarget = walljumprightkickanim;
                             frameTarget = 0;
                             XYZ rotatetarget = victim->coords - coords;
@@ -3735,8 +3738,8 @@ void Person::DoAnimations()
                         float distance;
                         if (numplayers > 1)
                             for (i = 0; i < numplayers; i++) {
-                                if (id != i && player[i].coords.y < coords.y && !player[i].skeleton.free) {
-                                    distance = distsq(&player[i].coords, &coords);
+                                if (id != i && Person::players[i]->coords.y < coords.y && !Person::players[i]->skeleton.free) {
+                                    distance = distsq(&Person::players[i]->coords, &coords);
                                     if (closestdist == -1 || distance < closestdist) {
                                         closestdist = distance;
                                         closest = i;
@@ -3744,7 +3747,7 @@ void Person::DoAnimations()
                                 }
                             }
                         if (closestdist > 0 && closest >= 0 && closestdist < 16) {
-                            victim = &player[closest];
+                            victim = Person::players[closest];
                             animTarget = walljumpleftkickanim;
                             frameTarget = 0;
                             XYZ rotatetarget = victim->coords - coords;
@@ -4166,7 +4169,7 @@ void Person::DoStuff()
     flamedelay -= multiplier;
     parriedrecently -= multiplier;
     if (!victim) {
-        victim = this;
+        victim = this->shared_from_this();
         hasvictim = 0;
     }
 
@@ -4185,7 +4188,7 @@ void Person::DoStuff()
         superruntoggle = 0;
         if (aitype != passivetype) {
             superruntoggle = 1;
-            if (aitype == attacktypecutoff && (player[0].isIdle() || player[0].isCrouch() || player[0].skeleton.free || player[0].animTarget == getupfrombackanim || player[0].animTarget == getupfromfrontanim || player[0].animTarget == sneakanim) && distsq(&coords, &player[0].coords) < 16) {
+            if (aitype == attacktypecutoff && (Person::players[0]->isIdle() || Person::players[0]->isCrouch() || Person::players[0]->skeleton.free || Person::players[0]->animTarget == getupfrombackanim || Person::players[0]->animTarget == getupfromfrontanim || Person::players[0]->animTarget == sneakanim) && distsq(&coords, &Person::players[0]->coords) < 16) {
                 superruntoggle = 0;
             }
         }
@@ -4337,7 +4340,7 @@ void Person::DoStuff()
                 }
                 weaponactive = -1;
                 for (i = 0; i < numplayers; i++) {
-                    player[i].wentforweapon = 0;
+                    Person::players[i]->wentforweapon = 0;
                 }
 
                 if (id == 0) {
@@ -4763,7 +4766,7 @@ void Person::DoStuff()
             }
             weaponactive = -1;
             for (i = 0; i < numplayers; i++) {
-                player[i].wentforweapon = 0;
+                Person::players[i]->wentforweapon = 0;
             }
         }
 
@@ -4829,7 +4832,7 @@ void Person::DoStuff()
             }
             weaponactive = -1;
             for (i = 0; i < numplayers; i++) {
-                player[i].wentforweapon = 0;
+                Person::players[i]->wentforweapon = 0;
             }
         }
 
@@ -5463,7 +5466,9 @@ void Person::DoStuff()
         bool behind;
         behind = 0;
         if (hasvictim) {
-            if (victim != this && !victim->dead && victim->aitype != passivetype && victim->aitype != searchtype && aitype != passivetype && aitype != searchtype && victim->id < numplayers && aitype != passivetype) {
+            if ((victim != this->shared_from_this()) && !victim->dead && (victim->aitype != passivetype) &&
+                (victim->aitype != searchtype) && (aitype != passivetype) &&
+                (aitype != searchtype) && (victim->id < numplayers) && (aitype != passivetype)) {
                 behind = (normaldotproduct(facing, coords - victim->coords) > 0);
             }
         }

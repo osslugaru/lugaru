@@ -224,7 +224,7 @@ GLvoid Game::ReSizeGLScene(float fov, float pnear)
 void Game::LoadingScreen()
 {
     static float loadprogress;
-    static AbsoluteTime time = {0, 0};
+    //~ static AbsoluteTime time = {0, 0};
     static AbsoluteTime frametime = {0, 0};
     AbsoluteTime currTime = UpTime ();
     double deltaTime = (float) AbsoluteDeltaToDuration (currTime, frametime);
@@ -747,8 +747,9 @@ void Game::LoadStuff()
 
     stillloading = 1;
 
-    for (i = 0; i < maxplayers; i++)
-        player[i].skeleton.drawmodel.textureptr.destroy();
+    for (auto p:Person::players) {
+        p->skeleton.drawmodel.textureptr.destroy();
+    }
 
     i = abs(Random() % 4);
     visibleloading = 0; //don't use loadscreentexture yet
@@ -919,7 +920,7 @@ void Game::LoadStuff()
     XYZ moveamount;
     moveamount = 0;
     moveamount.z = 2;
-    for (i = 0; i < player[0].skeleton.num_joints; i++) {
+    for (i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
         for (j = 0; j < animation[knifesneakattackanim].numframes; j++) {
             animation[knifesneakattackanim].position[i][j] += moveamount;
         }
@@ -927,7 +928,7 @@ void Game::LoadStuff()
 
     LoadingScreen();
 
-    for (i = 0; i < player[0].skeleton.num_joints; i++) {
+    for (i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
         for (j = 0; j < animation[knifesneakattackedanim].numframes; j++) {
             animation[knifesneakattackedanim].position[i][j] += moveamount;
         }
@@ -935,7 +936,7 @@ void Game::LoadStuff()
 
     LoadingScreen();
 
-    for (i = 0; i < player[0].skeleton.num_joints; i++) {
+    for (i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
         animation[dead1anim].position[i][1] = animation[dead1anim].position[i][0];
         animation[dead2anim].position[i][1] = animation[dead2anim].position[i][0];
         animation[dead3anim].position[i][1] = animation[dead3anim].position[i][0];
@@ -951,7 +952,7 @@ void Game::LoadStuff()
     animation[dead3anim].speed[1] = 0.001;
     animation[dead4anim].speed[1] = 0.001;
 
-    for (i = 0; i < player[0].skeleton.num_joints; i++) {
+    for (i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
         for (j = 0; j < animation[swordsneakattackanim].numframes; j++) {
             animation[swordsneakattackanim].position[i][j] += moveamount;
         }
@@ -963,7 +964,7 @@ void Game::LoadStuff()
 
     LoadingScreen();
 
-    for (i = 0; i < player[0].skeleton.num_joints; i++) {
+    for (i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
         for (j = 0; j < animation[swordsneakattackedanim].numframes; j++) {
             animation[swordsneakattackedanim].position[i][j] += moveamount;
         }

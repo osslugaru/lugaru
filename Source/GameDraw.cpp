@@ -138,7 +138,7 @@ int Game::DrawGLScene(StereoSide side)
     static float texcoordwidth, texcoordheight;
     static float texviewwidth, texviewheight;
     static int i, j, k, l;
-    static GLubyte color;
+    //~ static GLubyte color;
     static XYZ checkpoint;
     static float tempmult;
     float tutorialopac;
@@ -154,6 +154,8 @@ int Game::DrawGLScene(StereoSide side)
             break;
         case stereoRight:
             glColorMask( 1.0, 0.0, 0.0, 1.0 );
+            break;
+        default:
             break;
         }
     } else {
@@ -188,12 +190,12 @@ int Game::DrawGLScene(StereoSide side)
 
         int olddrawmode = drawmode;
         if (ismotionblur && !loading) {
-            if ((findLengthfast(&player[0].velocity) > 200) && velocityblur && !cameramode) {
+            if ((findLengthfast(&Person::players[0]->velocity) > 200) && velocityblur && !cameramode) {
                 drawmode = motionblurmode;
-                motionbluramount = 200 / (findLengthfast(&player[0].velocity));
+                motionbluramount = 200 / (findLengthfast(&Person::players[0]->velocity));
                 changed = 1;
             }
-            if (player[0].damage - player[0].superpermanentdamage > (player[0].damagetolerance - player[0].superpermanentdamage) * 1 / 2 && damageeffects && !cameramode) {
+            if (Person::players[0]->damage - Person::players[0]->superpermanentdamage > (Person::players[0]->damagetolerance - Person::players[0]->superpermanentdamage) * 1 / 2 && damageeffects && !cameramode) {
                 drawmode = doublevisionmode;
                 changed = 1;
             }
@@ -290,8 +292,8 @@ int Game::DrawGLScene(StereoSide side)
             //shake
             glRotatef(float(Random() % 100) / 10 * camerashake/*+(woozy*woozy)/10*/, 0, 0, 1);
             //sway
-            glRotatef(pitch + sin(woozy / 2) * (player[0].damage / player[0].damagetolerance) * 5, 1, 0, 0);
-            glRotatef(yaw + sin(woozy) * (player[0].damage / player[0].damagetolerance) * 5, 0, 1, 0);
+            glRotatef(pitch + sin(woozy / 2) * (Person::players[0]->damage / Person::players[0]->damagetolerance) * 5, 1, 0, 0);
+            glRotatef(yaw + sin(woozy) * (Person::players[0]->damage / Person::players[0]->damagetolerance) * 5, 0, 1, 0);
         }
         if (cameramode || freeze || winfreeze) {
             glRotatef(pitch, 1, 0, 0);
@@ -332,21 +334,21 @@ int Game::DrawGLScene(StereoSide side)
         static float size, opacity, rotation;
         rotation = 0;
         for (k = 0; k < numplayers; k++) {
-            if (!player[k].skeleton.free && player[k].playerdetail && player[k].howactive < typesleeping)
-                if (frustum.SphereInFrustum(player[k].coords.x, player[k].coords.y + player[k].scale * 3, player[k].coords.z, player[k].scale * 7) && player[k].occluded < 25)
-                    for (i = 0; i < player[k].skeleton.num_joints; i++) {
-                        if (player[k].skeleton.joints[i].label == leftknee || player[k].skeleton.joints[i].label == rightknee || player[k].skeleton.joints[i].label == groin) {
-                            point = DoRotation(player[k].skeleton.joints[i].position, 0, player[k].yaw, 0) * player[k].scale + player[k].coords;
+            if (!Person::players[k]->skeleton.free && Person::players[k]->playerdetail && Person::players[k]->howactive < typesleeping)
+                if (frustum.SphereInFrustum(Person::players[k]->coords.x, Person::players[k]->coords.y + Person::players[k]->scale * 3, Person::players[k]->coords.z, Person::players[k]->scale * 7) && Person::players[k]->occluded < 25)
+                    for (i = 0; i < Person::players[k]->skeleton.num_joints; i++) {
+                        if (Person::players[k]->skeleton.joints[i].label == leftknee || Person::players[k]->skeleton.joints[i].label == rightknee || Person::players[k]->skeleton.joints[i].label == groin) {
+                            point = DoRotation(Person::players[k]->skeleton.joints[i].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords;
                             size = .4f;
-                            opacity = .4 - player[k].skeleton.joints[i].position.y * player[k].scale / 5 - (player[k].coords.y - terrain.getHeight(player[k].coords.x, player[k].coords.z)) / 10;
+                            opacity = .4 - Person::players[k]->skeleton.joints[i].position.y * Person::players[k]->scale / 5 - (Person::players[k]->coords.y - terrain.getHeight(Person::players[k]->coords.x, Person::players[k]->coords.z)) / 10;
                             if (k != 0 && tutoriallevel == 1) {
-                                opacity = .2 + .2 * sin(smoketex * 6 + i) - player[k].skeleton.joints[i].position.y * player[k].scale / 5 - (player[k].coords.y - terrain.getHeight(player[k].coords.x, player[k].coords.z)) / 10;
+                                opacity = .2 + .2 * sin(smoketex * 6 + i) - Person::players[k]->skeleton.joints[i].position.y * Person::players[k]->scale / 5 - (Person::players[k]->coords.y - terrain.getHeight(Person::players[k]->coords.x, Person::players[k]->coords.z)) / 10;
                             }
                             terrain.MakeDecal(shadowdecal, point, size, opacity, rotation);
-                            for (l = 0; l < terrain.patchobjectnum[player[k].whichpatchx][player[k].whichpatchz]; l++) {
-                                j = terrain.patchobjects[player[k].whichpatchx][player[k].whichpatchz][l];
-                                if (objects.position[j].y < player[k].coords.y || objects.type[j] == tunneltype || objects.type[j] == weirdtype) {
-                                    point = DoRotation(DoRotation(player[k].skeleton.joints[i].position, 0, player[k].yaw, 0) * player[k].scale + player[k].coords - objects.position[j], 0, -objects.yaw[j], 0);
+                            for (l = 0; l < terrain.patchobjectnum[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz]; l++) {
+                                j = terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz][l];
+                                if (objects.position[j].y < Person::players[k]->coords.y || objects.type[j] == tunneltype || objects.type[j] == weirdtype) {
+                                    point = DoRotation(DoRotation(Person::players[k]->skeleton.joints[i].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords - objects.position[j], 0, -objects.yaw[j], 0);
                                     size = .4f;
                                     opacity = .4f;
                                     if (k != 0 && tutoriallevel == 1) {
@@ -357,27 +359,27 @@ int Game::DrawGLScene(StereoSide side)
                             }
                         }
                     }
-            if ((player[k].skeleton.free || player[k].howactive >= typesleeping) && player[k].playerdetail)
-                if (frustum.SphereInFrustum(player[k].coords.x, player[k].coords.y, player[k].coords.z, player[k].scale * 5) && player[k].occluded < 25)
-                    for (i = 0; i < player[k].skeleton.num_joints; i++) {
-                        if (player[k].skeleton.joints[i].label == leftknee || player[k].skeleton.joints[i].label == rightknee || player[k].skeleton.joints[i].label == groin || player[k].skeleton.joints[i].label == leftelbow || player[k].skeleton.joints[i].label == rightelbow || player[k].skeleton.joints[i].label == neck) {
-                            if (player[k].skeleton.free)
-                                point = player[k].skeleton.joints[i].position * player[k].scale + player[k].coords;
+            if ((Person::players[k]->skeleton.free || Person::players[k]->howactive >= typesleeping) && Person::players[k]->playerdetail)
+                if (frustum.SphereInFrustum(Person::players[k]->coords.x, Person::players[k]->coords.y, Person::players[k]->coords.z, Person::players[k]->scale * 5) && Person::players[k]->occluded < 25)
+                    for (i = 0; i < Person::players[k]->skeleton.num_joints; i++) {
+                        if (Person::players[k]->skeleton.joints[i].label == leftknee || Person::players[k]->skeleton.joints[i].label == rightknee || Person::players[k]->skeleton.joints[i].label == groin || Person::players[k]->skeleton.joints[i].label == leftelbow || Person::players[k]->skeleton.joints[i].label == rightelbow || Person::players[k]->skeleton.joints[i].label == neck) {
+                            if (Person::players[k]->skeleton.free)
+                                point = Person::players[k]->skeleton.joints[i].position * Person::players[k]->scale + Person::players[k]->coords;
                             else
-                                point = DoRotation(player[k].skeleton.joints[i].position, 0, player[k].yaw, 0) * player[k].scale + player[k].coords;
+                                point = DoRotation(Person::players[k]->skeleton.joints[i].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords;
                             size = .4f;
-                            opacity = .4 - player[k].skeleton.joints[i].position.y * player[k].scale / 5 - (player[k].coords.y - terrain.getHeight(player[k].coords.x, player[k].coords.z)) / 5;
+                            opacity = .4 - Person::players[k]->skeleton.joints[i].position.y * Person::players[k]->scale / 5 - (Person::players[k]->coords.y - terrain.getHeight(Person::players[k]->coords.x, Person::players[k]->coords.z)) / 5;
                             if (k != 0 && tutoriallevel == 1) {
-                                opacity = .2 + .2 * sin(smoketex * 6 + i) - player[k].skeleton.joints[i].position.y * player[k].scale / 5 - (player[k].coords.y - terrain.getHeight(player[k].coords.x, player[k].coords.z)) / 10;
+                                opacity = .2 + .2 * sin(smoketex * 6 + i) - Person::players[k]->skeleton.joints[i].position.y * Person::players[k]->scale / 5 - (Person::players[k]->coords.y - terrain.getHeight(Person::players[k]->coords.x, Person::players[k]->coords.z)) / 10;
                             }
                             terrain.MakeDecal(shadowdecal, point, size, opacity * .7, rotation);
-                            for (l = 0; l < terrain.patchobjectnum[player[k].whichpatchx][player[k].whichpatchz]; l++) {
-                                j = terrain.patchobjects[player[k].whichpatchx][player[k].whichpatchz][l];
-                                if (objects.position[j].y < player[k].coords.y || objects.type[j] == tunneltype || objects.type[j] == weirdtype) {
-                                    if (player[k].skeleton.free)
-                                        point = DoRotation(player[k].skeleton.joints[i].position * player[k].scale + player[k].coords - objects.position[j], 0, -objects.yaw[j], 0);
+                            for (l = 0; l < terrain.patchobjectnum[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz]; l++) {
+                                j = terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz][l];
+                                if (objects.position[j].y < Person::players[k]->coords.y || objects.type[j] == tunneltype || objects.type[j] == weirdtype) {
+                                    if (Person::players[k]->skeleton.free)
+                                        point = DoRotation(Person::players[k]->skeleton.joints[i].position * Person::players[k]->scale + Person::players[k]->coords - objects.position[j], 0, -objects.yaw[j], 0);
                                     else
-                                        point = DoRotation(DoRotation(player[k].skeleton.joints[i].position, 0, player[k].yaw, 0) * player[k].scale + player[k].coords - objects.position[j], 0, -objects.yaw[j], 0);
+                                        point = DoRotation(DoRotation(Person::players[k]->skeleton.joints[i].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords - objects.position[j], 0, -objects.yaw[j], 0);
                                     size = .4f;
                                     opacity = .4f;
                                     if (k != 0 && tutoriallevel == 1) {
@@ -389,15 +391,15 @@ int Game::DrawGLScene(StereoSide side)
                         }
                     }
 
-            if (!player[k].playerdetail)
-                if (frustum.SphereInFrustum(player[k].coords.x, player[k].coords.y, player[k].coords.z, player[k].scale * 5)) {
-                    point = player[k].coords;
+            if (!Person::players[k]->playerdetail)
+                if (frustum.SphereInFrustum(Person::players[k]->coords.x, Person::players[k]->coords.y, Person::players[k]->coords.z, Person::players[k]->scale * 5)) {
+                    point = Person::players[k]->coords;
                     size = .7;
-                    opacity = .4 - (player[k].coords.y - terrain.getHeight(player[k].coords.x, player[k].coords.z)) / 5;
+                    opacity = .4 - (Person::players[k]->coords.y - terrain.getHeight(Person::players[k]->coords.x, Person::players[k]->coords.z)) / 5;
                     terrain.MakeDecal(shadowdecal, point, size, opacity * .7, rotation);
-                    for (l = 0; l < terrain.patchobjectnum[player[k].whichpatchx][player[k].whichpatchz]; l++) {
-                        j = terrain.patchobjects[player[k].whichpatchx][player[k].whichpatchz][l];
-                        point = DoRotation(player[k].coords - objects.position[j], 0, -objects.yaw[j], 0);
+                    for (l = 0; l < terrain.patchobjectnum[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz]; l++) {
+                        j = terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz][l];
+                        point = DoRotation(Person::players[k]->coords - objects.position[j], 0, -objects.yaw[j], 0);
                         size = .7;
                         opacity = .4f;
                         objects.model[j].MakeDecal(shadowdecal, &point, &size, &opacity, &rotation);
@@ -453,34 +455,34 @@ int Game::DrawGLScene(StereoSide side)
                 if (k == 0 || tutoriallevel != 1) {
                     glEnable(GL_BLEND);
                     glEnable(GL_LIGHTING);
-                    terrainlight = terrain.getLighting(player[k].coords.x, player[k].coords.z);
-                    distance = distsq(&viewer, &player[k].coords);
+                    terrainlight = terrain.getLighting(Person::players[k]->coords.x, Person::players[k]->coords.z);
+                    distance = distsq(&viewer, &Person::players[k]->coords);
                     distance = (viewdistance * viewdistance - (distance - (viewdistance * viewdistance * fadestart)) * (1 / (1 - fadestart))) / viewdistance / viewdistance;
                     glColor4f(terrainlight.x, terrainlight.y, terrainlight.z, distance);
                     if (distance >= 1)
                         glDisable(GL_BLEND);
                     if (distance >= .5) {
-                        checkpoint = DoRotation(player[k].skeleton.joints[abs(Random() % player[k].skeleton.num_joints)].position, 0, player[k].yaw, 0) * player[k].scale + player[k].coords;
+                        checkpoint = DoRotation(Person::players[k]->skeleton.joints[abs(Random() % Person::players[k]->skeleton.num_joints)].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords;
                         checkpoint.y += 1;
-                        if (!player[k].occluded == 0)
-                            i = checkcollide(viewer, checkpoint, player[k].lastoccluded);
-                        if (i == -1 || player[k].occluded == 0)
+                        if (!Person::players[k]->occluded == 0)
+                            i = checkcollide(viewer, checkpoint, Person::players[k]->lastoccluded);
+                        if (i == -1 || Person::players[k]->occluded == 0)
                             i = checkcollide(viewer, checkpoint);
                         if (i != -1) {
-                            player[k].occluded += 1;
-                            player[k].lastoccluded = i;
+                            Person::players[k]->occluded += 1;
+                            Person::players[k]->lastoccluded = i;
                         } else {
-                            player[k].occluded = 0;
+                            Person::players[k]->occluded = 0;
                         }
-                        if (player[k].occluded < 25)
-                            player[k].DrawSkeleton();
+                        if (Person::players[k]->occluded < 25)
+                            Person::players[k]->DrawSkeleton();
                     }
                 }
             }
         }
 
         if (!cameramode && musictype == stream_fighttheme)
-            playerdist = distsqflat(&player[0].coords, &viewer);
+            playerdist = distsqflat(&Person::players[0]->coords, &viewer);
         else
             playerdist = -100;
         glPushMatrix();
@@ -517,27 +519,27 @@ int Game::DrawGLScene(StereoSide side)
             if (!(k == 0 || tutoriallevel != 1)) {
                 glEnable(GL_BLEND);
                 glEnable(GL_LIGHTING);
-                terrainlight = terrain.getLighting(player[k].coords.x, player[k].coords.z);
-                distance = distsq(&viewer, &player[k].coords);
+                terrainlight = terrain.getLighting(Person::players[k]->coords.x, Person::players[k]->coords.z);
+                distance = distsq(&viewer, &Person::players[k]->coords);
                 distance = (viewdistance * viewdistance - (distance - (viewdistance * viewdistance * fadestart)) * (1 / (1 - fadestart))) / viewdistance / viewdistance;
                 glColor4f(terrainlight.x, terrainlight.y, terrainlight.z, distance);
                 if (distance >= 1)
                     glDisable(GL_BLEND);
                 if (distance >= .5) {
-                    checkpoint = DoRotation(player[k].skeleton.joints[abs(Random() % player[k].skeleton.num_joints)].position, 0, player[k].yaw, 0) * player[k].scale + player[k].coords;
+                    checkpoint = DoRotation(Person::players[k]->skeleton.joints[abs(Random() % Person::players[k]->skeleton.num_joints)].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords;
                     checkpoint.y += 1;
-                    if (!player[k].occluded == 0)
-                        i = checkcollide(viewer, checkpoint, player[k].lastoccluded);
-                    if (i == -1 || player[k].occluded == 0)
+                    if (!Person::players[k]->occluded == 0)
+                        i = checkcollide(viewer, checkpoint, Person::players[k]->lastoccluded);
+                    if (i == -1 || Person::players[k]->occluded == 0)
                         i = checkcollide(viewer, checkpoint);
                     if (i != -1) {
-                        player[k].occluded += 1;
-                        player[k].lastoccluded = i;
+                        Person::players[k]->occluded += 1;
+                        Person::players[k]->lastoccluded = i;
                     } else {
-                        player[k].occluded = 0;
+                        Person::players[k]->occluded = 0;
                     }
-                    if (player[k].occluded < 25)
-                        player[k].DrawSkeleton();
+                    if (Person::players[k]->occluded < 25)
+                        Person::players[k]->DrawSkeleton();
                 }
             }
         }
@@ -566,10 +568,10 @@ int Game::DrawGLScene(StereoSide side)
             glColor4f(1, 1, 0, 1);
 
             for (k = 0; k < numplayers; k++) {
-                if (player[k].numwaypoints > 1) {
+                if (Person::players[k]->numwaypoints > 1) {
                     glBegin(GL_LINE_LOOP);
-                    for (i = 0; i < player[k].numwaypoints; i++) {
-                        glVertex3f(player[k].waypoints[i].x, player[k].waypoints[i].y + .5, player[k].waypoints[i].z);
+                    for (i = 0; i < Person::players[k]->numwaypoints; i++) {
+                        glVertex3f(Person::players[k]->waypoints[i].x, Person::players[k]->waypoints[i].y + .5, Person::players[k]->waypoints[i].z);
                     }
                     glEnd();
                 }
@@ -696,7 +698,7 @@ int Game::DrawGLScene(StereoSide side)
                     sprintf (string3, "Be sure to use the movement keys to press against the wall");
                 }
                 if (tutorialstage == 12) {
-                    sprintf (string, "While in the air, you can press crouch to flip.", Input::keyToChar(jumpkey));
+                    sprintf (string, "While in the air, you can press crouch to flip.");
                     sprintf (string2, "Walljumps and flips confuse enemies and give you more control.");
                     sprintf (string3, " ");
                 }
@@ -917,7 +919,7 @@ int Game::DrawGLScene(StereoSide side)
                 text->glPrint(screenwidth / 2 - 7.6 * strlen(string2)*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 20 * screenwidth / 1024, string2, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
                 text->glPrint(screenwidth / 2 - 7.6 * strlen(string3)*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 40 * screenwidth / 1024, string3, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
 
-                sprintf (string, "Press 'tab' to skip to the next item.", Input::keyToChar(jumpkey));
+                sprintf (string, "Press 'tab' to skip to the next item.");
                 sprintf (string2, "Press escape at any time to");
                 sprintf (string3, "pause or exit the tutorial.");
 
@@ -938,9 +940,9 @@ int Game::DrawGLScene(StereoSide side)
                 float distance = 0;
                 closest = currenthotspot;
                 for (i = 0; i < numhotspots; i++) {
-                    distance = distsq(&player[0].coords, &hotspot[i]);
+                    distance = distsq(&Person::players[0]->coords, &hotspot[i]);
                     if (closestdist == -1 || distance < closestdist) {
-                        if (distsq(&player[0].coords, &hotspot[i]) < hotspotsize[i] && ((hotspottype[i] <= 10 && hotspottype[i] >= 0) || (hotspottype[i] <= 40 && hotspottype[i] >= 20))) {
+                        if (distsq(&Person::players[0]->coords, &hotspot[i]) < hotspotsize[i] && ((hotspottype[i] <= 10 && hotspottype[i] >= 0) || (hotspottype[i] <= 40 && hotspottype[i] >= 20))) {
                             closestdist = distance;
                             closest = i;
                         }
@@ -950,7 +952,7 @@ int Game::DrawGLScene(StereoSide side)
                     currenthotspot = closest;
                 if (currenthotspot != -1) {
                     if (hotspottype[closest] <= 10) {
-                        if (distsq(&player[0].coords, &hotspot[closest]) < hotspotsize[closest])
+                        if (distsq(&Person::players[0]->coords, &hotspot[closest]) < hotspotsize[closest])
                             tutorialstagetime = 0;
                         tutorialmaxtime = 1;
                         tutorialopac = tutorialmaxtime - tutorialstagetime;
@@ -983,12 +985,12 @@ int Game::DrawGLScene(StereoSide side)
                     } else if (hotspottype[closest] >= 20 && dialoguegonethrough[hotspottype[closest] - 20] == 0) {
                         whichdialogue = hotspottype[closest] - 20;
                         for (j = 0; j < numdialogueboxes[whichdialogue]; j++) {
-                            player[participantfocus[whichdialogue][j]].coords = participantlocation[whichdialogue][participantfocus[whichdialogue][j]];
-                            player[participantfocus[whichdialogue][j]].yaw = participantyaw[whichdialogue][participantfocus[whichdialogue][j]];
-                            player[participantfocus[whichdialogue][j]].targetyaw = participantyaw[whichdialogue][participantfocus[whichdialogue][j]];
-                            player[participantfocus[whichdialogue][j]].velocity = 0;
-                            player[participantfocus[whichdialogue][j]].animTarget = player[participantfocus[whichdialogue][j]].getIdle();
-                            player[participantfocus[whichdialogue][j]].frameTarget = 0;
+                            Person::players[participantfocus[whichdialogue][j]]->coords = participantlocation[whichdialogue][participantfocus[whichdialogue][j]];
+                            Person::players[participantfocus[whichdialogue][j]]->yaw = participantyaw[whichdialogue][participantfocus[whichdialogue][j]];
+                            Person::players[participantfocus[whichdialogue][j]]->targetyaw = participantyaw[whichdialogue][participantfocus[whichdialogue][j]];
+                            Person::players[participantfocus[whichdialogue][j]]->velocity = 0;
+                            Person::players[participantfocus[whichdialogue][j]]->animTarget = Person::players[participantfocus[whichdialogue][j]]->getIdle();
+                            Person::players[participantfocus[whichdialogue][j]]->frameTarget = 0;
                         }
                         directing = 0;
                         indialogue = 0;
@@ -1015,7 +1017,7 @@ int Game::DrawGLScene(StereoSide side)
                             if (dialogueboxsound[whichdialogue][indialogue] == -2) whichsoundplay = firestartsound;
                             if (dialogueboxsound[whichdialogue][indialogue] == -3) whichsoundplay = consolesuccesssound;
                             if (dialogueboxsound[whichdialogue][indialogue] == -4) whichsoundplay = consolefailsound;
-                            emit_sound_at(whichsoundplay, player[participantfocus[whichdialogue][indialogue]].coords);
+                            emit_sound_at(whichsoundplay, Person::players[participantfocus[whichdialogue][indialogue]]->coords);
                         }
                     }
                 }
@@ -1164,7 +1166,7 @@ int Game::DrawGLScene(StereoSide side)
                     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                     glEnable(GL_BLEND);
                     glColor4f(0.0, 0.4, 0.0, 0.7);
-                    float bar = ((float)player[0].damage) / player[0].damagetolerance;
+                    float bar = ((float)Person::players[0]->damage) / Person::players[0]->damagetolerance;
                     glBegin(GL_QUADS);
                     glVertex3f((bar < 1 ? bar : 1), 0, 0.0f);
                     glVertex3f(1, 0, 0.0f);
@@ -1172,7 +1174,7 @@ int Game::DrawGLScene(StereoSide side)
                     glVertex3f((bar < 1 ? bar : 1), 1, 0.0f);
                     glEnd();
                     glColor4f(0.1, 0.0, 0.0, 1);
-                    bar = ((float)player[0].bloodloss) / player[0].damagetolerance;
+                    bar = ((float)Person::players[0]->bloodloss) / Person::players[0]->damagetolerance;
                     glBegin(GL_QUADS);
                     glVertex3f(0, 0, 0.0f);
                     glVertex3f((bar < 1 ? bar : 1), 0, 0.0f);
@@ -1180,7 +1182,7 @@ int Game::DrawGLScene(StereoSide side)
                     glVertex3f(0, 1, 0.0f);
                     glEnd();
                     glColor4f(0.4, 0.0, 0.0, 0.7);
-                    bar = ((float)player[0].damage) / player[0].damagetolerance;
+                    bar = ((float)Person::players[0]->damage) / Person::players[0]->damagetolerance;
                     glBegin(GL_QUADS);
                     glVertex3f(0, 0, 0.0f);
                     glVertex3f((bar < 1 ? bar : 1), 0, 0.0f);
@@ -1188,7 +1190,7 @@ int Game::DrawGLScene(StereoSide side)
                     glVertex3f(0, 1, 0.0f);
                     glEnd();
                     glColor4f(0.4, 0.0, 0.0, 0.7);
-                    bar = ((float)player[0].permanentdamage) / player[0].damagetolerance;
+                    bar = ((float)Person::players[0]->permanentdamage) / Person::players[0]->damagetolerance;
                     glBegin(GL_QUADS);
                     glVertex3f(0, 0, 0.0f);
                     glVertex3f((bar < 1 ? bar : 1), 0, 0.0f);
@@ -1196,7 +1198,7 @@ int Game::DrawGLScene(StereoSide side)
                     glVertex3f(0, 1, 0.0f);
                     glEnd();
                     glColor4f(0.4, 0.0, 0.0, 0.7);
-                    bar = ((float)player[0].superpermanentdamage) / player[0].damagetolerance;
+                    bar = ((float)Person::players[0]->superpermanentdamage) / Person::players[0]->damagetolerance;
                     glBegin(GL_QUADS);
                     glVertex3f(0, 0, 0.0f);
                     glVertex3f((bar < 1 ? bar : 1), 0, 0.0f);
@@ -1224,7 +1226,7 @@ int Game::DrawGLScene(StereoSide side)
                     glEnable(GL_TEXTURE_2D);
 
                     // writing the numbers :
-                    sprintf (string, "Damages : %d/%d (%d)", (int)(player[0].damage), (int)(player[0].damagetolerance), (int)(player[0].bloodloss));
+                    sprintf (string, "Damages : %d/%d (%d)", (int)(Person::players[0]->damage), (int)(Person::players[0]->damagetolerance), (int)(Person::players[0]->bloodloss));
                     glColor4f(0, 0, 0, 1);
                     text->glPrintOutline(1024 / 40 - 4, 768 / 16 - 4 + 768 * 14 / 16 - 40, string, 1, 1.5 * 1.25, 1024, 768);
                     glColor4f(1, 0, 0, 1);
@@ -1301,7 +1303,7 @@ int Game::DrawGLScene(StereoSide side)
 
                     sprintf (string, "Numplayers: %d", numplayers);
                     text->glPrint(10, 155, string, 0, .8, 1024, 768);
-                    sprintf (string, "Player %d: numwaypoints: %d", numplayers, player[numplayers - 1].numwaypoints);
+                    sprintf (string, "Player %d: numwaypoints: %d", numplayers, Person::players[numplayers - 1]->numwaypoints);
                     text->glPrint(10, 140, string, 0, .8, 1024, 768);
                 }
                 sprintf (string, "Difficulty: %d", difficulty);
@@ -1343,7 +1345,7 @@ int Game::DrawGLScene(StereoSide side)
             glDepthMask(1);
         }
 
-        if ((((blackout && damageeffects) || (player[0].bloodloss > 0 && damageeffects && player[0].blooddimamount > 0) || player[0].dead) && !cameramode) || console) {
+        if ((((blackout && damageeffects) || (Person::players[0]->bloodloss > 0 && damageeffects && Person::players[0]->blooddimamount > 0) || Person::players[0]->dead) && !cameramode) || console) {
             glDisable(GL_DEPTH_TEST);
             glDisable(GL_CULL_FACE);
             glDisable(GL_LIGHTING);
@@ -1359,20 +1361,20 @@ int Game::DrawGLScene(StereoSide side)
             glScalef(screenwidth, screenheight, 1);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glEnable(GL_BLEND);
-            if (player[0].dead)
+            if (Person::players[0]->dead)
                 blackout += multiplier * 3;
-            if (player[0].dead == 1)
+            if (Person::players[0]->dead == 1)
                 blackout = .4f;
-            if (player[0].dead == 2 && blackout > .6)
+            if (Person::players[0]->dead == 2 && blackout > .6)
                 blackout = .6;
             glColor4f(0, 0, 0, blackout);
-            if (!player[0].dead) {
-                if ((player[0].bloodloss / player[0].damagetolerance * (sin(woozy) / 4 + .5))*.3 < .3) {
-                    glColor4f(0, 0, 0, player[0].blooddimamount * player[0].bloodloss / player[0].damagetolerance * (sin(woozy) / 4 + .5)*.3);
-                    blackout = player[0].blooddimamount * player[0].bloodloss / player[0].damagetolerance * (sin(woozy) / 4 + .5) * .3;
+            if (!Person::players[0]->dead) {
+                if ((Person::players[0]->bloodloss / Person::players[0]->damagetolerance * (sin(woozy) / 4 + .5))*.3 < .3) {
+                    glColor4f(0, 0, 0, Person::players[0]->blooddimamount * Person::players[0]->bloodloss / Person::players[0]->damagetolerance * (sin(woozy) / 4 + .5)*.3);
+                    blackout = Person::players[0]->blooddimamount * Person::players[0]->bloodloss / Person::players[0]->damagetolerance * (sin(woozy) / 4 + .5) * .3;
                 } else {
-                    glColor4f(0, 0, 0, player[0].blooddimamount * .3);
-                    blackout = player[0].blooddimamount * .3;
+                    glColor4f(0, 0, 0, Person::players[0]->blooddimamount * .3);
+                    blackout = Person::players[0]->blooddimamount * .3;
                 }
             }
             if (console)
@@ -1488,7 +1490,7 @@ int Game::DrawGLScene(StereoSide side)
             int numliveplayers = 0;
             center = 0;
             for (i = 0; i < numplayers; i++) {
-                if (!player[i].dead)
+                if (!Person::players[i]->dead)
                     numliveplayers++;
             }
 
@@ -1501,12 +1503,12 @@ int Game::DrawGLScene(StereoSide side)
                 }
             }
             for (i = 0; i < numplayers; i++) {
-                if (!player[i].dead)
-                    center += player[i].coords;
+                if (!Person::players[i]->dead)
+                    center += Person::players[i]->coords;
             }
             center /= numadd + numliveplayers;
 
-            center = player[0].coords;
+            center = Person::players[0]->coords;
 
             float maxdistance = 0;
             float tempdist;
@@ -1519,8 +1521,8 @@ int Game::DrawGLScene(StereoSide side)
                 }
             }
             for (i = 0; i < numplayers; i++) {
-                if (!player[i].dead) {
-                    tempdist = distsq(&center, &player[i].coords);
+                if (!Person::players[i]->dead) {
+                    tempdist = distsq(&center, &Person::players[i]->coords);
                     if (tempdist > maxdistance) {
                         //~ whichclosest=i;
                         maxdistance = tempdist;
@@ -1535,11 +1537,11 @@ int Game::DrawGLScene(StereoSide side)
             glPushMatrix();
             glScalef(1 / (1 / radius * 256 * terrain.scale * .4), 1 / (1 / radius * 256 * terrain.scale * .4), 1);
             glPopMatrix();
-            glRotatef(player[0].lookyaw * -1 + 180, 0, 0, 1);
+            glRotatef(Person::players[0]->lookyaw * -1 + 180, 0, 0, 1);
             glTranslatef(-(center.x / terrain.scale / 256 * -2 + 1), (center.z / terrain.scale / 256 * -2 + 1), 0);
             for (i = 0; i < objects.numobjects; i++) {
                 if (objects.type[i] == treetrunktype) {
-                    distcheck = distsq(&player[0].coords, &objects.position[i]);
+                    distcheck = distsq(&Person::players[0]->coords, &objects.position[i]);
                     if (distcheck < mapviewdist) {
                         Mapcircletexture.bind();
                         glColor4f(0, .3, 0, opac * (1 - distcheck / mapviewdist));
@@ -1561,7 +1563,7 @@ int Game::DrawGLScene(StereoSide side)
                     }
                 }
                 if (objects.type[i] == boxtype) {
-                    distcheck = distsq(&player[0].coords, &objects.position[i]);
+                    distcheck = distsq(&Person::players[0]->coords, &objects.position[i]);
                     if (distcheck < mapviewdist) {
                         Mapboxtexture.bind();
                         glColor4f(.4, .4, .4, opac * (1 - distcheck / mapviewdist));
@@ -1604,24 +1606,24 @@ int Game::DrawGLScene(StereoSide side)
                 }
             }
             for (i = 0; i < numplayers; i++) {
-                distcheck = distsq(&player[0].coords, &player[i].coords);
+                distcheck = distsq(&Person::players[0]->coords, &Person::players[i]->coords);
                 if (distcheck < mapviewdist) {
                     glPushMatrix();
                     Maparrowtexture.bind();
                     if (i == 0)
                         glColor4f(1, 1, 1, opac);
-                    else if (player[i].dead == 2 || player[i].howactive > typesleeping)
+                    else if (Person::players[i]->dead == 2 || Person::players[i]->howactive > typesleeping)
                         glColor4f(0, 0, 0, opac * (1 - distcheck / mapviewdist));
-                    else if (player[i].dead)
+                    else if (Person::players[i]->dead)
                         glColor4f(.3, .3, .3, opac * (1 - distcheck / mapviewdist));
-                    else if (player[i].aitype == attacktypecutoff)
+                    else if (Person::players[i]->aitype == attacktypecutoff)
                         glColor4f(1, 0, 0, opac * (1 - distcheck / mapviewdist));
-                    else if (player[i].aitype == passivetype)
+                    else if (Person::players[i]->aitype == passivetype)
                         glColor4f(0, 1, 0, opac * (1 - distcheck / mapviewdist));
                     else
                         glColor4f(1, 1, 0, 1);
-                    glTranslatef(player[i].coords.x / terrain.scale / 256 * -2 + 1, player[i].coords.z / terrain.scale / 256 * 2 - 1, 0);
-                    glRotatef(player[i].yaw + 180, 0, 0, 1);
+                    glTranslatef(Person::players[i]->coords.x / terrain.scale / 256 * -2 + 1, Person::players[i]->coords.z / terrain.scale / 256 * 2 - 1, 0);
+                    glRotatef(Person::players[i]->yaw + 180, 0, 0, 1);
                     glScalef(.005, .005, .005);
                     glBegin(GL_QUADS);
                     glTexCoord2f(0, 0);
@@ -1648,7 +1650,7 @@ int Game::DrawGLScene(StereoSide side)
             glDepthMask(1);
         }
 
-        if (loading && !stealthloading && (!campaign || player[0].dead)) {
+        if (loading && !stealthloading && (!campaign || Person::players[0]->dead)) {
             glDisable(GL_DEPTH_TEST);
             glDisable(GL_CULL_FACE);
             glDisable(GL_LIGHTING);
@@ -1897,7 +1899,7 @@ int Game::DrawGLScene(StereoSide side)
             }
             if (drawmode == doublevisionmode) {
                 static float crosseyedness;
-                crosseyedness = abs(player[0].damage - player[0].superpermanentdamage - (player[0].damagetolerance - player[0].superpermanentdamage) * 1 / 2) / 30;
+                crosseyedness = abs(Person::players[0]->damage - Person::players[0]->superpermanentdamage - (Person::players[0]->damagetolerance - Person::players[0]->superpermanentdamage) * 1 / 2) / 30;
                 if (crosseyedness > 1)
                     crosseyedness = 1;
                 if (crosseyedness < 0)
