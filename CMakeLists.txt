@@ -62,6 +62,8 @@ set(LUGARU_SRCS
 	${SRCDIR}/Objects.cpp
 	${SRCDIR}/pack.c
 	${SRCDIR}/Person.cpp
+	${SRCDIR}/Rabbit.cpp
+	${SRCDIR}/Wolf.cpp
 	${SRCDIR}/private.c
 	${SRCDIR}/Quaternions.cpp
 	${SRCDIR}/Skeleton.cpp

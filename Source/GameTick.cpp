@@ -37,6 +37,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Animation.h"
 #include "Awards.h"
 #include "Menu.h"
+#include "Rabbit.h"
+#include "Wolf.h"
 
 #include <algorithm>
 
@@ -905,6 +907,7 @@ static void ch_funnybunny(const char *args)
     set_proportion(0, "1 1 1 1");
 }
 
+//FIXME needs to be redone once Wolf and Rabbit classes are used
 static void ch_wolfie(const char *args)
 {
     Person::players[0]->skeleton.id = 0;
@@ -1433,7 +1436,7 @@ int Game::checkcollide(XYZ startpoint, XYZ endpoint, int what)
 {
     static XYZ colpoint, colviewer, coltarget;
     static float minx, minz, maxx, maxz, miny, maxy;
-    static int i; //FIXME: see below
+    //~ static int i; //FIXME: see below
 
     minx = min(startpoint.x, endpoint.x) - 1;
     miny = min(startpoint.y, endpoint.y) - 1;
@@ -1456,7 +1459,7 @@ int Game::checkcollide(XYZ startpoint, XYZ endpoint, int what)
                 coltarget = endpoint;
                 //FIXME: i/what
                 if (objects.model[what].LineCheck(&colviewer, &coltarget, &colpoint, &objects.position[what], &objects.yaw[what]) != -1)
-                    return i;
+                    return what;
             }
         }
     }
@@ -1987,113 +1990,119 @@ void Loadlevel(const char *name)
             LoadingScreen();
 
         int numplayers;
+        Person::players.resize(1);
         funpackf(tfile, "Bi", &numplayers);
-        int howmanyremoved = 0;
-        bool removeanother = 0;
         if (numplayers > maxplayers) {
             cout << "Warning: this level contains more players than allowed" << endl;
         }
         if (numplayers > 1) {
             for (int i = 1; i < numplayers; i++) {
-                Person::players.push_back(shared_ptr<Person>(new Person()));
+                Person* player = nullptr;
+
                 if (visibleloading)
                     LoadingScreen();
-                removeanother = 0;
 
-                funpackf(tfile, "Bi Bi Bf Bf Bf Bi", &Person::players[i - howmanyremoved]->whichskin, &Person::players[i - howmanyremoved]->creature, &Person::players[i - howmanyremoved]->coords.x, &Person::players[i - howmanyremoved]->coords.y, &Person::players[i - howmanyremoved]->coords.z, &Person::players[i - howmanyremoved]->num_weapons);
+                int whichskin, creature;
+                funpackf(tfile, "Bi Bi", &whichskin, &creature);
+                switch (creature) {
+                    default:
+                    case rabbittype:
+                        player = new Rabbit();
+                    break;
+                    case wolftype:
+                        player = new Wolf();
+                    break;
+                }
+                player->whichskin = whichskin;
+                funpackf(tfile, "Bf Bf Bf Bi", &player->coords.x, &player->coords.y, &player->coords.z, &player->num_weapons);
                 if (mapvers >= 5)
-                    funpackf(tfile, "Bi", &Person::players[i - howmanyremoved]->howactive);
+                    funpackf(tfile, "Bi", &player->howactive);
                 else
-                    Person::players[i - howmanyremoved]->howactive = typeactive;
+                    player->howactive = typeactive;
                 if (mapvers >= 3)
-                    funpackf(tfile, "Bf", &Person::players[i - howmanyremoved]->scale);
+                    funpackf(tfile, "Bf", &player->scale);
                 else
-                    Person::players[i - howmanyremoved]->scale = -1;
+                    player->scale = -1;
                 if (mapvers >= 11)
-                    funpackf(tfile, "Bb", &Person::players[i - howmanyremoved]->immobile);
+                    funpackf(tfile, "Bb", &player->immobile);
                 else
-                    Person::players[i - howmanyremoved]->immobile = 0;
+                    player->immobile = 0;
                 if (mapvers >= 12)
-                    funpackf(tfile, "Bf", &Person::players[i - howmanyremoved]->yaw);
+                    funpackf(tfile, "Bf", &player->yaw);
                 else
-                    Person::players[i - howmanyremoved]->yaw = 0;
-                Person::players[i - howmanyremoved]->targetyaw = Person::players[i - howmanyremoved]->yaw;
-                if (Person::players[i - howmanyremoved]->num_weapons < 0 || Person::players[i - howmanyremoved]->num_weapons > 5) {
-                    removeanother = 1;
-                    howmanyremoved++;
+                    player->yaw = 0;
+                player->targetyaw = player->yaw;
+                if (player->num_weapons < 0 || player->num_weapons > 5) {
+                    continue; // Skipping invalid player
                 }
-                if (!removeanother) {
-                    if (Person::players[i - howmanyremoved]->num_weapons > 0 && Person::players[i - howmanyremoved]->num_weapons < 5) {
-                        for (int j = 0; j < Person::players[i - howmanyremoved]->num_weapons; j++) {
-                            Person::players[i - howmanyremoved]->weaponids[j] = weapons.size();
-                            int type;
-                            funpackf(tfile, "Bi", &type);
-                            weapons.push_back(Weapon(type, i));
-                        }
-                    }
-                    funpackf(tfile, "Bi", &Person::players[i - howmanyremoved]->numwaypoints);
-                    //Person::players[i-howmanyremoved]->numwaypoints=10;
-                    for (int j = 0; j < Person::players[i - howmanyremoved]->numwaypoints; j++) {
-                        funpackf(tfile, "Bf", &Person::players[i - howmanyremoved]->waypoints[j].x);
-                        funpackf(tfile, "Bf", &Person::players[i - howmanyremoved]->waypoints[j].y);
-                        funpackf(tfile, "Bf", &Person::players[i - howmanyremoved]->waypoints[j].z);
-                        if (mapvers >= 5)
-                            funpackf(tfile, "Bi", &Person::players[i - howmanyremoved]->waypointtype[j]);
-                        else
-                            Person::players[i - howmanyremoved]->waypointtype[j] = wpkeepwalking;
-                    }
-
-                    funpackf(tfile, "Bi", &Person::players[i - howmanyremoved]->waypoint);
-                    if (Person::players[i - howmanyremoved]->waypoint > Person::players[i - howmanyremoved]->numwaypoints - 1)
-                        Person::players[i - howmanyremoved]->waypoint = 0;
-
-                    funpackf(tfile, "Bf Bf Bf", &Person::players[i - howmanyremoved]->armorhead, &Person::players[i - howmanyremoved]->armorhigh, &Person::players[i - howmanyremoved]->armorlow);
-                    funpackf(tfile, "Bf Bf Bf", &Person::players[i - howmanyremoved]->protectionhead, &Person::players[i - howmanyremoved]->protectionhigh, &Person::players[i - howmanyremoved]->protectionlow);
-                    funpackf(tfile, "Bf Bf Bf", &Person::players[i - howmanyremoved]->metalhead, &Person::players[i - howmanyremoved]->metalhigh, &Person::players[i - howmanyremoved]->metallow);
-                    funpackf(tfile, "Bf Bf", &Person::players[i - howmanyremoved]->power, &Person::players[i - howmanyremoved]->speedmult);
-
-                    if (mapvers >= 4)
-                        funpackf(tfile, "Bf Bf Bf Bf", &headprop, &bodyprop, &armprop, &legprop);
-                    else {
-                        headprop = 1;
-                        bodyprop = 1;
-                        armprop = 1;
-                        legprop = 1;
-                    }
-                    if (Person::players[i - howmanyremoved]->creature == wolftype) {
-                        Person::players[i - howmanyremoved]->proportionhead = 1.1 * headprop;
-                        Person::players[i - howmanyremoved]->proportionbody = 1.1 * bodyprop;
-                        Person::players[i - howmanyremoved]->proportionarms = 1.1 * armprop;
-                        Person::players[i - howmanyremoved]->proportionlegs = 1.1 * legprop;
-                    }
-
-                    if (Person::players[i - howmanyremoved]->creature == rabbittype) {
-                        Person::players[i - howmanyremoved]->proportionhead = 1.2 * headprop;
-                        Person::players[i - howmanyremoved]->proportionbody = 1.05 * bodyprop;
-                        Person::players[i - howmanyremoved]->proportionarms = 1.00 * armprop;
-                        Person::players[i - howmanyremoved]->proportionlegs = 1.1 * legprop;
-                        Person::players[i - howmanyremoved]->proportionlegs.y = 1.05 * legprop;
-                    }
-
-                    funpackf(tfile, "Bi", &Person::players[i - howmanyremoved]->numclothes);
-                    if (Person::players[i - howmanyremoved]->numclothes) {
-                        for (int k = 0; k < Person::players[i - howmanyremoved]->numclothes; k++) {
-                            int templength;
-                            funpackf(tfile, "Bi", &templength);
-                            for (int l = 0; l < templength; l++)
-                                funpackf(tfile, "Bb", &Person::players[i - howmanyremoved]->clothes[k][l]);
-                            Person::players[i - howmanyremoved]->clothes[k][templength] = '\0';
-                            funpackf(tfile, "Bf Bf Bf", &Person::players[i - howmanyremoved]->clothestintr[k], &Person::players[i - howmanyremoved]->clothestintg[k], &Person::players[i - howmanyremoved]->clothestintb[k]);
-                        }
+                if (player->num_weapons > 0 && player->num_weapons < 5) {
+                    for (int j = 0; j < player->num_weapons; j++) {
+                        player->weaponids[j] = weapons.size();
+                        int type;
+                        funpackf(tfile, "Bi", &type);
+                        weapons.push_back(Weapon(type, i));
                     }
                 }
+                funpackf(tfile, "Bi", &player->numwaypoints);
+                for (int j = 0; j < player->numwaypoints; j++) {
+                    funpackf(tfile, "Bf", &player->waypoints[j].x);
+                    funpackf(tfile, "Bf", &player->waypoints[j].y);
+                    funpackf(tfile, "Bf", &player->waypoints[j].z);
+                    if (mapvers >= 5)
+                        funpackf(tfile, "Bi", &player->waypointtype[j]);
+                    else
+                        player->waypointtype[j] = wpkeepwalking;
+                }
+
+                funpackf(tfile, "Bi", &player->waypoint);
+                if (player->waypoint > player->numwaypoints - 1)
+                    player->waypoint = 0;
+
+                funpackf(tfile, "Bf Bf Bf", &player->armorhead, &player->armorhigh, &player->armorlow);
+                funpackf(tfile, "Bf Bf Bf", &player->protectionhead, &player->protectionhigh, &player->protectionlow);
+                funpackf(tfile, "Bf Bf Bf", &player->metalhead, &player->metalhigh, &player->metallow);
+                funpackf(tfile, "Bf Bf", &player->power, &player->speedmult);
+
+                if (mapvers >= 4)
+                    funpackf(tfile, "Bf Bf Bf Bf", &headprop, &bodyprop, &armprop, &legprop);
+                else {
+                    headprop = 1;
+                    bodyprop = 1;
+                    armprop = 1;
+                    legprop = 1;
+                }
+
+                if (player->creature == wolftype) {
+                    player->proportionhead = 1.1 * headprop;
+                    player->proportionbody = 1.1 * bodyprop;
+                    player->proportionarms = 1.1 * armprop;
+                    player->proportionlegs = 1.1 * legprop;
+                }
+
+                if (player->creature == rabbittype) {
+                    player->proportionhead = 1.2 * headprop;
+                    player->proportionbody = 1.05 * bodyprop;
+                    player->proportionarms = 1.00 * armprop;
+                    player->proportionlegs = 1.1 * legprop;
+                    player->proportionlegs.y = 1.05 * legprop;
+                }
+
+                funpackf(tfile, "Bi", &player->numclothes);
+                if (player->numclothes) {
+                    for (int k = 0; k < player->numclothes; k++) {
+                        int templength;
+                        funpackf(tfile, "Bi", &templength);
+                        for (int l = 0; l < templength; l++)
+                            funpackf(tfile, "Bb", &player->clothes[k][l]);
+                        player->clothes[k][templength] = '\0';
+                        funpackf(tfile, "Bf Bf Bf", &player->clothestintr[k], &player->clothestintg[k], &player->clothestintb[k]);
+                    }
+                }
+                Person::players.push_back(shared_ptr<Person>(player));
             }
         }
         if (visibleloading)
             LoadingScreen();
-
-        numplayers -= howmanyremoved;
-        Person::players.resize(numplayers);
 
         funpackf(tfile, "Bi", &numpathpoints);
         if (numpathpoints > 30 || numpathpoints < 0)
@@ -2133,7 +2142,7 @@ void Loadlevel(const char *name)
 
         fclose(tfile);
 
-        for (int i = 0; i < Person::players.size(); i++) {
+        for (unsigned i = 0; i < Person::players.size(); i++) {
             if (visibleloading)
                 LoadingScreen();
             Person::players[i]->burnt = 0;
@@ -2143,56 +2152,9 @@ void Loadlevel(const char *name)
                 Person::players[i]->scale = .2;
             Person::players[i]->skeleton.free = 0;
             Person::players[i]->skeleton.id = i;
-            if (i == 0 && mapvers < 9)
-                Person::players[i]->creature = rabbittype;
-            if (Person::players[i]->creature != wolftype) {
-                Person::players[i]->skeleton.Load(
-                    (char *)":Data:Skeleton:Basic Figure",
-                    (char *)":Data:Skeleton:Basic Figurelow",
-                    (char *)":Data:Skeleton:Rabbitbelt",
-                    (char *)":Data:Models:Body.solid",
-                    (char *)":Data:Models:Body2.solid",
-                    (char *)":Data:Models:Body3.solid",
-                    (char *)":Data:Models:Body4.solid",
-                    (char *)":Data:Models:Body5.solid",
-                    (char *)":Data:Models:Body6.solid",
-                    (char *)":Data:Models:Body7.solid",
-                    (char *)":Data:Models:Bodylow.solid",
-                    (char *)":Data:Models:Belt.solid", 0);
-            } else {
-                if (Person::players[i]->creature != wolftype) {
-                    Person::players[i]->skeleton.Load(
-                        (char *)":Data:Skeleton:Basic Figure",
-                        (char *)":Data:Skeleton:Basic Figurelow",
-                        (char *)":Data:Skeleton:Rabbitbelt",
-                        (char *)":Data:Models:Body.solid",
-                        (char *)":Data:Models:Body2.solid",
-                        (char *)":Data:Models:Body3.solid",
-                        (char *)":Data:Models:Body4.solid",
-                        (char *)":Data:Models:Body5.solid",
-                        (char *)":Data:Models:Body6.solid",
-                        (char *)":Data:Models:Body7.solid",
-                        (char *)":Data:Models:Bodylow.solid",
-                        (char *)":Data:Models:Belt.solid", 1);
-                    Person::players[i]->skeleton.drawmodelclothes.textureptr.load(":Data:Textures:Belt.png", 1, 1);
-                }
-                if (Person::players[i]->creature == wolftype) {
-                    Person::players[i]->skeleton.Load(
-                        (char *)":Data:Skeleton:Basic Figure Wolf",
-                        (char *)":Data:Skeleton:Basic Figure Wolf Low",
-                        (char *)":Data:Skeleton:Rabbitbelt",
-                        (char *)":Data:Models:Wolf.solid",
-                        (char *)":Data:Models:Wolf2.solid",
-                        (char *)":Data:Models:Wolf3.solid",
-                        (char *)":Data:Models:Wolf4.solid",
-                        (char *)":Data:Models:Wolf5.solid",
-                        (char *)":Data:Models:Wolf6.solid",
-                        (char *)":Data:Models:Wolf7.solid",
-                        (char *)":Data:Models:Wolflow.solid",
-                        (char *)":Data:Models:Belt.solid", 0);
-                }
-            }
+            Person::players[i]->loadSkeleton();
 
+            // TODO : move this line into loadSkeleton : for this rabbitskin, wolfskin and creatureskin must be reorganized
             Person::players[i]->skeleton.drawmodel.textureptr.load(creatureskin[Person::players[i]->creature][Person::players[i]->whichskin], 1, &Person::players[i]->skeleton.skinText[0], &Person::players[i]->skeleton.skinsize);
 
             if (Person::players[i]->numclothes) {
@@ -3290,10 +3252,9 @@ void doDebugKeys()
             }
 
             if (Input::isKeyPressed(SDLK_p) && Input::isKeyDown(SDLK_LSHIFT) && !Input::isKeyDown(SDLK_LCTRL)) {
-                Person::players.push_back(shared_ptr<Person>(new Person()));
+                Person::players.push_back(shared_ptr<Person>(new Rabbit()));
 
                 Person::players.back()->scale = .2 * 5 * Person::players[0]->scale;
-                Person::players.back()->creature = rabbittype;
                 Person::players.back()->howactive = editoractive;
                 Person::players.back()->skeleton.id = Person::players.size()-1;
                 Person::players.back()->skeleton.Load((char *)":Data:Skeleton:Basic Figure", (char *)":Data:Skeleton:Basic Figurelow", (char *)":Data:Skeleton:Rabbitbelt", (char *)":Data:Models:Body.solid", (char *)":Data:Models:Body2.solid", (char *)":Data:Models:Body3.solid", (char *)":Data:Models:Body4.solid", (char *)":Data:Models:Body5.solid", (char *)":Data:Models:Body6.solid", (char *)":Data:Models:Body7.solid", (char *)":Data:Models:Bodylow.solid", (char *)":Data:Models:Belt.solid", 1);

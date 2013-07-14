@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /**> HEADER FILES <**/
 #include "Person.h"
+#include "Rabbit.h"
 #include "openal_wrapper.h"
 #include "Animation.h"
 #include "Sounds.h"
@@ -83,7 +84,27 @@ extern int indialogue;
 
 extern bool gamestarted;
 
-std::vector<std::shared_ptr<Person>> Person::players(1, std::shared_ptr<Person>(new Person()));
+std::vector<std::shared_ptr<Person>> Person::players(1, std::shared_ptr<Person>(new Rabbit()));
+
+Person::Person()
+{
+    whichpatchx = 0;
+    whichpatchz = 0;
+
+    occluded = 0;
+
+    /* This init avoids crash in DrawSkeleton */
+    righthandmorphstart = 0;
+    righthandmorphend   = 0;
+    lefthandmorphstart  = 0;
+    lefthandmorphend    = 0;
+    headmorphstart      = 0;
+    headmorphend        = 0;
+    chestmorphstart     = 0;
+    chestmorphend       = 0;
+    tailmorphstart      = 0;
+    tailmorphend        = 0;
+}
 
 /* EFFECT
  *
@@ -162,14 +183,13 @@ void Person::CatchFire()
     int howmany;
     for (int i = 0; i < 10; i++) {
         howmany = abs(Random() % (skeleton.num_joints));
-        if (!skeleton.free)
-            flatvelocity = velocity;
-        if (skeleton.free)
+        if (skeleton.free) {
             flatvelocity = skeleton.joints[howmany].velocity;
-        if (!skeleton.free)
-            flatfacing = DoRotation(DoRotation(DoRotation(skeleton.joints[howmany].position, 0, 0, tilt), tilt2, 0, 0), 0, yaw, 0) * scale + coords;
-        if (skeleton.free)
             flatfacing = skeleton.joints[howmany].position * scale + coords;
+        } else {
+            flatvelocity = velocity;
+            flatfacing = DoRotation(DoRotation(DoRotation(skeleton.joints[howmany].position, 0, 0, tilt), tilt2, 0, 0), 0, yaw, 0) * scale + coords;
+        }
         Sprite::MakeSprite(flamesprite, flatfacing, flatvelocity, 1, 1, 1, 2, 1);
     }
 
@@ -319,22 +339,15 @@ void Person::DoBlood(float howmuch, int which)
             for (int i = 0; i < 3; i++) {
                 // emit blood particles
                 bloodvel = 0;
-                if (!skeleton.free) {
-                    bloodvel.z = 10;
-                    bloodvel = DoRotation(bloodvel, ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
-                }
                 if (skeleton.free) {
                     bloodvel -= DoRotation(skeleton.forward * 10 * scale, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0);
-                }
-                if (skeleton.free)
                     bloodvel += DoRotation(jointVel(head), ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
-                if (!skeleton.free)
-                    bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0) * scale;
-                if (skeleton.free) {
                     Sprite::MakeSprite(bloodsprite, jointPos(head) * scale + coords, bloodvel, 1, 1, 1, .05, 1);
                     Sprite::MakeSprite(bloodflamesprite, jointPos(head) * scale + coords, bloodvel, 1, 1, 1, .3, 1);
-                }
-                if (!skeleton.free) {
+                } else {
+                    bloodvel.z = 10;
+                    bloodvel = DoRotation(bloodvel, ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
+                    bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0) * scale;
                     Sprite::MakeSprite(bloodsprite, DoRotation((jointPos(head) + jointPos(neck)) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .05, 1);
                     Sprite::MakeSprite(bloodflamesprite, DoRotation((jointPos(head) + jointPos(neck)) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .3, 1);
                 }
@@ -5920,6 +5933,10 @@ void IKHelper(Person *p, float interp)
  */
 int Person::DrawSkeleton()
 {
+    if (skeleton.model[0].vertex == 0) {
+        return 0;
+    }
+
     int oldplayerdetail;
     if ((frustum.SphereInFrustum(coords.x, coords.y + scale * 3, coords.z, scale * 8) && distsq(&viewer, &coords) < viewdistance * viewdistance) || skeleton.free == 3) {
         if (onterrain && (isIdle() || isCrouch() || wasIdle() || wasCrouch()) && !skeleton.free) {
@@ -6028,7 +6045,8 @@ int Person::DrawSkeleton()
                 const int p1 = skeleton.muscles[i].parent1->label;
                 const int p2 = skeleton.muscles[i].parent2->label;
 
-                if ((skeleton.muscles[i].numvertices > 0 && playerdetail) || (skeleton.muscles[i].numverticeslow > 0 && !playerdetail)) {
+                if ((skeleton.muscles[i].numvertices > 0 && playerdetail) ||
+                    (skeleton.muscles[i].numverticeslow > 0 && !playerdetail)) {
                     morphness = 0;
                     start = 0;
                     endthing = 0;

@@ -186,7 +186,6 @@ public:
     float jumpkeydowntime;
     bool freefall;
 
-
     float turnspeed;
 
     int aitype;
@@ -323,7 +322,7 @@ public:
 
     Animation tempanimation;
 
-    float occluded;
+    int occluded;
 
     bool jumpclimb;
 
@@ -334,6 +333,7 @@ public:
     inline XYZ& jointPos(int bodypart) { return joint(bodypart).position; }
     inline XYZ& jointVel(int bodypart) { return joint(bodypart).velocity; }
 
+    Person();
 
     void CheckKick();
     void CatchFire();
@@ -343,7 +343,7 @@ public:
 
     bool wasIdle() { return animation_bits[animCurrent] & ab_idle; }
     bool isIdle() { return animation_bits[animTarget] & ab_idle; }
-    int getIdle();
+    virtual int getIdle();
 
     bool isSitting() { return animation_bits[animTarget] & ab_sit; }
 
@@ -351,27 +351,23 @@ public:
 
     bool wasCrouch() { return animation_bits[animCurrent] & ab_crouch; }
     bool isCrouch() { return animation_bits[animTarget] & ab_crouch; }
-    int getCrouch();
+    virtual int getCrouch();
 
     bool wasStop() { return animation_bits[animCurrent] & ab_stop; }
     bool isStop() { return animation_bits[animTarget] & ab_stop; }
-    int getStop();
-
-    bool wasSneak();
-    bool isSneak();
-    int getSneak();
+    virtual int getStop();
 
     bool wasRun() { return animation_bits[animCurrent] & ab_run; }
     bool isRun() { return animation_bits[animTarget] & ab_run; }
-    int getRun();
+    virtual int getRun();
 
     bool wasLanding() { return animation_bits[animCurrent] & ab_land; }
     bool isLanding() { return animation_bits[animTarget] & ab_land; }
-    int getLanding();
+    virtual int getLanding();
 
     bool wasLandhard() { return animation_bits[animCurrent] & ab_landhard; }
     bool isLandhard() { return animation_bits[animTarget] & ab_landhard; }
-    int getLandhard();
+    virtual int getLandhard();
 
     bool wasFlip() { return animation_bits[animCurrent] & ab_flip; }
     bool isFlip() { return animation_bits[animTarget] & ab_flip; }
@@ -394,6 +390,9 @@ public:
     void setAnimation(int);
     void DoAnimations();
     void RagDoll(bool checkcollision);
+
+    virtual void setProps(float headprop, float bodyprop, float armprop, float legprop) = 0;
+    virtual void loadSkeleton() = 0;
 };
 
 const int maxplayers = 10;
