@@ -48,43 +48,44 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define rabbittype 0
 #define wolftype 1
 
+/* TODO : Do a proper init of fields, not this all to 0 one */
 class Person : public enable_shared_from_this<Person>
 {
 public:
     static std::vector<std::shared_ptr<Person>> players;
 
-    int whichpatchx;
-    int whichpatchz;
+    int whichpatchx = 0;
+    int whichpatchz = 0;
 
     // animCurrent and animTarget are used to interpolate between different animations
     // (and for a bunch of other things).
     // animations interpolate with one another at various speeds.
     // animTarget seems to determine the combat state?
-    int animCurrent;
-    int animTarget;
+    int animCurrent = 0;
+    int animTarget = 0;
 
     // frameCurrent and frameTarget are used to interpolate between the frames of an animation
     // (e.g. the crouched animation has only two frames, lerped back and forth slowly).
     // animations advance at various speeds.
-    int frameCurrent;
-    int frameTarget;
+    int frameCurrent = 0;
+    int frameTarget = 0;
 
-    int oldanimCurrent;
-    int oldanimTarget;
-    int oldframeCurrent;
-    int oldframeTarget;
+    int oldanimCurrent = 0;
+    int oldanimTarget = 0;
+    int oldframeCurrent = 0;
+    int oldframeTarget = 0;
 
-    int howactive;
+    int howactive = 0;
 
-    float parriedrecently;
+    float parriedrecently = 0;
 
-    bool superruntoggle;
+    bool superruntoggle = 0;
 
-    int lastattack, lastattack2, lastattack3;
+    int lastattack = 0, lastattack2 = 0, lastattack3 = 0;
 
     XYZ currentoffset, targetoffset, offset;
-    float target;
-    float transspeed;
+    float target = 0;
+    float transspeed = 0;
 
     XYZ realoldcoords;
     XYZ oldcoords;
@@ -97,234 +98,234 @@ public:
     XYZ proportionarms;
     XYZ proportionbody;
 
-    float unconscioustime;
+    float unconscioustime = 0;
 
-    bool immobile;
+    bool immobile = 0;
 
-    float velspeed;
-    float targetyaw;
-    float targetrot;
-    float rot;
-    float oldrot;
-    float lookyaw;
-    float lookpitch;
-    float yaw;
-    float pitch;
-    float lowyaw;
-    float tilt;
-    float targettilt;
-    float tilt2;
-    float targettilt2;
-    bool rabbitkickenabled;
+    float velspeed = 0;
+    float targetyaw = 0;
+    float targetrot = 0;
+    float rot = 0;
+    float oldrot = 0;
+    float lookyaw = 0;
+    float lookpitch = 0;
+    float yaw = 0;
+    float pitch = 0;
+    float lowyaw = 0;
+    float tilt = 0;
+    float targettilt = 0;
+    float tilt2 = 0;
+    float targettilt2 = 0;
+    bool rabbitkickenabled = 0;
 
-    float bloodloss;
-    float bleeddelay;
-    float skiddelay;
-    float skiddingdelay;
-    float deathbleeding;
-    float tempdeltav;
+    float bloodloss = 0;
+    float bleeddelay = 0;
+    float skiddelay = 0;
+    float skiddingdelay = 0;
+    float deathbleeding = 0;
+    float tempdeltav = 0;
 
-    float damagetolerance;
-    float damage;
-    float permanentdamage;
-    float superpermanentdamage;
-    float lastcollide;
-    int dead;
+    float damagetolerance = 0;
+    float damage = 0;
+    float permanentdamage = 0;
+    float superpermanentdamage = 0;
+    float lastcollide = 0;
+    int dead = 0;
 
-    float jumppower;
-    bool onground;
-    int madskills;
+    float jumppower = 0;
+    bool onground = 0;
+    int madskills = 0;
 
-    int wentforweapon;
+    int wentforweapon = 0;
 
-    bool calcrot;
+    bool calcrot = 0;
 
-    bool backwardsanim;
+    bool backwardsanim = 0;
 
     XYZ facing;
 
-    float bleeding;
-    float bleedx, bleedy;
-    int direction;
-    float texupdatedelay;
+    float bleeding = 0;
+    float bleedx = 0, bleedy = 0;
+    int direction = 0;
+    float texupdatedelay = 0;
 
-    float headyaw, headpitch;
-    float targetheadyaw, targetheadpitch;
+    float headyaw = 0, headpitch = 0;
+    float targetheadyaw = 0, targetheadpitch = 0;
 
-    bool onterrain;
-    bool pause;
+    bool onterrain = 0;
+    bool pause = 0;
 
-    float grabdelay;
+    float grabdelay = 0;
 
     std::shared_ptr<Person> victim;
-    bool hasvictim;
+    bool hasvictim = 0;
 
-    float updatedelay;
-    float normalsupdatedelay;
+    float updatedelay = 0;
+    float normalsupdatedelay = 0;
 
-    bool jumpstart;
+    bool jumpstart = 0;
 
-    bool forwardkeydown;
-    bool forwardstogglekeydown;
-    bool rightkeydown;
-    bool leftkeydown;
-    bool backkeydown;
-    bool jumpkeydown;
-    bool jumptogglekeydown;
-    bool crouchkeydown;
-    bool crouchtogglekeydown;
-    bool drawkeydown;
-    bool drawtogglekeydown;
-    bool throwkeydown;
-    bool throwtogglekeydown;
-    bool attackkeydown;
-    bool feint;
-    bool lastfeint;
-    bool headless;
+    bool forwardkeydown = 0;
+    bool forwardstogglekeydown = 0;
+    bool rightkeydown = 0;
+    bool leftkeydown = 0;
+    bool backkeydown = 0;
+    bool jumpkeydown = 0;
+    bool jumptogglekeydown = 0;
+    bool crouchkeydown = 0;
+    bool crouchtogglekeydown = 0;
+    bool drawkeydown = 0;
+    bool drawtogglekeydown = 0;
+    bool throwkeydown = 0;
+    bool throwtogglekeydown = 0;
+    bool attackkeydown = 0;
+    bool feint = 0;
+    bool lastfeint = 0;
+    bool headless = 0;
 
-    float crouchkeydowntime;
-    float jumpkeydowntime;
-    bool freefall;
+    float crouchkeydowntime = 0;
+    float jumpkeydowntime = 0;
+    bool freefall = 0;
 
-    float turnspeed;
+    float turnspeed = 0;
 
-    int aitype;
-    float aiupdatedelay;
-    float losupdatedelay;
-    int ally;
+    int aitype = 0;
+    float aiupdatedelay = 0;
+    float losupdatedelay = 0;
+    int ally = 0;
     XYZ movetarget;
-    float collide;
-    float collided;
-    float avoidcollided;
-    bool loaded;
-    bool whichdirection;
-    float whichdirectiondelay;
-    bool avoidsomething;
+    float collide = 0;
+    float collided = 0;
+    float avoidcollided = 0;
+    bool loaded = 0;
+    bool whichdirection = 0;
+    float whichdirectiondelay = 0;
+    bool avoidsomething = 0;
     XYZ avoidwhere;
-    float blooddimamount;
+    float blooddimamount = 0;
 
-    float staggerdelay;
-    float blinkdelay;
-    float twitchdelay;
-    float twitchdelay2;
-    float twitchdelay3;
-    float lefthandmorphness;
-    float righthandmorphness;
-    float headmorphness;
-    float chestmorphness;
-    float tailmorphness;
-    float targetlefthandmorphness;
-    float targetrighthandmorphness;
-    float targetheadmorphness;
-    float targetchestmorphness;
-    float targettailmorphness;
-    int lefthandmorphstart, lefthandmorphend;
-    int righthandmorphstart, righthandmorphend;
-    int headmorphstart, headmorphend;
-    int chestmorphstart, chestmorphend;
-    int tailmorphstart, tailmorphend;
+    float staggerdelay = 0;
+    float blinkdelay = 0;
+    float twitchdelay = 0;
+    float twitchdelay2 = 0;
+    float twitchdelay3 = 0;
+    float lefthandmorphness = 0;
+    float righthandmorphness = 0;
+    float headmorphness = 0;
+    float chestmorphness = 0;
+    float tailmorphness = 0;
+    float targetlefthandmorphness = 0;
+    float targetrighthandmorphness = 0;
+    float targetheadmorphness = 0;
+    float targetchestmorphness = 0;
+    float targettailmorphness = 0;
+    int lefthandmorphstart = 0, lefthandmorphend = 0;
+    int righthandmorphstart = 0, righthandmorphend = 0;
+    int headmorphstart = 0, headmorphend = 0;
+    int chestmorphstart = 0, chestmorphend = 0;
+    int tailmorphstart = 0, tailmorphend = 0;
 
-    float weaponmissdelay;
-    float highreversaldelay;
-    float lowreversaldelay;
-    float nocollidedelay;
+    float weaponmissdelay = 0;
+    float highreversaldelay = 0;
+    float lowreversaldelay = 0;
+    float nocollidedelay = 0;
 
-    int creature;
+    int creature = 0;
 
-    int id;
+    int id = 0;
 
     Skeleton skeleton;
 
-    float speed;
-    float scale;
-    float power;
-    float speedmult;
+    float speed = 0;
+    float scale = 0;
+    float power = 0;
+    float speedmult = 0;
 
-    float protectionhead;
-    float protectionhigh;
-    float protectionlow;
-    float armorhead;
-    float armorhigh;
-    float armorlow;
-    bool metalhead;
-    bool metalhigh;
-    bool metallow;
+    float protectionhead = 0;
+    float protectionhigh = 0;
+    float protectionlow = 0;
+    float armorhead = 0;
+    float armorhigh = 0;
+    float armorlow = 0;
+    bool metalhead = 0;
+    bool metalhigh = 0;
+    bool metallow = 0;
 
-    int numclothes;
+    int numclothes = 0;
     char clothes[10][256];
     float clothestintr[10];
     float clothestintg[10];
     float clothestintb[10];
 
-    bool landhard;
-    bool bled;
-    bool spurt;
-    bool onfire;
-    float onfiredelay;
-    float burnt;
-    float fireduration;
+    bool landhard = 0;
+    bool bled = 0;
+    bool spurt = 0;
+    bool onfire = 0;
+    float onfiredelay = 0;
+    float burnt = 0;
+    float fireduration = 0;
 
-    float flamedelay;
-    float updatestuffdelay;
+    float flamedelay = 0;
+    float updatestuffdelay = 0;
 
-    int playerdetail;
+    int playerdetail = 0;
 
-    int num_weapons;
+    int num_weapons = 0;
     int weaponids[4];
-    int weaponactive;
-    int weaponstuck;
-    int weaponstuckwhere;
-    int weaponwhere;
+    int weaponactive = 0;
+    int weaponstuck = 0;
+    int weaponstuckwhere = 0;
+    int weaponwhere = 0;
 
-    int numwaypoints;
+    int numwaypoints = 0;
     XYZ waypoints[90];
     int waypointtype[90];
-    float pausetime;
-    bool hastempwaypoint;
+    float pausetime = 0;
+    bool hastempwaypoint = 0;
     XYZ tempwaypoint;
 
     XYZ headtarget;
-    float interestdelay;
+    float interestdelay = 0;
 
     XYZ finalfinaltarget;
     XYZ finaltarget;
-    int finalpathfindpoint;
-    int targetpathfindpoint;
-    int lastpathfindpoint;
-    int lastpathfindpoint2;
-    int lastpathfindpoint3;
-    int lastpathfindpoint4;
-    bool onpath;
+    int finalpathfindpoint = 0;
+    int targetpathfindpoint = 0;
+    int lastpathfindpoint = 0;
+    int lastpathfindpoint2 = 0;
+    int lastpathfindpoint3 = 0;
+    int lastpathfindpoint4 = 0;
+    bool onpath = 0;
 
-    int waypoint;
-    bool jumppath;
+    int waypoint = 0;
+    bool jumppath = 0;
 
     XYZ lastseen;
-    float lastseentime;
-    float lastchecktime;
-    float stunned;
-    float surprised;
-    float runninghowlong;
-    int lastoccluded;
-    int laststanding;
-    int escapednum;
+    float lastseentime = 0;
+    float lastchecktime = 0;
+    float stunned = 0;
+    float surprised = 0;
+    float runninghowlong = 0;
+    int lastoccluded = 0;
+    int laststanding = 0;
+    int escapednum = 0;
 
-    float speechdelay;
-    float neckspurtdelay;
-    float neckspurtparticledelay;
-    float neckspurtamount;
+    float speechdelay = 0;
+    float neckspurtdelay = 0;
+    float neckspurtparticledelay = 0;
+    float neckspurtamount = 0;
 
-    int whichskin;
-    bool rabbitkickragdoll;
+    int whichskin = 0;
+    bool rabbitkickragdoll = 0;
 
     XYZ averageloc;
     XYZ oldaverageloc;
 
     Animation tempanimation;
 
-    int occluded;
+    int occluded = 0;
 
-    bool jumpclimb;
+    bool jumpclimb = 0;
 
 
 
