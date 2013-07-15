@@ -94,6 +94,8 @@ set(LUGARU_H
 	${SRCDIR}/Models.h
 	${SRCDIR}/Objects.h
 	${SRCDIR}/Person.h
+	${SRCDIR}/Rabbit.h
+	${SRCDIR}/Wolf.h
 	${SRCDIR}/PhysicsMath.h
 	${SRCDIR}/Quaternions.h
 	${SRCDIR}/Random.h

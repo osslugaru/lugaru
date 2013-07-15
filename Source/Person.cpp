@@ -88,22 +88,22 @@ std::vector<std::shared_ptr<Person>> Person::players(1, std::shared_ptr<Person>(
 
 Person::Person()
 {
-    whichpatchx = 0;
-    whichpatchz = 0;
-
+    //~ whichpatchx = 0;
+    //~ whichpatchz = 0;
+//~
     occluded = 0;
-
-    /* This init avoids crash in DrawSkeleton */
-    righthandmorphstart = 0;
-    righthandmorphend   = 0;
-    lefthandmorphstart  = 0;
-    lefthandmorphend    = 0;
-    headmorphstart      = 0;
-    headmorphend        = 0;
-    chestmorphstart     = 0;
-    chestmorphend       = 0;
-    tailmorphstart      = 0;
-    tailmorphend        = 0;
+//~
+    //~ /* This init avoids crash in DrawSkeleton */
+    //~ righthandmorphstart = 0;
+    //~ righthandmorphend   = 0;
+    //~ lefthandmorphstart  = 0;
+    //~ lefthandmorphend    = 0;
+    //~ headmorphstart      = 0;
+    //~ headmorphend        = 0;
+    //~ chestmorphstart     = 0;
+    //~ chestmorphend       = 0;
+    //~ tailmorphstart      = 0;
+    //~ tailmorphend        = 0;
 }
 
 /* EFFECT
