@@ -1500,7 +1500,7 @@ int Game::DrawGLScene(StereoSide side)
             }
             for (auto player: Person::players) {
                 if (!player->dead) {
-                    center += Person::players[i]->coords;
+                    center += player->coords;
                     numaliveplayers++;
                 }
             }
