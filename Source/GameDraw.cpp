@@ -1487,48 +1487,8 @@ int Game::DrawGLScene(StereoSide side)
             XYZ center;
             float radius;
             float distcheck;
-            int numaliveplayers = 0;
-            int numadd = 0;
 
-            center = 0;
-
-            for (i = 0; i < objects.numobjects; i++) {
-                if (objects.type[i] == treetrunktype || objects.type[i] == boxtype) {
-                    center += objects.position[i];
-                    numadd++;
-                }
-            }
-            for (auto player: Person::players) {
-                if (!player->dead) {
-                    center += player->coords;
-                    numaliveplayers++;
-                }
-            }
-            center /= numadd + numaliveplayers;
-
-            /* FIXME : Why compute center if we erase it afterwards? */
             center = Person::players[0]->coords;
-
-            float maxdistance = 0;
-            float tempdist;
-            //~ int whichclosest;
-            for (i = 0; i < objects.numobjects; i++) {
-                tempdist = distsq(&center, &objects.position[i]);
-                if (tempdist > maxdistance) {
-                    //~ whichclosest=i;
-                    maxdistance = tempdist;
-                }
-            }
-            for (auto player: Person::players) {
-                if (!player->dead) {
-                    tempdist = distsq(&center, &player->coords);
-                    if (tempdist > maxdistance) {
-                        //~ whichclosest=i;
-                        maxdistance = tempdist;
-                    }
-                }
-            }
-            radius = fast_sqrt(maxdistance);
 
             radius = 110;
 
