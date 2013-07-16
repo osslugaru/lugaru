@@ -731,18 +731,7 @@ static void set_proportion(int pnum, const char *args)
 
     sscanf(args, "%f%f%f%f", &headprop, &bodyprop, &armprop, &legprop);
 
-    if (Person::players[pnum]->creature == wolftype) {
-        Person::players[pnum]->proportionhead = 1.1 * headprop;
-        Person::players[pnum]->proportionbody = 1.1 * bodyprop;
-        Person::players[pnum]->proportionarms = 1.1 * armprop;
-        Person::players[pnum]->proportionlegs = 1.1 * legprop;
-    } else if (Person::players[pnum]->creature == rabbittype) {
-        Person::players[pnum]->proportionhead = 1.2 * headprop;
-        Person::players[pnum]->proportionbody = 1.05 * bodyprop;
-        Person::players[pnum]->proportionarms = 1.00 * armprop;
-        Person::players[pnum]->proportionlegs = 1.1 * legprop;
-        Person::players[pnum]->proportionlegs.y = 1.05 * legprop;
-    }
+    Person::players[pnum]->setProps(headprop, bodyprop, armprop, legprop);
 }
 
 static void ch_proportion(const char *args)
@@ -2072,20 +2061,7 @@ void Loadlevel(const char *name)
                     legprop = 1;
                 }
 
-                if (player->creature == wolftype) {
-                    player->proportionhead = 1.1 * headprop;
-                    player->proportionbody = 1.1 * bodyprop;
-                    player->proportionarms = 1.1 * armprop;
-                    player->proportionlegs = 1.1 * legprop;
-                }
-
-                if (player->creature == rabbittype) {
-                    player->proportionhead = 1.2 * headprop;
-                    player->proportionbody = 1.05 * bodyprop;
-                    player->proportionarms = 1.00 * armprop;
-                    player->proportionlegs = 1.1 * legprop;
-                    player->proportionlegs.y = 1.05 * legprop;
-                }
+                player->setProps(headprop, bodyprop, armprop, legprop);
 
                 funpackf(tfile, "Bi", &player->numclothes);
                 if (player->numclothes) {
@@ -2975,20 +2951,7 @@ void doDebugKeys()
                     Person::players[closest]->damagetolerance = 200;
                 }
 
-                if (Person::players[closest]->creature == wolftype) {
-                    Person::players[closest]->proportionhead = 1.1 * headprop;
-                    Person::players[closest]->proportionbody = 1.1 * bodyprop;
-                    Person::players[closest]->proportionarms = 1.1 * armprop;
-                    Person::players[closest]->proportionlegs = 1.1 * legprop;
-                }
-
-                if (Person::players[closest]->creature == rabbittype) {
-                    Person::players[closest]->proportionhead = 1.2 * headprop;
-                    Person::players[closest]->proportionbody = 1.05 * bodyprop;
-                    Person::players[closest]->proportionarms = 1.00 * armprop;
-                    Person::players[closest]->proportionlegs = 1.1 * legprop;
-                    Person::players[closest]->proportionlegs.y = 1.05 * legprop;
-                }
+                Person::players[closest]->setProps(headprop, bodyprop, armprop, legprop);
 
             }
         }
@@ -3310,20 +3273,7 @@ void doDebugKeys()
                     legprop = Person::players[0]->proportionlegs.x / 1.1;
                 }
 
-                if (Person::players.back()->creature == wolftype) {
-                    Person::players.back()->proportionhead = 1.1 * headprop;
-                    Person::players.back()->proportionbody = 1.1 * bodyprop;
-                    Person::players.back()->proportionarms = 1.1 * armprop;
-                    Person::players.back()->proportionlegs = 1.1 * legprop;
-                }
-
-                if (Person::players.back()->creature == rabbittype) {
-                    Person::players.back()->proportionhead = 1.2 * headprop;
-                    Person::players.back()->proportionbody = 1.05 * bodyprop;
-                    Person::players.back()->proportionarms = 1.00 * armprop;
-                    Person::players.back()->proportionlegs = 1.1 * legprop;
-                    Person::players.back()->proportionlegs.y = 1.05 * legprop;
-                }
+                Person::players.back()->setProps(headprop, bodyprop, armprop, legprop);
 
                 Person::players.back()->headless = 0;
                 Person::players.back()->onfire = 0;
