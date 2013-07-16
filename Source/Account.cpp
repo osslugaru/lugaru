@@ -58,11 +58,11 @@ Account* Account::add(string name)
 
 Account* Account::get(int i)
 {
-
-    if ((i >= 0) && (i < accounts.size())) {
+    if ((i >= 0) && (i < int(accounts.size()))) {
         return accounts[i];
-    } else
+    } else {
         return NULL;
+    }
 }
 
 void Account::destroy(int i)
@@ -71,7 +71,7 @@ void Account::destroy(int i)
 }
 Account* Account::destroy(Account* a)
 {
-    for (int i = 0; i < accounts.size(); i++) {
+    for (unsigned i = 0; i < accounts.size(); i++) {
         if (accounts[i] == a) {
             accounts.erase(accounts.begin() + i);
             return NULL;
@@ -198,7 +198,7 @@ Account* Account::loadFile(string filename)
 void Account::saveFile(string filename, Account* accountactive)
 {
     FILE *tfile;
-    int j;
+    unsigned j;
 
     tfile = fopen(ConvertFileName(filename.c_str(), "wb"), "wb" );
     if (tfile) {
@@ -254,7 +254,7 @@ void Account::saveFile(string filename, Account* accountactive)
 
 int Account::indice(Account* a)
 {
-    for (int i = 0; i < accounts.size(); i++) {
+    for (unsigned i = 0; i < accounts.size(); i++) {
         if (accounts[i] == a)
             return i;
     }

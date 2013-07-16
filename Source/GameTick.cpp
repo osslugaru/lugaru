@@ -577,7 +577,7 @@ static void ch_save(const char *args)
     if (Person::players.size() > maxplayers) {
         cout << "Warning: this level contains more players than allowed" << endl;
     }
-    for (int j = 1; j < Person::players.size(); j++) {
+    for (unsigned j = 1; j < Person::players.size(); j++) {
         fpackf(tfile, "Bi Bi Bf Bf Bf Bi Bi Bf Bb Bf", Person::players[j]->whichskin, Person::players[j]->creature,
                Person::players[j]->coords.x, Person::players[j]->coords.y, Person::players[j]->coords.z,
                Person::players[j]->num_weapons, Person::players[j]->howactive, Person::players[j]->scale, Person::players[j]->immobile, Person::players[j]->yaw);
@@ -693,7 +693,7 @@ static int findClosestPlayer()
     int closest = -1;
     float closestdist = std::numeric_limits<float>::max();
 
-    for (int i = 1; i < Person::players.size(); i++) {
+    for (unsigned i = 1; i < Person::players.size(); i++) {
         float distance = distsq(&Person::players[i]->coords, &Person::players[0]->coords);
         if (distance < closestdist) {
             closestdist = distance;
@@ -954,7 +954,7 @@ static void ch_black(const char *args)
 
 static void ch_sizemin(const char *args)
 {
-    for (int i = 1; i < Person::players.size(); i++)
+    for (unsigned i = 1; i < Person::players.size(); i++)
         if (Person::players[i]->scale < 0.8 * 0.2)
             Person::players[i]->scale = 0.8 * 0.2;
 }
@@ -1061,7 +1061,7 @@ static void ch_dialogue(const char *args)
     }
 
     for (int i = 0; i < numdialogueboxes[numdialogues]; i++) {
-        for (int j = 0; j < Person::players.size(); j++) {
+        for (unsigned j = 0; j < Person::players.size(); j++) {
             participantfacing[numdialogues][i][j] = Person::players[j]->facing;
         }
     }
@@ -1144,7 +1144,7 @@ static void ch_immobile(const char *args)
 
 static void ch_allimmobile(const char *args)
 {
-    for (int i = 1; i < Person::players.size(); i++)
+    for (unsigned i = 1; i < Person::players.size(); i++)
         Person::players[i]->immobile = 1;
 }
 
@@ -2966,7 +2966,7 @@ void doDebugKeys()
             int closest = -1;
             float closestdist = std::numeric_limits<float>::max();
 
-            for (int i = 1; i < Person::players.size(); i++) {
+            for (unsigned i = 1; i < Person::players.size(); i++) {
                 float distance = distsq(&Person::players[i]->coords, &Person::players[0]->coords);
                 if (!Person::players[i]->headless)
                     if (distance < closestdist) {
@@ -3091,7 +3091,7 @@ void doDebugKeys()
                 }
 
                 XYZ temppos;
-                for (int j = 0; j < Person::players.size(); j++) {
+                for (unsigned j = 0; j < Person::players.size(); j++) {
                     if (j != closest) {
                         if (distsq(&Person::players[j]->coords, &Person::players[closest]->coords) < 25) {
                             Person::players[j]->DoDamage((25 - distsq(&Person::players[j]->coords, &Person::players[closest]->coords)) * 60);
@@ -3474,8 +3474,8 @@ void doDebugKeys()
 
 void doJumpReversals()
 {
-    for (int k = 0; k < Person::players.size(); k++)
-        for (int i = k; i < Person::players.size(); i++) {
+    for (unsigned k = 0; k < Person::players.size(); k++)
+        for (unsigned i = k; i < Person::players.size(); i++) {
             if (i == k)
                 continue;
             if (     Person::players[k]->skeleton.free == 0 &&
@@ -3484,8 +3484,8 @@ void doJumpReversals()
                       Person::players[k]->animTarget == jumpupanim) &&
                      (Person::players[i]->aitype == playercontrolled ||
                       Person::players[k]->aitype == playercontrolled) &&
-                     (Person::players[i]->aitype == attacktypecutoff && Person::players[i]->stunned <= 0 ||
-                      Person::players[k]->aitype == attacktypecutoff && Person::players[k]->stunned <= 0)) {
+                     ((Person::players[i]->aitype == attacktypecutoff && Person::players[i]->stunned <= 0) ||
+                      (Person::players[k]->aitype == attacktypecutoff && Person::players[k]->stunned <= 0))) {
                 if (     distsq(&Person::players[i]->coords, &Person::players[k]->coords) < 10 * sq((Person::players[i]->scale + Person::players[k]->scale) * 2.5) &&
                          distsqflat(&Person::players[i]->coords, &Person::players[k]->coords) < 2 * sq((Person::players[i]->scale + Person::players[k]->scale) * 2.5)) {
                     //TODO: refactor two huge similar ifs
@@ -3494,8 +3494,8 @@ void doJumpReversals()
                             Person::players[k]->animTarget != getupfromfrontanim &&
                             animation[Person::players[k]->animTarget].height == middleheight &&
                             normaldotproduct(Person::players[i]->velocity, Person::players[k]->coords - Person::players[i]->coords) < 0 &&
-                            (Person::players[k]->aitype == playercontrolled && Person::players[k]->attackkeydown ||
-                             Person::players[k]->aitype != playercontrolled)) {
+                            ((Person::players[k]->aitype == playercontrolled && Person::players[k]->attackkeydown) ||
+                             (Person::players[k]->aitype != playercontrolled))) {
                         Person::players[i]->victim = Person::players[k];
                         Person::players[i]->velocity = 0;
                         Person::players[i]->animCurrent = jumpreversedanim;
@@ -3575,7 +3575,7 @@ void doJumpReversals()
 void doAerialAcrobatics()
 {
     static XYZ facing, flatfacing;
-    for (int k = 0; k < Person::players.size(); k++) {
+    for (unsigned k = 0; k < Person::players.size(); k++) {
         Person::players[k]->turnspeed = 500;
 
         if ((Person::players[k]->isRun() &&
@@ -3636,7 +3636,7 @@ void doAerialAcrobatics()
             for (int l = 0; l < terrain.patchobjectnum[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz]; l++) {
                 int i = terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz][l];
                 if (objects.type[i] != rocktype ||
-                        objects.scale[i] > .5 && Person::players[k]->aitype == playercontrolled ||
+                        (objects.scale[i] > .5 && Person::players[k]->aitype == playercontrolled) ||
                         objects.position[i].y > Person::players[k]->coords.y) {
                     lowpoint = Person::players[k]->coords;
                     if (Person::players[k]->animTarget != jumpupanim &&
@@ -3802,11 +3802,11 @@ void doAerialAcrobatics()
                             Person::players[k]->collide = 1;
 
                             if ((Person::players[k]->grabdelay <= 0 || Person::players[k]->aitype != playercontrolled) &&
-                                    (Person::players[k]->animCurrent != climbanim &&
+                                    ((Person::players[k]->animCurrent != climbanim &&
                                      Person::players[k]->animCurrent != hanganim &&
-                                     !Person::players[k]->isWallJump() ||
-                                     Person::players[k]->animTarget == jumpupanim ||
-                                     Person::players[k]->animTarget == jumpdownanim)) {
+                                     !Person::players[k]->isWallJump()) ||
+                                     (Person::players[k]->animTarget == jumpupanim) ||
+                                     (Person::players[k]->animTarget == jumpdownanim))) {
                                 lowpoint = Person::players[k]->coords;
                                 objects.model[i].SphereCheckPossible(&lowpoint, 1.5, &objects.position[i], &objects.yaw[i]);
                                 lowpoint = Person::players[k]->coords;
@@ -3865,7 +3865,7 @@ void doAerialAcrobatics()
                                                             lowpointtarget = lowpoint + facing * 1.4;
                                                             if (objects.model[i].LineCheckPossible(&lowpoint, &lowpointtarget,
                                                                                                    &colpoint2, &objects.position[i], &objects.yaw[i]) == -1) {
-                                                                if (j <= 6 || j <= 25 && Person::players[k]->animTarget == jumpdownanim)
+                                                                if (j <= 6 || (j <= 25 && Person::players[k]->animTarget == jumpdownanim))
                                                                     break;
                                                                 if (Person::players[k]->animTarget == jumpupanim || Person::players[k]->animTarget == jumpdownanim) {
                                                                     lowpoint = DoRotation(objects.model[i].facenormals[whichhit], 0, objects.yaw[k], 0);
@@ -3976,20 +3976,20 @@ void doAttacks()
     if (Input::isKeyDown(attackkey) &&
             !oldattackkey &&
             !Person::players[0]->backkeydown) {
-        for (int k = 0; k < Person::players.size(); k++) {
-            if ((Person::players[k]->animTarget == swordslashanim ||
-                    Person::players[k]->animTarget == staffhitanim ||
-                    Person::players[k]->animTarget == staffspinhitanim) &&
+        for (auto player: Person::players) {
+            if ((player->animTarget == swordslashanim ||
+                    player->animTarget == staffhitanim ||
+                    player->animTarget == staffspinhitanim) &&
                     Person::players[0]->animCurrent != dodgebackanim &&
-                    !Person::players[k]->skeleton.free)
-                Person::players[k]->Reverse();
+                    !player->skeleton.free)
+                player->Reverse();
         }
     }
 
     if (!hostile || indialogue != -1)
         Person::players[0]->attackkeydown = 0;
 
-    for (int k = 0; k < Person::players.size(); k++) {
+    for (unsigned k = 0; k < Person::players.size(); k++) {
         if (indialogue != -1)
             Person::players[k]->attackkeydown = 0;
         if (Person::players[k]->animTarget != rabbitrunninganim && Person::players[k]->animTarget != wolfrunninganim) {

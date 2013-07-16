@@ -38,8 +38,6 @@ void InitStereo(StereoMode mode)
 {
     switch (mode) {
     case stereoNone:
-        glDisable( GL_STENCIL_TEST);
-        return;
     case stereoAnaglyph:
         glDisable( GL_STENCIL_TEST);
         return;

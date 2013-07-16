@@ -67,7 +67,8 @@ int maxalarmed;
 
 int award_awards(int *awards)
 {
-    int numawards = 0, i;
+    int numawards = 0;
+    unsigned i;
     if (damagetaken == 0 && Person::players[0]->bloodloss == 0) {
         awards[numawards] = awardflawless;
         numawards++;
@@ -118,7 +119,7 @@ int award_awards(int *awards)
         awards[numawards] = awardacrobat;
         numawards++;
     }
-    if (numthrowkill == Person::players.size() - 1) {
+    if (numthrowkill == int(Person::players.size()) - 1) {
         awards[numawards] = awardlongrange;
         numawards++;
     }

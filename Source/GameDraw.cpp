@@ -137,7 +137,7 @@ int Game::DrawGLScene(StereoSide side)
 {
     static float texcoordwidth, texcoordheight;
     static float texviewwidth, texviewheight;
-    static int i, j, k, l;
+    static int i, j, l;
     //~ static GLubyte color;
     static XYZ checkpoint;
     static float tempmult;
@@ -333,7 +333,7 @@ int Game::DrawGLScene(StereoSide side)
         static XYZ point;
         static float size, opacity, rotation;
         rotation = 0;
-        for (k = 0; k < Person::players.size(); k++) {
+        for (unsigned k = 0; k < Person::players.size(); k++) {
             if (!Person::players[k]->skeleton.free && Person::players[k]->playerdetail && Person::players[k]->howactive < typesleeping)
                 if (frustum.SphereInFrustum(Person::players[k]->coords.x, Person::players[k]->coords.y + Person::players[k]->scale * 3, Person::players[k]->coords.z, Person::players[k]->scale * 7) && Person::players[k]->occluded < 25)
                     for (i = 0; i < Person::players[k]->skeleton.num_joints; i++) {
@@ -451,7 +451,7 @@ int Game::DrawGLScene(StereoSide side)
             glEnable(GL_CULL_FACE);
             glCullFace(GL_FRONT);
             glDepthMask(1);
-            for (k = 0; k < Person::players.size(); k++) {
+            for (unsigned k = 0; k < Person::players.size(); k++) {
                 if (k == 0 || tutoriallevel != 1) {
                     glEnable(GL_BLEND);
                     glEnable(GL_LIGHTING);
@@ -515,7 +515,7 @@ int Game::DrawGLScene(StereoSide side)
         glEnable(GL_CULL_FACE);
         glCullFace(GL_FRONT);
         glDepthMask(1);
-        for (k = 0; k < Person::players.size(); k++) {
+        for (unsigned k = 0; k < Person::players.size(); k++) {
             if (!(k == 0 || tutoriallevel != 1)) {
                 glEnable(GL_BLEND);
                 glEnable(GL_LIGHTING);
@@ -567,7 +567,7 @@ int Game::DrawGLScene(StereoSide side)
             glDisable(GL_COLOR_MATERIAL);
             glColor4f(1, 1, 0, 1);
 
-            for (k = 0; k < Person::players.size(); k++) {
+            for (unsigned k = 0; k < Person::players.size(); k++) {
                 if (Person::players[k]->numwaypoints > 1) {
                     glBegin(GL_LINE_LOOP);
                     for (i = 0; i < Person::players[k]->numwaypoints; i++) {
@@ -580,7 +580,7 @@ int Game::DrawGLScene(StereoSide side)
 
             if (numpathpoints > 1) {
                 glColor4f(0, 1, 0, 1);
-                for (k = 0; k < numpathpoints; k++) {
+                for (int k = 0; k < numpathpoints; k++) {
                     if (numpathpointconnect[k]) {
                         for (i = 0; i < numpathpointconnect[k]; i++) {
                             glBegin(GL_LINE_LOOP);
@@ -1487,14 +1487,10 @@ int Game::DrawGLScene(StereoSide side)
             XYZ center;
             float radius;
             float distcheck;
-            int numliveplayers = 0;
-            center = 0;
-            for (i = 0; i < Person::players.size(); i++) {
-                if (!Person::players[i]->dead)
-                    numliveplayers++;
-            }
-
+            int numaliveplayers = 0;
             int numadd = 0;
+
+            center = 0;
 
             for (i = 0; i < objects.numobjects; i++) {
                 if (objects.type[i] == treetrunktype || objects.type[i] == boxtype) {
@@ -1502,12 +1498,15 @@ int Game::DrawGLScene(StereoSide side)
                     numadd++;
                 }
             }
-            for (i = 0; i < Person::players.size(); i++) {
-                if (!Person::players[i]->dead)
+            for (auto player: Person::players) {
+                if (!player->dead) {
                     center += Person::players[i]->coords;
+                    numaliveplayers++;
+                }
             }
-            center /= numadd + numliveplayers;
+            center /= numadd + numaliveplayers;
 
+            /* FIXME : Why compute center if we erase it afterwards? */
             center = Person::players[0]->coords;
 
             float maxdistance = 0;
@@ -1520,9 +1519,9 @@ int Game::DrawGLScene(StereoSide side)
                     maxdistance = tempdist;
                 }
             }
-            for (i = 0; i < Person::players.size(); i++) {
-                if (!Person::players[i]->dead) {
-                    tempdist = distsq(&center, &Person::players[i]->coords);
+            for (auto player: Person::players) {
+                if (!player->dead) {
+                    tempdist = distsq(&center, &player->coords);
                     if (tempdist > maxdistance) {
                         //~ whichclosest=i;
                         maxdistance = tempdist;
@@ -1605,25 +1604,25 @@ int Game::DrawGLScene(StereoSide side)
                     glPopMatrix();
                 }
             }
-            for (i = 0; i < Person::players.size(); i++) {
-                distcheck = distsq(&Person::players[0]->coords, &Person::players[i]->coords);
+            for (auto player: Person::players) {
+                distcheck = distsq(&Person::players[0]->coords, &player->coords);
                 if (distcheck < mapviewdist) {
                     glPushMatrix();
                     Maparrowtexture.bind();
-                    if (i == 0)
+                    if (player->id == 0)
                         glColor4f(1, 1, 1, opac);
-                    else if (Person::players[i]->dead == 2 || Person::players[i]->howactive > typesleeping)
+                    else if (player->dead == 2 || player->howactive > typesleeping)
                         glColor4f(0, 0, 0, opac * (1 - distcheck / mapviewdist));
-                    else if (Person::players[i]->dead)
+                    else if (player->dead)
                         glColor4f(.3, .3, .3, opac * (1 - distcheck / mapviewdist));
-                    else if (Person::players[i]->aitype == attacktypecutoff)
+                    else if (player->aitype == attacktypecutoff)
                         glColor4f(1, 0, 0, opac * (1 - distcheck / mapviewdist));
-                    else if (Person::players[i]->aitype == passivetype)
+                    else if (player->aitype == passivetype)
                         glColor4f(0, 1, 0, opac * (1 - distcheck / mapviewdist));
                     else
                         glColor4f(1, 1, 0, 1);
-                    glTranslatef(Person::players[i]->coords.x / terrain.scale / 256 * -2 + 1, Person::players[i]->coords.z / terrain.scale / 256 * 2 - 1, 0);
-                    glRotatef(Person::players[i]->yaw + 180, 0, 0, 1);
+                    glTranslatef(player->coords.x / terrain.scale / 256 * -2 + 1, player->coords.z / terrain.scale / 256 * 2 - 1, 0);
+                    glRotatef(player->yaw + 180, 0, 0, 1);
                     glScalef(.005, .005, .005);
                     glBegin(GL_QUADS);
                     glTexCoord2f(0, 0);

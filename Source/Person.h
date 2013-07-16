@@ -396,6 +396,6 @@ public:
     virtual void loadSkeleton() = 0;
 };
 
-const int maxplayers = 10;
+const unsigned maxplayers = 10;
 
 #endif
