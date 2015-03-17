@@ -1609,6 +1609,15 @@ void LoadCampaign()
     if (!accountactive)
         return;
     ifstream ipstream(ConvertFileName((":Data:Campaigns:" + accountactive->getCurrentCampaign() + ".txt").c_str()));
+    if (!ipstream.good()) {
+        if (accountactive->getCurrentCampaign() == "main") {
+            cerr << "Could not found main campaign!" << endl;
+            return;
+        }
+        cerr << "Could not found campaign \"" << accountactive->getCurrentCampaign() << "\", falling back to main." << endl;
+        accountactive->setCurrentCampaign("main");
+        return LoadCampaign();
+    }
     ipstream.ignore(256, ':');
     int numlevels;
     ipstream >> numlevels;
