@@ -200,7 +200,7 @@ public:
         is >> mapname;
         is.ignore(256, ':');
         is >> description;
-        for (unsigned pos = description.find('_'); pos != string::npos; pos = description.find('_', pos)) {
+        for (size_t pos = description.find('_'); pos != string::npos; pos = description.find('_', pos)) {
             description.replace(pos, 1, 1, ' ');
         }
         is.ignore(256, ':');
