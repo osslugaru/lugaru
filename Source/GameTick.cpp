@@ -19,6 +19,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+// Enable full math definitions
+#define _USE_MATH_DEFINES
+
 #if PLATFORM_UNIX
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -27,8 +30,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <direct.h>
 #endif
 
+
 #include <limits>
 #include <ctime>
+#include <cmath>
 #include <dirent.h>
 #include "Game.h"
 #include "openal_wrapper.h"
