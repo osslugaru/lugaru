@@ -36,7 +36,11 @@ build_mingw32:
   stage: build
   script:
     - dnf --quiet --assumeyes install mingw32-gcc mingw32-gcc-c++ mingw32-binutils
-    - export PATH=/usr/i686-w64-mingw32/bin:$PATH; mkdir -p i686-w64-mingw32 mingw32-build; cd i686-w64-mingw32; cmake .. -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-mingw32.cmake -DLUGARU_INSTALL_PREFIX=/builds/osslugaru/lugaru/mingw32-build; make -j4; make install
+    - export PKG_CONFIG_LIBDIR="/usr/i686-w64-mingw32/sys-root/mingw/lib/pkgconfig:/usr/i686-w64-mingw32/sys-root/mingw/share/pkgconfig"
+    - export PATH=/usr/i686-w64-mingw32/bin:$PATH
+    - mkdir -p i686-w64-mingw32 mingw32-build; cd i686-w64-mingw32
+    - cmake .. -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-mingw32.cmake -DLUGARU_INSTALL_PREFIX=/builds/osslugaru/lugaru/mingw32-build -DLUGARU_FORCE_INTERNAL_SDL=True -DLUGARU_FORCE_INTERNAL_GLU=True -DLUGARU_FORCE_INTERNAL_JPEG=True -DLUGARU_FORCE_INTERNAL_PNG=True -DLUGARU_FORCE_INTERNAL_VORBIS=True -DLUGARU_FORCE_INTERNAL_ZLIB=True
+    - make -j4; make install
   artifacts:
     expire_in: 7d
     paths:
