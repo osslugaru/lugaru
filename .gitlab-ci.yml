@@ -12,7 +12,7 @@ build_gcc:
   stage: build
   script:
     - dnf --quiet --assumeyes install gcc gcc-c++
-    - export CC=gcc; export CXX=g++; mkdir -p x86_64-linux-gnu-gcc gcc-build; cd x86_64-linux-gnu-gcc; cmake .. -DLUGARU_INSTALL_PREFIX=/builds/osslugaru/lugaru/gcc-build; make -j4
+    - export CC=gcc; export CXX=g++; mkdir -p x86_64-linux-gnu-gcc gcc-build; cd x86_64-linux-gnu-gcc; cmake .. -DLUGARU_INSTALL_PREFIX=/builds/osslugaru/lugaru/gcc-build; make -j4; make install
   artifacts:
     expire_in: 7d
     paths:
@@ -24,7 +24,7 @@ build_clang:
   stage: build
   script:
     - dnf --quiet --assumeyes install clang
-    - export CC=clang; export CXX=clang++; mkdir -p x86_64-linux-gnu-clang clang-build; cd x86_64-linux-gnu-clang; cmake .. -DLUGARU_INSTALL_PREFIX=/builds/osslugaru/lugaru/clang-build; make -j4
+    - export CC=clang; export CXX=clang++; mkdir -p x86_64-linux-gnu-clang clang-build; cd x86_64-linux-gnu-clang; cmake .. -DLUGARU_INSTALL_PREFIX=/builds/osslugaru/lugaru/clang-build; make -j4; make install
   artifacts:
     expire_in: 7d
     paths:
