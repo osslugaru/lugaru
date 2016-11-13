@@ -144,11 +144,12 @@ Data/Campaign/temple.txt
 
 Data/Maps/sven*
 
-Data/Textures/mask.png
+Data/Textures/Desertcl.png
 Data/Textures/GiTop.png
 Data/Textures/GiTeared.png
 Data/Textures/GiBottom.png
-Data/Textures/Desertcl.png
+Data/Textures/mask.png
+Data/Textures/temple/World.png
 
 ## Wolfire nonfree but redistributable assets
 
