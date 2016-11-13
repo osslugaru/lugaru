@@ -6,7 +6,7 @@ cache:
   - /var/cache/dnf
 
 before_script:
-  - dnf --quiet --assumeyes install /usr/bin/cmake "pkgconfig(openal)" "pkgconfig(sdl)" "pkgconfig(glu)" "pkgconfig(libpng)" "pkgconfig(zlib)" "pkgconfig(vorbis)" "pkgconfig(vorbisfile)" "pkgconfig(ogg)" make
+  - dnf --quiet --assumeyes install /usr/bin/cmake "pkgconfig(libjpeg)" "pkgconfig(openal)" "pkgconfig(sdl)" "pkgconfig(glu)" "pkgconfig(libpng)" "pkgconfig(zlib)" "pkgconfig(vorbis)" "pkgconfig(vorbisfile)" "pkgconfig(ogg)" make
 
 build_gcc:
   stage: build
