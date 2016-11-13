@@ -138,7 +138,7 @@ endif(MSVC)
 if(WIN32)
   if(CMAKE_CROSSCOMPILING)
     ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
-						  COMMAND i686-pc-mingw32-windres
+						  COMMAND i686-w64-mingw32-windres
 							  -I${SRCDIR}/win-res
 							  -o ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
 							  -i${SRCDIR}/win-res/Lugaru.rc
