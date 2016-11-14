@@ -163,10 +163,8 @@ int kContextHeight;
 
 Boolean gDone = false;
 
-#ifndef __MINGW32__
 static int _argc = 0;
 static char **_argv = NULL;
-#endif
 
 bool cmdline(const char *cmd)
 {
@@ -681,10 +679,8 @@ static inline void chdirToAppPath(const char *argv0)
 
 int main(int argc, char **argv)
 {
-#ifndef __MINGW32__
     _argc = argc;
     _argv = argv;
-#endif
 
     // !!! FIXME: we could use a Win32 API for this.  --ryan.
 #ifndef WIN32
