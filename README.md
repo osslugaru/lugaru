@@ -14,6 +14,13 @@ This is the same game as the one distributed by Wolfire Games on
 contains some further developments which are not (yet) featured in the
 commercial version.
 
+## Project links
+
+This project is community-driven and uses the following communication channels:
+- GitLab repository (including issues): https://gitlab.com/osslugaru/lugaru
+- Mailing list: http://icculus.org/mailman/listinfo/lugaru
+- IRC channel: [#lugaru on Freenode](http://webchat.freenode.net/?channels=lugaru)
+
 ## The game
 
 Lugaru (pronounced Loo-GAH-roo) is a cross-platform third-person action game.
