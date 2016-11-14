@@ -99,6 +99,7 @@ char* ConvertFileName( const char* orgfilename, const char* junk);
 
 #define fopen(a, b) fopen(ConvertFileName(a), b);
 
+#ifndef __MINGW32__
 inline float abs(float f)
 {
     if (f < 0)
@@ -112,6 +113,7 @@ inline double abs(double f)
         return -f;
     return f;
 }
+#endif // __MINGW32__
 
 
 #endif

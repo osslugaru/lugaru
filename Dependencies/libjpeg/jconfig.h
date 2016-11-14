@@ -12,3 +12,5 @@
 #define TARGA_SUPPORTED		/* Targa image file format */
 #endif /* JPEG_CJPEG_DJPEG */
 
+#define HAVE_UNSIGNED_CHAR
+#define HAVE_UNSIGNED_SHORT
