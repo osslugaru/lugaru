@@ -189,16 +189,11 @@ if (NOT OPENAL_FOUND OR LUGARU_FORCE_INTERNAL_OPENAL)
 
     if (WIN32)
         set(LUGARU_HAS_INTERNAL_OPENAL True)
-        if (MSVC80)
-            set(OPENAL_LIBRARY
-                ${OPENALDIR}/lib/win32/msvc2005/OpenAL32.lib
-            )
-        endif (MSVC80)
-        if (MSVC90)
+        if (MSVC)
             set(OPENAL_LIBRARY
                 ${OPENALDIR}/lib/win32/msvc2008/OpenAL32.lib
             )
-        endif (MSVC90)
+        endif (MSVC)
         if (MINGW)
             set(OPENAL_LIBRARY
                 ${OPENALDIR}/lib/win32/mingw/libOpenAL32.dll.a
@@ -234,18 +229,12 @@ if (NOT SDL_FOUND)
 
     if (WIN32)
         set(LUGARU_HAS_INTERNAL_SDL True)
-        if (MSVC80)
-          set(SDL_LIBRARY
-              ${SDLDIR}/lib/win32/msvc2005/SDLmain.lib
-              ${SDLDIR}/lib/win32/msvc2005/SDL.lib
-          )
-        endif (MSVC80)
-        if (MSVC90)
+        if (MSVC)
           set(SDL_LIBRARY
               ${SDLDIR}/lib/win32/msvc2008/SDLmain.lib
               ${SDLDIR}/lib/win32/msvc2008/SDL.lib
           )
-        endif (MSVC90)
+        endif (MSVC)
         if (MINGW)
           set(SDL_LIBRARY
               "mingw32"
@@ -495,14 +484,10 @@ endif(APPLE)
 
 if(WIN32)
 	install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru.exe DESTINATION ${CMAKE_INSTALL_PREFIX})
-	if(MSVC80)
-		install(FILES ${SDLDIR}/lib/win32/msvc2005/SDL.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
-		install(FILES ${OPENALDIR}/lib/win32/msvc2005/OpenAL32.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
-	endif(MSVC80)
-	if(MSVC90)
+	if(MSVC)
 		install(FILES ${SDLDIR}/lib/win32/msvc2008/SDL.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
 		install(FILES ${OPENALDIR}/lib/win32/msvc2008/OpenAL32.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
-	endif(MSVC90)
+	endif(MSVC)
 	if(MINGW)
 		install(FILES ${SDLDIR}/lib/win32/mingw/SDL.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
 		install(FILES ${OPENALDIR}/lib/win32/mingw/OpenAL32.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
