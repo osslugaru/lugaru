@@ -10,130 +10,130 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -g -pg --std=c++11")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -O2 -std=c++11")
 
 if(NOT LUGARU_INSTALL_PREFIX)
-  if(WIN32)
-     set(LUGARU_INSTALL_PREFIX "C:/Lugaru" CACHE PATH
-     "LUGARU_INSTALL_PREFIX: Install path prefix, prepended onto install directories."
-      FORCE)
-  else(WIN32)
-     set(LUGARU_INSTALL_PREFIX "/usr/local/lugaru" CACHE PATH
-     "CMAKE_INSTALL_PREFIX: Install path prefix, prepended onto install directories."
-      FORCE)
-  endif(WIN32)
+    if(WIN32)
+        set(LUGARU_INSTALL_PREFIX "C:/Lugaru" CACHE PATH
+        "LUGARU_INSTALL_PREFIX: Install path prefix, prepended onto install directories."
+        FORCE)
+    else(WIN32)
+        set(LUGARU_INSTALL_PREFIX "/usr/local/lugaru" CACHE PATH
+        "CMAKE_INSTALL_PREFIX: Install path prefix, prepended onto install directories."
+        FORCE)
+    endif(WIN32)
 endif(NOT LUGARU_INSTALL_PREFIX)
 
 set(CMAKE_INSTALL_PREFIX "${LUGARU_INSTALL_PREFIX}" CACHE INTERNAL "Prefix prepended to install directories" FORCE)
 
 if(MINGW)
-	set(OPENGL_gl_LIBRARY "-lopengl32" CACHE STRING "OpenGL library for Win32" FORCE)
-	set(OPENGL_glu_LIBRARY "-lglu32" CACHE STRING "GLU library for Win32" FORCE)
+    set(OPENGL_gl_LIBRARY "-lopengl32" CACHE STRING "OpenGL library for Win32" FORCE)
+    set(OPENGL_glu_LIBRARY "-lglu32" CACHE STRING "GLU library for Win32" FORCE)
 endif(MINGW)
 
 if(APPLE)
-	set(CMAKE_OSX_ARCHITECTURES "i386;x86_64;ppc" CACHE STRING "Build architectures for OSX")
-	set(CMAKE_OSX_DEPLOYMENT_TARGET "10.5" CACHE STRING
-		"Minimum OS X version to target for deployment (at runtime); newer APIs weak linked. Set to empty string for default value")
-	set(CMAKE_OSX_SYSROOT "/Developer/SDKs/MacOSX10.5.sdk" CACHE PATH
-		"The product will be built against the headers and libraries located inside the indicated SDK.")
+    set(CMAKE_OSX_ARCHITECTURES "i386;x86_64;ppc" CACHE STRING "Build architectures for OSX")
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "10.5" CACHE STRING
+        "Minimum OS X version to target for deployment (at runtime); newer APIs weak linked. Set to empty string for default value")
+    set(CMAKE_OSX_SYSROOT "/Developer/SDKs/MacOSX10.5.sdk" CACHE PATH
+        "The product will be built against the headers and libraries located inside the indicated SDK.")
 endif(APPLE)
 
 if(APPLE)
-	# Save our sanity; Set all available libraries to internal by default
-	set(LUGARU_FORCE_INTERNAL_SDL True)
-	set(LUGARU_FORCE_INTERNAL_GLU True)
-	set(LUGARU_FORCE_INTERNAL_JPEG True)
-	set(LUGARU_FORCE_INTERNAL_PNG True)
-	set(LUGARU_FORCE_INTERNAL_VORBIS True)
-	set(LUGARU_FORCE_INTERNAL_ZLIB True)
-	set(LUGARU_FORCE_INTERNAL_OPENAL True)
+    # Save our sanity; Set all available libraries to internal by default
+    set(LUGARU_FORCE_INTERNAL_SDL True)
+    set(LUGARU_FORCE_INTERNAL_GLU True)
+    set(LUGARU_FORCE_INTERNAL_JPEG True)
+    set(LUGARU_FORCE_INTERNAL_PNG True)
+    set(LUGARU_FORCE_INTERNAL_VORBIS True)
+    set(LUGARU_FORCE_INTERNAL_ZLIB True)
+    set(LUGARU_FORCE_INTERNAL_OPENAL True)
 endif(APPLE)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 set(LUGARU_SRCS
-	${SRCDIR}/Frustum.cpp
-	${SRCDIR}/Account.cpp
-	${SRCDIR}/Game.cpp
-	${SRCDIR}/GameDraw.cpp
-	${SRCDIR}/GameInitDispose.cpp
-	${SRCDIR}/GameTick.cpp
-	${SRCDIR}/Globals.cpp
-	${SRCDIR}/Lights.cpp
-	${SRCDIR}/Menu.cpp
-	${SRCDIR}/Models.cpp
-	${SRCDIR}/Objects.cpp
-	${SRCDIR}/pack.c
-	${SRCDIR}/Person.cpp
-	${SRCDIR}/private.c
-	${SRCDIR}/Quaternions.cpp
-	${SRCDIR}/Skeleton.cpp
-	${SRCDIR}/Skybox.cpp
-	${SRCDIR}/Sprite.cpp
-	${SRCDIR}/Terrain.cpp
-	${SRCDIR}/Texture.cpp
-	${SRCDIR}/Text.cpp
-	${SRCDIR}/TGALoader.cpp
-	${SRCDIR}/unpack.c
-	${SRCDIR}/Weapons.cpp
-	${SRCDIR}/OpenGL_Windows.cpp
-	${SRCDIR}/openal_wrapper.cpp
-	${SRCDIR}/Input.cpp
-	${SRCDIR}/Settings.cpp
-	${SRCDIR}/Stereo.cpp
-	${SRCDIR}/Animation.cpp
-	${SRCDIR}/Sounds.cpp
-	${SRCDIR}/Awards.cpp
+    ${SRCDIR}/Frustum.cpp
+    ${SRCDIR}/Account.cpp
+    ${SRCDIR}/Game.cpp
+    ${SRCDIR}/GameDraw.cpp
+    ${SRCDIR}/GameInitDispose.cpp
+    ${SRCDIR}/GameTick.cpp
+    ${SRCDIR}/Globals.cpp
+    ${SRCDIR}/Lights.cpp
+    ${SRCDIR}/Menu.cpp
+    ${SRCDIR}/Models.cpp
+    ${SRCDIR}/Objects.cpp
+    ${SRCDIR}/pack.c
+    ${SRCDIR}/Person.cpp
+    ${SRCDIR}/private.c
+    ${SRCDIR}/Quaternions.cpp
+    ${SRCDIR}/Skeleton.cpp
+    ${SRCDIR}/Skybox.cpp
+    ${SRCDIR}/Sprite.cpp
+    ${SRCDIR}/Terrain.cpp
+    ${SRCDIR}/Texture.cpp
+    ${SRCDIR}/Text.cpp
+    ${SRCDIR}/TGALoader.cpp
+    ${SRCDIR}/unpack.c
+    ${SRCDIR}/Weapons.cpp
+    ${SRCDIR}/OpenGL_Windows.cpp
+    ${SRCDIR}/openal_wrapper.cpp
+    ${SRCDIR}/Input.cpp
+    ${SRCDIR}/Settings.cpp
+    ${SRCDIR}/Stereo.cpp
+    ${SRCDIR}/Animation.cpp
+    ${SRCDIR}/Sounds.cpp
+    ${SRCDIR}/Awards.cpp
 )
 
 set(LUGARU_H
-	${SRCDIR}/Frustum.h
-	${SRCDIR}/Account.h
-	${SRCDIR}/Game.h
-	${SRCDIR}/Lights.h
-	${SRCDIR}/Menu.h
-	${SRCDIR}/Models.h
-	${SRCDIR}/Objects.h
-	${SRCDIR}/Person.h
-	${SRCDIR}/PhysicsMath.h
-	${SRCDIR}/Quaternions.h
-	${SRCDIR}/Random.h
-	${SRCDIR}/Skeleton.h
-	${SRCDIR}/Skybox.h
-	${SRCDIR}/Sprite.h
-	${SRCDIR}/TGALoader.h
-	${SRCDIR}/Terrain.h
-	${SRCDIR}/Texture.h
-	${SRCDIR}/Text.h
-	${SRCDIR}/Weapons.h
-	${SRCDIR}/Input.h
-	${SRCDIR}/alstubs.h
-	${SRCDIR}/binio.h
-	${SRCDIR}/openal_wrapper.h
-	${SRCDIR}/gamegl.h
-	${SRCDIR}/glstubs.h
-	${SRCDIR}/private.h
-	${SRCDIR}/Settings.h
-	${SRCDIR}/Stereo.h
-	${SRCDIR}/Animation.h
-	${SRCDIR}/Sounds.h
+    ${SRCDIR}/Frustum.h
+    ${SRCDIR}/Account.h
+    ${SRCDIR}/Game.h
+    ${SRCDIR}/Lights.h
+    ${SRCDIR}/Menu.h
+    ${SRCDIR}/Models.h
+    ${SRCDIR}/Objects.h
+    ${SRCDIR}/Person.h
+    ${SRCDIR}/PhysicsMath.h
+    ${SRCDIR}/Quaternions.h
+    ${SRCDIR}/Random.h
+    ${SRCDIR}/Skeleton.h
+    ${SRCDIR}/Skybox.h
+    ${SRCDIR}/Sprite.h
+    ${SRCDIR}/TGALoader.h
+    ${SRCDIR}/Terrain.h
+    ${SRCDIR}/Texture.h
+    ${SRCDIR}/Text.h
+    ${SRCDIR}/Weapons.h
+    ${SRCDIR}/Input.h
+    ${SRCDIR}/alstubs.h
+    ${SRCDIR}/binio.h
+    ${SRCDIR}/openal_wrapper.h
+    ${SRCDIR}/gamegl.h
+    ${SRCDIR}/glstubs.h
+    ${SRCDIR}/private.h
+    ${SRCDIR}/Settings.h
+    ${SRCDIR}/Stereo.h
+    ${SRCDIR}/Animation.h
+    ${SRCDIR}/Sounds.h
 )
 
 if(UNIX)
-	set(LUGARU_SRCS
-		${LUGARU_SRCS}
-		${SRCDIR}/MacCompatibility.cpp
-	)
-	set(LUGARU_H
-		${LUGARU_H}
-		${SRCDIR}/MacCompatibility.h
-	)
+    set(LUGARU_SRCS
+        ${LUGARU_SRCS}
+        ${SRCDIR}/MacCompatibility.cpp
+    )
+    set(LUGARU_H
+        ${LUGARU_H}
+        ${SRCDIR}/MacCompatibility.h
+    )
 endif(UNIX)
 
 if(MSVC) # MSVC non-C99 support biting us hard
-	set(LUGARU_H
-		${LUGARU_H}
-		${DEPDIR}/msinttypes/stdint.h
-		${DEPDIR}/msinttypes/inttypes.h
-	)
+    set(LUGARU_H
+        ${LUGARU_H}
+        ${DEPDIR}/msinttypes/stdint.h
+        ${DEPDIR}/msinttypes/inttypes.h
+    )
 endif(MSVC)
 
 if(WIN32)
@@ -141,14 +141,14 @@ if(WIN32)
 
   # !!! FIXME: get rid of WinDefs.{cpp,h}
   set(LUGARU_SRCS
-	${LUGARU_SRCS}
-	${SRCDIR}/WinDefs.cpp
-	${SRCDIR}/win-res/Lugaru.rc)
+    ${LUGARU_SRCS}
+    ${SRCDIR}/WinDefs.cpp
+    ${SRCDIR}/win-res/Lugaru.rc)
 
   set(LUGARU_H
-	${LUGARU_H}
-	${SRCDIR}/WinDefs.h
-	${SRCDIR}/win-res/resource.h)
+    ${LUGARU_H}
+    ${SRCDIR}/WinDefs.h
+    ${SRCDIR}/win-res/resource.h)
 endif(WIN32)
 
 if (APPLE)
@@ -159,25 +159,25 @@ endif (APPLE)
 find_package(OpenGL REQUIRED)
 # force this include dir no matter what on Windows, so we get sane headers.
 if(NOT WIN32)
-	option (LUGARU_FORCE_INTERNAL_OPENGL "Force internal OpenGL headers, even if there's a system version" True)
-	if (LUGARU_FORCE_INTERNAL_OPENGL)
-		include_directories("${DEPDIR}/OpenGL")
-	endif (LUGARU_FORCE_INTERNAL_OPENGL)
+    option (LUGARU_FORCE_INTERNAL_OPENGL "Force internal OpenGL headers, even if there's a system version" True)
+    if (LUGARU_FORCE_INTERNAL_OPENGL)
+        include_directories("${DEPDIR}/OpenGL")
+    endif (LUGARU_FORCE_INTERNAL_OPENGL)
 endif(NOT WIN32)
 
 if(WIN32)
-	include_directories("${DEPDIR}/OpenGL")
+    include_directories("${DEPDIR}/OpenGL")
 endif(WIN32)
 
 if(MSVC) # More Visual Studio annoyances
-	include_directories("${DEPDIR}/msinttypes")
+    include_directories("${DEPDIR}/msinttypes")
 endif(MSVC)
 
 option (LUGARU_FORCE_INTERNAL_OPENAL "Force internal libOpenAL, even if there's a system version" False)
 if (NOT LUGARU_FORCE_INTERNAL_OPENAL)
-	find_package(OpenAL REQUIRED)
+    find_package(OpenAL REQUIRED)
 else(NOT LUGARU_FORCE_INTERNAL_OPENAL)
-	set(OPENAL_FOUND False)
+    set(OPENAL_FOUND False)
 endif (NOT LUGARU_FORCE_INTERNAL_OPENAL)
 
 if (NOT OPENAL_FOUND OR LUGARU_FORCE_INTERNAL_OPENAL)
@@ -199,7 +199,7 @@ if (NOT OPENAL_FOUND OR LUGARU_FORCE_INTERNAL_OPENAL)
                 ${OPENALDIR}/lib/win32/mingw/libOpenAL32.dll.a
             )
         endif (MINGW)
-     endif(WIN32)
+    endif(WIN32)
 
     if (NOT LUGARU_HAS_INTERNAL_OPENAL)
         message(ERROR "We don't have a prebuilt OpenAL for this platform.")
@@ -210,7 +210,7 @@ option (LUGARU_FORCE_INTERNAL_SDL "Force internal libSDL, even if there's a syst
 if (NOT LUGARU_FORCE_INTERNAL_SDL)
     find_package(SDL)
 else(NOT LUGARU_FORCE_INTERNAL_SDL)
-	set(SDL_FOUND False)
+    set(SDL_FOUND False)
 endif (NOT LUGARU_FORCE_INTERNAL_SDL)
 
 if (NOT SDL_FOUND)
@@ -254,7 +254,7 @@ option (LUGARU_FORCE_INTERNAL_PNG "Force internal libPNG, even if there's a syst
 if (NOT LUGARU_FORCE_INTERNAL_PNG)
     find_package(PNG)
 else(NOT LUGARU_FORCE_INTERNAL_PNG)
-	set(PNG_FOUND False)
+    set(PNG_FOUND False)
 endif (NOT LUGARU_FORCE_INTERNAL_PNG)
 
 if (NOT PNG_FOUND)
@@ -287,7 +287,7 @@ option (LUGARU_FORCE_INTERNAL_JPEG "Force internal libJPEG, even if there's a sy
 if (NOT LUGARU_FORCE_INTERNAL_JPEG)
     find_package(JPEG)
 else(NOT LUGARU_FORCE_INTERNAL_JPEG)
-	set(JPEG_FOUND False)
+    set(JPEG_FOUND False)
 endif (NOT LUGARU_FORCE_INTERNAL_JPEG)
 
 if (NOT JPEG_FOUND)
@@ -350,7 +350,7 @@ option (LUGARU_FORCE_INTERNAL_ZLIB "Force internal zlib, even if there's a syste
 if (NOT LUGARU_FORCE_INTERNAL_ZLIB)
     find_package(ZLIB)
 else(NOT LUGARU_FORCE_INTERNAL_ZLIB)
-	set(ZLIB_FOUND False)
+    set(ZLIB_FOUND False)
 endif (NOT LUGARU_FORCE_INTERNAL_ZLIB)
 
 if (NOT ZLIB_FOUND)
@@ -377,7 +377,7 @@ endif (NOT ZLIB_FOUND)
 
 option (LUGARU_FORCE_INTERNAL_GLU "Force internal libGLU, even if there's a system version" False)
 if (LUGARU_FORCE_INTERNAL_GLU)
-	set(OPENGL_GLU_FOUND False)
+    set(OPENGL_GLU_FOUND False)
 endif (LUGARU_FORCE_INTERNAL_GLU)
 
 if (NOT OPENGL_GLU_FOUND)
@@ -407,7 +407,7 @@ option (LUGARU_FORCE_INTERNAL_VORBIS "Force internal Vorbis, even if there's a s
 if (NOT LUGARU_FORCE_INTERNAL_VORBIS)
     find_package(OggVorbis)
 else(NOT LUGARU_FORCE_INTERNAL_VORBIS)
-	set(OGGVORBIS_FOUND False)
+    set(OGGVORBIS_FOUND False)
 endif (NOT LUGARU_FORCE_INTERNAL_VORBIS)
 
 if (NOT OGGVORBIS_FOUND)
@@ -467,52 +467,51 @@ add_executable(lugaru ${LUGARU_SRCS} ${LUGARU_H})
 target_link_libraries(lugaru ${LUGARU_LIBS})
 
 if(WIN32)
-	add_definitions(-DUSE_OPENAL=1 -DUSE_SDL=1 -DBinIO_STDINT_HEADER=<stdint.h>)
-	if(MINGW)
-		add_definitions(-DWIN32)
-	endif(MINGW)
+    add_definitions(-DUSE_OPENAL=1 -DUSE_SDL=1 -DBinIO_STDINT_HEADER=<stdint.h>)
+    if(MINGW)
+        add_definitions(-DWIN32)
+    endif(MINGW)
 else(WIN32)
-	add_definitions(-DPLATFORM_LINUX=1 -DPLATFORM_UNIX=1 -DUSE_OPENAL=1 -DUSE_SDL=1 -DBinIO_STDINT_HEADER=<stdint.h>)
+    add_definitions(-DPLATFORM_LINUX=1 -DPLATFORM_UNIX=1 -DUSE_OPENAL=1 -DUSE_SDL=1 -DBinIO_STDINT_HEADER=<stdint.h>)
 endif(WIN32)
 
 # Install target
 if(APPLE)
-	set(APPS_ROOT "${CMAKE_INSTALL_PREFIX}/Lugaru.app")
-	set(APPS_BIN "${APPS_ROOT}/Contents/MacOS")
-	set(APPS_DATA "${APPS_ROOT}/Contents/Resources")
+    set(APPS_ROOT "${CMAKE_INSTALL_PREFIX}/Lugaru.app")
+    set(APPS_BIN "${APPS_ROOT}/Contents/MacOS")
+    set(APPS_DATA "${APPS_ROOT}/Contents/Resources")
 endif(APPLE)
 
 if(WIN32)
-	install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru.exe DESTINATION ${CMAKE_INSTALL_PREFIX})
-	if(MSVC)
-		install(FILES ${SDLDIR}/lib/win32/msvc2008/SDL.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
-		install(FILES ${OPENALDIR}/lib/win32/msvc2008/OpenAL32.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
-	endif(MSVC)
-	if(MINGW)
-		install(FILES ${SDLDIR}/lib/win32/mingw/SDL.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
-		install(FILES ${OPENALDIR}/lib/win32/mingw/OpenAL32.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
-	endif(MINGW)
+    install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru.exe DESTINATION ${CMAKE_INSTALL_PREFIX})
+    if(MSVC)
+        install(FILES ${SDLDIR}/lib/win32/msvc2008/SDL.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
+        install(FILES ${OPENALDIR}/lib/win32/msvc2008/OpenAL32.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
+    endif(MSVC)
+    if(MINGW)
+        install(FILES ${SDLDIR}/lib/win32/mingw/SDL.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
+        install(FILES ${OPENALDIR}/lib/win32/mingw/OpenAL32.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
+    endif(MINGW)
 else(WIN32)
-	if(APPLE)
-		set(CMAKE_INSTALL_PREFIX "${APPS_BIN}")
-		install(FILES ${SRCDIR}/mac-res/lugaru.icns DESTINATION ${APPS_DATA})
-		install(FILES ${SRCDIR}/mac-res/Info.plist DESTINATION ${APPS_ROOT}/Contents)
-	endif(APPLE)
-	install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru DESTINATION ${CMAKE_INSTALL_PREFIX})
-	if(APPLE AND LUGARU_HAS_INTERNAL_SDL)
-		install(FILES ${SDLDIR}/lib/macosx/libSDL-1.2.0.dylib DESTINATION ${CMAKE_INSTALL_PREFIX})
-	endif(APPLE AND LUGARU_HAS_INTERNAL_SDL)
+    if(APPLE)
+        set(CMAKE_INSTALL_PREFIX "${APPS_BIN}")
+        install(FILES ${SRCDIR}/mac-res/lugaru.icns DESTINATION ${APPS_DATA})
+        install(FILES ${SRCDIR}/mac-res/Info.plist DESTINATION ${APPS_ROOT}/Contents)
+    endif(APPLE)
+    install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru DESTINATION ${CMAKE_INSTALL_PREFIX})
+    if(APPLE AND LUGARU_HAS_INTERNAL_SDL)
+        install(FILES ${SDLDIR}/lib/macosx/libSDL-1.2.0.dylib DESTINATION ${CMAKE_INSTALL_PREFIX})
+    endif(APPLE AND LUGARU_HAS_INTERNAL_SDL)
 endif(WIN32)
 
 if(NOT APPLE)
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/Data DESTINATION ${CMAKE_INSTALL_PREFIX})
+    install(DIRECTORY ${CMAKE_SOURCE_DIR}/Data DESTINATION ${CMAKE_INSTALL_PREFIX})
 endif(NOT APPLE)
 
 if(APPLE)
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/Data DESTINATION ${APPS_ROOT})
+    install(DIRECTORY ${CMAKE_SOURCE_DIR}/Data DESTINATION ${APPS_ROOT})
 endif(APPLE)
 
 if (LUGARU_MISSING_DEPS)
     message(STATUS "Using our copy of these libs: ${LUGARU_MISSING_DEPS}")
 endif (LUGARU_MISSING_DEPS)
-
