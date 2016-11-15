@@ -53,3 +53,19 @@ build_mingw32:
       - ./mingw32-build
   tags:
     - shared
+
+build_mingw64:
+  stage: build
+  script:
+    - dnf --quiet --assumeyes install mingw64-gcc mingw64-gcc-c++ mingw64-binutils
+    - export PKG_CONFIG_LIBDIR="/usr/x86_64-w64-mingw32/sys-root/mingw/lib/pkgconfig:/usr/x86_64-w64-mingw32/sys-root/mingw/share/pkgconfig"
+    - export PATH=/usr/x86_64-w64-mingw32/bin:$PATH
+    - mkdir -p x86_64-w64-mingw32 mingw64-build; cd x86_64-w64-mingw32
+    - cmake .. -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-mingw64.cmake -DLUGARU_INSTALL_PREFIX=/builds/osslugaru/lugaru/mingw64-build -DLUGARU_FORCE_INTERNAL_SDL=True -DLUGARU_FORCE_INTERNAL_GLU=True -DLUGARU_FORCE_INTERNAL_JPEG=True -DLUGARU_FORCE_INTERNAL_PNG=True -DLUGARU_FORCE_INTERNAL_VORBIS=True -DLUGARU_FORCE_INTERNAL_ZLIB=True -DLUGARU_FORCE_INTERNAL_OPENAL=True
+    - make -j4; make install
+  artifacts:
+    expire_in: 7d
+    paths:
+      - ./mingw64-build
+  tags:
+    - shared
