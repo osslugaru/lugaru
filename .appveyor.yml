@@ -19,5 +19,5 @@ before_build:
 
 # Tell it what to build
 build:
-  - project: lugaru.sln
-  - parallel: true
+  project: lugaru.sln
+  parallel: true
