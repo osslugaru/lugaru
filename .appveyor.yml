@@ -1,6 +1,9 @@
 # This is pretty useless, but it sets the version of the build
 version: 0.0.0.build.{build}
 
+# Force configuration
+configuration: Debug
+
 # Use Visual Studio 2015 base image
 image: Visual Studio 2015
 
