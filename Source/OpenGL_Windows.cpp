@@ -21,29 +21,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
 #ifdef WIN32
-#define UINT8 WIN32API_UINT8
-#define UINT16 WIN32API_UINT16
-#define boolean WIN32API_boolean
 #include <windows.h>
-#undef UINT8
-#undef UINT16
-#undef boolean
 #endif
-
-
 
 #include "Game.h"
-extern "C" {
-#include "zlib.h"
-#include "png.h"
-#ifdef WIN32
-#define INT32 INT32_jpeg
-#include "jpeglib.h"
-#undef INT32
-#else
-#include "jpeglib.h"
-#endif
-}
+
+#include <jpeglib.h>
+#include <png.h>
+#include <zlib.h>
 
 using namespace Game;
 
