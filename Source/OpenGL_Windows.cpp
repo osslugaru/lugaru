@@ -89,18 +89,11 @@ extern float slomofreq;
 #include "win-res/resource.h"
 #endif
 
+extern SDL_Window *sdlwindow;
+
 using namespace std;
 
 SDL_Rect **resolutions = NULL;
-static SDL_Rect rect_1024_768 = { 0, 0, 1024, 768 };
-static SDL_Rect rect_800_600  = { 0, 0, 800,  600 };
-static SDL_Rect rect_640_480  = { 0, 0, 640,  480 };
-static SDL_Rect *hardcoded_resolutions[] = {
-    &rect_1024_768,
-    &rect_800_600,
-    &rect_640_480,
-    NULL
-};
 
 Boolean SetUp ();
 void DoUpdate ();
@@ -236,45 +229,46 @@ void initGL()
 
 static void toggleFullscreen()
 {
-    if (!SDL_WM_ToggleFullScreen(SDL_GetVideoSurface())) {
-        SDL_Surface* screen = SDL_GetVideoSurface();
-        Uint32 flags = screen->flags;
-        screen = SDL_SetVideoMode(0, 0, 0, flags ^ SDL_FULLSCREEN);
-        if (!screen)
-            screen = SDL_SetVideoMode(0, 0, 0, flags);
-        if (!screen)
-            exit(1);
-        //reload opengl state
-        initGL();
-        Texture::reloadAll();
-        if (text)
-            text->BuildFont();
-        if (firstload) {
-            screentexture = 0;
-            LoadScreenTexture();
-        }
-        screentexture2 = 0;
+    Uint32 flags = SDL_GetWindowFlags(sdlwindow);
+    if (flags & SDL_WINDOW_FULLSCREEN) {
+        flags &= ~SDL_WINDOW_FULLSCREEN;
+    } else {
+        flags |= SDL_WINDOW_FULLSCREEN;
     }
+    SDL_SetWindowFullscreen(sdlwindow, flags);
 }
 
-static void sdlEventProc(const SDL_Event &e)
+static SDL_bool sdlEventProc(const SDL_Event &e)
 {
     switch (e.type) {
-    case SDL_MOUSEMOTION:
-        deltah += e.motion.xrel;
-        deltav += e.motion.yrel;
+        case SDL_QUIT:
+            return SDL_FALSE;
+
+        case SDL_WINDOWEVENT:
+            if (e.window.event == SDL_WINDOWEVENT_CLOSE) {
+                return SDL_FALSE;
+            }
         break;
 
-    case SDL_KEYDOWN:
-        if ((e.key.keysym.sym == SDLK_g) &&
-                (e.key.keysym.mod & KMOD_CTRL) &&
-                !(SDL_GetVideoSurface()->flags & SDL_FULLSCREEN) ) {
-            SDL_WM_GrabInput( ((SDL_WM_GrabInput(SDL_GRAB_QUERY) == SDL_GRAB_ON) ? SDL_GRAB_OFF : SDL_GRAB_ON) );
-        } else if ( (e.key.keysym.sym == SDLK_RETURN) && (e.key.keysym.mod & KMOD_ALT) ) {
-            toggleFullscreen();
-        }
+        case SDL_MOUSEMOTION:
+            deltah += e.motion.xrel;
+            deltav += e.motion.yrel;
+        break;
+
+        case SDL_KEYDOWN:
+            if ((e.key.keysym.scancode == SDL_SCANCODE_G) &&
+                (e.key.keysym.mod & KMOD_CTRL)) {
+                SDL_bool mode = SDL_TRUE;
+                if ((SDL_GetWindowFlags(sdlwindow) & SDL_WINDOW_FULLSCREEN) == 0)
+                    mode = (SDL_GetWindowGrab(sdlwindow) ? SDL_FALSE : SDL_TRUE);
+                SDL_SetWindowGrab(sdlwindow, mode);
+                SDL_SetRelativeMouseMode(mode);
+            } else if ( (e.key.keysym.scancode == SDL_SCANCODE_RETURN) && (e.key.keysym.mod & KMOD_ALT) ) {
+                toggleFullscreen();
+            }
         break;
     }
+    return SDL_TRUE;
 }
 
 
@@ -297,6 +291,8 @@ Boolean SetUp ()
 
     DefaultSettings();
 
+    const int displayIdx = 0;  // !!! FIXME: other monitors?
+
     if (!SDL_WasInit(SDL_INIT_VIDEO))
         if (SDL_Init(SDL_INIT_VIDEO) == -1) {
             fprintf(stderr, "SDL_Init() failed: %s\n", SDL_GetError());
@@ -316,15 +312,24 @@ Boolean SetUp ()
         return false;
     }
 
-    SDL_Rect **res = SDL_ListModes(NULL, SDL_FULLSCREEN | SDL_OPENGL);
-    if ( (res == NULL) || (res == ((SDL_Rect **) - 1)) || (res[0] == NULL) || (res[0]->w < 640) || (res[0]->h < 480) )
-        res = hardcoded_resolutions;
+    int count = 0;
+    const int nummodes = SDL_GetNumDisplayModes(displayIdx);
+    for (int i = 0; i < nummodes; i++)
+    {
+        SDL_DisplayMode mode;
+        if (SDL_GetDisplayMode(displayIdx, i, &mode) == -1)
+            continue;
+        if ((mode.w < 640) || (mode.h < 480))
+            continue;  // sane lower limit.
+        count++;
+    }
 
-    // reverse list (it was sorted biggest to smallest by SDL)...
-    int count;
-    for (count = 0; res[count]; count++) {
-        if ((res[count]->w < 640) || (res[count]->h < 480))
-            break;   // sane lower limit.
+    if (count == 0) {
+        const std::string error = "No suitable video resolutions found.";
+        cerr << error << endl;
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Lugaru init failed!", error.c_str(), NULL);
+        SDL_Quit();
+        return false;
     }
 
     static SDL_Rect *resolutions_block = NULL;
@@ -338,7 +343,15 @@ Boolean SetUp ()
 
     resolutions[count--] = NULL;
     for (int i = 0; count >= 0; i++, count--) {
-        memcpy(&resolutions_block[count], res[i], sizeof (SDL_Rect));
+        /* FIXME - Pretty sure this should use nummodes and not count */
+        SDL_DisplayMode mode;
+        if (SDL_GetDisplayMode(displayIdx, i, &mode) == -1)
+            continue;
+        if ((mode.w < 640) || (mode.h < 480))
+            continue;  // sane lower limit.
+        resolutions_block[count].x = resolutions_block[count].y = 0;
+        resolutions_block[count].w = mode.w;
+        resolutions_block[count].h = mode.h;
         resolutions[count] = &resolutions_block[count];
     }
 
@@ -348,51 +361,68 @@ Boolean SetUp ()
             printf("  %d x %d\n", (int) resolutions[i]->w, (int) resolutions[i]->h);
     }
 
-    Uint32 sdlflags = SDL_OPENGL;
-
-    if (!cmdline("windowed"))
-        sdlflags |= SDL_FULLSCREEN;
-
-    SDL_WM_SetCaption("Lugaru", "Lugaru");
-
-    SDL_ShowCursor(0);
-
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 1);
-#if SDL_VERSION_ATLEAST(1, 2, 10)
-    SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, vblsync);
-#endif
 
-    if (SDL_SetVideoMode(kContextWidth, kContextHeight, 0, sdlflags) == NULL) {
-        fprintf(stderr, "SDL_SetVideoMode() failed: %s\n", SDL_GetError());
+    Uint32 sdlflags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
+    if (!cmdline("windowed"))
+        sdlflags |= SDL_WINDOW_FULLSCREEN;
+    if (!cmdline("nomousegrab"))
+        sdlflags |= SDL_WINDOW_INPUT_GRABBED;
+
+    sdlwindow = SDL_CreateWindow("Lugaru", SDL_WINDOWPOS_CENTERED_DISPLAY(displayIdx), SDL_WINDOWPOS_CENTERED_DISPLAY(displayIdx),
+                                 kContextWidth, kContextHeight, sdlflags);
+
+    if (!sdlwindow) {
+        fprintf(stderr, "SDL_CreateWindow() failed: %s\n", SDL_GetError());
         fprintf(stderr, "forcing 640x480...\n");
         kContextWidth = 640;
         kContextHeight = 480;
-        if (SDL_SetVideoMode(kContextWidth, kContextHeight, 0, sdlflags) == NULL) {
-            fprintf(stderr, "SDL_SetVideoMode() failed: %s\n", SDL_GetError());
+        sdlwindow = SDL_CreateWindow("Lugaru", SDL_WINDOWPOS_CENTERED_DISPLAY(displayIdx), SDL_WINDOWPOS_CENTERED_DISPLAY(displayIdx),
+                                     kContextWidth, kContextHeight, sdlflags);
+        if (!sdlwindow) {
+            fprintf(stderr, "SDL_CreateWindow() failed: %s\n", SDL_GetError());
             fprintf(stderr, "forcing 640x480 windowed mode...\n");
-            sdlflags &= ~SDL_FULLSCREEN;
-            if (SDL_SetVideoMode(kContextWidth, kContextHeight, 0, sdlflags) == NULL) {
-                fprintf(stderr, "SDL_SetVideoMode() failed: %s\n", SDL_GetError());
+            sdlflags &= ~SDL_WINDOW_FULLSCREEN;
+            sdlwindow = SDL_CreateWindow("Lugaru", SDL_WINDOWPOS_CENTERED_DISPLAY(displayIdx), SDL_WINDOWPOS_CENTERED_DISPLAY(displayIdx),
+                                         kContextWidth, kContextHeight, sdlflags);
+
+            if (!sdlwindow) {
+                fprintf(stderr, "SDL_CreateWindow() failed: %s\n", SDL_GetError());
                 return false;
             }
         }
     }
 
-    int dblbuf = 0;
-    if ((SDL_GL_GetAttribute(SDL_GL_DOUBLEBUFFER, &dblbuf) == -1) || (!dblbuf)) {
-        fprintf(stderr, "Failed to get double buffered GL context!\n");
+    SDL_GLContext glctx = SDL_GL_CreateContext(sdlwindow);
+    if (!glctx) {
+        fprintf(stderr, "SDL_GL_CreateContext() failed: %s\n", SDL_GetError());
         SDL_Quit();
         return false;
     }
+
+    SDL_GL_MakeCurrent(sdlwindow, glctx);
 
     if (!lookup_all_glsyms()) {
+        fprintf(stderr, "Missing required OpenGL functions.\n");
         SDL_Quit();
         return false;
     }
 
-    if (!cmdline("nomousegrab"))
-        SDL_WM_GrabInput(SDL_GRAB_ON);
+    int dblbuf = 0;
+    if ((SDL_GL_GetAttribute(SDL_GL_DOUBLEBUFFER, &dblbuf) == -1) || (!dblbuf))
+    {
+        fprintf(stderr, "Failed to get a double-buffered context.\n");
+        SDL_Quit();
+        return false;
+    }
+
+    if (SDL_GL_SetSwapInterval(-1) == -1)  // try swap_tear first.
+        SDL_GL_SetSwapInterval(1);
+
+    SDL_ShowCursor(0);
+    SDL_SetWindowGrab(sdlwindow, SDL_TRUE);
+    SDL_SetRelativeMouseMode(SDL_TRUE);
 
 
     initGL();
@@ -575,7 +605,7 @@ void CleanUp (void)
 
 static bool IsFocused()
 {
-    return ((SDL_GetAppState() & SDL_APPINPUTFOCUS) != 0);
+    return ((SDL_GetWindowFlags(sdlwindow) & SDL_WINDOW_INPUT_FOCUS) != 0);
 }
 
 
@@ -713,11 +743,10 @@ int main(int argc, char **argv)
                     if (!waiting) {
                         // message pump
                         while ( SDL_PollEvent( &e ) ) {
-                            if ( e.type == SDL_QUIT ) {
+                            if (!sdlEventProc(e)) {
                                 gDone = true;
                                 break;
                             }
-                            sdlEventProc(e);
                         }
                     }
 
@@ -731,12 +760,7 @@ int main(int argc, char **argv)
                     }
 
                     // game is not in focus, give CPU time to other apps by waiting for messages instead of 'peeking'
-                    SDL_ActiveEvent evt;
-                    SDL_WaitEvent((SDL_Event*)&evt);
-                    if (evt.type == SDL_ACTIVEEVENT && evt.gain == 1)
-                        gameFocused = true;
-                    else if (evt.type == SDL_QUIT)
-                        gDone = true;
+                    SDL_WaitEvent(0);
                 }
             }
 

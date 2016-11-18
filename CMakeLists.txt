@@ -2,6 +2,8 @@ project(lugaru)
 
 cmake_minimum_required(VERSION 3.5)
 
+INCLUDE(FindPkgConfig)
+
 set(SRCDIR "${CMAKE_CURRENT_SOURCE_DIR}/Source")
 set(DEPDIR "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies")
 
@@ -38,7 +40,6 @@ endif(APPLE)
 
 if(APPLE)
     # Save our sanity; Set all available libraries to internal by default
-    set(LUGARU_FORCE_INTERNAL_SDL True)
     set(LUGARU_FORCE_INTERNAL_GLU True)
     set(LUGARU_FORCE_INTERNAL_JPEG True)
     set(LUGARU_FORCE_INTERNAL_PNG True)
@@ -206,49 +207,7 @@ if (NOT OPENAL_FOUND OR LUGARU_FORCE_INTERNAL_OPENAL)
     endif (NOT LUGARU_HAS_INTERNAL_OPENAL)
 endif (NOT OPENAL_FOUND OR LUGARU_FORCE_INTERNAL_OPENAL)
 
-option (LUGARU_FORCE_INTERNAL_SDL "Force internal libSDL, even if there's a system version" False)
-if (NOT LUGARU_FORCE_INTERNAL_SDL)
-    find_package(SDL)
-else(NOT LUGARU_FORCE_INTERNAL_SDL)
-    set(SDL_FOUND False)
-endif (NOT LUGARU_FORCE_INTERNAL_SDL)
-
-if (NOT SDL_FOUND)
-    message(STATUS "Using internal copy of SDL")
-    set(LUGARU_MISSING_DEPS "${LUGARU_MISSING_DEPS} SDL")
-    set(SDLDIR "${DEPDIR}/SDL12")
-    set(SDL_INCLUDE_DIR "${SDLDIR}/include")
-    set(SDL_LIBRARY "")
-    if (APPLE)
-        set(LUGARU_HAS_INTERNAL_SDL True)
-        set(SDL_LIBRARY
-            ${SDLDIR}/lib/macosx/libSDL-1.2.0.dylib
-            ${SDLDIR}/lib/macosx/libSDLmain-osx.a
-        )
-    endif (APPLE)
-
-    if (WIN32)
-        set(LUGARU_HAS_INTERNAL_SDL True)
-        if (MSVC)
-          set(SDL_LIBRARY
-              ${SDLDIR}/lib/win32/msvc2008/SDLmain.lib
-              ${SDLDIR}/lib/win32/msvc2008/SDL.lib
-          )
-        endif (MSVC)
-        if (MINGW)
-          set(SDL_LIBRARY
-              "mingw32"
-              ${SDLDIR}/lib/win32/mingw/libSDLmain.a
-              ${SDLDIR}/lib/win32/mingw/libSDL.dll.a
-              "-mwindows"
-          )
-        endif (MINGW)
-    endif (WIN32)
-
-    if (NOT LUGARU_HAS_INTERNAL_SDL)
-        message(ERROR "We don't have a prebuilt SDL for this platform.")
-    endif (NOT LUGARU_HAS_INTERNAL_SDL)
-endif (NOT SDL_FOUND)
+PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
 
 option (LUGARU_FORCE_INTERNAL_PNG "Force internal libPNG, even if there's a system version" False)
 if (NOT LUGARU_FORCE_INTERNAL_PNG)
@@ -453,13 +412,13 @@ include_directories(
     ${ZLIB_INCLUDE_DIR}
     ${OPENGL_INCLUDE_DIR}
     ${GLU_INCLUDE_DIR}
-    ${SDL_INCLUDE_DIR}
+    ${SDL2_INCLUDE_DIRS}
     ${VORBISFILE_INCLUDE_DIR}
     ${OGG_INCLUDE_DIR}
     ${CMAKE_SOURCE_DIR}/Source
 )
 
-set(LUGARU_LIBS ${OPENAL_LIBRARY} ${PNG_LIBRARY} ${JPEG_LIBRARY} ${ZLIB_LIBRARIES} ${SDL_LIBRARY} ${OPENGL_glu_LIBRARY} ${VORBISFILE_LIBRARY} ${OGG_LIBRARY} ${PLATFORM_LIBS})
+set(LUGARU_LIBS ${OPENAL_LIBRARY} ${PNG_LIBRARY} ${JPEG_LIBRARY} ${ZLIB_LIBRARIES} ${SDL2_LIBRARIES} ${OPENGL_glu_LIBRARY} ${VORBISFILE_LIBRARY} ${OGG_LIBRARY} ${PLATFORM_LIBS})
 
 
 add_executable(lugaru ${LUGARU_SRCS} ${LUGARU_H})
@@ -485,11 +444,9 @@ endif(APPLE)
 if(WIN32)
     install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru.exe DESTINATION ${CMAKE_INSTALL_PREFIX})
     if(MSVC)
-        install(FILES ${SDLDIR}/lib/win32/msvc2008/SDL.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
         install(FILES ${OPENALDIR}/lib/win32/msvc2008/OpenAL32.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
     endif(MSVC)
     if(MINGW)
-        install(FILES ${SDLDIR}/lib/win32/mingw/SDL.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
         install(FILES ${OPENALDIR}/lib/win32/mingw/OpenAL32.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
     endif(MINGW)
 else(WIN32)
@@ -499,9 +456,6 @@ else(WIN32)
         install(FILES ${SRCDIR}/mac-res/Info.plist DESTINATION ${APPS_ROOT}/Contents)
     endif(APPLE)
     install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru DESTINATION ${CMAKE_INSTALL_PREFIX})
-    if(APPLE AND LUGARU_HAS_INTERNAL_SDL)
-        install(FILES ${SDLDIR}/lib/macosx/libSDL-1.2.0.dylib DESTINATION ${CMAKE_INSTALL_PREFIX})
-    endif(APPLE AND LUGARU_HAS_INTERNAL_SDL)
 endif(WIN32)
 
 if(NOT APPLE)

@@ -123,11 +123,9 @@ bool scoreadded = 0;
 int numchallengelevels = 0;
 
 bool console = false;
-char consoletext[15][256] = {};
-int consolechars[15] = {};
+std::string consoletext[15] = {};
 bool chatting = 0;
-char displaytext[15][256] = {};
-int displaychars[15] = {};
+std::string displaytext[15] = {};
 float displaytime[15] = {};
 float displayblinkdelay = 0;
 bool displayblink = 0;
@@ -154,120 +152,110 @@ void Game::fireSound(int sound)
     emit_sound_at(sound);
 }
 
-void Game::inputText(char* str, int* charselected, int* nb_chars)
+void Game::inputText(string& str, int* charselected)
 {
     SDL_Event evenement;
 
     if (!waiting) {
+        SDL_StartTextInput();
         waiting = true;
-        SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
-        SDL_EnableUNICODE(true);
     }
 
     while (SDL_PollEvent(&evenement)) {
-
         switch (evenement.type) {
+        case SDL_TEXTEDITING:
+            /* FIXME - We should handle this for complete input method support */
+            break;
+        case SDL_TEXTINPUT:
+            str.insert(*charselected, evenement.text.text);
+            (*charselected) += strlen(evenement.text.text);
+            break;
         case SDL_KEYDOWN:
             if (evenement.key.keysym.sym == SDLK_ESCAPE) {
-                for (int i = 0; i < 255; i++)
-                    str[i] = 0;
-                *nb_chars = 0;
+                str.clear();
                 *charselected = 0;
                 waiting = false;
             } else if (evenement.key.keysym.sym == SDLK_BACKSPACE) {
-                if ((*charselected) != 0) {
-                    for (int i = (*charselected) - 1; i < 255; i++)
-                        str[i] = str[i + 1];
-                    str[255] = 0;
+                if ((*charselected) > 0) {
                     (*charselected)--;
-                    (*nb_chars)--;
+                    str.erase(*charselected, 1);
                 }
             } else if (evenement.key.keysym.sym == SDLK_DELETE) {
-                if ((*charselected) < (*nb_chars)) {
-                    for (int i = (*charselected); i < 255; i++)
-                        str[i] = str[i + 1];
-                    str[255] = 0;
-                    (*nb_chars)--;
+                if ((*charselected) < str.size()) {
+                    str.erase(*charselected, 1);
                 }
             } else if (evenement.key.keysym.sym == SDLK_HOME) {
                 (*charselected) = 0;
             } else if (evenement.key.keysym.sym == SDLK_END) {
-                (*charselected) = (*nb_chars);
+                (*charselected) = str.size();
             } else if (evenement.key.keysym.sym == SDLK_LEFT) {
                 if ((*charselected) != 0)
                     (*charselected)--;
             } else if (evenement.key.keysym.sym == SDLK_RIGHT) {
-                if ((*charselected) < (*nb_chars))
+                if ((*charselected) < str.size())
                     (*charselected)++;
             } else if (evenement.key.keysym.sym == SDLK_RETURN) {
                 waiting = false;
-            } else if (evenement.key.keysym.unicode >= 32 && evenement.key.keysym.unicode < 127 && (*nb_chars) < 60) {
-                for (int i = 255; i >= (*charselected) + 1; i--)
-                    str[i] = str[i - 1];
-                str[*charselected] = evenement.key.keysym.unicode;
-                (*charselected)++;
-                (*nb_chars)++;
             }
             break;
         }
     }
 
     if (!waiting) {
-        SDL_EnableKeyRepeat(0, 0); // disable key repeat
-        SDL_EnableUNICODE(false);
+        SDL_StopTextInput();
     }
 }
 
 int setKeySelected_thread(void* data)
 {
     using namespace Game;
-    int keycode = -1;
+    int scancode = -1;
     SDL_Event evenement;
-    while (keycode == -1) {
+    while (scancode == -1) {
         SDL_WaitEvent(&evenement);
         switch (evenement.type) {
         case SDL_KEYDOWN:
-            keycode = evenement.key.keysym.sym;
+            scancode = evenement.key.keysym.scancode;
             break;
         case SDL_MOUSEBUTTONDOWN:
-            keycode = SDLK_LAST + evenement.button.button;
+            scancode = SDL_NUM_SCANCODES + evenement.button.button;
             break;
         default:
             break;
         }
     }
-    if (keycode != SDLK_ESCAPE) {
+    if (scancode != SDL_SCANCODE_ESCAPE) {
         fireSound();
         switch (keyselect) {
         case 0:
-            forwardkey = keycode;
+            forwardkey = scancode;
             break;
         case 1:
-            backkey = keycode;
+            backkey = scancode;
             break;
         case 2:
-            leftkey = keycode;
+            leftkey = scancode;
             break;
         case 3:
-            rightkey = keycode;
+            rightkey = scancode;
             break;
         case 4:
-            crouchkey = keycode;
+            crouchkey = scancode;
             break;
         case 5:
-            jumpkey = keycode;
+            jumpkey = scancode;
             break;
         case 6:
-            drawkey = keycode;
+            drawkey = scancode;
             break;
         case 7:
-            throwkey = keycode;
+            throwkey = scancode;
             break;
         case 8:
-            attackkey = keycode;
+            attackkey = scancode;
             break;
         case 9:
-            consolekey = keycode;
+            consolekey = scancode;
             break;
         default:
             break;
@@ -283,7 +271,7 @@ void Game::setKeySelected()
 {
     waiting = true;
     printf("launch thread\n");
-    SDL_Thread* thread = SDL_CreateThread(setKeySelected_thread, NULL);
+    SDL_Thread* thread = SDL_CreateThread(setKeySelected_thread, NULL, NULL);
     if ( thread == NULL ) {
         fprintf(stderr, "Unable to create thread: %s\n", SDL_GetError());
         waiting = false;

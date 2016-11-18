@@ -74,7 +74,7 @@ int numsounds = 0;
 Terrain terrain;
 float sps = 0;
 
-SDL_Surface *sdlscreen;
+SDL_Window *sdlwindow;
 
 int kTextureSize = 0;
 int detail = 0;
