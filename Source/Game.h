@@ -135,11 +135,9 @@ extern bool scoreadded;
 extern int numchallengelevels;
 
 extern bool console;
-extern char consoletext[15][256];
-extern int consolechars[15];
+extern std::string consoletext[15];
 extern bool chatting;
-extern char displaytext[15][256];
-extern int displaychars[15];
+extern std::string displaytext[15];
 extern float displaytime[15];
 extern float displayblinkdelay;
 extern bool displayblink;
@@ -178,7 +176,7 @@ int checkcollide(XYZ startpoint, XYZ endpoint, int what);
 void fireSound(int sound = fireendsound);
 void setKeySelected();
 
-void inputText(char* str, int* charselected, int* nb_chars);
+void inputText(std::string& str, int* charselected);
 void flash();
 }
 
@@ -190,7 +188,15 @@ void flash();
 
 static __forceinline void swap_gl_buffers(void)
 {
-    SDL_GL_SwapBuffers();
+    extern SDL_Window *sdlwindow;
+    SDL_GL_SwapWindow(sdlwindow);
+
+    // try to limit this to 60fps, even if vsync fails.
+    Uint32 now;
+    static Uint32 frameticks = 0;
+    const Uint32 endticks = (frameticks + 16);
+    while ((now = SDL_GetTicks()) < endticks) { /* spin. */ }
+    frameticks = now;
 }
 
 extern "C" {

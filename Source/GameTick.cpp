@@ -2890,7 +2890,7 @@ void doDebugKeys()
 {
     float headprop, bodyprop, armprop, legprop;
     if (debugmode) {
-        if (Input::isKeyPressed(SDLK_h)) {
+        if (Input::isKeyPressed(SDL_SCANCODE_H)) {
             Person::players[0]->damagetolerance = 200000;
             Person::players[0]->damage = 0;
             Person::players[0]->burnt = 0;
@@ -2898,18 +2898,18 @@ void doDebugKeys()
             Person::players[0]->superpermanentdamage = 0;
         }
 
-        if (Input::isKeyPressed(SDLK_j)) {
+        if (Input::isKeyPressed(SDL_SCANCODE_J)) {
             environment++;
             if (environment > 2)
                 environment = 0;
             Setenvironment(environment);
         }
 
-        if (Input::isKeyPressed(SDLK_c)) {
+        if (Input::isKeyPressed(SDL_SCANCODE_C)) {
             cameramode = 1 - cameramode;
         }
 
-        if (Input::isKeyPressed(SDLK_x) && !Input::isKeyDown(SDLK_LSHIFT)) {
+        if (Input::isKeyPressed(SDL_SCANCODE_X) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
             if (Person::players[0]->num_weapons > 0) {
                 if (weapons[Person::players[0]->weaponids[0]].getType() == sword)
                     weapons[Person::players[0]->weaponids[0]].setType(staff);
@@ -2920,7 +2920,7 @@ void doDebugKeys()
             }
         }
 
-        if (Input::isKeyPressed(SDLK_x) && Input::isKeyDown(SDLK_LSHIFT)) {
+        if (Input::isKeyPressed(SDL_SCANCODE_X) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
             int closest = findClosestPlayer();
             if (closest >= 0) {
                 if (Person::players[closest]->num_weapons) {
@@ -2941,7 +2941,7 @@ void doDebugKeys()
             }
         }
 
-        if (Input::isKeyDown(SDLK_u)) {
+        if (Input::isKeyDown(SDL_SCANCODE_U)) {
             int closest = findClosestPlayer();
             if (closest >= 0) {
                 Person::players[closest]->yaw += multiplier * 50;
@@ -2950,9 +2950,9 @@ void doDebugKeys()
         }
 
 
-        if (Input::isKeyPressed(SDLK_o) && !Input::isKeyDown(SDLK_LSHIFT)) {
+        if (Input::isKeyPressed(SDL_SCANCODE_O) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
             int closest = findClosestPlayer();
-            if (Input::isKeyDown(SDLK_LCTRL))
+            if (Input::isKeyDown(SDL_SCANCODE_LCTRL))
                 closest = 0;
 
             if (closest >= 0) {
@@ -2977,7 +2977,7 @@ void doDebugKeys()
             }
         }
 
-        if (Input::isKeyPressed(SDLK_o) && Input::isKeyDown(SDLK_LSHIFT)) {
+        if (Input::isKeyPressed(SDL_SCANCODE_O) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
             int closest = findClosestPlayer();
             if (closest >= 0) {
                 if (Person::players[closest]->creature == wolftype) {
@@ -3045,13 +3045,13 @@ void doDebugKeys()
             }
         }
 
-        if (Input::isKeyPressed(SDLK_b) && !Input::isKeyDown(SDLK_LSHIFT)) {
+        if (Input::isKeyPressed(SDL_SCANCODE_B) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
             slomo = 1 - slomo;
             slomodelay = 1000;
         }
 
 
-        if (((Input::isKeyPressed(SDLK_i) && !Input::isKeyDown(SDLK_LSHIFT)))) {
+        if (((Input::isKeyPressed(SDL_SCANCODE_I) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT)))) {
             int closest = -1;
             float closestdist = std::numeric_limits<float>::max();
 
@@ -3105,7 +3105,7 @@ void doDebugKeys()
             }
         }
 
-        if (((Input::isKeyPressed(SDLK_i) && Input::isKeyDown(SDLK_LSHIFT)))) {
+        if (((Input::isKeyPressed(SDL_SCANCODE_I) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)))) {
             int closest = findClosestPlayer();
             XYZ flatfacing2, flatvelocity2;
             XYZ blah;
@@ -3211,7 +3211,7 @@ void doDebugKeys()
             }
         }
 
-        if (Input::isKeyPressed(SDLK_f)) {
+        if (Input::isKeyPressed(SDL_SCANCODE_F)) {
             Person::players[0]->onfire = 1 - Person::players[0]->onfire;
             if (Person::players[0]->onfire) {
                 Person::players[0]->CatchFire();
@@ -3222,7 +3222,7 @@ void doDebugKeys()
             }
         }
 
-        if (Input::isKeyPressed(SDLK_n) && !Input::isKeyDown(SDLK_LCTRL)) {
+        if (Input::isKeyPressed(SDL_SCANCODE_N) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
             //if(!Person::players[0]->skeleton.free)Person::players[0]->damage+=500;
             Person::players[0]->RagDoll(0);
             //Person::players[0]->spurt=1;
@@ -3231,7 +3231,7 @@ void doDebugKeys()
             emit_sound_at(whooshsound, Person::players[0]->coords, 128.);
         }
 
-        if (Input::isKeyPressed(SDLK_n) && Input::isKeyDown(SDLK_LCTRL)) {
+        if (Input::isKeyPressed(SDL_SCANCODE_N) && Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
             for (int i = 0; i < objects.numobjects; i++) {
                 if (objects.type[i] == treeleavestype) {
                     objects.scale[i] *= .9;
@@ -3239,7 +3239,7 @@ void doDebugKeys()
             }
         }
 
-        if (Input::isKeyPressed(SDLK_m) && Input::isKeyDown(SDLK_LSHIFT)) {
+        if (Input::isKeyPressed(SDL_SCANCODE_M) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
             editorenabled = 1 - editorenabled;
             if (editorenabled) {
                 Person::players[0]->damagetolerance = 100000;
@@ -3254,7 +3254,7 @@ void doDebugKeys()
         }
 
         //skip level
-        if (whichlevel != -2 && Input::isKeyPressed(SDLK_k) && Input::isKeyDown(SDLK_LSHIFT) && !editorenabled) {
+        if (whichlevel != -2 && Input::isKeyPressed(SDL_SCANCODE_K) && Input::isKeyDown(SDL_SCANCODE_LSHIFT) && !editorenabled) {
             targetlevel++;
             if (targetlevel > numchallengelevels - 1)
                 targetlevel = 0;
@@ -3263,20 +3263,20 @@ void doDebugKeys()
         }
 
         if (editorenabled) {
-            if (Input::isKeyPressed(SDLK_DELETE) && Input::isKeyDown(SDLK_LSHIFT)) {
+            if (Input::isKeyPressed(SDL_SCANCODE_DELETE) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
                 int closest = findClosestPlayer();
                 if (closest >= 0) {
                     Person::players.erase(Person::players.begin()+closest);
                 }
             }
 
-            if (Input::isKeyPressed(SDLK_DELETE) && Input::isKeyDown(SDLK_LCTRL)) {
+            if (Input::isKeyPressed(SDL_SCANCODE_DELETE) && Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
                 int closest = findClosestObject();
                 if (closest >= 0)
                     objects.position[closest].y -= 500;
             }
 
-            if (Input::isKeyPressed(SDLK_m) && Input::isKeyDown(SDLK_LSHIFT)) {
+            if (Input::isKeyPressed(SDL_SCANCODE_M) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
                 //drawmode++;
                 //if(drawmode>2)drawmode=0;
                 if (objects.numobjects < max_objects - 1) {
@@ -3303,7 +3303,7 @@ void doDebugKeys()
                 }
             }
 
-            if (Input::isKeyPressed(SDLK_p) && Input::isKeyDown(SDLK_LSHIFT) && !Input::isKeyDown(SDLK_LCTRL)) {
+            if (Input::isKeyPressed(SDL_SCANCODE_P) && Input::isKeyDown(SDL_SCANCODE_LSHIFT) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
                 Person::players.push_back(shared_ptr<Person>(new Person()));
 
                 Person::players.back()->scale = .2 * 5 * Person::players[0]->scale;
@@ -3440,7 +3440,7 @@ void doDebugKeys()
                 Person::players.back()->loaded = 1;
             }
 
-            if (Input::isKeyPressed(SDLK_p) && Input::isKeyDown(SDLK_LSHIFT)) {
+            if (Input::isKeyPressed(SDL_SCANCODE_P) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
                 if (Person::players.back()->numwaypoints < 90) {
                     Person::players.back()->waypoints[Person::players.back()->numwaypoints] = Person::players[0]->coords;
                     Person::players.back()->waypointtype[Person::players.back()->numwaypoints] = editorpathtype;
@@ -3448,7 +3448,7 @@ void doDebugKeys()
                 }
             }
 
-            if (Input::isKeyPressed(SDLK_p) && Input::isKeyDown(SDLK_LCTRL)) {
+            if (Input::isKeyPressed(SDL_SCANCODE_P) && Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
                 if (numpathpoints < 30) {
                     bool connected, alreadyconnected;
                     connected = 0;
@@ -3480,17 +3480,17 @@ void doDebugKeys()
                 }
             }
 
-            if (Input::isKeyPressed(SDLK_PERIOD)) {
+            if (Input::isKeyPressed(SDL_SCANCODE_PERIOD)) {
                 pathpointselected++;
                 if (pathpointselected >= numpathpoints)
                     pathpointselected = -1;
             }
-            if (Input::isKeyPressed(SDLK_COMMA) && !Input::isKeyDown(SDLK_LSHIFT)) {
+            if (Input::isKeyPressed(SDL_SCANCODE_COMMA) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
                 pathpointselected--;
                 if (pathpointselected <= -2)
                     pathpointselected = numpathpoints - 1;
             }
-            if (Input::isKeyPressed(SDLK_COMMA) && Input::isKeyDown(SDLK_LSHIFT)) {
+            if (Input::isKeyPressed(SDL_SCANCODE_COMMA) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
                 if (pathpointselected != -1) {
                     numpathpoints--;
                     pathpoint[pathpointselected] = pathpoint[numpathpoints];
@@ -3513,7 +3513,7 @@ void doDebugKeys()
                 }
             }
 
-            if (Input::isKeyPressed(SDLK_LEFT) && Input::isKeyDown(SDLK_LSHIFT) && !Input::isKeyDown(SDLK_LCTRL)) {
+            if (Input::isKeyPressed(SDL_SCANCODE_LEFT) && Input::isKeyDown(SDL_SCANCODE_LSHIFT) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
                 editortype--;
                 if (editortype == treeleavestype || editortype == 10)
                     editortype--;
@@ -3521,7 +3521,7 @@ void doDebugKeys()
                     editortype = firetype;
             }
 
-            if (Input::isKeyPressed(SDLK_RIGHT) && Input::isKeyDown(SDLK_LSHIFT) && !Input::isKeyDown(SDLK_LCTRL)) {
+            if (Input::isKeyPressed(SDL_SCANCODE_RIGHT) && Input::isKeyDown(SDL_SCANCODE_LSHIFT) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
                 editortype++;
                 if (editortype == treeleavestype || editortype == 10)
                     editortype++;
@@ -3529,44 +3529,44 @@ void doDebugKeys()
                     editortype = 0;
             }
 
-            if (Input::isKeyDown(SDLK_LEFT) && !Input::isKeyDown(SDLK_LSHIFT) && !Input::isKeyDown(SDLK_LCTRL)) {
+            if (Input::isKeyDown(SDL_SCANCODE_LEFT) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
                 editoryaw -= multiplier * 100;
                 if (editoryaw < -.01)
                     editoryaw = -.01;
             }
 
-            if (Input::isKeyDown(SDLK_RIGHT) && !Input::isKeyDown(SDLK_LSHIFT) && !Input::isKeyDown(SDLK_LCTRL)) {
+            if (Input::isKeyDown(SDL_SCANCODE_RIGHT) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
                 editoryaw += multiplier * 100;
             }
 
-            if (Input::isKeyDown(SDLK_UP) && !Input::isKeyDown(SDLK_LCTRL)) {
+            if (Input::isKeyDown(SDL_SCANCODE_UP) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
                 editorsize += multiplier;
             }
 
-            if (Input::isKeyDown(SDLK_DOWN) && !Input::isKeyDown(SDLK_LCTRL)) {
+            if (Input::isKeyDown(SDL_SCANCODE_DOWN) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
                 editorsize -= multiplier;
                 if (editorsize < .1)
                     editorsize = .1;
             }
 
 
-            if (Input::isKeyPressed(SDLK_LEFT) && Input::isKeyDown(SDLK_LSHIFT) && Input::isKeyDown(SDLK_LCTRL)) {
+            if (Input::isKeyPressed(SDL_SCANCODE_LEFT) && Input::isKeyDown(SDL_SCANCODE_LSHIFT) && Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
                 mapradius -= multiplier * 10;
             }
 
-            if (Input::isKeyPressed(SDLK_RIGHT) && Input::isKeyDown(SDLK_LSHIFT) && Input::isKeyDown(SDLK_LCTRL)) {
+            if (Input::isKeyPressed(SDL_SCANCODE_RIGHT) && Input::isKeyDown(SDL_SCANCODE_LSHIFT) && Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
                 mapradius += multiplier * 10;
             }
-            if (Input::isKeyDown(SDLK_UP) && Input::isKeyDown(SDLK_LCTRL)) {
+            if (Input::isKeyDown(SDL_SCANCODE_UP) && Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
                 editorpitch += multiplier * 100;
             }
 
-            if (Input::isKeyDown(SDLK_DOWN) && Input::isKeyDown(SDLK_LCTRL)) {
+            if (Input::isKeyDown(SDL_SCANCODE_DOWN) && Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
                 editorpitch -= multiplier * 100;
                 if (editorpitch < -.01)
                     editorpitch = -.01;
             }
-            if (Input::isKeyPressed(SDLK_DELETE) && objects.numobjects && Input::isKeyDown(SDLK_LSHIFT)) {
+            if (Input::isKeyPressed(SDL_SCANCODE_DELETE) && objects.numobjects && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
                 int closest = findClosestObject();
                 if (closest >= 0)
                     objects.DeleteObject(closest);
@@ -6296,10 +6296,7 @@ void MenuTick()
                     mainmenu = 5;
                 else
                     mainmenu = 1;
-                for (int j = 0; j < 255; j++) {
-                    displaytext[0][j] = 0;
-                }
-                displaychars[0] = 0;
+                displaytext[0].clear();
                 displayselected = 0;
                 entername = 0;
             }
@@ -6373,7 +6370,7 @@ void MenuTick()
         }
     }
 
-    if (Input::isKeyDown(SDLK_q) && Input::isKeyDown(SDLK_LMETA)) {
+    if (Input::isKeyDown(SDL_SCANCODE_Q) && Input::isKeyDown(SDL_SCANCODE_LGUI)) {
         tryquit = 1;
         if (mainmenu == 3) {
             SaveSettings();
@@ -6383,9 +6380,9 @@ void MenuTick()
     OPENAL_SetFrequency(channels[stream_menutheme], 22050);
 
     if (entername) {
-        inputText(displaytext[0], &displayselected, &displaychars[0]);
+        inputText(displaytext[0], &displayselected);
         if (!waiting) { // the input as finished
-            if (displaychars[0]) { // with enter
+            if (!displaytext[0].empty()) { // with enter
                 accountactive = Account::add(string(displaytext[0]));
 
                 mainmenu = 8;
@@ -6394,10 +6391,7 @@ void MenuTick()
 
                 fireSound(firestartsound);
 
-                for (int i = 0; i < 255; i++) {
-                    displaytext[0][i] = 0;
-                }
-                displaychars[0] = 0;
+                displaytext[0].clear();
 
                 displayselected = 0;
             }
@@ -6435,8 +6429,8 @@ void Game::Tick()
     keyboardfrozen = false;
     Input::Tick();
 
-    if (Input::isKeyPressed(SDLK_F6)) {
-        if (Input::isKeyDown(SDLK_LSHIFT))
+    if (Input::isKeyPressed(SDL_SCANCODE_F6)) {
+        if (Input::isKeyDown(SDL_SCANCODE_LSHIFT))
             stereoreverse = true;
         else
             stereoreverse = false;
@@ -6447,16 +6441,16 @@ void Game::Tick()
             printf("Stereo unreversed\n");
     }
 
-    if (Input::isKeyDown(SDLK_F7)) {
-        if (Input::isKeyDown(SDLK_LSHIFT))
+    if (Input::isKeyDown(SDL_SCANCODE_F7)) {
+        if (Input::isKeyDown(SDL_SCANCODE_LSHIFT))
             stereoseparation -= 0.001;
         else
             stereoseparation -= 0.010;
         printf("Stereo decreased increased to %f\n", stereoseparation);
     }
 
-    if (Input::isKeyDown(SDLK_F8)) {
-        if (Input::isKeyDown(SDLK_LSHIFT))
+    if (Input::isKeyDown(SDL_SCANCODE_F8)) {
+        if (Input::isKeyDown(SDL_SCANCODE_LSHIFT))
             stereoseparation += 0.001;
         else
             stereoseparation += 0.010;
@@ -6464,7 +6458,7 @@ void Game::Tick()
     }
 
 
-    if (Input::isKeyPressed(SDLK_TAB) && tutoriallevel) {
+    if (Input::isKeyPressed(SDL_SCANCODE_TAB) && tutoriallevel) {
         if (tutorialstage != 51)
             tutorialstagetime = tutorialmaxtime;
         emit_sound_np(consolefailsound, 128.);
@@ -6505,7 +6499,7 @@ void Game::Tick()
             LoadMenu();
         }
         //escape key pressed
-        if (Input::isKeyPressed(SDLK_ESCAPE) &&
+        if (Input::isKeyPressed(SDL_SCANCODE_ESCAPE) &&
                 (gameon || mainmenu == 0 || (mainmenu >= 3 && mainmenu != 8 && !(mainmenu == 7 && entername)))) {
             selected = -1;
             if (mainmenu == 0 && !winfreeze)
@@ -6566,7 +6560,7 @@ void Game::Tick()
             leveltime += multiplier;
 
         //keys
-        if (Input::isKeyPressed(SDLK_v) && debugmode) {
+        if (Input::isKeyPressed(SDL_SCANCODE_V) && debugmode) {
             freeze = 1 - freeze;
             if (freeze) {
                 OPENAL_SetFrequency(OPENAL_ALL, 0.001);
@@ -6577,12 +6571,10 @@ void Game::Tick()
             chatting = 1;
 
         if (chatting) {
-            inputText(displaytext[0], &displayselected, &displaychars[0]);
+            inputText(displaytext[0], &displayselected);
             if (!waiting) {
-                if (displaychars[0]) {
-                    for (int j = 0; j < 255; j++)
-                        displaytext[0][j] = 0;
-                    displaychars[0] = 0;
+                if (!displaytext[0].empty()) {
+                    displaytext[0].clear();
                     displayselected = 0;
                 }
                 chatting = 0;
@@ -6609,20 +6601,15 @@ void Game::Tick()
 
         if (console)
             freeze = 1;
-        if (console && !Input::isKeyDown(SDLK_LMETA)) {
-            inputText(consoletext[0], &consoleselected, &consolechars[0]);
+        if (console && !Input::isKeyDown(SDL_SCANCODE_LGUI)) {
+            inputText(consoletext[0], &consoleselected);
             if (!waiting) {
-                if (consolechars[0] > 0) {
-                    consoletext[0][consolechars[0]] = '\0';
+                if (!consoletext[0].empty()) {
                     cmd_dispatch(consoletext[0]);
                     for (int k = 14; k >= 1; k--) {
-                        for (int j = 0; j < 255; j++)
-                            consoletext[k][j] = consoletext[k - 1][j];
-                        consolechars[k] = consolechars[k - 1];
+                        consoletext[k] = consoletext[k - 1];
                     }
-                    for (int j = 0; j < 255; j++)
-                        consoletext[0][j] = 0;
-                    consolechars[0] = 0;
+                    consoletext[0].clear();
                     consoleselected = 0;
                 }
             }
@@ -6636,7 +6623,7 @@ void Game::Tick()
 
 
 
-        if (Input::isKeyDown(SDLK_q) && Input::isKeyDown(SDLK_LMETA)) {
+        if (Input::isKeyDown(SDL_SCANCODE_Q) && Input::isKeyDown(SDL_SCANCODE_LGUI)) {
             tryquit = 1;
             if (mainmenu == 3) {
                 SaveSettings();
@@ -6653,10 +6640,10 @@ void Game::Tick()
         else
             oldwinfreeze++;
 
-        if ((Input::isKeyPressed(jumpkey) || Input::isKeyPressed(SDLK_SPACE)) && !campaign)
+        if ((Input::isKeyPressed(jumpkey) || Input::isKeyPressed(SDL_SCANCODE_SPACE)) && !campaign)
             if (winfreeze)
                 winfreeze = 0;
-        if ((Input::isKeyDown(SDLK_ESCAPE)) && !campaign && gameon) {
+        if ((Input::isKeyDown(SDL_SCANCODE_ESCAPE)) && !campaign && gameon) {
             if (console) {
                 console = false;
                 freeze = 0;
@@ -6869,29 +6856,29 @@ void Game::Tick()
                         viewer.y += multiplier * 4;
                     if (Input::isKeyDown(crouchkey))
                         viewer.y -= multiplier * 4;
-                    if (     Input::isKeyPressed(SDLK_1) ||
-                             Input::isKeyPressed(SDLK_2) ||
-                             Input::isKeyPressed(SDLK_3) ||
-                             Input::isKeyPressed(SDLK_4) ||
-                             Input::isKeyPressed(SDLK_5) ||
-                             Input::isKeyPressed(SDLK_6) ||
-                             Input::isKeyPressed(SDLK_7) ||
-                             Input::isKeyPressed(SDLK_8) ||
-                             Input::isKeyPressed(SDLK_9) ||
-                             Input::isKeyPressed(SDLK_0) ||
-                             Input::isKeyPressed(SDLK_MINUS)) {
+                    if (     Input::isKeyPressed(SDL_SCANCODE_1) ||
+                             Input::isKeyPressed(SDL_SCANCODE_2) ||
+                             Input::isKeyPressed(SDL_SCANCODE_3) ||
+                             Input::isKeyPressed(SDL_SCANCODE_4) ||
+                             Input::isKeyPressed(SDL_SCANCODE_5) ||
+                             Input::isKeyPressed(SDL_SCANCODE_6) ||
+                             Input::isKeyPressed(SDL_SCANCODE_7) ||
+                             Input::isKeyPressed(SDL_SCANCODE_8) ||
+                             Input::isKeyPressed(SDL_SCANCODE_9) ||
+                             Input::isKeyPressed(SDL_SCANCODE_0) ||
+                             Input::isKeyPressed(SDL_SCANCODE_MINUS)) {
                         int whichend;
-                        if (Input::isKeyPressed(SDLK_1)) whichend = 1;
-                        if (Input::isKeyPressed(SDLK_2)) whichend = 2;
-                        if (Input::isKeyPressed(SDLK_3)) whichend = 3;
-                        if (Input::isKeyPressed(SDLK_4)) whichend = 4;
-                        if (Input::isKeyPressed(SDLK_5)) whichend = 5;
-                        if (Input::isKeyPressed(SDLK_6)) whichend = 6;
-                        if (Input::isKeyPressed(SDLK_7)) whichend = 7;
-                        if (Input::isKeyPressed(SDLK_8)) whichend = 8;
-                        if (Input::isKeyPressed(SDLK_9)) whichend = 9;
-                        if (Input::isKeyPressed(SDLK_0)) whichend = 0;
-                        if (Input::isKeyPressed(SDLK_MINUS))
+                        if (Input::isKeyPressed(SDL_SCANCODE_1)) whichend = 1;
+                        if (Input::isKeyPressed(SDL_SCANCODE_2)) whichend = 2;
+                        if (Input::isKeyPressed(SDL_SCANCODE_3)) whichend = 3;
+                        if (Input::isKeyPressed(SDL_SCANCODE_4)) whichend = 4;
+                        if (Input::isKeyPressed(SDL_SCANCODE_5)) whichend = 5;
+                        if (Input::isKeyPressed(SDL_SCANCODE_6)) whichend = 6;
+                        if (Input::isKeyPressed(SDL_SCANCODE_7)) whichend = 7;
+                        if (Input::isKeyPressed(SDL_SCANCODE_8)) whichend = 8;
+                        if (Input::isKeyPressed(SDL_SCANCODE_9)) whichend = 9;
+                        if (Input::isKeyPressed(SDL_SCANCODE_0)) whichend = 0;
+                        if (Input::isKeyPressed(SDL_SCANCODE_MINUS))
                             whichend = -1;
                         if (whichend != -1) {
                             participantfocus[whichdialogue][indialogue] = whichend;
@@ -6921,27 +6908,27 @@ void Game::Tick()
                         }
                     }
                     //TODO: should these be KeyDown or KeyPressed?
-                    if (     Input::isKeyDown(SDLK_KP1) ||
-                             Input::isKeyDown(SDLK_KP2) ||
-                             Input::isKeyDown(SDLK_KP3) ||
-                             Input::isKeyDown(SDLK_KP4) ||
-                             Input::isKeyDown(SDLK_KP5) ||
-                             Input::isKeyDown(SDLK_KP6) ||
-                             Input::isKeyDown(SDLK_KP7) ||
-                             Input::isKeyDown(SDLK_KP8) ||
-                             Input::isKeyDown(SDLK_KP9) ||
-                             Input::isKeyDown(SDLK_KP0)) {
+                    if (     Input::isKeyDown(SDL_SCANCODE_KP_1) ||
+                             Input::isKeyDown(SDL_SCANCODE_KP_2) ||
+                             Input::isKeyDown(SDL_SCANCODE_KP_3) ||
+                             Input::isKeyDown(SDL_SCANCODE_KP_4) ||
+                             Input::isKeyDown(SDL_SCANCODE_KP_5) ||
+                             Input::isKeyDown(SDL_SCANCODE_KP_6) ||
+                             Input::isKeyDown(SDL_SCANCODE_KP_7) ||
+                             Input::isKeyDown(SDL_SCANCODE_KP_8) ||
+                             Input::isKeyDown(SDL_SCANCODE_KP_9) ||
+                             Input::isKeyDown(SDL_SCANCODE_KP_0)) {
                         int whichend;
-                        if (Input::isKeyDown(SDLK_KP1)) whichend = 1;
-                        if (Input::isKeyDown(SDLK_KP2)) whichend = 2;
-                        if (Input::isKeyDown(SDLK_KP3)) whichend = 3;
-                        if (Input::isKeyDown(SDLK_KP4)) whichend = 4;
-                        if (Input::isKeyDown(SDLK_KP5)) whichend = 5;
-                        if (Input::isKeyDown(SDLK_KP6)) whichend = 6;
-                        if (Input::isKeyDown(SDLK_KP7)) whichend = 7;
-                        if (Input::isKeyDown(SDLK_KP8)) whichend = 8;
-                        if (Input::isKeyDown(SDLK_KP9)) whichend = 9;
-                        if (Input::isKeyDown(SDLK_KP0)) whichend = 0;
+                        if (Input::isKeyDown(SDL_SCANCODE_KP_1)) whichend = 1;
+                        if (Input::isKeyDown(SDL_SCANCODE_KP_2)) whichend = 2;
+                        if (Input::isKeyDown(SDL_SCANCODE_KP_3)) whichend = 3;
+                        if (Input::isKeyDown(SDL_SCANCODE_KP_4)) whichend = 4;
+                        if (Input::isKeyDown(SDL_SCANCODE_KP_5)) whichend = 5;
+                        if (Input::isKeyDown(SDL_SCANCODE_KP_6)) whichend = 6;
+                        if (Input::isKeyDown(SDL_SCANCODE_KP_7)) whichend = 7;
+                        if (Input::isKeyDown(SDL_SCANCODE_KP_8)) whichend = 8;
+                        if (Input::isKeyDown(SDL_SCANCODE_KP_9)) whichend = 9;
+                        if (Input::isKeyDown(SDL_SCANCODE_KP_0)) whichend = 0;
                         participantfacing[whichdialogue][indialogue][whichend] = facing;
                     }
                     if (indialogue >= numdialogueboxes[whichdialogue]) {
@@ -6957,17 +6944,17 @@ void Game::Tick()
                     yaw = dialoguecamerayaw[whichdialogue][indialogue];
                     pitch = dialoguecamerapitch[whichdialogue][indialogue];
                     if (dialoguetime > 0.5)
-                        if (     Input::isKeyPressed(SDLK_1) ||
-                                 Input::isKeyPressed(SDLK_2) ||
-                                 Input::isKeyPressed(SDLK_3) ||
-                                 Input::isKeyPressed(SDLK_4) ||
-                                 Input::isKeyPressed(SDLK_5) ||
-                                 Input::isKeyPressed(SDLK_6) ||
-                                 Input::isKeyPressed(SDLK_7) ||
-                                 Input::isKeyPressed(SDLK_8) ||
-                                 Input::isKeyPressed(SDLK_9) ||
-                                 Input::isKeyPressed(SDLK_0) ||
-                                 Input::isKeyPressed(SDLK_MINUS) ||
+                        if (     Input::isKeyPressed(SDL_SCANCODE_1) ||
+                                 Input::isKeyPressed(SDL_SCANCODE_2) ||
+                                 Input::isKeyPressed(SDL_SCANCODE_3) ||
+                                 Input::isKeyPressed(SDL_SCANCODE_4) ||
+                                 Input::isKeyPressed(SDL_SCANCODE_5) ||
+                                 Input::isKeyPressed(SDL_SCANCODE_6) ||
+                                 Input::isKeyPressed(SDL_SCANCODE_7) ||
+                                 Input::isKeyPressed(SDL_SCANCODE_8) ||
+                                 Input::isKeyPressed(SDL_SCANCODE_9) ||
+                                 Input::isKeyPressed(SDL_SCANCODE_0) ||
+                                 Input::isKeyPressed(SDL_SCANCODE_MINUS) ||
                                  Input::isKeyPressed(attackkey)) {
                             indialogue++;
                             if (indialogue < numdialogueboxes[whichdialogue]) {
@@ -7059,8 +7046,8 @@ void Game::Tick()
             static bool respawnkeydown;
             if (!editorenabled &&
                     (whichlevel != -2 &&
-                     (Input::isKeyDown(SDLK_z) &&
-                      Input::isKeyDown(SDLK_LMETA) &&
+                     (Input::isKeyDown(SDL_SCANCODE_Z) &&
+                      Input::isKeyDown(SDL_SCANCODE_LGUI) &&
                       debugmode) ||
                      (Input::isKeyDown(jumpkey) &&
                       !respawnkeydown &&
@@ -8104,7 +8091,7 @@ void Game::Tick()
         }
     }
 
-    if (Input::isKeyPressed(SDLK_F1))
+    if (Input::isKeyPressed(SDL_SCANCODE_F1))
         Screenshot();
 }
 

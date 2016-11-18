@@ -55,17 +55,17 @@ void DefaultSettings()
     vblsync = 1;
     debugmode = 0;
 
-    crouchkey = SDLK_LSHIFT;
-    jumpkey = SDLK_SPACE;
-    leftkey = SDLK_a;
-    forwardkey = SDLK_w;
-    backkey = SDLK_s;
-    rightkey = SDLK_d;
-    drawkey = SDLK_e;
-    throwkey = SDLK_q;
+    crouchkey = SDL_SCANCODE_LSHIFT;
+    jumpkey = SDL_SCANCODE_SPACE;
+    leftkey = SDL_SCANCODE_A;
+    forwardkey = SDL_SCANCODE_W;
+    backkey = SDL_SCANCODE_S;
+    rightkey = SDL_SCANCODE_D;
+    drawkey = SDL_SCANCODE_E;
+    throwkey = SDL_SCANCODE_Q;
     attackkey = MOUSEBUTTON1;
-    consolekey = SDLK_BACKQUOTE;
-    chatkey = SDLK_t;
+    consolekey = SDL_SCANCODE_GRAVE;
+    chatkey = SDL_SCANCODE_T;
 }
 
 void SaveSettings()
@@ -138,27 +138,27 @@ void SaveSettings()
     opstream << "\nVolume:\n";
     opstream << volume;
     opstream << "\nForward key:\n";
-    opstream << Input::keyToChar(forwardkey);
+    opstream << forwardkey;
     opstream << "\nBack key:\n";
-    opstream << Input::keyToChar(backkey);
+    opstream << backkey;
     opstream << "\nLeft key:\n";
-    opstream << Input::keyToChar(leftkey);
+    opstream << leftkey;
     opstream << "\nRight key:\n";
-    opstream << Input::keyToChar(rightkey);
+    opstream << rightkey;
     opstream << "\nJump key:\n";
-    opstream << Input::keyToChar(jumpkey);
+    opstream << jumpkey;
     opstream << "\nCrouch key:\n";
-    opstream << Input::keyToChar(crouchkey);
+    opstream << crouchkey;
     opstream << "\nDraw key:\n";
-    opstream << Input::keyToChar(drawkey);
+    opstream << drawkey;
     opstream << "\nThrow key:\n";
-    opstream << Input::keyToChar(throwkey);
+    opstream << throwkey;
     opstream << "\nAttack key:\n";
-    opstream << Input::keyToChar(attackkey);
+    opstream << attackkey;
     opstream << "\nConsole key:\n";
-    opstream << Input::keyToChar(consolekey);
+    opstream << consolekey;
     opstream << "\nChat key:\n";
-    opstream << Input::keyToChar(chatkey);
+    opstream << chatkey;
     opstream << "\nDamage bar:\n";
     opstream << showdamagebar;
     opstream << "\nStereoMode:\n";
@@ -259,38 +259,27 @@ bool LoadSettings()
         } else if ( !strncmp(setting, "Volume", 6) ) {
             ipstream >> volume;
         } else if ( !strncmp(setting, "Forward key", 11) ) {
-            ipstream.getline( string, sizeof(string) );
-            forwardkey = Input::CharToKey(string);
+            ipstream >> forwardkey;
         } else if ( !strncmp(setting, "Back key", 8) ) {
-            ipstream.getline( string, sizeof(string) );
-            backkey = Input::CharToKey(string);
+            ipstream >> backkey;
         } else if ( !strncmp(setting, "Left key", 8) ) {
-            ipstream.getline( string, sizeof(string) );
-            leftkey = Input::CharToKey(string);
+            ipstream >> leftkey;
         } else if ( !strncmp(setting, "Right key", 9) ) {
-            ipstream.getline( string, sizeof(string) );
-            rightkey = Input::CharToKey(string);
+            ipstream >> rightkey;
         } else if ( !strncmp(setting, "Jump key", 8) ) {
-            ipstream.getline( string, sizeof(string) );
-            jumpkey = Input::CharToKey(string);
+            ipstream >> jumpkey;
         } else if ( !strncmp(setting, "Crouch key", 10) ) {
-            ipstream.getline( string, sizeof(string) );
-            crouchkey = Input::CharToKey(string);
+            ipstream >> crouchkey;
         } else if ( !strncmp(setting, "Draw key", 8) ) {
-            ipstream.getline( string, sizeof(string) );
-            drawkey = Input::CharToKey(string);
+            ipstream >> drawkey;
         } else if ( !strncmp(setting, "Throw key", 9) ) {
-            ipstream.getline( string, sizeof(string) );
-            throwkey = Input::CharToKey(string);
+            ipstream >> throwkey;
         } else if ( !strncmp(setting, "Attack key", 10) ) {
-            ipstream.getline( string, sizeof(string) );
-            attackkey = Input::CharToKey(string);
+            ipstream >> attackkey;
         } else if ( !strncmp(setting, "Console key", 11) ) {
-            ipstream.getline( string, sizeof(string) );
-            consolekey = Input::CharToKey(string);
+            ipstream >> consolekey;
         } else if ( !strncmp(setting, "Chat key", 8) ) {
-            ipstream.getline( string, sizeof(string) );
-            chatkey = Input::CharToKey(string);
+            ipstream >> chatkey;
         } else if ( !strncmp(setting, "Damage bar", 10) ) {
             ipstream >> showdamagebar;
         } else if ( !strncmp(setting, "StereoMode", 10) ) {

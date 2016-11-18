@@ -1448,12 +1448,10 @@ int Game::DrawGLScene(StereoSide side)
             }
             for (i = 0; i < 15; i++)
                 if ((i != 0 || chatting) && displaytime[i] < 4)
-                    for (j = 0; j < displaychars[i]; j++) {
+                    for (j = 0; j < displaytext[i].size(); j++) {
                         glColor4f(1, 1, 1, 4 - displaytime[i]);
-                        if (j < displaychars[i]) {
-                            sprintf (string, "%c", displaytext[i][j]);
-                            text->glPrint(30 + j * 10, 30 + i * 20 + (screenheight - 330), string, 0, 1, screenwidth, screenheight);
-                        }
+                        sprintf (string, "%c", displaytext[i][j]);
+                        text->glPrint(30 + j * 10, 30 + i * 20 + (screenheight - 330), string, 0, 1, screenwidth, screenheight);
                     }
         }
 
@@ -2038,12 +2036,10 @@ int Game::DrawGLScene(StereoSide side)
                 text->glPrint(30 + (float)(consoleselected) * 10 - offset * 10, 30, string, 0, 1, 1024, 768);
             }
             for (i = 0; i < 15; i++)
-                for (j = 0; j < consolechars[i]; j++) {
+                for (j = 0; j < consoletext[i].size(); j++) {
                     glColor4f(1, 1, 1, 1 - (float)(i) / 16);
-                    if (j < consolechars[i]) {
-                        sprintf (string, "%c", consoletext[i][j]);
-                        text->glPrint(30 + j * 10 - offset * 10, 30 + i * 20, string, 0, 1, 1024, 768);
-                    }
+                    sprintf (string, "%c", consoletext[i][j]);
+                    text->glPrint(30 + j * 10 - offset * 10, 30 + i * 20, string, 0, 1, 1024, 768);
                 }
         }
     }
