@@ -138,13 +138,40 @@ if(MSVC) # MSVC non-C99 support biting us hard
 endif(MSVC)
 
 if(WIN32)
-  ENABLE_LANGUAGE(RC)
+  if(CMAKE_CROSSCOMPILING)
+    ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
+						  COMMAND ${CMAKE_RC_COMPILER}
+							  -I${SRCDIR}/win-res
+							  -o ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
+							  -i${SRCDIR}/win-res/Lugaru.rc
+					      DEPENDS ${SRCDIR}/win-res/Lugaru.rc
+						  )
+  endif(CMAKE_CROSSCOMPILING)
+  if(NOT CMAKE_CROSSCOMPILING)
+   if(MSVC)
+    ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
+						  COMMAND rc
+							  -I${SRCDIR}/win-res
+							  -fo${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
+							  ${SRCDIR}/win-res/Lugaru.rc
+					      DEPENDS ${SRCDIR}/win-res/Lugaru.rc
+						  )
+   endif(MSVC)
+   if(MINGW)
+    ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
+						  COMMAND windres
+							  -I${SRCDIR}/win-res
+							  -o ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
+							  -i${SRCDIR}/win-res/Lugaru.rc
+					      DEPENDS ${SRCDIR}/win-res/Lugaru.rc
+						  )
+   endif(MINGW)
+  endif(NOT CMAKE_CROSSCOMPILING)
 
-  # !!! FIXME: get rid of WinDefs.{cpp,h}
+  # !!! FIXME: get rid of this.
   set(LUGARU_SRCS
-    ${LUGARU_SRCS}
-    ${SRCDIR}/WinDefs.cpp
-    ${SRCDIR}/win-res/Lugaru.rc)
+	${LUGARU_SRCS}
+	${SRCDIR}/WinDefs.cpp)
 
   set(LUGARU_H
     ${LUGARU_H}
@@ -421,7 +448,11 @@ include_directories(
 set(LUGARU_LIBS ${OPENAL_LIBRARY} ${PNG_LIBRARY} ${JPEG_LIBRARY} ${ZLIB_LIBRARIES} ${SDL2_LIBRARIES} ${OPENGL_glu_LIBRARY} ${VORBISFILE_LIBRARY} ${OGG_LIBRARY} ${PLATFORM_LIBS})
 
 
-add_executable(lugaru ${LUGARU_SRCS} ${LUGARU_H})
+if(WIN32)
+    add_executable(lugaru ${LUGARU_SRCS} ${LUGARU_H} lugaru_resource.obj)
+else(WIN32)
+    add_executable(lugaru ${LUGARU_SRCS} ${LUGARU_H})
+endif(WIN32)
 
 target_link_libraries(lugaru ${LUGARU_LIBS})
 

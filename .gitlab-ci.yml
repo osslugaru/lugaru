@@ -69,3 +69,4 @@ build_mingw64:
       - ./mingw64-build
   tags:
     - shared
+
