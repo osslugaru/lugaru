@@ -45,7 +45,7 @@ build_mingw32:
     - export PKG_CONFIG_LIBDIR="/usr/i686-w64-mingw32/sys-root/mingw/lib/pkgconfig:/usr/i686-w64-mingw32/sys-root/mingw/share/pkgconfig"
     - export PATH=/usr/i686-w64-mingw32/bin:$PATH
     - mkdir -p i686-w64-mingw32 mingw32-build; cd i686-w64-mingw32
-    - cmake .. -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-mingw32.cmake -DLUGARU_INSTALL_PREFIX=/builds/osslugaru/lugaru/mingw32-build -DLUGARU_FORCE_INTERNAL_GLU=True -DLUGARU_FORCE_INTERNAL_OPENAL=True -DLUGARU_FORCE_INTERNAL_OPENGL=True
+    - cmake .. -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-mingw32.cmake -DLUGARU_INSTALL_PREFIX=/builds/osslugaru/lugaru/mingw32-build
     - make -j4; make install
   artifacts:
     expire_in: 7d
@@ -61,7 +61,7 @@ build_mingw64:
     - export PKG_CONFIG_LIBDIR="/usr/x86_64-w64-mingw32/sys-root/mingw/lib/pkgconfig:/usr/x86_64-w64-mingw32/sys-root/mingw/share/pkgconfig"
     - export PATH=/usr/x86_64-w64-mingw32/bin:$PATH
     - mkdir -p x86_64-w64-mingw32 mingw64-build; cd x86_64-w64-mingw32
-    - cmake .. -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-mingw64.cmake -DLUGARU_INSTALL_PREFIX=/builds/osslugaru/lugaru/mingw64-build -DLUGARU_FORCE_INTERNAL_GLU=True- -DLUGARU_FORCE_INTERNAL_OPENAL=True -DLUGARU_FORCE_INTERNAL_OPENGL=True
+    - cmake .. -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-mingw64.cmake -DLUGARU_INSTALL_PREFIX=/builds/osslugaru/lugaru/mingw64-build
     - make -j4; make install
   artifacts:
     expire_in: 7d

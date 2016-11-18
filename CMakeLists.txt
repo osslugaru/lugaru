@@ -186,16 +186,10 @@ endif (APPLE)
 # Deal with dependencies...
 find_package(OpenGL REQUIRED)
 # force this include dir no matter what on Windows, so we get sane headers.
-if(NOT WIN32)
-    option (LUGARU_FORCE_INTERNAL_OPENGL "Force internal OpenGL headers, even if there's a system version" True)
-    if (LUGARU_FORCE_INTERNAL_OPENGL)
-        include_directories("${DEPDIR}/OpenGL")
-    endif (LUGARU_FORCE_INTERNAL_OPENGL)
-endif(NOT WIN32)
-
-if(WIN32)
+option (LUGARU_FORCE_INTERNAL_OPENGL "Force internal OpenGL headers, even if there's a system version" True)
+if (LUGARU_FORCE_INTERNAL_OPENGL)
     include_directories("${DEPDIR}/OpenGL")
-endif(WIN32)
+endif (LUGARU_FORCE_INTERNAL_OPENGL)
 
 if(MSVC) # More Visual Studio annoyances
     include_directories("${DEPDIR}/msinttypes")
@@ -203,7 +197,12 @@ endif(MSVC)
 
 option (LUGARU_FORCE_INTERNAL_OPENAL "Force internal libOpenAL, even if there's a system version" False)
 if (NOT LUGARU_FORCE_INTERNAL_OPENAL)
-    find_package(OpenAL REQUIRED)
+    # FIXME: We should remove bundled libs and allow building OpenAL from source, for all platforms
+    if (WIN32)
+        find_package(OpenAL)
+    else (WIN32)
+        find_package(OpenAL REQUIRED)
+    endif()
 else(NOT LUGARU_FORCE_INTERNAL_OPENAL)
     set(OPENAL_FOUND False)
 endif (NOT LUGARU_FORCE_INTERNAL_OPENAL)
@@ -445,7 +444,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/Source
 )
 
-set(LUGARU_LIBS ${OPENAL_LIBRARY} ${PNG_LIBRARY} ${JPEG_LIBRARY} ${ZLIB_LIBRARIES} ${SDL2_LIBRARIES} ${OPENGL_glu_LIBRARY} ${VORBISFILE_LIBRARY} ${OGG_LIBRARY} ${PLATFORM_LIBS})
+set(LUGARU_LIBS ${OPENAL_LIBRARY} ${PNG_LIBRARY} ${JPEG_LIBRARY} ${ZLIB_LIBRARIES} ${SDL2_LIBRARIES} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY} ${VORBISFILE_LIBRARY} ${OGG_LIBRARY} ${PLATFORM_LIBS})
 
 
 if(WIN32)
