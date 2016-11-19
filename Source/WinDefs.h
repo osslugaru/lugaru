@@ -89,8 +89,6 @@ inline bool isnormal( double x)
 }
 */
 
-typedef unsigned int uintptr_t;
-
 
 // fix file names to use '/' instead of ':'
 char* ConvertFileName( const char* orgfilename);
