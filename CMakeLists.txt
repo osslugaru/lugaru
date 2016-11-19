@@ -430,6 +430,25 @@ endif(APPLE)
 
 if(WIN32)
     install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru.exe DESTINATION ${CMAKE_INSTALL_PREFIX})
+    if(MINGW)
+        set(LIBGCC_S libgcc_s_sjlj-1.dll)
+        if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64") # MinGW64
+            set(LIBGCC_S libgcc_s_seh-1.dll)
+        endif(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+        # FIXME: Filter out unneeded DLLs when building against some internal deps
+        set(DLL_ROOT ${CMAKE_FIND_ROOT_PATH}/bin)
+        install(FILES ${DLL_ROOT}/${LIBGCC_S}
+                      ${DLL_ROOT}/libjpeg-62.dll
+                      ${DLL_ROOT}/libogg-0.dll
+                      ${DLL_ROOT}/libpng16-16.dll
+                      ${DLL_ROOT}/libstdc++-6.dll
+                      ${DLL_ROOT}/libvorbis-0.dll
+                      ${DLL_ROOT}/libvorbisfile-3.dll
+                      ${DLL_ROOT}/libwinpthread-1.dll
+                      ${DLL_ROOT}/SDL2.dll
+                      ${DLL_ROOT}/zlib1.dll
+                DESTINATION ${CMAKE_INSTALL_PREFIX})
+    endif(MINGW)
 else(WIN32)
     if(APPLE)
         set(CMAKE_INSTALL_PREFIX "${APPS_BIN}")
