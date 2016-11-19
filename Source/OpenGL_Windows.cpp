@@ -92,6 +92,7 @@ void CleanUp (void);
 #pragma warning(disable: 4273)
 #endif
 
+#ifndef __MINGW32__ // FIXME: Temporary workaround for GL-8
 #define GL_FUNC(ret,fn,params,call,rt) \
     extern "C" { \
         static ret (GLAPIENTRY *p##fn) params = NULL; \
@@ -99,6 +100,7 @@ void CleanUp (void);
     }
 #include "glstubs.h"
 #undef GL_FUNC
+#endif // __MINGW32__
 
 #ifdef _MSC_VER
 #pragma warning(pop)
@@ -117,10 +119,12 @@ static bool lookup_glsym(const char *funcname, void **func)
 static bool lookup_all_glsyms(void)
 {
     bool retval = true;
+#ifndef __MINGW32__ // FIXME: Temporary workaround for GL-8
 #define GL_FUNC(ret,fn,params,call,rt) \
         if (!lookup_glsym(#fn, (void **) &p##fn)) retval = false;
 #include "glstubs.h"
 #undef GL_FUNC
+#endif // __MINGW32__
     return retval;
 }
 
@@ -577,12 +581,14 @@ void CleanUp (void)
     LOGFUNC;
 
     SDL_Quit();
+#ifndef __MINGW32__ // FIXME: Temporary workaround for GL-8
 #define GL_FUNC(ret,fn,params,call,rt) p##fn = NULL;
 #include "glstubs.h"
 #undef GL_FUNC
     // cheat here...static destructors are calling glDeleteTexture() after
     //  the context is destroyed and libGL unloaded by SDL_Quit().
     pglDeleteTextures = glDeleteTextures_doNothing;
+#endif // __MINGW32__
 
 }
 
