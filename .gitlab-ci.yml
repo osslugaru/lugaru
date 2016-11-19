@@ -6,6 +6,7 @@ cache:
   - /var/cache/dnf
 
 before_script:
+  - dnf --quiet --assumeyes "dnf-command(copr)"
   - dnf --assumeyes copr enable ngompa/mingw-openal-soft
   - dnf --quiet --assumeyes install /usr/bin/cmake "pkgconfig(libjpeg)" "pkgconfig(openal)" "pkgconfig(sdl2)" "pkgconfig(glu)" "pkgconfig(libpng)" "pkgconfig(zlib)" "pkgconfig(vorbis)" "pkgconfig(vorbisfile)" "pkgconfig(ogg)" make
 
