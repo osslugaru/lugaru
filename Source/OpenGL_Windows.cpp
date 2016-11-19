@@ -410,9 +410,8 @@ Boolean SetUp ()
         SDL_GL_SetSwapInterval(1);
 
     SDL_ShowCursor(0);
-    SDL_SetWindowGrab(sdlwindow, SDL_TRUE);
-    SDL_SetRelativeMouseMode(SDL_TRUE);
-
+    if (!cmdline("nomousegrab"))
+        SDL_SetRelativeMouseMode(SDL_TRUE);
 
     initGL();
 
