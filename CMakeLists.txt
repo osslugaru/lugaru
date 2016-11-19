@@ -216,7 +216,7 @@ if (NOT OPENAL_FOUND OR LUGARU_FORCE_INTERNAL_OPENAL)
     message(STATUS "Using internal copy of OpenAL")
     set(LUGARU_MISSING_DEPS "${LUGARU_MISSING_DEPS} OpenAL")
     set(OPENALDIR "${DEPDIR}/OpenAL")
-    set(OPENAL_INCLUDE_DIR "${OPENALDIR}/include/AL")
+    set(OPENAL_INCLUDE_DIR "${OPENALDIR}/include")
     set(OPENAL_LIBRARY "")
 
     if (WIN32)
