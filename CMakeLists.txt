@@ -201,7 +201,7 @@ if (NOT LUGARU_FORCE_INTERNAL_OPENAL)
     # FIXME: We should remove bundled libs and allow building OpenAL from source, for all platforms
     if (WIN32)
       if(CMAKE_CROSSCOMPILING)
-	pkg_check_modules(OpenAL openal)
+	pkg_check_modules(OPENAL openal)
       else(CMAKE_CROSSCOMPILING)
         find_package(OpenAL)
       endif(CMAKE_CROSSCOMPILING)
