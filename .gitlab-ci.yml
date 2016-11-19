@@ -6,8 +6,6 @@ cache:
   - /var/cache/dnf
 
 before_script:
-  - dnf --quiet --assumeyes "dnf-command(copr)"
-  - dnf --assumeyes copr enable ngompa/mingw-openal-soft
   - dnf --quiet --assumeyes install /usr/bin/cmake "pkgconfig(libjpeg)" "pkgconfig(openal)" "pkgconfig(sdl2)" "pkgconfig(glu)" "pkgconfig(libpng)" "pkgconfig(zlib)" "pkgconfig(vorbis)" "pkgconfig(vorbisfile)" "pkgconfig(ogg)" make
 
 build_gcc:
@@ -43,6 +41,8 @@ build_clang:
 build_mingw32:
   stage: build
   script:
+    - dnf --quiet --assumeyes install "dnf-command(copr)"
+    - dnf --assumeyes copr enable ngompa/mingw-openal-soft
     - dnf --quiet --assumeyes install mingw32-gcc mingw32-gcc-c++ mingw32-binutils mingw32-headers mingw32-libjpeg-turbo mingw32-libpng mingw32-SDL2 mingw32-zlib mingw32-libvorbis mingw32-libogg mingw32-openal-soft
     - export PKG_CONFIG_LIBDIR="/usr/i686-w64-mingw32/sys-root/mingw/lib/pkgconfig:/usr/i686-w64-mingw32/sys-root/mingw/share/pkgconfig"
     - export PATH=/usr/i686-w64-mingw32/bin:$PATH
@@ -59,6 +59,8 @@ build_mingw32:
 build_mingw64:
   stage: build
   script:
+    - dnf --quiet --assumeyes install "dnf-command(copr)"
+    - dnf --assumeyes copr enable ngompa/mingw-openal-soft
     - dnf --quiet --assumeyes install mingw64-gcc mingw64-gcc-c++ mingw64-binutils mingw64-headers mingw64-libjpeg-turbo mingw64-libpng mingw64-SDL2 mingw64-zlib mingw64-libvorbis mingw64-libogg mingw64-openal-soft
     - export PKG_CONFIG_LIBDIR="/usr/x86_64-w64-mingw32/sys-root/mingw/lib/pkgconfig:/usr/x86_64-w64-mingw32/sys-root/mingw/share/pkgconfig"
     - export PATH=/usr/x86_64-w64-mingw32/bin:$PATH
