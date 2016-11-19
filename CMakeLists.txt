@@ -179,6 +179,7 @@ if (NOT LUGARU_FORCE_INTERNAL_OPENAL)
     # FIXME: We should remove bundled libs and allow building OpenAL from source, for all platforms
     if (WIN32)
         pkg_check_modules(OPENAL openal)
+        set(OPENAL_LIBRARY ${OPENAL_LIBRARIES})
     else (WIN32)
         find_package(OpenAL REQUIRED)
     endif()
