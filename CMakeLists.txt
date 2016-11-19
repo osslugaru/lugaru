@@ -139,45 +139,23 @@ if(MSVC) # MSVC non-C99 support biting us hard
 endif(MSVC)
 
 if(WIN32)
-  if(CMAKE_CROSSCOMPILING)
     ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
-						  COMMAND ${CMAKE_RC_COMPILER}
-							  -I${SRCDIR}/win-res
-							  -o ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
-							  -i${SRCDIR}/win-res/Lugaru.rc
-					      DEPENDS ${SRCDIR}/win-res/Lugaru.rc
-						  )
-  endif(CMAKE_CROSSCOMPILING)
-  if(NOT CMAKE_CROSSCOMPILING)
-   if(MSVC)
-    ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
-						  COMMAND rc
-							  -I${SRCDIR}/win-res
-							  -fo${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
-							  ${SRCDIR}/win-res/Lugaru.rc
-					      DEPENDS ${SRCDIR}/win-res/Lugaru.rc
-						  )
-   endif(MSVC)
-   if(MINGW)
-    ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
-						  COMMAND windres
-							  -I${SRCDIR}/win-res
-							  -o ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
-							  -i${SRCDIR}/win-res/Lugaru.rc
-					      DEPENDS ${SRCDIR}/win-res/Lugaru.rc
-						  )
-   endif(MINGW)
-  endif(NOT CMAKE_CROSSCOMPILING)
+                        COMMAND ${CMAKE_RC_COMPILER}
+                        -I${SRCDIR}/win-res
+                        -o ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
+                        -i${SRCDIR}/win-res/Lugaru.rc
+                        DEPENDS ${SRCDIR}/win-res/Lugaru.rc
+    )
 
-  # !!! FIXME: get rid of this.
-  set(LUGARU_SRCS
-	${LUGARU_SRCS}
-	${SRCDIR}/WinDefs.cpp)
+    # !!! FIXME: get rid of this.
+    set(LUGARU_SRCS
+        ${LUGARU_SRCS}
+        ${SRCDIR}/WinDefs.cpp)
 
-  set(LUGARU_H
-    ${LUGARU_H}
-    ${SRCDIR}/WinDefs.h
-    ${SRCDIR}/win-res/resource.h)
+    set(LUGARU_H
+        ${LUGARU_H}
+        ${SRCDIR}/WinDefs.h
+        ${SRCDIR}/win-res/resource.h)
 endif(WIN32)
 
 if (APPLE)
@@ -200,11 +178,7 @@ option (LUGARU_FORCE_INTERNAL_OPENAL "Force internal libOpenAL, even if there's 
 if (NOT LUGARU_FORCE_INTERNAL_OPENAL)
     # FIXME: We should remove bundled libs and allow building OpenAL from source, for all platforms
     if (WIN32)
-      if(CMAKE_CROSSCOMPILING)
-	pkg_check_modules(OPENAL openal)
-      else(CMAKE_CROSSCOMPILING)
-        find_package(OpenAL)
-      endif(CMAKE_CROSSCOMPILING)
+        pkg_check_modules(OPENAL openal)
     else (WIN32)
         find_package(OpenAL REQUIRED)
     endif()
