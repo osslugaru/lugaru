@@ -445,6 +445,7 @@ if(WIN32)
                       ${DLL_ROOT}/libvorbis-0.dll
                       ${DLL_ROOT}/libvorbisfile-3.dll
                       ${DLL_ROOT}/libwinpthread-1.dll
+                      ${DLL_ROOT}/OpenAL32.dll
                       ${DLL_ROOT}/SDL2.dll
                       ${DLL_ROOT}/zlib1.dll
                 DESTINATION ${CMAKE_INSTALL_PREFIX})
@@ -460,6 +461,10 @@ endif(WIN32)
 
 if(NOT APPLE)
     install(DIRECTORY ${CMAKE_SOURCE_DIR}/Data DESTINATION ${CMAKE_INSTALL_PREFIX})
+    install(FILES ${CMAKE_SOURCE_DIR}/README.md
+                  ${CMAKE_SOURCE_DIR}/COPYING.txt
+                  ${CMAKE_SOURCE_DIR}/CONTENT-LICENSE.txt
+            DESTINATION ${CMAKE_INSTALL_PREFIX})
 endif(NOT APPLE)
 
 if(APPLE)
