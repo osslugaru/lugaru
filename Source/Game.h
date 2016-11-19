@@ -136,7 +136,6 @@ extern int numchallengelevels;
 
 extern bool console;
 extern std::string consoletext[15];
-extern bool chatting;
 extern std::string displaytext[15];
 extern float displaytime[15];
 extern float displayblinkdelay;
@@ -153,7 +152,7 @@ extern float changedelay;
 extern bool waiting;
 extern Account* accountactive;
 
-extern unsigned short crouchkey, jumpkey, forwardkey, chatkey, backkey, leftkey, rightkey, drawkey, throwkey, attackkey;
+extern unsigned short crouchkey, jumpkey, forwardkey, backkey, leftkey, rightkey, drawkey, throwkey, attackkey;
 extern unsigned short consolekey;
 
 void newGame();

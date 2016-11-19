@@ -6567,28 +6567,6 @@ void Game::Tick()
             }
         }
 
-        if (Input::isKeyPressed(chatkey) && !console && !chatting && debugmode)
-            chatting = 1;
-
-        if (chatting) {
-            inputText(displaytext[0], &displayselected);
-            if (!waiting) {
-                if (!displaytext[0].empty()) {
-                    displaytext[0].clear();
-                    displayselected = 0;
-                }
-                chatting = 0;
-            }
-
-            displayblinkdelay -= multiplier;
-            if (displayblinkdelay <= 0) {
-                displayblinkdelay = .3;
-                displayblink = 1 - displayblink;
-            }
-        }
-        if (chatting)
-            keyboardfrozen = true;
-
         if (Input::isKeyPressed(consolekey) && debugmode) {
             console = !console;
             if (console) {

@@ -65,7 +65,6 @@ void DefaultSettings()
     throwkey = SDL_SCANCODE_Q;
     attackkey = MOUSEBUTTON1;
     consolekey = SDL_SCANCODE_GRAVE;
-    chatkey = SDL_SCANCODE_T;
 }
 
 void SaveSettings()
@@ -157,8 +156,6 @@ void SaveSettings()
     opstream << attackkey;
     opstream << "\nConsole key:\n";
     opstream << consolekey;
-    opstream << "\nChat key:\n";
-    opstream << chatkey;
     opstream << "\nDamage bar:\n";
     opstream << showdamagebar;
     opstream << "\nStereoMode:\n";
@@ -278,8 +275,6 @@ bool LoadSettings()
             ipstream >> attackkey;
         } else if ( !strncmp(setting, "Console key", 11) ) {
             ipstream >> consolekey;
-        } else if ( !strncmp(setting, "Chat key", 8) ) {
-            ipstream >> chatkey;
         } else if ( !strncmp(setting, "Damage bar", 10) ) {
             ipstream >> showdamagebar;
         } else if ( !strncmp(setting, "StereoMode", 10) ) {

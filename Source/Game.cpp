@@ -124,7 +124,6 @@ int numchallengelevels = 0;
 
 bool console = false;
 std::string consoletext[15] = {};
-bool chatting = 0;
 std::string displaytext[15] = {};
 float displaytime[15] = {};
 float displayblinkdelay = 0;
@@ -134,7 +133,7 @@ float consoleblinkdelay = 0;
 bool consoleblink = 0;
 int consoleselected = 0;
 
-unsigned short crouchkey = 0, jumpkey = 0, forwardkey = 0, chatkey = 0, backkey = 0, leftkey = 0, rightkey = 0, drawkey = 0, throwkey = 0, attackkey = 0;
+unsigned short crouchkey = 0, jumpkey = 0, forwardkey = 0, backkey = 0, leftkey = 0, rightkey = 0, drawkey = 0, throwkey = 0, attackkey = 0;
 unsigned short consolekey = 0;
 
 int loading = 0;

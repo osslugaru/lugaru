@@ -1438,16 +1438,8 @@ int Game::DrawGLScene(StereoSide side)
             displaytime[0] = 0;
             glEnable(GL_TEXTURE_2D);
             glColor4f(1, 1, 1, 1);
-            if (chatting) {
-                sprintf (string, " ]");
-                text->glPrint(10, 30 + screenheight - 330, string, 0, 1, screenwidth, screenheight);
-                if (displayblink) {
-                    sprintf (string, "_");
-                    text->glPrint(30 + (float)(displayselected) * 10, 30 + (screenheight - 330), string, 0, 1, screenwidth, screenheight);
-                }
-            }
-            for (i = 0; i < 15; i++)
-                if ((i != 0 || chatting) && displaytime[i] < 4)
+            for (i = 1; i < 15; i++)
+                if (displaytime[i] < 4)
                     for (j = 0; j < displaytext[i].size(); j++) {
                         glColor4f(1, 1, 1, 4 - displaytime[i]);
                         sprintf (string, "%c", displaytext[i][j]);
