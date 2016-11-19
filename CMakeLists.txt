@@ -176,41 +176,18 @@ endif(MSVC)
 
 option (LUGARU_FORCE_INTERNAL_OPENAL "Force internal libOpenAL, even if there's a system version" False)
 if (NOT LUGARU_FORCE_INTERNAL_OPENAL)
-    # FIXME: We should remove bundled libs and allow building OpenAL from source, for all platforms
     if (WIN32)
         pkg_check_modules(OPENAL openal)
         set(OPENAL_LIBRARY ${OPENAL_LIBRARIES})
     else (WIN32)
         find_package(OpenAL REQUIRED)
     endif()
-else(NOT LUGARU_FORCE_INTERNAL_OPENAL)
-    set(OPENAL_FOUND False)
 endif (NOT LUGARU_FORCE_INTERNAL_OPENAL)
 
 if (NOT OPENAL_FOUND OR LUGARU_FORCE_INTERNAL_OPENAL)
     message(STATUS "Using internal copy of OpenAL")
-    set(LUGARU_MISSING_DEPS "${LUGARU_MISSING_DEPS} OpenAL")
-    set(OPENALDIR "${DEPDIR}/OpenAL")
-    set(OPENAL_INCLUDE_DIR "${OPENALDIR}/include")
-    set(OPENAL_LIBRARY "")
-
-    if (WIN32)
-        set(LUGARU_HAS_INTERNAL_OPENAL True)
-        if (MSVC)
-            set(OPENAL_LIBRARY
-                ${OPENALDIR}/lib/win32/msvc2008/OpenAL32.lib
-            )
-        endif (MSVC)
-        if (MINGW)
-            set(OPENAL_LIBRARY
-                ${OPENALDIR}/lib/win32/mingw/libOpenAL32.dll.a
-            )
-        endif (MINGW)
-    endif(WIN32)
-
-    if (NOT LUGARU_HAS_INTERNAL_OPENAL)
-        message(ERROR "We don't have a prebuilt OpenAL for this platform.")
-    endif (NOT LUGARU_HAS_INTERNAL_OPENAL)
+    message(ERROR "*** Not implemented, terminating.")
+    # FIXME: We should  allow building OpenAL from source, for all platforms
 endif (NOT OPENAL_FOUND OR LUGARU_FORCE_INTERNAL_OPENAL)
 
 find_package(sdl2 REQUIRED)
