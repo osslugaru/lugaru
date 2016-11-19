@@ -59,6 +59,7 @@ int difficulty = 0;
 float multiplier = 0;
 float realmultiplier = 0;
 float screenwidth = 0, screenheight = 0;
+bool fullscreen = 0;
 float viewdistance = 0;
 XYZ viewer;
 XYZ viewerfacing;
