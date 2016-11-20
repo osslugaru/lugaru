@@ -129,10 +129,12 @@ static bool lookup_all_glsyms(void)
     return retval;
 }
 
+#ifndef __MINGW32__ // FIXME: Temporary workaround for GL-8
 static void GLAPIENTRY glDeleteTextures_doNothing(GLsizei n, const GLuint *textures)
 {
     // no-op.
 }
+#endif // __MINGW32__
 
 #ifdef MessageBox
 #undef MessageBox
