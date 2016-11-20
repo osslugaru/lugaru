@@ -2,7 +2,7 @@
   "targets": {
     "centos7-x86_64": {
       "buildenv": "centos7-x86_64",
-      "builddeps": ["/usr/bin/cmake3", "pkgconfig(libjpeg)", "pkgconfig(openal)", "pkgconfig(sdl)", "pkgconfig(glu)", "pkgconfig(libpng)", "pkgconfig(zlib)", "pkgconfig(vorbis)", "pkgconfig(vorbisfile)", "pkgconfig(ogg)", "make"],
+      "builddeps": ["/usr/bin/cmake3", "pkgconfig(libjpeg)", "pkgconfig(openal)", "pkgconfig(sdl2)", "pkgconfig(glu)", "pkgconfig(libpng)", "pkgconfig(zlib)", "pkgconfig(vorbis)", "pkgconfig(vorbisfile)", "pkgconfig(ogg)", "make"],
       "buildcmd": ["cmake3 . -DLUGARU_INSTALL_PREFIX=/opt/osslugaru/lugaru/gcc-build", "make -j4"]
     },
     "macosx": {
