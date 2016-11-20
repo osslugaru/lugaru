@@ -3,27 +3,20 @@ project(lugaru)
 cmake_minimum_required(VERSION 3.5)
 cmake_policy(SET CMP0004 OLD)
 
-INCLUDE(FindPkgConfig)
+include(FindPkgConfig)
 
 set(SRCDIR "${CMAKE_CURRENT_SOURCE_DIR}/Source")
+
+
+### CMake config
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 --std=c++11")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wno-parentheses -g -pg --std=c++11")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wno-parentheses -O2 -std=c++11")
 
-if(NOT LUGARU_INSTALL_PREFIX)
-    if(WIN32)
-        set(LUGARU_INSTALL_PREFIX "C:/Lugaru" CACHE PATH
-        "LUGARU_INSTALL_PREFIX: Install path prefix, prepended onto install directories."
-        FORCE)
-    else(WIN32)
-        set(LUGARU_INSTALL_PREFIX "/usr/local/lugaru" CACHE PATH
-        "CMAKE_INSTALL_PREFIX: Install path prefix, prepended onto install directories."
-        FORCE)
-    endif(WIN32)
-endif(NOT LUGARU_INSTALL_PREFIX)
-
-set(CMAKE_INSTALL_PREFIX "${LUGARU_INSTALL_PREFIX}" CACHE INTERNAL "Prefix prepended to install directories" FORCE)
+if(NOT CMAKE_INSTALL_PREFIX AND WIN32)
+    set(CMAKE_INSTALL_PREFIX "C:/Lugaru")
+endif(NOT CMAKE_INSTALL_PREFIX AND WIN32)
 
 if(APPLE)
     set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "Build architectures for OSX")
@@ -34,6 +27,9 @@ if(APPLE)
 endif(APPLE)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+
+
+### Sources
 
 set(LUGARU_SRCS
     ${SRCDIR}/Frustum.cpp
@@ -115,15 +111,15 @@ if(UNIX)
 endif(UNIX)
 
 if(WIN32)
-    ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
-                        COMMAND ${CMAKE_RC_COMPILER}
-                        -I${SRCDIR}/win-res
-                        -o ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
-                        -i${SRCDIR}/win-res/Lugaru.rc
-                        DEPENDS ${SRCDIR}/win-res/Lugaru.rc
+    add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
+                       COMMAND ${CMAKE_RC_COMPILER}
+                       -I${SRCDIR}/win-res
+                       -o ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
+                       -i${SRCDIR}/win-res/Lugaru.rc
+                       DEPENDS ${SRCDIR}/win-res/Lugaru.rc
     )
 
-    # !!! FIXME: get rid of this.
+    # FIXME: get rid of this.
     set(LUGARU_SRCS
         ${LUGARU_SRCS}
         ${SRCDIR}/WinDefs.cpp)
@@ -134,21 +130,22 @@ if(WIN32)
         ${SRCDIR}/win-res/resource.h)
 endif(WIN32)
 
-if (APPLE)
+if(APPLE)
     set(PLATFORM_LIBS "-framework Carbon -framework Cocoa -framework OpenGL -framework OpenAL")
-endif (APPLE)
+endif(APPLE)
 
-# Deal with dependencies...
+
+### Dependencies
 
 find_package(OpenGL REQUIRED)
 
 # Windows is funky about OpenAL detection
-if (WIN32)
+if(WIN32)
     pkg_check_modules(OPENAL openal REQUIRED)
     set(OPENAL_LIBRARY ${OPENAL_LIBRARIES})
-else (WIN32)
+else(WIN32)
     find_package(OpenAL REQUIRED)
-endif()
+endif(WIN32)
 
 find_package(sdl2 REQUIRED)
 find_package(PNG REQUIRED)
@@ -171,6 +168,8 @@ include_directories(
 set(LUGARU_LIBS ${OPENAL_LIBRARY} ${PNG_LIBRARY} ${JPEG_LIBRARY} ${ZLIB_LIBRARIES} ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES} ${VORBISFILE_LIBRARY} ${OGG_LIBRARY} ${PLATFORM_LIBS})
 
 
+### Definitions
+
 if(WIN32)
     add_executable(lugaru ${LUGARU_SRCS} ${LUGARU_H} lugaru_resource.obj)
 else(WIN32)
@@ -182,13 +181,16 @@ target_link_libraries(lugaru ${LUGARU_LIBS})
 if(WIN32)
     add_definitions(-DUSE_OPENAL=1 -DUSE_SDL=1 -DBinIO_STDINT_HEADER=<stdint.h>)
     if(MINGW)
+        # An alternative would be to use _WIN32 consistently instead of WIN32
         add_definitions(-DWIN32)
     endif(MINGW)
 else(WIN32)
     add_definitions(-DPLATFORM_LINUX=1 -DPLATFORM_UNIX=1 -DUSE_OPENAL=1 -DUSE_SDL=1 -DBinIO_STDINT_HEADER=<stdint.h>)
 endif(WIN32)
 
-# Install target
+
+### Installation
+
 if(APPLE)
     set(APPS_ROOT "${CMAKE_INSTALL_PREFIX}/Lugaru.app")
     set(APPS_BIN "${APPS_ROOT}/Contents/MacOS")
@@ -198,6 +200,7 @@ endif(APPLE)
 if(WIN32)
     install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru.exe DESTINATION ${CMAKE_INSTALL_PREFIX})
     if(MINGW)
+        # Based off Mageia/Fedora MinGW toolchain, might not work on other distros or Windows
         set(LIBGCC_S libgcc_s_sjlj-1.dll)
         if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64") # MinGW64
             set(LIBGCC_S libgcc_s_seh-1.dll)

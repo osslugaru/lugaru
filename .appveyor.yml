@@ -19,8 +19,8 @@ platform:
 before_build:
   - cd c:\projects\osslugaru\lugaru
   - set PATH=C:\Program Files (x86)\MSBuild\14.0\BIN;%PATH%
-  - if %PLATFORM% == Win32 cmake . -DCMAKE_BUILD_TYPE=Debug -DLUGARU_INSTALL_PREFIX=C:\projects\osslugaru\lugaru\msvc32-build
-  - if %PLATFORM% == Win64 cmake . -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Debug -DLUGARU_INSTALL_PREFIX=C:\projects\osslugaru\lugaru\msvc64-build
+  - if %PLATFORM% == Win32 cmake . -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=C:\projects\osslugaru\lugaru\msvc32-build
+  - if %PLATFORM% == Win64 cmake . -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=C:\projects\osslugaru\lugaru\msvc64-build
 
 # Tell it what to build
 build:

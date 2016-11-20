@@ -72,7 +72,7 @@ export PATH=/usr/i686-w64-mingw32/bin:$PATH
 Then build:
 ```
 mkdir build-mingw32 && cd build-mingw32
-cmake .. -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-mingw32.cmake -DLUGARU_INSTALL_PREFIX=install
+cmake .. -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-mingw32.cmake -DCMAKE_INSTALL_PREFIX=install
 make
 make install
 ```
@@ -90,7 +90,7 @@ export PATH=/usr/x86_64-w64-mingw32/bin:$PATH
 ```
 ```
 mkdir build-mingw64 && cd build-mingw64
-cmake .. -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-mingw64.cmake -DLUGARU_INSTALL_PREFIX=install
+cmake .. -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-mingw64.cmake -DCMAKE_INSTALL_PREFIX=install
 make
 make install
 ```
