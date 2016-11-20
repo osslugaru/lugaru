@@ -217,8 +217,9 @@ void initGL()
     }
 }
 
-static void toggleFullscreen()
+void toggleFullscreen()
 {
+    fullscreen = !fullscreen;
     Uint32 flags = SDL_GetWindowFlags(sdlwindow);
     if (flags & SDL_WINDOW_FULLSCREEN) {
         flags &= ~SDL_WINDOW_FULLSCREEN;
@@ -331,8 +332,10 @@ Boolean SetUp ()
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 1);
 
     Uint32 sdlflags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
-    if (!cmdline("windowed"))
+    if ((fullscreen || cmdline("fullscreen")) && !cmdline("windowed")) {
+        fullscreen = 1;
         sdlflags |= SDL_WINDOW_FULLSCREEN;
+    }
     if (!cmdline("nomousegrab"))
         sdlflags |= SDL_WINDOW_INPUT_GRABBED;
 

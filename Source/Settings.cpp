@@ -32,6 +32,7 @@ void DefaultSettings()
     usermousesensitivity = 1;
     newscreenwidth = kContextWidth = 640;
     newscreenheight = kContextHeight = 480;
+    fullscreen = 0;
     kBitsPerPixel = 32;
     floatjump = 0;
     autoslomo = 1;
@@ -86,6 +87,8 @@ void SaveSettings()
     opstream << newscreenwidth;
     opstream << "\nScreenheight:\n";
     opstream << newscreenheight;
+    opstream << "\nFullscreen:\n";
+    opstream << fullscreen;
     opstream << "\nMouse sensitivity:\n";
     opstream << usermousesensitivity;
     opstream << "\nBlur(0,1):\n";
@@ -198,6 +201,8 @@ bool LoadSettings()
             ipstream >> kContextWidth;
         } else if ( !strncmp(setting, "Screenheight", 12) ) {
             ipstream >> kContextHeight;
+        } else if ( !strncmp(setting, "Fullscreen", 10) ) {
+            ipstream >> fullscreen;
         } else if ( !strncmp(setting, "Mouse sensitivity", 17) ) {
             ipstream >> usermousesensitivity;
         } else if ( !strncmp(setting, "Blur", 4) ) {

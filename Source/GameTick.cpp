@@ -148,10 +148,11 @@ extern bool winfreeze;
 extern bool campaign;
 
 
+extern void toggleFullscreen();
+
 
 void Loadlevel(int which);
 void Loadlevel(const char *name);
-
 
 
 class CampaignLevel
@@ -5795,6 +5796,7 @@ void updateSettingsMenu()
     else
         sprintf (sbuf, "Resolution: %d*%d (widescreen)", (int)newscreenwidth, (int)newscreenheight);
     Menu::setText(0, sbuf);
+    Menu::setText(14, fullscreen ? "Fullscreen: On" : "Fullscreen: Off");
     if (newdetail == 0) Menu::setText(1, "Detail: Low");
     if (newdetail == 1) Menu::setText(1, "Detail: Medium");
     if (newdetail == 2) Menu::setText(1, "Detail: High");
@@ -5875,6 +5877,7 @@ void Game::LoadMenu()
         break;
     case 3:
         Menu::addButton( 0, "", 10 + 20, 440);
+        Menu::addButton(14, "", 10 + 400, 440);
         Menu::addButton( 1, "", 10 + 60, 405);
         Menu::addButton( 2, "", 10 + 70, 370);
         Menu::addButton( 3, "", 10 + 20 - 1000, 335 - 1000);
@@ -6164,6 +6167,9 @@ void MenuTick()
                 break;
             case 13:
                 showdamagebar = !showdamagebar;
+                break;
+            case 14:
+                toggleFullscreen();
                 break;
             }
             updateSettingsMenu();

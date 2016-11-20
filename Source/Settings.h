@@ -54,6 +54,7 @@ extern int kBitsPerPixel;
 extern int kContextWidth;
 extern int kContextHeight;
 extern float screenwidth, screenheight;
+extern bool fullscreen;
 
 void DefaultSettings();
 void SaveSettings();
