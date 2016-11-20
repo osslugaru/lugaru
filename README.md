@@ -18,6 +18,7 @@ commercial version.
 
 This project is community-driven and uses the following communication channels:
 - GitLab repository (including issues): https://gitlab.com/osslugaru/lugaru
+- Project website: https://osslugaru.gitlab.io
 - Mailing list: http://icculus.org/mailman/listinfo/lugaru
 - IRC channel: [#lugaru on Freenode](http://webchat.freenode.net/?channels=lugaru)
 
