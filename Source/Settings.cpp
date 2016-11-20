@@ -30,8 +30,8 @@ void DefaultSettings()
     detail = 1;
     ismotionblur = 0;
     usermousesensitivity = 1;
-    newscreenwidth = kContextWidth = 640;
-    newscreenheight = kContextHeight = 480;
+    newscreenwidth = kContextWidth = 1024;
+    newscreenheight = kContextHeight = 768;
     fullscreen = 0;
     kBitsPerPixel = 32;
     floatjump = 0;
@@ -315,9 +315,9 @@ bool LoadSettings()
     if (detail < 0)
         detail = 0;
     if (screenwidth < 0)
-        screenwidth = 640;
+        screenwidth = 1024;
     if (screenheight < 0)
-        screenheight = 480;
+        screenheight = 768;
 
     return true;
 }
