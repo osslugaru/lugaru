@@ -1322,18 +1322,17 @@ static void cmd_dispatch(const string cmd)
 extern bool save_image(const char * fname);
 void Screenshot (void)
 {
-    char temp[1024];
+    char filename[1024];
     time_t t = time(NULL);
     struct tm *tme = localtime(&t);
-    sprintf(temp, "Screenshots/Screenshot_%04d_%02d_%02d--%02d_%02d_%02d.png", tme->tm_year + 1900, tme->tm_mon + 1, tme->tm_mday, tme->tm_hour, tme->tm_min, tme->tm_sec);
+    sprintf(filename, "Screenshots/Screenshot-%04d%02d%02d-%02d%02d%02d.png",
+            tme->tm_year + 1900, tme->tm_mon + 1, tme->tm_mday, tme->tm_hour, tme->tm_min, tme->tm_sec);
 
 #if defined(_WIN32)
     mkdir("Screenshots");
-#else
-    mkdir("Screenshots", S_IRWXU);
 #endif
 
-    save_image(temp);
+    save_image(filename);
 }
 
 void Game::SetUpLighting()
