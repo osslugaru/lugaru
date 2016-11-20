@@ -44,6 +44,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Menu.h"
 
 #include <algorithm>
+#include <set>
 
 using namespace std;
 using namespace Game;
@@ -6009,7 +6010,7 @@ void Game::LoadMenu()
     }
 }
 
-extern SDL_Rect **resolutions;
+extern set<pair<int,int>> resolutions;
 
 void MenuTick()
 {
@@ -6033,6 +6034,7 @@ void MenuTick()
     char sbuf[256];
 
     if (Input::MouseClicked() && (selected >= 0)) { // handling of the left mouse clic in menus
+        set<pair<int,int>>::iterator newscreenresolution;
         switch (mainmenu) {
         case 1:
         case 2:
@@ -6081,40 +6083,17 @@ void MenuTick()
             break;
         case 3:
             fireSound();
-            bool isCustomResolution, found;
             switch (selected) {
             case 0:
-                isCustomResolution = true;
-                found = false;
-                for (int i = 0; (!found) && (resolutions[i]); i++) {
-                    if ((resolutions[i]->w == screenwidth) && (resolutions[i]->h == screenwidth))
-                        isCustomResolution = false;
-
-                    if ((resolutions[i]->w == newscreenwidth) && (resolutions[i]->h == newscreenheight)) {
-                        i++;
-                        if (resolutions[i] != NULL) {
-                            newscreenwidth = (int) resolutions[i]->w;
-                            newscreenheight = (int) resolutions[i]->h;
-                        } else if (isCustomResolution) {
-                            if ((screenwidth == newscreenwidth) && (screenheight == newscreenheight)) {
-                                newscreenwidth = (int) resolutions[0]->w;
-                                newscreenheight = (int) resolutions[0]->h;
-                            } else {
-                                newscreenwidth = screenwidth;
-                                newscreenheight = screenheight;
-                            }
-                        } else {
-                            newscreenwidth = (int) resolutions[0]->w;
-                            newscreenheight = (int) resolutions[0]->h;
-                        }
-                        found = true;
-                    }
+                newscreenresolution = resolutions.find(make_pair(newscreenwidth, newscreenheight));
+                /* Next one (end() + 1 is also end() so the ++ is safe even if it was not found) */
+                newscreenresolution++;
+                if (newscreenresolution == resolutions.end()) {
+                    /* It was the last one (or not found), go back to the beginning */
+                    newscreenresolution = resolutions.begin();
                 }
-
-                if (!found) {
-                    newscreenwidth = (int) resolutions[0]->w;
-                    newscreenheight = (int) resolutions[0]->h;
-                }
+                newscreenwidth  = newscreenresolution->first;
+                newscreenheight = newscreenresolution->second;
                 break;
             case 1:
                 newdetail++;

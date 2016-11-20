@@ -65,6 +65,7 @@ extern float slomofreq;
 #include <string.h>
 #include <fstream>
 #include <iostream>
+#include <set>
 #include "gamegl.h"
 #include "MacCompatibility.h"
 #include "Settings.h"
@@ -78,7 +79,7 @@ extern SDL_Window *sdlwindow;
 
 using namespace std;
 
-SDL_Rect **resolutions = NULL;
+set<pair<int,int>> resolutions;
 
 Boolean SetUp ();
 void DoUpdate ();
@@ -280,8 +281,6 @@ Boolean SetUp ()
 
     DefaultSettings();
 
-    const int displayIdx = 0;  // !!! FIXME: other monitors?
-
     if (!SDL_WasInit(SDL_INIT_VIDEO))
         if (SDL_Init(SDL_INIT_VIDEO) == -1) {
             fprintf(stderr, "SDL_Init() failed: %s\n", SDL_GetError());
@@ -301,19 +300,19 @@ Boolean SetUp ()
         return false;
     }
 
-    int count = 0;
-    const int nummodes = SDL_GetNumDisplayModes(displayIdx);
-    for (int i = 0; i < nummodes; i++)
-    {
-        SDL_DisplayMode mode;
-        if (SDL_GetDisplayMode(displayIdx, i, &mode) == -1)
-            continue;
-        if ((mode.w < 640) || (mode.h < 480))
-            continue;  // sane lower limit.
-        count++;
+    for (int displayIdx = 0; displayIdx < SDL_GetNumVideoDisplays(); ++displayIdx) {
+        for (int i = 0; i < SDL_GetNumDisplayModes(displayIdx); ++i) {
+            SDL_DisplayMode mode;
+            if (SDL_GetDisplayMode(displayIdx, i, &mode) == -1)
+                continue;
+            if ((mode.w < 640) || (mode.h < 480))
+                continue;  // sane lower limit.
+            pair<int,int> resolution(mode.w, mode.h);
+            resolutions.insert(resolution);
+        }
     }
 
-    if (count == 0) {
+    if (resolutions.empty()) {
         const std::string error = "No suitable video resolutions found.";
         cerr << error << endl;
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Lugaru init failed!", error.c_str(), NULL);
@@ -321,33 +320,11 @@ Boolean SetUp ()
         return false;
     }
 
-    static SDL_Rect *resolutions_block = NULL;
-    resolutions_block = (SDL_Rect*) realloc(resolutions_block, sizeof (SDL_Rect) * count);
-    resolutions = (SDL_Rect**) realloc(resolutions, sizeof (SDL_Rect *) * (count + 1));
-    if ((resolutions_block == NULL) || (resolutions == NULL)) {
-        SDL_Quit();
-        fprintf(stderr, "Out of memory!\n");
-        return false;
-    }
-
-    resolutions[count--] = NULL;
-    for (int i = 0; count >= 0; i++, count--) {
-        /* FIXME - Pretty sure this should use nummodes and not count */
-        SDL_DisplayMode mode;
-        if (SDL_GetDisplayMode(displayIdx, i, &mode) == -1)
-            continue;
-        if ((mode.w < 640) || (mode.h < 480))
-            continue;  // sane lower limit.
-        resolutions_block[count].x = resolutions_block[count].y = 0;
-        resolutions_block[count].w = mode.w;
-        resolutions_block[count].h = mode.h;
-        resolutions[count] = &resolutions_block[count];
-    }
-
     if (cmdline("showresolutions")) {
-        printf("Resolutions we think are okay:\n");
-        for (int i = 0; resolutions[i]; i++)
-            printf("  %d x %d\n", (int) resolutions[i]->w, (int) resolutions[i]->h);
+        printf("Available resolutions:\n");
+        for (auto resolution = resolutions.begin(); resolution != resolutions.end(); resolution++) {
+            printf("  %d x %d\n", (int) resolution->first, (int) resolution->second);
+        }
     }
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -359,7 +336,7 @@ Boolean SetUp ()
     if (!cmdline("nomousegrab"))
         sdlflags |= SDL_WINDOW_INPUT_GRABBED;
 
-    sdlwindow = SDL_CreateWindow("Lugaru", SDL_WINDOWPOS_CENTERED_DISPLAY(displayIdx), SDL_WINDOWPOS_CENTERED_DISPLAY(displayIdx),
+    sdlwindow = SDL_CreateWindow("Lugaru", SDL_WINDOWPOS_CENTERED_DISPLAY(0), SDL_WINDOWPOS_CENTERED_DISPLAY(0),
                                  kContextWidth, kContextHeight, sdlflags);
 
     if (!sdlwindow) {
@@ -367,13 +344,13 @@ Boolean SetUp ()
         fprintf(stderr, "forcing 640x480...\n");
         kContextWidth = 640;
         kContextHeight = 480;
-        sdlwindow = SDL_CreateWindow("Lugaru", SDL_WINDOWPOS_CENTERED_DISPLAY(displayIdx), SDL_WINDOWPOS_CENTERED_DISPLAY(displayIdx),
+        sdlwindow = SDL_CreateWindow("Lugaru", SDL_WINDOWPOS_CENTERED_DISPLAY(0), SDL_WINDOWPOS_CENTERED_DISPLAY(0),
                                      kContextWidth, kContextHeight, sdlflags);
         if (!sdlwindow) {
             fprintf(stderr, "SDL_CreateWindow() failed: %s\n", SDL_GetError());
             fprintf(stderr, "forcing 640x480 windowed mode...\n");
             sdlflags &= ~SDL_WINDOW_FULLSCREEN;
-            sdlwindow = SDL_CreateWindow("Lugaru", SDL_WINDOWPOS_CENTERED_DISPLAY(displayIdx), SDL_WINDOWPOS_CENTERED_DISPLAY(displayIdx),
+            sdlwindow = SDL_CreateWindow("Lugaru", SDL_WINDOWPOS_CENTERED_DISPLAY(0), SDL_WINDOWPOS_CENTERED_DISPLAY(0),
                                          kContextWidth, kContextHeight, sdlflags);
 
             if (!sdlwindow) {
@@ -425,6 +402,12 @@ Boolean SetUp ()
     newdetail = detail;
     newscreenwidth = screenwidth;
     newscreenheight = screenheight;
+
+    /* If saved resolution is not in the list, add it to the list (so that it’s selectable in the options) */
+    pair<int,int> startresolution(width,height);
+    if (resolutions.find(startresolution) == resolutions.end()) {
+        resolutions.insert(startresolution);
+    }
 
     InitGame();
 
