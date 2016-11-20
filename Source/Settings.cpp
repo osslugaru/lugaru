@@ -27,8 +27,8 @@ using namespace Game;
 
 void DefaultSettings()
 {
-    detail = 1;
-    ismotionblur = 0;
+    detail = 2;
+    ismotionblur = 1;
     usermousesensitivity = 1;
     newscreenwidth = kContextWidth = 1024;
     newscreenheight = kContextHeight = 768;
