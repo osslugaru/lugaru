@@ -179,13 +179,13 @@ endif(WIN32)
 target_link_libraries(lugaru ${LUGARU_LIBS})
 
 if(WIN32)
-    add_definitions(-DUSE_OPENAL=1 -DUSE_SDL=1 -DBinIO_STDINT_HEADER=<stdint.h>)
+    add_definitions(-DBinIO_STDINT_HEADER=<stdint.h>)
     if(MINGW)
         # An alternative would be to use _WIN32 consistently instead of WIN32
         add_definitions(-DWIN32)
     endif(MINGW)
 else(WIN32)
-    add_definitions(-DPLATFORM_LINUX=1 -DPLATFORM_UNIX=1 -DUSE_OPENAL=1 -DUSE_SDL=1 -DBinIO_STDINT_HEADER=<stdint.h>)
+    add_definitions(-DPLATFORM_LINUX=1 -DPLATFORM_UNIX=1 -DBinIO_STDINT_HEADER=<stdint.h>)
 endif(WIN32)
 
 
