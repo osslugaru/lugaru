@@ -137,7 +137,7 @@ int Game::DrawGLScene(StereoSide side)
 {
     static float texcoordwidth, texcoordheight;
     static float texviewwidth, texviewheight;
-    static int i, j, l;
+    static int l;
     static XYZ checkpoint;
     static float tempmult;
     float tutorialopac;
@@ -175,7 +175,7 @@ int Game::DrawGLScene(StereoSide side)
             numboundaries = mapradius * 2;
             if (numboundaries > 360)
                 numboundaries = 360;
-            for (i = 0; i < numboundaries; i++) {
+            for (int i = 0; i < numboundaries; i++) {
                 boundary[i] = 0;
                 boundary[i].z = 1;
                 boundary[i] = mapcenter + DoRotation(boundary[i] * mapradius, 0, i * (360 / ((float)(numboundaries))), 0);
@@ -335,7 +335,7 @@ int Game::DrawGLScene(StereoSide side)
         for (unsigned k = 0; k < Person::players.size(); k++) {
             if (!Person::players[k]->skeleton.free && Person::players[k]->playerdetail && Person::players[k]->howactive < typesleeping)
                 if (frustum.SphereInFrustum(Person::players[k]->coords.x, Person::players[k]->coords.y + Person::players[k]->scale * 3, Person::players[k]->coords.z, Person::players[k]->scale * 7) && Person::players[k]->occluded < 25)
-                    for (i = 0; i < Person::players[k]->skeleton.num_joints; i++) {
+                    for (int i = 0; i < Person::players[k]->skeleton.num_joints; i++) {
                         if (Person::players[k]->skeleton.joints[i].label == leftknee || Person::players[k]->skeleton.joints[i].label == rightknee || Person::players[k]->skeleton.joints[i].label == groin) {
                             point = DoRotation(Person::players[k]->skeleton.joints[i].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords;
                             size = .4f;
@@ -345,7 +345,7 @@ int Game::DrawGLScene(StereoSide side)
                             }
                             terrain.MakeDecal(shadowdecal, point, size, opacity, rotation);
                             for (l = 0; l < terrain.patchobjectnum[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz]; l++) {
-                                j = terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz][l];
+                                int j = terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz][l];
                                 if (objects.position[j].y < Person::players[k]->coords.y || objects.type[j] == tunneltype || objects.type[j] == weirdtype) {
                                     point = DoRotation(DoRotation(Person::players[k]->skeleton.joints[i].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords - objects.position[j], 0, -objects.yaw[j], 0);
                                     size = .4f;
@@ -360,7 +360,7 @@ int Game::DrawGLScene(StereoSide side)
                     }
             if ((Person::players[k]->skeleton.free || Person::players[k]->howactive >= typesleeping) && Person::players[k]->playerdetail)
                 if (frustum.SphereInFrustum(Person::players[k]->coords.x, Person::players[k]->coords.y, Person::players[k]->coords.z, Person::players[k]->scale * 5) && Person::players[k]->occluded < 25)
-                    for (i = 0; i < Person::players[k]->skeleton.num_joints; i++) {
+                    for (int i = 0; i < Person::players[k]->skeleton.num_joints; i++) {
                         if (Person::players[k]->skeleton.joints[i].label == leftknee || Person::players[k]->skeleton.joints[i].label == rightknee || Person::players[k]->skeleton.joints[i].label == groin || Person::players[k]->skeleton.joints[i].label == leftelbow || Person::players[k]->skeleton.joints[i].label == rightelbow || Person::players[k]->skeleton.joints[i].label == neck) {
                             if (Person::players[k]->skeleton.free)
                                 point = Person::players[k]->skeleton.joints[i].position * Person::players[k]->scale + Person::players[k]->coords;
@@ -373,7 +373,7 @@ int Game::DrawGLScene(StereoSide side)
                             }
                             terrain.MakeDecal(shadowdecal, point, size, opacity * .7, rotation);
                             for (l = 0; l < terrain.patchobjectnum[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz]; l++) {
-                                j = terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz][l];
+                                int j = terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz][l];
                                 if (objects.position[j].y < Person::players[k]->coords.y || objects.type[j] == tunneltype || objects.type[j] == weirdtype) {
                                     if (Person::players[k]->skeleton.free)
                                         point = DoRotation(Person::players[k]->skeleton.joints[i].position * Person::players[k]->scale + Person::players[k]->coords - objects.position[j], 0, -objects.yaw[j], 0);
@@ -397,7 +397,7 @@ int Game::DrawGLScene(StereoSide side)
                     opacity = .4 - (Person::players[k]->coords.y - terrain.getHeight(Person::players[k]->coords.x, Person::players[k]->coords.z)) / 5;
                     terrain.MakeDecal(shadowdecal, point, size, opacity * .7, rotation);
                     for (l = 0; l < terrain.patchobjectnum[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz]; l++) {
-                        j = terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz][l];
+                        int j = terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz][l];
                         point = DoRotation(Person::players[k]->coords - objects.position[j], 0, -objects.yaw[j], 0);
                         size = .7;
                         opacity = .4f;
@@ -463,6 +463,7 @@ int Game::DrawGLScene(StereoSide side)
                     if (distance >= .5) {
                         checkpoint = DoRotation(Person::players[k]->skeleton.joints[abs(Random() % Person::players[k]->skeleton.num_joints)].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords;
                         checkpoint.y += 1;
+                        int i;
                         if (!Person::players[k]->occluded == 0)
                             i = checkcollide(viewer, checkpoint, Person::players[k]->lastoccluded);
                         if (i == -1 || Person::players[k]->occluded == 0)
@@ -527,6 +528,7 @@ int Game::DrawGLScene(StereoSide side)
                 if (distance >= .5) {
                     checkpoint = DoRotation(Person::players[k]->skeleton.joints[abs(Random() % Person::players[k]->skeleton.num_joints)].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords;
                     checkpoint.y += 1;
+                    int i;
                     if (!Person::players[k]->occluded == 0)
                         i = checkcollide(viewer, checkpoint, Person::players[k]->lastoccluded);
                     if (i == -1 || Person::players[k]->occluded == 0)
@@ -569,7 +571,7 @@ int Game::DrawGLScene(StereoSide side)
             for (unsigned k = 0; k < Person::players.size(); k++) {
                 if (Person::players[k]->numwaypoints > 1) {
                     glBegin(GL_LINE_LOOP);
-                    for (i = 0; i < Person::players[k]->numwaypoints; i++) {
+                    for (int i = 0; i < Person::players[k]->numwaypoints; i++) {
                         glVertex3f(Person::players[k]->waypoints[i].x, Person::players[k]->waypoints[i].y + .5, Person::players[k]->waypoints[i].z);
                     }
                     glEnd();
@@ -581,7 +583,7 @@ int Game::DrawGLScene(StereoSide side)
                 glColor4f(0, 1, 0, 1);
                 for (unsigned k = 0; int(k) < numpathpoints; k++) {
                     if (numpathpointconnect[k]) {
-                        for (i = 0; i < numpathpointconnect[k]; i++) {
+                        for (int i = 0; i < numpathpointconnect[k]; i++) {
                             glBegin(GL_LINE_LOOP);
                             glVertex3f(pathpoint[k].x, pathpoint[k].y + .5, pathpoint[k].z);
                             glVertex3f(pathpoint[pathpointconnect[k][i]].x, pathpoint[pathpointconnect[k][i]].y + .5, pathpoint[pathpointconnect[k][i]].z);
@@ -935,7 +937,7 @@ int Game::DrawGLScene(StereoSide side)
                 float closestdist = -1;
                 float distance = 0;
                 closest = currenthotspot;
-                for (i = 0; i < numhotspots; i++) {
+                for (int i = 0; i < numhotspots; i++) {
                     distance = distsq(&Person::players[0]->coords, &hotspot[i]);
                     if (closestdist == -1 || distance < closestdist) {
                         if (distsq(&Person::players[0]->coords, &hotspot[i]) < hotspotsize[i] && ((hotspottype[i] <= 10 && hotspottype[i] >= 0) || (hotspottype[i] <= 40 && hotspottype[i] >= 20))) {
@@ -962,7 +964,7 @@ int Game::DrawGLScene(StereoSide side)
                         int lastline = 0;
                         int line = 0;
                         bool done = false;
-                        i = 0;
+                        int i = 0;
                         while (!done) {
                             if (string[i] == '\n' || string[i] > 'z' || string[i] < ' ' || string[i] == '\0') {
                                 glColor4f(0, 0, 0, tutorialopac);
@@ -980,7 +982,7 @@ int Game::DrawGLScene(StereoSide side)
                         }
                     } else if (hotspottype[closest] >= 20 && dialoguegonethrough[hotspottype[closest] - 20] == 0) {
                         whichdialogue = hotspottype[closest] - 20;
-                        for (j = 0; j < numdialogueboxes[whichdialogue]; j++) {
+                        for (int j = 0; j < numdialogueboxes[whichdialogue]; j++) {
                             Person::players[participantfocus[whichdialogue][j]]->coords = participantlocation[whichdialogue][participantfocus[whichdialogue][j]];
                             Person::players[participantfocus[whichdialogue][j]]->yaw = participantyaw[whichdialogue][participantfocus[whichdialogue][j]];
                             Person::players[participantfocus[whichdialogue][j]]->targetyaw = participantyaw[whichdialogue][participantfocus[whichdialogue][j]];
@@ -1069,11 +1071,11 @@ int Game::DrawGLScene(StereoSide side)
                 char tempname[264];
                 bool goodchar;
                 int tempnum = 0;
-                for (i = 0; i < 264; i++) {
+                for (int i = 0; i < 264; i++) {
                     tempname[i] = '\0';
                 }
 
-                for (i = 0; i < (int)strlen(dialoguename[whichdialogue][indialogue]); i++) {
+                for (int i = 0; i < (int)strlen(dialoguename[whichdialogue][indialogue]); i++) {
                     tempname[tempnum] = dialoguename[whichdialogue][indialogue][i];
                     goodchar = 1;
                     if (dialoguename[whichdialogue][indialogue][i] == '#' || dialoguename[whichdialogue][indialogue][i] == '\0')
@@ -1097,7 +1099,7 @@ int Game::DrawGLScene(StereoSide side)
                 }
 
                 tempnum = 0;
-                for (i = 0; i < (int)strlen(dialoguetext[whichdialogue][indialogue]) + 1; i++) {
+                for (int i = 0; i < (int)strlen(dialoguetext[whichdialogue][indialogue]) + 1; i++) {
                     tempname[tempnum] = dialoguetext[whichdialogue][indialogue][i];
                     if (dialoguetext[whichdialogue][indialogue][i] != '#')
                         tempnum++;
@@ -1108,7 +1110,7 @@ int Game::DrawGLScene(StereoSide side)
                 int lastline = 0;
                 int line = 0;
                 bool done = false;
-                i = 0;
+                int i = 0;
                 while (!done) {
                     if (string[i] == '\n' || string[i] > 'z' || string[i] < ' ' || string[i] == '\0') {
                         if (dialogueboxcolor[whichdialogue][indialogue][0] + dialogueboxcolor[whichdialogue][indialogue][1] + dialogueboxcolor[whichdialogue][indialogue][2] < 1.5) {
@@ -1434,9 +1436,9 @@ int Game::DrawGLScene(StereoSide side)
             displaytime[0] = 0;
             glEnable(GL_TEXTURE_2D);
             glColor4f(1, 1, 1, 1);
-            for (i = 1; i < 15; i++)
+            for (unsigned i = 1; i < 15; i++)
                 if (displaytime[i] < 4)
-                    for (j = 0; j < displaytext[i].size(); j++) {
+                    for (unsigned j = 0; j < displaytext[i].size(); j++) {
                         glColor4f(1, 1, 1, 4 - displaytime[i]);
                         sprintf (string, "%c", displaytext[i][j]);
                         text->glPrint(30 + j * 10, 30 + i * 20 + (screenheight - 330), string, 0, 1, screenwidth, screenheight);
@@ -1475,20 +1477,20 @@ int Game::DrawGLScene(StereoSide side)
             float distcheck;
             int numliveplayers = 0;
             center = 0;
-            for (i = 0; i < Person::players.size(); i++) {
+            for (unsigned i = 0; i < Person::players.size(); i++) {
                 if (!Person::players[i]->dead)
                     numliveplayers++;
             }
 
             int numadd = 0;
 
-            for (i = 0; i < objects.numobjects; i++) {
+            for (int i = 0; i < objects.numobjects; i++) {
                 if (objects.type[i] == treetrunktype || objects.type[i] == boxtype) {
                     center += objects.position[i];
                     numadd++;
                 }
             }
-            for (i = 0; i < Person::players.size(); i++) {
+            for (unsigned i = 0; i < Person::players.size(); i++) {
                 if (!Person::players[i]->dead)
                     center += Person::players[i]->coords;
             }
@@ -1499,14 +1501,14 @@ int Game::DrawGLScene(StereoSide side)
             float maxdistance = 0;
             float tempdist;
             //~ int whichclosest;
-            for (i = 0; i < objects.numobjects; i++) {
+            for (int i = 0; i < objects.numobjects; i++) {
                 tempdist = distsq(&center, &objects.position[i]);
                 if (tempdist > maxdistance) {
                     //~ whichclosest=i;
                     maxdistance = tempdist;
                 }
             }
-            for (i = 0; i < Person::players.size(); i++) {
+            for (unsigned i = 0; i < Person::players.size(); i++) {
                 if (!Person::players[i]->dead) {
                     tempdist = distsq(&center, &Person::players[i]->coords);
                     if (tempdist > maxdistance) {
@@ -1525,7 +1527,7 @@ int Game::DrawGLScene(StereoSide side)
             glPopMatrix();
             glRotatef(Person::players[0]->lookyaw * -1 + 180, 0, 0, 1);
             glTranslatef(-(center.x / terrain.scale / 256 * -2 + 1), (center.z / terrain.scale / 256 * -2 + 1), 0);
-            for (i = 0; i < objects.numobjects; i++) {
+            for (int i = 0; i < objects.numobjects; i++) {
                 if (objects.type[i] == treetrunktype) {
                     distcheck = distsq(&Person::players[0]->coords, &objects.position[i]);
                     if (distcheck < mapviewdist) {
@@ -1573,7 +1575,7 @@ int Game::DrawGLScene(StereoSide side)
             }
             if (editorenabled) {
                 Mapcircletexture.bind();
-                for (i = 0; i < numboundaries; i++) {
+                for (int i = 0; i < numboundaries; i++) {
                     glColor4f(0, 0, 0, opac / 3);
                     glPushMatrix();
                     glTranslatef(boundary[i].x / terrain.scale / 256 * -2 + 1, boundary[i].z / terrain.scale / 256 * 2 - 1, 0);
@@ -1591,7 +1593,7 @@ int Game::DrawGLScene(StereoSide side)
                     glPopMatrix();
                 }
             }
-            for (i = 0; i < Person::players.size(); i++) {
+            for (unsigned i = 0; i < Person::players.size(); i++) {
                 distcheck = distsq(&Person::players[0]->coords, &Person::players[i]->coords);
                 if (distcheck < mapviewdist) {
                     glPushMatrix();
@@ -1743,7 +1745,8 @@ int Game::DrawGLScene(StereoSide side)
 
             char temp[255];
 
-            for (i = 0; i < 255; i++)string[i] = '\0';
+            for (int i = 0; i < 255; i++)
+                string[i] = '\0';
             sprintf (temp, "Time:      %d:", (int)(((int)leveltime - (int)(leveltime) % 60) / 60));
             strcat(string, temp);
             if ((int)(leveltime) % 60 < 10)
@@ -1756,7 +1759,7 @@ int Game::DrawGLScene(StereoSide side)
             int awards[award_count];
             int numawards = award_awards(awards);
 
-            for (i = 0; i < numawards && i < 6; i++)
+            for (int i = 0; i < numawards && i < 6; i++)
                 text->glPrintOutlined(1024 / 30, 768 * 6 / 8 - 90 - 40 * i, award_names[awards[i]], 1, 2, 1024, 768);
         }
 
@@ -1982,7 +1985,7 @@ int Game::DrawGLScene(StereoSide side)
                 glPopMatrix();
             }
             if (drawmode == radialzoommode) {
-                for (i = 0; i < 3; i++) {
+                for (int i = 0; i < 3; i++) {
                     //glRotatef((float)i*.1,0,0,1);
                     glColor4f(1, 1, 1, 1 / ((float)i + 1));
                     glPushMatrix();
@@ -2023,8 +2026,8 @@ int Game::DrawGLScene(StereoSide side)
                 sprintf (string, "_");
                 text->glPrint(30 + (float)(consoleselected) * 10 - offset * 10, 30, string, 0, 1, 1024, 768);
             }
-            for (i = 0; i < 15; i++)
-                for (j = 0; j < consoletext[i].size(); j++) {
+            for (unsigned i = 0; i < 15; i++)
+                for (unsigned j = 0; j < consoletext[i].size(); j++) {
                     glColor4f(1, 1, 1, 1 - (float)(i) / 16);
                     sprintf (string, "%c", consoletext[i][j]);
                     text->glPrint(30 + j * 10 - offset * 10, 30 + i * 20, string, 0, 1, 1024, 768);

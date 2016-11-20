@@ -57,15 +57,13 @@ bool CanInitStereo(StereoMode mode)
 void InitStereo(StereoMode mode)
 {
     switch (mode) {
+    default:
     case stereoNone:
-        glDisable( GL_STENCIL_TEST);
-        return;
     case stereoAnaglyph:
-        glDisable( GL_STENCIL_TEST);
+        glDisable(GL_STENCIL_TEST);
         return;
     case stereoHorizontalInterlaced:
     case stereoVerticalInterlaced:
-
         fprintf(stderr, "Screen width is %i, height is %i\n", kContextWidth, kContextHeight);
 
         // Setup stencil buffer
@@ -122,7 +120,6 @@ void InitStereo(StereoMode mode)
         glEnable(GL_CULL_FACE);
         glEnable(GL_LIGHTING);
         glEnable(GL_TEXTURE_2D);
-
     }
 
 }

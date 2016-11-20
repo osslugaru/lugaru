@@ -134,10 +134,10 @@ std::string displaytext[15] = {};
 float displaytime[15] = {};
 float displayblinkdelay = 0;
 bool displayblink = 0;
-int displayselected = 0;
+unsigned displayselected = 0;
 float consoleblinkdelay = 0;
 bool consoleblink = 0;
-int consoleselected = 0;
+unsigned consoleselected = 0;
 
 unsigned short crouchkey = 0, jumpkey = 0, forwardkey = 0, backkey = 0, leftkey = 0, rightkey = 0, drawkey = 0, throwkey = 0, attackkey = 0;
 unsigned short consolekey = 0;
@@ -157,7 +157,7 @@ void Game::fireSound(int sound)
     emit_sound_at(sound);
 }
 
-void Game::inputText(string& str, int* charselected)
+void Game::inputText(string& str, unsigned* charselected)
 {
     SDL_Event evenement;
 

@@ -23,11 +23,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _QUATERNIONS_H_
 #define _QUATERNIONS_H_
 
-#ifndef WIN32
-#pragma mark -
-#endif
-
-//#include "Carbon.h"
 #include "math.h"
 #include "PhysicsMath.h"
 #include "gamegl.h"

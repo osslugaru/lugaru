@@ -79,13 +79,13 @@ int maxalarmed;
 
 int award_awards(int *awards)
 {
-    int numawards = 0, i;
+    int numawards = 0;
     if (damagetaken == 0 && Person::players[0]->bloodloss == 0) {
         awards[numawards] = awardflawless;
         numawards++;
     }
     bool alldead = true;
-    for (i = 1; i < Person::players.size(); i++) {
+    for (unsigned i = 1; i < Person::players.size(); i++) {
         if (Person::players[i]->dead != 2)
             alldead = 0;
     }
@@ -94,7 +94,7 @@ int award_awards(int *awards)
         numawards++;
     }
     alldead = 1;
-    for (i = 1; i < Person::players.size(); i++) {
+    for (unsigned i = 1; i < Person::players.size(); i++) {
         if (Person::players[i]->dead != 1)
             alldead = 0;
     }
@@ -130,12 +130,12 @@ int award_awards(int *awards)
         awards[numawards] = awardacrobat;
         numawards++;
     }
-    if (numthrowkill == Person::players.size() - 1) {
+    if (numthrowkill == (int(Person::players.size()) - 1)) {
         awards[numawards] = awardlongrange;
         numawards++;
     }
     alldead = 1;
-    for (i = 1; i < Person::players.size(); i++) {
+    for (unsigned i = 1; i < Person::players.size(); i++) {
         if (Person::players[i]->dead != 2)
             alldead = 0;
     }

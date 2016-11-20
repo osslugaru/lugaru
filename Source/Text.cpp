@@ -26,8 +26,6 @@ extern TGAImageRec texture;
 
 void Text::LoadFontTexture(const char *fileName)
 {
-    GLuint type;
-
     LOGFUNC;
 
     LOG(std::string("Loading font texture...") + fileName);

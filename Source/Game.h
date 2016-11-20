@@ -140,10 +140,10 @@ extern std::string displaytext[15];
 extern float displaytime[15];
 extern float displayblinkdelay;
 extern bool displayblink;
-extern int displayselected;
+extern unsigned displayselected;
 extern float consoleblinkdelay;
 extern bool consoleblink;
-extern int consoleselected;
+extern unsigned consoleselected;
 
 extern int oldenvironment;
 extern int targetlevel;
@@ -175,7 +175,7 @@ int checkcollide(XYZ startpoint, XYZ endpoint, int what);
 void fireSound(int sound = fireendsound);
 void setKeySelected();
 
-void inputText(std::string& str, int* charselected);
+void inputText(std::string& str, unsigned* charselected);
 void flash();
 }
 

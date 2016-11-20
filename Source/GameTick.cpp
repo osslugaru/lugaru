@@ -4808,7 +4808,7 @@ void doPlayerCollisions()
             }
 }
 
-void doAI(int i)
+void doAI(unsigned i)
 {
     static bool connected;
     if (Person::players[i]->aitype != playercontrolled && indialogue == -1) {
@@ -5402,7 +5402,7 @@ void doAI(int i)
                 if (Person::players[i]->ally < 0) {
                     int closest = -1;
                     float closestdist = -1;
-                    for (int k = 0; k < weapons.size(); k++)
+                    for (unsigned k = 0; k < weapons.size(); k++)
                         if (weapons[k].owner == -1) {
                             float distance = distsq(&Person::players[i]->coords, &weapons[k].position);
                             if (closestdist == -1 || distance < closestdist) {
@@ -5514,7 +5514,7 @@ void doAI(int i)
             }
             //go for weapon on the ground
             if (Person::players[i]->wentforweapon < 3)
-                for (int k = 0; k < weapons.size(); k++)
+                for (unsigned k = 0; k < weapons.size(); k++)
                     if (Person::players[i]->creature != wolftype)
                         if (Person::players[i]->num_weapons == 0 &&
                                 weapons[k].owner == -1 &&
@@ -6032,8 +6032,6 @@ void MenuTick()
     }
 
     static int oldmainmenu = mainmenu;
-
-    char sbuf[256];
 
     if (Input::MouseClicked() && (selected >= 0)) { // handling of the left mouse clic in menus
         set<pair<int,int>>::iterator newscreenresolution;
@@ -6628,8 +6626,9 @@ void Game::Tick()
 
             if (talkdelay <= 0 && indialogue == -1 && animation[Person::players[0]->animTarget].height != highheight)
                 for (int i = 0; i < numdialogues; i++) {
-                    int realdialoguetype;
+                    unsigned realdialoguetype;
                     bool special;
+                    /* FIXME - Seems like modulo done with ifs */
                     if (dialoguetype[i] > 49) {
                         realdialoguetype = dialoguetype[i] - 50;
                         special = 1;
@@ -6953,7 +6952,7 @@ void Game::Tick()
                         }
                         if (dialoguetype[whichdialogue] > 49 && dialoguetype[whichdialogue] < 60) {
                             hostile = 1;
-                            for (int i = 1; i < Person::players.size(); i++) {
+                            for (unsigned i = 1; i < Person::players.size(); i++) {
                                 Person::players[i]->aitype = attacktypecutoff;
                             }
                         }
@@ -7201,7 +7200,7 @@ void Game::Tick()
                                  Person::players[i]->isFlip() ||
                                  Person::players[i]->isFlip() ||
                                  Person::players[i]->aitype != playercontrolled)) {
-                            for (int j = 0; j < weapons.size(); j++) {
+                            for (unsigned j = 0; j < weapons.size(); j++) {
                                 if ((weapons[j].velocity.x == 0 && weapons[j].velocity.y == 0 && weapons[j].velocity.z == 0 ||
                                         Person::players[i]->aitype == playercontrolled) &&
                                         weapons[j].owner == -1 &&
@@ -7226,7 +7225,7 @@ void Game::Tick()
                                                         Person::players[i]->aitype == playercontrolled) &&
                                                         weapons[j].owner == -1 ||
                                                         Person::players[i]->victim &&
-                                                        weapons[j].owner == Person::players[i]->victim->id)
+                                                        weapons[j].owner == int(Person::players[i]->victim->id))
                                                     if (distsqflat(&Person::players[i]->coords, &weapons[j].position) < 2 && Person::players[i]->weaponactive == -1)
                                                         if (distsq(&Person::players[i]->coords, &weapons[j].position) < 1 || Person::players[i]->victim) {
                                                             if (weapons[j].getType() != staff)
@@ -7254,13 +7253,13 @@ void Game::Tick()
                                                 Person::players[i]->throwtogglekeydown = 1;
                                                 Person::players[i]->hasvictim = 0;
 
-                                                for (int k = 0; k < weapons.size(); k++) {
+                                                for (unsigned k = 0; k < weapons.size(); k++) {
                                                     if (Person::players[i]->weaponactive == -1)
                                                         if ((weapons[k].velocity.x == 0 && weapons[k].velocity.y == 0 && weapons[k].velocity.z == 0 ||
                                                                 Person::players[i]->aitype == playercontrolled) &&
                                                                 weapons[k].owner == -1 ||
                                                                 Person::players[i]->victim &&
-                                                                weapons[k].owner == Person::players[i]->victim->id)
+                                                                weapons[k].owner == int(Person::players[i]->victim->id))
                                                             if (distsqflat(&Person::players[i]->coords, &weapons[k].position) < 3 &&
                                                                     Person::players[i]->weaponactive == -1) {
                                                                 if (weapons[k].getType() != staff)
@@ -8216,7 +8215,7 @@ void Game::TickOnceAfter()
                     winhotspot = true;
 
         int numalarmed = 0;
-        for (int i = 1; i < Person::players.size(); i++)
+        for (unsigned i = 1; i < Person::players.size(); i++)
             if (!Person::players[i]->dead && Person::players[i]->aitype == attacktypecutoff && Person::players[i]->surprised <= 0)
                 numalarmed++;
         if (numalarmed > maxalarmed)
@@ -8228,7 +8227,7 @@ void Game::TickOnceAfter()
                 targetlevel = whichlevel;
             }
             alldead = true;
-            for (int i = 1; i < Person::players.size(); i++) {
+            for (unsigned i = 1; i < Person::players.size(); i++) {
                 if (!Person::players[i]->dead && Person::players[i]->howactive < typedead1) {
                     alldead = false;
                     break;

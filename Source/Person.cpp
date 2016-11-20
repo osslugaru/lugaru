@@ -923,7 +923,7 @@ void Person::Reverse()
             }
 
             victim->weaponactive = -1;
-            for (int j = 0; j < Person::players.size(); j++) {
+            for (unsigned j = 0; j < Person::players.size(); j++) {
                 Person::players[j]->wentforweapon = 0;
             }
         }
@@ -953,7 +953,7 @@ void Person::Reverse()
             }
 
             victim->weaponactive = -1;
-            for (int j = 0; j < Person::players.size(); j++) {
+            for (unsigned j = 0; j < Person::players.size(); j++) {
                 Person::players[j]->wentforweapon = 0;
             }
         }
@@ -982,7 +982,7 @@ void Person::Reverse()
             }
 
             victim->weaponactive = -1;
-            for (int j = 0; j < Person::players.size(); j++) {
+            for (unsigned j = 0; j < Person::players.size(); j++) {
                 Person::players[j]->wentforweapon = 0;
             }
         }
@@ -1011,7 +1011,7 @@ void Person::Reverse()
             }
 
             victim->weaponactive = -1;
-            for (int j = 0; j < Person::players.size(); j++) {
+            for (unsigned j = 0; j < Person::players.size(); j++) {
                 Person::players[j]->wentforweapon = 0;
             }
         }
@@ -1094,7 +1094,7 @@ void Person::Reverse()
                     victim->weaponstuck = 0;
             }
             victim->weaponactive = -1;
-            for (int i = 0; i < Person::players.size(); i++) {
+            for (unsigned i = 0; i < Person::players.size(); i++) {
                 Person::players[i]->wentforweapon = 0;
             }
         }
@@ -1137,7 +1137,7 @@ void Person::Reverse()
                     weaponstuck = 0;
             }
             weaponactive = -1;
-            for (int i = 0; i < Person::players.size(); i++) {
+            for (unsigned i = 0; i < Person::players.size(); i++) {
                 Person::players[i]->wentforweapon = 0;
             }
 
@@ -1410,8 +1410,7 @@ void Person::DoHead()
 
         skeleton.specialforward[0] = facing;
         //skeleton.specialforward[0]=DoRotation(facing,0,yaw,0);
-        static int i;
-        for (i = 0; i < skeleton.num_muscles; i++) {
+        for (int i = 0; i < skeleton.num_muscles; i++) {
             if (skeleton.muscles[i].visible && (skeleton.muscles[i].parent1->label == head || skeleton.muscles[i].parent2->label == head)) {
                 skeleton.FindRotationMuscle(i, animTarget);
             }
@@ -1457,7 +1456,7 @@ void Person::RagDoll(bool checkcollision)
         if (!isnormal(tilt)) tilt = 0;
         if (!isnormal(tilt2)) tilt2 = 0;
 
-        for (i = 0; i < skeleton.num_joints; i++) {
+        for (int i = 0; i < skeleton.num_joints; i++) {
             skeleton.joints[i].delay = 0;
             skeleton.joints[i].locked = 0;
             skeleton.joints[i].position = DoRotation(DoRotation(DoRotation(skeleton.joints[i].position, 0, 0, tilt), tilt2, 0, 0), 0, yaw, 0);
@@ -1469,7 +1468,7 @@ void Person::RagDoll(bool checkcollision)
             skeleton.joints[i].realoldposition = skeleton.joints[i].position * scale + coords;
         }
 
-        for (i = 0; i < skeleton.num_joints; i++) {
+        for (int i = 0; i < skeleton.num_joints; i++) {
             skeleton.joints[i].velocity = 0;
             skeleton.joints[i].velchange = 0;
         }
@@ -1490,7 +1489,7 @@ void Person::RagDoll(bool checkcollision)
 
         speed *= speedmult;
 
-        for (i = 0; i < skeleton.num_joints; i++) {
+        for (int i = 0; i < skeleton.num_joints; i++) {
             if ((animation[animCurrent].attack != reversed || animCurrent == swordslashreversedanim) && animCurrent != rabbitkickanim && !isLanding() && !wasLanding() && animation[animCurrent].height == animation[animTarget].height)
                 skeleton.joints[i].velocity = velocity / scale + facing * 5 + DoRotation(DoRotation(DoRotation((animation[animTarget].position[i][frameTarget] - animation[animCurrent].position[i][frameCurrent]) * speed, 0, 0, tilt), tilt2, 0, 0), 0, yaw, 0);
             else
@@ -1543,7 +1542,7 @@ void Person::RagDoll(bool checkcollision)
         updatedelay = 0;
 
         velocity = 0;
-        for (i = 0; i < skeleton.num_joints; i++) {
+        for (int i = 0; i < skeleton.num_joints; i++) {
             velocity += skeleton.joints[i].velocity * scale;
         }
         velocity /= skeleton.num_joints;
@@ -1567,7 +1566,7 @@ void Person::RagDoll(bool checkcollision)
                         weaponstuck = 0;
                 }
                 weaponactive = -1;
-                for (i = 0; i < Person::players.size(); i++) {
+                for (unsigned i = 0; i < Person::players.size(); i++) {
                     Person::players[i]->wentforweapon = 0;
                 }
             }
@@ -1685,7 +1684,6 @@ void Person::setAnimation(int animation)
 void Person::DoAnimations()
 {
     if (!skeleton.free) {
-        int i = 0;
         static float oldtarget;
 
         if (isIdle() && animCurrent != getIdle())
@@ -1837,12 +1835,12 @@ void Person::DoAnimations()
                     }
                     if (animation[animTarget].label[frameTarget] == 4 && (weaponactive == -1 || (animTarget != knifeslashstartanim && animTarget != knifethrowanim && animTarget != crouchstabanim && animTarget != swordgroundstabanim && animTarget != knifefollowanim))) {
                         if (animation[animTarget].attack != neutral) {
-                            i = abs(Random() % 3);
-                            if (i == 0)
+                            unsigned r = abs(Random() % 3);
+                            if (r == 0)
                                 whichsound = lowwhooshsound;
-                            if (i == 1)
+                            if (r == 1)
                                 whichsound = midwhooshsound;
-                            if (i == 2)
+                            if (r == 2)
                                 whichsound = highwhooshsound;
                         }
                         if (animation[animTarget].attack == neutral)
@@ -1879,18 +1877,18 @@ void Person::DoAnimations()
                             int whichsound = -1;
                             if (animation[animTarget].label[frameTarget] == 4 && aitype != playercontrolled) {
                                 if (animation[animTarget].attack != neutral) {
-                                    i = abs(Random() % 4);
+                                    unsigned r = abs(Random() % 4);
                                     if (creature == rabbittype) {
-                                        if (i == 0) whichsound = rabbitattacksound;
-                                        if (i == 1) whichsound = rabbitattack2sound;
-                                        if (i == 2) whichsound = rabbitattack3sound;
-                                        if (i == 3) whichsound = rabbitattack4sound;
+                                        if (r == 0) whichsound = rabbitattacksound;
+                                        if (r == 1) whichsound = rabbitattack2sound;
+                                        if (r == 2) whichsound = rabbitattack3sound;
+                                        if (r == 3) whichsound = rabbitattack4sound;
                                     }
                                     if (creature == wolftype) {
-                                        if (i == 0) whichsound = barksound;
-                                        if (i == 1) whichsound = bark2sound;
-                                        if (i == 2) whichsound = bark3sound;
-                                        if (i == 3) whichsound = barkgrowlsound;
+                                        if (r == 0) whichsound = barksound;
+                                        if (r == 1) whichsound = bark2sound;
+                                        if (r == 2) whichsound = bark3sound;
+                                        if (r == 3) whichsound = barkgrowlsound;
                                     }
                                     speechdelay = .3;
                                 }
@@ -1918,7 +1916,7 @@ void Person::DoAnimations()
             frameTarget++;
 
             if (animTarget == removeknifeanim && animation[animTarget].label[frameCurrent] == 5) {
-                for (i = 0; i < weapons.size(); i++) {
+                for (unsigned i = 0; i < weapons.size(); i++) {
                     if (weapons[i].owner == -1)
                         if (distsqflat(&coords, &weapons[i].position) < 4 && weaponactive == -1) {
                             if (distsq(&coords, &weapons[i].position) >= 1) {
@@ -1939,20 +1937,20 @@ void Person::DoAnimations()
             }
 
             if (animTarget == crouchremoveknifeanim && animation[animTarget].label[frameCurrent] == 5) {
-                for (i = 0; i < weapons.size(); i++) {
+                for (unsigned i = 0; i < weapons.size(); i++) {
                     bool willwork = true;
                     if (weapons[i].owner != -1)
                         if (Person::players[weapons[i].owner]->weaponstuck != -1)
-                            if (Person::players[weapons[i].owner]->weaponids[Person::players[weapons[i].owner]->weaponstuck] == i)
+                            if (Person::players[weapons[i].owner]->weaponids[Person::players[weapons[i].owner]->weaponstuck] == int(i))
                                 if (Person::players[weapons[i].owner]->num_weapons > 1)
                                     willwork = 0;
-                    if ((weapons[i].owner == -1) || (hasvictim && weapons[i].owner == victim->id && victim->skeleton.free))
+                    if ((weapons[i].owner == -1) || (hasvictim && (weapons[i].owner == int(victim->id)) && victim->skeleton.free))
                         if (willwork && distsqflat(&coords, &weapons[i].position) < 3 && weaponactive == -1) {
                             if (distsq(&coords, &weapons[i].position) < 1 || hasvictim) {
                                 bool fleshstuck = false;
                                 if (weapons[i].owner != -1)
                                     if (victim->weaponstuck != -1) {
-                                        if (victim->weaponids[victim->weaponstuck] == i) {
+                                        if (victim->weaponids[victim->weaponstuck] == int(i)) {
                                             fleshstuck = true;
                                         }
                                     }
@@ -1990,7 +1988,7 @@ void Person::DoAnimations()
                                     footvel = 0;
                                     footpoint = weapons[i].position;
                                     if (victim->weaponstuck != -1) {
-                                        if (victim->weaponids[victim->weaponstuck] == i) {
+                                        if (victim->weaponids[victim->weaponstuck] == int(i)) {
                                             if (bloodtoggle)
                                                 Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 0, 0, .8, .3);
                                             weapons[i].bloody = 2;
@@ -2001,7 +1999,7 @@ void Person::DoAnimations()
                                     if (victim->num_weapons > 0) {
                                         if (victim->weaponstuck != 0 && victim->weaponstuck != -1)
                                             victim->weaponstuck = 0;
-                                        if (victim->weaponids[0] == i)
+                                        if (victim->weaponids[0] == int(i))
                                             victim->weaponids[0] = victim->weaponids[victim->num_weapons];
                                     }
 
@@ -2080,7 +2078,7 @@ void Person::DoAnimations()
                 targetloc = velocity;
                 Normalise(&targetloc);
                 targetloc += coords;
-                for (i = 0; i < Person::players.size(); i++) {
+                for (unsigned i = 0; i < Person::players.size(); i++) {
                     if (i != id)
                         if (distsq(&targetloc, &Person::players[i]->coords) < closestdist || closestdist == 0) {
                             closestdist = distsq(&targetloc, &Person::players[i]->coords);
@@ -2145,7 +2143,7 @@ void Person::DoAnimations()
                         relative.y = 0;
                         Normalise(&relative);
                         relative = DoRotation(relative, 0, -90, 0);
-                        for (i = 0; i < victim->skeleton.num_joints; i++) {
+                        for (int i = 0; i < victim->skeleton.num_joints; i++) {
                             victim->skeleton.joints[i].velocity += relative * damagemult * 40;
                         }
                         victim->jointVel(head) += relative * damagemult * 200;
@@ -2181,7 +2179,7 @@ void Person::DoAnimations()
                         relative.y -= 1;
                         Normalise(&relative);
                         relative = DoRotation(relative, 0, 90, 0);
-                        for (i = 0; i < victim->skeleton.num_joints; i++) {
+                        for (int i = 0; i < victim->skeleton.num_joints; i++) {
                             victim->skeleton.joints[i].velocity += relative * damagemult * 20;
                         }
                         victim->jointVel(head) += relative * damagemult * 100;
@@ -2212,7 +2210,7 @@ void Person::DoAnimations()
                         relative.y = 0;
                         Normalise(&relative);
                         relative = DoRotation(relative, 0, -90, 0);
-                        for (i = 0; i < victim->skeleton.num_joints; i++) {
+                        for (int i = 0; i < victim->skeleton.num_joints; i++) {
                             victim->skeleton.joints[i].velocity += relative * damagemult * 40;
                         }
                         victim->jointVel(head) += relative * damagemult * 200;
@@ -2248,7 +2246,7 @@ void Person::DoAnimations()
                         relative.y = 0;
                         Normalise(&relative);
                         relative = DoRotation(relative, 0, 90, 0);
-                        for (i = 0; i < victim->skeleton.num_joints; i++) {
+                        for (int i = 0; i < victim->skeleton.num_joints; i++) {
                             victim->skeleton.joints[i].velocity += relative * damagemult * 40;
                         }
                         victim->jointVel(head) += relative * damagemult * 200;
@@ -2278,7 +2276,7 @@ void Person::DoAnimations()
                         relative = victim->coords - coords;
                         relative.y = 0;
                         Normalise(&relative);
-                        for (i = 0; i < victim->skeleton.num_joints; i++) {
+                        for (int i = 0; i < victim->skeleton.num_joints; i++) {
                             victim->skeleton.joints[i].velocity += relative * damagemult * 30;
                         }
                         victim->jointVel(head) += relative * damagemult * 100;
@@ -2300,7 +2298,7 @@ void Person::DoAnimations()
                         victim->skeleton.broken = 0;
                         victim->skeleton.spinny = 1;
 
-                        for (i = 0; i < victim->skeleton.num_joints; i++) {
+                        for (int i = 0; i < victim->skeleton.num_joints; i++) {
                             victim->skeleton.joints[i].velchange = 0;
                             victim->skeleton.joints[i].delay = 0;
                             victim->skeleton.joints[i].locked = 0;
@@ -2311,7 +2309,7 @@ void Person::DoAnimations()
                         relative = 0;
                         relative.y = 1;
                         Normalise(&relative);
-                        for (i = 0; i < victim->skeleton.num_joints; i++) {
+                        for (int i = 0; i < victim->skeleton.num_joints; i++) {
                             victim->skeleton.joints[i].velocity.y = relative.y * 10;
                             victim->skeleton.joints[i].position.y += relative.y * .3;
                             victim->skeleton.joints[i].oldposition.y += relative.y * .3;
@@ -2334,7 +2332,7 @@ void Person::DoAnimations()
                         relative = victim->coords - coords;
                         relative.y = 0;
                         Normalise(&relative);
-                        for (i = 0; i < victim->skeleton.num_joints; i++) {
+                        for (int i = 0; i < victim->skeleton.num_joints; i++) {
                             victim->skeleton.joints[i].velocity += relative * damagemult * 90;
                         }
                         victim->Puff(abdomen);
@@ -2361,7 +2359,7 @@ void Person::DoAnimations()
                         victim->skeleton.broken = 0;
                         victim->skeleton.spinny = 1;
 
-                        for (i = 0; i < victim->skeleton.num_joints; i++) {
+                        for (int i = 0; i < victim->skeleton.num_joints; i++) {
                             victim->skeleton.joints[i].velchange = 0;
                             //victim->skeleton.joints[i].delay=0;
                             victim->skeleton.joints[i].locked = 0;
@@ -2371,7 +2369,7 @@ void Person::DoAnimations()
                         Normalise(&relative);
                         relative.y += .3;
                         Normalise(&relative);
-                        for (i = 0; i < victim->skeleton.num_joints; i++) {
+                        for (int i = 0; i < victim->skeleton.num_joints; i++) {
                             victim->skeleton.joints[i].velocity += relative * damagemult * 20;
                         }
                         if (!victim->dead)
@@ -2458,7 +2456,7 @@ void Person::DoAnimations()
                                 victim->skeleton.free = 1;
                                 victim->skeleton.broken = 0;
 
-                                for (i = 0; i < victim->skeleton.num_joints; i++) {
+                                for (int i = 0; i < victim->skeleton.num_joints; i++) {
                                     victim->skeleton.joints[i].velchange = 0;
                                     victim->skeleton.joints[i].locked = 0;
                                     //victim->skeleton.joints[i].velocity=0;
@@ -2548,7 +2546,7 @@ void Person::DoAnimations()
                                 victim->skeleton.free = 1;
                                 victim->skeleton.broken = 0;
 
-                                for (i = 0; i < victim->skeleton.num_joints; i++) {
+                                for (int i = 0; i < victim->skeleton.num_joints; i++) {
                                     victim->skeleton.joints[i].velchange = 0;
                                     victim->skeleton.joints[i].locked = 0;
                                     //victim->skeleton.joints[i].velocity=0;
@@ -2595,7 +2593,7 @@ void Person::DoAnimations()
                         relative = victim->coords - coords;
                         relative.y = 0;
                         Normalise(&relative);
-                        for (i = 0; i < victim->skeleton.num_joints; i++) {
+                        for (int i = 0; i < victim->skeleton.num_joints; i++) {
                             victim->skeleton.joints[i].velocity = relative * 30;
                         }
                         victim->jointVel(head) += relative * damagemult * 150;
@@ -2642,7 +2640,7 @@ void Person::DoAnimations()
                         Normalise(&relative);
                         relative.y = .3;
                         Normalise(&relative);
-                        for (i = 0; i < victim->skeleton.num_joints; i++) {
+                        for (int i = 0; i < victim->skeleton.num_joints; i++) {
                             victim->skeleton.joints[i].velocity = relative * 5;
                         }
                         victim->jointVel(abdomen) += relative * damagemult * 400;
@@ -2860,7 +2858,7 @@ void Person::DoAnimations()
                                     victim->weaponstuck = 0;
                             }
                             victim->weaponactive = -1;
-                            for (i = 0; i < Person::players.size(); i++) {
+                            for (unsigned i = 0; i < Person::players.size(); i++) {
                                 Person::players[i]->wentforweapon = 0;
                             }
 
@@ -2888,7 +2886,7 @@ void Person::DoAnimations()
                         relative = DoRotation(relative, 0, 90, 0);
                         relative.y -= 1;
                         Normalise(&relative);
-                        for (i = 0; i < victim->skeleton.num_joints; i++) {
+                        for (int i = 0; i < victim->skeleton.num_joints; i++) {
                             victim->skeleton.joints[i].velocity += relative * damagemult * 60;
                         }
                         victim->jointVel(head) += relative * damagemult * 230;
@@ -2921,7 +2919,7 @@ void Person::DoAnimations()
                         relative.y = 0;
                         Normalise(&relative);
                         relative = DoRotation(relative, 0, -90, 0);
-                        for (i = 0; i < victim->skeleton.num_joints; i++) {
+                        for (int i = 0; i < victim->skeleton.num_joints; i++) {
                             victim->skeleton.joints[i].velocity += relative * damagemult * 40;
                         }
                         victim->jointVel(head) += relative * damagemult * 220;
@@ -2953,7 +2951,7 @@ void Person::DoAnimations()
                         victim->skeleton.free = 1;
                         victim->skeleton.broken = 0;
 
-                        for (i = 0; i < victim->skeleton.num_joints; i++) {
+                        for (int i = 0; i < victim->skeleton.num_joints; i++) {
                             victim->skeleton.joints[i].velchange = 0;
                             victim->skeleton.joints[i].locked = 0;
                             //victim->skeleton.joints[i].velocity=0;
@@ -2969,14 +2967,14 @@ void Person::DoAnimations()
                         relative.y = -1;
                         Normalise(&relative);
                         if (!victim->dead) {
-                            for (i = 0; i < victim->skeleton.num_joints; i++) {
+                            for (int i = 0; i < victim->skeleton.num_joints; i++) {
                                 victim->skeleton.joints[i].velocity = relative * damagemult * 40;
                             }
                             //FootLand(1,2);
                             victim->jointVel(abdomen) += relative * damagemult * 40;
                         }
                         if (victim->dead) {
-                            for (i = 0; i < victim->skeleton.num_joints; i++) {
+                            for (int i = 0; i < victim->skeleton.num_joints; i++) {
                                 victim->skeleton.joints[i].velocity = relative * damagemult * abs(Random() % 20);
                             }
                             //FootLand(1,2);
@@ -3011,7 +3009,7 @@ void Person::DoAnimations()
                                 DoBlood(.2, 250);
                             }
                             victim->RagDoll(0);
-                            for (i = 0; i < victim->skeleton.num_joints; i++) {
+                            for (int i = 0; i < victim->skeleton.num_joints; i++) {
                                 victim->skeleton.joints[i].velocity += relative * damagemult * 40;
                             }
                             victim->jointVel(head) += relative * damagemult * 200;
@@ -3030,7 +3028,7 @@ void Person::DoAnimations()
                         } else {
                             if (victim->damage >= victim->damagetolerance)
                                 victim->RagDoll(0);
-                            for (i = 0; i < victim->skeleton.num_joints; i++) {
+                            for (int i = 0; i < victim->skeleton.num_joints; i++) {
                                 victim->skeleton.joints[i].velocity += relative * damagemult * 10;
                             }
                             victim->jointVel(abdomen) += relative * damagemult * 200;
@@ -3071,12 +3069,12 @@ void Person::DoAnimations()
                         if (animation[victim->animTarget].height == middleheight || animation[victim->animCurrent].height == middleheight || victim->damage >= victim->damagetolerance - 40) {
                             victim->RagDoll(0);
 
-                            for (i = 0; i < victim->skeleton.num_joints; i++) {
+                            for (int i = 0; i < victim->skeleton.num_joints; i++) {
                                 victim->skeleton.joints[i].velocity += relative * damagemult * 15;
                             }
                             relative = DoRotation(relative, 0, -90, 0);
                             relative.y += .1;
-                            for (i = 0; i < victim->skeleton.num_joints; i++) {
+                            for (int i = 0; i < victim->skeleton.num_joints; i++) {
                                 if (victim->skeleton.joints[i].label == leftfoot || victim->skeleton.joints[i].label == rightfoot || victim->skeleton.joints[i].label == leftankle || victim->skeleton.joints[i].label == rightankle)
                                     victim->skeleton.joints[i].velocity = relative * 80;
                             }
@@ -3086,11 +3084,11 @@ void Person::DoAnimations()
                         } else {
                             if (victim->damage >= victim->damagetolerance)
                                 victim->RagDoll(0);
-                            for (i = 0; i < victim->skeleton.num_joints; i++) {
+                            for (int i = 0; i < victim->skeleton.num_joints; i++) {
                                 victim->skeleton.joints[i].velocity += relative * damagemult * 10;
                             }
                             relative = DoRotation(relative, 0, -90, 0);
-                            for (i = 0; i < victim->skeleton.num_joints; i++) {
+                            for (int i = 0; i < victim->skeleton.num_joints; i++) {
                                 if (victim->skeleton.joints[i].label == leftfoot || victim->skeleton.joints[i].label == rightfoot || victim->skeleton.joints[i].label == leftankle || victim->skeleton.joints[i].label == rightankle)
                                     victim->skeleton.joints[i].velocity += relative * damagemult * 80;
                             }
@@ -3134,7 +3132,7 @@ void Person::DoAnimations()
                     relative.y = 0;
                     Normalise(&relative);
                     //relative=DoRotation(relative,0,-90,0);
-                    for (i = 0; i < victim->skeleton.num_joints; i++) {
+                    for (int i = 0; i < victim->skeleton.num_joints; i++) {
                         victim->skeleton.joints[i].velocity += relative * damagemult * 40;
                     }
                     victim->jointVel(abdomen) += relative * damagemult * 200;
@@ -3147,7 +3145,7 @@ void Person::DoAnimations()
 
                 if ((animTarget == swordslashreversalanim || animTarget == knifeslashreversalanim || animTarget == staffhitreversalanim || animTarget == staffspinhitreversalanim) && animation[animTarget].label[frameCurrent] == 5) {
                     if (victim->weaponactive != -1 && victim->num_weapons > 0) {
-                        if (weapons[victim->weaponids[victim->weaponactive]].owner == victim->id) {
+                        if (weapons[victim->weaponids[victim->weaponactive]].owner == int(victim->id)) {
                             weapons[victim->weaponids[victim->weaponactive]].owner = id;
                             weaponactive = 0;
                             if (num_weapons > 0) {
@@ -3180,7 +3178,7 @@ void Person::DoAnimations()
                     relative.y = 0;
                     Normalise(&relative);
                     //relative=DoRotation(relative,0,-90,0);
-                    for (i = 0; i < victim->skeleton.num_joints; i++) {
+                    for (int i = 0; i < victim->skeleton.num_joints; i++) {
                         victim->skeleton.joints[i].velocity += relative * damagemult * 30;
                     }
                     victim->jointVel(abdomen) += relative * damagemult * 200;
@@ -3211,7 +3209,7 @@ void Person::DoAnimations()
                     relative.y = 0;
                     Normalise(&relative);
                     //relative=DoRotation(relative,0,-90,0);
-                    for (i = 0; i < victim->skeleton.num_joints; i++) {
+                    for (int i = 0; i < victim->skeleton.num_joints; i++) {
                         victim->skeleton.joints[i].velocity += relative * damagemult * 30;
                     }
                     victim->jointVel(abdomen) += relative * damagemult * 200;
@@ -3229,7 +3227,7 @@ void Person::DoAnimations()
                     Normalise(&relative);
                     //relative*=-1;
                     relative.y -= .1;
-                    for (i = 0; i < victim->skeleton.num_joints; i++) {
+                    for (int i = 0; i < victim->skeleton.num_joints; i++) {
                         victim->skeleton.joints[i].velocity += relative * damagemult * 70;
                     }
                     victim->jointVel(lefthand) *= .1;
@@ -3281,7 +3279,7 @@ void Person::DoAnimations()
                     Normalise(&relative);
                     //relative*=-1;
                     relative.y -= .1;
-                    for (i = 0; i < victim->skeleton.num_joints; i++) {
+                    for (int i = 0; i < victim->skeleton.num_joints; i++) {
                         victim->skeleton.joints[i].velocity += relative * damagemult * 70;
                     }
                     victim->jointVel(lefthand) *= .1 - 1;
@@ -3313,7 +3311,7 @@ void Person::DoAnimations()
                     relative.y = 0;
                     Normalise(&relative);
                     relative = DoRotation(relative, 0, -90, 0);
-                    for (i = 0; i < victim->skeleton.num_joints; i++) {
+                    for (int i = 0; i < victim->skeleton.num_joints; i++) {
                         victim->skeleton.joints[i].velocity += relative * damagemult * 40;
                     }
                     victim->jointVel(abdomen) += relative * damagemult * 200;
@@ -3334,7 +3332,7 @@ void Person::DoAnimations()
                     Normalise(&relative);
                     if (victim->id == 0)
                         relative /= 30;
-                    for (i = 0; i < victim->skeleton.num_joints; i++) {
+                    for (int i = 0; i < victim->skeleton.num_joints; i++) {
                         victim->skeleton.joints[i].velocity += relative * damagemult * 40;
                     }
                     //victim->DoDamage(1000);
@@ -3418,12 +3416,12 @@ void Person::DoAnimations()
                 if (hasvictim && (animTarget == knifefollowanim || animTarget == knifesneakattackanim) && animation[animTarget].label[frameCurrent] == 6) {
                     escapednum = 0;
                     victim->velocity = 0;
-                    for (i = 0; i < victim->skeleton.num_joints; i++) {
+                    for (int i = 0; i < victim->skeleton.num_joints; i++) {
                         victim->skeleton.joints[i].velocity = 0;
                     }
                     if (animTarget == knifefollowanim) {
                         victim->RagDoll(0);
-                        for (i = 0; i < victim->skeleton.num_joints; i++) {
+                        for (int i = 0; i < victim->skeleton.num_joints; i++) {
                             victim->skeleton.joints[i].velocity = 0;
                         }
                     }
@@ -3476,7 +3474,7 @@ void Person::DoAnimations()
                 if (hasvictim && animTarget == swordsneakattackanim && animation[animTarget].label[frameCurrent] == 6) {
                     escapednum = 0;
                     victim->velocity = 0;
-                    for (i = 0; i < victim->skeleton.num_joints; i++) {
+                    for (int i = 0; i < victim->skeleton.num_joints; i++) {
                         victim->skeleton.joints[i].velocity = 0;
                     }
                     if (weaponactive != -1) {
@@ -3545,7 +3543,7 @@ void Person::DoAnimations()
                     relative = DoRotation(relative, 0, 90, 0);
                     relative.y = .5;
                     Normalise(&relative);
-                    for (i = 0; i < victim->skeleton.num_joints; i++) {
+                    for (int i = 0; i < victim->skeleton.num_joints; i++) {
                         victim->skeleton.joints[i].velocity += relative * damagemult * 20;
                     }
                     victim->jointVel(head) += relative * damagemult * 200;
@@ -3566,7 +3564,7 @@ void Person::DoAnimations()
                     relative = DoRotation(relative, 0, 90, 0);
                     relative.y = .5;
                     Normalise(&relative);
-                    for (i = 0; i < victim->skeleton.num_joints; i++) {
+                    for (int i = 0; i < victim->skeleton.num_joints; i++) {
                         victim->skeleton.joints[i].velocity += relative * damagemult * 20;
                     }
                     victim->jointVel(head) += relative * damagemult * 200;
@@ -3680,7 +3678,7 @@ void Person::DoAnimations()
                         float closestdist = -1;
                         float distance;
                         if (Person::players.size() > 1)
-                            for (i = 0; i < Person::players.size(); i++) {
+                            for (unsigned i = 0; i < Person::players.size(); i++) {
                                 if (id != i && Person::players[i]->coords.y < coords.y && !Person::players[i]->skeleton.free) {
                                     distance = distsq(&Person::players[i]->coords, &coords);
                                     if (closestdist == -1 || distance < closestdist) {
@@ -3738,7 +3736,7 @@ void Person::DoAnimations()
                         float closestdist = -1;
                         float distance;
                         if (Person::players.size() > 1)
-                            for (i = 0; i < Person::players.size(); i++) {
+                            for (unsigned i = 0; i < Person::players.size(); i++) {
                                 if (id != i && Person::players[i]->coords.y < coords.y && !Person::players[i]->skeleton.free) {
                                     distance = distsq(&Person::players[i]->coords, &coords);
                                     if (closestdist == -1 || distance < closestdist) {
@@ -4034,18 +4032,18 @@ void Person::DoAnimations()
             }
             if (animCurrent != oldanimCurrent || animTarget != oldanimTarget || ((frameCurrent != oldframeCurrent || frameTarget != oldframeTarget) && !calcrot)) {
                 //Old rotates
-                for (i = 0; i < skeleton.num_joints; i++) {
+                for (int i = 0; i < skeleton.num_joints; i++) {
                     skeleton.joints[i].position = animation[animCurrent].position[i][frameCurrent];
                 }
 
                 skeleton.FindForwards();
 
-                for (i = 0; i < skeleton.num_muscles; i++) {
+                for (int i = 0; i < skeleton.num_muscles; i++) {
                     if (skeleton.muscles[i].visible) {
                         skeleton.FindRotationMuscle(i, animTarget);
                     }
                 }
-                for (i = 0; i < skeleton.num_muscles; i++) {
+                for (int i = 0; i < skeleton.num_muscles; i++) {
                     if (skeleton.muscles[i].visible) {
                         if (isnormal((float)((int)(skeleton.muscles[i].rotate1 * 100) % 36000) / 100))
                             skeleton.muscles[i].oldrotate1 = (float)((int)(skeleton.muscles[i].rotate1 * 100) % 36000) / 100;
@@ -4057,18 +4055,18 @@ void Person::DoAnimations()
                 }
 
                 //New rotates
-                for (i = 0; i < skeleton.num_joints; i++) {
+                for (int i = 0; i < skeleton.num_joints; i++) {
                     skeleton.joints[i].position = animation[animTarget].position[i][frameTarget];
                 }
 
                 skeleton.FindForwards();
 
-                for (i = 0; i < skeleton.num_muscles; i++) {
+                for (int i = 0; i < skeleton.num_muscles; i++) {
                     if (skeleton.muscles[i].visible) {
                         skeleton.FindRotationMuscle(i, animTarget);
                     }
                 }
-                for (i = 0; i < skeleton.num_muscles; i++) {
+                for (int i = 0; i < skeleton.num_muscles; i++) {
                     if (skeleton.muscles[i].visible) {
                         if (isnormal((float)((int)(skeleton.muscles[i].rotate1 * 100) % 36000) / 100))
                             skeleton.muscles[i].newrotate1 = (float)((int)(skeleton.muscles[i].rotate1 * 100) % 36000) / 100;
@@ -4093,12 +4091,12 @@ void Person::DoAnimations()
             oldframeTarget = frameTarget;
             oldframeCurrent = frameCurrent;
 
-            for (i = 0; i < skeleton.num_joints; i++) {
+            for (int i = 0; i < skeleton.num_joints; i++) {
                 skeleton.joints[i].velocity = (animation[animCurrent].position[i][frameCurrent] * (1 - target) + animation[animTarget].position[i][frameTarget] * (target) - skeleton.joints[i].position) / multiplier;
                 skeleton.joints[i].position = animation[animCurrent].position[i][frameCurrent] * (1 - target) + animation[animTarget].position[i][frameTarget] * (target);
             }
             offset = currentoffset * (1 - target) + targetoffset * target;
-            for (i = 0; i < skeleton.num_muscles; i++) {
+            for (int i = 0; i < skeleton.num_muscles; i++) {
                 if (skeleton.muscles[i].visible) {
                     skeleton.muscles[i].rotate1 = skeleton.muscles[i].oldrotate1 * (1 - target) + skeleton.muscles[i].newrotate1 * (target);
                     skeleton.muscles[i].rotate2 = skeleton.muscles[i].oldrotate2 * (1 - target) + skeleton.muscles[i].newrotate2 * (target);
@@ -4340,7 +4338,7 @@ void Person::DoStuff()
                         weaponstuck = 0;
                 }
                 weaponactive = -1;
-                for (i = 0; i < Person::players.size(); i++) {
+                for (unsigned i = 0; i < Person::players.size(); i++) {
                     Person::players[i]->wentforweapon = 0;
                 }
 
@@ -4358,7 +4356,7 @@ void Person::DoStuff()
             }
             dead = 2;
             if (animTarget == knifefollowedanim && !skeleton.free) {
-                for (i = 0; i < skeleton.num_joints; i++) {
+                for (int i = 0; i < skeleton.num_joints; i++) {
                     skeleton.joints[i].velocity = 0;
                     skeleton.joints[i].velocity.y = -2;
                 }
@@ -4766,7 +4764,7 @@ void Person::DoStuff()
                     weaponstuck = 0;
             }
             weaponactive = -1;
-            for (i = 0; i < Person::players.size(); i++) {
+            for (unsigned i = 0; i < Person::players.size(); i++) {
                 Person::players[i]->wentforweapon = 0;
             }
         }
@@ -4808,7 +4806,7 @@ void Person::DoStuff()
         dead = 0;
         skeleton.free = 1;
         damage -= 20;
-        for (i = 0; i < skeleton.num_joints; i++) {
+        for (int i = 0; i < skeleton.num_joints; i++) {
             skeleton.joints[i].velocity = 0;
         }
     }
@@ -4832,7 +4830,7 @@ void Person::DoStuff()
                     weaponstuck = 0;
             }
             weaponactive = -1;
-            for (i = 0; i < Person::players.size(); i++) {
+            for (unsigned i = 0; i < Person::players.size(); i++) {
                 Person::players[i]->wentforweapon = 0;
             }
         }
@@ -4902,7 +4900,7 @@ void Person::DoStuff()
 
         //velocity=jointVel(groin)*scale;
         velocity = 0;
-        for (i = 0; i < skeleton.num_joints; i++) {
+        for (int i = 0; i < skeleton.num_joints; i++) {
             velocity += skeleton.joints[i].velocity * scale;
         }
         velocity /= skeleton.num_joints;
@@ -5020,7 +5018,7 @@ void Person::DoStuff()
 
                 //if(middle.y>0)targetoffset.y=middle.y+1;
 
-                for (i = 0; i < skeleton.num_joints; i++) {
+                for (int i = 0; i < skeleton.num_joints; i++) {
                     tempanimation.position[i][0] = skeleton.joints[i].position;
                     tempanimation.position[i][0] = DoRotation(tempanimation.position[i][0], 0, -yaw, 0);
                 }
@@ -5111,7 +5109,7 @@ void Person::DoStuff()
                 if (middle.y > 0 && animTarget != rollanim)
                     targetoffset.y = middle.y + 1;
 
-                for (i = 0; i < skeleton.num_joints; i++) {
+                for (int i = 0; i < skeleton.num_joints; i++) {
                     tempanimation.position[i][0] = skeleton.joints[i].position;
                     tempanimation.position[i][0] = DoRotation(tempanimation.position[i][0], 0, -yaw, 0);
                 }
@@ -6023,7 +6021,7 @@ int Person::DrawSkeleton()
                 skeleton.drawmodelclothes.vertex[i] = 0;
                 skeleton.drawmodelclothes.vertex[i].y = 999;
             }
-            for (i = 0; i < skeleton.num_muscles; i++) {
+            for (int i = 0; i < skeleton.num_muscles; i++) {
                 // convenience renames
                 const int p1 = skeleton.muscles[i].parent1->label;
                 const int p2 = skeleton.muscles[i].parent2->label;

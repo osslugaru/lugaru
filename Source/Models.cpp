@@ -245,7 +245,7 @@ int Model::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate)
 
 int Model::SphereCheckPossible(XYZ *p1, float radius, XYZ *move, float *rotate)
 {
-    static int i, j;
+    static int j;
     static float distance;
     static float olddistance;
     static int intersecting;

@@ -214,12 +214,12 @@ void Weapon::DoStuff(int i)
         }
 
         if (velocity.x || velocity.y || velocity.z) {
-            for (int j = 0; j < Person::players.size(); j++) {
+            for (unsigned j = 0; j < Person::players.size(); j++) {
                 footvel = 0;
                 footpoint = DoRotation((Person::players[j]->jointPos(abdomen) + Person::players[j]->jointPos(neck)) / 2, 0, Person::players[j]->yaw, 0) * Person::players[j]->scale + Person::players[j]->coords;
                 if (owner == -1 && distsqflat(&position, &Person::players[j]->coords) < 1.5 &&
                         distsq(&position, &Person::players[j]->coords) < 4 && Person::players[j]->weaponstuck == -1 &&
-                        !Person::players[j]->skeleton.free && j != oldowner) {
+                        !Person::players[j]->skeleton.free && (int(j) != oldowner)) {
                     if ((Person::players[j]->aitype != attacktypecutoff || abs(Random() % 6) == 0 || (Person::players[j]->animTarget != backhandspringanim && Person::players[j]->animTarget != rollanim && Person::players[j]->animTarget != flipanim && Random() % 2 == 0)) && !missed) {
                         if ( (Person::players[j]->creature == wolftype && Random() % 3 != 0 && Person::players[j]->weaponactive == -1 && (Person::players[j]->isIdle() || Person::players[j]->isRun() || Person::players[j]->animTarget == walkanim)) ||
                                 (Person::players[j]->creature == rabbittype && Random() % 2 == 0 && Person::players[j]->aitype == attacktypecutoff && Person::players[j]->weaponactive == -1)) {

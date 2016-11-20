@@ -272,6 +272,9 @@ void Menu::drawItems()
             glEnable(GL_TEXTURE_2D);
         }
         break;
+        default:
+        case MenuItem::NONE:
+        break;
         }
     }
 }

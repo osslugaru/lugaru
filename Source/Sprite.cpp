@@ -57,7 +57,7 @@ vector<Sprite*> Sprite::sprites = vector<Sprite*>();
 //Functions
 void Sprite::Draw()
 {
-    int i, j, k;
+    int k;
     static float M[16];
     static XYZ point;
     static float distancemult;
@@ -97,7 +97,7 @@ void Sprite::Draw()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDepthMask(0);
     glAlphaFunc(GL_GREATER, 0.0001);
-    for (i = 0; i < sprites.size(); i++) {
+    for (unsigned i = 0; i < sprites.size(); i++) {
         if (lasttype != sprites[i]->type) {
             switch (sprites[i]->type) {
             case cloudsprite:
@@ -279,7 +279,7 @@ void Sprite::Draw()
         glPopMatrix();
     }
     tempmult = multiplier;
-    for (i = sprites.size() - 1; i >= 0; i--) {
+    for (unsigned i = sprites.size() - 1; i >= 0; i--) {
         multiplier = tempmult;
         if (sprites[i]->type != snowsprite) {
             sprites[i]->position += sprites[i]->velocity * multiplier;
@@ -330,7 +330,7 @@ void Sprite::Draw()
                 float rotationpoint;
                 int whichtri;
 
-                for (j = 0; j < Person::players.size(); j++) {
+                for (unsigned j = 0; j < Person::players.size(); j++) {
                     if (!spritehit && Person::players[j]->dead && sprites[i]->alivetime > .1) {
                         where = sprites[i]->oldposition;
                         where -= Person::players[j]->coords;
@@ -359,7 +359,7 @@ void Sprite::Draw()
                 if (whichpatchx > 0 && whichpatchz > 0 && whichpatchx < subdivision && whichpatchz < subdivision)
                     if (terrain.patchobjectnum[whichpatchx][whichpatchz]) {
                         if (!spritehit)
-                            for (j = 0; j < terrain.patchobjectnum[whichpatchx][whichpatchz]; j++) {
+                            for (int j = 0; j < terrain.patchobjectnum[whichpatchx][whichpatchz]; j++) {
                                 k = terrain.patchobjects[whichpatchx][whichpatchz][j];
                                 start = sprites[i]->oldposition;
                                 end = sprites[i]->position;
@@ -418,7 +418,7 @@ void Sprite::Draw()
             DeleteSprite(i);
     }
     if (check)
-        for (i = sprites.size() - 1; i >= 0; i--) {
+        for (unsigned i = sprites.size() - 1; i >= 0; i--) {
             sprites[i]->oldposition = sprites[i]->position;
         }
     glAlphaFunc(GL_GREATER, 0.0001);

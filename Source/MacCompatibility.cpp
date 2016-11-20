@@ -150,8 +150,6 @@ Duration AbsoluteDeltaToDuration( AbsoluteTime& a, AbsoluteTime& b)
 static int locateOneElement(char *buf)
 {
     char *ptr;
-    char **rc;
-    char **i;
     DIR *dirp;
 
     //if (PHYSFS_exists(buf))

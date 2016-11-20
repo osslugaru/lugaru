@@ -185,7 +185,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
     XYZ bounceness;
     const int numrepeats = 3;
     float groundlevel = .15;
-    int i, j, k, l, m;
+    int i, j, k, m;
     XYZ temp;
     XYZ terrainnormal;
     int whichhit;
@@ -834,15 +834,10 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
     int parentID;
     FILE *tfile;
     float lSize;
-    int i, j, tempmuscle;
-
-    int newload;
+    int i, j;
     int edit;
 
     LOGFUNC;
-
-
-    newload = 0;
 
     num_models = 7;
 
@@ -934,7 +929,6 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
         }
 
         // read num_muscles
-        tempmuscle = num_muscles;
         funpackf(tfile, "Bi", &num_muscles);
 
         // allocate memory
@@ -943,12 +937,9 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
             delete [] muscles; //dealloc2(muscles);
         muscles = (Muscle*)new Muscle[num_muscles]; //malloc(sizeof(Muscle)*num_muscles);
 
-        newload = 1;
-
         // for each muscle...
         for (i = 0; i < num_muscles; i++) {
             // read info
-            tempmuscle = muscles[i].numvertices;
             funpackf(tfile, "Bf Bf Bf Bf Bf Bi Bi", &muscles[i].length, &muscles[i].targetlength, &muscles[i].minlength, &muscles[i].maxlength, &muscles[i].strength, &muscles[i].type, &muscles[i].numvertices);
 
             // allocate memory for vertices
@@ -1071,7 +1062,6 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
             fseek(tfile, lSize, SEEK_CUR);
 
             // read numverticeslow
-            tempmuscle = muscles[i].numverticeslow;
             funpackf(tfile, "Bi", &muscles[i].numverticeslow);
 
             if (muscles[i].numverticeslow) {
@@ -1185,7 +1175,6 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
             fseek(tfile, lSize, SEEK_CUR);
 
             // read numverticesclothes
-            tempmuscle = muscles[i].numverticesclothes;
             funpackf(tfile, "Bi", &muscles[i].numverticesclothes);
 
             // read verticesclothes

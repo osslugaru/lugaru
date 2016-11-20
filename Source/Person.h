@@ -232,7 +232,7 @@ public:
 
     int creature;
 
-    int id;
+    unsigned id;
 
     Skeleton skeleton;
 

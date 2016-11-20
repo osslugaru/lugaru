@@ -25,9 +25,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 void SetUpLight(Light* whichsource, int whichlight)
 {
     static float qattenuation[] = {0.0002f};
-    static float cattenuation[] = {1.5f};
-    static float lattenuation[] = {0.5f};
-    static float zattenuation[] = {0.0f};
 
     //Initialize lights
     if (whichlight == 0) {

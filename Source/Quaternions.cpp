@@ -280,8 +280,7 @@ bool PointInTriangle(Vector *p, Vector normal, float p11, float p12, float p13, 
 bool LineFacet(Vector p1, Vector p2, Vector pa, Vector pb, Vector pc, Vector *p)
 {
     static float d;
-    static float a1, a2, a3;
-    static float total, denom, mu;
+    static float denom, mu;
     static Vector n, pa1, pa2, pa3;
 
     //Calculate the parameters for the plane
@@ -393,8 +392,7 @@ bool PointInTriangle(XYZ *p, XYZ normal, XYZ *p1, XYZ *p2, XYZ *p3)
 bool LineFacet(XYZ p1, XYZ p2, XYZ pa, XYZ pb, XYZ pc, XYZ *p)
 {
     static float d;
-    static float a1, a2, a3;
-    static float total, denom, mu;
+    static float denom, mu;
     static XYZ n, pa1, pa2, pa3;
 
     //Calculate the parameters for the plane
@@ -425,8 +423,7 @@ bool LineFacet(XYZ p1, XYZ p2, XYZ pa, XYZ pb, XYZ pc, XYZ *p)
 float LineFacetd(XYZ p1, XYZ p2, XYZ pa, XYZ pb, XYZ pc, XYZ *p)
 {
     static float d;
-    static float a1, a2, a3;
-    static float total, denom, mu;
+    static float denom, mu;
     static XYZ n, pa1, pa2, pa3;
 
     //Calculate the parameters for the plane
@@ -457,8 +454,7 @@ float LineFacetd(XYZ p1, XYZ p2, XYZ pa, XYZ pb, XYZ pc, XYZ *p)
 float LineFacetd(XYZ p1, XYZ p2, XYZ pa, XYZ pb, XYZ pc, XYZ n, XYZ *p)
 {
     static float d;
-    static float a1, a2, a3;
-    static float total, denom, mu;
+    static float denom, mu;
     static XYZ pa1, pa2, pa3;
 
     //Calculate the parameters for the plane
@@ -484,8 +480,7 @@ float LineFacetd(XYZ p1, XYZ p2, XYZ pa, XYZ pb, XYZ pc, XYZ n, XYZ *p)
 float LineFacetd(XYZ *p1, XYZ *p2, XYZ *pa, XYZ *pb, XYZ *pc, XYZ *p)
 {
     static float d;
-    static float a1, a2, a3;
-    static float total, denom, mu;
+    static float denom, mu;
     static XYZ pa1, pa2, pa3, n;
 
     //Calculate the parameters for the plane
@@ -516,8 +511,7 @@ float LineFacetd(XYZ *p1, XYZ *p2, XYZ *pa, XYZ *pb, XYZ *pc, XYZ *p)
 float LineFacetd(XYZ *p1, XYZ *p2, XYZ *pa, XYZ *pb, XYZ *pc, XYZ *n, XYZ *p)
 {
     static float d;
-    static float a1, a2, a3;
-    static float total, denom, mu;
+    static float denom, mu;
     static XYZ pa1, pa2, pa3;
 
     //Calculate the parameters for the plane

@@ -52,9 +52,7 @@ int Terrain::lineTerrain(XYZ p1, XYZ p2, XYZ *p)
     static int firstintersecting;
     static XYZ point;
     static int startx, starty;
-    static float slope;
     static int endx, endy;
-    static int numtris = (size - 1) * (size - 1) * 2;
     static float highest, lowest;
 
     firstintersecting = -1;
@@ -203,7 +201,6 @@ void Terrain::UpdateTransparencyother(int whichx, int whichy)
 {
     static XYZ vertex;
     static int i, j, a, b, c, d, patch_size, stepsize;
-    static float distance;
 
     patch_size = size / subdivision;
 
@@ -862,7 +859,6 @@ void Terrain::drawpatchotherother(int whichx, int whichy, float opacity)
 
 float Terrain::getHeight(float pointx, float pointz)
 {
-    static float height1, height2;
     static int tilex, tiley;
     static XYZ startpoint, endpoint, intersect, triangle[3], average;
 
@@ -918,7 +914,6 @@ float Terrain::getHeight(float pointx, float pointz)
 
 float Terrain::getHeightExtrude(float pointx, float pointz, float point2x, float point2z)
 {
-    static float height1, height2;
     static int tilex, tiley;
     static XYZ startpoint, endpoint, intersect, triangle[3], average;
 
@@ -1131,11 +1126,10 @@ void Terrain::draw(int layer)
 void Terrain::drawdecals()
 {
     if (decals) {
-        static int i, j;
+        static int i;
         static float distancemult;
         static int lasttype;
 
-        static float patch_size = size / subdivision * scale;
         static float viewdistsquared;
         static bool blend;
 

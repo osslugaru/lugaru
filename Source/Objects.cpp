@@ -84,7 +84,7 @@ void Objects::SphereCheckPossible(XYZ *p1, float radius)
 void Objects::Draw()
 {
     static float distance;
-    static int i, j;
+    static int i;
     static XYZ moved, terrainlight;
     bool hidden;
 
