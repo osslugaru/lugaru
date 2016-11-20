@@ -29,11 +29,7 @@ enum bonus_types {
     bonus_count
 };
 
-static const char *bonus_names[bonus_count] = {
-#define DECLARE_BONUS(id, name, ...) name,
-#include "Bonuses.def"
-#undef DECLARE_BONUS
-};
+extern const char *bonus_names[bonus_count];
 
 extern int bonus;
 extern float bonusvalue;
@@ -51,11 +47,7 @@ enum award_types {
     award_count
 };
 
-static const char *award_names[award_count] = {
-#define DECLARE_AWARD(id, name) name,
-#include "Awards.def"
-#undef DECLARE_AWARD
-};
+extern const char *award_names[award_count];
 
 extern int award_awards(int *);
 

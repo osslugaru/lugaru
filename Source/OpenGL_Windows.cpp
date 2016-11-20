@@ -272,8 +272,6 @@ static Point gMidPoint;
 
 Boolean SetUp ()
 {
-    char string[10];
-
     LOGFUNC;
 
     osx = 0;
@@ -643,7 +641,6 @@ char *calcBaseDir(const char *argv0)
     char *retval;
     char *envr;
 
-    const char *ptr = strrchr((char *)argv0, '/');
     if (strchr(argv0, '/')) {
         retval = strdup(argv0);
         if (retval)
@@ -868,7 +865,6 @@ static bool load_png(const char *file_name, TGAImageRec &tex)
     png_infop info_ptr = NULL;
     png_uint_32 width, height;
     int bit_depth, color_type, interlace_type;
-    png_byte **rows = NULL;
     bool retval = false;
     png_byte **row_pointers = NULL;
     FILE *fp = fopen(file_name, "rb");
@@ -914,7 +910,7 @@ static bool load_png(const char *file_name, TGAImageRec &tex)
         png_byte *dst = tex.data;
         for (int i = height - 1; i >= 0; i--) {
             png_byte *src = row_pointers[i];
-            for (int j = 0; j < width; j++) {
+            for (unsigned j = 0; j < width; j++) {
                 dst[0] = src[0];
                 dst[1] = src[1];
                 dst[2] = src[2];

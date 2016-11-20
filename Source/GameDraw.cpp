@@ -137,8 +137,7 @@ int Game::DrawGLScene(StereoSide side)
 {
     static float texcoordwidth, texcoordheight;
     static float texviewwidth, texviewheight;
-    static int i, j, k, l;
-    //~ static GLubyte color;
+    static int i, j, l;
     static XYZ checkpoint;
     static float tempmult;
     float tutorialopac;
@@ -333,7 +332,7 @@ int Game::DrawGLScene(StereoSide side)
         static XYZ point;
         static float size, opacity, rotation;
         rotation = 0;
-        for (k = 0; k < Person::players.size(); k++) {
+        for (unsigned k = 0; k < Person::players.size(); k++) {
             if (!Person::players[k]->skeleton.free && Person::players[k]->playerdetail && Person::players[k]->howactive < typesleeping)
                 if (frustum.SphereInFrustum(Person::players[k]->coords.x, Person::players[k]->coords.y + Person::players[k]->scale * 3, Person::players[k]->coords.z, Person::players[k]->scale * 7) && Person::players[k]->occluded < 25)
                     for (i = 0; i < Person::players[k]->skeleton.num_joints; i++) {
@@ -451,7 +450,7 @@ int Game::DrawGLScene(StereoSide side)
             glEnable(GL_CULL_FACE);
             glCullFace(GL_FRONT);
             glDepthMask(1);
-            for (k = 0; k < Person::players.size(); k++) {
+            for (unsigned k = 0; k < Person::players.size(); k++) {
                 if (k == 0 || tutoriallevel != 1) {
                     glEnable(GL_BLEND);
                     glEnable(GL_LIGHTING);
@@ -515,7 +514,7 @@ int Game::DrawGLScene(StereoSide side)
         glEnable(GL_CULL_FACE);
         glCullFace(GL_FRONT);
         glDepthMask(1);
-        for (k = 0; k < Person::players.size(); k++) {
+        for (unsigned k = 0; k < Person::players.size(); k++) {
             if (!(k == 0 || tutoriallevel != 1)) {
                 glEnable(GL_BLEND);
                 glEnable(GL_LIGHTING);
@@ -567,7 +566,7 @@ int Game::DrawGLScene(StereoSide side)
             glDisable(GL_COLOR_MATERIAL);
             glColor4f(1, 1, 0, 1);
 
-            for (k = 0; k < Person::players.size(); k++) {
+            for (unsigned k = 0; k < Person::players.size(); k++) {
                 if (Person::players[k]->numwaypoints > 1) {
                     glBegin(GL_LINE_LOOP);
                     for (i = 0; i < Person::players[k]->numwaypoints; i++) {
@@ -580,7 +579,7 @@ int Game::DrawGLScene(StereoSide side)
 
             if (numpathpoints > 1) {
                 glColor4f(0, 1, 0, 1);
-                for (k = 0; k < numpathpoints; k++) {
+                for (unsigned k = 0; int(k) < numpathpoints; k++) {
                     if (numpathpointconnect[k]) {
                         for (i = 0; i < numpathpointconnect[k]; i++) {
                             glBegin(GL_LINE_LOOP);
@@ -603,9 +602,6 @@ int Game::DrawGLScene(StereoSide side)
         glEnable(GL_TEXTURE_2D);
         glColor4f(.5, .5, .5, 1);
         if (!console) {
-            sprintf (string, " ", (int)(fps));
-            text->glPrint(10, 30, string, 0, .8, screenwidth, screenheight);
-
             if (!tutoriallevel)
                 if (bonus > 0 && bonustime < 1 && !winfreeze && indialogue == -1/*bonustime<4*/) {
                     const char *bonus_name;
@@ -1301,9 +1297,9 @@ int Game::DrawGLScene(StereoSide side)
                     }
                     text->glPrint(130, 120, string, 0, .8, 1024, 768);
 
-                    sprintf (string, "Numplayers: %d", Person::players.size());
+                    sprintf (string, "Numplayers: %lu", Person::players.size());
                     text->glPrint(10, 155, string, 0, .8, 1024, 768);
-                    sprintf (string, "Player %d: numwaypoints: %d", Person::players.size()-1, Person::players.back()->numwaypoints);
+                    sprintf (string, "Player %d: numwaypoints: %d", (int(Person::players.size()) - 1), Person::players.back()->numwaypoints);
                     text->glPrint(10, 140, string, 0, .8, 1024, 768);
                 }
                 sprintf (string, "Difficulty: %d", difficulty);

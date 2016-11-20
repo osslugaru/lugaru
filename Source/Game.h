@@ -236,15 +236,12 @@ enum maptypes {
 
 enum pathtypes {wpkeepwalking, wppause};
 
-static const char *pathtypenames[] = {"keepwalking", "pause"};
+extern const char *pathtypenames[2];
 
 enum editortypes {typeactive, typesitting, typesittingwall, typesleeping,
                   typedead1, typedead2, typedead3, typedead4
                  };
 
-static const char *editortypenames[] = {
-    "active", "sitting", "sitting wall", "sleeping",
-    "dead1", "dead2", "dead3", "dead4"
-};
+extern const char *editortypenames[8];
 
 #endif

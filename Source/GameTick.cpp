@@ -582,7 +582,7 @@ static void ch_save(const char *args)
     if (Person::players.size() > maxplayers) {
         cout << "Warning: this level contains more players than allowed" << endl;
     }
-    for (int j = 1; j < Person::players.size(); j++) {
+    for (unsigned j = 1; j < Person::players.size(); j++) {
         fpackf(tfile, "Bi Bi Bf Bf Bf Bi Bi Bf Bb Bf", Person::players[j]->whichskin, Person::players[j]->creature,
                Person::players[j]->coords.x, Person::players[j]->coords.y, Person::players[j]->coords.z,
                Person::players[j]->num_weapons, Person::players[j]->howactive, Person::players[j]->scale, Person::players[j]->immobile, Person::players[j]->yaw);
@@ -698,7 +698,7 @@ static int findClosestPlayer()
     int closest = -1;
     float closestdist = std::numeric_limits<float>::max();
 
-    for (int i = 1; i < Person::players.size(); i++) {
+    for (unsigned i = 1; i < Person::players.size(); i++) {
         float distance = distsq(&Person::players[i]->coords, &Person::players[0]->coords);
         if (distance < closestdist) {
             closestdist = distance;
@@ -969,7 +969,7 @@ static void ch_black(const char *args)
 
 static void ch_sizemin(const char *args)
 {
-    for (int i = 1; i < Person::players.size(); i++)
+    for (unsigned i = 1; i < Person::players.size(); i++)
         if (Person::players[i]->scale < 0.8 * 0.2)
             Person::players[i]->scale = 0.8 * 0.2;
 }
@@ -1076,7 +1076,7 @@ static void ch_dialogue(const char *args)
     }
 
     for (int i = 0; i < numdialogueboxes[numdialogues]; i++) {
-        for (int j = 0; j < Person::players.size(); j++) {
+        for (unsigned j = 0; j < Person::players.size(); j++) {
             participantfacing[numdialogues][i][j] = Person::players[j]->facing;
         }
     }
@@ -1159,7 +1159,7 @@ static void ch_immobile(const char *args)
 
 static void ch_allimmobile(const char *args)
 {
-    for (int i = 1; i < Person::players.size(); i++)
+    for (unsigned i = 1; i < Person::players.size(); i++)
         Person::players[i]->immobile = 1;
 }
 
@@ -2148,7 +2148,7 @@ void Loadlevel(const char *name)
 
         fclose(tfile);
 
-        for (int i = 0; i < Person::players.size(); i++) {
+        for (unsigned i = 0; i < Person::players.size(); i++) {
             if (visibleloading)
                 LoadingScreen();
             Person::players[i]->burnt = 0;
@@ -3056,7 +3056,7 @@ void doDebugKeys()
             int closest = -1;
             float closestdist = std::numeric_limits<float>::max();
 
-            for (int i = 1; i < Person::players.size(); i++) {
+            for (unsigned i = 1; i < Person::players.size(); i++) {
                 float distance = distsq(&Person::players[i]->coords, &Person::players[0]->coords);
                 if (!Person::players[i]->headless)
                     if (distance < closestdist) {
@@ -3181,8 +3181,8 @@ void doDebugKeys()
                 }
 
                 XYZ temppos;
-                for (int j = 0; j < Person::players.size(); j++) {
-                    if (j != closest) {
+                for (unsigned j = 0; j < Person::players.size(); j++) {
+                    if (int(j) != closest) {
                         if (distsq(&Person::players[j]->coords, &Person::players[closest]->coords) < 25) {
                             Person::players[j]->DoDamage((25 - distsq(&Person::players[j]->coords, &Person::players[closest]->coords)) * 60);
                             if (Person::players[j]->skeleton.free == 2)
@@ -3578,8 +3578,8 @@ void doDebugKeys()
 
 void doJumpReversals()
 {
-    for (int k = 0; k < Person::players.size(); k++)
-        for (int i = k; i < Person::players.size(); i++) {
+    for (unsigned k = 0; k < Person::players.size(); k++)
+        for (unsigned i = k; i < Person::players.size(); i++) {
             if (i == k)
                 continue;
             if (     Person::players[k]->skeleton.free == 0 &&
@@ -3588,8 +3588,8 @@ void doJumpReversals()
                       Person::players[k]->animTarget == jumpupanim) &&
                      (Person::players[i]->aitype == playercontrolled ||
                       Person::players[k]->aitype == playercontrolled) &&
-                     (Person::players[i]->aitype == attacktypecutoff && Person::players[i]->stunned <= 0 ||
-                      Person::players[k]->aitype == attacktypecutoff && Person::players[k]->stunned <= 0)) {
+                     ((Person::players[i]->aitype == attacktypecutoff && Person::players[i]->stunned <= 0) ||
+                      (Person::players[k]->aitype == attacktypecutoff && Person::players[k]->stunned <= 0))) {
                 if (     distsq(&Person::players[i]->coords, &Person::players[k]->coords) < 10 * sq((Person::players[i]->scale + Person::players[k]->scale) * 2.5) &&
                          distsqflat(&Person::players[i]->coords, &Person::players[k]->coords) < 2 * sq((Person::players[i]->scale + Person::players[k]->scale) * 2.5)) {
                     //TODO: refactor two huge similar ifs
@@ -3598,7 +3598,7 @@ void doJumpReversals()
                             Person::players[k]->animTarget != getupfromfrontanim &&
                             animation[Person::players[k]->animTarget].height == middleheight &&
                             normaldotproduct(Person::players[i]->velocity, Person::players[k]->coords - Person::players[i]->coords) < 0 &&
-                            (Person::players[k]->aitype == playercontrolled && Person::players[k]->attackkeydown ||
+                            ((Person::players[k]->aitype == playercontrolled && Person::players[k]->attackkeydown) ||
                              Person::players[k]->aitype != playercontrolled)) {
                         Person::players[i]->victim = Person::players[k];
                         Person::players[i]->velocity = 0;
@@ -3679,7 +3679,7 @@ void doJumpReversals()
 void doAerialAcrobatics()
 {
     static XYZ facing, flatfacing;
-    for (int k = 0; k < Person::players.size(); k++) {
+    for (unsigned k = 0; k < Person::players.size(); k++) {
         Person::players[k]->turnspeed = 500;
 
         if ((Person::players[k]->isRun() &&
@@ -4080,7 +4080,7 @@ void doAttacks()
     if (Input::isKeyDown(attackkey) &&
             !oldattackkey &&
             !Person::players[0]->backkeydown) {
-        for (int k = 0; k < Person::players.size(); k++) {
+        for (unsigned k = 0; k < Person::players.size(); k++) {
             if ((Person::players[k]->animTarget == swordslashanim ||
                     Person::players[k]->animTarget == staffhitanim ||
                     Person::players[k]->animTarget == staffspinhitanim) &&
@@ -4093,7 +4093,7 @@ void doAttacks()
     if (!hostile || indialogue != -1)
         Person::players[0]->attackkeydown = 0;
 
-    for (int k = 0; k < Person::players.size(); k++) {
+    for (unsigned k = 0; k < Person::players.size(); k++) {
         if (indialogue != -1)
             Person::players[k]->attackkeydown = 0;
         if (Person::players[k]->animTarget != rabbitrunninganim && Person::players[k]->animTarget != wolfrunninganim) {
@@ -4111,7 +4111,7 @@ void doAttacks()
                     if (Person::players[k]->jumppower <= 1) {
                         Person::players[k]->jumppower -= 2;
                     } else {
-                        for (int i = 0; i < Person::players.size(); i++) {
+                        for (unsigned i = 0; i < Person::players.size(); i++) {
                             if (i == k)
                                 continue;
                             if (Person::players[i]->animTarget == swordslashanim ||
@@ -4150,7 +4150,7 @@ void doAttacks()
                     //normal attacks (?)
                     Person::players[k]->hasvictim = 0;
                     if (Person::players.size() > 1)
-                        for (int i = 0; i < Person::players.size(); i++) {
+                        for (unsigned i = 0; i < Person::players.size(); i++) {
                             if (i == k || !(k == 0 || i == 0))
                                 continue;
                             if (!Person::players[k]->hasvictim)
@@ -4421,7 +4421,7 @@ void doAttacks()
                         }
                     const bool hasstaff = attackweapon == staff;
                     if (k == 0 && Person::players.size() > 1)
-                        for (int i = 0; i < Person::players.size(); i++) {
+                        for (unsigned i = 0; i < Person::players.size(); i++) {
                             if (i == k)
                                 continue;
                             if ((playerrealattackkeydown || Person::players[i]->dead || !hasstaff) &&
@@ -4546,7 +4546,7 @@ void doAttacks()
                         }
                     if (!Person::players[k]->hasvictim) {
                         //find victim
-                        for (int i = 0; i < Person::players.size(); i++) {
+                        for (unsigned i = 0; i < Person::players.size(); i++) {
                             if (i == k || !(i == 0 || k == 0))
                                 continue;
                             if (!Person::players[i]->skeleton.free) {
@@ -4609,8 +4609,8 @@ void doPlayerCollisions()
     static XYZ rotatetarget;
     static float collisionradius;
     if (Person::players.size() > 1)
-        for (int k = 0; k < Person::players.size(); k++)
-            for (int i = k + 1; i < Person::players.size(); i++) {
+        for (unsigned k = 0; k < Person::players.size(); k++)
+            for (unsigned i = k + 1; i < Person::players.size(); i++) {
                 //neither player is part of a reversal
                 if ((animation[Person::players[i]->animTarget].attack != reversed &&
                         animation[Person::players[i]->animTarget].attack != reversal &&
@@ -4968,7 +4968,7 @@ void doAI(int i)
 
                 if (Person::players[i]->losupdatedelay < 0 && !editorenabled && Person::players[i]->occluded < 2) {
                     Person::players[i]->losupdatedelay = .2;
-                    for (int j = 0; j < Person::players.size(); j++)
+                    for (unsigned j = 0; j < Person::players.size(); j++)
                         if (j == 0 || Person::players[j]->skeleton.free || Person::players[j]->aitype != passivetype)
                             if (abs(Random() % 2) || animation[Person::players[j]->animTarget].height != lowheight || j != 0)
                                 if (distsq(&Person::players[i]->coords, &Person::players[j]->coords) < 400)
@@ -5089,7 +5089,7 @@ void doAI(int i)
                 //wolf smell
                 if (Person::players[i]->creature == wolftype) {
                     XYZ windsmell;
-                    for (int j = 0; j < Person::players.size(); j++) {
+                    for (unsigned j = 0; j < Person::players.size(); j++) {
                         if (j == 0 || (Person::players[j]->dead && Person::players[j]->bloodloss > 0)) {
                             float smelldistance = 50;
                             if (j == 0 && Person::players[j]->num_weapons > 0) {
@@ -5112,7 +5112,7 @@ void doAI(int i)
 
                 if (Person::players[i]->howactive < typesleeping && Person::players[i]->losupdatedelay < 0 && !editorenabled && Person::players[i]->occluded < 2) {
                     Person::players[i]->losupdatedelay = .2;
-                    for (int j = 0; j < Person::players.size(); j++) {
+                    for (unsigned j = 0; j < Person::players.size(); j++) {
                         if (j == 0 || Person::players[j]->skeleton.free || Person::players[j]->aitype != passivetype) {
                             if (abs(Random() % 2) || animation[Person::players[j]->animTarget].height != lowheight || j != 0)
                                 if (distsq(&Person::players[i]->coords, &Person::players[j]->coords) < 400)
@@ -5302,7 +5302,7 @@ void doAI(int i)
                 if (!Person::players[i]->ally) {
                     int closest = -1;
                     float closestdist = -1;
-                    for (int k = 0; k < Person::players.size(); k++) {
+                    for (unsigned k = 0; k < Person::players.size(); k++) {
                         if (k != i && k != 0 && !Person::players[k]->dead &&
                                 Person::players[k]->howactive < typedead1 &&
                                 !Person::players[k]->skeleton.free &&
@@ -5651,7 +5651,7 @@ void doAI(int i)
                          Person::players[i]->isCrouch() ||
                          Person::players[i]->isRun())) {
                     int target = -2;
-                    for (int j = 0; j < Person::players.size(); j++)
+                    for (unsigned j = 0; j < Person::players.size(); j++)
                         if (j != i && !Person::players[j]->skeleton.free &&
                                 Person::players[j]->hasvictim &&
                                 (tutoriallevel == 1 && reversaltrain ||
@@ -6865,7 +6865,7 @@ void Game::Tick()
                             }
                         }
 
-                        for (int j = 0; j < Person::players.size(); j++) {
+                        for (unsigned j = 0; j < Person::players.size(); j++) {
                             participantfacing[whichdialogue][indialogue][j] = participantfacing[whichdialogue][indialogue - 1][j];
                         }
                     }
@@ -6992,11 +6992,11 @@ void Game::Tick()
 
             doJumpReversals();
 
-            for (int k = 0; k < Person::players.size(); k++)
+            for (unsigned k = 0; k < Person::players.size(); k++)
                 if (k != 0 && Person::players[k]->immobile)
                     Person::players[k]->coords = Person::players[k]->realoldcoords;
 
-            for (int k = 0; k < Person::players.size(); k++) {
+            for (unsigned k = 0; k < Person::players.size(); k++) {
                 if (!isnormal(Person::players[k]->coords.x) || !isnormal(Person::players[k]->coords.y) || !isnormal(Person::players[k]->coords.z)) {
                     if (!isnormal(Person::players[k]->coords.x) || !isnormal(Person::players[k]->coords.y) || !isnormal(Person::players[k]->coords.z)) {
                         Person::players[k]->DoDamage(1000);
@@ -7030,7 +7030,7 @@ void Game::Tick()
             static bool movekey;
 
             //?
-            for (int i = 0; i < Person::players.size(); i++) {
+            for (unsigned i = 0; i < Person::players.size(); i++) {
                 static float oldtargetyaw;
                 if (!Person::players[i]->skeleton.free) {
                     oldtargetyaw = Person::players[i]->targetyaw;
@@ -7118,7 +7118,7 @@ void Game::Tick()
                                 }
 
                     //avoid flaming players
-                    for (int j = 0; j < Person::players.size(); j++)
+                    for (unsigned j = 0; j < Person::players.size(); j++)
                         if (Person::players[j]->onfire)
                             if (distsq(&Person::players[j]->coords, &Person::players[i]->coords) < sq(0.3) * 200)
                                 if (     distsq(&Person::players[i]->coords, &Person::players[j]->coords) <
@@ -7284,7 +7284,7 @@ void Game::Tick()
                                     Person::players[i]->isIdle() || Person::players[i]->animTarget == rollanim ||
                                     Person::players[i]->animTarget == backhandspringanim) {
                                 if (Person::players.size() > 1)
-                                    for (int j = 0; j < Person::players.size(); j++) {
+                                    for (unsigned j = 0; j < Person::players.size(); j++) {
                                         if (Person::players[i]->weaponactive == -1)
                                             if (j != i)
                                                 if (Person::players[j]->num_weapons &&
@@ -7391,7 +7391,7 @@ void Game::Tick()
                                         Person::players[i]->animTarget == sneakanim ||
                                         Person::players[i]->isFlip())
                                     if (Person::players.size() > 1)
-                                        for (int j = 0; j < Person::players.size(); j++) {
+                                        for (unsigned j = 0; j < Person::players.size(); j++) {
                                             if (i != j)
                                                 if (tutoriallevel != 1 || tutorialstage == 49)
                                                     if (hostile)
@@ -7455,7 +7455,7 @@ void Game::Tick()
                                 }
 
                                 Person::players[i]->weaponactive = -1;
-                                for (int j = 0; j < Person::players.size(); j++) {
+                                for (unsigned j = 0; j < Person::players.size(); j++) {
                                     Person::players[j]->wentforweapon = 0;
                                 }
                             }
@@ -7552,14 +7552,14 @@ void Game::Tick()
                             if (i == 0) {
                                 Person::players[i]->superruntoggle = 1;
                                 if (Person::players.size() > 1)
-                                    for (int j = 0; j < Person::players.size(); j++)
+                                    for (unsigned j = 0; j < Person::players.size(); j++)
                                         if (j != i && !Person::players[j]->skeleton.free && Person::players[j]->aitype == passivetype)
                                             if (distsq(&Person::players[j]->coords, &Person::players[i]->coords) < 16)
                                                 Person::players[i]->superruntoggle = 0;
                             }
 
                             if (Person::players.size() > 1)
-                                for (int j = 0; j < Person::players.size(); j++) {
+                                for (unsigned j = 0; j < Person::players.size(); j++) {
                                     if (j != i && !Person::players[j]->skeleton.free && Person::players[j]->victim && Person::players[i]->lowreversaldelay <= 0) {
                                         if (distsq(&Person::players[j]->coords, &Person::players[j]->victim->coords) < 3 &&
                                                 Person::players[j]->victim == Person::players[i] &&
@@ -7603,7 +7603,7 @@ void Game::Tick()
                             target = -2;
                             if (Person::players[i]->isCrouch()) {
                                 if (Person::players.size() > 1)
-                                    for (int j = 0; j < Person::players.size(); j++) {
+                                    for (unsigned j = 0; j < Person::players.size(); j++) {
                                         if (j != i &&
                                                 !Person::players[j]->skeleton.free &&
                                                 Person::players[j]->victim &&
@@ -7793,7 +7793,7 @@ void Game::Tick()
                                 //Dodge sweep?
                                 target = -2;
                                 if (Person::players.size() > 1)
-                                    for (int j = 0; j < Person::players.size(); j++) {
+                                    for (unsigned j = 0; j < Person::players.size(); j++) {
                                         if (j != i && !Person::players[j]->skeleton.free && Person::players[j]->victim) {
                                             if (distsq(&Person::players[j]->coords, &Person::players[j]->victim->coords) < 3 &&
                                                     (Person::players[j]->victim == Person::players[i]) &&
@@ -7878,7 +7878,7 @@ void Game::Tick()
             }
 
             //Rotation
-            for (int k = 0; k < Person::players.size(); k++) {
+            for (unsigned k = 0; k < Person::players.size(); k++) {
                 if (fabs(Person::players[k]->yaw - Person::players[k]->targetyaw) > 180) {
                     if (Person::players[k]->yaw > Person::players[k]->targetyaw)
                         Person::players[k]->yaw -= 360;
@@ -7915,7 +7915,7 @@ void Game::Tick()
             }
 
             //do animations
-            for (int k = 0; k < Person::players.size(); k++) {
+            for (unsigned k = 0; k < Person::players.size(); k++) {
                 Person::players[k]->DoAnimations();
                 Person::players[k]->whichpatchx = Person::players[k]->coords.x / (terrain.size / subdivision * terrain.scale);
                 Person::players[k]->whichpatchz = Person::players[k]->coords.z / (terrain.size / subdivision * terrain.scale);
@@ -8099,7 +8099,7 @@ void Game::TickOnceAfter()
         realthreat = 0;
 
         musictype = leveltheme;
-        for (int i = 0; i < Person::players.size(); i++) {
+        for (unsigned i = 0; i < Person::players.size(); i++) {
             if ((Person::players[i]->aitype == attacktypecutoff ||
                     Person::players[i]->aitype == getweapontype ||
                     Person::players[i]->aitype == gethelptype ||

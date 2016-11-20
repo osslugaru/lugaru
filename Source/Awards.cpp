@@ -30,6 +30,18 @@ float startbonustotal;
 float bonustime;
 float bonusnum[100];
 
+const char *bonus_names[bonus_count] = {
+#define DECLARE_BONUS(id, name, ...) name,
+#include "Bonuses.def"
+#undef DECLARE_BONUS
+};
+
+const char *award_names[award_count] = {
+#define DECLARE_AWARD(id, name) name,
+#include "Awards.def"
+#undef DECLARE_AWARD
+};
+
 static const int bonus_values[bonus_count] = {
 #define DECLARE_BONUS(id, name, value, ...) value,
 #include "Bonuses.def"

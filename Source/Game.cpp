@@ -47,6 +47,12 @@ int directing;
 float dialoguetime;
 int dialoguegonethrough[20];
 
+const char *pathtypenames[] = {"keepwalking", "pause"};
+const char *editortypenames[] = {
+    "active", "sitting", "sitting wall", "sleeping",
+    "dead1", "dead2", "dead3", "dead4"
+};
+
 namespace Game
 {
 Texture terraintexture;
