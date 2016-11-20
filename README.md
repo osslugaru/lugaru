@@ -53,7 +53,7 @@ builds.
 
 ## Compiling
 
-See the `COMPILING.txt` for compilation instructions on all supported
+See the `COMPILING.md` for compilation instructions on all supported
 platforms.
 
 ## Licensing
@@ -64,6 +64,3 @@ or (at your option) any later version (GPLv2+).
 The assets (campaigns, graphical and audio assets, etc.) are distributed
 under various licenses (CC-BY-SA 3.0 and Freeware) as described in the
 `CONTENT-LICENSE.txt` file.
-
-The third party dependencies of the `Dependencies` folder are distributed
-under their respective licenses.
