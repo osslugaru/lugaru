@@ -461,10 +461,10 @@ int Game::DrawGLScene(StereoSide side)
                     if (distance >= .5) {
                         checkpoint = DoRotation(Person::players[k]->skeleton.joints[abs(Random() % Person::players[k]->skeleton.num_joints)].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords;
                         checkpoint.y += 1;
-                        int i;
-                        if (!Person::players[k]->occluded == 0)
+                        int i = -1;
+                        if (Person::players[k]->occluded != 0)
                             i = checkcollide(viewer, checkpoint, Person::players[k]->lastoccluded);
-                        if (i == -1 || Person::players[k]->occluded == 0)
+                        if (i == -1)
                             i = checkcollide(viewer, checkpoint);
                         if (i != -1) {
                             Person::players[k]->occluded += 1;
@@ -526,10 +526,10 @@ int Game::DrawGLScene(StereoSide side)
                 if (distance >= .5) {
                     checkpoint = DoRotation(Person::players[k]->skeleton.joints[abs(Random() % Person::players[k]->skeleton.num_joints)].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords;
                     checkpoint.y += 1;
-                    int i;
-                    if (!Person::players[k]->occluded == 0)
+                    int i = -1;
+                    if (Person::players[k]->occluded != 0)
                         i = checkcollide(viewer, checkpoint, Person::players[k]->lastoccluded);
-                    if (i == -1 || Person::players[k]->occluded == 0)
+                    if (i == -1)
                         i = checkcollide(viewer, checkpoint);
                     if (i != -1) {
                         Person::players[k]->occluded += 1;
