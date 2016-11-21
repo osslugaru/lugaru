@@ -62,6 +62,7 @@ platforms.
 The source code is distributed under the GNU General Public License version 2
 or (at your option) any later version (GPLv2+).
 
-The assets (campaigns, graphical and audio assets, etc.) are distributed
-under various licenses (CC-BY-SA 3.0 and Freeware) as described in the
-`CONTENT-LICENSE.txt` file.
+The assets (campaigns, graphical and audio assets, etc.) in the `Data` folder
+are distributed under the Creative Commons Attribution - Share Alike license
+version 3.0 Unported (CC-BY-SA 3.0) as described in the `CONTENT-LICENSE.txt`
+file.
