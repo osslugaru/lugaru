@@ -29,70 +29,6 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 // FMOD uses a Left Handed Coordinate system, OpenAL uses a Right Handed
 //  one...so we just need to flip the sign on the Z axis when appropriate.
 
-#define DYNAMIC_LOAD_OPENAL 0
-
-#if DYNAMIC_LOAD_OPENAL
-
-#include <dlfcn.h>
-
-#define AL_FUNC(t,ret,fn,params,call,rt) \
-    extern "C" { \
-        static ret ALAPIENTRY (*p##fn) params = NULL; \
-        ret ALAPIENTRY fn params { rt p##fn call; } \
-    }
-#include "alstubs.h"
-#undef AL_FUNC
-
-static void *aldlhandle = NULL;
-
-static bool lookup_alsym(const char *funcname, void **func, const char *libname)
-{
-    if (!aldlhandle)
-        return false;
-
-    *func = dlsym(aldlhandle, funcname);
-    if (*func == NULL) {
-        fprintf(stderr, "Failed to find OpenAL symbol \"%s\" in \"%s\"\n",
-                funcname, libname);
-        return false;
-    }
-    return true;
-}
-
-static void unload_alsyms(void)
-{
-#define AL_FUNC(t,ret,fn,params,call,rt) p##fn = NULL;
-#include "alstubs.h"
-#undef AL_FUNC
-    if (aldlhandle) {
-        dlclose(aldlhandle);
-        aldlhandle = NULL;
-    }
-}
-
-static bool lookup_all_alsyms(const char *libname)
-{
-    if (!aldlhandle) {
-        if ( (aldlhandle = dlopen(libname, RTLD_GLOBAL | RTLD_NOW)) == NULL )
-            return false;
-    }
-
-    bool retval = true;
-#define AL_FUNC(t,ret,fn,params,call,rt) \
-        if (!lookup_alsym(#fn, (void **) &p##fn, libname)) retval = false;
-#include "alstubs.h"
-#undef AL_FUNC
-
-    if (!retval)
-        unload_alsyms();
-
-    return retval;
-}
-#else
-#define lookup_all_alsyms(x) (true)
-#define unload_alsyms()
-#endif
-
 typedef struct {
     ALuint sid;
     OPENAL_SAMPLE *sample;
@@ -198,13 +134,6 @@ AL_API signed char OPENAL_Init(int mixrate, int maxsoftwarechannels, unsigned in
     if (flags != 0)  // unsupported.
         return false;
 
-    if (!lookup_all_alsyms("./openal.so")) { // !!! FIXME: linux specific lib name
-        if (!lookup_all_alsyms("openal.so.1")) { // !!! FIXME: linux specific lib name
-            if (!lookup_all_alsyms("openal.so"))  // !!! FIXME: linux specific lib name
-                return false;
-        }
-    }
-
     ALCdevice *dev = alcOpenDevice(NULL);
     if (!dev)
         return false;
@@ -260,7 +189,6 @@ AL_API void OPENAL_Close()
     delete[] impl_channels;
     impl_channels = NULL;
 
-    unload_alsyms();
     initialized = false;
 }
 

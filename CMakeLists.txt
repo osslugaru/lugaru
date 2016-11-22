@@ -87,7 +87,6 @@ set(LUGARU_H
     ${SRCDIR}/Text.h
     ${SRCDIR}/Weapons.h
     ${SRCDIR}/Input.h
-    ${SRCDIR}/alstubs.h
     ${SRCDIR}/binio.h
     ${SRCDIR}/openal_wrapper.h
     ${SRCDIR}/gamegl.h
