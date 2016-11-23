@@ -109,7 +109,6 @@ public:
     void MakeDecalLock(int type, XYZ where, int whichx, int whichy, float size, float opacity, float rotation);
     int lineTerrain(XYZ p1, XYZ p2, XYZ *p);
     float getHeight(float pointx, float pointz);
-    float getHeightExtrude(float pointx, float pointz, float point2x, float point2z);
     float getOpacity(float pointx, float pointz);
     XYZ getLighting(float pointx, float pointz);
     XYZ getNormal(float pointx, float pointz);
@@ -124,7 +123,6 @@ public:
     void drawpatch(int whichx, int whichy, float opacity);
     void drawpatchother(int whichx, int whichy, float opacity);
     void drawpatchotherother(int whichx, int whichy, float opacity);
-    void DoLighting();
     void DoShadows();
 
     Terrain();

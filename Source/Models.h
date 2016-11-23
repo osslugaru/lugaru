@@ -121,7 +121,6 @@ public:
     int SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate);
     int SphereCheckPossible(XYZ *p1, float radius, XYZ *move, float *rotate);
     int LineCheck(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate);
-    int LineCheckSlide(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate);
     int LineCheckPossible(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate);
     int LineCheckSlidePossible(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate);
     void UpdateVertexArray();
@@ -142,7 +141,6 @@ public:
     void drawdifftex(GLuint texture);
     void drawdifftex(Texture texture);
     void drawimmediate();
-    void drawdiffteximmediate(GLuint texture);
     void Rotate(float xang, float yang, float zang);
     ~Model();
     void deallocate();

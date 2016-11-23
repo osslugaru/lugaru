@@ -98,7 +98,6 @@ extern "C" {
     AL_API signed char OPENAL_SetPaused(int channel, signed char paused);
     AL_API void OPENAL_SetSFXMasterVolume(int volume);
     AL_API signed char OPENAL_StopSound(int channel);
-    AL_API void OPENAL_Stream_Close(OPENAL_STREAM *stream);
     AL_API signed char OPENAL_Stream_SetMode(OPENAL_STREAM *stream, unsigned int mode);
     AL_API void OPENAL_Update();
     AL_API signed char OPENAL_SetOutput(int outputtype);

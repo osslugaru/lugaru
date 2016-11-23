@@ -64,43 +64,6 @@ int Model::LineCheck(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate)
     return firstintersecting;
 }
 
-int Model::LineCheckSlide(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate)
-{
-    static int j;
-    static float distance;
-    static float olddistance;
-    static int intersecting;
-    static int firstintersecting;
-    static XYZ point;
-
-    *p1 = *p1 - *move;
-    *p2 = *p2 - *move;
-    if (!sphere_line_intersection(p1, p2, &boundingspherecenter, &boundingsphereradius))
-        return -1;
-    firstintersecting = -1;
-    if (*rotate)
-        *p1 = DoRotation(*p1, 0, -*rotate, 0);
-    if (*rotate)
-        *p2 = DoRotation(*p2, 0, -*rotate, 0);
-
-    for (j = 0; j < TriangleNum; j++) {
-        intersecting = LineFacetd(p1, p2, &vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[1]], &vertex[Triangles[j].vertex[2]], &facenormals[j], &point);
-        distance = (point.x - p1->x) * (point.x - p1->x) + (point.y - p1->y) * (point.y - p1->y) + (point.z - p1->z) * (point.z - p1->z);
-        if ((distance < olddistance || firstintersecting == -1) && intersecting) {
-            olddistance = distance;
-            firstintersecting = j;
-        }
-    }
-
-    distance = abs((facenormals[firstintersecting].x * p2->x) + (facenormals[firstintersecting].y * p2->y) + (facenormals[firstintersecting].z * p2->z) - ((facenormals[firstintersecting].x * vertex[Triangles[firstintersecting].vertex[0]].x) + (facenormals[firstintersecting].y * vertex[Triangles[firstintersecting].vertex[0]].y) + (facenormals[firstintersecting].z * vertex[Triangles[firstintersecting].vertex[0]].z)));
-    *p2 -= facenormals[firstintersecting] * distance;
-
-    if (*rotate)
-        *p2 = DoRotation(*p2, 0, *rotate, 0);
-    *p2 = *p2 + *move;
-    return firstintersecting;
-}
-
 int Model::LineCheckPossible(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate)
 {
     static int j;
@@ -1027,7 +990,6 @@ void Model::drawdifftex(GLuint texture)
         glDisableClientState(GL_COLOR_ARRAY);
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    //drawdiffteximmediate(texture);
 }
 
 void Model::drawdifftex(Texture texture)
@@ -1060,49 +1022,6 @@ void Model::drawdifftex(Texture texture)
         glDisableClientState(GL_COLOR_ARRAY);
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    //drawdiffteximmediate(texture);
-}
-
-void Model::drawdiffteximmediate(GLuint texture)
-{
-    glBindTexture(GL_TEXTURE_2D, (unsigned long)texture);
-
-    glBegin(GL_TRIANGLES);
-    for (int i = 0; i < TriangleNum; i++) {
-        /*if(Triangles[i].vertex[0]<vertexNum&&Triangles[i].vertex[1]<vertexNum&&Triangles[i].vertex[2]<vertexNum&&Triangles[i].vertex[0]>=0&&Triangles[i].vertex[1]>=0&&Triangles[i].vertex[2]>=0){
-        if(isnormal(vertex[Triangles[i].vertex[0]].x)&&isnormal(vertex[Triangles[i].vertex[0]].y)&&isnormal(vertex[Triangles[i].vertex[0]].z)
-        &&isnormal(vertex[Triangles[i].vertex[1]].x)&&isnormal(vertex[Triangles[i].vertex[1]].y)&&isnormal(vertex[Triangles[i].vertex[1]].z)
-        &&isnormal(vertex[Triangles[i].vertex[2]].x)&&isnormal(vertex[Triangles[i].vertex[2]].y)&&isnormal(vertex[Triangles[i].vertex[2]].z)){
-        */glTexCoord2f(Triangles[i].gx[0], Triangles[i].gy[0]);
-        if (color)
-            glColor3f(normals[Triangles[i].vertex[0]].x, normals[Triangles[i].vertex[0]].y, normals[Triangles[i].vertex[0]].z);
-        if (!color && !flat)
-            glNormal3f(normals[Triangles[i].vertex[0]].x, normals[Triangles[i].vertex[0]].y, normals[Triangles[i].vertex[0]].z);
-        if (!color && flat)
-            glNormal3f(facenormals[i].x, facenormals[i].y, facenormals[i].y);
-        glVertex3f(vertex[Triangles[i].vertex[0]].x, vertex[Triangles[i].vertex[0]].y, vertex[Triangles[i].vertex[0]].z);
-
-        glTexCoord2f(Triangles[i].gx[1], Triangles[i].gy[1]);
-        if (color)
-            glColor3f(normals[Triangles[i].vertex[1]].x, normals[Triangles[i].vertex[1]].y, normals[Triangles[i].vertex[1]].z);
-        if (!color && !flat)
-            glNormal3f(normals[Triangles[i].vertex[1]].x, normals[Triangles[i].vertex[1]].y, normals[Triangles[i].vertex[1]].z);
-        if (!color && flat)
-            glNormal3f(facenormals[i].x, facenormals[i].y, facenormals[i].y);
-        glVertex3f(vertex[Triangles[i].vertex[1]].x, vertex[Triangles[i].vertex[1]].y, vertex[Triangles[i].vertex[1]].z);
-
-        glTexCoord2f(Triangles[i].gx[2], Triangles[i].gy[2]);
-        if (color)
-            glColor3f(normals[Triangles[i].vertex[2]].x, normals[Triangles[i].vertex[2]].y, normals[Triangles[i].vertex[2]].z);
-        if (!color && !flat)
-            glNormal3f(normals[Triangles[i].vertex[2]].x, normals[Triangles[i].vertex[2]].y, normals[Triangles[i].vertex[2]].z);
-        if (!color && flat)
-            glNormal3f(facenormals[i].x, facenormals[i].y, facenormals[i].y);
-        glVertex3f(vertex[Triangles[i].vertex[2]].x, vertex[Triangles[i].vertex[2]].y, vertex[Triangles[i].vertex[2]].z);
-        //}
-        //}
-    }
-    glEnd();
 }
 
 void Model::drawdecals(Texture shadowtexture, Texture bloodtexture, Texture bloodtexture2, Texture breaktexture)

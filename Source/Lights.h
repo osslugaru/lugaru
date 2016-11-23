@@ -44,7 +44,6 @@ public:
     }
 };
 
-void SetUpMainLight(Light* whichsource, int whichlight, float ambientr, float ambientg, float ambientb);
 void SetUpLight(Light* whichsource, int whichlight);
 
 #endif

@@ -528,11 +528,6 @@ AL_API signed char OPENAL_StopSound(int channel)
     return true;
 }
 
-AL_API void OPENAL_Stream_Close(OPENAL_STREAM *stream)
-{
-    OPENAL_Sample_Free((OPENAL_SAMPLE *) stream);
-}
-
 static OPENAL_SAMPLE *OPENAL_Stream_GetSample(OPENAL_STREAM *stream)
 {
     if (!initialized)

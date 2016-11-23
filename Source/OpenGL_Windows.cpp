@@ -772,13 +772,6 @@ bool LoadImage(const char * fname, TGAImageRec & tex)
         return load_image(fname, tex);
 }
 
-void ScreenShot(const char * fname)
-{
-
-}
-
-
-
 static bool load_image(const char *file_name, TGAImageRec &tex)
 {
     const char *ptr = strrchr((char *)file_name, '.');
