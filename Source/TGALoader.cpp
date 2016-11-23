@@ -39,17 +39,6 @@ bool upload_image(const unsigned char* filePath, bool hasalpha)
     // for Windows, just use TGA loader for now
     char fileName[256];
     CopyPascalStringToC( filePath, fileName);
-    /*
-        // change extension to .TGA
-        int len = strlen( fileName);
-        if (len > 3)
-        {
-            fileName[ len - 3] = 't';
-            fileName[ len - 2] = 'g';
-            fileName[ len - 1] = 'a';
-        }
-    */
-//return (LoadTGA( fileName) != NULL);
     return (LoadImage(fileName, texture));
 
 #else
@@ -57,21 +46,9 @@ bool upload_image(const unsigned char* filePath, bool hasalpha)
     OSStatus err;
     ComponentResult cr;
 
-    /*FSRef fsref;
-    Boolean isdir;
-    err = FSPathMakeRef((const UInt8*)filePath, &fsref, &isdir);
-    if(err)return;
-
-    FSSpec fsspec;
-    err = FSGetCatalogInfo(&fsref, kFSCatInfoNone, NULL, NULL, &fsspec, NULL);
-    if(err)return;
-    */
-
     //Boolean isdir;
     FSSpec fsspec;
-    //err = FSMakeFSSpec (0, 0, (const unsigned char*)filePath, &fsspec);
     err = FSMakeFSSpec (0, 0, filePath, &fsspec);
-    //err=FSPathMakeFSSpec((const UInt8*)filePath,&fsspec,&isdir);*/
     if (err)
         return;
 
@@ -83,13 +60,9 @@ bool upload_image(const unsigned char* filePath, bool hasalpha)
     Rect natbounds;
     cr = GraphicsImportGetNaturalBounds(gi, &natbounds);
 
-    //~ size_t buffersize = 4 * natbounds.bottom * natbounds.right;
-    //void* buf = malloc(buffersize);
     texture.sizeX = natbounds.right;
     texture.sizeY = natbounds.bottom;
-    /*if(hasalpha)*/
     texture.bpp = 32;
-    //if(!hasalpha)texture.bpp = 24;
 
     GWorldPtr gw;
     err = QTNewGWorldFromPtr(&gw, k32ARGBPixelFormat, &natbounds, NULL, NULL,
@@ -110,11 +83,6 @@ bool upload_image(const unsigned char* filePath, bool hasalpha)
     if (err)
         return;
 
-    /*glTexImage2D(textureTarget, 0, GL_RGBA, natbounds.right, natbounds.top, 0,
-    GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);
-    */
-
-    //free(buf);
     DisposeGWorld(gw);
 
     // Loop Through The Image Data
@@ -123,7 +91,6 @@ bool upload_image(const unsigned char* filePath, bool hasalpha)
     GLuint bytesPerPixel; // Temporary Variable
     bytesPerPixel = texture.bpp / 8;
     imageSize = texture.sizeX * texture.sizeY * bytesPerPixel;
-    //~ int alltrans=10;
 
     for ( GLuint i = 0; i < int( imageSize ); i += 4 ) {
         // Swaps The 1st And 3rd Bytes ('R'ed and 'B'lue)
@@ -134,15 +101,9 @@ bool upload_image(const unsigned char* filePath, bool hasalpha)
         texture.data[i + 3] = temp;
     }
 
-    //~ int tempplace;
-    //~ tempplace=0;
     if (!hasalpha) {
         for ( GLuint i = 0; i < int( imageSize ); i += 4 ) {
             texture.data[i + 3] = 255;
-            /*texture.data[tempplace] = texture.data[i]; // Set The 1st Byte To The Value Of The 3rd Byte
-            texture.data[tempplace + 1] = texture.data[i + 1]; // Set The 3rd Byte To The Value In 'temp' (1st Byte Value)
-            texture.data[tempplace + 2] = texture.data[i + 2];
-            tempplace+=3;*/
         }
     }
 

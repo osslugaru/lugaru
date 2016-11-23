@@ -180,12 +180,6 @@ int Model::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate)
                     intersecting = sphere_line_intersection(&vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[2]], p1, &radius);
                 if (intersecting) {
                     *p1 += facenormals[j] * (distance - radius);
-                    /*start=*p1;
-                    end=*p1;
-                    end.y-=radius;
-                    if(LineFacetd(&start,&end,&vertex[Triangles[j].vertex[0]],&vertex[Triangles[j].vertex[1]],&vertex[Triangles[j].vertex[2]],&facenormals[j],&point)){
-                    p1->y=point.y+radius;
-                    }*/
                 }
             }
             if ((distance < olddistance || firstintersecting == -1) && intersecting) {
@@ -243,7 +237,6 @@ int Model::SphereCheckPossible(XYZ *p1, float radius, XYZ *move, float *rotate)
             if (!intersecting)
                 intersecting = sphere_line_intersection(&vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[2]], p1, &radius);
             if (intersecting) {
-                //if(j>=0&&j<TriangleNum)
                 possible[numpossible] = j;
                 numpossible++;
             }
@@ -566,10 +559,6 @@ bool Model::loaddecal(const char *filename, bool texture )
 
     LOG(std::string("Loading decal...") + FixedFN);
 
-    //~ int oldvertexNum, oldTriangleNum;
-    //~ oldvertexNum = vertexNum;
-    //~ oldTriangleNum = TriangleNum;
-
     type = decalstype;
     numdecals = 0;
     color = 0;
@@ -642,7 +631,6 @@ bool Model::loaddecal(const char *filename, bool texture )
                 decaltexcoords[i][j] = (float*)malloc(sizeof(float) * 2);
             }
         }
-        //if(decalvertex)free(decalvertex);
         decalvertex = (XYZ**)malloc(sizeof(XYZ*)*max_model_decals);
         for (i = 0; i < max_model_decals; i++) {
             decalvertex[i] = (XYZ*)malloc(sizeof(XYZ) * 3);
@@ -889,11 +877,6 @@ void Model::drawimmediate()
     textureptr.bind();
     glBegin(GL_TRIANGLES);
     for (int i = 0; i < TriangleNum; i++) {
-        /*if(Triangles[i].vertex[0]<vertexNum&&Triangles[i].vertex[1]<vertexNum&&Triangles[i].vertex[2]<vertexNum&&Triangles[i].vertex[0]>=0&&Triangles[i].vertex[1]>=0&&Triangles[i].vertex[2]>=0){
-        if(isnormal(vertex[Triangles[i].vertex[0]].x)&&isnormal(vertex[Triangles[i].vertex[0]].y)&&isnormal(vertex[Triangles[i].vertex[0]].z)
-        &&isnormal(vertex[Triangles[i].vertex[1]].x)&&isnormal(vertex[Triangles[i].vertex[1]].y)&&isnormal(vertex[Triangles[i].vertex[1]].z)
-        &&isnormal(vertex[Triangles[i].vertex[2]].x)&&isnormal(vertex[Triangles[i].vertex[2]].y)&&isnormal(vertex[Triangles[i].vertex[2]].z)){
-        */
         glTexCoord2f(Triangles[i].gx[0], Triangles[i].gy[0]);
         if (color)
             glColor3f(normals[Triangles[i].vertex[0]].x, normals[Triangles[i].vertex[0]].y, normals[Triangles[i].vertex[0]].z);
@@ -920,8 +903,6 @@ void Model::drawimmediate()
         if (!color && flat)
             glNormal3f(facenormals[i].x, facenormals[i].y, facenormals[i].y);
         glVertex3f(vertex[Triangles[i].vertex[2]].x, vertex[Triangles[i].vertex[2]].y, vertex[Triangles[i].vertex[2]].z);
-        //}
-        //}
     }
     glEnd();
 }
@@ -1030,12 +1011,9 @@ void Model::drawdecals(Texture shadowtexture, Texture bloodtexture, Texture bloo
         if (type != decalstype)
             return;
         static int i;
-        //~ static float distancemult;
         static int lasttype;
-        //~ static float viewdistsquared;
         static bool blend;
 
-        //~ viewdistsquared = viewdistance * viewdistance;
         blend = 1;
 
         lasttype = -1;
@@ -1154,7 +1132,6 @@ void Model::MakeDecal(int atype, XYZ *where, float *size, float *opacity, float 
 
         static float placex, placez;
         static XYZ rot;
-        //static XYZ point,point1,point2;
         static float distance;
         static int i, j;
 
@@ -1233,7 +1210,6 @@ void Model::MakeDecal(int atype, XYZ where, float size, float opacity, float rot
 
         static float placex, placez;
         static XYZ rot;
-        //static XYZ point,point1,point2;
         static float distance;
         static int i, j;
 

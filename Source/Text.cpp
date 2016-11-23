@@ -29,34 +29,6 @@ void Text::LoadFontTexture(const char *fileName)
     LOG(std::string("Loading font texture...") + fileName);
 
     FontTexture.load(fileName, false, false);
-    /*
-        //Load Image
-        //LoadTGA( fileName );
-        unsigned char fileNamep[256];
-        CopyCStringToPascal(fileName,fileNamep);
-        //Load Image
-        upload_image( fileNamep ,1);
-
-        //Is it valid?
-        if(1==1){
-            //Alpha channel?
-            if ( texture.bpp == 24 )
-                type = GL_RGB;
-            else
-                type = GL_RGBA;
-
-            glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-
-            if(!FontTexture)glGenTextures( 1, &FontTexture );
-            glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-
-            glBindTexture( GL_TEXTURE_2D, FontTexture);
-            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-
-            gluBuild2DMipmaps( GL_TEXTURE_2D, type, texture.sizeX, texture.sizeY, type, GL_UNSIGNED_BYTE, texture.data );
-        }
-    */
     if (base) {
         glDeleteLists(base, 512);
         base = 0;
@@ -74,11 +46,8 @@ void Text::BuildFont() // Build Our Font Display List
     if (base) {
         glDeleteLists(base, 512);
         base = 0;
-        //LOG("Font already created...");
-        //return;
     }
 
-//base=glGenLists(256); // Creating 256 Display Lists
     base = glGenLists(512); // Creating 256 Display Lists
     FontTexture.bind();
     for (loop = 0; loop < 512; loop++) { // Loop Through All 256 Lists

@@ -714,23 +714,6 @@ void Animation::Load(const char *filename, int aheight, int aattack)
     if (tfile) {
         // read numframes, joints to know how much memory to allocate
         funpackf(tfile, "Bi Bi", &numframes, &joints);
-        /*
-        for(i = 0; i < joints; i++){
-        if(position[i])dealloc2(position[i]);
-        if(twist[i])dealloc2(twist[i]);
-        if(twist2[i])dealloc2(twist2[i]);
-        if(onground[i])dealloc2(onground[i]);
-        }*/
-        /*
-        if(position)dealloc2(position);
-        if(twist)dealloc2(twist);
-        if(twist2)dealloc2(twist2);
-        if(speed)dealloc2(speed);
-        if(onground)dealloc2(onground);
-        if(forward)dealloc2(forward);
-        if(weapontarget)dealloc2(weapontarget);
-        if(label)dealloc2(label);*/
-
 
         // allocate memory for everything
 
@@ -755,15 +738,6 @@ void Animation::Load(const char *filename, int aheight, int aattack)
         forward = (XYZ*)malloc(sizeof(XYZ) * numframes);
         weapontarget = (XYZ*)malloc(sizeof(XYZ) * numframes);
         label = (int*)malloc(sizeof(int) * numframes);
-
-        /*position = new XYZ[joints][numframes];
-        twist = new float[joints][numframes];
-        twist2 = new float[joints][numframes];
-        speed = new float[numframes];
-        onground = new bool[joints][numframes];
-        forward = new XYZ[numframes];
-        label = new int[numframes];*/
-
 
         // read binary data as animation
 
@@ -914,10 +888,9 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
         funpackf(tfile, "Bi", &num_joints);
 
         // allocate memory
-        //joints.resize(num_joints);
         if (joints)
             delete [] joints; //dealloc2(joints);
-        joints = (Joint*)new Joint[num_joints]; //malloc(sizeof(Joint)*num_joints);
+        joints = (Joint*)new Joint[num_joints];
 
         // read info for each joint
         for (i = 0; i < num_joints; i++) {
@@ -938,7 +911,6 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
         funpackf(tfile, "Bi", &num_muscles);
 
         // allocate memory
-        //muscles.clear();
         if (muscles)
             delete [] muscles; //dealloc2(muscles);
         muscles = (Muscle*)new Muscle[num_muscles]; //malloc(sizeof(Muscle)*num_muscles);
@@ -949,9 +921,6 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
             funpackf(tfile, "Bf Bf Bf Bf Bf Bi Bi", &muscles[i].length, &muscles[i].targetlength, &muscles[i].minlength, &muscles[i].maxlength, &muscles[i].strength, &muscles[i].type, &muscles[i].numvertices);
 
             // allocate memory for vertices
-            //muscles[i].vertices.clear();
-            //muscles[i].vertices.resize(muscles[i].numvertices);
-            //if(muscles[i].vertices)dealloc2(muscles[i].vertices);
             muscles[i].vertices = (int*)malloc(sizeof(int) * muscles[i].numvertices);
 
             // read vertices
@@ -1029,8 +998,6 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 
         lSize = sizeof(num_joints);
         fseek(tfile, lSize, SEEK_CUR);
-        //joints = new Joint[num_joints];
-        //jointlabels = new int[num_joints];
         for (i = 0; i < num_joints; i++) {
             // skip joint info
             lSize = sizeof(XYZ)
@@ -1055,7 +1022,6 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 
         // read num_muscles
         funpackf(tfile, "Bi", &num_muscles);
-        //muscles = new Muscle[num_muscles];
 
         for (i = 0; i < num_muscles; i++) {
             // skip muscle info
@@ -1072,9 +1038,6 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 
             if (muscles[i].numverticeslow) {
                 // allocate memory
-                //muscles[i].verticeslow.clear();
-                //muscles[i].verticeslow.resize(muscles[i].numverticeslow);
-                //if(muscles[i].verticeslow)dealloc2(muscles[i].verticeslow);
                 muscles[i].verticeslow = (int*)malloc(sizeof(int) * muscles[i].numverticeslow);
 
                 // read verticeslow
@@ -1102,14 +1065,6 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
                     modellow.owner[muscles[j].verticeslow[i]] = j;
             }
         }
-
-        /*FindForwards();
-        for(i=0;i<num_joints;i++){
-        joints[i].startpos=joints[i].position;
-        }
-        for(i=0;i<num_muscles;i++){
-        FindRotationMuscle(i,-1);
-        }*/
 
         // use opengl for its matrix math
         for (i = 0; i < modellow.vertexNum; i++) {
@@ -1139,8 +1094,6 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
         // skip num_joints
         lSize = sizeof(num_joints);
         fseek ( tfile, lSize, SEEK_CUR);
-        //joints = new Joint[num_joints];
-        //jointlabels = new int[num_joints];
 
         for (i = 0; i < num_joints; i++) {
             // skip joint info
@@ -1166,7 +1119,6 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 
         // read num_muscles
         funpackf(tfile, "Bi", &num_muscles);
-        //muscles = new Muscle[num_muscles];
 
         for (i = 0; i < num_muscles; i++) {
             // skip muscle info
@@ -1183,9 +1135,6 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 
             // read verticesclothes
             if (muscles[i].numverticesclothes) {
-                //muscles[i].verticesclothes.clear();
-                //muscles[i].verticesclothes.resize(muscles[i].numverticesclothes);
-                //if(muscles[i].verticesclothes)dealloc2(muscles[i].verticesclothes);
                 muscles[i].verticesclothes = (int*)malloc(sizeof(int) * muscles[i].numverticesclothes);
                 edit = 0;
                 for (j = 0; j < muscles[i].numverticesclothes - edit; j++) {
@@ -1213,14 +1162,6 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
                     modelclothes.owner[muscles[j].verticesclothes[i]] = j;
             }
         }
-
-        /*FindForwards();
-        for(i=0;i<num_joints;i++){
-        joints[i].startpos=joints[i].position;
-        }
-        for(i=0;i<num_muscles;i++){
-        FindRotationMuscle(i,-1);
-        }*/
 
         // use opengl for its matrix math
         for (i = 0; i < modelclothes.vertexNum; i++) {
@@ -1592,14 +1533,6 @@ void Skeleton::Draw(int muscleview)
             glVertex3f(joints[i].parent->position.x, joints[i].parent->position.y, joints[i].parent->position.z);
         }
     }
-    /*for(int i=0; i<num_joints; i++){
-    if(joints[i].hasparent){
-    glColor4f(jointcolor[0],jointcolor[1],jointcolor[2],1);
-    glVertex3f(joints[i].position.x,joints[i].position.y,joints[i].position.z);
-    glColor4f(jointcolor[0],jointcolor[1],jointcolor[2],1);
-    glVertex3f(joints[i].position.x+forward.x,joints[i].position.y+forward.y,joints[i].position.z+forward.z);
-    }
-    }*/
     for (int i = 0; i < num_muscles; i++) {
         if (muscles[i].type == boneconnect) {
             glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / muscles[i].parent1->blurred);
@@ -1656,13 +1589,7 @@ void Skeleton::AddJoint(float x, float y, float z, int which)
         joints[num_joints].mass = 1;
         joints[num_joints].locked = 0;
 
-        /*if(which>=num_joints||which<0)*/
         joints[num_joints].hasparent = 0;
-        /*if(which<num_joints&&which>=0){
-        joints[num_joints].parent=&joints[which];
-        joints[num_joints].hasparent=1;
-        joints[num_joints].length=findDistance(joints[num_joints].position,joints[num_joints].parent->position);
-        }*/
         num_joints++;
         if (which < num_joints && which >= 0)
             AddMuscle(num_joints - 1, which, 0, 10, boneconnect);

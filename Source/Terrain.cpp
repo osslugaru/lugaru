@@ -516,28 +516,6 @@ bool Terrain::load(const char *fileName)
     if (visibleloading)
         Game::LoadingScreen();
 
-    /*float total;
-    int todivide;
-    //Smooth opacityother
-    for(i=0;i<size;i++){
-    for(j=0;j<size;j++){
-    total=0;
-    todivide=0;
-    if(i!=0){total+=opacityother[j][i-1]; todivide++;}
-    if(i!=size-1){total+=opacityother[j][i+1]; todivide++;}
-    if(j!=0){total+=opacityother[j-1][i]; todivide++;}
-    if(j!=size-1){total+=opacityother[j+1][i]; todivide++;}
-    if(i!=0&&j!=0){total+=opacityother[j-1][i-1]; todivide++;}
-    if(i!=size-1&&j!=0){total+=opacityother[j-1][i+1]; todivide++;}
-    if(j!=size-1&&i!=size-1){total+=opacityother[j+1][i+1]; todivide++;}
-    if(j!=size-1&&i!=0){total+=opacityother[j+1][i-1]; todivide++;}
-    total+=opacityother[j][i]; todivide++;
-
-    opacityother[j][i]=total/(float)todivide;
-    }
-    }*/
-
-
     for (i = 0; i < size; i++) {
         for (j = 0; j < size; j++) {
             if (opacityother[i][j] < .1)
@@ -667,13 +645,6 @@ bool Terrain::load(const char *fileName)
     patch_size = size / subdivision;
     patch_elements = (patch_size) * (patch_size) * 54;
     CalculateNormals();
-    /*DoShadows();
-
-    for(i=0;i<subdivision;i++){
-    for(j=0;j<subdivision;j++){
-    UpdateVertexArray(i,j);
-    }
-    }*/
 
     return 1;
 }
@@ -882,11 +853,6 @@ float Terrain::getHeight(float pointx, float pointz)
         LineFacetd(&startpoint, &endpoint, &triangle[0], &triangle[1], &triangle[2], &intersect);
     }
     return intersect.y * scale + getOpacity(pointx * scale, pointz * scale) / 8;
-
-    //height1=heightmap[tilex][tiley]*(1-(pointx-tilex))+heightmap[tilex+1][tiley]*(pointx-tilex);
-    //height2=heightmap[tilex][tiley+1]*(1-(pointx-tilex))+heightmap[tilex+1][tiley+1]*(pointx-tilex);
-
-    //return height1*(1-(pointz-tiley))*scale+height2*(pointz-tiley)*scale;
 }
 
 float Terrain::getOpacity(float pointx, float pointz)
@@ -1237,11 +1203,6 @@ void Terrain::MakeDecal(int type, XYZ where, float size, float opacity, float ro
             patchy[2] = (where.z + size) / scale;
             patchy[3] = (where.z + size) / scale;
 
-            /*if(patchx[1]<subdivision-1&&patchy[1]<subdivision-1&&patchx[1]>0&&patchy[1]>0)
-            if(patchx[2]<subdivision-1&&patchy[2]<subdivision-1&&patchx[2]>0&&patchy[2]>0)
-            if(patchx[3]<subdivision-1&&patchy[3]<subdivision-1&&patchx[3]>0&&patchy[3]>0)
-            if(patchx[0]<subdivision-1&&patchy[0]<subdivision-1&&patchx[0]>0&&patchy[0]>0){
-            */
             if ((patchx[0] != patchx[1] || patchy[0] != patchy[1]) && (patchx[0] != patchx[2] || patchy[0] != patchy[2]) && (patchx[0] != patchx[3] || patchy[0] != patchy[3])) {
                 MakeDecalLock(type, where, patchx[0], patchy[0], size, opacity, rotation);
             }

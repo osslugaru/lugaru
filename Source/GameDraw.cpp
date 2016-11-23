@@ -262,7 +262,6 @@ int Game::DrawGLScene(StereoSide side)
         glDrawBuffer(GL_BACK);
         glReadBuffer(GL_BACK);
 
-        //glFinish();
         static XYZ terrainlight;
         static float distance;
         if (drawmode == normalmode)
@@ -416,9 +415,6 @@ int Game::DrawGLScene(StereoSide side)
         terrain.draw(0);
         terraintexture2.bind();
         terrain.draw(1);
-        //glBindTexture( GL_TEXTURE_2D, terraintexture3);
-        //glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-        //terrain.draw(2);
 
         terrain.drawdecals();
 
@@ -1680,7 +1676,6 @@ int Game::DrawGLScene(StereoSide side)
                 text->glPrint(1024 / 2 - 90, 768 / 2, string, 1, 2, 1024, 768);
             }
             loading = 2;
-            //if(ismotionblur)drawmode=motionblurmode;
             drawmode = normalmode;
         }
 
@@ -1767,7 +1762,6 @@ int Game::DrawGLScene(StereoSide side)
                     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT);
                     GLfloat subtractColor[4] = { 0.5, 0.5, 0.5, 0.0 };
                     glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, subtractColor);
-                    //glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_SUBTRACT);
                     glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB_EXT, GL_TEXTURE);
                     glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB_EXT, GL_CONSTANT_EXT);
                     glTexEnvf(GL_TEXTURE_ENV, GL_RGB_SCALE_EXT, 2.0f);
@@ -1795,7 +1789,6 @@ int Game::DrawGLScene(StereoSide side)
                     glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, kTextureSize, kTextureSize, 0);
                 }
             }
-            //glFlush();
         }
 
         glClear(GL_DEPTH_BUFFER_BIT);
@@ -1832,7 +1825,6 @@ int Game::DrawGLScene(StereoSide side)
             if (drawmode == motionblurmode) {
                 if (motionbluramount < .2)
                     motionbluramount = .2;
-                //glColor4f(1,1,1,fast_sqrt(multiplier)*2.9*motionbluramount);
                 glColor4f(1, 1, 1, motionbluramount);
                 glPushMatrix();
                 glBegin(GL_QUADS);
@@ -1981,7 +1973,6 @@ int Game::DrawGLScene(StereoSide side)
             }
             if (drawmode == radialzoommode) {
                 for (int i = 0; i < 3; i++) {
-                    //glRotatef((float)i*.1,0,0,1);
                     glColor4f(1, 1, 1, 1 / ((float)i + 1));
                     glPushMatrix();
                     glScalef(1 + (float)i * .01, 1 + (float)i * .01, 1);
@@ -2043,17 +2034,14 @@ int Game::DrawGLScene(StereoSide side)
         multiplier = 0;
     }
 
-    //glFlush();
     if ( side == stereoRight || side == stereoCenter ) {
         if (drawmode != motionblurmode || mainmenu) {
             swap_gl_buffers();
         }
     }
 
-    //myassert(glGetError() == GL_NO_ERROR);
     glDrawBuffer(GL_BACK);
     glReadBuffer(GL_BACK);
-    //glFlush();
 
     weapons.DoStuff();
 
@@ -2175,7 +2163,6 @@ void DrawMenu()
         glColor4f(1, 1, 1, 1);
         Game::cursortexture.bind();
         glPushMatrix();
-        //glScalef(.25,.25,.25);
         glBegin(GL_QUADS);
         glTexCoord2f(0, 0);
         glVertex3f(-1, -1, 0.0f);

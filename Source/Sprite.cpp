@@ -364,7 +364,7 @@ void Sprite::Draw()
                                 if (!spritehit)
                                     if (objects.model[k].LineCheck(&start, &end, &colpoint, &objects.position[k], &objects.yaw[k]) != -1) {
                                         if (detail == 2 || (detail == 1 && abs(Random() % 4) == 0) || (detail == 0 && abs(Random() % 8) == 0))
-                                            objects.model[k].MakeDecal(blooddecalfast, DoRotation(colpoint - objects.position[k], 0, -objects.yaw[k], 0), sprites[i]->size * 1.6/*+abs((float)(Random()%100))/2400*/, .5, Random() % 360);
+                                            objects.model[k].MakeDecal(blooddecalfast, DoRotation(colpoint - objects.position[k], 0, -objects.yaw[k], 0), sprites[i]->size * 1.6, .5, Random() % 360);
                                         DeleteSprite(i);
                                         spritehit = 1;
                                     }
@@ -372,7 +372,7 @@ void Sprite::Draw()
                     }
                 if (!spritehit)
                     if (sprites[i]->position.y < terrain.getHeight(sprites[i]->position.x, sprites[i]->position.z)) {
-                        terrain.MakeDecal(blooddecalfast, sprites[i]->position, sprites[i]->size * 1.6/*+abs((float)(Random()%100))/2400*/, .6, Random() % 360);
+                        terrain.MakeDecal(blooddecalfast, sprites[i]->position, sprites[i]->size * 1.6, .6, Random() % 360);
                         DeleteSprite(i);
                     }
             }

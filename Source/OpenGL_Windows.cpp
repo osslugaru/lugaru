@@ -175,7 +175,6 @@ void initGL()
     glDisable( GL_ALPHA_TEST);
     glDisable( GL_BLEND);
     glDisable( GL_DEPTH_TEST);
-    //glDisable( GL_DITHER);
     glDisable( GL_FOG);
     glDisable( GL_LIGHTING);
     glDisable( GL_LOGIC_OP);
@@ -196,13 +195,11 @@ void initGL()
     glClearDepth( 1.0f);
     glDepthFunc( GL_LEQUAL);
     glDepthMask( GL_TRUE);
-    //glDepthRange( FRONT_CLIP, BACK_CLIP);
     glEnable( GL_DEPTH_TEST);
     glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     glCullFace( GL_FRONT);
     glEnable( GL_CULL_FACE);
     glEnable( GL_LIGHTING);
-    //glEnable( GL_LIGHT_MODEL_AMBIENT);
     glEnable( GL_DITHER);
     glEnable( GL_COLOR_MATERIAL);
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

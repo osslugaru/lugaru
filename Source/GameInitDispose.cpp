@@ -214,7 +214,6 @@ GLvoid Game::ReSizeGLScene(float fov, float pnear)
 void Game::LoadingScreen()
 {
     static float loadprogress;
-    //~ static AbsoluteTime time = {0, 0};
     static AbsoluteTime frametime = {0, 0};
     AbsoluteTime currTime = UpTime ();
     double deltaTime = (float) AbsoluteDeltaToDuration (currTime, frametime);
@@ -244,8 +243,6 @@ void Game::LoadingScreen()
         if (loadprogress > 100)
             loadprogress = 100;
 
-        //loadprogress=abs(Random()%100);
-
         //Background
 
         glEnable(GL_TEXTURE_2D);
@@ -269,7 +266,6 @@ void Game::LoadingScreen()
         glDisable(GL_BLEND);
         glColor4f(loadprogress / 100, loadprogress / 100, loadprogress / 100, 1);
         glPushMatrix();
-        //glScalef(.25,.25,.25);
         glBegin(GL_QUADS);
         glTexCoord2f(.1 - loadprogress / 100, 0 + loadprogress / 100 + .3);
         glVertex3f(-1, -1, 0.0f);
@@ -283,7 +279,6 @@ void Game::LoadingScreen()
         glPopMatrix();
         glEnable(GL_BLEND);
         glPushMatrix();
-        //glScalef(.25,.25,.25);
         glBegin(GL_QUADS);
         glTexCoord2f(.4 + loadprogress / 100, 0 + loadprogress / 100);
         glVertex3f(-1, -1, 0.0f);
@@ -322,10 +317,8 @@ void Game::LoadingScreen()
         glScalef((float)screenwidth / 2 * (1.5 - (loadprogress) / 200), (float)screenheight / 2 * (1.5 - (loadprogress) / 200), 1);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         glEnable(GL_BLEND);
-        //glColor4f(loadprogress/100,loadprogress/100,loadprogress/100,1);
         glColor4f(loadprogress / 100, loadprogress / 100, loadprogress / 100, 1);
         glPushMatrix();
-        //glScalef(.25,.25,.25);
         glBegin(GL_QUADS);
         glTexCoord2f(0 + .5, 0 + .5);
         glVertex3f(-1, -1, 0.0f);
@@ -366,7 +359,6 @@ void Game::LoadingScreen()
         glEnable(GL_BLEND);
         glColor4f(loadprogress / 100, loadprogress / 100, loadprogress / 100, .4);
         glPushMatrix();
-        //glScalef(.25,.25,.25);
         glBegin(GL_QUADS);
         glTexCoord2f(0 + .2, 0 + .8);
         glVertex3f(-1, -1, 0.0f);
@@ -443,13 +435,9 @@ void FadeLoadingScreen(float howmuch)
 
     loadprogress = howmuch;
 
-    //loadprogress=abs(Random()%100);
-
     //Background
 
-    //glEnable(GL_TEXTURE_2D);
     glDisable(GL_TEXTURE_2D);
-    //glBindTexture( GL_TEXTURE_2D, loadscreentexture);
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
     glDisable(GL_DEPTH_TEST);
@@ -469,7 +457,6 @@ void FadeLoadingScreen(float howmuch)
     glDisable(GL_BLEND);
     glColor4f(loadprogress / 100, 0, 0, 1);
     glPushMatrix();
-    //glScalef(.25,.25,.25);
     glBegin(GL_QUADS);
     glTexCoord2f(0, 0);
     glVertex3f(-1, -1, 0.0f);

@@ -1428,8 +1428,6 @@ int Game::checkcollide(XYZ startpoint, XYZ endpoint)
         }
     }
 
-    //if(terrain.lineTerrain(startpoint,endpoint,&colpoint)!=-1)return 1000;
-
     return -1;
 }
 
@@ -1729,9 +1727,6 @@ void Loadlevel(const char *name)
 
     int mapvers;
     FILE *tfile;
-    //~ char* buff=getcwd(NULL,0);
-    //~ cout << buff << " " << FixedFN << endl;
-    //~ free(buff);
     tfile = fopen( FixedFN, "rb" );
     if (tfile) {
         pause_sound(stream_firesound);
@@ -3222,10 +3217,7 @@ void doDebugKeys()
         }
 
         if (Input::isKeyPressed(SDL_SCANCODE_N) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
-            //if(!Person::players[0]->skeleton.free)Person::players[0]->damage+=500;
             Person::players[0]->RagDoll(0);
-            //Person::players[0]->spurt=1;
-            //Person::players[0]->DoDamage(1000);
 
             emit_sound_at(whooshsound, Person::players[0]->coords, 128.);
         }
@@ -3276,8 +3268,6 @@ void doDebugKeys()
             }
 
             if (Input::isKeyPressed(SDL_SCANCODE_M) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
-                //drawmode++;
-                //if(drawmode>2)drawmode=0;
                 if (objects.numobjects < max_objects - 1) {
                     XYZ boxcoords;
                     boxcoords.x = Person::players[0]->coords.x;
@@ -3712,7 +3702,6 @@ void doAerialAcrobatics()
             Person::players[k]->yaw = stepTowardf(Person::players[k]->yaw, Person::players[k]->targetyaw, multiplier * Person::players[k]->turnspeed * 4);
         }
 
-        /*if(Person::players[k]->aitype!=passivetype||(distsq(&Person::players[k]->coords,&viewer)<viewdistance*viewdistance))*/
         Person::players[k]->DoStuff();
         if (Person::players[k]->immobile && k != 0)
             Person::players[k]->coords = Person::players[k]->realoldcoords;
@@ -6686,7 +6675,6 @@ void Game::Tick()
                         hotspotvisual[i] -= multiplier / 320;
 
                 for (int i = 0; i < numhotspots; i++) {
-                    //if(hotspottype[i]<=10)
                     while (hotspotvisual[i] < 0) {
                         hotspotsprite = 0;
                         hotspotsprite.x = float(abs(Random() % 100000)) / 100000 * hotspotsize[i];
@@ -8398,7 +8386,7 @@ void Game::TickOnceAfter()
             }
             target.y += .1;
         }
-        if (Person::players[0]->skeleton.free != 2/*&&!autocam*/) {
+        if (Person::players[0]->skeleton.free != 2) {
             cameraspeed = 20;
             if (findLengthfast(&Person::players[0]->velocity) > 400) {
                 cameraspeed = 20 + (findLength(&Person::players[0]->velocity) - 20) * .96;
@@ -8446,55 +8434,8 @@ void Game::TickOnceAfter()
                 cameraloc.y = terrain.getHeight(cameraloc.x, cameraloc.z);
             }
         }
-        /*
-        //what did autocam do?
-        if(Person::players[0]->skeleton.free!=2&&autocam){
-            cameraspeed=20;
-            if(findLengthfast(&Person::players[0]->velocity)>400){
-                cameraspeed=20+(findLength(&Person::players[0]->velocity)-20)*.96;
-            }
-            if(Person::players[0]->skeleton.free==0&&Person::players[0]->animTarget!=hanganim&&Person::players[0]->animTarget!=climbanim)target.y+=1.4;
-            cameradist+=multiplier*5;
-            if(cameradist>3.3)cameradist=3.3;
-            coltarget=target-cameraloc;
-            if(findLengthfast(&coltarget)<multiplier*multiplier*400)cameraloc=target;
-            else if(findLengthfast(&coltarget)>1)
-            {
-                Normalise(&coltarget);
-                if(Person::players[0]->animTarget!=hanganim&&Person::players[0]->animTarget!=climbanim&&Person::players[0]->animCurrent!=climbanim&&Person::players[0]->currentoffset.x==0)cameraloc=cameraloc+coltarget*multiplier*cameraspeed;
-                else cameraloc=cameraloc+coltarget*multiplier*8;
-            }
-            if(editorenabled)cameraloc=target;
-            viewer=cameraloc;
-            colviewer=viewer;
-            coltarget=cameraloc;
-            objects.SphereCheckPossible(&colviewer, findDistance(&colviewer,&coltarget));
-            if(terrain.patchobjectnum[Person::players[0]->whichpatchx][Person::players[0]->whichpatchz])
-                for(int j=0;j<terrain.patchobjectnum[Person::players[0]->whichpatchx][Person::players[0]->whichpatchz];j++){
-                    int i=terrain.patchobjects[Person::players[0]->whichpatchx][Person::players[0]->whichpatchz][j];
-                    colviewer=viewer;
-                    coltarget=cameraloc;
-                    if(objects.model[i].LineCheckPossible(&colviewer,&coltarget,&col,&objects.position[i],&objects.yaw[i])!=-1)viewer=col;
-                }
-            if(terrain.patchobjectnum[Person::players[0]->whichpatchx][Person::players[0]->whichpatchz])
-                for(int j=0;j<terrain.patchobjectnum[Person::players[0]->whichpatchx][Person::players[0]->whichpatchz];j++){
-                    int i=terrain.patchobjects[Person::players[0]->whichpatchx][Person::players[0]->whichpatchz][j];
-                    colviewer=viewer;
-                    if(objects.model[i].SphereCheck(&colviewer,.15,&col,&objects.position[i],&objects.yaw[i])!=-1){
-                        viewer=colviewer;
-                    }
-                }
-            cameradist=findDistance(&viewer,&target);
-            viewer.y=max((double)viewer.y,terrain.getHeight(viewer.x,viewer.z)+.6);
-            if(cameraloc.y<terrain.getHeight(cameraloc.x,cameraloc.z)){
-                cameraloc.y=terrain.getHeight(cameraloc.x,cameraloc.z);
-            }
-        }
-        */
         if (camerashake > .8)
             camerashake = .8;
-        //if(woozy>10)woozy=10;
-        //woozy+=multiplier;
         woozy += multiplier;
         if (Person::players[0]->dead)
             camerashake = 0;
@@ -8502,12 +8443,10 @@ void Game::TickOnceAfter()
             woozy = 0;
         camerashake -= multiplier * 2;
         blackout -= multiplier * 2;
-        //if(Person::players[0]->isCrouch())woozy-=multiplier*8;
         if (camerashake < 0)
             camerashake = 0;
         if (blackout < 0)
             blackout = 0;
-        //if(woozy<0)woozy=0;
         if (camerashake) {
             viewer.x += (float)(Random() % 100) * .0005 * camerashake;
             viewer.y += (float)(Random() % 100) * .0005 * camerashake;

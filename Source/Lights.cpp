@@ -30,7 +30,6 @@ void SetUpLight(Light* whichsource, int whichlight)
         GLfloat LightDiffuse[] = { whichsource->color[0], whichsource->color[1], whichsource->color[2], 1.0f };
         GLfloat LightPosition[] = { whichsource->location.x, whichsource->location.y, whichsource->location.z, 0.0f };
 
-        //glLightfv(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, qattenuation);
         glLightfv(GL_LIGHT0, GL_POSITION, LightPosition);
         glLightfv(GL_LIGHT0, GL_AMBIENT, LightAmbient);
         glLightfv(GL_LIGHT0, GL_DIFFUSE, LightDiffuse);

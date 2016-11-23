@@ -104,10 +104,6 @@ void Objects::Draw()
                         distance = 1;
                     if (distance > 0) {
 
-                        /*if(checkcollide(viewer,DoRotation(model[i].vertex[model[i].vertexNum],0,yaw[i],0)*scale[i]+position[i],i)){
-                        occluded[i]+=1;
-                        }
-                        else occluded[i]=0;*/
                         if (occluded[i] < 6) {
                             glMatrixMode(GL_MODELVIEW);
                             glPushMatrix();
@@ -631,10 +627,6 @@ void Objects::MakeObject(int atype, XYZ where, float ayaw, float apitch, float a
         position[numobjects] = where;
         if (atype == bushtype)
             position[numobjects].y = terrain.getHeight(position[numobjects].x, position[numobjects].z) - .3;
-        /*if(atype==firetype){
-        if(position[numobjects].y<terrain.getHeight(position[numobjects].x,position[numobjects].z)-.3)
-        position[numobjects].y=terrain.getHeight(position[numobjects].x,position[numobjects].z)-.3;
-        }*/
         yaw[numobjects] = ayaw;
         pitch[numobjects] = apitch;
 
@@ -716,10 +708,6 @@ void Objects::DoStuff()
 {
     XYZ spawnpoint;
     for (int i = 0; i < numobjects; i++) {
-        /*if(type[i]==firetype){
-        Sprite::MakeSprite(weaponshinesprite, position[i],position[i]*0, 1,1,1, 5, 1);
-        }*/
-
         if (type[i] == firetype)
             onfire[i] = 1;
         if (onfire[i]) {
