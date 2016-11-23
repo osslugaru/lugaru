@@ -215,10 +215,8 @@ static inline const char *getPrefPath(void)
 static int locateCorrectCase(char *buf, bool makedirs)
 {
     int rc;
-    char *ptr;
-    char *prevptr;
+    char *ptr = buf;
 
-    ptr = prevptr = buf;
     while (ptr = strchr(ptr + 1, '/')) {
         *ptr = '\0';  /* block this path section off */
         rc = locateOneElement(buf);

@@ -432,34 +432,14 @@ bool Terrain::load(const char *fileName)
 
     texdetail = temptexdetail;
 
-    size = 128;
-    if (1 == 1) {
-        /*if ( texture.bpp == 24 )
-        type = GL_RGB;
-        else
-        type = GL_RGBA;
+    size = texture.sizeX;
 
-        glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-
-        if(!terraintexture)glGenTextures( 1, &terraintexture );
-        glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-
-        glBindTexture( GL_TEXTURE_2D, terraintexture);
-        //glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-
-        gluBuild2DMipmaps( GL_TEXTURE_2D, type, texture.sizeX, texture.sizeY, type, GL_UNSIGNED_BYTE, texture.data );
-        */
-
-        size = texture.sizeX;
-
-        for (i = 0; i < size; i++) {
-            for (j = 0; j < size; j++) {
-                heightmap[size - 1 - i][j] = (float)((texture.data[(i + (j * size)) * texture.bpp / 8])) / 5;
-            }
+    for (i = 0; i < size; i++) {
+        for (j = 0; j < size; j++) {
+            heightmap[size - 1 - i][j] = (float)((texture.data[(i + (j * size)) * texture.bpp / 8])) / 5;
         }
-
     }
+
     if (visibleloading)
         Game::LoadingScreen();
 
@@ -770,7 +750,6 @@ void Terrain::CalculateNormals()
     for (i = 0; i < size; i++) {
         for (j = 0; j < size; j++) {
             Normalise(&normals[i][j]);
-            normals[i][j] = normals[i][j];
         }
     }
 }

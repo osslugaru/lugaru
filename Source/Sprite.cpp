@@ -277,7 +277,7 @@ void Sprite::Draw()
         glPopMatrix();
     }
     tempmult = multiplier;
-    for (unsigned i = sprites.size() - 1; i >= 0; i--) {
+    for (int i = sprites.size() - 1; i >= 0; i--) {
         multiplier = tempmult;
         if (sprites[i]->type != snowsprite) {
             sprites[i]->position += sprites[i]->velocity * multiplier;
@@ -416,7 +416,7 @@ void Sprite::Draw()
             DeleteSprite(i);
     }
     if (check)
-        for (unsigned i = sprites.size() - 1; i >= 0; i--) {
+        for (int i = sprites.size() - 1; i >= 0; i--) {
             sprites[i]->oldposition = sprites[i]->position;
         }
     glAlphaFunc(GL_GREATER, 0.0001);

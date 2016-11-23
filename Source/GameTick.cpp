@@ -3888,7 +3888,7 @@ void doAerialAcrobatics()
                 }
             }
 
-            if (tempcollide && (/*Person::players[k]->jumptogglekeydown*/1 == 1 || Person::players[k]->aitype != playercontrolled))
+            if (tempcollide)
                 for (int l = 0; l < terrain.patchobjectnum[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz]; l++) {
                     int i = terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz][l];
                     lowpoint = Person::players[k]->coords;
@@ -3970,7 +3970,6 @@ void doAerialAcrobatics()
                                                                 if (j <= 6 || j <= 25 && Person::players[k]->animTarget == jumpdownanim)
                                                                     break;
                                                                 if (Person::players[k]->animTarget == jumpupanim || Person::players[k]->animTarget == jumpdownanim) {
-                                                                    lowpoint = DoRotation(objects.model[i].facenormals[whichhit], 0, objects.yaw[k], 0);
                                                                     lowpoint = Person::players[k]->coords;
                                                                     lowpoint.y += (float)j / 13;
                                                                     lowpointtarget = lowpoint + facing * 1.3;
@@ -7195,7 +7194,6 @@ void Game::Tick()
                                  Person::players[i]->animTarget == sneakanim ||
                                  Person::players[i]->animTarget == rollanim ||
                                  Person::players[i]->animTarget == backhandspringanim ||
-                                 Person::players[i]->isFlip() ||
                                  Person::players[i]->isFlip() ||
                                  Person::players[i]->aitype != playercontrolled)) {
                             for (unsigned j = 0; j < weapons.size(); j++) {

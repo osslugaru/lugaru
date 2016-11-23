@@ -931,10 +931,9 @@ int Game::DrawGLScene(StereoSide side)
             //Hot spots
 
             if (numhotspots && (bonustime >= 1 || bonus <= 0 || bonustime < 0) && !tutoriallevel) {
-                int closest = -1;
                 float closestdist = -1;
                 float distance = 0;
-                closest = currenthotspot;
+                int closest = currenthotspot;
                 for (int i = 0; i < numhotspots; i++) {
                     distance = distsq(&Person::players[0]->coords, &hotspot[i]);
                     if (closestdist == -1 || distance < closestdist) {
@@ -1515,8 +1514,6 @@ int Game::DrawGLScene(StereoSide side)
                     }
                 }
             }
-            radius = fast_sqrt(maxdistance);
-
             radius = 110;
 
             glScalef(.25 / radius * 256 * terrain.scale * .4, .25 / radius * 256 * terrain.scale * .4, 1);

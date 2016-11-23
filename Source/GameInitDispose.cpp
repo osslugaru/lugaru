@@ -162,9 +162,6 @@ void Game::deleteGame()
 
 void LoadSave(const char *fileName, GLuint *textureid, bool mipmap, GLubyte *array, int *skinsize)
 {
-    int i;
-    int bytesPerPixel;
-
     LOGFUNC;
 
     LOG(std::string("Loading (S)...") + fileName);
@@ -172,8 +169,6 @@ void LoadSave(const char *fileName, GLuint *textureid, bool mipmap, GLubyte *arr
     //Load Image
     float temptexdetail = texdetail;
     texdetail = 1;
-    //upload_image( fileName );
-    //LoadTGA( fileName );
 
     // Converting file to something os specific
     char * fixedFN = ConvertFileName(fileName);
@@ -185,16 +180,13 @@ void LoadSave(const char *fileName, GLuint *textureid, bool mipmap, GLubyte *arr
     upload_image( fileNamep , 0);
     texdetail = temptexdetail;
 
-    //Is it valid?
-    if (1 == 1) {
-        bytesPerPixel = texture.bpp / 8;
+    int bytesPerPixel = texture.bpp / 8;
 
-        int tempnum = 0;
-        for (i = 0; i < (int)(texture.sizeY * texture.sizeX * bytesPerPixel); i++) {
-            if ((i + 1) % 4 || bytesPerPixel == 3) {
-                array[tempnum] = texture.data[i];
-                tempnum++;
-            }
+    int tempnum = 0;
+    for (int i = 0; i < (int)(texture.sizeY * texture.sizeX * bytesPerPixel); i++) {
+        if ((i + 1) % 4 || bytesPerPixel == 3) {
+            array[tempnum] = texture.data[i];
+            tempnum++;
         }
     }
 }
@@ -640,10 +632,8 @@ void Game::InitGame()
     LOG("Initializing sound system...");
 
 #if PLATFORM_LINUX
-    int output = -1;
-
     unsigned char rc = 0;
-    output = OPENAL_OUTPUT_ALSA;  // Try alsa first...
+    int output = OPENAL_OUTPUT_ALSA;  // Try alsa first...
     if (cmdline("forceoss"))      //  ...but let user override that.
         output = OPENAL_OUTPUT_OSS;
     else if (cmdline("nosound"))

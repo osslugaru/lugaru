@@ -48,7 +48,6 @@ extern bool visibleloading;
 void dealloc2(void* param)
 {
     free(param);
-    param = 0; // FIXME: does this *do* anything???
 }
 
 enum {boneconnect, constraint, muscle};
@@ -553,7 +552,16 @@ void Skeleton::DoGravity(float *scale)
 {
     static int i;
     for (i = 0; i < num_joints; i++) {
-        if (((joints[i].label != leftknee && joints[i].label != rightknee) || lowforward.y > -.1 || joints[i].mass < 5) && ((joints[i].label != rightelbow && joints[i].label != rightelbow) || forward.y < .3))
+        if (
+                (
+                    ((joints[i].label != leftknee) && (joints[i].label != rightknee)) ||
+                    (lowforward.y > -.1) ||
+                    (joints[i].mass < 5)
+                ) && (
+                    ((joints[i].label != leftelbow) && (joints[i].label != rightelbow)) ||
+                    (forward.y < .3)
+                )
+            )
             joints[i].velocity.y += gravity * multiplier / (*scale);
     }
 }
@@ -1088,11 +1096,9 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
             fseek ( tfile, lSize, SEEK_CUR);
         }
 
-        // ???
-        lSize = sizeof(int);
         for (j = 0; j < num_muscles; j++) {
             for (i = 0; i < muscles[j].numverticeslow; i++) {
-                if (muscles[j].numverticeslow && muscles[j].verticeslow[i] < modellow.vertexNum)
+                if (muscles[j].verticeslow[i] < modellow.vertexNum)
                     modellow.owner[muscles[j].verticeslow[i]] = j;
             }
         }
@@ -1422,9 +1428,7 @@ Animation & Animation::operator = (const Animation & ani)
 {
     int i = 0;
 
-    bool allocate = true;
-
-    allocate = ((ani.numframes != numframes) || (ani.joints != joints));
+    bool allocate = ((ani.numframes != numframes) || (ani.joints != joints));
 
     if (allocate)
         deallocate();
@@ -1434,6 +1438,7 @@ Animation & Animation::operator = (const Animation & ani)
     attack = ani.attack;
     joints = ani.joints;
     weapontargetnum = ani.weapontargetnum;
+    offset = ani.offset;
 
     if (allocate)
         position = (XYZ**)malloc(sizeof(XYZ*)*ani.joints);

@@ -45,7 +45,7 @@ class Account
 public:
     static void destroy(int i);
     static Account* destroy(Account* a);
-    static Account* add(std::string name);
+    static Account* add(const std::string& name);
     static Account* get(int i);
     static Account* loadFile(std::string filename);
     static void saveFile(std::string filename, Account* accountactive);
@@ -103,13 +103,13 @@ public:
     std::string getCurrentCampaign() {
         return currentCampaign;
     };
-    void setCurrentCampaign(std::string name);
+    void setCurrentCampaign(const std::string& name);
 
     static int getNbAccounts() {
         return accounts.size();
     };
 private:
-    Account(std::string n = "");
+    Account(const std::string& name = "");
     int difficulty;
     int progress; // progress in challenge levels
     float points;

@@ -1018,7 +1018,7 @@ void Person::Reverse()
         victim->animCurrent = knifeslashreversalanim;
         victim->animTarget = knifeslashreversalanim;
     }
-    if (animTarget != knifeslashstartanim && animTarget != staffhitanim && animTarget != staffspinhitanim && animTarget != winduppunchanim && animTarget != wolfslapanim && animTarget != swordslashanim && animTarget != swordslashanim) {
+    if (animTarget != knifeslashstartanim && animTarget != staffhitanim && animTarget != staffspinhitanim && animTarget != winduppunchanim && animTarget != wolfslapanim && animTarget != swordslashanim) {
         victim->targettilt2 = targettilt2;
         victim->frameCurrent = frameCurrent;
         victim->frameTarget = frameTarget;
@@ -1459,7 +1459,6 @@ void Person::RagDoll(bool checkcollision)
             skeleton.joints[i].locked = 0;
             skeleton.joints[i].position = DoRotation(DoRotation(DoRotation(skeleton.joints[i].position, 0, 0, tilt), tilt2, 0, 0), 0, yaw, 0);
             if (!isnormal(skeleton.joints[i].position.x)) skeleton.joints[i].position = DoRotation(skeleton.joints[i].position, 0, yaw, 0);
-            if (!isnormal(skeleton.joints[i].position.x)) skeleton.joints[i].position = skeleton.joints[i].position;
             if (!isnormal(skeleton.joints[i].position.x)) skeleton.joints[i].position = coords;
             skeleton.joints[i].position.y += .1;
             skeleton.joints[i].oldposition = skeleton.joints[i].position;
@@ -5418,7 +5417,7 @@ void Person::DoStuff()
             }
         }
 
-        if (animTarget == jumpupanim || animTarget == crouchstabanim || animTarget == swordgroundstabanim || animTarget == swordfightidlebothanim || animTarget == blockhighleftanim || animTarget == blockhighleftanim) {
+        if (animTarget == jumpupanim || animTarget == crouchstabanim || animTarget == swordgroundstabanim || animTarget == swordfightidlebothanim || animTarget == blockhighleftanim) {
             //close hands and mouth
             if (righthandmorphend != 1 && righthandmorphness == targetrighthandmorphness) {
                 righthandmorphness = 0;

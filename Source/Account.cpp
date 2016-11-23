@@ -30,9 +30,8 @@ extern bool debugmode;
 
 vector<Account*> Account::accounts = vector<Account*>();
 
-Account::Account(string n) : campaignProgress()
+Account::Account(const string& name) : name(name), campaignProgress()
 {
-    name = string(n);
     difficulty = 0;
     progress = 0;
     points = 0;
@@ -43,12 +42,12 @@ Account::Account(string n) : campaignProgress()
     setCurrentCampaign("main");
 }
 
-void Account::setCurrentCampaign(string name)
+void Account::setCurrentCampaign(const string& name)
 {
     currentCampaign = name;
 }
 
-Account* Account::add(string name)
+Account* Account::add(const string& name)
 {
     accounts.push_back(new Account(name));
     return accounts.back();
@@ -196,7 +195,6 @@ Account* Account::loadFile(string filename)
 void Account::saveFile(string filename, Account* accountactive)
 {
     FILE *tfile;
-    unsigned j;
 
     tfile = fopen(ConvertFileName(filename.c_str(), "wb"), "wb" );
     if (tfile) {
@@ -212,9 +210,9 @@ void Account::saveFile(string filename, Account* accountactive)
             fpackf(tfile, "Bi", a->campaignProgress.size());
 
             map<string, CampaignProgress>::const_iterator it;
-            for ( it = a->campaignProgress.begin(); it != a->campaignProgress.end(); ++it) {
+            for (it = a->campaignProgress.begin(); it != a->campaignProgress.end(); ++it) {
                 fpackf(tfile, "Bi",  it->first.size());
-                for (j = 0; j < it->first.size(); j++) {
+                for (unsigned j = 0; j < it->first.size(); j++) {
                     fpackf(tfile, "Bb",  it->first[j]);
                 }
                 fpackf(tfile, "Bf", it->second.time);
@@ -222,26 +220,26 @@ void Account::saveFile(string filename, Account* accountactive)
                 fpackf(tfile, "Bf", it->second.fasttime);
                 fpackf(tfile, "Bf", it->second.highscore);
                 fpackf(tfile, "Bi", it->second.choices.size());
-                for (j = 0; j < it->second.choices.size(); j++) {
+                for (unsigned j = 0; j < it->second.choices.size(); j++) {
                     fpackf(tfile, "Bi", it->second.choices[j]);
                 }
             }
 
             fpackf(tfile, "Bi", a->getCurrentCampaign().size());
-            for (j = 0; j < a->getCurrentCampaign().size(); j++) {
+            for (unsigned j = 0; j < a->getCurrentCampaign().size(); j++) {
                 fpackf(tfile, "Bb", a->getCurrentCampaign()[j]);
             }
 
             fpackf(tfile, "Bf", a->points);
-            for (j = 0; j < 50; j++) {
+            for (unsigned j = 0; j < 50; j++) {
                 fpackf(tfile, "Bf", a->highscore[j]);
                 fpackf(tfile, "Bf", a->fasttime[j]);
             }
-            for (j = 0; j < 60; j++) {
+            for (unsigned j = 0; j < 60; j++) {
                 fpackf(tfile, "Bb",  a->unlocked[j]);
             }
             fpackf(tfile, "Bi",  a->name.size());
-            for (j = 0; j < a->name.size(); j++) {
+            for (unsigned j = 0; j < a->name.size(); j++) {
                 fpackf(tfile, "Bb",  a->name[j]);
             }
         }
