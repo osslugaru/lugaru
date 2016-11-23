@@ -5487,7 +5487,7 @@ void doAI(unsigned i)
                     if (Person::players[0]->animTarget != rabbitkickanim && Person::players[0]->weaponactive != -1) {
                         if (weapons[Person::players[0]->weaponids[0]].getType() == knife) {
                             if (Person::players[i]->isIdle() || Person::players[i]->isCrouch() || Person::players[i]->isRun() || Person::players[i]->isFlip()) {
-                                if (abs(Random() % 2 == 0))
+                                if (abs(Random() % 2) == 0)
                                     Person::players[i]->setAnimation(backhandspringanim);
                                 else
                                     Person::players[i]->setAnimation(rollanim);
