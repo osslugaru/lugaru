@@ -17,75 +17,20 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-DECLARE_COMMAND(quit)
-DECLARE_COMMAND(map)
-DECLARE_COMMAND(save)
+typedef void (*console_handler)(const char *args);
 
-DECLARE_COMMAND(cellar)
-DECLARE_COMMAND(tint)
-DECLARE_COMMAND(tintr)
-DECLARE_COMMAND(tintg)
-DECLARE_COMMAND(tintb)
-DECLARE_COMMAND(speed)
-DECLARE_COMMAND(strength)
-DECLARE_COMMAND(power)
-DECLARE_COMMAND(size)
-DECLARE_COMMAND(sizenear)
-DECLARE_COMMAND(proportion)
-DECLARE_COMMAND(proportionnear)
-DECLARE_COMMAND(protection)
-DECLARE_COMMAND(protectionnear)
-DECLARE_COMMAND(protectionreset)
-DECLARE_COMMAND(armor)
-DECLARE_COMMAND(armornear)
-DECLARE_COMMAND(metal)
-DECLARE_COMMAND(clothes)
-DECLARE_COMMAND(clothesnear)
-DECLARE_COMMAND(noclothes)
-DECLARE_COMMAND(noclothesnear)
-DECLARE_COMMAND(belt)
-DECLARE_COMMAND(cellophane)
-DECLARE_COMMAND(funnybunny)
-DECLARE_COMMAND(wolfie)
-DECLARE_COMMAND(wolfieisgod)
-DECLARE_COMMAND(wolf)
-DECLARE_COMMAND(snowwolf)
-DECLARE_COMMAND(darkwolf)
-DECLARE_COMMAND(lizardwolf)
-DECLARE_COMMAND(white)
-DECLARE_COMMAND(brown)
-DECLARE_COMMAND(black)
+#define DECLARE_COMMAND(cmd) void ch_##cmd(const char *args);
+#include "ConsoleCmds.def"
+#undef  DECLARE_COMMAND
 
-DECLARE_COMMAND(sizemin)
-DECLARE_COMMAND(viewdistance)
-DECLARE_COMMAND(fadestart)
-DECLARE_COMMAND(slomo)
-DECLARE_COMMAND(slofreq)
+/* FIXME - This is only to get cmd_count, not very clean */
+enum console_command {
+#define DECLARE_COMMAND(cmd) cmd_##cmd,
+#include "ConsoleCmds.def"
+#undef DECLARE_COMMAND
+    cmd_count
+};
 
-DECLARE_COMMAND(tutorial)
-DECLARE_COMMAND(hostile)
-DECLARE_COMMAND(indemo)
-DECLARE_COMMAND(notindemo)
-DECLARE_COMMAND(type)
-DECLARE_COMMAND(path)
-DECLARE_COMMAND(hs)
-DECLARE_COMMAND(dhs)
-DECLARE_COMMAND(dialogue)
-DECLARE_COMMAND(fixdialogue)
-DECLARE_COMMAND(ddialogue)
-DECLARE_COMMAND(fixtype)
-DECLARE_COMMAND(fixrotation)
-DECLARE_COMMAND(immobile)
-DECLARE_COMMAND(allimmobile)
-DECLARE_COMMAND(mobile)
-DECLARE_COMMAND(default)
-DECLARE_COMMAND(play)
+extern const char *cmd_names[cmd_count];
 
-DECLARE_COMMAND(mapkilleveryone)
-DECLARE_COMMAND(mapkillmost)
-DECLARE_COMMAND(mapkillsomeone)
-DECLARE_COMMAND(mapgosomewhere)
-
-DECLARE_COMMAND(skytint)
-DECLARE_COMMAND(skylight)
-DECLARE_COMMAND(skybox)
+extern console_handler cmd_handlers[cmd_count];

@@ -162,6 +162,11 @@ void LoadScreenTexture();
 void LoadingScreen();
 int DrawGLScene(StereoSide side);
 void LoadMenu();
+void playdialogueboxsound();
+int findClosestPlayer();
+bool AddClothes(const char *fileName, GLubyte *array);
+void Loadlevel(int which);
+void Loadlevel(const char *name);
 void Tick();
 void TickOnce();
 void TickOnceAfter();
@@ -226,6 +231,7 @@ extern int whichdialogue;
 extern int directing;
 extern float dialoguetime;
 extern int dialoguegonethrough[20];
+extern float tintr, tintg, tintb;
 
 enum maptypes {
     mapkilleveryone, mapgosomewhere,
@@ -241,5 +247,11 @@ enum editortypes {typeactive, typesitting, typesittingwall, typesleeping,
                  };
 
 extern const char *editortypenames[8];
+
+extern const char *rabbitskin[10];
+
+extern const char *wolfskin[3];
+
+extern const char **creatureskin[2];
 
 #endif
