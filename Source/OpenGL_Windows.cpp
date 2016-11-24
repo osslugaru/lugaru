@@ -39,14 +39,10 @@ extern bool osx;
 extern bool freeze;
 extern bool stillloading;
 extern int mainmenu;
-/*extern*/
-bool gameFocused;
 
 extern float slomospeed;
 extern float slomofreq;
 extern bool visibleloading;
-
-
 
 #include <math.h>
 #include <stdio.h>
@@ -136,6 +132,7 @@ int kContextWidth;
 int kContextHeight;
 
 bool gDone = false;
+bool gameFocused;
 
 static int _argc = 0;
 static char **_argv = NULL;
@@ -683,11 +680,6 @@ int main(int argc, char **argv)
     try {
         {
             newGame();
-
-            //ofstream os("error.txt");
-            //os.close();
-            //ofstream os("log.txt");
-            //os.close();
 
             if (!SetUp ())
                 return 42;

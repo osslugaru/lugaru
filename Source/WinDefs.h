@@ -72,16 +72,6 @@ enum {
 
 Duration AbsoluteDeltaToDuration( AbsoluteTime& a, AbsoluteTime& b);
 
-
-/*
-inline bool isnormal( double x)
-{
-    int ret = _fpclass( x);
-    return (ret == _FPCLASS_NN || ret == _FPCLASS_PN);
-}
-*/
-
-
 // fix file names to use '/' instead of ':'
 char* ConvertFileName( const char* orgfilename);
 char* ConvertFileName( const char* orgfilename, const char* junk);
