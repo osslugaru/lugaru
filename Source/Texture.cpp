@@ -23,7 +23,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace std;
 
-extern TGAImageRec texture;
+extern ImageRec texture;
 extern bool trilinear;
 
 
@@ -60,9 +60,7 @@ void TextureRes::load()
 {
     //load image into 'texture' global var
     if (!skindata) {
-        unsigned char filenamep[256];
-        CopyCStringToPascal(ConvertFileName(filename.c_str()), filenamep);
-        upload_image(filenamep, hasAlpha);
+        upload_image(ConvertFileName(filename.c_str()));
     }
 
     skinsize = texture.sizeX;
@@ -146,8 +144,6 @@ void TextureRes::reloadAll()
         (*it)->load();
     }
 }
-
-
 
 
 void Texture::load(const string& filename, bool hasMipmap, bool hasAlpha)

@@ -178,7 +178,7 @@ bool tiltweird = false;
 bool midweird = false;
 bool proportionweird = false;
 bool vertexweird[6] = {0};
-TGAImageRec texture;
+ImageRec texture;
 bool debugmode = false;
 
 

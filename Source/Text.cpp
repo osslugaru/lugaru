@@ -20,7 +20,6 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 /**> HEADER FILES <**/
 #include "Text.h"
 #include "Game.h"
-extern TGAImageRec texture;
 
 void Text::LoadFontTexture(const char *fileName)
 {

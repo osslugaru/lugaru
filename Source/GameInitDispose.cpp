@@ -53,7 +53,7 @@ extern float multiplier;
 extern int netdatanew;
 extern float mapinfo;
 extern bool stillloading;
-extern TGAImageRec texture;
+extern ImageRec texture;
 extern short vRefNum;
 extern long dirID;
 extern int mainmenu;
@@ -170,14 +170,8 @@ void LoadSave(const char *fileName, GLuint *textureid, bool mipmap, GLubyte *arr
     float temptexdetail = texdetail;
     texdetail = 1;
 
-    // Converting file to something os specific
-    char * fixedFN = ConvertFileName(fileName);
-
     //Load Image
-    unsigned char fileNamep[256];
-    CopyCStringToPascal(fixedFN, fileNamep);
-    //Load Image
-    upload_image( fileNamep , 0);
+    upload_image(ConvertFileName(fileName));
     texdetail = temptexdetail;
 
     int bytesPerPixel = texture.bpp / 8;

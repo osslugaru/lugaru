@@ -124,7 +124,7 @@ extern float damagedealt;
 extern int maptype;
 extern int editoractive;
 extern int editorpathtype;
-extern TGAImageRec texture;
+extern ImageRec texture;
 
 extern float hostiletime;
 
@@ -387,10 +387,7 @@ bool Game::AddClothes(const char *fileName, GLubyte *array)
 {
     LOGFUNC;
     //Load Image
-    unsigned char fileNamep[256];
-    CopyCStringToPascal(fileName, fileNamep);
-    bool opened;
-    opened = upload_image(fileNamep, 1);
+    bool opened = upload_image(fileName);
 
     float alphanum;
     //Is it valid?

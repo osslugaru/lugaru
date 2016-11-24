@@ -21,21 +21,11 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Game.h"
 #include "TGALoader.h"
 
-extern float texdetail;
-extern TGAImageRec texture;
-extern short vRefNum;
-extern long dirID;
-extern bool visibleloading;
+extern ImageRec texture;
 
-extern bool LoadImage(const char * fname, TGAImageRec & tex);
-/********************> LoadTGA() <*****/
-bool upload_image(const unsigned char* filePath, bool hasalpha)
+extern bool load_image(const char * fname, ImageRec & tex);
+
+bool upload_image(const char* fileName)
 {
-    if (visibleloading)
-        Game::LoadingScreen();
-
-    // for Windows, just use TGA loader for now
-    char fileName[256];
-    CopyPascalStringToC( filePath, fileName);
-    return (LoadImage(fileName, texture));
+    return load_image(fileName, texture);
 }

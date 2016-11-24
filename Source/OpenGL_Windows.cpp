@@ -30,9 +30,9 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace Game;
 
-static bool load_image(const char * fname, TGAImageRec & tex);
-static bool load_png(const char * fname, TGAImageRec & tex);
-static bool load_jpg(const char * fname, TGAImageRec & tex);
+bool load_image(const char * fname, ImageRec & tex);
+static bool load_png(const char * fname, ImageRec & tex);
+static bool load_jpg(const char * fname, ImageRec & tex);
 bool save_image(const char * fname);
 static bool save_png(const char * fname);
 
@@ -55,6 +55,7 @@ bool gameFocused;
 
 extern float slomospeed;
 extern float slomofreq;
+extern bool visibleloading;
 
 
 
@@ -760,17 +761,14 @@ int main(int argc, char **argv)
 
 // --------------------------------------------------------------------------
 
-
-bool LoadImage(const char * fname, TGAImageRec & tex)
+bool load_image(const char *file_name, ImageRec &tex)
 {
+    if (visibleloading)
+        Game::LoadingScreen();
+
     if ( tex.data == NULL )
         return false;
-    else
-        return load_image(fname, tex);
-}
 
-static bool load_image(const char *file_name, TGAImageRec &tex)
-{
     const char *ptr = strrchr((char *)file_name, '.');
     if (ptr) {
         if (strcasecmp(ptr + 1, "png") == 0)
@@ -782,7 +780,6 @@ static bool load_image(const char *file_name, TGAImageRec &tex)
     STUBBED("Unsupported image type");
     return false;
 }
-
 
 struct my_error_mgr {
     struct jpeg_error_mgr pub; /* "public" fields */
@@ -798,7 +795,7 @@ static void my_error_exit(j_common_ptr cinfo)
 }
 
 /* stolen from public domain example.c code in libjpg distribution. */
-static bool load_jpg(const char *file_name, TGAImageRec &tex)
+static bool load_jpg(const char *file_name, ImageRec &tex)
 {
     struct jpeg_decompress_struct cinfo;
     struct my_error_mgr jerr;
@@ -846,7 +843,7 @@ static bool load_jpg(const char *file_name, TGAImageRec &tex)
 
 
 /* stolen from public domain example.c code in libpng distribution. */
-static bool load_png(const char *file_name, TGAImageRec &tex)
+static bool load_png(const char *file_name, ImageRec &tex)
 {
     bool hasalpha = false;
     png_structp png_ptr = NULL;

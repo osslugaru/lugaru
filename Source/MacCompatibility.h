@@ -62,11 +62,6 @@ typedef unsigned int UInt32;
 
 #include "Random.h"
 
-
-void CopyCStringToPascal( const char* src, unsigned char dst[256]);
-void CopyPascalStringToC( const unsigned char* src, char* dst);
-
-
 typedef struct AbsoluteTime {
     unsigned long   hi;
     unsigned long   lo;

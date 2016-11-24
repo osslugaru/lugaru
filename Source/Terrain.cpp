@@ -34,7 +34,7 @@ extern bool decals;
 extern float blurness;
 extern float targetblurness;
 extern Objects objects;
-extern TGAImageRec texture;
+extern ImageRec texture;
 extern bool visibleloading;
 extern bool skyboxtexture;
 extern int tutoriallevel;
@@ -404,15 +404,9 @@ bool Terrain::load(const char *fileName)
     static float patch_size;
 
     float temptexdetail = texdetail;
-    //LoadTGA( fileName );
 
-    // Fixing filename so that it works with its own os
-    char * FixedFN = ConvertFileName(fileName);
-
-    unsigned char fileNamep[256];
-    CopyCStringToPascal(FixedFN, fileNamep);
     //Load Image
-    upload_image( fileNamep , 0);
+    upload_image(ConvertFileName(fileName));
 
     //Is it valid?
     if (texture.bpp > 24) {

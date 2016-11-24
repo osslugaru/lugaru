@@ -37,21 +37,17 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "GL/gl.h"
 #else
 #include "gamegl.h"
-// #include "MoreFilesX.h"
 #endif
 
-//#include <stdbool.h>
-//#include <QuickTime.h>
-
 /**> DATA STRUCTURES <**/
-typedef struct TGAImageRec {
+typedef struct ImageRec {
     GLubyte *data; // Image Data (Up To 32 Bits)
     GLuint bpp; // Image Color Depth In Bits Per Pixel.
     GLuint sizeX;
     GLuint sizeY;
-} TGAImageRec;
+} ImageRec;
 
-bool upload_image(const unsigned char* filePath, bool hasalpha);
+bool upload_image(const char* filePath);
 
 #endif
 
