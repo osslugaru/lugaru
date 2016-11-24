@@ -21,7 +21,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #define _SKYBOX_H_
 
 #include "Quaternions.h"
-#include "TGALoader.h"
+#include "ImageIO.h"
 #include "Quaternions.h"
 #include "gamegl.h"
 #include "Texture.h"

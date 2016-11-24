@@ -23,7 +23,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "gamegl.h"
 #include "Frustum.h"
 #include "Lights.h"
-#include "TGALoader.h"
+#include "ImageIO.h"
 #include "Quaternions.h"
 #include "Quaternions.h"
 #include "Texture.h"

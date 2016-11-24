@@ -29,7 +29,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Objects.h"
 #include "Weapons.h"
 #include "Person.h"
-#include "TGALoader.h"
+#include "ImageIO.h"
 #include "openal_wrapper.h"
 #include "Stereo.h"
 

@@ -54,7 +54,7 @@ set(LUGARU_SRCS
     ${SRCDIR}/Terrain.cpp
     ${SRCDIR}/Texture.cpp
     ${SRCDIR}/Text.cpp
-    ${SRCDIR}/TGALoader.cpp
+    ${SRCDIR}/ImageIO.cpp
     ${SRCDIR}/unpack.c
     ${SRCDIR}/Weapons.cpp
     ${SRCDIR}/OpenGL_Windows.cpp
@@ -83,7 +83,7 @@ set(LUGARU_H
     ${SRCDIR}/Skeleton.h
     ${SRCDIR}/Skybox.h
     ${SRCDIR}/Sprite.h
-    ${SRCDIR}/TGALoader.h
+    ${SRCDIR}/ImageIO.h
     ${SRCDIR}/Terrain.h
     ${SRCDIR}/Texture.h
     ${SRCDIR}/Text.h

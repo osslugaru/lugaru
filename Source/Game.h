@@ -22,7 +22,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "SDL.h"
 
-#include "TGALoader.h"
+#include "ImageIO.h"
 
 #include "Terrain.h"
 #include "Skybox.h"

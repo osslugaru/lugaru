@@ -19,7 +19,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "gamegl.h"
 #include "Texture.h"
-#include "TGALoader.h"
+#include "ImageIO.h"
 
 using namespace std;
 

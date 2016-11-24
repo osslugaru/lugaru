@@ -26,7 +26,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 //#include "Files.h"
 #include "Quaternions.h"
 #include "gamegl.h"
-#include "TGALoader.h"
+#include "ImageIO.h"
 #include "Texture.h"
 
 class Text

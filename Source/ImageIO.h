@@ -17,15 +17,39 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifndef _IMAGE_IO_H_
+#define _IMAGE_IO_H_
+
+#ifdef _MSC_VER
+#pragma once
+#endif
+
+
 /**> HEADER FILES <**/
-#include "Game.h"
-#include "TGALoader.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
+#define Polygon WinPolygon
+#include <windows.h>
+#undef Polygon
+#include "GL/gl.h"
+#else
+#include "gamegl.h"
+#endif
 
-extern ImageRec texture;
+/**> DATA STRUCTURES <**/
+typedef struct ImageRec {
+    GLubyte *data; // Image Data (Up To 32 Bits)
+    GLuint bpp; // Image Color Depth In Bits Per Pixel.
+    GLuint sizeX;
+    GLuint sizeY;
+} ImageRec;
 
-extern bool load_image(const char * fname, ImageRec & tex);
+bool upload_image(const char* filePath);
+bool load_image(const char * fname, ImageRec & tex);
+bool save_screenshot(const char * fname);
 
-bool upload_image(const char* fileName)
-{
-    return load_image(fileName, texture);
-}
+#endif
+

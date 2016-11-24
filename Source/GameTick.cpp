@@ -470,7 +470,7 @@ static void cmd_dispatch(const string cmd)
 }
 
 /********************> Tick() <*****/
-extern bool save_image(const char * fname);
+extern bool save_screenshot(const char * fname);
 void Screenshot (void)
 {
     char filename[1024];
@@ -483,7 +483,7 @@ void Screenshot (void)
     mkdir("Screenshots");
 #endif
 
-    save_image(filename);
+    save_screenshot(filename);
 }
 
 void Game::SetUpLighting()
