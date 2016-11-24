@@ -17,16 +17,28 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-#ifdef WIN32
-#include <windows.h>
-#endif
+#include <math.h>
+#include <stdio.h>
+#include <string.h>
+#include <fstream>
+#include <iostream>
+#include <zlib.h>
+#include <set>
+#include "gamegl.h"
+#include "MacCompatibility.h"
+#include "Settings.h"
 
 #include "Game.h"
 
 using namespace Game;
 
 #include "openal_wrapper.h"
+
+#ifdef WIN32
+#include <windows.h>
+#include <shellapi.h>
+#include "win-res/resource.h"
+#endif
 
 extern float multiplier;
 extern float sps;
@@ -44,32 +56,11 @@ extern float slomospeed;
 extern float slomofreq;
 extern bool visibleloading;
 
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
-#include <fstream>
-#include <iostream>
-#include <zlib.h>
-#include <set>
-#include "gamegl.h"
-#include "MacCompatibility.h"
-#include "Settings.h"
-
-#ifdef WIN32
-#include <shellapi.h>
-#include "win-res/resource.h"
-#endif
-
 extern SDL_Window *sdlwindow;
 
 using namespace std;
 
 set<pair<int,int>> resolutions;
-
-bool SetUp ();
-void DoUpdate ();
-
-void CleanUp (void);
 
 // statics/globals (internal only) ------------------------------------------
 
@@ -130,9 +121,6 @@ static void GLAPIENTRY glDeleteTextures_doNothing(GLsizei n, const GLuint *textu
 
 int kContextWidth;
 int kContextHeight;
-
-bool gDone = false;
-bool gameFocused;
 
 static int _argc = 0;
 static char **_argv = NULL;
@@ -684,7 +672,10 @@ int main(int argc, char **argv)
             if (!SetUp ())
                 return 42;
 
-            while (!gDone && !tryquit) {
+            bool gameDone = false;
+            bool gameFocused = true;
+
+            while (!gameDone && !tryquit) {
                 if (IsFocused()) {
                     gameFocused = true;
 
@@ -697,7 +688,7 @@ int main(int argc, char **argv)
                         // message pump
                         while ( SDL_PollEvent( &e ) ) {
                             if (!sdlEventProc(e)) {
-                                gDone = true;
+                                gameDone = true;
                                 break;
                             }
                         }
@@ -732,9 +723,7 @@ int main(int argc, char **argv)
         LOG(e);
 
         MessageBox(g_windowHandle, error.what(), "ERROR", MB_OK | MB_ICONEXCLAMATION);
+
+        return -1;
     }
-
-    CleanUp();
-
-    return -1;
 }
