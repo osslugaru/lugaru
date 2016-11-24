@@ -45,7 +45,6 @@ extern GLubyte bloodText[512 * 512 * 3];
 extern GLubyte wolfbloodText[512 * 512 * 3];
 extern bool ismotionblur;
 extern bool trilinear;
-extern bool osx;
 extern bool musictoggle;
 extern int environment;
 extern bool ambientsound;

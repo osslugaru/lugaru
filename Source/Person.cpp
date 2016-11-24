@@ -42,7 +42,6 @@ extern GLubyte bloodText[512 * 512 * 3];
 extern GLubyte wolfbloodText[512 * 512 * 3];
 extern int bloodtoggle;
 extern Objects objects;
-extern bool osx;
 extern bool autoslomo;
 extern float camerashake;
 extern float woozy;
@@ -4208,7 +4207,7 @@ void Person::DoStuff()
         bleeding -= multiplier * .3;
         if (bloodtoggle == 2) {
             skeleton.drawmodel.textureptr.bind();
-            if (bleeding <= 0 && (detail != 2 || osx))
+            if ((bleeding <= 0) && (detail != 2))
                 DoMipmaps();
         }
     }
@@ -4359,7 +4358,7 @@ void Person::DoStuff()
                 }
             }
         }
-        if (!osx && detail > 1) {
+        if (detail > 1) {
             skeleton.drawmodel.textureptr.bind();
             DoMipmaps();
         }

@@ -42,7 +42,6 @@ extern float texdetail;
 extern GLubyte bloodText[512 * 512 * 3];
 extern int bloodtoggle;
 extern Objects objects;
-extern bool osx;
 extern bool autoslomo;
 extern float camerashake;
 extern float woozy;

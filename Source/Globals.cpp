@@ -88,7 +88,6 @@ GLubyte bloodText[512 * 512 * 3] = {0};
 GLubyte wolfbloodText[512 * 512 * 3] = {0};
 float colors[3] = {0};
 int bloodtoggle = 0;
-bool osx = false;
 float camerashake = 0;
 float woozy = 0;
 float blackout = 0;

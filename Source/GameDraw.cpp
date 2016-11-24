@@ -40,7 +40,6 @@ extern Light light;
 extern Objects objects;
 extern int detail;
 extern float usermousesensitivity;
-extern bool osx;
 extern float camerashake;
 extern int slomo;
 extern float slomodelay;

@@ -47,7 +47,6 @@ extern int slomo;
 extern bool cellophane;
 extern float texdetail;
 
-extern bool osx;
 extern bool freeze;
 extern bool stillloading;
 extern int mainmenu;
@@ -245,7 +244,6 @@ bool SetUp ()
 {
     LOGFUNC;
 
-    osx = 0;
     cellophane = 0;
     texdetail = 4;
     slomospeed = 0.25;
