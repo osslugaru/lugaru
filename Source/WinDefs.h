@@ -38,8 +38,6 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 // disable warning about unreferenced local variables
 #pragma warning(disable:4101)
 
-typedef bool Boolean;
-
 struct Point {
     short v;
     short h;

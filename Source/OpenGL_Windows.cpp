@@ -70,7 +70,7 @@ using namespace std;
 
 set<pair<int,int>> resolutions;
 
-Boolean SetUp ();
+bool SetUp ();
 void DoUpdate ();
 
 void CleanUp (void);
@@ -135,7 +135,7 @@ static void GLAPIENTRY glDeleteTextures_doNothing(GLsizei n, const GLuint *textu
 int kContextWidth;
 int kContextHeight;
 
-Boolean gDone = false;
+bool gDone = false;
 
 static int _argc = 0;
 static char **_argv = NULL;
@@ -256,7 +256,7 @@ static SDL_bool sdlEventProc(const SDL_Event &e)
 
 static Point gMidPoint;
 
-Boolean SetUp ()
+bool SetUp ()
 {
     LOGFUNC;
 

@@ -48,9 +48,6 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #  endif
 #endif
 
-typedef bool Boolean;
-
-
 struct Point {
     short v;
     short h;

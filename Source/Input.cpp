@@ -88,7 +88,7 @@ unsigned short Input::CharToKey(const char* which)
     return SDL_NUM_SCANCODES;
 }
 
-Boolean Input::MouseClicked()
+bool Input::MouseClicked()
 {
     return isKeyPressed(SDL_NUM_SCANCODES + SDL_BUTTON_LEFT);
 }
