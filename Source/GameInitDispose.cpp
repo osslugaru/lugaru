@@ -484,26 +484,6 @@ extern bool cmdline(const char *cmd);
 
 void Game::InitGame()
 {
-#if PLATFORM_MACOSX
-    ProcessSerialNumber PSN;
-    ProcessInfoRec pinfo;
-    FSSpec pspec;
-    OSStatus err;
-    /* set up process serial number */
-    PSN.highLongOfPSN = 0;
-    PSN.lowLongOfPSN = kCurrentProcess;
-    /* set up info block */
-    pinfo.processInfoLength = sizeof(pinfo);
-    pinfo.processName = NULL;
-    pinfo.processAppSpec = &pspec;
-    /* grab the vrefnum and directory */
-    err = GetProcessInformation(&PSN, &pinfo);
-    if (err == noErr) {
-        vRefNum = pspec.vRefNum;
-        dirID = pspec.parID;
-    }
-#endif
-
     LOGFUNC;
 
     numchallengelevels = 14;

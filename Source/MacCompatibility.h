@@ -20,8 +20,6 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef _MACCOMPATIBLITY_H_
 #define _MACCOMPATIBLITY_H_
 
-#if !PLATFORM_MACOSX
-
 #include <stdio.h>
 #include <float.h>
 #include <math.h>
@@ -107,7 +105,6 @@ char* ConvertFileName( const char* orgfilename, const char *mode = "rb" );
 
 #define fopen( a, b) fopen(ConvertFileName(a, b), b)
 
-#endif
 #endif
 
 

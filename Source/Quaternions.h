@@ -240,25 +240,7 @@ inline void CrossProduct(XYZ P, XYZ Q, XYZ *V)
 
 inline float fast_sqrt (register float arg)
 {
-#if PLATFORM_MACOSX
-    // Can replace with slower return std::sqrt(arg);
-    register float result;
-
-    if (arg == 0.0)
-        return 0.0;
-
-    asm {
-        frsqrte     result, arg         // Calculate Square root
-    }
-
-    // Newton Rhapson iterations.
-    result = result + 0.5 * result * (1.0 - arg * result * result);
-    result = result + 0.5 * result * (1.0 - arg * result * result);
-
-    return result * arg;
-#else
-    return sqrtf( arg);
-#endif
+    return sqrtf(arg);
 }
 
 inline float normaldotproduct(XYZ point1, XYZ point2)

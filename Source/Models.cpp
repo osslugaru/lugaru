@@ -922,14 +922,7 @@ void Model::draw()
         glInterleavedArrays( GL_T2F_C3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
     textureptr.bind();
 
-#if PLATFORM_MACOSX
-    glLockArraysEXT( 0, TriangleNum * 3);
-#endif
     glDrawArrays(GL_TRIANGLES, 0, TriangleNum * 3);
-#if PLATFORM_MACOSX
-    glUnlockArraysEXT();
-#endif
-
 
     if (!color)
         glDisableClientState(GL_NORMAL_ARRAY);
@@ -937,7 +930,6 @@ void Model::draw()
         glDisableClientState(GL_COLOR_ARRAY);
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    //drawimmediate();
 }
 
 //TODO: phase out in favor of Texture

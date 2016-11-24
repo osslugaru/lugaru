@@ -17,8 +17,6 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#if !PLATFORM_MACOSX
-
 /**> HEADER FILES <**/
 #include "MacCompatibility.h"
 
@@ -285,7 +283,3 @@ char* ConvertFileName( const char* orgfilename, const char *mode)
 
     return g_filename;
 }
-
-#endif
-
-
