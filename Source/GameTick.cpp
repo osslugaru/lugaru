@@ -2055,7 +2055,7 @@ void doDebugKeys()
         }
 
         if (Input::isKeyPressed(SDL_SCANCODE_C)) {
-            cameramode = 1 - cameramode;
+            cameramode = !cameramode;
         }
 
         if (Input::isKeyPressed(SDL_SCANCODE_X) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
@@ -2386,7 +2386,7 @@ void doDebugKeys()
         }
 
         if (Input::isKeyPressed(SDL_SCANCODE_M) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
-            editorenabled = 1 - editorenabled;
+            editorenabled = !editorenabled;
             if (editorenabled) {
                 Person::players[0]->damagetolerance = 100000;
             } else {
@@ -5525,7 +5525,7 @@ void MenuTick()
         displayblinkdelay -= multiplier;
         if (displayblinkdelay <= 0) {
             displayblinkdelay = .3;
-            displayblink = 1 - displayblink;
+            displayblink = !displayblink;
         }
     }
 
@@ -5684,7 +5684,7 @@ void Game::Tick()
 
         //keys
         if (Input::isKeyPressed(SDL_SCANCODE_V) && debugmode) {
-            freeze = 1 - freeze;
+            freeze = !freeze;
             if (freeze) {
                 OPENAL_SetFrequency(OPENAL_ALL, 0.001);
             }
@@ -5718,7 +5718,7 @@ void Game::Tick()
             consoleblinkdelay -= multiplier;
             if (consoleblinkdelay <= 0) {
                 consoleblinkdelay = .3;
-                consoleblink = 1 - consoleblink;
+                consoleblink = !consoleblink;
             }
         }
 
