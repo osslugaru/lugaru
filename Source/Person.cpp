@@ -2625,16 +2625,9 @@ void Person::DoAnimations()
                     if (weaponactive != -1) {
                         escapednum = 0;
                         XYZ aim;
-                        weapons[weaponids[0]].owner = -1;
                         aim = victim->coords + DoRotation(victim->jointPos(abdomen), 0, victim->yaw, 0) * victim->scale + victim->velocity * findDistance(&victim->coords, &coords) / 50 - (coords + DoRotation(jointPos(righthand), 0, yaw, 0) * scale);
                         Normalise(&aim);
-                        weapons[weaponids[0]].velocity = aim * 50;
-                        weapons[weaponids[0]].tipvelocity = aim * 50;
-                        weapons[weaponids[0]].missed = 0;
-                        weapons[weaponids[0]].hitsomething = 0;
-                        weapons[weaponids[0]].freetime = 0;
-                        weapons[weaponids[0]].firstfree = 1;
-                        weapons[weaponids[0]].physics = 0;
+                        weapons[weaponids[0]].thrown(aim * 50);
                         num_weapons--;
                         if (num_weapons) {
                             weaponids[0] = weaponids[num_weapons];

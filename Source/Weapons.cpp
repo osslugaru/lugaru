@@ -1092,6 +1092,13 @@ void Weapon::drop(XYZ v, XYZ tv, bool sethitsomething)
     physics = 1;
 }
 
+void Weapon::thrown(XYZ v, bool sethitsomething)
+{
+    drop(v, v, sethitsomething);
+    missed = 0;
+    physics = 0;
+}
+
 int Weapons::Draw()
 {
     glAlphaFunc(GL_GREATER, 0.9);

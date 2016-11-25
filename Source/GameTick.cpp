@@ -6550,18 +6550,12 @@ void Game::Tick()
                                                                     Person::players[i]->throwtogglekeydown = 1;
                                                                     Person::players[i]->victim = Person::players[j];
                                                                     XYZ aim;
-                                                                    weapons[Person::players[i]->weaponids[0]].owner = -1;
                                                                     aim = Person::players[i]->victim->coords + DoRotation(Person::players[i]->victim->jointPos(abdomen), 0, Person::players[i]->victim->yaw, 0) * Person::players[i]->victim->scale + Person::players[i]->victim->velocity * findDistance(&Person::players[i]->victim->coords, &Person::players[i]->coords) / 50 - (Person::players[i]->coords + DoRotation(Person::players[i]->jointPos(righthand), 0, Person::players[i]->yaw, 0) * Person::players[i]->scale);
                                                                     Normalise(&aim);
 
                                                                     aim = DoRotation(aim, (float)abs(Random() % 30) - 15, (float)abs(Random() % 30) - 15, 0);
 
-                                                                    weapons[Person::players[i]->weaponids[0]].velocity = aim * 50;
-                                                                    weapons[Person::players[i]->weaponids[0]].tipvelocity = aim * 50;
-                                                                    weapons[Person::players[i]->weaponids[0]].missed = 0;
-                                                                    weapons[Person::players[i]->weaponids[0]].freetime = 0;
-                                                                    weapons[Person::players[i]->weaponids[0]].firstfree = 1;
-                                                                    weapons[Person::players[i]->weaponids[0]].physics = 0;
+                                                                    weapons[Person::players[i]->weaponids[0]].thrown(aim * 50, false);
                                                                     Person::players[i]->num_weapons--;
                                                                     if (Person::players[i]->num_weapons) {
                                                                         Person::players[i]->weaponids[0] = Person::players[i]->weaponids[Person::players[i]->num_weapons];
