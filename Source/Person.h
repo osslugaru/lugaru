@@ -128,6 +128,7 @@ public:
     float permanentdamage;
     float superpermanentdamage;
     float lastcollide;
+    /* Seems to be 0 = alive, 1 = unconscious, 2 = dead */
     int dead;
 
     float jumppower;
@@ -271,10 +272,12 @@ public:
 
     int num_weapons;
     int weaponids[4];
+    /* Key of weaponids which is the weapon in hand, if any. -1 otherwise.
+     * Always 0 or -1 as activeweapon is moved to position 0 when taken */
     int weaponactive;
     int weaponstuck;
+    /* 0 or 1 to say if weapon is stuck in the front or the back  */
     int weaponstuckwhere;
-    int weaponwhere;
 
     int numwaypoints;
     XYZ waypoints[90];
