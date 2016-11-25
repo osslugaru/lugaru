@@ -117,7 +117,6 @@ void Weapon::DoStuff(int i)
     static XYZ point[3];
     static XYZ closestpoint;
     static XYZ closestswordpoint;
-    static XYZ extramove;
     static float tempmult;
 
     if (owner != -1) {
@@ -174,7 +173,7 @@ void Weapon::DoStuff(int i)
                                 position = colpoint - normalrot * .2;
                             else if (type == staff)
                                 position = colpoint - normalrot * .2;
-                            XYZ temppoint1, temppoint2, tempforward;
+                            XYZ temppoint1, temppoint2;
                             float distance;
 
                             temppoint1 = 0;
@@ -314,7 +313,7 @@ void Weapon::DoStuff(int i)
                 tippoint.z = M[14];
                 glPopMatrix();
                 position -= tippoint * .15;
-                XYZ temppoint1, temppoint2, tempforward;
+                XYZ temppoint1, temppoint2;
 
                 rotation3 = 0;
                 smallrotation = 90;
@@ -350,7 +349,7 @@ void Weapon::DoStuff(int i)
         if (velocity.x != 0 || velocity.z != 0 || velocity.y != 0) {
             velocity.y += gravity * multiplier;
 
-            XYZ temppoint1, temppoint2, tempforward;
+            XYZ temppoint1, temppoint2;
             float distance;
 
             temppoint1 = 0;
@@ -824,7 +823,7 @@ void Weapon::DoStuff(int i)
             tipvelocity.y += gravity * multiplier;
 
             //Rotation
-            XYZ temppoint1, temppoint2, tempforward;
+            XYZ temppoint1, temppoint2;
             float distance;
 
             temppoint1 = position;

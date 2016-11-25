@@ -609,7 +609,6 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
     static float rotationpoint;
     static int whichtri;
     static XYZ p1, p2, p3, p0;
-    static XYZ N, temp;
     XYZ bary;
     XYZ gxx, gyy;
     float coordsx, coordsy;
@@ -5668,7 +5667,7 @@ void Person::DoStuff()
  */
 void IKHelper(Person *p, float interp)
 {
-    XYZ point, newpoint, change, change2;
+    XYZ point, change, change2;
     float heightleft, heightright;
 
     // TODO: implement localToWorld and worldToLocal
@@ -6245,7 +6244,7 @@ int Person::DrawSkeleton()
                             weapons[i].smallrotation2 = 50;
                         }
                         if ((animCurrent == crouchstabanim && animTarget == crouchstabanim) || (animCurrent == backhandspringanim && animTarget == backhandspringanim)) {
-                            XYZ temppoint1, temppoint2, tempforward;
+                            XYZ temppoint1, temppoint2;
                             float distance;
 
                             temppoint1 = jointPos(righthand);
@@ -6264,7 +6263,7 @@ int Person::DrawSkeleton()
                                 weapons[i].rotation1 = 360 - weapons[i].rotation1;
                         }
                         if ((animCurrent == knifeslashreversalanim && animTarget == knifeslashreversalanim) || (animCurrent == knifeslashreversedanim && animTarget == knifeslashreversedanim)) {
-                            XYZ temppoint1, temppoint2, tempforward;
+                            XYZ temppoint1, temppoint2;
                             float distance;
 
                             temppoint1 = jointPos(righthand);
@@ -6308,7 +6307,7 @@ int Person::DrawSkeleton()
                             weapons[i].rotation3 = 0;
                         }
                         if ((animTarget == swordgroundstabanim && animCurrent == swordgroundstabanim) || (animTarget == swordsneakattackanim && animCurrent == swordsneakattackanim) || (animTarget == swordslashparryanim && animCurrent == swordslashparryanim) || (animTarget == swordslashparriedanim && animCurrent == swordslashparriedanim) || (animTarget == swordslashreversalanim && animCurrent == swordslashreversalanim) || (animTarget == swordslashreversedanim && animCurrent == swordslashreversedanim) || (animTarget == knifeslashreversalanim && animCurrent == knifeslashreversalanim) || (animTarget == knifeslashreversedanim && animCurrent == knifeslashreversedanim) || (animTarget == swordslashanim && animCurrent == swordslashanim) || (animTarget == drawleftanim && animCurrent == drawleftanim) || (animCurrent == backhandspringanim && animTarget == backhandspringanim)) {
-                            XYZ temppoint1, temppoint2, tempforward;
+                            XYZ temppoint1, temppoint2;
                             float distance;
 
                             temppoint1 = animation[animCurrent].position[skeleton.jointlabels[righthand]][frameCurrent] * (1 - target) + animation[animTarget].position[skeleton.jointlabels[righthand]][frameTarget] * (target); //jointPos(righthand);
@@ -6331,7 +6330,7 @@ int Person::DrawSkeleton()
                         weapons[i].smallrotation = 100;
                         weapons[i].smallrotation2 = 0;
                         if ((animTarget == staffhitanim && animCurrent == staffhitanim) || (animTarget == staffhitreversedanim && animCurrent == staffhitreversedanim) || (animTarget == staffspinhitreversedanim && animCurrent == staffspinhitreversedanim) || (animTarget == staffgroundsmashanim && animCurrent == staffgroundsmashanim) || (animTarget == staffspinhitanim && animCurrent == staffspinhitanim)) {
-                            XYZ temppoint1, temppoint2, tempforward;
+                            XYZ temppoint1, temppoint2;
                             float distance;
 
                             temppoint1 = animation[animCurrent].position[skeleton.jointlabels[righthand]][frameCurrent] * (1 - target) + animation[animTarget].position[skeleton.jointlabels[righthand]][frameTarget] * (target); //jointPos(righthand);

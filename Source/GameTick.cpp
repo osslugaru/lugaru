@@ -3197,7 +3197,6 @@ void doAerialAcrobatics()
 
 void doAttacks()
 {
-    static XYZ relative;
     static int randattack;
     static bool playerrealattackkeydown = 0;
 

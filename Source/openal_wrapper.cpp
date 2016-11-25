@@ -375,7 +375,6 @@ AL_API OPENAL_SAMPLE *OPENAL_Sample_Load(int index, const char *name_or_data, un
         return NULL;  // this is all the game does...
 
     OPENAL_SAMPLE *retval = NULL;
-    ALuint bufferName = 0;
     ALenum format = AL_NONE;
     ALsizei size = 0;
     ALuint frequency = 0;

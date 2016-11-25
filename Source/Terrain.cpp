@@ -198,7 +198,6 @@ void Terrain::UpdateTransparency(int whichx, int whichy)
 
 void Terrain::UpdateTransparencyother(int whichx, int whichy)
 {
-    static XYZ vertex;
     static int i, j, a, b, c, d, patch_size, stepsize;
 
     patch_size = size / subdivision;
@@ -803,7 +802,7 @@ void Terrain::drawpatchotherother(int whichx, int whichy, float opacity)
 float Terrain::getHeight(float pointx, float pointz)
 {
     static int tilex, tiley;
-    static XYZ startpoint, endpoint, intersect, triangle[3], average;
+    static XYZ startpoint, endpoint, intersect, triangle[3];
 
     pointx /= scale;
     pointz /= scale;

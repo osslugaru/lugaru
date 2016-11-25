@@ -280,7 +280,7 @@ bool LineFacet(Vector p1, Vector p2, Vector pa, Vector pb, Vector pc, Vector *p)
 {
     static float d;
     static float denom, mu;
-    static Vector n, pa1, pa2, pa3;
+    static Vector n;
 
     //Calculate the parameters for the plane
     n.x = (pb.y - pa.y) * (pc.z - pa.z) - (pb.z - pa.z) * (pc.y - pa.y);
@@ -392,7 +392,7 @@ bool LineFacet(XYZ p1, XYZ p2, XYZ pa, XYZ pb, XYZ pc, XYZ *p)
 {
     static float d;
     static float denom, mu;
-    static XYZ n, pa1, pa2, pa3;
+    static XYZ n;
 
     //Calculate the parameters for the plane
     n.x = (pb.y - pa.y) * (pc.z - pa.z) - (pb.z - pa.z) * (pc.y - pa.y);
@@ -423,7 +423,7 @@ float LineFacetd(XYZ p1, XYZ p2, XYZ pa, XYZ pb, XYZ pc, XYZ *p)
 {
     static float d;
     static float denom, mu;
-    static XYZ n, pa1, pa2, pa3;
+    static XYZ n;
 
     //Calculate the parameters for the plane
     n.x = (pb.y - pa.y) * (pc.z - pa.z) - (pb.z - pa.z) * (pc.y - pa.y);
@@ -454,7 +454,6 @@ float LineFacetd(XYZ p1, XYZ p2, XYZ pa, XYZ pb, XYZ pc, XYZ n, XYZ *p)
 {
     static float d;
     static float denom, mu;
-    static XYZ pa1, pa2, pa3;
 
     //Calculate the parameters for the plane
     d = - n.x * pa.x - n.y * pa.y - n.z * pa.z;
@@ -480,7 +479,7 @@ float LineFacetd(XYZ *p1, XYZ *p2, XYZ *pa, XYZ *pb, XYZ *pc, XYZ *p)
 {
     static float d;
     static float denom, mu;
-    static XYZ pa1, pa2, pa3, n;
+    static XYZ n;
 
     //Calculate the parameters for the plane
     n.x = (pb->y - pa->y) * (pc->z - pa->z) - (pb->z - pa->z) * (pc->y - pa->y);
@@ -511,7 +510,6 @@ float LineFacetd(XYZ *p1, XYZ *p2, XYZ *pa, XYZ *pb, XYZ *pc, XYZ *n, XYZ *p)
 {
     static float d;
     static float denom, mu;
-    static XYZ pa1, pa2, pa3;
 
     //Calculate the parameters for the plane
     d = - n->x * pa->x - n->y * pa->y - n->z * pa->z;

@@ -154,7 +154,6 @@ int Model::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate)
     static int firstintersecting;
     static XYZ point;
     static XYZ oldp1;
-    static XYZ start, end;
 
     firstintersecting = -1;
 
@@ -208,7 +207,6 @@ int Model::SphereCheckPossible(XYZ *p1, float radius, XYZ *move, float *rotate)
     static int firstintersecting;
     static XYZ point;
     static XYZ oldp1;
-    static XYZ start, end;
 
     firstintersecting = -1;
 
