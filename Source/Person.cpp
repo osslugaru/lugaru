@@ -5275,7 +5275,7 @@ void Person::DoStuff()
         if (hasvictim) {
             if ((victim != this->shared_from_this()) && !victim->dead && (victim->aitype != passivetype) &&
                 (victim->aitype != searchtype) && (aitype != passivetype) &&
-                (aitype != searchtype) && (victim->id < Person::players.size()) && (aitype != passivetype)) {
+                (aitype != searchtype) && (victim->id < Person::players.size())) {
                 behind = (normaldotproduct(facing, coords - victim->coords) > 0);
             }
         }
@@ -6379,7 +6379,7 @@ int Person::DrawSkeleton()
     calcrot = 0;
     if (skeleton.free)
         calcrot = 1;
-    if (animation[animTarget].attack || isRun() || animTarget == staggerbackhardanim || isFlip() || animTarget == climbanim || animTarget == sneakanim || animTarget == rollanim || animTarget == walkanim || animTarget == backhandspringanim || isFlip() || isWallJump())
+    if (animation[animTarget].attack || isRun() || animTarget == staggerbackhardanim || isFlip() || animTarget == climbanim || animTarget == sneakanim || animTarget == rollanim || animTarget == walkanim || animTarget == backhandspringanim || isWallJump())
         calcrot = 1;
     if (animCurrent != animTarget)
         calcrot = 1;
