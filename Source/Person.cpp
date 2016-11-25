@@ -160,14 +160,13 @@ void Person::CatchFire()
     int howmany;
     for (int i = 0; i < 10; i++) {
         howmany = abs(Random() % (skeleton.num_joints));
-        if (!skeleton.free)
-            flatvelocity = velocity;
-        if (skeleton.free)
+        if (skeleton.free) {
             flatvelocity = skeleton.joints[howmany].velocity;
-        if (!skeleton.free)
-            flatfacing = DoRotation(DoRotation(DoRotation(skeleton.joints[howmany].position, 0, 0, tilt), tilt2, 0, 0), 0, yaw, 0) * scale + coords;
-        if (skeleton.free)
             flatfacing = skeleton.joints[howmany].position * scale + coords;
+        } else {
+            flatvelocity = velocity;
+            flatfacing = DoRotation(DoRotation(DoRotation(skeleton.joints[howmany].position, 0, 0, tilt), tilt2, 0, 0), 0, yaw, 0) * scale + coords;
+        }
         Sprite::MakeSprite(flamesprite, flatfacing, flatvelocity, 1, 1, 1, 2, 1);
     }
 
@@ -316,22 +315,15 @@ void Person::DoBlood(float howmuch, int which)
             for (int i = 0; i < 3; i++) {
                 // emit blood particles
                 bloodvel = 0;
-                if (!skeleton.free) {
-                    bloodvel.z = 10;
-                    bloodvel = DoRotation(bloodvel, ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
-                }
                 if (skeleton.free) {
                     bloodvel -= DoRotation(skeleton.forward * 10 * scale, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0);
-                }
-                if (skeleton.free)
                     bloodvel += DoRotation(jointVel(head), ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
-                if (!skeleton.free)
-                    bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0) * scale;
-                if (skeleton.free) {
                     Sprite::MakeSprite(bloodsprite, jointPos(head) * scale + coords, bloodvel, 1, 1, 1, .05, 1);
                     Sprite::MakeSprite(bloodflamesprite, jointPos(head) * scale + coords, bloodvel, 1, 1, 1, .3, 1);
-                }
-                if (!skeleton.free) {
+                } else {
+                    bloodvel.z = 10;
+                    bloodvel = DoRotation(bloodvel, ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
+                    bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0) * scale;
                     Sprite::MakeSprite(bloodsprite, DoRotation((jointPos(head) + jointPos(neck)) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .05, 1);
                     Sprite::MakeSprite(bloodflamesprite, DoRotation((jointPos(head) + jointPos(neck)) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .3, 1);
                 }
@@ -446,22 +438,15 @@ void Person::DoBloodBig(float howmuch, int which)
                 // emit blood particles
                 // FIXME: copypaste from above
                 bloodvel = 0;
-                if (!skeleton.free) {
-                    bloodvel.z = 10;
-                    bloodvel = DoRotation(bloodvel, ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
-                }
                 if (skeleton.free) {
                     bloodvel -= DoRotation(skeleton.forward * 10 * scale, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0);
-                }
-                if (skeleton.free)
                     bloodvel += DoRotation(jointVel(head), ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
-                if (!skeleton.free)
-                    bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0) * scale;
-                if (skeleton.free) {
                     Sprite::MakeSprite(bloodsprite, jointPos(head) * scale + coords, bloodvel, 1, 1, 1, .05, 1);
                     Sprite::MakeSprite(bloodflamesprite, jointPos(head) * scale + coords, bloodvel, 1, 1, 1, .3, 1);
-                }
-                if (!skeleton.free) {
+                } else {
+                    bloodvel.z = 10;
+                    bloodvel = DoRotation(bloodvel, ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
+                    bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0) * scale;
                     Sprite::MakeSprite(bloodsprite, DoRotation((jointPos(head) + jointPos(neck)) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .05, 1);
                     Sprite::MakeSprite(bloodflamesprite, DoRotation((jointPos(head) + jointPos(neck)) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .3, 1);
                 }
@@ -694,22 +679,15 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
                     // emit blood particles
                     // FIXME: more copypaste code
                     bloodvel = 0;
-                    if (!skeleton.free) {
-                        bloodvel.z = 10;
-                        bloodvel = DoRotation(bloodvel, ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
-                    }
                     if (skeleton.free) {
                         bloodvel -= DoRotation(skeleton.forward * 10 * scale, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0);
-                    }
-                    if (skeleton.free)
                         bloodvel += DoRotation(jointVel(head), ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
-                    if (!skeleton.free)
-                        bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0) * scale;
-                    if (skeleton.free) {
                         Sprite::MakeSprite(bloodsprite, jointPos(head) * scale + coords, bloodvel, 1, 1, 1, .05, 1);
                         Sprite::MakeSprite(bloodflamesprite, jointPos(head) * scale + coords, bloodvel, 1, 1, 1, .3, 1);
-                    }
-                    if (!skeleton.free) {
+                    } else {
+                        bloodvel.z = 10;
+                        bloodvel = DoRotation(bloodvel, ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
+                        bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0) * scale;
                         Sprite::MakeSprite(bloodsprite, DoRotation((jointPos(head) + jointPos(neck)) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .05, 1);
                         Sprite::MakeSprite(bloodflamesprite, DoRotation((jointPos(head) + jointPos(neck)) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .3, 1);
                     }
@@ -1205,14 +1183,13 @@ void Person::DoDamage(float howmuch)
         XYZ flatvelocity2;
         XYZ flatfacing2;
         for (int i = 0; i < skeleton.num_joints; i++) {
-            if (!skeleton.free)
-                flatvelocity2 = velocity;
-            if (skeleton.free)
+            if (skeleton.free) {
                 flatvelocity2 = skeleton.joints[i].velocity;
-            if (!skeleton.free)
-                flatfacing2 = DoRotation(DoRotation(DoRotation(skeleton.joints[i].position, 0, 0, tilt), tilt2, 0, 0), 0, yaw, 0) * scale + coords;
-            if (skeleton.free)
                 flatfacing2 = skeleton.joints[i].position * scale + coords;
+            } else {
+                flatvelocity2 = velocity;
+                flatfacing2 = DoRotation(DoRotation(DoRotation(skeleton.joints[i].position, 0, 0, tilt), tilt2, 0, 0), 0, yaw, 0) * scale + coords;
+            }
             flatvelocity2.x += (float)(abs(Random() % 100) - 50) / 10;
             flatvelocity2.y += (float)(abs(Random() % 100) - 50) / 10;
             flatvelocity2.z += (float)(abs(Random() % 100) - 50) / 10;
@@ -2658,8 +2635,7 @@ void Person::DoAnimations()
                             footvel = 0;
                             if (skeleton.free) {
                                 footpoint = (victim->jointPos(abdomen) + victim->jointPos(neck)) / 2 * victim->scale + victim->coords;
-                            }
-                            if (!skeleton.free) {
+                            } else {
                                 footpoint = DoRotation((victim->jointPos(abdomen) + victim->jointPos(neck)) / 2, 0, victim->yaw, 0) * victim->scale + victim->coords;
                             }
                             if (tutoriallevel != 1) {
@@ -2714,8 +2690,7 @@ void Person::DoAnimations()
                                 footvel = 0;
                                 if (skeleton.free) {
                                     footpoint = (victim->jointPos(abdomen) + victim->jointPos(neck)) / 2 * victim->scale + victim->coords;
-                                }
-                                if (!skeleton.free) {
+                                } else {
                                     footpoint = DoRotation((victim->jointPos(abdomen) + victim->jointPos(neck)) / 2, 0, victim->yaw, 0) * victim->scale + victim->coords;
                                 }
                                 if (bloodtoggle)
@@ -4105,28 +4080,26 @@ void Person::DoStuff()
     while (flamedelay < 0 && onfire) {
         flamedelay += .006;
         howmany = abs(Random() % (skeleton.num_joints));
-        if (!skeleton.free)
-            flatvelocity = (coords - oldcoords) / multiplier / 2; //velocity/2;
-        if (skeleton.free)
+        if (skeleton.free) {
             flatvelocity = skeleton.joints[howmany].velocity * scale / 2;
-        if (!skeleton.free)
-            flatfacing = DoRotation(DoRotation(DoRotation(skeleton.joints[howmany].position, 0, 0, tilt), tilt2, 0, 0), 0, yaw, 0) * scale + coords;
-        if (skeleton.free)
             flatfacing = skeleton.joints[howmany].position * scale + coords;
+        } else {
+            flatfacing = DoRotation(DoRotation(DoRotation(skeleton.joints[howmany].position, 0, 0, tilt), tilt2, 0, 0), 0, yaw, 0) * scale + coords;
+            flatvelocity = (coords - oldcoords) / multiplier / 2;
+        }
         Sprite::MakeSprite(flamesprite, flatfacing, flatvelocity, 1, 1, 1, .6 + (float)abs(Random() % 100) / 200 - .25, 1);
     }
 
     while (flamedelay < 0 && !onfire && tutoriallevel == 1 && id != 0) {
         flamedelay += .05;
         howmany = abs(Random() % (skeleton.num_joints));
-        if (!skeleton.free)
-            flatvelocity = (coords - oldcoords) / multiplier / 2; //velocity/2;
-        if (skeleton.free)
+        if (skeleton.free) {
             flatvelocity = skeleton.joints[howmany].velocity * scale / 2;
-        if (!skeleton.free)
-            flatfacing = DoRotation(DoRotation(DoRotation(skeleton.joints[howmany].position, 0, 0, tilt), tilt2, 0, 0), 0, yaw, 0) * scale + coords;
-        if (skeleton.free)
             flatfacing = skeleton.joints[howmany].position * scale + coords;
+        } else {
+            flatvelocity = (coords - oldcoords) / multiplier / 2;
+            flatfacing = DoRotation(DoRotation(DoRotation(skeleton.joints[howmany].position, 0, 0, tilt), tilt2, 0, 0), 0, yaw, 0) * scale + coords;
+        }
         Sprite::MakeSprite(breathsprite, flatfacing, flatvelocity, 1, 1, 1, .6 + (float)abs(Random() % 100) / 200 - .25, .3);
     }
 
@@ -4146,21 +4119,16 @@ void Person::DoStuff()
         if (neckspurtparticledelay < 0 && neckspurtdelay > 2) {
             spurt = 0;
             bloodvel = 0;
-            if (!skeleton.free) {
-                bloodvel.z = 5 * neckspurtamount;
-                bloodvel = DoRotation(bloodvel, ((float)(Random() % 100)) / 40, yaw + ((float)(Random() % 100)) / 40, 0) * scale;
-            }
             if (skeleton.free) {
                 bloodvel -= DoRotation(skeleton.forward * 10 * scale, ((float)(Random() % 100)) / 40, ((float)(Random() % 100)) / 40, 0);
-            }
-            if (skeleton.free)
                 bloodvel += DoRotation(jointVel(head), ((float)(Random() % 100)) / 40, yaw + ((float)(Random() % 100)) / 40, 0) * scale;
-            if (!skeleton.free)
-                bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 40, ((float)(Random() % 100)) / 40, 0) * scale;
-            if (skeleton.free)
                 Sprite::MakeSprite(bloodsprite, (jointPos(neck) + (jointPos(neck) - jointPos(head)) / 5)*scale + coords, bloodvel, 1, 1, 1, .05, .9);
-            if (!skeleton.free)
+            } else {
+                bloodvel.z = 5 * neckspurtamount;
+                bloodvel = DoRotation(bloodvel, ((float)(Random() % 100)) / 40, yaw + ((float)(Random() % 100)) / 40, 0) * scale;
+                bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 40, ((float)(Random() % 100)) / 40, 0) * scale;
                 Sprite::MakeSprite(bloodsprite, DoRotation(jointPos(neck) + (jointPos(neck) - jointPos(head)) / 5, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .05, .9);
+            }
             neckspurtparticledelay = .05;
         }
         if (neckspurtdelay < 0) {
@@ -4178,14 +4146,13 @@ void Person::DoStuff()
             XYZ bloodvel;
             if (bloodtoggle) {
                 bloodvel = 0;
-                if (skeleton.free)
+                if (skeleton.free) {
                     bloodvel += DoRotation(jointVel(abdomen), ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
-                if (!skeleton.free)
-                    bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0) * scale;
-                if (skeleton.free)
                     Sprite::MakeSprite(bloodsprite, jointPos(abdomen) * scale + coords, bloodvel, 1, 1, 1, .05, 1);
-                if (!skeleton.free)
+                } else {
+                    bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0) * scale;
                     Sprite::MakeSprite(bloodsprite, DoRotation((jointPos(abdomen) + jointPos(abdomen)) / 2, 0, yaw, 0)*scale + coords, bloodvel, 1, 1, 1, .05, 1);
+                }
             }
         }
         bloodloss += deathbleeding * multiplier * 80;
@@ -4283,19 +4250,18 @@ void Person::DoStuff()
             DoMipmaps();
         }
 
-        if (!skeleton.free) {
-            bleedy -= 4 / realtexdetail;
-            if (detail == 2)
-                bleedx += (abs(Random() % 3) - 1) * 2 / realtexdetail;
-            else
-                bleedx += (abs(Random() % 3) - 1) * 4 / realtexdetail;
-        }
         if (skeleton.free) {
             bleedx += 4 * direction / realtexdetail;
             if (detail == 2)
                 bleedy += (abs(Random() % 3) - 1) * 2 / realtexdetail;
             else
                 bleedy += (abs(Random() % 3) - 1) * 4 / realtexdetail;
+        } else {
+            bleedy -= 4 / realtexdetail;
+            if (detail == 2)
+                bleedx += (abs(Random() % 3) - 1) * 2 / realtexdetail;
+            else
+                bleedx += (abs(Random() % 3) - 1) * 4 / realtexdetail;
         }
     }
 
@@ -4390,14 +4356,13 @@ void Person::DoStuff()
             if (environment == snowyenvironment) {
                 XYZ footpoint;
                 XYZ footvel;
-                if (!skeleton.free)
-                    footvel = DoRotation(skeleton.specialforward[0], 0, yaw, 0) * -1;
-                if (skeleton.free)
+                if (skeleton.free) {
                     footvel = skeleton.specialforward[0] * -1;
-                if (!skeleton.free)
-                    footpoint = DoRotation((jointPos(head) + jointPos(neck)) / 2, 0, yaw, 0) * scale + coords;
-                if (skeleton.free)
                     footpoint = ((jointPos(head) + jointPos(neck)) / 2) * scale + coords;
+                } else {
+                    footvel = DoRotation(skeleton.specialforward[0], 0, yaw, 0) * -1;
+                    footpoint = DoRotation((jointPos(head) + jointPos(neck)) / 2, 0, yaw, 0) * scale + coords;
+                }
                 if (animTarget == sleepanim)
                     footvel = DoRotation(footvel, 0, 90, 0);
                 Sprite::MakeSprite(breathsprite, footpoint + footvel * .2, footvel * .4, 1, 1, 1, .4, .3);
@@ -4746,7 +4711,6 @@ void Person::DoStuff()
         }
         average /= multiplier;
 
-        //velocity=jointVel(groin)*scale;
         velocity = 0;
         for (int i = 0; i < skeleton.num_joints; i++) {
             velocity += skeleton.joints[i].velocity * scale;
@@ -6049,14 +6013,11 @@ int Person::DrawSkeleton()
 
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
-        if (!skeleton.free)
-            glTranslatef(coords.x, coords.y - .02, coords.z);
-        if (skeleton.free)
-            glTranslatef(coords.x, coords.y - .02, coords.z);
-        if (!skeleton.free)
+        glTranslatef(coords.x, coords.y - .02, coords.z);
+        if (!skeleton.free) {
             glTranslatef(offset.x * scale, offset.y * scale, offset.z * scale);
-        if (!skeleton.free)
             glRotatef(yaw, 0, 1, 0);
+        }
         if (showpoints) {
             glPointSize(5);
             glColor4f(.4, 1, .4, 1);
