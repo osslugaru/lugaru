@@ -683,7 +683,7 @@ void Animation::Load(const char *filename, int aheight, int aattack)
 {
     FILE *tfile;
     int i, j;
-    XYZ startoffset, endoffset;
+    XYZ endoffset;
 
     // path to dir
     const char *anim_prefix = ":Data:Animations:";
@@ -782,18 +782,14 @@ void Animation::Load(const char *filename, int aheight, int aattack)
         fclose(tfile);
     }
 
-    startoffset = 0;
     endoffset = 0;
-    // find average position of certain joints on first and last frames
-    // and save in startoffset, endoffset
+    // find average position of certain joints on last frames
+    // and save in endoffset
     // (not sure what exactly this accomplishes. the y < 1 test confuses me.)
     for (j = 0; j < joints; j++) {
-        if (position[j][0].y < 1)
-            startoffset += position[j][0];
         if (position[j][numframes - 1].y < 1)
             endoffset += position[j][numframes - 1];
     }
-    startoffset /= joints;
     endoffset /= joints;
     offset = endoffset;
     offset.y = 0;
