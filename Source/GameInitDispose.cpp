@@ -34,7 +34,6 @@ extern Light light;
 extern Skeleton testskeleton;
 extern int numsounds;
 extern Terrain terrain;
-//extern Sprites sprites;
 extern int kTextureSize;
 extern float texdetail;
 extern float realtexdetail;
@@ -740,32 +739,26 @@ void Game::LoadStuff()
 
     Weapon::throwingknifemodel.load((char *)":Data:Models:throwingknife.solid", 1);
     Weapon::throwingknifemodel.Scale(.001, .001, .001);
-    //Weapon::throwingknifemodel.Rotate(0,0,-90);
     Weapon::throwingknifemodel.Rotate(90, 0, 0);
     Weapon::throwingknifemodel.Rotate(0, 90, 0);
     Weapon::throwingknifemodel.flat = 0;
     Weapon::throwingknifemodel.CalculateNormals(1);
-    //Weapon::throwingknifemodel.ScaleNormals(-1,-1,-1);
 
     Weapon::swordmodel.load((char *)":Data:Models:sword.solid", 1);
     Weapon::swordmodel.Scale(.001, .001, .001);
-    //Weapon::swordmodel.Rotate(0,0,-90);
     Weapon::swordmodel.Rotate(90, 0, 0);
     Weapon::swordmodel.Rotate(0, 90, 0);
     Weapon::swordmodel.Rotate(0, 0, 90);
     Weapon::swordmodel.flat = 1;
     Weapon::swordmodel.CalculateNormals(1);
-    //Weapon::swordmodel.ScaleNormals(-1,-1,-1);
 
     Weapon::staffmodel.load((char *)":Data:Models:staff.solid", 1);
     Weapon::staffmodel.Scale(.005, .005, .005);
-    //Weapon::staffmodel.Rotate(0,0,-90);
     Weapon::staffmodel.Rotate(90, 0, 0);
     Weapon::staffmodel.Rotate(0, 90, 0);
     Weapon::staffmodel.Rotate(0, 0, 90);
     Weapon::staffmodel.flat = 1;
     Weapon::staffmodel.CalculateNormals(1);
-    //Weapon::staffmodel.ScaleNormals(-1,-1,-1);
 
     terrain.shadowtexture.load(":Data:Textures:shadow.png", 0, 1);
     terrain.bloodtexture.load(":Data:Textures:blood.png", 0, 1);

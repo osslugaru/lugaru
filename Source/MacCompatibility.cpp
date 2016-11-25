@@ -132,7 +132,6 @@ static int locateOneElement(char *buf)
     char *ptr;
     DIR *dirp;
 
-    //if (PHYSFS_exists(buf))
     if (access(buf, F_OK) == 0)
         return(1);  /* quick rejection: exists in current case. */
 

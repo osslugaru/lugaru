@@ -633,13 +633,6 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
             p1 = skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[whichtri].vertex[0]];
             p2 = skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[whichtri].vertex[1]];
             p3 = skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[whichtri].vertex[2]];
-            /*
-            CrossProduct(p2-p1,p3-p1,&N);
-            CrossProduct(p0-p1,p3-p1,&temp);
-            s =  dotproduct(&temp,&N)/findLength(&N);
-            CrossProduct(p2-p1,p1-p0,&temp);
-            t = dotproduct(&temp,&N)/findLength(&N);
-            r = 1 - (s + t);*/
 
             bary.x = distsq(&p0, &p1);
             bary.y = distsq(&p0, &p2);
@@ -668,9 +661,6 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
             gyy.z = skeleton.drawmodel.Triangles[whichtri].gy[2];
             coordsx = skeleton.drawmodel.Triangles[whichtri].gx[0] * bary.x + skeleton.drawmodel.Triangles[whichtri].gx[1] * bary.y + skeleton.drawmodel.Triangles[whichtri].gx[2] * bary.z;
             coordsy = skeleton.drawmodel.Triangles[whichtri].gy[0] * bary.x + skeleton.drawmodel.Triangles[whichtri].gy[1] * bary.y + skeleton.drawmodel.Triangles[whichtri].gy[2] * bary.z;
-
-            //coordsx=skeleton.drawmodel.Triangles[whichtri].gx[1];
-            //coordsy=skeleton.drawmodel.Triangles[whichtri].gy[1];
 
             if (bleeding <= 0 && spurt) {
                 spurt = 0;

@@ -659,10 +659,6 @@ void Setenvironment(int which)
         terraintexture.load(":Data:Textures:snow.jpg", 1, 0);
         terraintexture2.load(":Data:Textures:rock.jpg", 1, 0);
 
-        //LoadTexture(":Data:Textures:detailgrain.png",&terraintexture3,1);
-
-
-
 
         temptexdetail = texdetail;
         if (texdetail > 1)
@@ -698,9 +694,6 @@ void Setenvironment(int which)
         terraintexture.load(":Data:Textures:sand.jpg", 1, 0);
         terraintexture2.load(":Data:Textures:sandslope.jpg", 1, 0);
 
-        //LoadTexture(":Data:Textures:detailgrain.png",&terraintexture3,1);
-
-
 
         temptexdetail = texdetail;
         if (texdetail > 1)
@@ -734,9 +727,6 @@ void Setenvironment(int which)
 
         terraintexture.load(":Data:Textures:grassdirt.jpg", 1, 0);
         terraintexture2.load(":Data:Textures:mossrock.jpg", 1, 0);
-
-        //LoadTexture(":Data:Textures:detail.png",&terraintexture3,1);
-
 
 
         temptexdetail = texdetail;
@@ -1135,11 +1125,9 @@ void Game::Loadlevel(const char *name)
 
             float maxdistance = 0;
             float tempdist;
-            //~ int whichclosest;
             for (int i = 0; i < objects.numobjects; i++) {
                 tempdist = distsq(&objects.center, &objects.position[i]);
                 if (tempdist > maxdistance) {
-                    //~ whichclosest=i;
                     maxdistance = tempdist;
                 }
             }
@@ -1195,7 +1183,6 @@ void Game::Loadlevel(const char *name)
                         }
                     }
                     funpackf(tfile, "Bi", &Person::players[i - howmanyremoved]->numwaypoints);
-                    //Person::players[i-howmanyremoved]->numwaypoints=10;
                     for (int j = 0; j < Person::players[i - howmanyremoved]->numwaypoints; j++) {
                         funpackf(tfile, "Bf", &Person::players[i - howmanyremoved]->waypoints[j].x);
                         funpackf(tfile, "Bf", &Person::players[i - howmanyremoved]->waypoints[j].y);
@@ -1600,7 +1587,6 @@ void doTutorial()
             break;
         case 19:
             tutorialstage = 20;
-            //tutorialmaxtime=500;
             break;
         case 20:
             tutorialmaxtime = 500;

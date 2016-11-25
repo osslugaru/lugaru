@@ -29,7 +29,6 @@ extern int environment;
 extern float texscale;
 extern Light light;
 extern Terrain terrain;
-//extern Sprites sprites;
 extern float multiplier;
 extern float sps;
 extern float viewdistance;
@@ -73,8 +72,6 @@ extern int mainmenu;
 extern int bloodtoggle;
 extern int difficulty;
 extern bool decals;
-// MODIFIED GWC
-//extern int texdetail;
 extern float texdetail;
 extern bool musictoggle;
 extern int tutoriallevel;
@@ -1483,11 +1480,9 @@ int Game::DrawGLScene(StereoSide side)
 
             float maxdistance = 0;
             float tempdist;
-            //~ int whichclosest;
             for (int i = 0; i < objects.numobjects; i++) {
                 tempdist = distsq(&center, &objects.position[i]);
                 if (tempdist > maxdistance) {
-                    //~ whichclosest=i;
                     maxdistance = tempdist;
                 }
             }
@@ -1495,7 +1490,6 @@ int Game::DrawGLScene(StereoSide side)
                 if (!Person::players[i]->dead) {
                     tempdist = distsq(&center, &Person::players[i]->coords);
                     if (tempdist > maxdistance) {
-                        //~ whichclosest=i;
                         maxdistance = tempdist;
                     }
                 }

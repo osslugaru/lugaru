@@ -167,7 +167,7 @@ float skyboxlightb = 0;
 int hostile = 0;
 float hostiletime = 0;
 
-XYZ envsound[30]; // = {0};
+XYZ envsound[30];
 float envsoundvol[30] = {0};
 float envsoundlife[30] = {0};
 int numenvsounds;
@@ -185,8 +185,6 @@ bool debugmode = false;
 bool campaign = false;
 
 bool gamestarted = false;
-
-//TextureList textures;
 
 StereoMode stereomode =  stereoNone;
 StereoMode newstereomode = stereoNone;

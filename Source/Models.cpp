@@ -404,10 +404,6 @@ bool Model::loadnotex(const char *filename )
     FILE *tfile;
     long i;
 
-    //~ int oldvertexNum, oldTriangleNum;
-    //~ oldvertexNum = vertexNum;
-    //~ oldTriangleNum = TriangleNum;
-
     type = notextype;
     color = 0;
 
@@ -433,7 +429,6 @@ bool Model::loadnotex(const char *filename )
     }
 
     for (i = 0; i < TriangleNum; i++) {
-        //funpackf(tfile, "Bi Bi Bi", &Triangles[i].vertex[0], &Triangles[i].vertex[1], &Triangles[i].vertex[2]);
         short vertex[ 6];
         funpackf(tfile, "Bs Bs Bs Bs Bs Bs", &vertex[ 0], &vertex[ 1], &vertex[ 2], &vertex[ 3], &vertex[ 4], &vertex[ 5]);
         Triangles[i].vertex[ 0] = vertex[ 0];
@@ -479,10 +474,6 @@ bool Model::load(const char *filename, bool texture )
     if (visibleloading)
         Game::LoadingScreen();
 
-    //~ int oldvertexNum, oldTriangleNum;
-    //~ oldvertexNum = vertexNum;
-    //~ oldTriangleNum = TriangleNum;
-
     type = normaltype;
     color = 0;
 
@@ -511,7 +502,6 @@ bool Model::load(const char *filename, bool texture )
     }
 
     for (i = 0; i < TriangleNum; i++) {
-        //funpackf(tfile, "Bi Bi Bi", &Triangles[i].vertex[0], &Triangles[i].vertex[1], &Triangles[i].vertex[2]);
         short vertex[ 6];
         funpackf(tfile, "Bs Bs Bs Bs Bs Bs", &vertex[ 0], &vertex[ 1], &vertex[ 2], &vertex[ 3], &vertex[ 4], &vertex[ 5]);
         Triangles[i].vertex[ 0] = vertex[ 0];
@@ -589,7 +579,6 @@ bool Model::loaddecal(const char *filename, bool texture )
     }
 
     for (i = 0; i < TriangleNum; i++) {
-        //funpackf(tfile, "Bi Bi Bi", &Triangles[i].vertex[0], &Triangles[i].vertex[1], &Triangles[i].vertex[2]);
         short vertex[ 6];
         funpackf(tfile, "Bs Bs Bs Bs Bs Bs", &vertex[ 0], &vertex[ 1], &vertex[ 2], &vertex[ 3], &vertex[ 4], &vertex[ 5]);
         Triangles[i].vertex[ 0] = vertex[ 0];
@@ -654,10 +643,6 @@ bool Model::loadraw(char *filename )
 
     LOG(std::string("Loading raw...") + filename);
 
-    //~ int oldvertexNum, oldTriangleNum;
-    //~ oldvertexNum = vertexNum;
-    //~ oldTriangleNum = TriangleNum;
-
     type = rawtype;
     color = 0;
 
@@ -685,7 +670,6 @@ bool Model::loadraw(char *filename )
     }
 
     for (i = 0; i < TriangleNum; i++) {
-        //funpackf(tfile, "Bi Bi Bi", &Triangles[i].vertex[0], &Triangles[i].vertex[1], &Triangles[i].vertex[2]);
         short vertex[ 6];
         funpackf(tfile, "Bs Bs Bs Bs Bs Bs", &vertex[ 0], &vertex[ 1], &vertex[ 2], &vertex[ 3], &vertex[ 4], &vertex[ 5]);
         Triangles[i].vertex[ 0] = vertex[ 0];
