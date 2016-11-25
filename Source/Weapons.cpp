@@ -225,16 +225,10 @@ void Weapon::DoStuff(int i)
                                 (Person::players[j]->creature == rabbittype && Random() % 2 == 0 && Person::players[j]->aitype == attacktypecutoff && Person::players[j]->weaponactive == -1)) {
                             emit_sound_at(knifedrawsound, Person::players[j]->coords, 128.);
 
-                            Person::players[j]->weaponactive = 0;
                             Person::players[j]->animTarget = removeknifeanim;
                             Person::players[j]->frameTarget = 1;
                             Person::players[j]->target = 1;
-                            owner = Person::players[j]->id;
-                            if (Person::players[j]->num_weapons > 0) {
-                                Person::players[j]->weaponids[Person::players[j]->num_weapons] = Person::players[j]->weaponids[0];
-                            }
-                            Person::players[j]->num_weapons++;
-                            Person::players[j]->weaponids[0] = i;
+                            Person::players[j]->takeWeapon(i);
 
                             Person::players[j]->aitype = attacktypecutoff;
                         } else {

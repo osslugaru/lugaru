@@ -6370,12 +6370,7 @@ void Game::Tick()
                                                             if (weapons[j].getType() != staff)
                                                                 emit_sound_at(knifedrawsound, Person::players[i]->coords, 128.);
 
-                                                            Person::players[i]->weaponactive = 0;
-                                                            weapons[j].owner = Person::players[i]->id;
-                                                            if (Person::players[i]->num_weapons > 0)
-                                                                Person::players[i]->weaponids[Person::players[i]->num_weapons] = Person::players[i]->weaponids[0];
-                                                            Person::players[i]->num_weapons++;
-                                                            Person::players[i]->weaponids[0] = j;
+                                                            Person::players[i]->takeWeapon(j);
                                                         }
                                             }
                                         } else if ((Person::players[i]->isIdle() ||
@@ -6404,12 +6399,7 @@ void Game::Tick()
                                                                 if (weapons[k].getType() != staff)
                                                                     emit_sound_at(knifedrawsound, Person::players[i]->coords, 128.);
 
-                                                                Person::players[i]->weaponactive = 0;
-                                                                weapons[k].owner = Person::players[i]->id;
-                                                                if (Person::players[i]->num_weapons > 0)
-                                                                    Person::players[i]->weaponids[Person::players[i]->num_weapons] = Person::players[i]->weaponids[0];
-                                                                Person::players[i]->num_weapons++;
-                                                                Person::players[i]->weaponids[0] = k;
+                                                                Person::players[i]->takeWeapon(k);
                                                             }
                                                 }
                                             }
@@ -6461,7 +6451,6 @@ void Game::Tick()
                                                             if (fleshstuck)
                                                                 emit_sound_at(fleshstabremovesound, Person::players[i]->coords, 128.);
 
-                                                            Person::players[i]->weaponactive = 0;
                                                             if (weapons[k].owner != -1) {
                                                                 if (Person::players[i]->victim->num_weapons == 1)
                                                                     Person::players[i]->victim->num_weapons = 0;
@@ -6509,12 +6498,7 @@ void Game::Tick()
                                                                 Person::players[i]->victim->jointVel(rightshoulder) += relative * 6;
                                                                 Person::players[i]->victim->jointVel(leftshoulder) += relative * 6;
                                                             }
-                                                            weapons[k].owner = i;
-                                                            if (Person::players[i]->num_weapons > 0) {
-                                                                Person::players[i]->weaponids[Person::players[i]->num_weapons] = Person::players[i]->weaponids[0];
-                                                            }
-                                                            Person::players[i]->num_weapons++;
-                                                            Person::players[i]->weaponids[0] = k;
+                                                            Person::players[i]->takeWeapon(k);
                                                         }
                                                     }
                                                 }

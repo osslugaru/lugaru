@@ -393,6 +393,8 @@ public:
     void setAnimation(int);
     void DoAnimations();
     void RagDoll(bool checkcollision);
+
+    void takeWeapon (int weaponId);
 };
 
 const int maxplayers = 10;

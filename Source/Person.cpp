@@ -1857,13 +1857,7 @@ void Person::DoAnimations()
                                     emit_sound_at(knifedrawsound, coords, 128.);
                                 }
 
-                                weaponactive = 0;
-                                weapons[i].owner = id;
-                                if (num_weapons > 0) {
-                                    weaponids[num_weapons] = weaponids[0];
-                                }
-                                num_weapons++;
-                                weaponids[0] = i;
+                                takeWeapon(i);
                             }
                         }
                 }
@@ -1894,9 +1888,7 @@ void Person::DoAnimations()
                                         emit_sound_at(knifedrawsound, coords, 128.);
                                     }
                                 }
-                                weaponactive = 0;
                                 if (weapons[i].owner != -1) {
-
                                     victim = Person::players[weapons[i].owner];
                                     if (victim->num_weapons == 1)
                                         victim->num_weapons = 0;
@@ -1941,12 +1933,7 @@ void Person::DoAnimations()
                                     victim->jointVel(rightshoulder) += relative * 6;
                                     victim->jointVel(leftshoulder) += relative * 6;
                                 }
-                                weapons[i].owner = id;
-                                if (num_weapons > 0) {
-                                    weaponids[num_weapons] = weaponids[0];
-                                }
-                                num_weapons++;
-                                weaponids[0] = i;
+                                takeWeapon(i);
                             }
                         }
                 }
@@ -3060,13 +3047,7 @@ void Person::DoAnimations()
                 if ((animTarget == swordslashreversalanim || animTarget == knifeslashreversalanim || animTarget == staffhitreversalanim || animTarget == staffspinhitreversalanim) && animation[animTarget].label[frameCurrent] == 5) {
                     if (victim->weaponactive != -1 && victim->num_weapons > 0) {
                         if (weapons[victim->weaponids[victim->weaponactive]].owner == int(victim->id)) {
-                            weapons[victim->weaponids[victim->weaponactive]].owner = id;
-                            weaponactive = 0;
-                            if (num_weapons > 0) {
-                                weaponids[num_weapons] = weaponids[victim->weaponactive];
-                            }
-                            num_weapons++;
-                            weaponids[0] = victim->weaponids[victim->weaponactive];
+                            takeWeapon(victim->weaponids[victim->weaponactive]);
                             victim->num_weapons--;
                             if (victim->num_weapons > 0) {
                                 victim->weaponids[victim->weaponactive] = victim->weaponids[victim->num_weapons];
@@ -6589,5 +6570,16 @@ int Person::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate,
         *p1 = DoRotation(*p1, 0, *rotate, 0);
     *p1 += *move;
     return firstintersecting;
+}
+
+void Person::takeWeapon(int weaponId)
+{
+    weaponactive = 0;
+    weapons[weaponId].owner = id;
+    if (num_weapons > 0) {
+        weaponids[num_weapons] = weaponids[0];
+    }
+    num_weapons++;
+    weaponids[0] = weaponId;
 }
 
