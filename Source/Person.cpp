@@ -893,15 +893,10 @@ void Person::Reverse()
     if (animTarget == staffhitanim && distsq(&victim->coords, &coords) < 2 && ((victim->id == 0 && victim->crouchkeydown) || Random() % 4 == 0)) {
         if (victim->weaponactive != -1) {
             victim->throwtogglekeydown = 1;
-            weapons[victim->weaponids[0]].owner = -1;
-            weapons[victim->weaponids[0]].velocity = victim->velocity * .2;
-            if (weapons[victim->weaponids[0]].velocity.x == 0)
-                weapons[victim->weaponids[0]].velocity.x = .1;
-            weapons[victim->weaponids[0]].tipvelocity = weapons[victim->weaponids[0]].velocity;
-            weapons[victim->weaponids[0]].missed = 1;
-            weapons[victim->weaponids[0]].freetime = 0;
-            weapons[victim->weaponids[0]].firstfree = 1;
-            weapons[victim->weaponids[0]].physics = 1;
+            XYZ tempVelocity = victim->velocity * .2;
+            if (tempVelocity.x == 0)
+                tempVelocity.x = .1;
+            weapons[victim->weaponids[0]].drop(tempVelocity, tempVelocity, false);
             victim->num_weapons--;
             if (victim->num_weapons) {
                 victim->weaponids[0] = victim->weaponids[victim->num_weapons];
@@ -923,15 +918,10 @@ void Person::Reverse()
     if (animTarget == staffspinhitanim && distsq(&victim->coords, &coords) < 2 && ((victim->id == 0 && victim->crouchkeydown) || Random() % 2 == 0)) {
         if (victim->weaponactive != -1) {
             victim->throwtogglekeydown = 1;
-            weapons[victim->weaponids[0]].owner = -1;
-            weapons[victim->weaponids[0]].velocity = victim->velocity * .2;
-            if (weapons[victim->weaponids[0]].velocity.x == 0)
-                weapons[victim->weaponids[0]].velocity.x = .1;
-            weapons[victim->weaponids[0]].tipvelocity = weapons[victim->weaponids[0]].velocity;
-            weapons[victim->weaponids[0]].missed = 1;
-            weapons[victim->weaponids[0]].freetime = 0;
-            weapons[victim->weaponids[0]].firstfree = 1;
-            weapons[victim->weaponids[0]].physics = 1;
+            XYZ tempVelocity = victim->velocity * .2;
+            if (tempVelocity.x == 0)
+                tempVelocity.x = .1;
+            weapons[victim->weaponids[0]].drop(tempVelocity, tempVelocity, false);
             victim->num_weapons--;
             if (victim->num_weapons) {
                 victim->weaponids[0] = victim->weaponids[victim->num_weapons];
@@ -952,15 +942,10 @@ void Person::Reverse()
     if (animTarget == swordslashanim && distsq(&victim->coords, &coords) < 2 && ((victim->id == 0 && victim->crouchkeydown) || Random() % 4 == 0)) {
         if (victim->weaponactive != -1) {
             victim->throwtogglekeydown = 1;
-            weapons[victim->weaponids[0]].owner = -1;
-            weapons[victim->weaponids[0]].velocity = victim->velocity * .2;
-            if (weapons[victim->weaponids[0]].velocity.x == 0)
-                weapons[victim->weaponids[0]].velocity.x = .1;
-            weapons[victim->weaponids[0]].tipvelocity = weapons[victim->weaponids[0]].velocity;
-            weapons[victim->weaponids[0]].missed = 1;
-            weapons[victim->weaponids[0]].freetime = 0;
-            weapons[victim->weaponids[0]].firstfree = 1;
-            weapons[victim->weaponids[0]].physics = 1;
+            XYZ tempVelocity = victim->velocity * .2;
+            if (tempVelocity.x == 0)
+                tempVelocity.x = .1;
+            weapons[victim->weaponids[0]].drop(tempVelocity, tempVelocity, false);
             victim->num_weapons--;
             if (victim->num_weapons) {
                 victim->weaponids[0] = victim->weaponids[victim->num_weapons];
@@ -981,15 +966,10 @@ void Person::Reverse()
     if (animTarget == knifeslashstartanim && distsq(&victim->coords, &coords) < 2 && (victim->id == 0 || Random() % 4 == 0)) {
         if (victim->weaponactive != -1) {
             victim->throwtogglekeydown = 1;
-            weapons[victim->weaponids[0]].owner = -1;
-            weapons[victim->weaponids[0]].velocity = victim->velocity * .2;
-            if (weapons[victim->weaponids[0]].velocity.x == 0)
-                weapons[victim->weaponids[0]].velocity.x = .1;
-            weapons[victim->weaponids[0]].tipvelocity = weapons[victim->weaponids[0]].velocity;
-            weapons[victim->weaponids[0]].missed = 1;
-            weapons[victim->weaponids[0]].freetime = 0;
-            weapons[victim->weaponids[0]].firstfree = 1;
-            weapons[victim->weaponids[0]].physics = 1;
+            XYZ tempVelocity = victim->velocity * .2;
+            if (tempVelocity.x == 0)
+                tempVelocity.x = .1;
+            weapons[victim->weaponids[0]].drop(tempVelocity, tempVelocity, false);
             victim->num_weapons--;
             if (victim->num_weapons) {
                 victim->weaponids[0] = victim->weaponids[victim->num_weapons];
@@ -1064,16 +1044,9 @@ void Person::Reverse()
             victim->animTarget = staggerbackhighanim;
             victim->targetyaw = targetyaw + 180;
             victim->target = 0;
-            weapons[victim->weaponids[0]].owner = -1;
             aim = DoRotation(facing, 0, 90, 0) * 21;
             aim.y += 7;
-            weapons[victim->weaponids[0]].velocity = aim * -.2;
-            weapons[victim->weaponids[0]].tipvelocity = aim;
-            weapons[victim->weaponids[0]].missed = 1;
-            weapons[victim->weaponids[0]].hitsomething = 0;
-            weapons[victim->weaponids[0]].freetime = 0;
-            weapons[victim->weaponids[0]].firstfree = 1;
-            weapons[victim->weaponids[0]].physics = 1;
+            weapons[victim->weaponids[0]].drop(aim * -.2, aim);
             victim->num_weapons--;
             if (victim->num_weapons) {
                 victim->weaponids[0] = victim->weaponids[num_weapons];
@@ -1107,16 +1080,9 @@ void Person::Reverse()
             animTarget = staggerbackhighanim;
             targetyaw = targetyaw + 180;
             target = 0;
-            weapons[weaponids[0]].owner = -1;
             aim = DoRotation(facing, 0, 90, 0) * 21;
             aim.y += 7;
-            weapons[weaponids[0]].velocity = aim * -.2;
-            weapons[weaponids[0]].tipvelocity = aim;
-            weapons[weaponids[0]].hitsomething = 0;
-            weapons[weaponids[0]].missed = 1;
-            weapons[weaponids[0]].freetime = 0;
-            weapons[weaponids[0]].firstfree = 1;
-            weapons[weaponids[0]].physics = 1;
+            weapons[victim->weaponids[0]].drop(aim * -.2, aim);
             num_weapons--;
             if (num_weapons) {
                 weaponids[0] = weaponids[num_weapons];
@@ -1528,15 +1494,8 @@ void Person::RagDoll(bool checkcollision)
         // drop weapon
         if (Random() % 2 == 0) {
             if (weaponactive != -1 && animTarget != rabbitkickanim && num_weapons > 0) {
-                weapons[weaponids[0]].owner = -1;
-                weapons[weaponids[0]].hitsomething = 0;
-                weapons[weaponids[0]].velocity = jointVel(righthand) * scale * -.3;
+                weapons[weaponids[0]].drop(jointVel(righthand) * scale * -.3, jointVel(righthand) * scale);
                 weapons[weaponids[0]].velocity.x += .01;
-                weapons[weaponids[0]].tipvelocity = jointVel(righthand) * scale;
-                weapons[weaponids[0]].missed = 1;
-                weapons[weaponids[0]].freetime = 0;
-                weapons[weaponids[0]].firstfree = 1;
-                weapons[weaponids[0]].physics = 1;
                 num_weapons--;
                 if (num_weapons) {
                     weaponids[0] = weaponids[num_weapons];
@@ -2810,16 +2769,9 @@ void Person::DoAnimations()
                             victim->animTarget = staggerbackhighanim;
                             victim->targetyaw = targetyaw + 180;
                             victim->target = 0;
-                            weapons[victim->weaponids[0]].owner = -1;
                             aim = DoRotation(facing, 0, 90, 0) * 21;
                             aim.y += 7;
-                            weapons[victim->weaponids[0]].velocity = aim * -.2;
-                            weapons[victim->weaponids[0]].tipvelocity = aim;
-                            weapons[victim->weaponids[0]].missed = 1;
-                            weapons[weaponids[0]].hitsomething = 0;
-                            weapons[victim->weaponids[0]].freetime = 0;
-                            weapons[victim->weaponids[0]].firstfree = 1;
-                            weapons[victim->weaponids[0]].physics = 1;
+                            weapons[victim->weaponids[0]].drop(aim * -.2, aim);
                             victim->num_weapons--;
                             if (victim->num_weapons) {
                                 victim->weaponids[0] = victim->weaponids[num_weapons];
@@ -4268,15 +4220,8 @@ void Person::DoStuff()
             deathbleeding = 0;
         if (bloodloss > damagetolerance && animation[animTarget].attack == neutral) {
             if (weaponactive != -1) {
-                weapons[weaponids[0]].owner = -1;
-                weapons[weaponids[0]].velocity = velocity * scale * -.3;
+                weapons[weaponids[0]].drop(velocity * scale * -.3, velocity * scale);
                 weapons[weaponids[0]].velocity.x += .01;
-                weapons[weaponids[0]].tipvelocity = velocity * scale;
-                weapons[weaponids[0]].missed = 1;
-                weapons[weaponids[0]].hitsomething = 0;
-                weapons[weaponids[0]].freetime = 0;
-                weapons[weaponids[0]].firstfree = 1;
-                weapons[weaponids[0]].physics = 1;
                 num_weapons--;
                 if (num_weapons) {
                     weaponids[0] = weaponids[num_weapons];
@@ -4694,15 +4639,8 @@ void Person::DoStuff()
         RagDoll(0);
 
         if (weaponactive != -1) {
-            weapons[weaponids[0]].owner = -1;
-            weapons[weaponids[0]].velocity = velocity * scale * -.3;
+            weapons[weaponids[0]].drop(velocity * scale * -.3, velocity * scale);
             weapons[weaponids[0]].velocity.x += .01;
-            weapons[weaponids[0]].tipvelocity = velocity * scale;
-            weapons[weaponids[0]].missed = 1;
-            weapons[weaponids[0]].hitsomething = 0;
-            weapons[weaponids[0]].freetime = 0;
-            weapons[weaponids[0]].firstfree = 1;
-            weapons[weaponids[0]].physics = 1;
             num_weapons--;
             if (num_weapons) {
                 weaponids[0] = weaponids[num_weapons];
@@ -4757,15 +4695,8 @@ void Person::DoStuff()
         DoBlood(1, 255);
 
         if (weaponactive != -1) {
-            weapons[weaponids[0]].owner = -1;
-            weapons[weaponids[0]].velocity = velocity * scale * -.3;
+            weapons[weaponids[0]].drop(velocity * scale * -.3, velocity * scale);
             weapons[weaponids[0]].velocity.x += .01;
-            weapons[weaponids[0]].tipvelocity = velocity * scale;
-            weapons[weaponids[0]].missed = 1;
-            weapons[weaponids[0]].hitsomething = 0;
-            weapons[weaponids[0]].freetime = 0;
-            weapons[weaponids[0]].firstfree = 1;
-            weapons[weaponids[0]].physics = 1;
             num_weapons--;
             if (num_weapons) {
                 weaponids[0] = weaponids[num_weapons];

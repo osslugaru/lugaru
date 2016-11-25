@@ -66,6 +66,8 @@ public:
     }
     void setType(int);
 
+    void drop(XYZ velocity, XYZ tipvelocity, bool sethitsomething = true);
+
     int owner;
     XYZ position;
     XYZ tippoint;

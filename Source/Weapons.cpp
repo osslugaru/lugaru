@@ -1078,6 +1078,20 @@ void Weapon::Draw()
     }
 }
 
+void Weapon::drop(XYZ v, XYZ tv, bool sethitsomething)
+{
+    owner = -1;
+    velocity = v;
+    tipvelocity = tv;
+    missed = 1;
+    if (sethitsomething) {
+        hitsomething = 0;
+    }
+    freetime = 0;
+    firstfree = 1;
+    physics = 1;
+}
+
 int Weapons::Draw()
 {
     glAlphaFunc(GL_GREATER, 0.9);

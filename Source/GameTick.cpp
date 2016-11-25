@@ -6576,15 +6576,10 @@ void Game::Tick()
                         if (Person::players[i]->weaponactive != -1 && Person::players[i]->aitype == playercontrolled) {
                             if (Person::players[i]->isCrouch() || Person::players[i]->animTarget == sneakanim) {
                                 Person::players[i]->throwtogglekeydown = 1;
-                                weapons[Person::players[i]->weaponids[0]].owner = -1;
-                                weapons[Person::players[i]->weaponids[0]].velocity = Person::players[i]->velocity * .2;
-                                if (weapons[Person::players[i]->weaponids[0]].velocity.x == 0)
-                                    weapons[Person::players[i]->weaponids[0]].velocity.x = .1;
-                                weapons[Person::players[i]->weaponids[0]].tipvelocity = weapons[Person::players[i]->weaponids[0]].velocity;
-                                weapons[Person::players[i]->weaponids[0]].missed = 1;
-                                weapons[Person::players[i]->weaponids[0]].freetime = 0;
-                                weapons[Person::players[i]->weaponids[0]].firstfree = 1;
-                                weapons[Person::players[i]->weaponids[0]].physics = 1;
+                                XYZ tempVelocity = Person::players[i]->velocity * .2;
+                                if (tempVelocity.x == 0)
+                                    tempVelocity.x = .1;
+                                weapons[Person::players[i]->weaponids[0]].drop(tempVelocity, tempVelocity, false);
                                 Person::players[i]->num_weapons--;
                                 if (Person::players[i]->num_weapons) {
                                     Person::players[i]->weaponids[0] = Person::players[i]->weaponids[Person::players[i]->num_weapons];
