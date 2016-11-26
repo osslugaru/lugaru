@@ -27,42 +27,12 @@ using namespace std;
 extern ImageRec texture;
 extern bool trilinear;
 
-
-class TextureRes
-{
-private:
-    static vector<TextureRes*> list;
-
-    GLuint id;
-    string filename;
-    bool hasMipmap;
-    bool hasAlpha;
-    bool isSkin;
-    int skinsize;
-    GLubyte* data;
-    int datalen;
-    GLubyte* skindata;
-
-    void load();
-
-public:
-    TextureRes(const string& filename, bool hasMipmap, bool hasAlpha);
-    TextureRes(const string& filename, bool hasMipmap, GLubyte* array, int* skinsize);
-    ~TextureRes();
-    void bind();
-
-    static void reloadAll();
-};
-
-
 vector<TextureRes*> TextureRes::list;
 
 void TextureRes::load()
 {
     //load image into 'texture' global var
-    if (!skindata) {
-        upload_image(ConvertFileName(filename.c_str()));
-    }
+    upload_image(ConvertFileName(filename.c_str()));
 
     skinsize = texture.sizeX;
     GLuint type = GL_RGBA;
@@ -85,18 +55,14 @@ void TextureRes::load()
     }
 
     if (isSkin) {
-        if (skindata) {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, skinsize, skinsize, 0, GL_RGB, GL_UNSIGNED_BYTE, skindata);
-        } else {
-            free(data);
-            const int nb = texture.sizeY * texture.sizeX * (texture.bpp / 8);
-            data = (GLubyte*)malloc(nb * sizeof(GLubyte));
-            datalen = 0;
-            for (int i = 0; i < nb; i++)
-                if ((i + 1) % 4 || type == GL_RGB)
-                    data[datalen++] = texture.data[i];
-            glTexImage2D(GL_TEXTURE_2D, 0, type, texture.sizeX, texture.sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        }
+        free(data);
+        const int nb = texture.sizeY * texture.sizeX * (texture.bpp / 8);
+        data = (GLubyte*)malloc(nb * sizeof(GLubyte));
+        datalen = 0;
+        for (int i = 0; i < nb; i++)
+            if ((i + 1) % 4 || type == GL_RGB)
+                data[datalen++] = texture.data[i];
+        glTexImage2D(GL_TEXTURE_2D, 0, type, texture.sizeX, texture.sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     } else {
         glTexImage2D(GL_TEXTURE_2D, 0, type, texture.sizeX, texture.sizeY, 0, type, GL_UNSIGNED_BYTE, texture.data);
     }
@@ -109,7 +75,7 @@ void TextureRes::bind()
 
 TextureRes::TextureRes(const string& _filename, bool _hasMipmap, bool _hasAlpha):
     id(0), filename(_filename), hasMipmap(_hasMipmap), hasAlpha(_hasAlpha), isSkin(false),
-    skinsize(0), data(NULL), datalen(0), skindata(NULL)
+    skinsize(0), data(NULL), datalen(0)
 {
     load();
     list.push_back(this);
@@ -117,13 +83,12 @@ TextureRes::TextureRes(const string& _filename, bool _hasMipmap, bool _hasAlpha)
 
 TextureRes::TextureRes(const string& _filename, bool _hasMipmap, GLubyte* array, int* skinsizep):
     id(0), filename(_filename), hasMipmap(_hasMipmap), hasAlpha(false), isSkin(true),
-    skinsize(0), data(NULL), datalen(0), skindata(NULL)
+    skinsize(0), data(NULL), datalen(0)
 {
     load();
     *skinsizep = skinsize;
     for (int i = 0; i < datalen; i++)
         array[i] = data[i];
-    skindata = array;
     list.push_back(this);
 }
 
@@ -137,15 +102,6 @@ TextureRes::~TextureRes()
             break;
         }
 }
-
-void TextureRes::reloadAll()
-{
-    for (vector<TextureRes*>::iterator it = list.begin(); it != list.end(); it++) {
-        (*it)->id = 0;
-        (*it)->load();
-    }
-}
-
 
 void Texture::load(const string& filename, bool hasMipmap, bool hasAlpha)
 {
@@ -174,9 +130,3 @@ void Texture::bind()
     else
         glBindTexture(GL_TEXTURE_2D, 0);
 }
-
-void Texture::reloadAll()
-{
-    TextureRes::reloadAll();
-}
-

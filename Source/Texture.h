@@ -26,7 +26,28 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include <string>
 using namespace std;
 
-class TextureRes;
+class TextureRes
+{
+private:
+    static vector<TextureRes*> list;
+
+    GLuint id;
+    string filename;
+    bool hasMipmap;
+    bool hasAlpha;
+    bool isSkin;
+    int skinsize;
+    GLubyte* data;
+    int datalen;
+
+    void load();
+
+public:
+    TextureRes(const string& filename, bool hasMipmap, bool hasAlpha);
+    TextureRes(const string& filename, bool hasMipmap, GLubyte* array, int* skinsize);
+    ~TextureRes();
+    void bind();
+};
 
 class Texture
 {
@@ -38,8 +59,6 @@ public:
     void load(const string& filename, bool hasMipmap, GLubyte* array, int* skinsizep);
     void destroy();
     void bind();
-
-    static void reloadAll();
 };
 
 #endif
