@@ -42,6 +42,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Account.h"
 #include "Sounds.h"
 #include "Texture.h"
+#include "optionparser.h"
 
 #define NB_CAMPAIGN_MENU_ITEM 7
 
@@ -239,5 +240,14 @@ extern const char **creatureskin[2];
 
 SDL_bool sdlEventProc(const SDL_Event &e);
 
+
+
+enum  optionIndex { UNKNOWN, HELP, FULLSCREEN, NOMOUSEGRAB, SOUND, OPENALINFO, SHOWRESOLUTIONS };
+/* Number of options + 1 */
+const int commandLineOptionsNumber = 8;
+
+extern const option::Descriptor usage[12];
+
+extern option::Option commandLineOptions[commandLineOptionsNumber];
 
 #endif

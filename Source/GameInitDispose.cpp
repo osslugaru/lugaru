@@ -467,9 +467,6 @@ void FadeLoadingScreen(float howmuch)
     swap_gl_buffers();
 }
 
-
-extern bool cmdline(const char *cmd);
-
 void Game::InitGame()
 {
     LOGFUNC;
@@ -583,15 +580,14 @@ void Game::InitGame()
 #if PLATFORM_LINUX
     unsigned char rc = 0;
     int output = OPENAL_OUTPUT_ALSA;  // Try alsa first...
-    if (cmdline("forceoss"))      //  ...but let user override that.
-        output = OPENAL_OUTPUT_OSS;
-    else if (cmdline("nosound"))
-        output = OPENAL_OUTPUT_NOSOUND;
+    if (commandLineOptions[SOUND]) {
+        output = commandLineOptions[SOUND].last()->type(); //  ...but let user override that.
+    }
 
     OPENAL_SetOutput(output);
     if ((rc = OPENAL_Init(44100, 32, 0)) == false) {
         // if we tried ALSA and failed, fall back to OSS.
-        if ( (output == OPENAL_OUTPUT_ALSA) && (!cmdline("forcealsa")) ) {
+        if ( (output == OPENAL_OUTPUT_ALSA) && (commandLineOptions[SOUND].last()->type() != OPENAL_OUTPUT_ALSA) ) {
             OPENAL_Close();
             output = OPENAL_OUTPUT_OSS;
             OPENAL_SetOutput(output);

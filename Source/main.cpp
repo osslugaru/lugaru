@@ -122,22 +122,6 @@ static void GLAPIENTRY glDeleteTextures_doNothing(GLsizei n, const GLuint *textu
 int kContextWidth;
 int kContextHeight;
 
-static int _argc = 0;
-static char **_argv = NULL;
-
-bool cmdline(const char *cmd)
-{
-    for (int i = 1; i < _argc; i++) {
-        char *arg = _argv[i];
-        while (*arg == '-')
-            arg++;
-        if (strcasecmp(arg, cmd) == 0)
-            return true;
-    }
-
-    return false;
-}
-
 //-----------------------------------------------------------------------------------------------------------------------
 
 // OpenGL Drawing
@@ -235,8 +219,6 @@ SDL_bool sdlEventProc(const SDL_Event &e)
     return SDL_TRUE;
 }
 
-
-
 // --------------------------------------------------------------------------
 
 static Point gMidPoint;
@@ -291,7 +273,7 @@ bool SetUp ()
         return false;
     }
 
-    if (cmdline("showresolutions")) {
+    if (commandLineOptions[SHOWRESOLUTIONS]) {
         printf("Available resolutions:\n");
         for (auto resolution = resolutions.begin(); resolution != resolutions.end(); resolution++) {
             printf("  %d x %d\n", (int) resolution->first, (int) resolution->second);
@@ -302,12 +284,15 @@ bool SetUp ()
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 1);
 
     Uint32 sdlflags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
-    if ((fullscreen || cmdline("fullscreen")) && !cmdline("windowed")) {
-        fullscreen = 1;
+    if (commandLineOptions[FULLSCREEN]) {
+        fullscreen = commandLineOptions[FULLSCREEN].last()->type();
+    }
+    if (fullscreen) {
         sdlflags |= SDL_WINDOW_FULLSCREEN;
     }
-    if (!cmdline("nomousegrab"))
+    if (!commandLineOptions[NOMOUSEGRAB].last()->type()) {
         sdlflags |= SDL_WINDOW_INPUT_GRABBED;
+    }
 
     sdlwindow = SDL_CreateWindow("Lugaru", SDL_WINDOWPOS_CENTERED_DISPLAY(0), SDL_WINDOWPOS_CENTERED_DISPLAY(0),
                                  kContextWidth, kContextHeight, sdlflags);
@@ -360,8 +345,9 @@ bool SetUp ()
         SDL_GL_SetSwapInterval(1);
 
     SDL_ShowCursor(0);
-    if (!cmdline("nomousegrab"))
+    if (!commandLineOptions[NOMOUSEGRAB].last()->type()) {
         SDL_SetRelativeMouseMode(SDL_TRUE);
+    }
 
     initGL();
 
@@ -651,11 +637,50 @@ static inline void chdirToAppPath(const char *argv0)
 }
 #endif
 
+const option::Descriptor usage[] =
+{
+    {UNKNOWN,           0,                      "",     "",                 option::Arg::None,  "USAGE: lugaru [options]\n\n"
+                                                                                                "Options:" },
+    {HELP,              0,                      "h",    "help",             option::Arg::None,  " -h, --help        Print usage and exit." },
+    {FULLSCREEN,        1,                      "f",    "fullscreen",       option::Arg::None,  " -f, --fullscreen  Start the game in fullscreen mode." },
+    {FULLSCREEN,        0,                      "w",    "windowed",         option::Arg::None,  " -w, --windowed    Start the game in windowed mode (default)." },
+    {NOMOUSEGRAB,       1,                      "",     "nomousegrab",      option::Arg::None,  " --nomousegrab     Disable mousegrab." },
+    {NOMOUSEGRAB,       0,                      "",     "mousegrab",        option::Arg::None,  " --mousegrab       Enable mousegrab (default)." },
+    {SOUND,             OPENAL_OUTPUT_NOSOUND,  "",     "nosound",          option::Arg::None,  " --nosound         Disable sound." },
+    {SOUND,             OPENAL_OUTPUT_ALSA,     "",     "force-alsa",       option::Arg::None,  " --force-alsa      Force use of ALSA back-end." },
+    {SOUND,             OPENAL_OUTPUT_OSS,      "",     "force-oss",        option::Arg::None,  " --force-oss       Force use of OSS back-end." },
+    {OPENALINFO,        0,                      "",     "openal-info",      option::Arg::None,  " --openal-info     Print info about OpenAL at launch." },
+    {SHOWRESOLUTIONS,   0,                      "",     "showresolutions",  option::Arg::None,  " --showresolutions List the resolutions found by SDL at launch." },
+    {0,0,0,0,0,0}
+};
+
+option::Option commandLineOptions[commandLineOptionsNumber];
 
 int main(int argc, char **argv)
 {
-    _argc = argc;
-    _argv = argv;
+    argc-=(argc>0); argv+=(argc>0); // skip program name argv[0] if present
+    option::Stats  stats(true, usage, argc, argv);
+    if (commandLineOptionsNumber != stats.options_max) {
+        std::cerr << "Found incorrect command line option number" << std::endl;
+        return 1;
+    }
+    option::Option buffer[stats.buffer_max];
+    option::Parser parse(true, usage, argc, argv, commandLineOptions, buffer);
+
+    if (parse.error()) {
+        return 1;
+    }
+
+    if (commandLineOptions[HELP]) {
+        option::printUsage(std::cout, usage);
+        return 0;
+    }
+
+    if (option::Option* opt = commandLineOptions[UNKNOWN]) {
+        std::cerr << "Unknown option: " << opt->name << "\n";
+        option::printUsage(std::cerr, usage);
+        return 1;
+    }
 
     // !!! FIXME: we could use a Win32 API for this.  --ryan.
 #ifndef WIN32

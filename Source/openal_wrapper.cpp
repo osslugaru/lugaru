@@ -25,6 +25,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Quaternions.h"
 #include "openal_wrapper.h"
 #include "Sounds.h"
+#include "Game.h"
 
 // NOTE:
 // FMOD uses a Left Handed Coordinate system, OpenAL uses a Right Handed
@@ -149,8 +150,7 @@ AL_API signed char OPENAL_Init(int mixrate, int maxsoftwarechannels, unsigned in
     alcMakeContextCurrent(ctx);
     alcProcessContext(ctx);
 
-    bool cmdline(const char * cmd);
-    if (cmdline("openalinfo")) {
+    if (commandLineOptions[OPENALINFO]) {
         printf("AL_VENDOR: %s\n", (char *) alGetString(AL_VENDOR));
         printf("AL_RENDERER: %s\n", (char *) alGetString(AL_RENDERER));
         printf("AL_VERSION: %s\n", (char *) alGetString(AL_VERSION));
