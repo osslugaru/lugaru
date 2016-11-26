@@ -52,7 +52,6 @@ extern float multiplier;
 extern int netdatanew;
 extern float mapinfo;
 extern bool stillloading;
-extern ImageRec texture;
 extern short vRefNum;
 extern long dirID;
 extern int mainmenu;
@@ -120,10 +119,6 @@ void Dispose()
     }
 
     OPENAL_Close();
-    if (texture.data) {
-        free(texture.data);
-    }
-    texture.data = 0;
 #endif
 }
 
@@ -170,7 +165,8 @@ void LoadSave(const char *fileName, GLuint *textureid, bool mipmap, GLubyte *arr
     texdetail = 1;
 
     //Load Image
-    upload_image(ConvertFileName(fileName));
+    ImageRec texture;
+    load_image(ConvertFileName(fileName), texture);
     texdetail = temptexdetail;
 
     int bytesPerPixel = texture.bpp / 8;
@@ -568,8 +564,6 @@ void Game::InitGame()
     FadeLoadingScreen(0);
 
     stillloading = 1;
-
-    texture.data = ( GLubyte* )malloc( 1024 * 1024 * 4 );
 
     int temptexdetail = texdetail;
     texdetail = 1;

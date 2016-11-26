@@ -35,7 +35,6 @@ extern bool decals;
 extern float blurness;
 extern float targetblurness;
 extern Objects objects;
-extern ImageRec texture;
 extern bool visibleloading;
 extern bool skyboxtexture;
 extern int tutoriallevel;
@@ -405,8 +404,10 @@ bool Terrain::load(const char *fileName)
 
     float temptexdetail = texdetail;
 
+    ImageRec texture;
+
     //Load Image
-    upload_image(ConvertFileName(fileName));
+    load_image(ConvertFileName(fileName), texture);
 
     //Is it valid?
     if (texture.bpp > 24) {

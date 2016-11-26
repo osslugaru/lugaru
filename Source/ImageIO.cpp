@@ -28,7 +28,6 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Game.h"
 #include "ImageIO.h"
 
-extern ImageRec texture;
 extern bool visibleloading;
 
 /* These two are needed for screenshot */
@@ -39,9 +38,15 @@ static bool load_png(const char * fname, ImageRec & tex);
 static bool load_jpg(const char * fname, ImageRec & tex);
 static bool save_screenshot_png(const char * fname);
 
-bool upload_image(const char* fileName)
+ImageRec::ImageRec()
 {
-    return load_image(fileName, texture);
+    data = ( GLubyte* )malloc( 1024 * 1024 * 4 );
+}
+
+ImageRec::~ImageRec()
+{
+    free(data);
+    data = NULL;
 }
 
 bool load_image(const char *file_name, ImageRec &tex)

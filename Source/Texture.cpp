@@ -24,15 +24,16 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace std;
 
-extern ImageRec texture;
 extern bool trilinear;
 
 vector<TextureRes*> TextureRes::list;
 
 void TextureRes::load()
 {
-    //load image into 'texture' global var
-    upload_image(ConvertFileName(filename.c_str()));
+    ImageRec texture;
+
+    //load image into 'texture'
+    load_image(ConvertFileName(filename.c_str()), texture);
 
     skinsize = texture.sizeX;
     GLuint type = GL_RGBA;

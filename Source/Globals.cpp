@@ -178,7 +178,6 @@ bool tiltweird = false;
 bool midweird = false;
 bool proportionweird = false;
 bool vertexweird[6] = {0};
-ImageRec texture;
 bool debugmode = false;
 
 
