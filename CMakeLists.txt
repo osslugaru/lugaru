@@ -32,6 +32,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 ### Sources
 
 set(LUGARU_SRCS
+    ${SRCDIR}/main.cpp
     ${SRCDIR}/Frustum.cpp
     ${SRCDIR}/Account.cpp
     ${SRCDIR}/ConsoleCmds.cpp
@@ -57,7 +58,6 @@ set(LUGARU_SRCS
     ${SRCDIR}/ImageIO.cpp
     ${SRCDIR}/unpack.c
     ${SRCDIR}/Weapons.cpp
-    ${SRCDIR}/OpenGL_Windows.cpp
     ${SRCDIR}/openal_wrapper.cpp
     ${SRCDIR}/Input.cpp
     ${SRCDIR}/Settings.cpp
