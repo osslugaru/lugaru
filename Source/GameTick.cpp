@@ -2133,7 +2133,7 @@ void doDebugKeys()
                 if (Person::players[closest]->creature == rabbittype) {
                     Person::players[closest]->skeleton.id = closest;
                     Person::players[closest]->skeleton.Load((char *)":Data:Skeleton:Basic Figure Wolf", (char *)":Data:Skeleton:Basic Figure Wolf Low", (char *)":Data:Skeleton:Rabbitbelt", (char *)":Data:Models:Wolf.solid", (char *)":Data:Models:Wolf2.solid", (char *)":Data:Models:Wolf3.solid", (char *)":Data:Models:Wolf4.solid", (char *)":Data:Models:Wolf5.solid", (char *)":Data:Models:Wolf6.solid", (char *)":Data:Models:Wolf7.solid", (char *)":Data:Models:Wolflow.solid", (char *)":Data:Models:Belt.solid", 0);
-                    Person::players[closest]->skeleton.drawmodel.textureptr.load(":Data:Textures:Wolf.jpg", 1, &Person::players[closest]->skeleton.skinText[closest], &Person::players[closest]->skeleton.skinsize);
+                    Person::players[closest]->skeleton.drawmodel.textureptr.load(":Data:Textures:Wolf.jpg", 1, &Person::players[closest]->skeleton.skinText[0], &Person::players[closest]->skeleton.skinsize);
                     Person::players[closest]->whichskin = 0;
                     Person::players[closest]->creature = wolftype;
 
