@@ -237,4 +237,7 @@ extern const char *wolfskin[3];
 
 extern const char **creatureskin[2];
 
+SDL_bool sdlEventProc(const SDL_Event &e);
+
+
 #endif

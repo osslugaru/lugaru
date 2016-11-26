@@ -202,7 +202,7 @@ void toggleFullscreen()
     SDL_SetWindowFullscreen(sdlwindow, flags);
 }
 
-static SDL_bool sdlEventProc(const SDL_Event &e)
+SDL_bool sdlEventProc(const SDL_Event &e)
 {
     switch (e.type) {
         case SDL_QUIT:

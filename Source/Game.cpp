@@ -166,6 +166,10 @@ void Game::inputText(string& str, unsigned* charselected)
     }
 
     while (SDL_PollEvent(&evenement)) {
+        if (!sdlEventProc(evenement)) {
+            tryquit = 1;
+            break;
+        }
         switch (evenement.type) {
         case SDL_TEXTEDITING:
             /* FIXME - We should handle this for complete input method support */
