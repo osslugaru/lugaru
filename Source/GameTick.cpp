@@ -5411,13 +5411,6 @@ void MenuTick()
         }
     }
 
-    if (Input::isKeyDown(SDL_SCANCODE_Q) && Input::isKeyDown(SDL_SCANCODE_LGUI)) {
-        tryquit = 1;
-        if (mainmenu == 3) {
-            SaveSettings();
-        }
-    }
-
     OPENAL_SetFrequency(channels[stream_menutheme], 22050);
 
     if (entername) {
@@ -5637,15 +5630,6 @@ void Game::Tick()
             if (consoleblinkdelay <= 0) {
                 consoleblinkdelay = .3;
                 consoleblink = !consoleblink;
-            }
-        }
-
-
-
-        if (Input::isKeyDown(SDL_SCANCODE_Q) && Input::isKeyDown(SDL_SCANCODE_LGUI)) {
-            tryquit = 1;
-            if (mainmenu == 3) {
-                SaveSettings();
             }
         }
 
