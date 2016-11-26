@@ -398,6 +398,9 @@ public:
     void RagDoll(bool checkcollision);
 
     void takeWeapon (int weaponId);
+
+    bool addClothes(const int& clothesId);
+    bool addClothes(const char* fileName);
 };
 
 const int maxplayers = 10;

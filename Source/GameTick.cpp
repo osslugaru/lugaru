@@ -383,50 +383,6 @@ void Game::playdialogueboxsound()
 
 // ================================================================
 
-bool Game::AddClothes(const char *fileName, GLubyte *array)
-{
-    LOGFUNC;
-    //Load Image
-    ImageRec texture;
-    bool opened = load_image(fileName, texture);
-
-    float alphanum;
-    //Is it valid?
-    if (opened) {
-        if (tintr > 1) tintr = 1;
-        if (tintg > 1) tintg = 1;
-        if (tintb > 1) tintb = 1;
-
-        if (tintr < 0) tintr = 0;
-        if (tintg < 0) tintg = 0;
-        if (tintb < 0) tintb = 0;
-
-        int bytesPerPixel = texture.bpp / 8;
-
-        int tempnum = 0;
-        alphanum = 255;
-        for (int i = 0; i < (int)(texture.sizeY * texture.sizeX * bytesPerPixel); i++) {
-            if (bytesPerPixel == 3)
-                alphanum = 255;
-            else if ((i + 1) % 4 == 0)
-                alphanum = texture.data[i];
-            if ((i + 1) % 4 || bytesPerPixel == 3) {
-                if ((i % 4) == 0)
-                    texture.data[i] *= tintr;
-                if ((i % 4) == 1)
-                    texture.data[i] *= tintg;
-                if ((i % 4) == 2)
-                    texture.data[i] *= tintb;
-                array[tempnum] = (float)array[tempnum] * (1 - alphanum / 255) + (float)texture.data[i] * (alphanum / 255);
-                tempnum++;
-            }
-        }
-        return 1;
-    } else {
-        return 0;
-    }
-}
-
 int Game::findClosestPlayer()
 {
     int closest = -1;
@@ -1350,7 +1306,7 @@ void Game::Loadlevel(const char *name)
                     tintr = Person::players[i]->clothestintr[j];
                     tintg = Person::players[i]->clothestintg[j];
                     tintb = Person::players[i]->clothestintb[j];
-                    AddClothes((char *)Person::players[i]->clothes[j], &Person::players[i]->skeleton.skinText[0]);
+                    Person::players[i]->addClothes(j);
                 }
                 Person::players[i]->DoMipmaps();
             }
@@ -2106,7 +2062,7 @@ void doDebugKeys()
                     tintr = Person::players[closest]->clothestintr[i];
                     tintg = Person::players[closest]->clothestintg[i];
                     tintb = Person::players[closest]->clothestintb[i];
-                    AddClothes((char *)Person::players[closest]->clothes[i], &Person::players[closest]->skeleton.skinText[0]);
+                    Person::players[closest]->addClothes(i);
                 }
                 Person::players[closest]->DoMipmaps();
             }
@@ -2544,7 +2500,7 @@ void doDebugKeys()
                         tintr = Person::players.back()->clothestintr[i];
                         tintg = Person::players.back()->clothestintg[i];
                         tintb = Person::players.back()->clothestintb[i];
-                        AddClothes((char *)Person::players.back()->clothes[i], &Person::players.back()->skeleton.skinText[0]);
+                        Person::players.back()->addClothes(i);
                     }
                 if (Person::players.back()->numclothes) {
                     Person::players.back()->DoMipmaps();

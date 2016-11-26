@@ -149,7 +149,6 @@ int DrawGLScene(StereoSide side);
 void LoadMenu();
 void playdialogueboxsound();
 int findClosestPlayer();
-bool AddClothes(const char *fileName, GLubyte *array);
 void Loadlevel(int which);
 void Loadlevel(const char *name);
 void Tick();

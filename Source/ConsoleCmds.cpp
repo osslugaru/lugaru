@@ -141,7 +141,7 @@ static void set_clothes(int pnum, const char *args)
     char buf[64];
     snprintf(buf, 63, ":Data:Textures:%s.png", args);
 
-    if (!AddClothes(buf, &Person::players[pnum]->skeleton.skinText[0]))
+    if (!Person::players[pnum]->addClothes(buf))
         return;
 
     Person::players[pnum]->DoMipmaps();

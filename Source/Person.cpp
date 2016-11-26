@@ -6533,3 +6533,54 @@ void Person::takeWeapon(int weaponId)
     weaponids[0] = weaponId;
 }
 
+bool Person::addClothes(const int& clothesId)
+{
+    return addClothes(clothes[clothesId]);
+}
+
+bool Person::addClothes(const char* fileName)
+{
+    LOGFUNC;
+
+    GLubyte* array = &skeleton.skinText[0];
+
+    //Load Image
+    ImageRec texture;
+    bool opened = load_image(fileName, texture);
+
+    float alphanum;
+    //Is it valid?
+    if (opened) {
+        if (tintr > 1) tintr = 1;
+        if (tintg > 1) tintg = 1;
+        if (tintb > 1) tintb = 1;
+
+        if (tintr < 0) tintr = 0;
+        if (tintg < 0) tintg = 0;
+        if (tintb < 0) tintb = 0;
+
+        int bytesPerPixel = texture.bpp / 8;
+
+        int tempnum = 0;
+        alphanum = 255;
+        for (int i = 0; i < (int)(texture.sizeY * texture.sizeX * bytesPerPixel); i++) {
+            if (bytesPerPixel == 3)
+                alphanum = 255;
+            else if ((i + 1) % 4 == 0)
+                alphanum = texture.data[i];
+            if ((i + 1) % 4 || bytesPerPixel == 3) {
+                if ((i % 4) == 0)
+                    texture.data[i] *= tintr;
+                if ((i % 4) == 1)
+                    texture.data[i] *= tintg;
+                if ((i % 4) == 2)
+                    texture.data[i] *= tintb;
+                array[tempnum] = (float)array[tempnum] * (1 - alphanum / 255) + (float)texture.data[i] * (alphanum / 255);
+                tempnum++;
+            }
+        }
+        return 1;
+    } else {
+        return 0;
+    }
+}
