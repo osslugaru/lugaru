@@ -53,7 +53,6 @@ float windvar = 0;
 float precipdelay = 0;
 float gamespeed = 0;
 float oldgamespeed = 0;
-float tintr = 0, tintg = 0, tintb = 0;
 int difficulty = 0;
 float multiplier = 0;
 float realmultiplier = 0;

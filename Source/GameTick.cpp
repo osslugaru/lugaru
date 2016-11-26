@@ -1301,15 +1301,7 @@ void Game::Loadlevel(const char *name)
 
             Person::players[i]->skeleton.drawmodel.textureptr.load(creatureskin[Person::players[i]->creature][Person::players[i]->whichskin], 1, &Person::players[i]->skeleton.skinText[0], &Person::players[i]->skeleton.skinsize);
 
-            if (Person::players[i]->numclothes) {
-                for (int j = 0; j < Person::players[i]->numclothes; j++) {
-                    tintr = Person::players[i]->clothestintr[j];
-                    tintg = Person::players[i]->clothestintg[j];
-                    tintb = Person::players[i]->clothestintb[j];
-                    Person::players[i]->addClothes(j);
-                }
-                Person::players[i]->DoMipmaps();
-            }
+            Person::players[i]->addClothes();
 
             Person::players[i]->animCurrent = bounceidleanim;
             Person::players[i]->animTarget = bounceidleanim;
@@ -2057,15 +2049,7 @@ void doDebugKeys()
                         &Person::players[closest]->skeleton.skinText[0], &Person::players[closest]->skeleton.skinsize);
             }
 
-            if (Person::players[closest]->numclothes) {
-                for (int i = 0; i < Person::players[closest]->numclothes; i++) {
-                    tintr = Person::players[closest]->clothestintr[i];
-                    tintg = Person::players[closest]->clothestintg[i];
-                    tintb = Person::players[closest]->clothestintb[i];
-                    Person::players[closest]->addClothes(i);
-                }
-                Person::players[closest]->DoMipmaps();
-            }
+            Person::players[closest]->addClothes();
         }
 
         if (Input::isKeyPressed(SDL_SCANCODE_O) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
@@ -2491,20 +2475,13 @@ void doDebugKeys()
                 Person::players.back()->immobile = Person::players[0]->immobile;
 
                 Person::players.back()->numclothes = Person::players[0]->numclothes;
-                if (Person::players.back()->numclothes)
-                    for (int i = 0; i < Person::players.back()->numclothes; i++) {
-                        strcpy(Person::players.back()->clothes[i], Person::players[0]->clothes[i]);
-                        Person::players.back()->clothestintr[i] = Person::players[0]->clothestintr[i];
-                        Person::players.back()->clothestintg[i] = Person::players[0]->clothestintg[i];
-                        Person::players.back()->clothestintb[i] = Person::players[0]->clothestintb[i];
-                        tintr = Person::players.back()->clothestintr[i];
-                        tintg = Person::players.back()->clothestintg[i];
-                        tintb = Person::players.back()->clothestintb[i];
-                        Person::players.back()->addClothes(i);
-                    }
-                if (Person::players.back()->numclothes) {
-                    Person::players.back()->DoMipmaps();
+                for (int i = 0; i < Person::players.back()->numclothes; i++) {
+                    strcpy(Person::players.back()->clothes[i], Person::players[0]->clothes[i]);
+                    Person::players.back()->clothestintr[i] = Person::players[0]->clothestintr[i];
+                    Person::players.back()->clothestintg[i] = Person::players[0]->clothestintg[i];
+                    Person::players.back()->clothestintb[i] = Person::players[0]->clothestintb[i];
                 }
+                Person::players.back()->addClothes();
 
                 Person::players.back()->power = Person::players[0]->power;
                 Person::players.back()->speedmult = Person::players[0]->speedmult;

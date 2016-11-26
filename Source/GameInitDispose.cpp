@@ -61,7 +61,6 @@ extern int flashdelay;
 extern int whichjointstartarray[26];
 extern int whichjointendarray[26];
 extern int difficulty;
-extern float tintr, tintg, tintb;
 extern float slomospeed;
 extern bool gamestarted;
 
@@ -478,10 +477,6 @@ void Game::InitGame()
     numchallengelevels = 14;
 
     accountactive = Account::loadFile(":Data:Users");
-
-    tintr = 1;
-    tintg = 1;
-    tintb = 1;
 
     whichjointstartarray[0] = righthip;
     whichjointendarray[0] = rightfoot;

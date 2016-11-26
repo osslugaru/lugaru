@@ -215,7 +215,6 @@ extern int whichdialogue;
 extern int directing;
 extern float dialoguetime;
 extern int dialoguegonethrough[20];
-extern float tintr, tintg, tintb;
 
 enum maptypes {
     mapkilleveryone, mapgosomewhere,

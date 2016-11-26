@@ -400,7 +400,7 @@ public:
     void takeWeapon (int weaponId);
 
     bool addClothes(const int& clothesId);
-    bool addClothes(const char* fileName);
+    void addClothes();
 };
 
 const int maxplayers = 10;

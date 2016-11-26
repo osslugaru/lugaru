@@ -6533,14 +6533,20 @@ void Person::takeWeapon(int weaponId)
     weaponids[0] = weaponId;
 }
 
-bool Person::addClothes(const int& clothesId)
+void Person::addClothes()
 {
-    return addClothes(clothes[clothesId]);
+    if (numclothes > 0) {
+        for (int i = 0; i < numclothes; i++) {
+            addClothes(i);
+        }
+        DoMipmaps();
+    }
 }
 
-bool Person::addClothes(const char* fileName)
+bool Person::addClothes(const int& clothesId)
 {
     LOGFUNC;
+    const char* fileName = clothes[clothesId];
 
     GLubyte* array = &skeleton.skinText[0];
 
@@ -6551,6 +6557,10 @@ bool Person::addClothes(const char* fileName)
     float alphanum;
     //Is it valid?
     if (opened) {
+        float tintr = clothestintr[clothesId];
+        float tintg = clothestintg[clothesId];
+        float tintb = clothestintb[clothesId];
+
         if (tintr > 1) tintr = 1;
         if (tintg > 1) tintg = 1;
         if (tintb > 1) tintb = 1;

@@ -70,6 +70,8 @@ extern float viewdistance;
 
 extern int whichlevel;
 
+float tintr = 1, tintg = 1, tintb = 1;
+
 /* Helpers used in console commands */
 
 /* Return true if PFX is a prefix of STR (case-insensitive).  */
@@ -141,15 +143,17 @@ static void set_clothes(int pnum, const char *args)
     char buf[64];
     snprintf(buf, 63, ":Data:Textures:%s.png", args);
 
-    if (!Person::players[pnum]->addClothes(buf))
+    int id = Person::players[pnum]->numclothes;
+    strcpy(Person::players[pnum]->clothes[id], buf);
+    Person::players[pnum]->clothestintr[id] = tintr;
+    Person::players[pnum]->clothestintg[id] = tintg;
+    Person::players[pnum]->clothestintb[id] = tintb;
+    Person::players[pnum]->numclothes++;
+
+    if (!Person::players[pnum]->addClothes(id))
         return;
 
     Person::players[pnum]->DoMipmaps();
-    strcpy(Person::players[pnum]->clothes[Person::players[pnum]->numclothes], buf);
-    Person::players[pnum]->clothestintr[Person::players[pnum]->numclothes] = tintr;
-    Person::players[pnum]->clothestintg[Person::players[pnum]->numclothes] = tintg;
-    Person::players[pnum]->clothestintb[Person::players[pnum]->numclothes] = tintb;
-    Person::players[pnum]->numclothes++;
 }
 
 /* Console commands themselves */
