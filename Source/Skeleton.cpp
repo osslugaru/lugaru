@@ -26,7 +26,6 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 extern float multiplier;
 extern float gravity;
-extern Skeleton testskeleton;
 extern Terrain terrain;
 extern Objects objects;
 extern int environment;

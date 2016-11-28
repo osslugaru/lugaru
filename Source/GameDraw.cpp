@@ -30,7 +30,6 @@ extern float texscale;
 extern Light light;
 extern Terrain terrain;
 extern float multiplier;
-extern float sps;
 extern float viewdistance;
 extern float fadestart;
 extern float screenwidth, screenheight;
@@ -60,12 +59,6 @@ extern int netstate;
 extern float motionbluramount;
 extern bool isclient;
 extern bool alwaysblur;
-extern int test;
-extern bool tilt2weird;
-extern bool tiltweird;
-extern bool midweird;
-extern bool proportionweird;
-extern bool vertexweird[6];
 extern bool velocityblur;
 extern bool debugmode;
 extern int mainmenu;
@@ -93,8 +86,6 @@ extern int currenthotspot;;
 
 extern bool campaign;
 extern bool winfreeze;
-
-extern float menupulse;
 
 extern bool gamestart;
 
@@ -413,18 +404,6 @@ int Game::DrawGLScene(StereoSide side)
         glDepthMask(1);
 
         glEnable(GL_COLOR_MATERIAL);
-
-        test = 2;
-        tilt2weird = 0;
-        tiltweird = 0;
-        midweird = 0;
-        proportionweird = 0;
-        vertexweird[0] = 0;
-        vertexweird[1] = 0;
-        vertexweird[2] = 0;
-        vertexweird[3] = 0;
-        vertexweird[4] = 0;
-        vertexweird[5] = 0;
 
         if (!cellophane) {
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

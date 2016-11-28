@@ -32,7 +32,6 @@ void DefaultSettings()
     newscreenwidth = kContextWidth = 1024;
     newscreenheight = kContextHeight = 768;
     fullscreen = 0;
-    kBitsPerPixel = 32;
     floatjump = 0;
     autoslomo = 1;
     decals = 1;
@@ -52,7 +51,6 @@ void DefaultSettings()
     velocityblur = 0;
     volume = 0.8f;
     ambientsound = 1;
-    vblsync = 1;
     debugmode = 0;
 
     crouchkey = SDL_SCANCODE_LSHIFT;
@@ -126,8 +124,6 @@ void SaveSettings()
     opstream << texttoggle;
     opstream << "\nDebug:\n";
     opstream << debugmode;
-    opstream << "\nVBL Sync:\n";
-    opstream << vblsync;
     opstream << "\nShow Points:\n";
     opstream << showpoints;
     opstream << "\nAlways Blur:\n";
@@ -208,10 +204,6 @@ bool LoadSettings()
             ipstream >> ismotionblur;
         } else if ( !strncmp(setting, "Overall Detail", 14) ) {
             ipstream >> detail;
-            if (detail != 0)
-                kBitsPerPixel = 32;
-            else
-                kBitsPerPixel = 16;
         } else if ( !strncmp(setting, "Floating jump", 13) ) {
             ipstream >> floatjump;
         } else if ( !strncmp(setting, "Mouse jump", 10) ) {
@@ -247,8 +239,6 @@ bool LoadSettings()
             ipstream >> texttoggle;
         } else if ( !strncmp(setting, "Debug", 5) ) {
             ipstream >> debugmode;
-        } else if ( !strncmp(setting, "VBL Sync", 8) ) {
-            ipstream >> vblsync;
         } else if ( !strncmp(setting, "Show Points", 11) ) {
             ipstream >> showpoints;
         } else if ( !strncmp(setting, "Always Blur", 11) ) {

@@ -85,8 +85,6 @@ extern bool ambientsound;
 extern bool mousejump;
 extern float viewdistance;
 extern bool freeze;
-extern bool keyboardfrozen;
-extern bool loadingstuff;
 extern XYZ windvector;
 extern bool debugmode;
 static int leveltheme;
@@ -817,7 +815,6 @@ void Game::Loadlevel(const char *name)
         tutorialstagetime = 0;
         tutorialmaxtime = 1;
     }
-    loadingstuff = 1;
     pause_sound(whooshsound);
     pause_sound(stream_firesound);
 
@@ -1434,7 +1431,6 @@ void Game::Loadlevel(const char *name)
         perror("Problem");
     }
     leveltime = 0;
-    loadingstuff = 0;
     visibleloading = 0;
 }
 
@@ -5456,7 +5452,6 @@ void Game::Tick()
         displaytime[i] += multiplier;
     }
 
-    keyboardfrozen = false;
     Input::Tick();
 
     if (Input::isKeyPressed(SDL_SCANCODE_F6)) {

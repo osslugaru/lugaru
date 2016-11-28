@@ -21,8 +21,6 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 /**> HEADER FILES <**/
 #include "Input.h"
 
-extern bool keyboardfrozen;
-
 bool keyDown[SDL_NUM_SCANCODES + 6];
 bool keyPressed[SDL_NUM_SCANCODES + 6];
 
@@ -44,14 +42,14 @@ void Input::Tick()
 
 bool Input::isKeyDown(int k)
 {
-    if (keyboardfrozen || k >= SDL_NUM_SCANCODES + 6) // really useful? check that.
+    if (k >= SDL_NUM_SCANCODES + 6) // really useful? check that.
         return false;
     return keyDown[k];
 }
 
 bool Input::isKeyPressed(int k)
 {
-    if (keyboardfrozen || k >= SDL_NUM_SCANCODES + 6)
+    if (k >= SDL_NUM_SCANCODES + 6)
         return false;
     return keyPressed[k];
 }

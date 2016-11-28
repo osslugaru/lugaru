@@ -26,13 +26,10 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 extern float screenwidth, screenheight;
 extern float viewdistance;
 extern XYZ viewer;
-extern XYZ lightlocation;
 extern float fadestart;
 extern float texscale;
 extern float gravity;
 extern Light light;
-extern Skeleton testskeleton;
-extern int numsounds;
 extern Terrain terrain;
 extern int kTextureSize;
 extern float texdetail;
@@ -52,8 +49,6 @@ extern float multiplier;
 extern int netdatanew;
 extern float mapinfo;
 extern bool stillloading;
-extern short vRefNum;
-extern long dirID;
 extern int mainmenu;
 extern bool visibleloading;
 extern float flashamount, flashr, flashg, flashb;
@@ -694,8 +689,6 @@ void Game::LoadStuff()
     text->LoadFontTexture(":Data:Textures:Font.png");
     text->BuildFont();
     texdetail = temptexdetail;
-
-    numsounds = 71;
 
     viewdistdetail = 2;
     viewdistance = 50 * megascale * viewdistdetail;

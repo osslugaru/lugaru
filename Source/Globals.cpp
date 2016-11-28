@@ -61,17 +61,13 @@ bool fullscreen = 0;
 float viewdistance = 0;
 XYZ viewer;
 XYZ viewerfacing;
-XYZ lightlocation;
 float fadestart = 0;
 int environment = 0;
 float texscale = 0;
 float gravity = 0;
 Light light;
 Animation animation[animation_count];
-Skeleton testskeleton;
-int numsounds = 0;
 Terrain terrain;
-float sps = 0;
 
 SDL_Window *sdlwindow;
 
@@ -86,7 +82,6 @@ int slomo = 0;
 float slomodelay = 0;
 GLubyte bloodText[512 * 512 * 3] = {0};
 GLubyte wolfbloodText[512 * 512 * 3] = {0};
-float colors[3] = {0};
 int bloodtoggle = 0;
 float camerashake = 0;
 float woozy = 0;
@@ -102,24 +97,17 @@ bool freeze = false;
 bool winfreeze = false;
 float flashamount = 0, flashr = 0, flashg = 0, flashb = 0;
 int flashdelay = 0;
-bool vblsync = false;
 float motionbluramount = 0;
-bool keyboardfrozen = false;
-bool loadingstuff = false;
 bool stillloading = false;
 bool showpoints = false;
 bool showdamagebar = false;
 bool alwaysblur = false;
 bool immediate = false;
 bool velocityblur = false;
-int test = 0;
 XYZ windvector;
-short vRefNum = 0;
-long dirID = 0;
 int mainmenu = 0;
 int whichjointstartarray[26] = {0};
 int whichjointendarray[26] = {0};
-int kBitsPerPixel = 0;
 
 int numhotspots = 0;
 XYZ hotspot[40];
@@ -128,8 +116,6 @@ float hotspotsize[40] = {0};
 char hotspottext[40][256] = {0};
 int currenthotspot = 0;
 int killhotspot = 0;
-
-float menupulse = 0;
 
 float smoketex = 0;
 
@@ -171,14 +157,7 @@ float envsoundvol[30] = {0};
 float envsoundlife[30] = {0};
 int numenvsounds;
 
-
-bool tilt2weird = false;
-bool tiltweird = false;
-bool midweird = false;
-bool proportionweird = false;
-bool vertexweird[6] = {0};
 bool debugmode = false;
-
 
 bool campaign = false;
 

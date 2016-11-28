@@ -42,7 +42,6 @@ using namespace Game;
 #endif
 
 extern float multiplier;
-extern float sps;
 extern float realmultiplier;
 extern int slomo;
 extern bool cellophane;
@@ -242,9 +241,6 @@ bool SetUp ()
     if (!LoadSettings()) {
         fprintf(stderr, "Failed to load config, creating default\n");
         SaveSettings();
-    }
-    if (kBitsPerPixel != 32 && kBitsPerPixel != 16) {
-        kBitsPerPixel = 16;
     }
 
     if (SDL_GL_LoadLibrary(NULL) == -1) {
