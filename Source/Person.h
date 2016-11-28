@@ -329,7 +329,7 @@ public:
 
     bool jumpclimb;
 
-
+    Person();
 
     // convenience functions
     inline Joint& joint(int bodypart) { return skeleton.joints[skeleton.jointlabels[bodypart]]; }

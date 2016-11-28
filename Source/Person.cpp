@@ -83,6 +83,258 @@ extern bool gamestarted;
 
 std::vector<std::shared_ptr<Person>> Person::players(1, std::shared_ptr<Person>(new Person()));
 
+Person::Person() :
+    whichpatchx(0),
+    whichpatchz(0),
+    animCurrent(0),
+    animTarget(0),
+    frameCurrent(0),
+    frameTarget(0),
+    oldanimCurrent(0),
+    oldanimTarget(0),
+    oldframeCurrent(0),
+    oldframeTarget(0),
+    howactive(typeactive),
+    parriedrecently(0),
+    superruntoggle(false),
+    lastattack(0), lastattack2(0), lastattack3(0),
+    currentoffset(), targetoffset(), offset(),
+    target(0),
+    transspeed(0),
+
+    realoldcoords(),
+    oldcoords(),
+    coords(),
+    originalcoords(),
+    velocity(),
+
+    proportionhead(),
+    proportionlegs(),
+    proportionarms(),
+    proportionbody(),
+
+    unconscioustime(0),
+
+    immobile(false),
+
+    velspeed(0),
+    targetyaw(0),
+    targetrot(0),
+    rot(0),
+    oldrot(0),
+    lookyaw(0),
+    lookpitch(0),
+    yaw(0),
+    pitch(0),
+    lowyaw(0),
+    tilt(0),
+    targettilt(0),
+    tilt2(0),
+    targettilt2(0),
+    rabbitkickenabled(false),
+
+    bloodloss(0),
+    bleeddelay(0),
+    skiddelay(0),
+    skiddingdelay(0),
+    deathbleeding(0),
+    tempdeltav(0),
+
+    damagetolerance(0),
+    damage(0),
+    permanentdamage(0),
+    superpermanentdamage(0),
+    lastcollide(0),
+    dead(0),
+
+    jumppower(0),
+    onground(false),
+    madskills(0),
+
+    wentforweapon(0),
+
+    calcrot(false),
+
+    backwardsanim(false),
+
+    facing(),
+
+    bleeding(0),
+    bleedx(0), bleedy(0),
+    direction(0),
+    texupdatedelay(0),
+
+    headyaw(0), headpitch(0),
+    targetheadyaw(0), targetheadpitch(0),
+
+    onterrain(false),
+    pause(false),
+
+    grabdelay(0),
+
+    victim(nullptr),
+    hasvictim(false),
+
+    updatedelay(0),
+    normalsupdatedelay(0),
+
+    jumpstart(false),
+    forwardkeydown(false),
+    forwardstogglekeydown(false),
+    rightkeydown(false),
+    leftkeydown(false),
+    backkeydown(false),
+    jumpkeydown(false),
+    jumptogglekeydown(false),
+    crouchkeydown(false),
+    crouchtogglekeydown(false),
+    drawkeydown(false),
+    drawtogglekeydown(false),
+    throwkeydown(false),
+    throwtogglekeydown(false),
+    attackkeydown(false),
+    feint(false),
+    lastfeint(false),
+    headless(false),
+
+    crouchkeydowntime(0),
+    jumpkeydowntime(0),
+    freefall(false),
+
+    turnspeed(0),
+
+    aitype(0),
+    aiupdatedelay(0),
+    losupdatedelay(0),
+    ally(0),
+    movetarget(),
+    collide(0),
+    collided(0),
+    avoidcollided(0),
+    loaded(false),
+    whichdirection(false),
+    whichdirectiondelay(0),
+    avoidsomething(false),
+    avoidwhere(),
+    blooddimamount(0),
+
+    staggerdelay(0),
+    blinkdelay(0),
+    twitchdelay(0),
+    twitchdelay2(0),
+    twitchdelay3(0),
+    lefthandmorphness(0),
+    righthandmorphness(0),
+    headmorphness(0),
+    chestmorphness(0),
+    tailmorphness(0),
+    targetlefthandmorphness(0),
+    targetrighthandmorphness(0),
+    targetheadmorphness(0),
+    targetchestmorphness(0),
+    targettailmorphness(0),
+    lefthandmorphstart(0), lefthandmorphend(0),
+    righthandmorphstart(0), righthandmorphend(0),
+    headmorphstart(0), headmorphend(0),
+    chestmorphstart(0), chestmorphend(0),
+    tailmorphstart(0), tailmorphend(0),
+
+    weaponmissdelay(0),
+    highreversaldelay(0),
+    lowreversaldelay(0),
+    nocollidedelay(0),
+
+    creature(rabbittype),
+
+    id(0),
+
+    skeleton(),
+
+    speed(0),
+    scale(-1),
+    power(0),
+    speedmult(0),
+
+    protectionhead(0),
+    protectionhigh(0),
+    protectionlow(0),
+    armorhead(0),
+    armorhigh(0),
+    armorlow(0),
+    metalhead(false),
+    metalhigh(false),
+    metallow(false),
+
+    numclothes(0),
+
+    landhard(false),
+    bled(false),
+    spurt(false),
+    onfire(false),
+    onfiredelay(0),
+    burnt(0),
+    fireduration(0),
+
+    flamedelay(0),
+    updatestuffdelay(0),
+
+    playerdetail(0),
+
+    num_weapons(0),
+    weaponactive(-1),
+    weaponstuck(0),
+    weaponstuckwhere(0),
+
+    numwaypoints(0),
+    pausetime(0),
+    hastempwaypoint(false),
+    tempwaypoint(),
+
+    headtarget(),
+    interestdelay(0),
+
+    finalfinaltarget(),
+    finaltarget(),
+    finalpathfindpoint(0),
+    targetpathfindpoint(0),
+    lastpathfindpoint(0),
+    lastpathfindpoint2(0),
+    lastpathfindpoint3(0),
+    lastpathfindpoint4(0),
+    onpath(false),
+
+    waypoint(0),
+    jumppath(false),
+
+    lastseen(),
+    lastseentime(0),
+    lastchecktime(0),
+    stunned(0),
+    surprised(0),
+    runninghowlong(0),
+    lastoccluded(0),
+    laststanding(0),
+    escapednum(0),
+
+    speechdelay(0),
+    neckspurtdelay(0),
+    neckspurtparticledelay(0),
+    neckspurtamount(0),
+
+    whichskin(0),
+    rabbitkickragdoll(false),
+
+    averageloc(),
+    oldaverageloc(),
+
+    tempanimation(),
+
+    occluded(0),
+
+    jumpclimb(false)
+{
+}
+
 /* EFFECT
  *
  * USES:
