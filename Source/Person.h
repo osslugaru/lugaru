@@ -88,7 +88,6 @@ public:
     XYZ realoldcoords;
     XYZ oldcoords;
     XYZ coords;
-    XYZ originalcoords;
     XYZ velocity;
 
     XYZ proportionhead;
@@ -133,13 +132,10 @@ public:
 
     float jumppower;
     bool onground;
-    int madskills;
 
     int wentforweapon;
 
     bool calcrot;
-
-    bool backwardsanim;
 
     XYZ facing;
 
@@ -193,7 +189,6 @@ public:
     float aiupdatedelay;
     float losupdatedelay;
     int ally;
-    XYZ movetarget;
     float collide;
     float collided;
     float avoidcollided;
@@ -228,7 +223,6 @@ public:
     float weaponmissdelay;
     float highreversaldelay;
     float lowreversaldelay;
-    float nocollidedelay;
 
     int creature;
 
@@ -263,10 +257,8 @@ public:
     bool onfire;
     float onfiredelay;
     float burnt;
-    float fireduration;
 
     float flamedelay;
-    float updatestuffdelay;
 
     int playerdetail;
 
@@ -283,8 +275,6 @@ public:
     XYZ waypoints[90];
     int waypointtype[90];
     float pausetime;
-    bool hastempwaypoint;
-    XYZ tempwaypoint;
 
     XYZ headtarget;
     float interestdelay;
@@ -297,10 +287,8 @@ public:
     int lastpathfindpoint2;
     int lastpathfindpoint3;
     int lastpathfindpoint4;
-    bool onpath;
 
     int waypoint;
-    bool jumppath;
 
     XYZ lastseen;
     float lastseentime;
@@ -319,9 +307,6 @@ public:
 
     int whichskin;
     bool rabbitkickragdoll;
-
-    XYZ averageloc;
-    XYZ oldaverageloc;
 
     Animation tempanimation;
 

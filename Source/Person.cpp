@@ -105,7 +105,6 @@ Person::Person() :
     realoldcoords(),
     oldcoords(),
     coords(),
-    originalcoords(),
     velocity(),
 
     proportionhead(),
@@ -149,13 +148,10 @@ Person::Person() :
 
     jumppower(0),
     onground(false),
-    madskills(0),
 
     wentforweapon(0),
 
     calcrot(false),
-
-    backwardsanim(false),
 
     facing(),
 
@@ -207,7 +203,6 @@ Person::Person() :
     aiupdatedelay(0),
     losupdatedelay(0),
     ally(0),
-    movetarget(),
     collide(0),
     collided(0),
     avoidcollided(0),
@@ -242,7 +237,6 @@ Person::Person() :
     weaponmissdelay(0),
     highreversaldelay(0),
     lowreversaldelay(0),
-    nocollidedelay(0),
 
     creature(rabbittype),
 
@@ -273,10 +267,8 @@ Person::Person() :
     onfire(false),
     onfiredelay(0),
     burnt(0),
-    fireduration(0),
 
     flamedelay(0),
-    updatestuffdelay(0),
 
     playerdetail(0),
 
@@ -287,8 +279,6 @@ Person::Person() :
 
     numwaypoints(0),
     pausetime(0),
-    hastempwaypoint(false),
-    tempwaypoint(),
 
     headtarget(),
     interestdelay(0),
@@ -301,10 +291,8 @@ Person::Person() :
     lastpathfindpoint2(0),
     lastpathfindpoint3(0),
     lastpathfindpoint4(0),
-    onpath(false),
 
     waypoint(0),
-    jumppath(false),
 
     lastseen(),
     lastseentime(0),
@@ -323,9 +311,6 @@ Person::Person() :
 
     whichskin(0),
     rabbitkickragdoll(false),
-
-    averageloc(),
-    oldaverageloc(),
 
     tempanimation(),
 

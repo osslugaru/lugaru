@@ -954,7 +954,6 @@ void Game::Loadlevel(const char *name)
             funpackf(tfile, "Bf Bf Bf Bf Bf Bi", &Person::players[0]->coords.x, &Person::players[0]->coords.y, &Person::players[0]->coords.z, &Person::players[0]->yaw, &Person::players[0]->targetyaw, &Person::players[0]->num_weapons);
         if (stealthloading)
             funpackf(tfile, "Bf Bf Bf Bf Bf Bi", &lamefloat, &lamefloat, &lamefloat, &lamefloat, &lamefloat, &Person::players[0]->num_weapons);
-        Person::players[0]->originalcoords = Person::players[0]->coords;
         if (Person::players[0]->num_weapons > 0 && Person::players[0]->num_weapons < 5)
             for (int j = 0; j < Person::players[0]->num_weapons; j++) {
                 Person::players[0]->weaponids[j] = weapons.size();
@@ -1324,7 +1323,6 @@ void Game::Loadlevel(const char *name)
             Person::players[i]->normalsupdatedelay = 0;
 
             Person::players[i]->aitype = passivetype;
-            Person::players[i]->madskills = 0;
 
             if (i == 0) {
                 Person::players[i]->proportionhead = 1.2;
@@ -2493,7 +2491,6 @@ void doDebugKeys()
                 Person::players.back()->bleeding = 0;
                 Person::players.back()->numwaypoints = 0;
                 Person::players.back()->waypoint = 0;
-                Person::players.back()->jumppath = 0;
                 Person::players.back()->weaponstuck = -1;
                 Person::players.back()->weaponactive = -1;
                 Person::players.back()->num_weapons = 0;
@@ -3384,8 +3381,7 @@ void doAttacks()
                                             !Person::players[i]->skeleton.free &&
                                             Person::players[i]->animTarget != getupfrombackanim &&
                                             Person::players[i]->animTarget != getupfromfrontanim &&
-                                            (Person::players[i]->stunned > 0 && Person::players[k]->madskills ||
-                                             Person::players[i]->surprised > 0 ||
+                                            (Person::players[i]->surprised > 0 ||
                                              Person::players[i]->aitype == passivetype ||
                                              attackweapon && Person::players[i]->stunned > 0) &&
                                             normaldotproduct(Person::players[i]->facing, Person::players[i]->coords - Person::players[k]->coords) > 0) {
