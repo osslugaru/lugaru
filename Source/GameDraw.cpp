@@ -107,13 +107,13 @@ enum drawmodes {
     realmotionblurmode, doublevisionmode, glowmode,
 };
 
-void Game::flash()   // shouldn't be that way, these should be attributes and Person class should not change rendering.
+void Game::flash(float amount, int delay)   // shouldn't be that way, these should be attributes and Person class should not change rendering.
 {
     flashr = 1;
     flashg = 0;
     flashb = 0;
-    flashamount = 1;
-    flashdelay = 1;
+    flashamount = amount;
+    flashdelay = delay;
 }
 
 void DrawMenu();
@@ -890,8 +890,8 @@ int Game::DrawGLScene(StereoSide side)
                 text->glPrint(screenwidth / 2 - 7.6 * strlen(string2)*screenwidth / 1024 * .8, 0 + screenheight * 1 / 10 - 20 * .8 * screenwidth / 1024, string2, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
                 text->glPrint(screenwidth / 2 - 7.6 * strlen(string3)*screenwidth / 1024 * .8, 0 + screenheight * 1 / 10 - 40 * .8 * screenwidth / 1024, string3, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
             }
-            //Hot spots
 
+            //Hot spots
             if (numhotspots && (bonustime >= 1 || bonus <= 0 || bonustime < 0) && !tutoriallevel) {
                 float closestdist = -1;
                 float distance = 0;

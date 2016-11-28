@@ -53,8 +53,6 @@ extern bool decals;
 extern float fadestart;
 extern bool freeze;
 extern bool winfreeze;
-extern float flashamount, flashr, flashg, flashb;
-extern int flashdelay;
 extern bool showpoints;
 extern bool immediate;
 extern int tutoriallevel;
@@ -643,12 +641,7 @@ void Person::DoBloodBig(float howmuch, int which)
         }
 
     if (id == 0 && howmuch > 0) {
-        // FIXME: manipulating attributes
-        flashamount = .5;
-        flashr = 1;
-        flashg = 0;
-        flashb = 0;
-        flashdelay = 0;
+        Game::flash(.5, 0);
     }
 
     if (bloodtoggle && decals && tutoriallevel != 1) {
@@ -4375,11 +4368,7 @@ void Person::DoStuff()
                 }
 
                 if (id == 0) {
-                    flashamount = .5;
-                    flashr = 1;
-                    flashg = 0;
-                    flashb = 0;
-                    flashdelay = 0;
+                    Game::flash(.5, 0);
                 }
             }
 

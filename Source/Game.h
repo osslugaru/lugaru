@@ -164,7 +164,7 @@ void fireSound(int sound = fireendsound);
 void setKeySelected();
 
 void inputText(std::string& str, unsigned* charselected);
-void flash();
+void flash(float amount = 1, int delay = 1);
 }
 
 #ifndef __forceinline
