@@ -50,12 +50,12 @@ void SkyBox::draw()
     M[13] = 0;
     M[14] = 0;
     glLoadMatrixf(M);
-    if (environment == 2)
+    if (environment == desertenvironment) {
         glScalef(1 + blurness / 1000, 1, 1 + blurness / 1000);
-    if (environment != 2)
-        glColor3f(.85 * skyboxr, .85 * skyboxg, .95 * skyboxb);
-    else
         glColor3f(1 * skyboxr, .95 * skyboxg, .95 * skyboxb);
+    } else {
+        glColor3f(.85 * skyboxr, .85 * skyboxg, .95 * skyboxb);
+    }
 
     if (!skyboxtexture) {
         glDisable(GL_TEXTURE_2D);

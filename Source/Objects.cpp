@@ -160,7 +160,7 @@ void Objects::Draw()
                                     roty[i] = -10;
                             }
                             if (type[i] == treetrunktype || type[i] == treeleavestype) {
-                                if (type[i] == treetrunktype || environment == 2) {
+                                if (type[i] == treetrunktype || environment == desertenvironment) {
                                     messedwith[i] -= multiplier;
                                     if (rotxvel[i] || rotx[i]) {
                                         if (rotx[i] > 0) rotxvel[i] -= multiplier * 8 * fabs(rotx[i]);
