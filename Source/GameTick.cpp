@@ -2932,12 +2932,8 @@ void doAerialAcrobatics()
                                 Person::players[k]->animTarget = Person::players[k]->getLanding();
                                 emit_sound_at(landsound, Person::players[k]->coords, 128.);
                                 if (k == 0) {
-                                    envsound[numenvsounds] = Person::players[k]->coords;
-                                    envsoundvol[numenvsounds] = 16;
-                                    envsoundlife[numenvsounds] = .4;
-                                    numenvsounds++;
+                                    addEnvSound(Person::players[k]->coords);
                                 }
-
                             }
                         }
                     }

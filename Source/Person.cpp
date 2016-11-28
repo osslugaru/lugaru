@@ -57,10 +57,6 @@ extern float flashamount, flashr, flashg, flashb;
 extern int flashdelay;
 extern bool showpoints;
 extern bool immediate;
-extern XYZ envsound[30];
-extern float envsoundvol[30];
-extern float envsoundlife[30];
-extern int numenvsounds;
 extern int tutoriallevel;
 extern float smoketex;
 extern int tutorialstage;
@@ -625,17 +621,12 @@ void Person::DoBloodBig(float howmuch, int which)
             // play pain sounds
             int whichsound = -1;
 
-            // FIXME: seems to be spawning sounds by manipulating attributes... MESSY!
             if (creature == wolftype) {
                 int i = abs(Random() % 2);
                 if (i == 0)
                     whichsound = snarlsound;
                 if (i == 1)
                     whichsound = snarl2sound;
-                envsound[numenvsounds] = coords;
-                envsoundvol[numenvsounds] = 16;
-                envsoundlife[numenvsounds] = .4;
-                numenvsounds++;
             }
             if (creature == rabbittype) {
                 int i = abs(Random() % 2);
@@ -643,14 +634,12 @@ void Person::DoBloodBig(float howmuch, int which)
                     whichsound = rabbitpainsound;
                 if (i == 1 && howmuch >= 2)
                     whichsound = rabbitpain1sound;
-                envsound[numenvsounds] = coords;
-                envsoundvol[numenvsounds] = 16;
-                envsoundlife[numenvsounds] = .4;
-                numenvsounds++;
             }
 
-            if (whichsound != -1)
+            if (whichsound != -1) {
                 emit_sound_at(whichsound, coords);
+                addEnvSound(coords);
+            }
         }
 
     if (id == 0 && howmuch > 0) {
@@ -1441,10 +1430,6 @@ void Person::DoDamage(float howmuch)
                     whichsound = snarlsound;
                 if (i == 1)
                     whichsound = snarl2sound;
-                envsound[numenvsounds] = coords;
-                envsoundvol[numenvsounds] = 16;
-                envsoundlife[numenvsounds] = .4;
-                numenvsounds++;
             }
             if (creature == rabbittype) {
                 int i = abs(Random() % 2);
@@ -1452,14 +1437,11 @@ void Person::DoDamage(float howmuch)
                     whichsound = rabbitpainsound;
                 if (i == 1 && damage > damagetolerance)
                     whichsound = rabbitpain1sound;
-                envsound[numenvsounds] = coords;
-                envsoundvol[numenvsounds] = 16;
-                envsoundlife[numenvsounds] = .4;
-                numenvsounds++;
             }
 
             if (whichsound != -1) {
                 emit_sound_at(whichsound, coords);
+                addEnvSound(coords);
             }
         }
     speechdelay = .3;
@@ -1987,13 +1969,11 @@ void Person::DoAnimations()
 
                     if (id == 0)
                         if (whichsound == footstepsound || whichsound == footstepsound2 || whichsound == footstepsound3 || whichsound == footstepsound4) {
-                            envsound[numenvsounds] = coords;
-                            if (animTarget == wolfrunninganim || animTarget == rabbitrunninganim)
-                                envsoundvol[numenvsounds] = 15;
-                            else
-                                envsoundvol[numenvsounds] = 6;
-                            envsoundlife[numenvsounds] = .4;
-                            numenvsounds++;
+                            if (animTarget == wolfrunninganim || animTarget == rabbitrunninganim) {
+                                addEnvSound(coords, 15);
+                            } else {
+                                addEnvSound(coords, 6);
+                            }
                         }
 
                     if (animation[animTarget].label[frameTarget] == 3) {
@@ -5229,10 +5209,7 @@ void Person::DoStuff()
                             emit_sound_at(bushrustle, coords, 40 * findLength(&velocity));
 
                             if (id == 0) {
-                                envsound[numenvsounds] = coords;
-                                envsoundvol[numenvsounds] = 4 * findLength(&velocity);
-                                envsoundlife[numenvsounds] = .4;
-                                numenvsounds++;
+                                addEnvSound(coords, 4 * findLength(&velocity));
                             }
 
                             int howmany;
@@ -5292,10 +5269,7 @@ void Person::DoStuff()
                             emit_sound_at(bushrustle, coords, 40 * findLength(&velocity));
 
                             if (id == 0) {
-                                envsound[numenvsounds] = coords;
-                                envsoundvol[numenvsounds] = 4 * findLength(&velocity);
-                                envsoundlife[numenvsounds] = .4;
-                                numenvsounds++;
+                                addEnvSound(coords, 4 * findLength(&velocity));
                             }
 
                             int howmany;
@@ -5784,10 +5758,7 @@ void Person::DoStuff()
                 emit_sound_at(landsound, coords, 128.);
 
                 if (id == 0) {
-                    envsound[numenvsounds] = coords;
-                    envsoundvol[numenvsounds] = 16;
-                    envsoundlife[numenvsounds] = .4;
-                    numenvsounds++;
+                    addEnvSound(coords);
                 }
             }
         }
@@ -6684,10 +6655,7 @@ int Person::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate,
                                     emit_sound_at(landsound, coords, 128.);
 
                                     if (id == 0) {
-                                        envsound[numenvsounds] = coords;
-                                        envsoundvol[numenvsounds] = 16;
-                                        envsoundlife[numenvsounds] = .4;
-                                        numenvsounds++;
+                                        addEnvSound(coords);
                                     }
                                 }
                             }

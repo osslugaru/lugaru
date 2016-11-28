@@ -32,10 +32,6 @@ extern int environment;
 extern float camerashake;
 extern bool freeze;
 extern int detail;
-extern XYZ envsound[30];
-extern float envsoundvol[30];
-extern int numenvsounds;
-extern float envsoundlife[30];
 extern int tutoriallevel;
 
 extern int whichjointstartarray[26];
@@ -350,10 +346,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
 
                             emit_sound_at(breaksound2, joints[i].position * (*scale) + *coords);
 
-                            envsound[numenvsounds] = *coords;
-                            envsoundvol[numenvsounds] = 64;
-                            envsoundlife[numenvsounds] = .4;
-                            numenvsounds++;
+                            addEnvSound(*coords, 64);
                         }
 
                     if (findLengthfast(&bounceness) > 2500) {
@@ -438,10 +431,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
 
                                             emit_sound_at(breaksound2, joints[i].position * (*scale) + *coords);
 
-                                            envsound[numenvsounds] = *coords;
-                                            envsoundvol[numenvsounds] = 64;
-                                            envsoundlife[numenvsounds] = .4;
-                                            numenvsounds++;
+                                            addEnvSound(*coords, 64);
                                         }
                                     if (objects.type[k] == treetrunktype) {
                                         objects.rotx[k] += joints[i].velocity.x * multiplier * .4;
