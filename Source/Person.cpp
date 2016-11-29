@@ -3317,7 +3317,6 @@ void Person::DoAnimations()
                             weapons[weaponids[weaponactive]].blooddrip += 3;
                         }
                         if (weaponactive == -1 && creature == wolftype) {
-                            ;
                             emit_sound_at(clawslicesound, victim->coords, 128.);
                             victim->spurt = 1;
                             victim->DoBloodBig(2 / victim->armorhigh, 175);

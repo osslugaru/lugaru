@@ -107,15 +107,8 @@ void Sprite::Draw()
                     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 }
                 break;
-            case cloudimpactsprite:
-                cloudimpacttexture.bind();
-                if (!blend) {
-                    blend = 1;
-                    glAlphaFunc(GL_GREATER, 0.0001);
-                    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                }
-                break;
             case breathsprite:
+            case cloudimpactsprite:
                 cloudimpacttexture.bind();
                 if (!blend) {
                     blend = 1;

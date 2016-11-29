@@ -31,8 +31,6 @@ bool CanInitStereo(StereoMode mode)
 
     switch (mode) {
     case stereoNone:
-        return true;
-        break;
     case stereoAnaglyph:
         return true;
         break;
