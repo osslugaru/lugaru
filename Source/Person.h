@@ -302,6 +302,7 @@ public:
     float stunned;
     float surprised;
     float runninghowlong;
+    int occluded;
     int lastoccluded;
     int laststanding;
     int escapednum;
@@ -315,8 +316,6 @@ public:
     bool rabbitkickragdoll;
 
     Animation tempanimation;
-
-    float occluded;
 
     bool jumpclimb;
 

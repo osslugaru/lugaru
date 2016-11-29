@@ -288,6 +288,7 @@ Person::Person() :
     stunned(0),
     surprised(0),
     runninghowlong(0),
+    occluded(0),
     lastoccluded(0),
     laststanding(0),
     escapednum(0),
@@ -301,8 +302,6 @@ Person::Person() :
     rabbitkickragdoll(false),
 
     tempanimation(),
-
-    occluded(0),
 
     jumpclimb(false)
 {
