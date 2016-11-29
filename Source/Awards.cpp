@@ -41,7 +41,7 @@ const char *award_names[award_count] = {
 };
 
 static const int bonus_values[bonus_count] = {
-#define DECLARE_BONUS(id, name, value, ...) value,
+#define DECLARE_BONUS(id, name, value) value,
 #include "Bonuses.def"
 #undef DECLARE_BONUS
 };
