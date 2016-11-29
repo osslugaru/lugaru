@@ -6686,8 +6686,8 @@ void Game::Tick()
                                 Person::players[i]->setAnimation(jumpupanim);
                                 Person::players[i]->yaw = Person::players[i]->targetyaw;
                                 Person::players[i]->transspeed = 20;
-                                Person::players[i]->FootLand(0, 1);
-                                Person::players[i]->FootLand(1, 1);
+                                Person::players[i]->FootLand(leftfoot, 1);
+                                Person::players[i]->FootLand(rightfoot, 1);
 
                                 facing = 0;
                                 facing.z = -1;

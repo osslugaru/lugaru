@@ -383,7 +383,7 @@ public:
     int SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate, Model *model);
     int DrawSkeleton();
     void Puff(int whichlabel);
-    void FootLand(int which, float opacity);
+    void FootLand(bodyparts whichfoot, float opacity);
     void DoStuff();
     void setAnimation(int);
     void DoAnimations();

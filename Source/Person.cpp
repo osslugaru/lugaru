@@ -1786,76 +1786,52 @@ void Person::RagDoll(bool checkcollision)
 
 /* EFFECT
  */
-void Person::FootLand(int which, float opacity)
+void Person::FootLand(bodyparts whichfoot, float opacity)
 {
+    if ((whichfoot != leftfoot) && (whichfoot != rightfoot)) {
+        cerr << "FootLand called on wrong bodypart" << endl;
+        return;
+    }
     static XYZ terrainlight;
     static XYZ footvel, footpoint;
-    if (opacity >= 1 || skiddelay <= 0)
+    if (opacity >= 1 || skiddelay <= 0) {
         if (opacity > 1) {
             footvel = 0;
-            if (which == 0)
-                footpoint = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
-            if (which == 1)
-                footpoint = DoRotation(jointPos(rightfoot), 0, yaw, 0) * scale + coords;
-            //footpoint.y=coords.y;
+            footpoint = DoRotation(jointPos(whichfoot), 0, yaw, 0) * scale + coords;
             if (distsq(&footpoint, &viewer))
                 Sprite::MakeSprite(cloudsprite, footpoint, footvel, 1, 1, 1, .5, .2 * opacity);
-        } else if (environment == snowyenvironment && onterrain && terrain.getOpacity(coords.x, coords.z) < .2) {
+        } else if (onterrain && terrain.getOpacity(coords.x, coords.z) < .2) {
             footvel = velocity / 5;
             if (footvel.y < .8)
                 footvel.y = .8;
-            if (which == 0)
-                footpoint = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
-            if (which == 1)
-                footpoint = DoRotation(jointPos(rightfoot), 0, yaw, 0) * scale + coords;
+            footpoint = DoRotation(jointPos(whichfoot), 0, yaw, 0) * scale + coords;
             footpoint.y = terrain.getHeight(footpoint.x, footpoint.z);
             terrainlight = terrain.getLighting(footpoint.x, footpoint.z);
-            if (distsq(&footpoint, &viewer) < viewdistance * viewdistance / 4)
-                Sprite::MakeSprite(cloudsprite, footpoint, footvel * .6, terrainlight.x, terrainlight.y, terrainlight.z, .5, .7 * opacity);
-            if (opacity >= 1 || detail == 2)
-                if (detail == 2)
-                    if (distsq(&footpoint, &viewer) < viewdistance * viewdistance / 4)
+            if (distsq(&footpoint, &viewer) < viewdistance * viewdistance / 4) {
+                if (environment == snowyenvironment) {
+                    Sprite::MakeSprite(cloudsprite, footpoint, footvel * .6, terrainlight.x, terrainlight.y, terrainlight.z, .5, .7 * opacity);
+                    if (detail == 2) {
                         terrain.MakeDecal(footprintdecal, footpoint, .2, 1 * opacity, yaw);
-        } else if (environment == grassyenvironment && onterrain && terrain.getOpacity(coords.x, coords.z) < .2) {
-            footvel = velocity / 5;
-            if (footvel.y < .8)
-                footvel.y = .8;
-            if (which == 0)
-                footpoint = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
-            if (which == 1)
-                footpoint = DoRotation(jointPos(rightfoot), 0, yaw, 0) * scale + coords;
-            footpoint.y = terrain.getHeight(footpoint.x, footpoint.z);
-            terrainlight = terrain.getLighting(footpoint.x, footpoint.z);
-            if (distsq(&footpoint, &viewer) < viewdistance * viewdistance / 4)
-                Sprite::MakeSprite(cloudsprite, footpoint, footvel * .6, terrainlight.x * 90 / 255, terrainlight.y * 70 / 255, terrainlight.z * 8 / 255, .5, .5 * opacity);
-        } else if (environment == desertenvironment && onterrain && terrain.getOpacity(coords.x, coords.z) < .2) {
-            footvel = velocity / 5;
-            if (footvel.y < .8)
-                footvel.y = .8;
-            if (which == 0)
-                footpoint = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
-            if (which == 1)
-                footpoint = DoRotation(jointPos(rightfoot), 0, yaw, 0) * scale + coords;
-            footpoint.y = terrain.getHeight(footpoint.x, footpoint.z);
-            terrainlight = terrain.getLighting(footpoint.x, footpoint.z);
-            if (distsq(&footpoint, &viewer) < viewdistance * viewdistance / 4)
-                Sprite::MakeSprite(cloudsprite, footpoint, footvel * .6, terrainlight.x * 190 / 255, terrainlight.y * 170 / 255, terrainlight.z * 108 / 255, .5, .7 * opacity);
-            if (opacity >= 1 || detail == 2)
-                if (detail == 2)
-                    if (distsq(&footpoint, &viewer) < viewdistance * viewdistance / 4)
+                    }
+                } else if (environment == grassyenvironment) {
+                    Sprite::MakeSprite(cloudsprite, footpoint, footvel * .6, terrainlight.x * 90 / 255, terrainlight.y * 70 / 255, terrainlight.z * 8 / 255, .5, .5 * opacity);
+                } else if (environment == desertenvironment) {
+                    Sprite::MakeSprite(cloudsprite, footpoint, footvel * .6, terrainlight.x * 190 / 255, terrainlight.y * 170 / 255, terrainlight.z * 108 / 255, .5, .7 * opacity);
+                    if (detail == 2) {
                         terrain.MakeDecal(footprintdecal, footpoint, .2, .25 * opacity, yaw);
-        } else if (isLanding() || animTarget == jumpupanim || isLandhard()) {
+                    }
+                }
+            }
+        } else if (isLanding() || (animTarget == jumpupanim) || isLandhard()) {
             footvel = velocity / 5;
             if (footvel.y < .8)
                 footvel.y = .8;
-            if (which == 0)
-                footpoint = DoRotation(jointPos(leftfoot), 0, yaw, 0) * scale + coords;
-            if (which == 1)
-                footpoint = DoRotation(jointPos(rightfoot), 0, yaw, 0) * scale + coords;
-            //footpoint.y=coords.y;
-            if (distsq(&footpoint, &viewer) < viewdistance * viewdistance / 4)
+            footpoint = DoRotation(jointPos(whichfoot), 0, yaw, 0) * scale + coords;
+            if (distsq(&footpoint, &viewer) < viewdistance * viewdistance / 4) {
                 Sprite::MakeSprite(cloudsprite, footpoint, footvel * .6, 1, 1, 1, .5, .2 * opacity);
+            }
         }
+    }
 }
 
 /* EFFECT
@@ -2013,12 +1989,12 @@ void Person::DoAnimations()
                             else
                                 whichsound = footstepsound2;
                             if (animation[animTarget].label[frameTarget] == 1)
-                                FootLand(0, 1);
+                                FootLand(leftfoot, 1);
                             if (animation[animTarget].label[frameTarget] == 2)
-                                FootLand(1, 1);
+                                FootLand(rightfoot, 1);
                             if (animation[animTarget].label[frameTarget] == 3 && isRun()) {
-                                FootLand(1, 1);
-                                FootLand(0, 1);
+                                FootLand(rightfoot, 1);
+                                FootLand(leftfoot, 1);
                             }
 
                         }
@@ -2102,8 +2078,8 @@ void Person::DoAnimations()
 
 
             if ((!wasLanding() && !wasLandhard()) && animCurrent != getIdle() && (isLanding() || isLandhard())) {
-                FootLand(0, 1);
-                FootLand(1, 1);
+                FootLand(leftfoot, 1);
+                FootLand(rightfoot, 1);
             }
 
             transspeed = 0;
@@ -2330,7 +2306,6 @@ void Person::DoAnimations()
                             victim->skeleton.joints[i].velocity += relative * damagemult * 40;
                         }
                         victim->jointVel(head) += relative * damagemult * 200;
-                        //FootLand(1,2);
                         victim->Puff(head);
                         victim->DoDamage(damagemult * 100 / victim->protectionhead);
 
@@ -2366,7 +2341,6 @@ void Person::DoAnimations()
                             victim->skeleton.joints[i].velocity += relative * damagemult * 20;
                         }
                         victim->jointVel(head) += relative * damagemult * 100;
-                        //FootLand(1,2);
                         victim->Puff(head);
                         victim->DoDamage(damagemult * 50 / victim->protectionhead);
                     }
@@ -2397,7 +2371,6 @@ void Person::DoAnimations()
                             victim->skeleton.joints[i].velocity += relative * damagemult * 40;
                         }
                         victim->jointVel(head) += relative * damagemult * 200;
-                        //FootLand(1,2);
                         victim->Puff(head);
                         victim->DoDamage(damagemult * 150 / victim->protectionhead);
 
@@ -2433,7 +2406,6 @@ void Person::DoAnimations()
                             victim->skeleton.joints[i].velocity += relative * damagemult * 40;
                         }
                         victim->jointVel(head) += relative * damagemult * 200;
-                        //FootLand(1,2);
                         victim->Puff(head);
                         victim->DoDamage(damagemult * 150 / victim->protectionhead);
 
@@ -2463,7 +2435,6 @@ void Person::DoAnimations()
                             victim->skeleton.joints[i].velocity += relative * damagemult * 30;
                         }
                         victim->jointVel(head) += relative * damagemult * 100;
-                        //FootLand(1,2);
                         victim->Puff(head);
                         victim->DoDamage(damagemult * 50 / victim->protectionhead);
                     }
@@ -3054,7 +3025,6 @@ void Person::DoAnimations()
                         }
                         victim->jointVel(head) += relative * damagemult * 230;
                         victim->jointVel(neck) += relative * damagemult * 230;
-                        //FootLand(1,2);
                         victim->Puff(head);
                         if (tutoriallevel != 1) {
                             victim->DoDamage(damagemult * 120 / victim->protectionhigh);
@@ -3087,7 +3057,6 @@ void Person::DoAnimations()
                         }
                         victim->jointVel(head) += relative * damagemult * 220;
                         victim->jointVel(neck) += relative * damagemult * 220;
-                        //FootLand(1,2);
                         victim->Puff(head);
                         if (tutoriallevel != 1) {
                             victim->DoDamage(damagemult * 350 / victim->protectionhead);
@@ -3123,25 +3092,18 @@ void Person::DoAnimations()
                         victim->RagDoll(0);
                         XYZ relative;
                         relative = 0;
-                        /*relative=victim->coords-coords;
-                        relative.y=0;
-                        Normalise(&relative);
-                        relative=DoRotation(relative,0,90,0);*/
                         relative.y = -1;
                         Normalise(&relative);
                         if (!victim->dead) {
                             for (int i = 0; i < victim->skeleton.num_joints; i++) {
                                 victim->skeleton.joints[i].velocity = relative * damagemult * 40;
                             }
-                            //FootLand(1,2);
                             victim->jointVel(abdomen) += relative * damagemult * 40;
                         }
                         if (victim->dead) {
                             for (int i = 0; i < victim->skeleton.num_joints; i++) {
                                 victim->skeleton.joints[i].velocity = relative * damagemult * abs(Random() % 20);
                             }
-                            //FootLand(1,2);
-                            //victim->jointVel(abdomen)+=relative*damagemult*20;
                         }
                         victim->Puff(abdomen);
                         if (tutoriallevel != 1) {
@@ -3294,12 +3256,10 @@ void Person::DoAnimations()
                     relative = victim->coords - oldcoords;
                     relative.y = 0;
                     Normalise(&relative);
-                    //relative=DoRotation(relative,0,-90,0);
                     for (int i = 0; i < victim->skeleton.num_joints; i++) {
                         victim->skeleton.joints[i].velocity += relative * damagemult * 40;
                     }
                     victim->jointVel(abdomen) += relative * damagemult * 200;
-                    //FootLand(1,2);
                     victim->Puff(abdomen);
                     victim->DoDamage(damagemult * 150 / victim->protectionhigh);
 
@@ -3719,8 +3679,8 @@ void Person::DoAnimations()
                 frameTarget = 0;
                 if (wasStop()) {
                     animTarget = getIdle();
-                    FootLand(0, 1);
-                    FootLand(1, 1);
+                    FootLand(leftfoot, 1);
+                    FootLand(rightfoot, 1);
                 }
                 if (animCurrent == rabbittackleanim || animCurrent == rabbittacklinganim) {
                     animTarget = rollanim;
@@ -3774,8 +3734,8 @@ void Person::DoAnimations()
                 }
                 if (animCurrent == rollanim) {
                     animTarget = getCrouch();
-                    FootLand(0, 1);
-                    FootLand(1, 1);
+                    FootLand(leftfoot, 1);
+                    FootLand(rightfoot, 1);
                 }
                 if (isFlip()) {
                     if (animTarget == walljumprightkickanim) {
@@ -5863,8 +5823,8 @@ void Person::DoStuff()
             if (velspeed > 5 && (isLanding() || isLandhard())) {
                 skiddingdelay += multiplier;
                 if (skiddelay <= 0) {
-                    FootLand(0, .5);
-                    FootLand(1, .5);
+                    FootLand(leftfoot, .5);
+                    FootLand(rightfoot, .5);
                     skiddelay = .02;
                 }
             } else
@@ -5882,8 +5842,8 @@ void Person::DoStuff()
             if (velspeed > 5 && (isLanding() || isLandhard())) {
                 skiddingdelay += multiplier;
                 if (skiddelay <= 0) {
-                    FootLand(0, .5);
-                    FootLand(1, .5);
+                    FootLand(leftfoot, .5);
+                    FootLand(rightfoot, .5);
                     skiddelay = .02;
                 }
             } else
