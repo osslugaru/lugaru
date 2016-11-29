@@ -249,5 +249,6 @@ const int commandLineOptionsNumber = 8;
 extern const option::Descriptor usage[12];
 
 extern option::Option commandLineOptions[commandLineOptionsNumber];
+extern option::Option* commandLineOptionsBuffer;
 
 #endif

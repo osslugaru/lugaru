@@ -517,6 +517,8 @@ void CleanUp (void)
 {
     LOGFUNC;
 
+    delete[] commandLineOptionsBuffer;
+
     SDL_Quit();
 #ifndef __MINGW32__ // FIXME: Temporary workaround for GL-8
 #define GL_FUNC(ret,fn,params,call,rt) p##fn = NULL;
@@ -526,7 +528,6 @@ void CleanUp (void)
     //  the context is destroyed and libGL unloaded by SDL_Quit().
     pglDeleteTextures = glDeleteTextures_doNothing;
 #endif // __MINGW32__
-
 }
 
 // --------------------------------------------------------------------------
@@ -651,6 +652,7 @@ const option::Descriptor usage[] =
 };
 
 option::Option commandLineOptions[commandLineOptionsNumber];
+option::Option* commandLineOptionsBuffer;
 
 int main(int argc, char **argv)
 {
@@ -660,21 +662,24 @@ int main(int argc, char **argv)
         std::cerr << "Found incorrect command line option number" << std::endl;
         return 1;
     }
-    option::Option buffer[stats.buffer_max];
-    option::Parser parse(true, usage, argc, argv, commandLineOptions, buffer);
+    commandLineOptionsBuffer = new option::Option[stats.buffer_max];
+    option::Parser parse(true, usage, argc, argv, commandLineOptions, commandLineOptionsBuffer);
 
     if (parse.error()) {
+        delete[] commandLineOptionsBuffer;
         return 1;
     }
 
     if (commandLineOptions[HELP]) {
         option::printUsage(std::cout, usage);
+        delete[] commandLineOptionsBuffer;
         return 0;
     }
 
     if (option::Option* opt = commandLineOptions[UNKNOWN]) {
         std::cerr << "Unknown option: " << opt->name << "\n";
         option::printUsage(std::cerr, usage);
+        delete[] commandLineOptionsBuffer;
         return 1;
     }
 
@@ -689,8 +694,10 @@ int main(int argc, char **argv)
         {
             newGame();
 
-            if (!SetUp ())
+            if (!SetUp ()) {
+                delete[] commandLineOptionsBuffer;
                 return 42;
+            }
 
             bool gameDone = false;
             bool gameFocused = true;
