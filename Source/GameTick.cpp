@@ -788,8 +788,6 @@ void Game::Loadlevel(const char *name)
     static const char *pfx = ":Data:Maps:";
     char *buf;
 
-    float headprop, legprop, armprop, bodyprop;
-
     LOGFUNC;
 
     LOG(std::string("Loading level...") + name);
@@ -912,6 +910,7 @@ void Game::Loadlevel(const char *name)
         }
 
         weapons.clear();
+        Person::players.resize(1);
 
         funpackf(tfile, "Bi", &mapvers);
         if (mapvers >= 15)
@@ -1027,8 +1026,9 @@ void Game::Loadlevel(const char *name)
                     funpackf(tfile, "Bf Bf", &dialoguecamerayaw[k][l], &dialoguecamerapitch[k][l]);
                 }
             }
-        } else
+        } else {
             numdialogues = 0;
+        }
 
         for (int k = 0; k < Person::players[0]->numclothes; k++) {
             funpackf(tfile, "Bi", &templength);
@@ -1091,111 +1091,19 @@ void Game::Loadlevel(const char *name)
 
         int numplayers;
         funpackf(tfile, "Bi", &numplayers);
-        int howmanyremoved = 0;
-        bool removeanother = 0;
         if (numplayers > maxplayers) {
             cout << "Warning: this level contains more players than allowed" << endl;
         }
-        if (numplayers > 1) {
-            for (int i = 1; i < numplayers; i++) {
-                Person::players.push_back(shared_ptr<Person>(new Person()));
-                if (visibleloading)
-                    LoadingScreen();
-                removeanother = 0;
-
-                funpackf(tfile, "Bi Bi Bf Bf Bf Bi", &Person::players[i - howmanyremoved]->whichskin, &Person::players[i - howmanyremoved]->creature, &Person::players[i - howmanyremoved]->coords.x, &Person::players[i - howmanyremoved]->coords.y, &Person::players[i - howmanyremoved]->coords.z, &Person::players[i - howmanyremoved]->num_weapons);
-                if (mapvers >= 5)
-                    funpackf(tfile, "Bi", &Person::players[i - howmanyremoved]->howactive);
-                else
-                    Person::players[i - howmanyremoved]->howactive = typeactive;
-                if (mapvers >= 3)
-                    funpackf(tfile, "Bf", &Person::players[i - howmanyremoved]->scale);
-                else
-                    Person::players[i - howmanyremoved]->scale = -1;
-                if (mapvers >= 11)
-                    funpackf(tfile, "Bb", &Person::players[i - howmanyremoved]->immobile);
-                else
-                    Person::players[i - howmanyremoved]->immobile = 0;
-                if (mapvers >= 12)
-                    funpackf(tfile, "Bf", &Person::players[i - howmanyremoved]->yaw);
-                else
-                    Person::players[i - howmanyremoved]->yaw = 0;
-                Person::players[i - howmanyremoved]->targetyaw = Person::players[i - howmanyremoved]->yaw;
-                if (Person::players[i - howmanyremoved]->num_weapons < 0 || Person::players[i - howmanyremoved]->num_weapons > 5) {
-                    removeanother = 1;
-                    howmanyremoved++;
-                }
-                if (!removeanother) {
-                    if (Person::players[i - howmanyremoved]->num_weapons > 0 && Person::players[i - howmanyremoved]->num_weapons < 5) {
-                        for (int j = 0; j < Person::players[i - howmanyremoved]->num_weapons; j++) {
-                            Person::players[i - howmanyremoved]->weaponids[j] = weapons.size();
-                            int type;
-                            funpackf(tfile, "Bi", &type);
-                            weapons.push_back(Weapon(type, i));
-                        }
-                    }
-                    funpackf(tfile, "Bi", &Person::players[i - howmanyremoved]->numwaypoints);
-                    for (int j = 0; j < Person::players[i - howmanyremoved]->numwaypoints; j++) {
-                        funpackf(tfile, "Bf", &Person::players[i - howmanyremoved]->waypoints[j].x);
-                        funpackf(tfile, "Bf", &Person::players[i - howmanyremoved]->waypoints[j].y);
-                        funpackf(tfile, "Bf", &Person::players[i - howmanyremoved]->waypoints[j].z);
-                        if (mapvers >= 5)
-                            funpackf(tfile, "Bi", &Person::players[i - howmanyremoved]->waypointtype[j]);
-                        else
-                            Person::players[i - howmanyremoved]->waypointtype[j] = wpkeepwalking;
-                    }
-
-                    funpackf(tfile, "Bi", &Person::players[i - howmanyremoved]->waypoint);
-                    if (Person::players[i - howmanyremoved]->waypoint > Person::players[i - howmanyremoved]->numwaypoints - 1)
-                        Person::players[i - howmanyremoved]->waypoint = 0;
-
-                    funpackf(tfile, "Bf Bf Bf", &Person::players[i - howmanyremoved]->armorhead, &Person::players[i - howmanyremoved]->armorhigh, &Person::players[i - howmanyremoved]->armorlow);
-                    funpackf(tfile, "Bf Bf Bf", &Person::players[i - howmanyremoved]->protectionhead, &Person::players[i - howmanyremoved]->protectionhigh, &Person::players[i - howmanyremoved]->protectionlow);
-                    funpackf(tfile, "Bf Bf Bf", &Person::players[i - howmanyremoved]->metalhead, &Person::players[i - howmanyremoved]->metalhigh, &Person::players[i - howmanyremoved]->metallow);
-                    funpackf(tfile, "Bf Bf", &Person::players[i - howmanyremoved]->power, &Person::players[i - howmanyremoved]->speedmult);
-
-                    if (mapvers >= 4)
-                        funpackf(tfile, "Bf Bf Bf Bf", &headprop, &bodyprop, &armprop, &legprop);
-                    else {
-                        headprop = 1;
-                        bodyprop = 1;
-                        armprop = 1;
-                        legprop = 1;
-                    }
-                    if (Person::players[i - howmanyremoved]->creature == wolftype) {
-                        Person::players[i - howmanyremoved]->proportionhead = 1.1 * headprop;
-                        Person::players[i - howmanyremoved]->proportionbody = 1.1 * bodyprop;
-                        Person::players[i - howmanyremoved]->proportionarms = 1.1 * armprop;
-                        Person::players[i - howmanyremoved]->proportionlegs = 1.1 * legprop;
-                    }
-
-                    if (Person::players[i - howmanyremoved]->creature == rabbittype) {
-                        Person::players[i - howmanyremoved]->proportionhead = 1.2 * headprop;
-                        Person::players[i - howmanyremoved]->proportionbody = 1.05 * bodyprop;
-                        Person::players[i - howmanyremoved]->proportionarms = 1.00 * armprop;
-                        Person::players[i - howmanyremoved]->proportionlegs = 1.1 * legprop;
-                        Person::players[i - howmanyremoved]->proportionlegs.y = 1.05 * legprop;
-                    }
-
-                    funpackf(tfile, "Bi", &Person::players[i - howmanyremoved]->numclothes);
-                    if (Person::players[i - howmanyremoved]->numclothes) {
-                        for (int k = 0; k < Person::players[i - howmanyremoved]->numclothes; k++) {
-                            int templength;
-                            funpackf(tfile, "Bi", &templength);
-                            for (int l = 0; l < templength; l++)
-                                funpackf(tfile, "Bb", &Person::players[i - howmanyremoved]->clothes[k][l]);
-                            Person::players[i - howmanyremoved]->clothes[k][templength] = '\0';
-                            funpackf(tfile, "Bf Bf Bf", &Person::players[i - howmanyremoved]->clothestintr[k], &Person::players[i - howmanyremoved]->clothestintg[k], &Person::players[i - howmanyremoved]->clothestintb[k]);
-                        }
-                    }
-                }
+        for (int i = 1; i < numplayers; i++) {
+            unsigned j = 1;
+            try {
+                Person::players.push_back(shared_ptr<Person>(new Person(tfile, mapvers, j)));
+                j++;
+            } catch (InvalidPersonException e) {
             }
         }
         if (visibleloading)
             LoadingScreen();
-
-        numplayers -= howmanyremoved;
-        Person::players.resize(numplayers);
 
         funpackf(tfile, "Bi", &numpathpoints);
         if (numpathpoints > 30 || numpathpoints < 0)

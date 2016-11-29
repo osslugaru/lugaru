@@ -308,6 +308,100 @@ Person::Person() :
 {
 }
 
+/* Read a person in tfile. Throws an error if it’s not valid */
+Person::Person(FILE *tfile, int mapvers, unsigned i) : Person()
+{
+    id = i;
+    funpackf(tfile, "Bi Bi Bf Bf Bf Bi", &whichskin, &creature, &coords.x, &coords.y, &coords.z, &num_weapons);
+    if (mapvers >= 5) {
+        funpackf(tfile, "Bi", &howactive);
+    } else {
+        howactive = typeactive;
+    }
+    if (mapvers >= 3) {
+        funpackf(tfile, "Bf", &scale);
+    } else {
+        scale = -1;
+    }
+    if (mapvers >= 11) {
+        funpackf(tfile, "Bb", &immobile);
+    } else {
+        immobile = 0;
+    }
+    if (mapvers >= 12) {
+        funpackf(tfile, "Bf", &yaw);
+    } else {
+        yaw = 0;
+    }
+    targetyaw = yaw;
+    if (num_weapons < 0 || num_weapons > 5) {
+        throw InvalidPersonException();
+    }
+    if (num_weapons > 0 && num_weapons < 5) {
+        for (int j = 0; j < num_weapons; j++) {
+            weaponids[j] = weapons.size();
+            int type;
+            funpackf(tfile, "Bi", &type);
+            weapons.push_back(Weapon(type, id));
+        }
+    }
+    funpackf(tfile, "Bi", &numwaypoints);
+    for (int j = 0; j < numwaypoints; j++) {
+        funpackf(tfile, "Bf", &waypoints[j].x);
+        funpackf(tfile, "Bf", &waypoints[j].y);
+        funpackf(tfile, "Bf", &waypoints[j].z);
+        if (mapvers >= 5) {
+            funpackf(tfile, "Bi", &waypointtype[j]);
+        } else {
+            waypointtype[j] = wpkeepwalking;
+        }
+    }
+
+    funpackf(tfile, "Bi", &waypoint);
+    if (waypoint > (numwaypoints - 1)) {
+        waypoint = 0;
+    }
+
+    funpackf(tfile, "Bf Bf Bf", &armorhead, &armorhigh, &armorlow);
+    funpackf(tfile, "Bf Bf Bf", &protectionhead, &protectionhigh, &protectionlow);
+    funpackf(tfile, "Bf Bf Bf", &metalhead, &metalhigh, &metallow);
+    funpackf(tfile, "Bf Bf", &power, &speedmult);
+
+    float headprop, legprop, armprop, bodyprop;
+
+    if (mapvers >= 4) {
+        funpackf(tfile, "Bf Bf Bf Bf", &headprop, &bodyprop, &armprop, &legprop);
+    } else {
+        headprop = 1;
+        bodyprop = 1;
+        armprop = 1;
+        legprop = 1;
+    }
+
+    if (creature == wolftype) {
+        proportionhead = 1.1 * headprop;
+        proportionbody = 1.1 * bodyprop;
+        proportionarms = 1.1 * armprop;
+        proportionlegs = 1.1 * legprop;
+    } else if (creature == rabbittype) {
+        proportionhead = 1.2 * headprop;
+        proportionbody = 1.05 * bodyprop;
+        proportionarms = 1.00 * armprop;
+        proportionlegs = 1.1 * legprop;
+        proportionlegs.y = 1.05 * legprop;
+    }
+
+    funpackf(tfile, "Bi", &numclothes);
+    for (int k = 0; k < numclothes; k++) {
+        int templength;
+        funpackf(tfile, "Bi", &templength);
+        for (int l = 0; l < templength; l++)
+            funpackf(tfile, "Bb", &clothes[k][l]);
+        clothes[k][templength] = '\0';
+        funpackf(tfile, "Bf Bf Bf", &clothestintr[k], &clothestintg[k], &clothestintb[k]);
+    }
+}
+
 /* EFFECT
  *
  * USES:
@@ -6239,7 +6333,6 @@ int Person::DrawSkeleton()
             if (terrainheight > 1.7)
                 terrainheight = 1.7;
 
-            //burnt=0;
             glColor4f((1 - (1 - terrainlight.x) / terrainheight) - burnt, (1 - (1 - terrainlight.y) / terrainheight) - burnt, (1 - (1 - terrainlight.z) / terrainheight) - burnt, distance);
             glDisable(GL_BLEND);
             glAlphaFunc(GL_GREATER, 0.0001);

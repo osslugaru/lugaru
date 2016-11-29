@@ -47,6 +47,12 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #define rabbittype 0
 #define wolftype 1
 
+struct InvalidPersonException : public exception {
+   const char * what () const throw () {
+      return "Invalid weapon number";
+   }
+};
+
 class Person : public enable_shared_from_this<Person>
 {
 public:
@@ -315,6 +321,7 @@ public:
     bool jumpclimb;
 
     Person();
+    Person(FILE*, int, unsigned);
 
     // convenience functions
     inline Joint& joint(int bodypart) { return skeleton.joints[skeleton.jointlabels[bodypart]]; }
