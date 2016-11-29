@@ -82,7 +82,7 @@ extern XYZ hotspot[40];
 extern int hotspottype[40];
 extern float hotspotsize[40];
 extern char hotspottext[40][256];
-extern int currenthotspot;;
+extern int currenthotspot;
 
 extern bool campaign;
 extern bool winfreeze;
@@ -905,9 +905,8 @@ int Game::DrawGLScene(StereoSide side)
                         }
                     }
                 }
-                if (closest != -1)
+                if (closest != -1) {
                     currenthotspot = closest;
-                if (currenthotspot != -1) {
                     if (hotspottype[closest] <= 10) {
                         if (distsq(&Person::players[0]->coords, &hotspot[closest]) < hotspotsize[closest])
                             tutorialstagetime = 0;
