@@ -97,7 +97,6 @@ private:
     int type;
 
     XYZ oldtippoint;
-    float lastmult;
     XYZ oldposition;
     int oldowner;
     bool onfire;
