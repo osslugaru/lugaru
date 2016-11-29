@@ -32,12 +32,12 @@ extern float skyboxb;
 void SkyBox::load (const char *ffront, const char *fleft, const char *fback,
                    const char *fright, const char *fup,   const char *fdown)
 {
-    front.load(ffront, true, false);
-    left.load(fleft, true, false);
-    back.load(fback, true, false);
-    right.load(fright, true, false);
-    up.load(fup, true, false);
-    down.load(fdown, true, false);
+    front.load(ffront, true);
+    left.load(fleft, true);
+    back.load(fback, true);
+    right.load(fright, true);
+    up.load(fup, true);
+    down.load(fdown, true);
 }
 
 void SkyBox::draw()

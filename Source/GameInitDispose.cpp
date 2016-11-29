@@ -606,25 +606,23 @@ void Game::InitGame()
     if (musictoggle)
         emit_stream_np(stream_menutheme);
 
-    cursortexture.load(":Data:Textures:Cursor.png", 0, 1);
+    cursortexture.load(":Data:Textures:Cursor.png", 0);
 
-    Mapcircletexture.load(":Data:Textures:MapCircle.png", 0, 1);
-    Mapboxtexture.load(":Data:Textures:MapBox.png", 0, 1);
-    Maparrowtexture.load(":Data:Textures:MapArrow.png", 0, 1);
+    Mapcircletexture.load(":Data:Textures:MapCircle.png", 0);
+    Mapboxtexture.load(":Data:Textures:MapBox.png", 0);
+    Maparrowtexture.load(":Data:Textures:MapArrow.png", 0);
 
     temptexdetail = texdetail;
     if (texdetail > 2)
         texdetail = 2;
-    Mainmenuitems[0].load(":Data:Textures:Lugaru.png", 0, 0);
-    Mainmenuitems[1].load(":Data:Textures:Newgame.png", 0, 0);
-    Mainmenuitems[2].load(":Data:Textures:Options.png", 0, 0);
-    Mainmenuitems[3].load(":Data:Textures:Quit.png", 0, 0);
-    Mainmenuitems[4].load(":Data:Textures:Eyelid.png", 0, 1);
-    Mainmenuitems[5].load(":Data:Textures:Resume.png", 0, 0);
-    Mainmenuitems[6].load(":Data:Textures:Endgame.png", 0, 0);
+    Mainmenuitems[0].load(":Data:Textures:Lugaru.png", 0);
+    Mainmenuitems[1].load(":Data:Textures:Newgame.png", 0);
+    Mainmenuitems[2].load(":Data:Textures:Options.png", 0);
+    Mainmenuitems[3].load(":Data:Textures:Quit.png", 0);
+    Mainmenuitems[4].load(":Data:Textures:Eyelid.png", 0);
+    Mainmenuitems[5].load(":Data:Textures:Resume.png", 0);
+    Mainmenuitems[6].load(":Data:Textures:Endgame.png", 0);
 
-    //LoadTexture(":Data:Textures:Eye.jpg",&Mainmenuitems[5],0,1);
-    //~ LoadTexture(":Data:Textures:World.png",&Mainmenuitems[7],0,0); // LoadCampaign will take care of that
     texdetail = temptexdetail;
 
     FadeLoadingScreen(95);
@@ -681,7 +679,7 @@ void Game::LoadStuff()
 
     i = abs(Random() % 4);
     visibleloading = 0; //don't use loadscreentexture yet
-    loadscreentexture.load(":Data:Textures:fire.jpg", 1, 0);
+    loadscreentexture.load(":Data:Textures:fire.jpg", 1);
     visibleloading = 1;
 
     temptexdetail = texdetail;
@@ -707,13 +705,13 @@ void Game::LoadStuff()
 
     LOG("Loading weapon data...");
 
-    Weapon::knifetextureptr.load(":Data:Textures:knife.png", 0, 1);
-    Weapon::bloodknifetextureptr.load(":Data:Textures:bloodknife.png", 0, 1);
-    Weapon::lightbloodknifetextureptr.load(":Data:Textures:lightbloodknife.png", 0, 1);
-    Weapon::swordtextureptr.load(":Data:Textures:sword.jpg", 1, 0);
-    Weapon::bloodswordtextureptr.load(":Data:Textures:Swordblood.jpg", 1, 0);
-    Weapon::lightbloodswordtextureptr.load(":Data:Textures:Swordbloodlight.jpg", 1, 0);
-    Weapon::stafftextureptr.load(":Data:Textures:Staff.jpg", 1, 0);
+    Weapon::knifetextureptr.load(":Data:Textures:knife.png", 0);
+    Weapon::bloodknifetextureptr.load(":Data:Textures:bloodknife.png", 0);
+    Weapon::lightbloodknifetextureptr.load(":Data:Textures:lightbloodknife.png", 0);
+    Weapon::swordtextureptr.load(":Data:Textures:sword.jpg", 1);
+    Weapon::bloodswordtextureptr.load(":Data:Textures:Swordblood.jpg", 1);
+    Weapon::lightbloodswordtextureptr.load(":Data:Textures:Swordbloodlight.jpg", 1);
+    Weapon::stafftextureptr.load(":Data:Textures:Staff.jpg", 1);
 
     Weapon::throwingknifemodel.load((char *)":Data:Models:throwingknife.solid", 1);
     Weapon::throwingknifemodel.Scale(.001, .001, .001);
@@ -738,28 +736,28 @@ void Game::LoadStuff()
     Weapon::staffmodel.flat = 1;
     Weapon::staffmodel.CalculateNormals(1);
 
-    terrain.shadowtexture.load(":Data:Textures:shadow.png", 0, 1);
-    terrain.bloodtexture.load(":Data:Textures:blood.png", 0, 1);
-    terrain.breaktexture.load(":Data:Textures:break.png", 0, 1);
-    terrain.bloodtexture2.load(":Data:Textures:blood.png", 0, 1);
+    terrain.shadowtexture.load(":Data:Textures:shadow.png", 0);
+    terrain.bloodtexture.load(":Data:Textures:blood.png", 0);
+    terrain.breaktexture.load(":Data:Textures:break.png", 0);
+    terrain.bloodtexture2.load(":Data:Textures:blood.png", 0);
 
 
-    terrain.footprinttexture.load(":Data:Textures:footprint.png", 0, 1);
-    terrain.bodyprinttexture.load(":Data:Textures:bodyprint.png", 0, 1);
-    hawktexture.load(":Data:Textures:hawk.png", 0, 1);
+    terrain.footprinttexture.load(":Data:Textures:footprint.png", 0);
+    terrain.bodyprinttexture.load(":Data:Textures:bodyprint.png", 0);
+    hawktexture.load(":Data:Textures:hawk.png", 0);
 
 
-    Sprite::cloudtexture.load(":Data:Textures:cloud.png", 1, 1);
-    Sprite::cloudimpacttexture.load(":Data:Textures:cloudimpact.png", 1, 1);
-    Sprite::bloodtexture.load(":Data:Textures:bloodparticle.png", 1, 1);
-    Sprite::snowflaketexture.load(":Data:Textures:snowflake.png", 1, 1);
-    Sprite::flametexture.load(":Data:Textures:flame.png", 1, 1);
-    Sprite::bloodflametexture.load(":Data:Textures:bloodflame.png", 1, 1);
-    Sprite::smoketexture.load(":Data:Textures:smoke.png", 1, 1);
-    Sprite::shinetexture.load(":Data:Textures:shine.png", 1, 0);
-    Sprite::splintertexture.load(":Data:Textures:splinter.png", 1, 1);
-    Sprite::leaftexture.load(":Data:Textures:leaf.png", 1, 1);
-    Sprite::toothtexture.load(":Data:Textures:tooth.png", 1, 1);
+    Sprite::cloudtexture.load(":Data:Textures:cloud.png", 1);
+    Sprite::cloudimpacttexture.load(":Data:Textures:cloudimpact.png", 1);
+    Sprite::bloodtexture.load(":Data:Textures:bloodparticle.png", 1);
+    Sprite::snowflaketexture.load(":Data:Textures:snowflake.png", 1);
+    Sprite::flametexture.load(":Data:Textures:flame.png", 1);
+    Sprite::bloodflametexture.load(":Data:Textures:bloodflame.png", 1);
+    Sprite::smoketexture.load(":Data:Textures:smoke.png", 1);
+    Sprite::shinetexture.load(":Data:Textures:shine.png", 1);
+    Sprite::splintertexture.load(":Data:Textures:splinter.png", 1);
+    Sprite::leaftexture.load(":Data:Textures:leaf.png", 1);
+    Sprite::toothtexture.load(":Data:Textures:tooth.png", 1);
 
     yaw = 0;
     pitch = 0;

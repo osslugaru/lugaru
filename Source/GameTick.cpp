@@ -600,18 +600,18 @@ void Setenvironment(int which)
         if (ambientsound)
             emit_stream_np(stream_wind);
 
-        objects.treetextureptr.load(":Data:Textures:snowtree.png", 0, 1);
-        objects.bushtextureptr.load(":Data:Textures:bushsnow.png", 0, 1);
-        objects.rocktextureptr.load(":Data:Textures:bouldersnow.jpg", 1, 0);
-        objects.boxtextureptr.load(":Data:Textures:snowbox.jpg", 1, 0);
+        objects.treetextureptr.load(":Data:Textures:snowtree.png", 0);
+        objects.bushtextureptr.load(":Data:Textures:bushsnow.png", 0);
+        objects.rocktextureptr.load(":Data:Textures:bouldersnow.jpg", 1);
+        objects.boxtextureptr.load(":Data:Textures:snowbox.jpg", 1);
 
         footstepsound = footstepsn1;
         footstepsound2 = footstepsn2;
         footstepsound3 = footstepst1;
         footstepsound4 = footstepst2;
 
-        terraintexture.load(":Data:Textures:snow.jpg", 1, 0);
-        terraintexture2.load(":Data:Textures:rock.jpg", 1, 0);
+        terraintexture.load(":Data:Textures:snow.jpg", 1);
+        terraintexture2.load(":Data:Textures:rock.jpg", 1);
 
 
         temptexdetail = texdetail;
@@ -631,10 +631,10 @@ void Setenvironment(int which)
     } else if (environment == desertenvironment) {
         windvector = 0;
         windvector.z = 2;
-        objects.treetextureptr.load(":Data:Textures:deserttree.png", 0, 1);
-        objects.bushtextureptr.load(":Data:Textures:bushdesert.png", 0, 1);
-        objects.rocktextureptr.load(":Data:Textures:boulderdesert.jpg", 1, 0);
-        objects.boxtextureptr.load(":Data:Textures:desertbox.jpg", 1, 0);
+        objects.treetextureptr.load(":Data:Textures:deserttree.png", 0);
+        objects.bushtextureptr.load(":Data:Textures:bushdesert.png", 0);
+        objects.rocktextureptr.load(":Data:Textures:boulderdesert.jpg", 1);
+        objects.boxtextureptr.load(":Data:Textures:desertbox.jpg", 1);
 
 
         if (ambientsound)
@@ -645,8 +645,8 @@ void Setenvironment(int which)
         footstepsound3 = footstepsn1;
         footstepsound4 = footstepsn2;
 
-        terraintexture.load(":Data:Textures:sand.jpg", 1, 0);
-        terraintexture2.load(":Data:Textures:sandslope.jpg", 1, 0);
+        terraintexture.load(":Data:Textures:sand.jpg", 1);
+        terraintexture2.load(":Data:Textures:sandslope.jpg", 1);
 
 
         temptexdetail = texdetail;
@@ -666,10 +666,10 @@ void Setenvironment(int which)
     } else if (environment == grassyenvironment) {
         windvector = 0;
         windvector.z = 2;
-        objects.treetextureptr.load(":Data:Textures:tree.png", 0, 1);
-        objects.bushtextureptr.load(":Data:Textures:bush.png", 0, 1);
-        objects.rocktextureptr.load(":Data:Textures:boulder.jpg", 1, 0);
-        objects.boxtextureptr.load(":Data:Textures:grassbox.jpg", 1, 0);
+        objects.treetextureptr.load(":Data:Textures:tree.png", 0);
+        objects.bushtextureptr.load(":Data:Textures:bush.png", 0);
+        objects.rocktextureptr.load(":Data:Textures:boulder.jpg", 1);
+        objects.boxtextureptr.load(":Data:Textures:grassbox.jpg", 1);
 
         if (ambientsound)
             emit_stream_np(stream_wind, 100.);
@@ -679,8 +679,8 @@ void Setenvironment(int which)
         footstepsound3 = footstepst1;
         footstepsound4 = footstepst2;
 
-        terraintexture.load(":Data:Textures:grassdirt.jpg", 1, 0);
-        terraintexture2.load(":Data:Textures:mossrock.jpg", 1, 0);
+        terraintexture.load(":Data:Textures:grassdirt.jpg", 1);
+        terraintexture2.load(":Data:Textures:mossrock.jpg", 1);
 
 
         temptexdetail = texdetail;
@@ -731,9 +731,9 @@ void LoadCampaign()
 
     ifstream test(ConvertFileName((":Data:Textures:" + accountactive->getCurrentCampaign() + ":World.png").c_str()));
     if (test.good()) {
-        Mainmenuitems[7].load((":Data:Textures:" + accountactive->getCurrentCampaign() + ":World.png").c_str(), 0, 0);
+        Mainmenuitems[7].load((":Data:Textures:" + accountactive->getCurrentCampaign() + ":World.png").c_str(), 0);
     } else {
-        Mainmenuitems[7].load(":Data:Textures:World.png", 0, 0);
+        Mainmenuitems[7].load(":Data:Textures:World.png", 0);
     }
 
     if (accountactive->getCampaignChoicesMade() == 0) {
@@ -1276,7 +1276,7 @@ void Game::Loadlevel(const char *name)
                         (char *)":Data:Models:Body7.solid",
                         (char *)":Data:Models:Bodylow.solid",
                         (char *)":Data:Models:Belt.solid", 1);
-                    Person::players[i]->skeleton.drawmodelclothes.textureptr.load(":Data:Textures:Belt.png", 1, 1);
+                    Person::players[i]->skeleton.drawmodelclothes.textureptr.load(":Data:Textures:Belt.png", 1);
                 }
                 if (Person::players[i]->creature == wolftype) {
                     Person::players[i]->skeleton.Load(
@@ -2388,7 +2388,7 @@ void doDebugKeys()
                     Person::players.back()->whichskin = 2;
                 }
 
-                Person::players.back()->skeleton.drawmodelclothes.textureptr.load(":Data:Textures:Belt.png", 1, 1);
+                Person::players.back()->skeleton.drawmodelclothes.textureptr.load(":Data:Textures:Belt.png", 1);
                 Person::players.back()->power = 1;
                 Person::players.back()->speedmult = 1;
                 Person::players.back()->animCurrent = bounceidleanim;

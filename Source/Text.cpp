@@ -28,7 +28,7 @@ void Text::LoadFontTexture(const char *fileName)
 
     LOG(std::string("Loading font texture...") + fileName);
 
-    FontTexture.load(fileName, false, false);
+    FontTexture.load(fileName, false);
     if (base) {
         glDeleteLists(base, 512);
         base = 0;

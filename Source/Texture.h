@@ -34,7 +34,6 @@ private:
     GLuint id;
     string filename;
     bool hasMipmap;
-    bool hasAlpha;
     bool isSkin;
     int skinsize;
     GLubyte* data;
@@ -43,7 +42,7 @@ private:
     void load();
 
 public:
-    TextureRes(const string& filename, bool hasMipmap, bool hasAlpha);
+    TextureRes(const string& filename, bool hasMipmap);
     TextureRes(const string& filename, bool hasMipmap, GLubyte* array, int* skinsize);
     ~TextureRes();
     void bind();
@@ -55,7 +54,7 @@ private:
     TextureRes* tex;
 public:
     inline Texture(): tex(NULL) {}
-    void load(const string& filename, bool hasMipmap, bool hasAlpha);
+    void load(const string& filename, bool hasMipmap);
     void load(const string& filename, bool hasMipmap, GLubyte* array, int* skinsizep);
     void destroy();
     void bind();
