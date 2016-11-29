@@ -27,6 +27,8 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Sounds.h"
 #include "Game.h"
 
+extern float slomofreq;
+
 // NOTE:
 // FMOD uses a Left Handed Coordinate system, OpenAL uses a Right Handed
 //  one...so we just need to flip the sign on the Z axis when appropriate.
@@ -430,21 +432,20 @@ static signed char OPENAL_Sample_SetMode(OPENAL_SAMPLE *sptr, unsigned int mode)
     return true;
 }
 
-AL_API signed char OPENAL_SetFrequency(int channel, int freq)
+AL_API signed char OPENAL_SetFrequency(int channel, bool slomo)
 {
     if (!initialized)
         return false;
     if (channel == OPENAL_ALL) {
         for (int i = 0; i < num_channels; i++)
-            OPENAL_SetFrequency(i, freq);
+            OPENAL_SetFrequency(i, slomo);
         return true;
     }
 
     if ((channel < 0) || (channel >= num_channels))
         return false;
-    if (freq == 8012)
-        // hack
-        alSourcef(impl_channels[channel].sid, AL_PITCH, 8012.0f / 44100.0f);
+    if (slomo)
+        alSourcef(impl_channels[channel].sid, AL_PITCH, ((ALfloat) slomofreq) / 44100.0f);
     else
         alSourcef(impl_channels[channel].sid, AL_PITCH, 1.0f);
     return true;

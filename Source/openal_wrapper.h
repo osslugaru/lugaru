@@ -94,7 +94,7 @@ extern "C" {
     AL_API void OPENAL_Close();
     AL_API OPENAL_SAMPLE *OPENAL_Sample_Load(int index, const char *name_or_data, unsigned int mode, int offset, int length);
     AL_API void OPENAL_Sample_Free(OPENAL_SAMPLE *sptr);
-    AL_API signed char OPENAL_SetFrequency(int channel, int freq);
+    AL_API signed char OPENAL_SetFrequency(int channel, bool slomo = false);
     AL_API signed char OPENAL_SetVolume(int channel, int vol);
     AL_API signed char OPENAL_SetPaused(int channel, signed char paused);
     AL_API void OPENAL_SetSFXMasterVolume(int volume);

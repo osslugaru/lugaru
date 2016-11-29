@@ -5307,7 +5307,7 @@ void MenuTick()
         }
     }
 
-    OPENAL_SetFrequency(channels[stream_menutheme], 22050);
+    OPENAL_SetFrequency(channels[stream_menutheme]);
 
     if (entername) {
         inputText(displaytext[0], &displayselected);
@@ -5421,7 +5421,7 @@ void Game::Tick()
             fireSound();
             flash();
             if (musictoggle) {
-                OPENAL_SetFrequency(OPENAL_ALL, 0.001);
+                OPENAL_SetFrequency(OPENAL_ALL);
                 emit_stream_np(stream_menutheme);
                 pause_sound(leveltheme);
             }
@@ -5438,7 +5438,7 @@ void Game::Tick()
             }
             //play menu theme
             if (musictoggle && (mainmenu == 1 || mainmenu == 2)) {
-                OPENAL_SetFrequency(OPENAL_ALL, 0.001);
+                OPENAL_SetFrequency(OPENAL_ALL);
                 emit_stream_np(stream_menutheme);
                 pause_sound(leveltheme);
             }
@@ -5492,14 +5492,14 @@ void Game::Tick()
         if (Input::isKeyPressed(SDL_SCANCODE_V) && debugmode) {
             freeze = !freeze;
             if (freeze) {
-                OPENAL_SetFrequency(OPENAL_ALL, 0.001);
+                OPENAL_SetFrequency(OPENAL_ALL);
             }
         }
 
         if (Input::isKeyPressed(consolekey) && debugmode) {
             console = !console;
             if (console) {
-                OPENAL_SetFrequency(OPENAL_ALL, 0.001);
+                OPENAL_SetFrequency(OPENAL_ALL);
             } else {
                 freeze = 0;
                 waiting = false;
@@ -5530,7 +5530,7 @@ void Game::Tick()
 
         static int oldwinfreeze;
         if (winfreeze && !oldwinfreeze) {
-            OPENAL_SetFrequency(OPENAL_ALL, 0.001);
+            OPENAL_SetFrequency(OPENAL_ALL);
             emit_sound_np(consolesuccesssound);
         }
         if (winfreeze == 0)
@@ -6840,10 +6840,7 @@ void Game::Tick()
                     envsound[j] = envsound[numenvsounds];
                 }
             }
-            if (slomo)
-                OPENAL_SetFrequency(OPENAL_ALL, slomofreq);
-            else
-                OPENAL_SetFrequency(OPENAL_ALL, 22050);
+            OPENAL_SetFrequency(OPENAL_ALL, slomo);
 
             if (tutoriallevel == 1) {
                 XYZ temp;
@@ -6865,7 +6862,7 @@ void Game::Tick()
                 if (tutorialstage >= 51)
                     if (distsq(&temp, &Person::players[0]->coords) >= distsq(&temp, &temp2) - 1 || distsq(&temp3, &Person::players[0]->coords) < 4) {
                         OPENAL_StopSound(OPENAL_ALL);  // hack...OpenAL renderer isn't stopping music after tutorial goes to level menu...
-                        OPENAL_SetFrequency(OPENAL_ALL, 0.001);
+                        OPENAL_SetFrequency(OPENAL_ALL);
 
                         emit_stream_np(stream_menutheme);
 
