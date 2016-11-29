@@ -1434,45 +1434,9 @@ int Game::DrawGLScene(StereoSide side)
             XYZ center;
             float radius;
             float distcheck;
-            int numliveplayers = 0;
-            center = 0;
-            for (unsigned i = 0; i < Person::players.size(); i++) {
-                if (!Person::players[i]->dead)
-                    numliveplayers++;
-            }
-
-            int numadd = 0;
-
-            for (int i = 0; i < objects.numobjects; i++) {
-                if (objects.type[i] == treetrunktype || objects.type[i] == boxtype) {
-                    center += objects.position[i];
-                    numadd++;
-                }
-            }
-            for (unsigned i = 0; i < Person::players.size(); i++) {
-                if (!Person::players[i]->dead)
-                    center += Person::players[i]->coords;
-            }
-            center /= numadd + numliveplayers;
 
             center = Person::players[0]->coords;
 
-            float maxdistance = 0;
-            float tempdist;
-            for (int i = 0; i < objects.numobjects; i++) {
-                tempdist = distsq(&center, &objects.position[i]);
-                if (tempdist > maxdistance) {
-                    maxdistance = tempdist;
-                }
-            }
-            for (unsigned i = 0; i < Person::players.size(); i++) {
-                if (!Person::players[i]->dead) {
-                    tempdist = distsq(&center, &Person::players[i]->coords);
-                    if (tempdist > maxdistance) {
-                        maxdistance = tempdist;
-                    }
-                }
-            }
             radius = 110;
 
             glScalef(.25 / radius * 256 * terrain.scale * .4, .25 / radius * 256 * terrain.scale * .4, 1);
