@@ -11,7 +11,7 @@ set(SRCDIR "${CMAKE_CURRENT_SOURCE_DIR}/Source")
 ### CMake config
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 --std=c++11")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wno-parentheses -g -pg --std=c++11")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wno-parentheses -pedantic -g -pg --std=c++11")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wno-parentheses -O2 -std=c++11")
 
 if(NOT CMAKE_INSTALL_PREFIX AND WIN32)
