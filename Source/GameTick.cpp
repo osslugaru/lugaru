@@ -5749,18 +5749,7 @@ void Game::Tick()
                     yaw = Dialog::currentBox().camerayaw;
                     pitch = Dialog::currentBox().camerapitch;
                     if (Dialog::dialoguetime > 0.5) {
-                        if (     Input::isKeyPressed(SDL_SCANCODE_1) ||
-                                 Input::isKeyPressed(SDL_SCANCODE_2) ||
-                                 Input::isKeyPressed(SDL_SCANCODE_3) ||
-                                 Input::isKeyPressed(SDL_SCANCODE_4) ||
-                                 Input::isKeyPressed(SDL_SCANCODE_5) ||
-                                 Input::isKeyPressed(SDL_SCANCODE_6) ||
-                                 Input::isKeyPressed(SDL_SCANCODE_7) ||
-                                 Input::isKeyPressed(SDL_SCANCODE_8) ||
-                                 Input::isKeyPressed(SDL_SCANCODE_9) ||
-                                 Input::isKeyPressed(SDL_SCANCODE_0) ||
-                                 Input::isKeyPressed(SDL_SCANCODE_MINUS) ||
-                                 Input::isKeyPressed(attackkey)) {
+                        if (Input::isKeyPressed(attackkey)) {
                             Dialog::indialogue++;
                             if (Dialog::indialogue < Dialog::currentDialog().boxes.size()) {
                                 if (Dialog::currentBox().sound != 0) {
