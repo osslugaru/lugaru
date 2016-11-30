@@ -148,7 +148,7 @@ void LoadScreenTexture();
 void LoadingScreen();
 int DrawGLScene(StereoSide side);
 void LoadMenu();
-void playdialogueboxsound();
+void playdialoguescenesound();
 int findClosestPlayer();
 void Loadlevel(int which);
 void Loadlevel(const char *name);

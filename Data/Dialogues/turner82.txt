@@ -1,27 +1,27 @@
-Dialogue boxes:  4
+Dialogue scenes:  4
 
-Box 1:
+Scene 1:
 Location: 2
 Color: 0.2 0.0 0.0
 Name: Ba##sil#
 Text:  Thanks for your help, but you would never\fit in here.
 Sound: 1
 
-Box 2:
+Scene 2:
 Location: 2
 Color: 0.1 0.1 0.2
 Name: Fiver###
 Text: No! You should claim the throne; nobody can\challenge your power.
 Sound: 4
 
-Box 3:
+Scene 3:
 Location: 2
 Color: 0.2 0.0 0.0
 Name: Ba##sil#
 Text:  What? He knows nothing about governing.
 Sound: 3
 
-Box 4:
+Scene 4:
 Location: 2
 Color: 0.2 0.0 0.0
 Name: Ba##sil#

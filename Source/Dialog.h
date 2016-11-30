@@ -25,11 +25,11 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Quaternions.h"
 #include <vector>
 
-class DialogBox
+class DialogScene
 {
 public:
-    DialogBox(FILE* tfile);
-    DialogBox(ifstream &ipstream);
+    DialogScene(FILE* tfile);
+    DialogScene(ifstream &ipstream);
     void save(FILE* tfile);
 
     int location;
@@ -56,7 +56,7 @@ public:
 
     int type;
     int gonethrough;
-    std::vector<DialogBox> boxes;
+    std::vector<DialogScene> scenes;
     XYZ participantlocation[10];
     float participantyaw[10];
 
@@ -65,7 +65,7 @@ public:
 
     static bool inDialog() { return (indialogue != -1); }
     static Dialog& currentDialog() { return dialogs[whichdialogue]; }
-    static DialogBox& currentBox() { return currentDialog().boxes[indialogue]; }
+    static DialogScene& currentScene() { return currentDialog().scenes[indialogue]; }
 
     static int indialogue;
     static int whichdialogue;

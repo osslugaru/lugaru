@@ -960,13 +960,13 @@ int Game::DrawGLScene(StereoSide side)
                 glMatrixMode(GL_MODELVIEW);
                 glPushMatrix();
                 glLoadIdentity();
-                if (Dialog::currentBox().location == 1)
+                if (Dialog::currentScene().location == 1)
                     glTranslatef(0, screenheight * 3 / 4, 0);
                 glScalef(screenwidth, screenheight / 4, 1);
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 glEnable(GL_BLEND);
 
-                glColor4f(Dialog::currentBox().color[0], Dialog::currentBox().color[1], Dialog::currentBox().color[2], 0.7);
+                glColor4f(Dialog::currentScene().color[0], Dialog::currentScene().color[1], Dialog::currentScene().color[2], 0.7);
                 glBegin(GL_QUADS);
                 glVertex3f(0, 0, 0.0f);
                 glVertex3f(1, 0, 0.0f);
@@ -989,9 +989,9 @@ int Game::DrawGLScene(StereoSide side)
                 float starty;
 
                 startx = screenwidth * 1 / 5;
-                if (Dialog::currentBox().location == 1)
+                if (Dialog::currentScene().location == 1)
                     starty = screenheight / 16 + screenheight * 4 / 5;
-                if (Dialog::currentBox().location == 2)
+                if (Dialog::currentScene().location == 2)
                     starty = screenheight * 1 / 5 - screenheight / 16;
 
                 char tempname[264];
@@ -1000,8 +1000,8 @@ int Game::DrawGLScene(StereoSide side)
                     tempname[i] = '\0';
                 }
 
-                for (int i = 0; i < Dialog::currentBox().name.size(); i++) {
-                    tempname[tempnum] = Dialog::currentBox().name[i];
+                for (int i = 0; i < Dialog::currentScene().name.size(); i++) {
+                    tempname[tempnum] = Dialog::currentScene().name[i];
                     if (tempname[tempnum] == '#' || tempname[tempnum] == '\0')
                         tempname[tempnum] = '\0';
                     else
@@ -1010,7 +1010,7 @@ int Game::DrawGLScene(StereoSide side)
 
                 sprintf (string, "%s: ", tempname);
 
-                if (Dialog::currentBox().color[0] + Dialog::currentBox().color[1] + Dialog::currentBox().color[2] < 1.5) {
+                if (Dialog::currentScene().color[0] + Dialog::currentScene().color[1] + Dialog::currentScene().color[2] < 1.5) {
                     glColor4f(0, 0, 0, tutorialopac);
                     text->glPrintOutline(startx - 2 * 7.6 * strlen(string)*screenwidth / 1024 - 4, starty - 4, string, 1, 1.5 * 1.25 * screenwidth / 1024, screenwidth, screenheight);
                     glColor4f(0.7, 0.7, 0.7, tutorialopac);
@@ -1021,9 +1021,9 @@ int Game::DrawGLScene(StereoSide side)
                 }
 
                 tempnum = 0;
-                for (int i = 0; i < Dialog::currentBox().text.size() + 1; i++) {
-                    tempname[tempnum] = Dialog::currentBox().text[i];
-                    if (Dialog::currentBox().text[i] != '#')
+                for (int i = 0; i < Dialog::currentScene().text.size() + 1; i++) {
+                    tempname[tempnum] = Dialog::currentScene().text[i];
+                    if (Dialog::currentScene().text[i] != '#')
                         tempnum++;
                 }
 
@@ -1035,7 +1035,7 @@ int Game::DrawGLScene(StereoSide side)
                 int i = 0;
                 while (!done) {
                     if (string[i] == '\n' || string[i] > 'z' || string[i] < ' ' || string[i] == '\0') {
-                        if (Dialog::currentBox().color[0] + Dialog::currentBox().color[1] + Dialog::currentBox().color[2] < 1.5) {
+                        if (Dialog::currentScene().color[0] + Dialog::currentScene().color[1] + Dialog::currentScene().color[2] < 1.5) {
                             glColor4f(0, 0, 0, tutorialopac);
                             text->glPrintOutline(startx/*-7.6*(i-lastline)*screenwidth/1024*/ - 4, starty - 4 - 20 * screenwidth / 1024 * line, string, 1, 1.5 * 1.25 * screenwidth / 1024, screenwidth, screenheight, lastline, i);
                             glColor4f(1, 1, 1, tutorialopac);

@@ -300,16 +300,16 @@ inline float stepTowardf(float from, float to, float by)
         return from + by;
 }
 
-void Game::playdialogueboxsound()
+void Game::playdialoguescenesound()
 {
     XYZ temppos;
-    temppos = Person::players[Dialog::currentBox().participantfocus]->coords;
+    temppos = Person::players[Dialog::currentScene().participantfocus]->coords;
     temppos = temppos - viewer;
     Normalise(&temppos);
     temppos += viewer;
 
     int sound = -1;
-    switch (Dialog::currentBox().sound) {
+    switch (Dialog::currentScene().sound) {
     case -6:
         sound = alarmsound;
         break;
@@ -2204,15 +2204,15 @@ void doDebugKeys()
 
             if (Input::isKeyPressed(SDL_SCANCODE_M) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
                 if (objects.numobjects < max_objects - 1) {
-                    XYZ boxcoords;
-                    boxcoords.x = Person::players[0]->coords.x;
-                    boxcoords.z = Person::players[0]->coords.z;
-                    boxcoords.y = Person::players[0]->coords.y - 3;
+                    XYZ scenecoords;
+                    scenecoords.x = Person::players[0]->coords.x;
+                    scenecoords.z = Person::players[0]->coords.z;
+                    scenecoords.y = Person::players[0]->coords.y - 3;
                     if (editortype == bushtype)
-                        boxcoords.y = Person::players[0]->coords.y - .5;
+                        scenecoords.y = Person::players[0]->coords.y - .5;
                     if (editortype == firetype)
-                        boxcoords.y = Person::players[0]->coords.y - .5;
-                    //objects.MakeObject(abs(Random()%3),boxcoords,Random()%360);
+                        scenecoords.y = Person::players[0]->coords.y - .5;
+                    //objects.MakeObject(abs(Random()%3),scenecoords,Random()%360);
                     float temprotat, temprotat2;
                     temprotat = editoryaw;
                     temprotat2 = editorpitch;
@@ -2221,9 +2221,9 @@ void doDebugKeys()
                     if (temprotat2 < 0)
                         temprotat2 = Random() % 360;
 
-                    objects.MakeObject(editortype, boxcoords, (int)temprotat - ((int)temprotat) % 30, (int)temprotat2, editorsize);
+                    objects.MakeObject(editortype, scenecoords, (int)temprotat - ((int)temprotat) % 30, (int)temprotat2, editorsize);
                     if (editortype == treetrunktype)
-                        objects.MakeObject(treeleavestype, boxcoords, Random() % 360 * (temprotat2 < 2) + (int)editoryaw - ((int)editoryaw) % 30, editorpitch, editorsize);
+                        objects.MakeObject(treeleavestype, scenecoords, Random() % 360 * (temprotat2 < 2) + (int)editoryaw - ((int)editoryaw) % 30, editorpitch, editorsize);
                 }
             }
 
@@ -5685,31 +5685,31 @@ void Game::Tick()
                         if (Input::isKeyPressed(SDL_SCANCODE_MINUS))
                             whichend = -1;
                         if (whichend != -1) {
-                            Dialog::currentBox().participantfocus = whichend;
+                            Dialog::currentScene().participantfocus = whichend;
                             Dialog::currentDialog().participantlocation[whichend] = Person::players[whichend]->coords;
                             Dialog::currentDialog().participantyaw[whichend] = Person::players[whichend]->yaw;
                         }
                         if (whichend == -1) {
-                            Dialog::currentBox().participantfocus = -1;
+                            Dialog::currentScene().participantfocus = -1;
                         }
                         /* FIXME: potentially accessing -1 in Person::players! */
-                        if (Person::players[Dialog::currentBox().participantfocus]->dead) {
+                        if (Person::players[Dialog::currentScene().participantfocus]->dead) {
                             Dialog::indialogue = -1;
                             Dialog::directing = false;
                             cameramode = 0;
                         }
-                        Dialog::currentBox().camera = viewer;
-                        Dialog::currentBox().camerayaw = yaw;
-                        Dialog::currentBox().camerapitch = pitch;
+                        Dialog::currentScene().camera = viewer;
+                        Dialog::currentScene().camerayaw = yaw;
+                        Dialog::currentScene().camerapitch = pitch;
                         Dialog::indialogue++;
-                        if (Dialog::indialogue < Dialog::currentDialog().boxes.size()) {
-                            if (Dialog::currentBox().sound != 0) {
-                                playdialogueboxsound();
+                        if (Dialog::indialogue < Dialog::currentDialog().scenes.size()) {
+                            if (Dialog::currentScene().sound != 0) {
+                                playdialoguescenesound();
                             }
                         }
 
                         for (unsigned j = 0; j < Person::players.size(); j++) {
-                            Dialog::currentBox().participantfacing[j] = Dialog::currentDialog().boxes[Dialog::indialogue - 1].participantfacing[j];
+                            Dialog::currentScene().participantfacing[j] = Dialog::currentDialog().scenes[Dialog::indialogue - 1].participantfacing[j];
                         }
                     }
                     //TODO: should these be KeyDown or KeyPressed?
@@ -5734,9 +5734,9 @@ void Game::Tick()
                         if (Input::isKeyDown(SDL_SCANCODE_KP_8)) whichend = 8;
                         if (Input::isKeyDown(SDL_SCANCODE_KP_9)) whichend = 9;
                         if (Input::isKeyDown(SDL_SCANCODE_KP_0)) whichend = 0;
-                        Dialog::currentBox().participantfacing[whichend] = facing;
+                        Dialog::currentScene().participantfacing[whichend] = facing;
                     }
-                    if (Dialog::indialogue >= Dialog::currentDialog().boxes.size()) {
+                    if (Dialog::indialogue >= Dialog::currentDialog().scenes.size()) {
                         Dialog::indialogue = -1;
                         Dialog::directing = false;
                         cameramode = 0;
@@ -5744,10 +5744,10 @@ void Game::Tick()
                 }
                 if (!Dialog::directing) {
                     pause_sound(whooshsound);
-                    viewer = Dialog::currentBox().camera;
+                    viewer = Dialog::currentScene().camera;
                     viewer.y = max((double)viewer.y, terrain.getHeight(viewer.x, viewer.z) + .1);
-                    yaw = Dialog::currentBox().camerayaw;
-                    pitch = Dialog::currentBox().camerapitch;
+                    yaw = Dialog::currentScene().camerayaw;
+                    pitch = Dialog::currentScene().camerapitch;
                     if (Dialog::dialoguetime > 0.5) {
                         if (     Input::isKeyPressed(SDL_SCANCODE_1) ||
                                  Input::isKeyPressed(SDL_SCANCODE_2) ||
@@ -5762,21 +5762,21 @@ void Game::Tick()
                                  Input::isKeyPressed(SDL_SCANCODE_MINUS) ||
                                  Input::isKeyPressed(attackkey)) {
                             Dialog::indialogue++;
-                            if (Dialog::indialogue < Dialog::currentDialog().boxes.size()) {
-                                if (Dialog::currentBox().sound != 0) {
-                                    playdialogueboxsound();
-                                    if (Dialog::currentBox().sound == -5) {
+                            if (Dialog::indialogue < Dialog::currentDialog().scenes.size()) {
+                                if (Dialog::currentScene().sound != 0) {
+                                    playdialoguescenesound();
+                                    if (Dialog::currentScene().sound == -5) {
                                         hotspot[numhotspots] = Person::players[0]->coords;
                                         hotspotsize[numhotspots] = 10;
                                         hotspottype[numhotspots] = -1;
 
                                         numhotspots++;
                                     }
-                                    if (Dialog::currentBox().sound == -6) {
+                                    if (Dialog::currentScene().sound == -6) {
                                         hostile = 1;
                                     }
 
-                                    if (Person::players[Dialog::currentBox().participantfocus]->dead) {
+                                    if (Person::players[Dialog::currentScene().participantfocus]->dead) {
                                         Dialog::indialogue = -1;
                                         Dialog::directing = false;
                                         cameramode = 0;
@@ -5785,7 +5785,7 @@ void Game::Tick()
                             }
                         }
                     }
-                    if (Dialog::indialogue >= Dialog::currentDialog().boxes.size()) {
+                    if (Dialog::indialogue >= Dialog::currentDialog().scenes.size()) {
                         Dialog::indialogue = -1;
                         Dialog::directing = false;
                         cameramode = 0;
@@ -5936,8 +5936,8 @@ void Game::Tick()
                         Person::players[i]->targetheadpitch = Person::players[i]->lookpitch;
                     }
                     if (Dialog::inDialog()) {
-                        Person::players[i]->targetheadyaw = 180 - roughDirection(Dialog::currentBox().participantfacing[i]);
-                        Person::players[i]->targetheadpitch = pitchOf(Dialog::currentBox().participantfacing[i]);
+                        Person::players[i]->targetheadyaw = 180 - roughDirection(Dialog::currentScene().participantfacing[i]);
+                        Person::players[i]->targetheadpitch = pitchOf(Dialog::currentScene().participantfacing[i]);
                     }
 
                     if (leveltime < .5)

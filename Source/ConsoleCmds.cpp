@@ -601,7 +601,7 @@ void ch_fixtype(const char *args)
 
 void ch_fixrotation(const char *args)
 {
-    int playerId = Dialog::currentBox().participantfocus;
+    int playerId = Dialog::currentScene().participantfocus;
     Dialog::currentDialog().participantyaw[playerId] = Person::players[playerId]->yaw;
 }
 
