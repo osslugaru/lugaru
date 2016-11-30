@@ -59,21 +59,6 @@ extern int difficulty;
 extern float slomospeed;
 extern bool gamestarted;
 
-extern int numdialogues;
-extern int numdialogueboxes[20];
-extern int dialoguetype[20];
-extern int dialogueboxlocation[20][20];
-extern float dialogueboxcolor[20][20][3];
-extern int dialogueboxsound[20][20];
-extern char dialoguetext[20][20][128];
-extern char dialoguename[20][20][64];
-extern XYZ dialoguecamera[20][20];
-extern float dialoguecamerayaw[20][20];
-extern float dialoguecamerapitch[20][20];
-extern int indialogue;
-extern int whichdialogue;
-extern float dialoguetime;
-
 extern float accountcampaignhighscore[10];
 extern float accountcampaignfasttime[10];
 extern float accountcampaignscore[10];

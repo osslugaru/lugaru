@@ -25,6 +25,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Sounds.h"
 #include "Awards.h"
 #include "Game.h"
+#include "Dialog.h"
 
 extern float multiplier;
 extern Terrain terrain;
@@ -64,8 +65,6 @@ extern bool cananger;
 extern float damagedealt;
 extern int hostile;
 extern float hostiletime;
-
-extern int indialogue;
 
 extern bool gamestarted;
 
@@ -504,7 +503,7 @@ void Person::CatchFire()
  */
 int Person::getIdle()
 {
-    if (indialogue != -1 && howactive == typeactive && creature == rabbittype)
+    if (Dialog::inDialog() && (howactive == typeactive) && (creature == rabbittype))
         return talkidleanim;
     if (hasvictim && (victim != this->shared_from_this())/*||(id==0&&attackkeydown)*/)
         if (/*(id==0&&attackkeydown)||*/(!victim->dead && victim->aitype != passivetype &&

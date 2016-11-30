@@ -193,30 +193,6 @@ extern "C" {
 #define STUBBED(x) { static bool seen = false; if (!seen) { seen = true; fprintf(stderr, "STUBBED: %s at %s:%d\n", x, __FILE__, __LINE__); } }
 //#define STUBBED(x)
 
-extern int numdialogues;
-const int max_dialogues = 20;
-const int max_dialoguelength = 20;
-extern int numdialogueboxes[max_dialogues];
-extern int dialoguetype[max_dialogues];
-extern int dialogueboxlocation[max_dialogues][max_dialoguelength];
-extern float dialogueboxcolor[max_dialogues][max_dialoguelength][3];
-extern int dialogueboxsound[max_dialogues][max_dialoguelength];
-extern char dialoguetext[max_dialogues][max_dialoguelength][128];
-extern char dialoguename[max_dialogues][max_dialoguelength][64];
-extern XYZ dialoguecamera[max_dialogues][max_dialoguelength];
-extern XYZ participantlocation[max_dialogues][10];
-extern int participantfocus[max_dialogues][max_dialoguelength];
-extern int participantaction[max_dialogues][max_dialoguelength];
-extern float participantyaw[max_dialogues][10];
-extern XYZ participantfacing[max_dialogues][max_dialoguelength][10];
-extern float dialoguecamerayaw[max_dialogues][max_dialoguelength];
-extern float dialoguecamerapitch[max_dialogues][max_dialoguelength];
-extern int indialogue;
-extern int whichdialogue;
-extern int directing;
-extern float dialoguetime;
-extern int dialoguegonethrough[20];
-
 enum maptypes {
     mapkilleveryone, mapgosomewhere,
     mapkillsomeone, mapkillmost // These two are unused

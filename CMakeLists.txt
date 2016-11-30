@@ -36,6 +36,7 @@ set(LUGARU_SRCS
     ${SRCDIR}/Frustum.cpp
     ${SRCDIR}/Account.cpp
     ${SRCDIR}/ConsoleCmds.cpp
+    ${SRCDIR}/Dialog.cpp
     ${SRCDIR}/Game.cpp
     ${SRCDIR}/GameDraw.cpp
     ${SRCDIR}/GameInitDispose.cpp
@@ -71,6 +72,7 @@ set(LUGARU_H
     ${SRCDIR}/Frustum.h
     ${SRCDIR}/Account.h
     ${SRCDIR}/ConsoleCmds.h
+    ${SRCDIR}/Dialog.h
     ${SRCDIR}/Game.h
     ${SRCDIR}/Lights.h
     ${SRCDIR}/Menu.h

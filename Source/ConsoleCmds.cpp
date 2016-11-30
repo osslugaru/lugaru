@@ -20,6 +20,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ConsoleCmds.h"
 #include "Game.h"
+#include "Dialog.h"
 
 const char *cmd_names[cmd_count] = {
 #define DECLARE_COMMAND(cmd) #cmd,
@@ -200,48 +201,7 @@ void ch_save(const char *args)
 
     fpackf(tfile, "Bi Bi", Person::players[0]->whichskin, Person::players[0]->creature);
 
-    fpackf(tfile, "Bi", numdialogues);
-
-    for (int k = 0; k < numdialogues; k++) {
-        fpackf(tfile, "Bi", numdialogueboxes[k]);
-        fpackf(tfile, "Bi", dialoguetype[k]);
-        for (int l = 0; l < 10; l++) {
-            fpackf(tfile, "Bf Bf Bf", participantlocation[k][l].x, participantlocation[k][l].y, participantlocation[k][l].z);
-            fpackf(tfile, "Bf", participantyaw[k][l]);
-        }
-        for (int l = 0; l < numdialogueboxes[k]; l++) {
-            fpackf(tfile, "Bi", dialogueboxlocation[k][l]);
-            fpackf(tfile, "Bf", dialogueboxcolor[k][l][0]);
-            fpackf(tfile, "Bf", dialogueboxcolor[k][l][1]);
-            fpackf(tfile, "Bf", dialogueboxcolor[k][l][2]);
-            fpackf(tfile, "Bi", dialogueboxsound[k][l]);
-
-            int templength = strlen(dialoguetext[k][l]);
-            fpackf(tfile, "Bi", (templength));
-            for (int m = 0; m < templength; m++) {
-                fpackf(tfile, "Bb", dialoguetext[k][l][m]);
-                if (dialoguetext[k][l][m] == '\0')
-                    break;
-            }
-
-            templength = strlen(dialoguename[k][l]);
-            fpackf(tfile, "Bi", templength);
-            for (int m = 0; m < templength; m++) {
-                fpackf(tfile, "Bb", dialoguename[k][l][m]);
-                if (dialoguename[k][l][m] == '\0')
-                    break;
-            }
-
-            fpackf(tfile, "Bf Bf Bf", dialoguecamera[k][l].x, dialoguecamera[k][l].y, dialoguecamera[k][l].z);
-            fpackf(tfile, "Bi", participantfocus[k][l]);
-            fpackf(tfile, "Bi", participantaction[k][l]);
-
-            for (int m = 0; m < 10; m++)
-                fpackf(tfile, "Bf Bf Bf", participantfacing[k][l][m].x, participantfacing[k][l][m].y, participantfacing[k][l][m].z);
-
-            fpackf(tfile, "Bf Bf", dialoguecamerayaw[k][l], dialoguecamerapitch[k][l]);
-        }
-    }
+    Dialog::saveDialogs(tfile);
 
     for (int k = 0; k < Person::players[0]->numclothes; k++) {
         int templength = strlen(Person::players[0]->clothes[k]);
@@ -608,111 +568,46 @@ void ch_hs(const char *args)
 
 void ch_dialogue(const char *args)
 {
-    int dlg;
-    char buf1[32], buf2[64];
+    int type;
+    char buf1[32], filename[64];
 
-    sscanf(args, "%d %31s", &dlg, buf1);
-    snprintf(buf2, 63, ":Data:Dialogues:%s.txt", buf1);
+    sscanf(args, "%d %31s", &type, buf1);
+    snprintf(filename, 63, ":Data:Dialogues:%s.txt", buf1);
 
-    dialoguetype[numdialogues] = dlg;
+    Dialog::dialogs.push_back(Dialog(type, filename));
 
-    memset(dialoguetext[numdialogues], 0, sizeof(dialoguetext[numdialogues]));
-    memset(dialoguename[numdialogues], 0, sizeof(dialoguename[numdialogues]));
-
-    ifstream ipstream(ConvertFileName(buf2));
-    ipstream.ignore(256, ':');
-    ipstream >> numdialogueboxes[numdialogues];
-    for (int i = 0; i < numdialogueboxes[numdialogues]; i++) {
-        ipstream.ignore(256, ':');
-        ipstream.ignore(256, ':');
-        ipstream.ignore(256, ' ');
-        ipstream >> dialogueboxlocation[numdialogues][i];
-        ipstream.ignore(256, ':');
-        ipstream >> dialogueboxcolor[numdialogues][i][0];
-        ipstream >> dialogueboxcolor[numdialogues][i][1];
-        ipstream >> dialogueboxcolor[numdialogues][i][2];
-        ipstream.ignore(256, ':');
-        ipstream.getline(dialoguename[numdialogues][i], 64);
-        ipstream.ignore(256, ':');
-        ipstream.ignore(256, ' ');
-        ipstream.getline(dialoguetext[numdialogues][i], 128);
-        for (int j = 0; j < 128; j++) {
-            if (dialoguetext[numdialogues][i][j] == '\\')
-                dialoguetext[numdialogues][i][j] = '\n';
-        }
-        ipstream.ignore(256, ':');
-        ipstream >> dialogueboxsound[numdialogues][i];
-    }
-
-    for (int i = 0; i < numdialogueboxes[numdialogues]; i++) {
-        for (unsigned j = 0; j < Person::players.size(); j++) {
-            participantfacing[numdialogues][i][j] = Person::players[j]->facing;
-        }
-    }
-    ipstream.close();
-
-    directing = 1;
-    indialogue = 0;
-    whichdialogue = numdialogues;
-
-    numdialogues++;
+    Dialog::directing = true;
+    Dialog::indialogue = 0;
+    Dialog::whichdialogue = Dialog::dialogs.size();
 }
 
 void ch_fixdialogue(const char *args)
 {
-    char buf1[32], buf2[64];
+    char buf1[32], filename[64];
     int whichdi;
 
     sscanf(args, "%d %31s", &whichdi, buf1);
-    snprintf(buf2, 63, ":Data:Dialogues:%s.txt", buf1);
+    snprintf(filename, 63, ":Data:Dialogues:%s.txt", buf1);
 
-    memset(dialoguetext[whichdi], 0, sizeof(dialoguetext[whichdi]));
-    memset(dialoguename[whichdi], 0, sizeof(dialoguename[whichdi]));
-
-    ifstream ipstream(ConvertFileName(buf2));
-    ipstream.ignore(256, ':');
-    ipstream >> numdialogueboxes[whichdi];
-    for (int i = 0; i < numdialogueboxes[whichdi]; i++) {
-        ipstream.ignore(256, ':');
-        ipstream.ignore(256, ':');
-        ipstream.ignore(256, ' ');
-        ipstream >> dialogueboxlocation[whichdi][i];
-        ipstream.ignore(256, ':');
-        ipstream >> dialogueboxcolor[whichdi][i][0];
-        ipstream >> dialogueboxcolor[whichdi][i][1];
-        ipstream >> dialogueboxcolor[whichdi][i][2];
-        ipstream.ignore(256, ':');
-        ipstream.getline(dialoguename[whichdi][i], 64);
-        ipstream.ignore(256, ':');
-        ipstream.ignore(256, ' ');
-        ipstream.getline(dialoguetext[whichdi][i], 128);
-        for (int j = 0; j < 128; j++) {
-            if (dialoguetext[whichdi][i][j] == '\\')
-                dialoguetext[whichdi][i][j] = '\n';
-        }
-        ipstream.ignore(256, ':');
-        ipstream >> dialogueboxsound[whichdi][i];
-    }
-
-    ipstream.close();
+    Dialog::dialogs[whichdi] = Dialog(Dialog::dialogs[whichdi].type, filename);
 }
 
 void ch_fixtype(const char *args)
 {
     int dlg;
     sscanf(args, "%d", &dlg);
-    dialoguetype[0] = dlg;
+    Dialog::dialogs[0].type = dlg;
 }
 
 void ch_fixrotation(const char *args)
 {
-    participantyaw[whichdialogue][participantfocus[whichdialogue][indialogue]] = Person::players[participantfocus[whichdialogue][indialogue]]->yaw;
+    int playerId = Dialog::currentBox().participantfocus;
+    Dialog::currentDialog().participantyaw[playerId] = Person::players[playerId]->yaw;
 }
 
 void ch_ddialogue(const char *args)
 {
-    if (numdialogues)
-        numdialogues--;
+    Dialog::dialogs.pop_back();
 }
 
 void ch_dhs(const char *args)
@@ -778,24 +673,13 @@ void ch_play(const char *args)
 {
     int dlg;
     sscanf(args, "%d", &dlg);
-    whichdialogue = dlg;
+    Dialog::whichdialogue = dlg;
 
-    if (whichdialogue >= numdialogues)
+    if (Dialog::whichdialogue >= Dialog::dialogs.size()) {
         return;
-
-    for (int i = 0; i < numdialogueboxes[whichdialogue]; i++) {
-        Person::players[participantfocus[whichdialogue][i]]->coords = participantlocation[whichdialogue][participantfocus[whichdialogue][i]];
-        Person::players[participantfocus[whichdialogue][i]]->yaw = participantyaw[whichdialogue][participantfocus[whichdialogue][i]];
-        Person::players[participantfocus[whichdialogue][i]]->targetyaw = participantyaw[whichdialogue][participantfocus[whichdialogue][i]];
-        Person::players[participantfocus[whichdialogue][i]]->velocity = 0;
-        Person::players[participantfocus[whichdialogue][i]]->animTarget = Person::players[participantfocus[whichdialogue][i]]->getIdle();
-        Person::players[participantfocus[whichdialogue][i]]->frameTarget = 0;
     }
 
-    directing = 0;
-    indialogue = 0;
-
-    playdialogueboxsound();
+    Dialog::currentDialog().play();
 }
 
 void ch_mapkilleveryone(const char *args)

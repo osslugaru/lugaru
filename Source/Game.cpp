@@ -21,30 +21,9 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Game.h"
 #include "openal_wrapper.h"
 #include "SDL_thread.h"
+#include "Dialog.h"
 
 extern int mainmenu;
-
-int numdialogues;
-int numdialogueboxes[max_dialogues];
-int dialoguetype[max_dialogues];
-int dialogueboxlocation[max_dialogues][max_dialoguelength];
-float dialogueboxcolor[max_dialogues][max_dialoguelength][3];
-int dialogueboxsound[max_dialogues][max_dialoguelength];
-char dialoguetext[max_dialogues][max_dialoguelength][128];
-char dialoguename[max_dialogues][max_dialoguelength][64];
-XYZ dialoguecamera[max_dialogues][max_dialoguelength];
-XYZ participantlocation[max_dialogues][10];
-int participantfocus[max_dialogues][max_dialoguelength];
-int participantaction[max_dialogues][max_dialoguelength];
-float participantyaw[max_dialogues][10];
-XYZ participantfacing[max_dialogues][max_dialoguelength][10];
-float dialoguecamerayaw[max_dialogues][max_dialoguelength];
-float dialoguecamerapitch[max_dialogues][max_dialoguelength];
-int indialogue;
-int whichdialogue;
-int directing;
-float dialoguetime;
-int dialoguegonethrough[20];
 
 const char *pathtypenames[] = {"keepwalking", "pause"};
 const char *editortypenames[] = {

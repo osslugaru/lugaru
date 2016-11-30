@@ -42,6 +42,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Awards.h"
 #include "Menu.h"
 #include "ConsoleCmds.h"
+#include "Dialog.h"
 
 #include <algorithm>
 #include <set>
@@ -302,13 +303,13 @@ inline float stepTowardf(float from, float to, float by)
 void Game::playdialogueboxsound()
 {
     XYZ temppos;
-    temppos = Person::players[participantfocus[whichdialogue][indialogue]]->coords;
+    temppos = Person::players[Dialog::currentBox().participantfocus]->coords;
     temppos = temppos - viewer;
     Normalise(&temppos);
     temppos += viewer;
 
     int sound = -1;
-    switch (dialogueboxsound[whichdialogue][indialogue]) {
+    switch (Dialog::currentBox().sound) {
     case -6:
         sound = alarmsound;
         break;
@@ -833,12 +834,9 @@ void Game::Loadlevel(const char *name)
 
         animation[bounceidleanim].Load((char *)"Idle", middleheight, neutral);
 
-        numdialogues = 0;
+        Dialog::dialogs.clear();
 
-        for (int i = 0; i < 20; i++)
-            dialoguegonethrough[i] = 0;
-
-        indialogue = -1;
+        Dialog::indialogue = -1;
         cameramode = 0;
 
         damagedealt = 0;
@@ -981,53 +979,7 @@ void Game::Loadlevel(const char *name)
 
         //dialogues
         if (mapvers >= 8) {
-            funpackf(tfile, "Bi", &numdialogues);
-            for (int k = 0; k < numdialogues; k++) {
-                funpackf(tfile, "Bi", &numdialogueboxes[k]);
-                funpackf(tfile, "Bi", &dialoguetype[k]);
-                for (int l = 0; l < 10; l++) {
-                    funpackf(tfile, "Bf Bf Bf", &participantlocation[k][l].x, &participantlocation[k][l].y, &participantlocation[k][l].z);
-                    funpackf(tfile, "Bf", &participantyaw[k][l]);
-                }
-                for (int l = 0; l < numdialogueboxes[k]; l++) {
-                    funpackf(tfile, "Bi", &dialogueboxlocation[k][l]);
-                    funpackf(tfile, "Bf", &dialogueboxcolor[k][l][0]);
-                    funpackf(tfile, "Bf", &dialogueboxcolor[k][l][1]);
-                    funpackf(tfile, "Bf", &dialogueboxcolor[k][l][2]);
-                    funpackf(tfile, "Bi", &dialogueboxsound[k][l]);
-
-                    funpackf(tfile, "Bi", &templength);
-                    if (templength > 128 || templength <= 0)
-                        templength = 128;
-                    int m;
-                    for (m = 0; m < templength; m++) {
-                        funpackf(tfile, "Bb", &dialoguetext[k][l][m]);
-                        if (dialoguetext[k][l][m] == '\0')
-                            break;
-                    }
-                    dialoguetext[k][l][m] = 0;
-
-                    funpackf(tfile, "Bi", &templength);
-                    if (templength > 64 || templength <= 0)
-                        templength = 64;
-                    for (m = 0; m < templength; m++) {
-                        funpackf(tfile, "Bb", &dialoguename[k][l][m]);
-                        if (dialoguename[k][l][m] == '\0')
-                            break;
-                    }
-                    dialoguename[k][l][m] = 0;
-                    funpackf(tfile, "Bf Bf Bf", &dialoguecamera[k][l].x, &dialoguecamera[k][l].y, &dialoguecamera[k][l].z);
-                    funpackf(tfile, "Bi", &participantfocus[k][l]);
-                    funpackf(tfile, "Bi", &participantaction[k][l]);
-
-                    for (m = 0; m < 10; m++)
-                        funpackf(tfile, "Bf Bf Bf", &participantfacing[k][l][m].x, &participantfacing[k][l][m].y, &participantfacing[k][l][m].z);
-
-                    funpackf(tfile, "Bf Bf", &dialoguecamerayaw[k][l], &dialoguecamerapitch[k][l]);
-                }
-            }
-        } else {
-            numdialogues = 0;
+            Dialog::loadDialogs(tfile);
         }
 
         for (int k = 0; k < Person::players[0]->numclothes; k++) {
@@ -3046,11 +2998,11 @@ void doAttacks()
         }
     }
 
-    if (!hostile || indialogue != -1)
+    if (!hostile || Dialog::inDialog())
         Person::players[0]->attackkeydown = 0;
 
     for (unsigned k = 0; k < Person::players.size(); k++) {
-        if (indialogue != -1)
+        if (Dialog::inDialog())
             Person::players[k]->attackkeydown = 0;
         if (Person::players[k]->animTarget != rabbitrunninganim && Person::players[k]->animTarget != wolfrunninganim) {
             if (Person::players[k]->aitype != playercontrolled)
@@ -3766,7 +3718,7 @@ void doPlayerCollisions()
 void doAI(unsigned i)
 {
     static bool connected;
-    if (Person::players[i]->aitype != playercontrolled && indialogue == -1) {
+    if (Person::players[i]->aitype != playercontrolled && !Dialog::inDialog()) {
         Person::players[i]->jumpclimb = 0;
         //disable movement in editor
         if (editorenabled)
@@ -5558,61 +5510,15 @@ void Game::Tick()
             //dialogues
             static float talkdelay = 0;
 
-            if (indialogue != -1)
+            if (Dialog::inDialog())
                 talkdelay = 1;
             talkdelay -= multiplier;
 
-            if (talkdelay <= 0 && indialogue == -1 && animation[Person::players[0]->animTarget].height != highheight)
-                for (int i = 0; i < numdialogues; i++) {
-                    unsigned realdialoguetype;
-                    bool special;
-                    /* FIXME - Seems like modulo done with ifs */
-                    if (dialoguetype[i] > 49) {
-                        realdialoguetype = dialoguetype[i] - 50;
-                        special = 1;
-                    } else if (dialoguetype[i] > 39) {
-                        realdialoguetype = dialoguetype[i] - 40;
-                        special = 1;
-                    } else if (dialoguetype[i] > 29) {
-                        realdialoguetype = dialoguetype[i] - 30;
-                        special = 1;
-                    } else if (dialoguetype[i] > 19) {
-                        realdialoguetype = dialoguetype[i] - 20;
-                        special = 1;
-                    } else if (dialoguetype[i] > 9) {
-                        realdialoguetype = dialoguetype[i] - 10;
-                        special = 1;
-                    } else {
-                        realdialoguetype = dialoguetype[i];
-                        special = 0;
-                    }
-                    if ((!hostile || dialoguetype[i] > 40 && dialoguetype[i] < 50) &&
-                            realdialoguetype < Person::players.size() &&
-                            realdialoguetype > 0 &&
-                            (dialoguegonethrough[i] == 0 || !special) &&
-                            (special || Input::isKeyPressed(attackkey))) {
-                        if (distsq(&Person::players[0]->coords, &Person::players[realdialoguetype]->coords) < 6 ||
-                                Person::players[realdialoguetype]->howactive >= typedead1 ||
-                                dialoguetype[i] > 40 && dialoguetype[i] < 50) {
-                            whichdialogue = i;
-                            for (int j = 0; j < numdialogueboxes[whichdialogue]; j++) {
-                                Person::players[participantfocus[whichdialogue][j]]->coords = participantlocation[whichdialogue][participantfocus[whichdialogue][j]];
-                                Person::players[participantfocus[whichdialogue][j]]->yaw = participantyaw[whichdialogue][participantfocus[whichdialogue][j]];
-                                Person::players[participantfocus[whichdialogue][j]]->targetyaw = participantyaw[whichdialogue][participantfocus[whichdialogue][j]];
-                                Person::players[participantfocus[whichdialogue][j]]->velocity = 0;
-                                Person::players[participantfocus[whichdialogue][j]]->animTarget = Person::players[participantfocus[whichdialogue][j]]->getIdle();
-                                Person::players[participantfocus[whichdialogue][j]]->frameTarget = 0;
-                            }
-                            directing = 0;
-                            indialogue = 0;
-                            dialoguetime = 0;
-                            dialoguegonethrough[i]++;
-                            if (dialogueboxsound[whichdialogue][indialogue] != 0) {
-                                playdialogueboxsound();
-                            }
-                        }
-                    }
+            if (talkdelay <= 0 && !Dialog::inDialog() && animation[Person::players[0]->animTarget].height != highheight) {
+                for (int i = 0; i < Dialog::dialogs.size(); i++) {
+                    Dialog::dialogs[i].tick(i);
                 }
+            }
 
             windvar += multiplier;
             smoketex += multiplier;
@@ -5704,7 +5610,7 @@ void Game::Tick()
             static XYZ oldviewer;
 
             //control keys
-            if (indialogue == -1) {
+            if (!Dialog::inDialog()) {
                 Person::players[0]->forwardkeydown = Input::isKeyDown(forwardkey);
                 Person::players[0]->leftkeydown = Input::isKeyDown(leftkey);
                 Person::players[0]->backkeydown = Input::isKeyDown(backkey);
@@ -5728,9 +5634,9 @@ void Game::Tick()
                 Person::players[0]->jumpclimb = 0;
 
 
-            if (indialogue != -1) {
+            if (Dialog::inDialog()) {
                 cameramode = 1;
-                if (directing) {
+                if (Dialog::directing) {
                     facing = 0;
                     facing.z = -1;
 
@@ -5779,30 +5685,31 @@ void Game::Tick()
                         if (Input::isKeyPressed(SDL_SCANCODE_MINUS))
                             whichend = -1;
                         if (whichend != -1) {
-                            participantfocus[whichdialogue][indialogue] = whichend;
-                            participantlocation[whichdialogue][whichend] = Person::players[whichend]->coords;
-                            participantyaw[whichdialogue][whichend] = Person::players[whichend]->yaw;
+                            Dialog::currentBox().participantfocus = whichend;
+                            Dialog::currentDialog().participantlocation[whichend] = Person::players[whichend]->coords;
+                            Dialog::currentDialog().participantyaw[whichend] = Person::players[whichend]->yaw;
                         }
                         if (whichend == -1) {
-                            participantfocus[whichdialogue][indialogue] = -1;
+                            Dialog::currentBox().participantfocus = -1;
                         }
-                        if (Person::players[participantfocus[whichdialogue][indialogue]]->dead) {
-                            indialogue = -1;
-                            directing = 0;
+                        /* FIXME: potentially accessing -1 in Person::players! */
+                        if (Person::players[Dialog::currentBox().participantfocus]->dead) {
+                            Dialog::indialogue = -1;
+                            Dialog::directing = false;
                             cameramode = 0;
                         }
-                        dialoguecamera[whichdialogue][indialogue] = viewer;
-                        dialoguecamerayaw[whichdialogue][indialogue] = yaw;
-                        dialoguecamerapitch[whichdialogue][indialogue] = pitch;
-                        indialogue++;
-                        if (indialogue < numdialogueboxes[whichdialogue]) {
-                            if (dialogueboxsound[whichdialogue][indialogue] != 0) {
+                        Dialog::currentBox().camera = viewer;
+                        Dialog::currentBox().camerayaw = yaw;
+                        Dialog::currentBox().camerapitch = pitch;
+                        Dialog::indialogue++;
+                        if (Dialog::indialogue < Dialog::currentDialog().boxes.size()) {
+                            if (Dialog::currentBox().sound != 0) {
                                 playdialogueboxsound();
                             }
                         }
 
                         for (unsigned j = 0; j < Person::players.size(); j++) {
-                            participantfacing[whichdialogue][indialogue][j] = participantfacing[whichdialogue][indialogue - 1][j];
+                            Dialog::currentBox().participantfacing[j] = Dialog::currentDialog().boxes[Dialog::indialogue - 1].participantfacing[j];
                         }
                     }
                     //TODO: should these be KeyDown or KeyPressed?
@@ -5827,21 +5734,21 @@ void Game::Tick()
                         if (Input::isKeyDown(SDL_SCANCODE_KP_8)) whichend = 8;
                         if (Input::isKeyDown(SDL_SCANCODE_KP_9)) whichend = 9;
                         if (Input::isKeyDown(SDL_SCANCODE_KP_0)) whichend = 0;
-                        participantfacing[whichdialogue][indialogue][whichend] = facing;
+                        Dialog::currentBox().participantfacing[whichend] = facing;
                     }
-                    if (indialogue >= numdialogueboxes[whichdialogue]) {
-                        indialogue = -1;
-                        directing = 0;
+                    if (Dialog::indialogue >= Dialog::currentDialog().boxes.size()) {
+                        Dialog::indialogue = -1;
+                        Dialog::directing = false;
                         cameramode = 0;
                     }
                 }
-                if (!directing) {
+                if (!Dialog::directing) {
                     pause_sound(whooshsound);
-                    viewer = dialoguecamera[whichdialogue][indialogue];
+                    viewer = Dialog::currentBox().camera;
                     viewer.y = max((double)viewer.y, terrain.getHeight(viewer.x, viewer.z) + .1);
-                    yaw = dialoguecamerayaw[whichdialogue][indialogue];
-                    pitch = dialoguecamerapitch[whichdialogue][indialogue];
-                    if (dialoguetime > 0.5)
+                    yaw = Dialog::currentBox().camerayaw;
+                    pitch = Dialog::currentBox().camerapitch;
+                    if (Dialog::dialoguetime > 0.5) {
                         if (     Input::isKeyPressed(SDL_SCANCODE_1) ||
                                  Input::isKeyPressed(SDL_SCANCODE_2) ||
                                  Input::isKeyPressed(SDL_SCANCODE_3) ||
@@ -5854,40 +5761,41 @@ void Game::Tick()
                                  Input::isKeyPressed(SDL_SCANCODE_0) ||
                                  Input::isKeyPressed(SDL_SCANCODE_MINUS) ||
                                  Input::isKeyPressed(attackkey)) {
-                            indialogue++;
-                            if (indialogue < numdialogueboxes[whichdialogue]) {
-                                if (dialogueboxsound[whichdialogue][indialogue] != 0) {
+                            Dialog::indialogue++;
+                            if (Dialog::indialogue < Dialog::currentDialog().boxes.size()) {
+                                if (Dialog::currentBox().sound != 0) {
                                     playdialogueboxsound();
-                                    if (dialogueboxsound[whichdialogue][indialogue] == -5) {
+                                    if (Dialog::currentBox().sound == -5) {
                                         hotspot[numhotspots] = Person::players[0]->coords;
                                         hotspotsize[numhotspots] = 10;
                                         hotspottype[numhotspots] = -1;
 
                                         numhotspots++;
                                     }
-                                    if (dialogueboxsound[whichdialogue][indialogue] == -6) {
+                                    if (Dialog::currentBox().sound == -6) {
                                         hostile = 1;
                                     }
 
-                                    if (Person::players[participantfocus[whichdialogue][indialogue]]->dead) {
-                                        indialogue = -1;
-                                        directing = 0;
+                                    if (Person::players[Dialog::currentBox().participantfocus]->dead) {
+                                        Dialog::indialogue = -1;
+                                        Dialog::directing = false;
                                         cameramode = 0;
                                     }
                                 }
                             }
                         }
-                    if (indialogue >= numdialogueboxes[whichdialogue]) {
-                        indialogue = -1;
-                        directing = 0;
+                    }
+                    if (Dialog::indialogue >= Dialog::currentDialog().boxes.size()) {
+                        Dialog::indialogue = -1;
+                        Dialog::directing = false;
                         cameramode = 0;
-                        if (dialoguetype[whichdialogue] > 19 && dialoguetype[whichdialogue] < 30) {
+                        if (Dialog::currentDialog().type > 19 && Dialog::currentDialog().type < 30) {
                             hostile = 1;
                         }
-                        if (dialoguetype[whichdialogue] > 29 && dialoguetype[whichdialogue] < 40) {
+                        if (Dialog::currentDialog().type > 29 && Dialog::currentDialog().type < 40) {
                             windialogue = true;
                         }
-                        if (dialoguetype[whichdialogue] > 49 && dialoguetype[whichdialogue] < 60) {
+                        if (Dialog::currentDialog().type > 49 && Dialog::currentDialog().type < 60) {
                             hostile = 1;
                             for (unsigned i = 1; i < Person::players.size(); i++) {
                                 Person::players[i]->aitype = attacktypecutoff;
@@ -5907,7 +5815,7 @@ void Game::Tick()
                 Person::players[0]->jumptogglekeydown = 1;
 
 
-            dialoguetime += multiplier;
+            Dialog::dialoguetime += multiplier;
             hawkyaw += multiplier * 25;
             realhawkcoords = 0;
             realhawkcoords.x = 25;
@@ -5970,7 +5878,7 @@ void Game::Tick()
                 static float oldtargetyaw;
                 if (!Person::players[i]->skeleton.free) {
                     oldtargetyaw = Person::players[i]->targetyaw;
-                    if (i == 0 && indialogue == -1) {
+                    if (i == 0 && !Dialog::inDialog()) {
                         //TODO: refactor repetitive code
                         if (!animation[Person::players[0]->animTarget].attack &&
                                 Person::players[0]->animTarget != staggerbackhighanim &&
@@ -6003,7 +5911,7 @@ void Game::Tick()
                         Person::players[i]->targetheadyaw = yaw;
                         Person::players[i]->targetheadpitch = pitch;
                     }
-                    if (i != 0 && Person::players[i]->aitype == playercontrolled && indialogue == -1) {
+                    if (i != 0 && Person::players[i]->aitype == playercontrolled && !Dialog::inDialog()) {
                         if (!animation[Person::players[i]->animTarget].attack &&
                                 Person::players[i]->animTarget != staggerbackhighanim &&
                                 Person::players[i]->animTarget != staggerbackhardanim &&
@@ -6027,9 +5935,9 @@ void Game::Tick()
                         Person::players[i]->targetheadyaw = Person::players[i]->lookyaw;
                         Person::players[i]->targetheadpitch = Person::players[i]->lookpitch;
                     }
-                    if (indialogue != -1) {
-                        Person::players[i]->targetheadyaw = 180 - roughDirection(participantfacing[whichdialogue][indialogue][i]);
-                        Person::players[i]->targetheadpitch = pitchOf(participantfacing[whichdialogue][indialogue][i]);
+                    if (Dialog::inDialog()) {
+                        Person::players[i]->targetheadyaw = 180 - roughDirection(Dialog::currentBox().participantfacing[i]);
+                        Person::players[i]->targetheadpitch = pitchOf(Dialog::currentBox().participantfacing[i]);
                     }
 
                     if (leveltime < .5)
@@ -6086,7 +5994,7 @@ void Game::Tick()
                         Person::players[i]->throwkeydown = 0;
                     }
 
-                    if (indialogue != -1) {
+                    if (Dialog::inDialog()) {
                         Person::players[i]->forwardkeydown = 0;
                         Person::players[i]->leftkeydown = 0;
                         Person::players[i]->backkeydown = 0;
@@ -6435,7 +6343,7 @@ void Game::Tick()
                     } else
                         absflatfacing = flatfacing;
 
-                    if (indialogue != -1) {
+                    if (Dialog::inDialog()) {
                         Person::players[i]->forwardkeydown = 0;
                         Person::players[i]->leftkeydown = 0;
                         Person::players[i]->backkeydown = 0;
@@ -6964,14 +6872,15 @@ void Game::Tick()
 
 void Game::TickOnce()
 {
-    if (mainmenu)
+    if (mainmenu) {
         yaw += multiplier * 5;
-    else if (directing || indialogue == -1) {
+    } else if (Dialog::directing || !Dialog::inDialog()) {
         yaw += deltah * .7;
-        if (!invertmouse)
-            pitch += deltav * .7;
-        if (invertmouse)
+        if (invertmouse) {
             pitch -= deltav * .7;
+        } else {
+            pitch += deltav * .7;
+        }
         if (pitch > 90)
             pitch = 90;
         if (pitch < -70)

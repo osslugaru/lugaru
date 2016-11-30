@@ -23,6 +23,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Input.h"
 #include "Awards.h"
 #include "Menu.h"
+#include "Dialog.h"
 
 extern XYZ viewer;
 extern int environment;
@@ -565,7 +566,7 @@ int Game::DrawGLScene(StereoSide side)
         glColor4f(.5, .5, .5, 1);
         if (!console) {
             if (!tutoriallevel)
-                if (bonus > 0 && bonustime < 1 && !winfreeze && indialogue == -1/*bonustime<4*/) {
+                if (bonus > 0 && bonustime < 1 && !winfreeze && !Dialog::inDialog()) {
                     const char *bonus_name;
                     if (bonus < bonus_count)
                         bonus_name = bonus_names[bonus];
@@ -938,48 +939,15 @@ int Game::DrawGLScene(StereoSide side)
                                 done = 1;
                             i++;
                         }
-                    } else if (hotspottype[closest] >= 20 && dialoguegonethrough[hotspottype[closest] - 20] == 0) {
-                        whichdialogue = hotspottype[closest] - 20;
-                        for (int j = 0; j < numdialogueboxes[whichdialogue]; j++) {
-                            Person::players[participantfocus[whichdialogue][j]]->coords = participantlocation[whichdialogue][participantfocus[whichdialogue][j]];
-                            Person::players[participantfocus[whichdialogue][j]]->yaw = participantyaw[whichdialogue][participantfocus[whichdialogue][j]];
-                            Person::players[participantfocus[whichdialogue][j]]->targetyaw = participantyaw[whichdialogue][participantfocus[whichdialogue][j]];
-                            Person::players[participantfocus[whichdialogue][j]]->velocity = 0;
-                            Person::players[participantfocus[whichdialogue][j]]->animTarget = Person::players[participantfocus[whichdialogue][j]]->getIdle();
-                            Person::players[participantfocus[whichdialogue][j]]->frameTarget = 0;
-                        }
-                        directing = 0;
-                        indialogue = 0;
-                        dialoguegonethrough[whichdialogue]++;
-                        if (dialogueboxsound[whichdialogue][indialogue] != 0) {
-                            int whichsoundplay;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 1) whichsoundplay = rabbitchitter;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 2) whichsoundplay = rabbitchitter2;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 3) whichsoundplay = rabbitpainsound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 4) whichsoundplay = rabbitpain1sound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 5) whichsoundplay = rabbitattacksound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 6) whichsoundplay = rabbitattack2sound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 7) whichsoundplay = rabbitattack3sound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 8) whichsoundplay = rabbitattack4sound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 9) whichsoundplay = growlsound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 10) whichsoundplay = growl2sound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 11) whichsoundplay = snarlsound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 12) whichsoundplay = snarl2sound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 13) whichsoundplay = barksound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 14) whichsoundplay = bark2sound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 15) whichsoundplay = bark3sound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == 16) whichsoundplay = barkgrowlsound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == -1) whichsoundplay = fireendsound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == -2) whichsoundplay = firestartsound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == -3) whichsoundplay = consolesuccesssound;
-                            if (dialogueboxsound[whichdialogue][indialogue] == -4) whichsoundplay = consolefailsound;
-                            emit_sound_at(whichsoundplay, Person::players[participantfocus[whichdialogue][indialogue]]->coords);
-                        }
+                    } else if ((hotspottype[closest] >= 20) && (Dialog::dialogs[hotspottype[closest] - 20].gonethrough == 0)) {
+                        Dialog::whichdialogue = hotspottype[closest] - 20;
+                        Dialog::currentDialog().play();
+                        Dialog::currentDialog().gonethrough++;
                     }
                 }
             }
 
-            if (indialogue != -1 && !mainmenu) {
+            if (Dialog::inDialog() && !mainmenu) {
                 glDisable(GL_DEPTH_TEST);
                 glDisable(GL_CULL_FACE);
                 glDisable(GL_LIGHTING);
@@ -992,13 +960,13 @@ int Game::DrawGLScene(StereoSide side)
                 glMatrixMode(GL_MODELVIEW);
                 glPushMatrix();
                 glLoadIdentity();
-                if (dialogueboxlocation[whichdialogue][indialogue] == 1)
+                if (Dialog::currentBox().location == 1)
                     glTranslatef(0, screenheight * 3 / 4, 0);
                 glScalef(screenwidth, screenheight / 4, 1);
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 glEnable(GL_BLEND);
 
-                glColor4f(dialogueboxcolor[whichdialogue][indialogue][0], dialogueboxcolor[whichdialogue][indialogue][1], dialogueboxcolor[whichdialogue][indialogue][2], 0.7);
+                glColor4f(Dialog::currentBox().color[0], Dialog::currentBox().color[1], Dialog::currentBox().color[2], 0.7);
                 glBegin(GL_QUADS);
                 glVertex3f(0, 0, 0.0f);
                 glVertex3f(1, 0, 0.0f);
@@ -1021,32 +989,28 @@ int Game::DrawGLScene(StereoSide side)
                 float starty;
 
                 startx = screenwidth * 1 / 5;
-                if (dialogueboxlocation[whichdialogue][indialogue] == 1)
+                if (Dialog::currentBox().location == 1)
                     starty = screenheight / 16 + screenheight * 4 / 5;
-                if (dialogueboxlocation[whichdialogue][indialogue] == 2)
+                if (Dialog::currentBox().location == 2)
                     starty = screenheight * 1 / 5 - screenheight / 16;
 
                 char tempname[264];
-                bool goodchar;
                 int tempnum = 0;
                 for (int i = 0; i < 264; i++) {
                     tempname[i] = '\0';
                 }
 
-                for (int i = 0; i < (int)strlen(dialoguename[whichdialogue][indialogue]); i++) {
-                    tempname[tempnum] = dialoguename[whichdialogue][indialogue][i];
-                    goodchar = 1;
-                    if (dialoguename[whichdialogue][indialogue][i] == '#' || dialoguename[whichdialogue][indialogue][i] == '\0')
-                        goodchar = 0;
-                    if (goodchar)
-                        tempnum++;
-                    else
+                for (int i = 0; i < Dialog::currentBox().name.size(); i++) {
+                    tempname[tempnum] = Dialog::currentBox().name[i];
+                    if (tempname[tempnum] == '#' || tempname[tempnum] == '\0')
                         tempname[tempnum] = '\0';
+                    else
+                        tempnum++;
                 }
 
                 sprintf (string, "%s: ", tempname);
 
-                if (dialogueboxcolor[whichdialogue][indialogue][0] + dialogueboxcolor[whichdialogue][indialogue][1] + dialogueboxcolor[whichdialogue][indialogue][2] < 1.5) {
+                if (Dialog::currentBox().color[0] + Dialog::currentBox().color[1] + Dialog::currentBox().color[2] < 1.5) {
                     glColor4f(0, 0, 0, tutorialopac);
                     text->glPrintOutline(startx - 2 * 7.6 * strlen(string)*screenwidth / 1024 - 4, starty - 4, string, 1, 1.5 * 1.25 * screenwidth / 1024, screenwidth, screenheight);
                     glColor4f(0.7, 0.7, 0.7, tutorialopac);
@@ -1057,9 +1021,9 @@ int Game::DrawGLScene(StereoSide side)
                 }
 
                 tempnum = 0;
-                for (int i = 0; i < (int)strlen(dialoguetext[whichdialogue][indialogue]) + 1; i++) {
-                    tempname[tempnum] = dialoguetext[whichdialogue][indialogue][i];
-                    if (dialoguetext[whichdialogue][indialogue][i] != '#')
+                for (int i = 0; i < Dialog::currentBox().text.size() + 1; i++) {
+                    tempname[tempnum] = Dialog::currentBox().text[i];
+                    if (Dialog::currentBox().text[i] != '#')
                         tempnum++;
                 }
 
@@ -1071,7 +1035,7 @@ int Game::DrawGLScene(StereoSide side)
                 int i = 0;
                 while (!done) {
                     if (string[i] == '\n' || string[i] > 'z' || string[i] < ' ' || string[i] == '\0') {
-                        if (dialogueboxcolor[whichdialogue][indialogue][0] + dialogueboxcolor[whichdialogue][indialogue][1] + dialogueboxcolor[whichdialogue][indialogue][2] < 1.5) {
+                        if (Dialog::currentBox().color[0] + Dialog::currentBox().color[1] + Dialog::currentBox().color[2] < 1.5) {
                             glColor4f(0, 0, 0, tutorialopac);
                             text->glPrintOutline(startx/*-7.6*(i-lastline)*screenwidth/1024*/ - 4, starty - 4 - 20 * screenwidth / 1024 * line, string, 1, 1.5 * 1.25 * screenwidth / 1024, screenwidth, screenheight, lastline, i);
                             glColor4f(1, 1, 1, tutorialopac);
@@ -1091,7 +1055,7 @@ int Game::DrawGLScene(StereoSide side)
                 }
             }
 
-            if (!tutoriallevel && !winfreeze && indialogue == -1 && !mainmenu) {
+            if (!tutoriallevel && !winfreeze && !Dialog::inDialog() && !mainmenu) {
                 if (campaign) {
                     if (scoreadded)
                         sprintf (string, "Score: %d", (int)accountactive->getCampaignScore());
@@ -1403,7 +1367,7 @@ int Game::DrawGLScene(StereoSide side)
                     }
         }
 
-        if (difficulty < 2 && indialogue == -1) { // minimap
+        if (difficulty < 2 && !Dialog::inDialog()) { // minimap
             float mapviewdist = 20000;
 
             glDisable(GL_DEPTH_TEST);
