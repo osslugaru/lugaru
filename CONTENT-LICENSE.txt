@@ -26,11 +26,3 @@ Data/Textures/GiTeared.png
 Data/Textures/GiBottom.png
 Data/Textures/mask.png
 Data/Textures/temple/World.png
-
-## Wolfire nonfree but redistributable assets
-
-All other game assets and demo data (should all be in "Data" folder
-in the root of the source tree) are not under the same license.
-Wolfire has allowed the other data to be freely redistributed
-for non commercial purposes, but it is forbidden to use in any revenue
-generating works.

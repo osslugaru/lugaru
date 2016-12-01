@@ -43,15 +43,15 @@ void Dialog::loadDialogs(FILE* tfile)
 
 Dialog::Dialog(FILE* tfile) : gonethrough(0)
 {
-    int numdialogboxes;
-    funpackf(tfile, "Bi", &numdialogboxes);
+    int numdialogscenes;
+    funpackf(tfile, "Bi", &numdialogscenes);
     funpackf(tfile, "Bi", &type);
     for (int l = 0; l < 10; l++) {
         funpackf(tfile, "Bf Bf Bf", &participantlocation[l].x, &participantlocation[l].y, &participantlocation[l].z);
         funpackf(tfile, "Bf", &participantyaw[l]);
     }
-    for (int l = 0; l < numdialogboxes; l++) {
-        boxes.push_back(DialogBox(tfile));
+    for (int l = 0; l < numdialogscenes; l++) {
+        scenes.push_back(DialogScene(tfile));
     }
 }
 
@@ -85,7 +85,7 @@ void fpackf_string(FILE* tfile, std::string text)
     }
 }
 
-DialogBox::DialogBox(FILE* tfile)
+DialogScene::DialogScene(FILE* tfile)
 {
     funpackf(tfile, "Bi", &location);
     funpackf(tfile, "Bf", &color[0]);
@@ -111,18 +111,18 @@ Dialog::Dialog(int type, std::string filename) : type(type)
 {
     ifstream ipstream(ConvertFileName(filename.c_str()));
     ipstream.ignore(256, ':');
-    int numboxes;
-    ipstream >> numboxes;
-    for (int i = 0; i < numboxes; i++) {
-        boxes.push_back(DialogBox(ipstream));
+    int numscenes;
+    ipstream >> numscenes;
+    for (int i = 0; i < numscenes; i++) {
+        scenes.push_back(DialogScene(ipstream));
         for (unsigned j = 0; j < Person::players.size(); j++) {
-            boxes.back().participantfacing[j] = Person::players[j]->facing;
+            scenes.back().participantfacing[j] = Person::players[j]->facing;
         }
     }
     ipstream.close();
 }
 
-DialogBox::DialogBox(ifstream &ipstream)
+DialogScene::DialogScene(ifstream &ipstream)
 {
     ipstream.ignore(256, ':');
     ipstream.ignore(256, ':');
@@ -168,8 +168,8 @@ void Dialog::tick(int id)
 
 void Dialog::play()
 {
-    for (int i = 0; i < boxes.size(); i++) {
-        int playerId = boxes[i].participantfocus;
+    for (int i = 0; i < scenes.size(); i++) {
+        int playerId = scenes[i].participantfocus;
         Person::players[playerId]->coords = participantlocation[playerId];
         Person::players[playerId]->yaw = participantyaw[playerId];
         Person::players[playerId]->targetyaw = participantyaw[playerId];
@@ -181,8 +181,8 @@ void Dialog::play()
     Dialog::directing = false;
     Dialog::indialogue = 0;
 
-    if (boxes[indialogue].sound != 0) {
-        Game::playdialogueboxsound();
+    if (scenes[indialogue].sound != 0) {
+        Game::playdialoguescenesound();
     }
 }
 
@@ -197,18 +197,18 @@ void Dialog::saveDialogs(FILE* tfile)
 
 void Dialog::save(FILE* tfile)
 {
-    fpackf(tfile, "Bi", boxes.size());
+    fpackf(tfile, "Bi", scenes.size());
     fpackf(tfile, "Bi", type);
     for (int l = 0; l < 10; l++) {
         fpackf(tfile, "Bf Bf Bf", participantlocation[l].x, participantlocation[l].y, participantlocation[l].z);
         fpackf(tfile, "Bf", participantyaw[l]);
     }
-    for (int l = 0; l < boxes.size(); l++) {
-        boxes[l].save(tfile);
+    for (int l = 0; l < scenes.size(); l++) {
+        scenes[l].save(tfile);
     }
 }
 
-void DialogBox::save(FILE* tfile)
+void DialogScene::save(FILE* tfile)
 {
     fpackf(tfile, "Bi", location);
     fpackf(tfile, "Bf", color[0]);
