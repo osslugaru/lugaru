@@ -21,6 +21,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Settings.h"
 #include "Game.h"
 #include "Input.h"
+#include "Utils/Folders.h"
 
 using namespace Game;
 
@@ -79,7 +80,7 @@ void SaveSettings()
         newscreenheight = screenheight;
     if (newscreenheight < 0)
         newscreenheight = screenheight;
-    ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
+    ofstream opstream(Folders::getConfigFilePath());
     opstream << "Screenwidth:\n";
     opstream << newscreenwidth;
     opstream << "\nScreenheight:\n";
@@ -167,7 +168,7 @@ void SaveSettings()
 
 bool LoadSettings()
 {
-    ifstream ipstream(ConvertFileName(":Data:config.txt"), std::ios::in);
+    ifstream ipstream(Folders::getConfigFilePath(), std::ios::in);
     if ( !ipstream || ipstream.fail() ) {
         printf("Config file not found\n");
         return false;

@@ -66,6 +66,7 @@ set(LUGARU_SRCS
     ${SRCDIR}/Animation.cpp
     ${SRCDIR}/Sounds.cpp
     ${SRCDIR}/Awards.cpp
+    ${SRCDIR}/Utils/Folders.cpp
 )
 
 set(LUGARU_H
@@ -101,6 +102,7 @@ set(LUGARU_H
     ${SRCDIR}/Stereo.h
     ${SRCDIR}/Animation.h
     ${SRCDIR}/Sounds.h
+    ${SRCDIR}/Utils/Folders.h
 )
 
 if(UNIX)
