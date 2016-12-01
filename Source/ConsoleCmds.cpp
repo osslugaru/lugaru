@@ -21,6 +21,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "ConsoleCmds.h"
 #include "Game.h"
 #include "Dialog.h"
+#include "Utils/Folders.h"
 
 const char *cmd_names[cmd_count] = {
 #define DECLARE_COMMAND(cmd) #cmd,
@@ -142,7 +143,7 @@ static void set_noclothes(int pnum, const char *args)
 static void set_clothes(int pnum, const char *args)
 {
     char buf[64];
-    snprintf(buf, 63, ":Data:Textures:%s.png", args);
+    snprintf(buf, 63, "Textures/%s.png", args);
 
     int id = Person::players[pnum]->numclothes;
     strcpy(Person::players[pnum]->clothes[id], buf);
@@ -173,13 +174,12 @@ void ch_map(const char *args)
 
 void ch_save(const char *args)
 {
-    char buf[64];
-    snprintf(buf, 63, ":Data:Maps:%s", args);
+    std::string map_path = Folders::getUserDataPath() + "/Maps/" + args;
 
     int mapvers = 12;
 
     FILE *tfile;
-    tfile = fopen( ConvertFileName(buf), "wb" );
+    tfile = fopen( map_path.c_str(), "wb" );
     fpackf(tfile, "Bi", mapvers);
     fpackf(tfile, "Bi", maptype);
     fpackf(tfile, "Bi", hostile);
@@ -300,7 +300,7 @@ void ch_save(const char *args)
 
 void ch_cellar(const char *args)
 {
-    Person::players[0]->skeleton.drawmodel.textureptr.load(":Data:Textures:Furdarko.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
+    Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/Furdarko.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 }
 
 void ch_tint(const char *args)
@@ -443,13 +443,13 @@ void ch_cellophane(const char *args)
 void ch_funnybunny(const char *args)
 {
     Person::players[0]->skeleton.id = 0;
-    Person::players[0]->skeleton.Load(":Data:Skeleton:Basic Figure", ":Data:Skeleton:Basic Figurelow",
-                            ":Data:Skeleton:Rabbitbelt", ":Data:Models:Body.solid",
-                            ":Data:Models:Body2.solid", ":Data:Models:Body3.solid",
-                            ":Data:Models:Body4.solid", ":Data:Models:Body5.solid",
-                            ":Data:Models:Body6.solid", ":Data:Models:Body7.solid",
-                            ":Data:Models:Bodylow.solid", ":Data:Models:Belt.solid", 1);
-    Person::players[0]->skeleton.drawmodel.textureptr.load(":Data:Textures:fur3.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
+    Person::players[0]->skeleton.Load("Skeleton/Basic Figure", "Skeleton/Basic Figurelow",
+                            "Skeleton/Rabbitbelt", "Models/Body.solid",
+                            "Models/Body2.solid", "Models/Body3.solid",
+                            "Models/Body4.solid", "Models/Body5.solid",
+                            "Models/Body6.solid", "Models/Body7.solid",
+                            "Models/Bodylow.solid", "Models/Belt.solid", 1);
+    Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/fur3.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
     Person::players[0]->creature = rabbittype;
     Person::players[0]->scale = .2;
     Person::players[0]->headless = 0;
@@ -460,13 +460,13 @@ void ch_funnybunny(const char *args)
 void ch_wolfie(const char *args)
 {
     Person::players[0]->skeleton.id = 0;
-    Person::players[0]->skeleton.Load(":Data:Skeleton:Basic Figure Wolf", ":Data:Skeleton:Basic Figure Wolf Low",
-                            ":Data:Skeleton:Rabbitbelt", ":Data:Models:Wolf.solid",
-                            ":Data:Models:Wolf2.solid", ":Data:Models:Wolf3.solid",
-                            ":Data:Models:Wolf4.solid", ":Data:Models:Wolf5.solid",
-                            ":Data:Models:Wolf6.solid", ":Data:Models:Wolf7.solid",
-                            ":Data:Models:Wolflow.solid", ":Data:Models:Belt.solid", 0);
-    Person::players[0]->skeleton.drawmodel.textureptr.load(":Data:Textures:Wolf.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
+    Person::players[0]->skeleton.Load("Skeleton/Basic Figure Wolf", "Skeleton/Basic Figure Wolf Low",
+                            "Skeleton/Rabbitbelt", "Models/Wolf.solid",
+                            "Models/Wolf2.solid", "Models/Wolf3.solid",
+                            "Models/Wolf4.solid", "Models/Wolf5.solid",
+                            "Models/Wolf6.solid", "Models/Wolf7.solid",
+                            "Models/Wolflow.solid", "Models/Belt.solid", 0);
+    Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/Wolf.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
     Person::players[0]->creature = wolftype;
     Person::players[0]->damagetolerance = 300;
     set_proportion(0, "1 1 1 1");
@@ -479,37 +479,37 @@ void ch_wolfieisgod(const char *args)
 
 void ch_wolf(const char *args)
 {
-    Person::players[0]->skeleton.drawmodel.textureptr.load(":Data:Textures:Wolf.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
+    Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/Wolf.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 }
 
 void ch_snowwolf(const char *args)
 {
-    Person::players[0]->skeleton.drawmodel.textureptr.load(":Data:Textures:SnowWolf.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
+    Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/SnowWolf.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 }
 
 void ch_darkwolf(const char *args)
 {
-    Person::players[0]->skeleton.drawmodel.textureptr.load(":Data:Textures:DarkWolf.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
+    Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/DarkWolf.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 }
 
 void ch_lizardwolf(const char *args)
 {
-    Person::players[0]->skeleton.drawmodel.textureptr.load(":Data:Textures:Lizardwolf.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
+    Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/Lizardwolf.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 }
 
 void ch_white(const char *args)
 {
-    Person::players[0]->skeleton.drawmodel.textureptr.load(":Data:Textures:fur.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
+    Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/fur.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 }
 
 void ch_brown(const char *args)
 {
-    Person::players[0]->skeleton.drawmodel.textureptr.load(":Data:Textures:fur3.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
+    Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/fur3.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 }
 
 void ch_black(const char *args)
 {
-    Person::players[0]->skeleton.drawmodel.textureptr.load(":Data:Textures:fur2.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
+    Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/fur2.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 }
 
 void ch_sizemin(const char *args)
@@ -569,10 +569,10 @@ void ch_hs(const char *args)
 void ch_dialogue(const char *args)
 {
     int type;
-    char buf1[32], filename[64];
+    char buf1[32];
 
     sscanf(args, "%d %31s", &type, buf1);
-    snprintf(filename, 63, ":Data:Dialogues:%s.txt", buf1);
+    std::string filename = std::string("Dialogues/") + buf1 + ".txt";
 
     Dialog::dialogs.push_back(Dialog(type, filename));
 
@@ -583,11 +583,11 @@ void ch_dialogue(const char *args)
 
 void ch_fixdialogue(const char *args)
 {
-    char buf1[32], filename[64];
+    char buf1[32];
     int whichdi;
 
     sscanf(args, "%d %31s", &whichdi, buf1);
-    snprintf(filename, 63, ":Data:Dialogues:%s.txt", buf1);
+    std::string filename = std::string("Dialogues/") + buf1 + ".txt";
 
     Dialog::dialogs[whichdi] = Dialog(Dialog::dialogs[whichdi].type, filename);
 }

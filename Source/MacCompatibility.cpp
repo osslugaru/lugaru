@@ -239,30 +239,3 @@ static int locateCorrectFile(char *buf, const char *mode)
     return(rc);
 } /* locateCorrectFile */
 #endif
-
-
-static char g_filename[4096];
-char* ConvertFileName( const char* orgfilename, const char *mode)
-{
-    if (orgfilename == g_filename) // recursion?
-        return g_filename;
-
-    // translate filename into proper path name
-    if (orgfilename[ 0] == ':')
-        orgfilename++;
-    strcpy( g_filename, orgfilename);
-
-    for (int n = 0; g_filename[ n]; n++) {
-        if (g_filename[ n] == ':')
-            g_filename[ n] = '/';
-
-        else if (g_filename[ n] == '\\')
-            g_filename[ n] = '/';
-    }
-
-#if PLATFORM_UNIX
-    locateCorrectFile(g_filename, mode);
-#endif
-
-    return g_filename;
-}

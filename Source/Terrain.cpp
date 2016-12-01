@@ -21,6 +21,8 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Game.h"
 #include "Terrain.h"
 #include "Objects.h"
+#include "Utils/Folders.h"
+
 extern XYZ viewer;
 extern float viewdistance;
 extern float fadestart;
@@ -407,7 +409,7 @@ bool Terrain::load(const char *fileName)
     ImageRec texture;
 
     //Load Image
-    load_image(ConvertFileName(fileName), texture);
+    load_image(Folders::getResourcePath(fileName).c_str(), texture);
 
     //Is it valid?
     if (texture.bpp > 24) {

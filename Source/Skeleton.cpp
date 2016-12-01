@@ -23,6 +23,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Skeleton.h"
 #include "openal_wrapper.h"
 #include "Animation.h"
+#include "Utils/Folders.h"
 
 extern float multiplier;
 extern float gravity;
@@ -668,27 +669,18 @@ void Skeleton::FindRotationMuscle(int which, int animation)
 /* EFFECT
  * load an animation from file
  */
-void Animation::Load(const char *filename, int aheight, int aattack)
+void Animation::Load(const std::string& filename, int aheight, int aattack)
 {
     FILE *tfile;
     int i, j;
     XYZ endoffset;
 
-    // path to dir
-    const char *anim_prefix = ":Data:Animations:";
-
-
     LOGFUNC;
 
-    // concatenate anim_prefix + filename
-    int len = strlen(anim_prefix) + strlen(filename);
-    char *buf = new char[len + 1];
-    snprintf(buf, len + 1, "%s%s", anim_prefix, filename);
     // Changing the filename into something the OS can understand
-    char *fixedFN = ConvertFileName(buf);
-    delete[] buf;
+    std::string filepath = Folders::getResourcePath("Animations/"+filename);
 
-    LOG(std::string("Loading animation...") + fixedFN);
+    LOG(std::string("Loading animation...") + filepath);
 
     // clear existing data
     deallocate();
@@ -700,7 +692,7 @@ void Animation::Load(const char *filename, int aheight, int aattack)
         Game::LoadingScreen();
 
     // read file in binary mode
-    tfile = fopen( fixedFN, "rb" );
+    tfile = fopen( filepath.c_str(), "rb" );
     if (tfile) {
         // read numframes, joints to know how much memory to allocate
         funpackf(tfile, "Bi Bi", &numframes, &joints);
@@ -867,7 +859,7 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 
     // load skeleton
 
-    tfile = fopen( ConvertFileName(filename), "rb" );
+    tfile = fopen( Folders::getResourcePath(filename).c_str(), "rb" );
 
     if (1) { // FIXME: should this be if(tfile) ?
         // read num_joints
@@ -977,7 +969,7 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 
     // load ???
 
-    tfile = fopen( ConvertFileName(lowfilename), "rb" );
+    tfile = fopen( Folders::getResourcePath(lowfilename).c_str(), "rb" );
 
     if (1) { // FIXME: should this be if(tfile) ?
         // skip joints section
@@ -1075,7 +1067,7 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
     // load clothes
 
     if (clothes) {
-        tfile = fopen( ConvertFileName(clothesfilename), "rb" ); // FIXME: where's the check for valid load
+        tfile = fopen( Folders::getResourcePath(clothesfilename).c_str(), "rb" ); // FIXME: where's the check for valid load
 
         // skip num_joints
         lSize = sizeof(num_joints);

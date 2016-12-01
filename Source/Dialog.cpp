@@ -23,6 +23,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Input.h"
 #include "Game.h"
 #include "binio.h"
+#include "Utils/Folders.h"
 
 extern int hostile;
 
@@ -109,7 +110,7 @@ DialogScene::DialogScene(FILE* tfile)
 /* Load dialog from txt file, used by console */
 Dialog::Dialog(int type, std::string filename) : type(type)
 {
-    ifstream ipstream(ConvertFileName(filename.c_str()));
+    ifstream ipstream(Folders::getResourcePath(filename));
     ipstream.ignore(256, ':');
     int numscenes;
     ipstream >> numscenes;

@@ -20,6 +20,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Quaternions.h"
 #include "Sounds.h"
 #include "openal_wrapper.h"
+#include "Utils/Folders.h"
 
 struct OPENAL_SAMPLE *samp[sounds_count];
 
@@ -57,10 +58,9 @@ static int snd_mode(int snd)
 void loadAllSounds()
 {
     for (int i = 0; i < sounds_count; i++) {
-        char buf[64];
-        snprintf(buf, 64, ":Data:Sounds:%s", sound_data[i]);
+        std::string buf = std::string("Sounds/") + sound_data[i];
         samp[i] = OPENAL_Sample_Load(OPENAL_FREE,
-                                     ConvertFileName(buf),
+                                     Folders::getResourcePath(buf).c_str(),
                                      snd_mode(i),
                                      0, 0);
     }

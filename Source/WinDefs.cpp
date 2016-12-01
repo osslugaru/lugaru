@@ -86,25 +86,3 @@ Duration AbsoluteDeltaToDuration( AbsoluteTime& a, AbsoluteTime& b)
 
     return time;
 }
-
-
-static char g_filename[ 256];
-char* ConvertFileName( const char* orgfilename)
-{
-    // translate filename into proper path name
-    if (orgfilename[ 0] == ':')
-        orgfilename++;
-    strcpy( g_filename, orgfilename);
-
-    for (int n = 0; g_filename[ n]; n++) {
-        if (g_filename[ n] == ':')
-            g_filename[ n] = '/';
-    }
-
-    return g_filename;
-}
-
-char* ConvertFileName( const char* orgfilename, const char* junk)
-{
-    return ConvertFileName(orgfilename);
-}

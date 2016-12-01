@@ -135,7 +135,7 @@ public:
     ~Animation();
     Animation & operator = (const Animation & ani);
 
-    void Load(const char *fileName, int aheight, int aattack);
+    void Load(const std::string& fileName, int aheight, int aattack);
 
 protected:
     void deallocate();

@@ -20,6 +20,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Game.h"
 #include "Models.h"
+#include "Utils/Folders.h"
 
 extern float multiplier;
 extern float viewdistance;
@@ -407,7 +408,7 @@ bool Model::loadnotex(const char *filename )
     type = notextype;
     color = 0;
 
-    tfile = fopen( ConvertFileName(filename), "rb" );
+    tfile = fopen( Folders::getResourcePath(filename).c_str(), "rb" );
     // read model settings
 
     fseek(tfile, 0, SEEK_SET);
@@ -477,7 +478,7 @@ bool Model::load(const char *filename, bool texture )
     type = normaltype;
     color = 0;
 
-    tfile = fopen( ConvertFileName(filename), "rb" );
+    tfile = fopen( Folders::getResourcePath(filename).c_str(), "rb" );
     // read model settings
 
 
@@ -543,16 +544,13 @@ bool Model::loaddecal(const char *filename, bool texture )
 
     LOGFUNC;
 
-    // Changing the filename so that its more os specific
-    char * FixedFN = ConvertFileName(filename);
-
-    LOG(std::string("Loading decal...") + FixedFN);
+    LOG(std::string("Loading decal...") + Folders::getResourcePath(filename));
 
     type = decalstype;
     numdecals = 0;
     color = 0;
 
-    tfile = fopen( FixedFN, "rb" );
+    tfile = fopen( Folders::getResourcePath(filename).c_str(), "rb" );
     // read model settings
 
 
@@ -646,7 +644,7 @@ bool Model::loadraw(char *filename )
     type = rawtype;
     color = 0;
 
-    tfile = fopen( ConvertFileName(filename), "rb" );
+    tfile = fopen( Folders::getResourcePath(filename).c_str(), "rb" );
     // read model settings
 
 

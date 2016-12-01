@@ -92,12 +92,6 @@ inline bool isnormal( double x)
 #include <stdint.h>
 #endif
 
-
-// fix file names to use '/' instead of ':'
-char* ConvertFileName( const char* orgfilename, const char *mode = "rb" );
-
-#define fopen( a, b) fopen(ConvertFileName(a, b), b)
-
 #endif
 
 

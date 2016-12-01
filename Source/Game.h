@@ -151,7 +151,7 @@ void LoadMenu();
 void playdialoguescenesound();
 int findClosestPlayer();
 void Loadlevel(int which);
-void Loadlevel(const char *name);
+void Loadlevel(const std::string& name);
 void Tick();
 void TickOnce();
 void TickOnceAfter();

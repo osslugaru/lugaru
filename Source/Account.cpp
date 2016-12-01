@@ -23,6 +23,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include <fstream>
 #include "MacCompatibility.h"
 #include "string.h"
+#include <iostream>
 
 using namespace std;
 
@@ -115,7 +116,7 @@ Account* Account::loadFile(string filename)
     int numaccounts;
     int accountactive;
 
-    tfile = fopen(ConvertFileName(filename.c_str()), "rb" );
+    tfile = fopen(filename.c_str(), "rb" );
 
     if (tfile) {
         funpackf(tfile, "Bi", &numaccounts);
@@ -185,7 +186,7 @@ Account* Account::loadFile(string filename)
         fclose(tfile);
         return get(accountactive);
     } else {
-        printf("filenotfound\n");
+        perror(("Couldn't load users from " + filename).c_str());
         return NULL;
     }
 }
@@ -194,7 +195,7 @@ void Account::saveFile(string filename, Account* accountactive)
 {
     FILE *tfile;
 
-    tfile = fopen(ConvertFileName(filename.c_str(), "wb"), "wb" );
+    tfile = fopen(filename.c_str(), "wb" );
     if (tfile) {
         printf("writing %d accounts :\n", getNbAccounts());
         fpackf(tfile, "Bi", getNbAccounts());
@@ -243,6 +244,8 @@ void Account::saveFile(string filename, Account* accountactive)
         }
 
         fclose(tfile);
+    } else {
+        perror(("Couldn't save users in " + filename).c_str());
     }
 }
 

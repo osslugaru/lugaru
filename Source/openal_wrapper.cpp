@@ -293,7 +293,6 @@ static void *decode_to_pcm(const char *_fname, ALenum &format, ALsizei &size, AL
     strcat(fname, ".ogg");
 
     // just in case...
-#undef fopen
     FILE *io = fopen(fname, "rb");
     if (io == NULL)
         return NULL;

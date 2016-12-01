@@ -73,13 +73,6 @@ enum {
 
 Duration AbsoluteDeltaToDuration( AbsoluteTime& a, AbsoluteTime& b);
 
-// fix file names to use '/' instead of ':'
-char* ConvertFileName( const char* orgfilename);
-char* ConvertFileName( const char* orgfilename, const char* junk);
-
-
-#define fopen(a, b) fopen(ConvertFileName(a), b);
-
 #ifndef __MINGW32__
 inline float abs(float f)
 {

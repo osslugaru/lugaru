@@ -81,6 +81,10 @@ void SaveSettings()
     if (newscreenheight < 0)
         newscreenheight = screenheight;
     ofstream opstream(Folders::getConfigFilePath());
+    if (opstream.fail()) {
+        perror(("Couldn't save config file " + Folders::getConfigFilePath()).c_str());
+        return;
+    }
     opstream << "Screenwidth:\n";
     opstream << newscreenwidth;
     opstream << "\nScreenheight:\n";
@@ -169,8 +173,8 @@ void SaveSettings()
 bool LoadSettings()
 {
     ifstream ipstream(Folders::getConfigFilePath(), std::ios::in);
-    if ( !ipstream || ipstream.fail() ) {
-        printf("Config file not found\n");
+    if ( ipstream.fail() ) {
+        perror(("Couldn't read config file " + Folders::getConfigFilePath()).c_str());
         return false;
     }
     char setting[256];

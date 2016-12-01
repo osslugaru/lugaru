@@ -21,6 +21,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "gamegl.h"
 #include "Texture.h"
 #include "ImageIO.h"
+#include "Utils/Folders.h"
 
 using namespace std;
 
@@ -33,7 +34,7 @@ void TextureRes::load()
     ImageRec texture;
 
     //load image into 'texture'
-    load_image(ConvertFileName(filename.c_str()), texture);
+    load_image(filename.c_str(), texture);
 
     skinsize = texture.sizeX;
     GLuint type = GL_RGBA;
@@ -107,13 +108,13 @@ TextureRes::~TextureRes()
 void Texture::load(const string& filename, bool hasMipmap)
 {
     destroy();
-    tex = new TextureRes(filename, hasMipmap);
+    tex = new TextureRes(Folders::getResourcePath(filename), hasMipmap);
 }
 
 void Texture::load(const string& filename, bool hasMipmap, GLubyte* array, int* skinsizep)
 {
     destroy();
-    tex = new TextureRes(filename, hasMipmap, array, skinsizep);
+    tex = new TextureRes(Folders::getResourcePath(filename), hasMipmap, array, skinsizep);
 }
 
 void Texture::destroy()

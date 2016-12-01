@@ -27,6 +27,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Game.h"
 #include "ImageIO.h"
+#include "Utils/Folders.h"
 
 extern bool visibleloading;
 
@@ -74,7 +75,7 @@ bool save_screenshot(const char *file_name)
     const char *ptr = strrchr((char *)file_name, '.');
     if (ptr) {
         if (strcasecmp(ptr + 1, "png") == 0)
-            return save_screenshot_png(file_name);
+            return save_screenshot_png((Folders::getScreenshotDir() + '/' + file_name).c_str());
     }
 
     STUBBED("Unsupported image type");
@@ -291,6 +292,6 @@ save_png_done:
     if (fp)
         fclose(fp);
     if (!retval)
-        unlink(ConvertFileName(file_name));
+        unlink(file_name);
     return retval;
 }
