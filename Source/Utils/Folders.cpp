@@ -20,7 +20,16 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Folders.h"
 #include <cstring>
+#include <unistd.h>
+#if PLATFORM_UNIX
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <pwd.h>
+#endif
+#if _WIN32
+#include <Windows.h>
+#include <WinBase.h>
+#endif
 
 const std::string Folders::dataDir = DATADIR;
 
@@ -38,26 +47,50 @@ std::string Folders::getResourcePath(std::string filepath)
 
 std::string Folders::getUserDataPath()
 {
-    std::string userDataPath = getGenericDirectory("XDG_DATA_HOME", ".local/share");
+#ifdef _WIN32
+    return dataDir;
+#else
+    std::string userDataPath;
+#if (defined(__APPLE__) && defined(__MACH__))
+    const char* homePath = getHomeDirectory();
+    if (homePath == NULL) {
+        userDataPath = ".";
+    } else {
+        userDataPath = std::string(homePath) + "/Library/Application Support/Lugaru";
+    }
+#else
+    userDataPath = getGenericDirectory("XDG_DATA_HOME", ".local/share");
+#endif
     makeDirectory(userDataPath);
     return userDataPath;
+#endif
 }
 
 std::string Folders::getConfigFilePath()
 {
-    std::string configFolder = getGenericDirectory("XDG_CONFIG_HOME", ".config");
+#ifdef _WIN32
+    return dataDir + "/config.txt";
+#else
+    std::string configFolder;
+#if (defined(__APPLE__) && defined(__MACH__))
+    configFolder = getUserDataPath();
+#else
+    configFolder = getGenericDirectory("XDG_CONFIG_HOME", ".config");
+#endif
     makeDirectory(configFolder);
     return configFolder + "/config.txt";
+#endif
 }
 
+#if PLATFORM_LINUX
 /* Generic code for XDG ENVVAR test and fallback */
 std::string Folders::getGenericDirectory(const char* ENVVAR, const std::string fallback) {
-    char* path = getenv(ENVVAR);
+    const char* path = getenv(ENVVAR);
     std::string ret;
     if((path != NULL) && (strlen(path) != 0)) {
         ret = std::string(path) + "/lugaru";
     } else {
-        path = getenv("HOME");
+        path = getHomeDirectory();
         if((path != NULL) && (strlen(path) != 0)) {
             ret = std::string(path) + '/' + fallback + "/lugaru";
         } else {
@@ -66,8 +99,32 @@ std::string Folders::getGenericDirectory(const char* ENVVAR, const std::string f
     }
     return ret;
 }
+#endif
+
+#if PLATFORM_UNIX
+const char* Folders::getHomeDirectory()
+{
+    const char *homedir = getenv("HOME");
+    if (homedir != NULL)
+        return homedir;
+    struct passwd *pw = getpwuid(getuid());
+    if (pw != NULL)
+        return pw->pw_dir;
+    return NULL;
+}
+#endif
 
 bool Folders::makeDirectory(std::string path) {
+#ifdef _WIN32
+    int status = CreateDirectory(path.c_str(), NULL);
+    if(status != 0) {
+        return true;
+    } else if(GetLastError() == ERROR_ALREADY_EXISTS) {
+        return true;
+    } else {
+        return false;
+    }
+#else
     errno = 0;
     int status = mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     if (status == 0) {
@@ -77,4 +134,5 @@ bool Folders::makeDirectory(std::string path) {
     } else {
         return false;
     }
+#endif
 }

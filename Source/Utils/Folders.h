@@ -45,6 +45,7 @@ public:
     static std::string getConfigFilePath();
 
 private:
+    static const char* getHomeDirectory();
     static std::string getGenericDirectory(const char* ENVVAR, const std::string fallback);
     static bool makeDirectory(std::string path);
 };
