@@ -746,11 +746,11 @@ void LoadCampaign()
 
 vector<string> ListCampaigns()
 {
+    errno = 0;
     DIR *campaigns = opendir(Folders::getResourcePath("Campaigns").c_str());
     struct dirent *campaign = NULL;
     if (!campaigns) {
-        perror("Problem while loading campaigns");
-        cerr << "campaign folder was : " << Folders::getResourcePath("Campaigns") << endl;
+        perror(("Problem while loading campaigns from " + Folders::getResourcePath("Campaigns")).c_str());
         exit(EXIT_FAILURE);
     }
     vector<string> campaignNames;
@@ -818,6 +818,7 @@ void Game::Loadlevel(const std::string& name)
 
     int mapvers;
     FILE *tfile;
+    errno = 0;
     tfile = fopen( Folders::getResourcePath("Maps/"+name).c_str(), "rb" );
     if (tfile) {
         pause_sound(stream_firesound);

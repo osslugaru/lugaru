@@ -115,6 +115,7 @@ Account* Account::loadFile(string filename)
     FILE *tfile;
     int numaccounts;
     int accountactive;
+    errno = 0;
 
     tfile = fopen(filename.c_str(), "rb" );
 
@@ -194,6 +195,7 @@ Account* Account::loadFile(string filename)
 void Account::saveFile(string filename, Account* accountactive)
 {
     FILE *tfile;
+    errno = 0;
 
     tfile = fopen(filename.c_str(), "wb" );
     if (tfile) {

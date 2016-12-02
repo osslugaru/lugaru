@@ -20,13 +20,15 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Folders.h"
 #include <cstring>
+#include <sys/stat.h>
 
 const std::string Folders::dataDir = DATADIR;
 
 std::string Folders::getScreenshotDir()
 {
-    /* TODO - create folder if missing */
-    return getUserDataPath() + "/Screenshots";
+    std::string screenshotDir = getUserDataPath() + "/Screenshots";
+    makeDirectory(screenshotDir);
+    return screenshotDir;
 }
 
 std::string Folders::getResourcePath(std::string filepath)
@@ -36,12 +38,16 @@ std::string Folders::getResourcePath(std::string filepath)
 
 std::string Folders::getUserDataPath()
 {
-    return getGenericDirectory("XDG_DATA_HOME", ".local/share");
+    std::string userDataPath = getGenericDirectory("XDG_DATA_HOME", ".local/share");
+    makeDirectory(userDataPath);
+    return userDataPath;
 }
 
 std::string Folders::getConfigFilePath()
 {
-    return getGenericDirectory("XDG_CONFIG_HOME", ".config") + "/config.txt";
+    std::string configFolder = getGenericDirectory("XDG_CONFIG_HOME", ".config");
+    makeDirectory(configFolder);
+    return configFolder + "/config.txt";
 }
 
 /* Generic code for XDG ENVVAR test and fallback */
@@ -55,8 +61,20 @@ std::string Folders::getGenericDirectory(const char* ENVVAR, const std::string f
         if((path != NULL) && (strlen(path) != 0)) {
             ret = std::string(path) + '/' + fallback + "/lugaru";
         } else {
-            ret = "";
+            ret = ".";
         }
     }
     return ret;
+}
+
+bool Folders::makeDirectory(std::string path) {
+    errno = 0;
+    int status = mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    if (status == 0) {
+        return true;
+    } else if(errno == EEXIST) {
+        return true;
+    } else {
+        return false;
+    }
 }

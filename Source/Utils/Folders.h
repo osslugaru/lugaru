@@ -46,6 +46,7 @@ public:
 
 private:
     static std::string getGenericDirectory(const char* ENVVAR, const std::string fallback);
+    static bool makeDirectory(std::string path);
 };
 
 #endif /* _FOLDERS_H_ */
