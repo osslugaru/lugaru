@@ -27,11 +27,10 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include <pwd.h>
 #endif
 #if _WIN32
-#include <Windows.h>
-#include <WinBase.h>
+#include <windows.h>
 #endif
 
-const std::string Folders::dataDir = DATADIR;
+const std::string Folders::dataDir = DATA_DIR;
 
 std::string Folders::getScreenshotDir()
 {
