@@ -86,12 +86,12 @@ std::string Folders::getConfigFilePath()
 std::string Folders::getGenericDirectory(const char* ENVVAR, const std::string fallback) {
     const char* path = getenv(ENVVAR);
     std::string ret;
-    if((path != NULL) && (strlen(path) != 0)) {
+    if ((path != NULL) && (strlen(path) != 0)) {
         ret = std::string(path) + "/lugaru";
     } else {
-        path = getHomeDirectory();
-        if((path != NULL) && (strlen(path) != 0)) {
-            ret = std::string(path) + '/' + fallback + "/lugaru";
+        const char* homedir = getHomeDirectory();
+        if ((homedir != NULL) && (strlen(homedir) != 0)) {
+            ret = std::string(homedir) + '/' + fallback + "/lugaru";
         } else {
             ret = ".";
         }
@@ -116,7 +116,7 @@ const char* Folders::getHomeDirectory()
 bool Folders::makeDirectory(std::string path) {
 #ifdef _WIN32
     int status = CreateDirectory(path.c_str(), NULL);
-    if(status != 0) {
+    if (status != 0) {
         return true;
     } else if(GetLastError() == ERROR_ALREADY_EXISTS) {
         return true;
