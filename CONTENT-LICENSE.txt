@@ -20,9 +20,9 @@ Data/Campaign/temple.txt
 
 Data/Maps/sven*
 
-Data/Textures/Desertcl.png
+Data/Textures/DesertCl.png
 Data/Textures/GiTop.png
 Data/Textures/GiTeared.png
 Data/Textures/GiBottom.png
-Data/Textures/mask.png
+Data/Textures/Mask.png
 Data/Textures/temple/World.png

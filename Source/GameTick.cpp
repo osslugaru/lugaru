@@ -254,8 +254,8 @@ const char *rabbitskin[] = {
 
 const char *wolfskin[] = {
     "Textures/Wolf.jpg",
-    "Textures/Darkwolf.jpg",
-    "Textures/Snowwolf.jpg"
+    "Textures/DarkWolf.jpg",
+    "Textures/SnowWolf.jpg"
 };
 
 const char **creatureskin[] = {rabbitskin, wolfskin};
@@ -602,29 +602,29 @@ void Setenvironment(int which)
         if (ambientsound)
             emit_stream_np(stream_wind);
 
-        objects.treetextureptr.load("Textures/snowtree.png", 0);
-        objects.bushtextureptr.load("Textures/bushsnow.png", 0);
-        objects.rocktextureptr.load("Textures/bouldersnow.jpg", 1);
-        objects.boxtextureptr.load("Textures/snowbox.jpg", 1);
+        objects.treetextureptr.load("Textures/SnowTree.png", 0);
+        objects.bushtextureptr.load("Textures/BushSnow.png", 0);
+        objects.rocktextureptr.load("Textures/BoulderSnow.jpg", 1);
+        objects.boxtextureptr.load("Textures/SnowBox.jpg", 1);
 
         footstepsound = footstepsn1;
         footstepsound2 = footstepsn2;
         footstepsound3 = footstepst1;
         footstepsound4 = footstepst2;
 
-        terraintexture.load("Textures/snow.jpg", 1);
-        terraintexture2.load("Textures/rock.jpg", 1);
+        terraintexture.load("Textures/Snow.jpg", 1);
+        terraintexture2.load("Textures/Rock.jpg", 1);
 
 
         temptexdetail = texdetail;
         if (texdetail > 1)
             texdetail = 4;
-        skybox->load(   "Textures/Skybox(snow):Front.jpg",
-                        "Textures/Skybox(snow):Left.jpg",
-                        "Textures/Skybox(snow):Back.jpg",
-                        "Textures/Skybox(snow):Right.jpg",
-                        "Textures/Skybox(snow):Up.jpg",
-                        "Textures/Skybox(snow):Down.jpg");
+        skybox->load(   "Textures/Skybox(snow)/Front.jpg",
+                        "Textures/Skybox(snow)/Left.jpg",
+                        "Textures/Skybox(snow)/Back.jpg",
+                        "Textures/Skybox(snow)/Right.jpg",
+                        "Textures/Skybox(snow)/Up.jpg",
+                        "Textures/Skybox(snow)/Down.jpg");
 
 
 
@@ -633,10 +633,10 @@ void Setenvironment(int which)
     } else if (environment == desertenvironment) {
         windvector = 0;
         windvector.z = 2;
-        objects.treetextureptr.load("Textures/deserttree.png", 0);
-        objects.bushtextureptr.load("Textures/bushdesert.png", 0);
-        objects.rocktextureptr.load("Textures/boulderdesert.jpg", 1);
-        objects.boxtextureptr.load("Textures/desertbox.jpg", 1);
+        objects.treetextureptr.load("Textures/DesertTree.png", 0);
+        objects.bushtextureptr.load("Textures/BushDesert.png", 0);
+        objects.rocktextureptr.load("Textures/BoulderDesert.jpg", 1);
+        objects.boxtextureptr.load("Textures/DesertBox.jpg", 1);
 
 
         if (ambientsound)
@@ -647,19 +647,19 @@ void Setenvironment(int which)
         footstepsound3 = footstepsn1;
         footstepsound4 = footstepsn2;
 
-        terraintexture.load("Textures/sand.jpg", 1);
-        terraintexture2.load("Textures/sandslope.jpg", 1);
+        terraintexture.load("Textures/Sand.jpg", 1);
+        terraintexture2.load("Textures/SandSlope.jpg", 1);
 
 
         temptexdetail = texdetail;
         if (texdetail > 1)
             texdetail = 4;
-        skybox->load(   "Textures/Skybox(sand):Front.jpg",
-                        "Textures/Skybox(sand):Left.jpg",
-                        "Textures/Skybox(sand):Back.jpg",
-                        "Textures/Skybox(sand):Right.jpg",
-                        "Textures/Skybox(sand):Up.jpg",
-                        "Textures/Skybox(sand):Down.jpg");
+        skybox->load(   "Textures/Skybox(sand)/Front.jpg",
+                        "Textures/Skybox(sand)/Left.jpg",
+                        "Textures/Skybox(sand)/Back.jpg",
+                        "Textures/Skybox(sand)/Right.jpg",
+                        "Textures/Skybox(sand)/Up.jpg",
+                        "Textures/Skybox(sand)/Down.jpg");
 
 
 
@@ -668,10 +668,10 @@ void Setenvironment(int which)
     } else if (environment == grassyenvironment) {
         windvector = 0;
         windvector.z = 2;
-        objects.treetextureptr.load("Textures/tree.png", 0);
-        objects.bushtextureptr.load("Textures/bush.png", 0);
-        objects.rocktextureptr.load("Textures/boulder.jpg", 1);
-        objects.boxtextureptr.load("Textures/grassbox.jpg", 1);
+        objects.treetextureptr.load("Textures/Tree.png", 0);
+        objects.bushtextureptr.load("Textures/Bush.png", 0);
+        objects.rocktextureptr.load("Textures/Boulder.jpg", 1);
+        objects.boxtextureptr.load("Textures/GrassBox.jpg", 1);
 
         if (ambientsound)
             emit_stream_np(stream_wind, 100.);
@@ -681,19 +681,19 @@ void Setenvironment(int which)
         footstepsound3 = footstepst1;
         footstepsound4 = footstepst2;
 
-        terraintexture.load("Textures/grassdirt.jpg", 1);
-        terraintexture2.load("Textures/mossrock.jpg", 1);
+        terraintexture.load("Textures/GrassDirt.jpg", 1);
+        terraintexture2.load("Textures/MossRock.jpg", 1);
 
 
         temptexdetail = texdetail;
         if (texdetail > 1)
             texdetail = 4;
-        skybox->load(   "Textures/Skybox(grass):Front.jpg",
-                        "Textures/Skybox(grass):Left.jpg",
-                        "Textures/Skybox(grass):Back.jpg",
-                        "Textures/Skybox(grass):Right.jpg",
-                        "Textures/Skybox(grass):Up.jpg",
-                        "Textures/Skybox(grass):Down.jpg");
+        skybox->load(   "Textures/Skybox(grass)/Front.jpg",
+                        "Textures/Skybox(grass)/Left.jpg",
+                        "Textures/Skybox(grass)/Back.jpg",
+                        "Textures/Skybox(grass)/Right.jpg",
+                        "Textures/Skybox(grass)/Up.jpg",
+                        "Textures/Skybox(grass)/Down.jpg");
 
 
 
@@ -701,7 +701,7 @@ void Setenvironment(int which)
     }
     temptexdetail = texdetail;
     texdetail = 1;
-    terrain.load("Textures/heightmap.png");
+    terrain.load("Textures/HeightMap.png");
 
     texdetail = temptexdetail;
 }
@@ -731,9 +731,9 @@ void LoadCampaign()
     }
     ipstream.close();
 
-    ifstream test(Folders::getResourcePath("Textures/" + accountactive->getCurrentCampaign() + ":World.png"));
+    ifstream test(Folders::getResourcePath("Textures/" + accountactive->getCurrentCampaign() + "/World.png"));
     if (test.good()) {
-        Mainmenuitems[7].load("Textures/" + accountactive->getCurrentCampaign() + ":World.png", 0);
+        Mainmenuitems[7].load("Textures/" + accountactive->getCurrentCampaign() + "/World.png", 0);
     } else {
         Mainmenuitems[7].load("Textures/World.png", 0);
     }
@@ -1104,9 +1104,9 @@ void Game::Loadlevel(const std::string& name)
                 Person::players[i]->creature = rabbittype;
             if (Person::players[i]->creature != wolftype) {
                 Person::players[i]->skeleton.Load(
-                    (char *)"Skeleton/Basic Figure",
-                    (char *)"Skeleton/Basic Figurelow",
-                    (char *)"Skeleton/Rabbitbelt",
+                    (char *)"Skeleton/BasicFigure",
+                    (char *)"Skeleton/BasicFigureLow",
+                    (char *)"Skeleton/RabbitBelt",
                     (char *)"Models/Body.solid",
                     (char *)"Models/Body2.solid",
                     (char *)"Models/Body3.solid",
@@ -1114,14 +1114,14 @@ void Game::Loadlevel(const std::string& name)
                     (char *)"Models/Body5.solid",
                     (char *)"Models/Body6.solid",
                     (char *)"Models/Body7.solid",
-                    (char *)"Models/Bodylow.solid",
+                    (char *)"Models/BodyLow.solid",
                     (char *)"Models/Belt.solid", 0);
             } else {
                 if (Person::players[i]->creature != wolftype) {
                     Person::players[i]->skeleton.Load(
-                        (char *)"Skeleton/Basic Figure",
-                        (char *)"Skeleton/Basic Figurelow",
-                        (char *)"Skeleton/Rabbitbelt",
+                        (char *)"Skeleton/BasicFigure",
+                        (char *)"Skeleton/BasicFigureLow",
+                        (char *)"Skeleton/RabbitBelt",
                         (char *)"Models/Body.solid",
                         (char *)"Models/Body2.solid",
                         (char *)"Models/Body3.solid",
@@ -1129,15 +1129,15 @@ void Game::Loadlevel(const std::string& name)
                         (char *)"Models/Body5.solid",
                         (char *)"Models/Body6.solid",
                         (char *)"Models/Body7.solid",
-                        (char *)"Models/Bodylow.solid",
+                        (char *)"Models/BodyLow.solid",
                         (char *)"Models/Belt.solid", 1);
                     Person::players[i]->skeleton.drawmodelclothes.textureptr.load("Textures/Belt.png", 1);
                 }
                 if (Person::players[i]->creature == wolftype) {
                     Person::players[i]->skeleton.Load(
-                        (char *)"Skeleton/Basic Figure Wolf",
-                        (char *)"Skeleton/Basic Figure Wolf Low",
-                        (char *)"Skeleton/Rabbitbelt",
+                        (char *)"Skeleton/BasicFigureWolf",
+                        (char *)"Skeleton/BasicFigureWolfLow",
+                        (char *)"Skeleton/RabbitBelt",
                         (char *)"Models/Wolf.solid",
                         (char *)"Models/Wolf2.solid",
                         (char *)"Models/Wolf3.solid",
@@ -1145,7 +1145,7 @@ void Game::Loadlevel(const std::string& name)
                         (char *)"Models/Wolf5.solid",
                         (char *)"Models/Wolf6.solid",
                         (char *)"Models/Wolf7.solid",
-                        (char *)"Models/Wolflow.solid",
+                        (char *)"Models/WolfLow.solid",
                         (char *)"Models/Belt.solid", 0);
                 }
             }
@@ -1921,7 +1921,7 @@ void doDebugKeys()
 
                 if (Person::players[closest]->creature == rabbittype) {
                     Person::players[closest]->skeleton.id = closest;
-                    Person::players[closest]->skeleton.Load((char *)"Skeleton/Basic Figure Wolf", (char *)"Skeleton/Basic Figure Wolf Low", (char *)"Skeleton/Rabbitbelt", (char *)"Models/Wolf.solid", (char *)"Models/Wolf2.solid", (char *)"Models/Wolf3.solid", (char *)"Models/Wolf4.solid", (char *)"Models/Wolf5.solid", (char *)"Models/Wolf6.solid", (char *)"Models/Wolf7.solid", (char *)"Models/Wolflow.solid", (char *)"Models/Belt.solid", 0);
+                    Person::players[closest]->skeleton.Load((char *)"Skeleton/BasicFigureWolf", (char *)"Skeleton/BasicFigureWolfLow", (char *)"Skeleton/RabbitBelt", (char *)"Models/Wolf.solid", (char *)"Models/Wolf2.solid", (char *)"Models/Wolf3.solid", (char *)"Models/Wolf4.solid", (char *)"Models/Wolf5.solid", (char *)"Models/Wolf6.solid", (char *)"Models/Wolf7.solid", (char *)"Models/WolfLow.solid", (char *)"Models/Belt.solid", 0);
                     Person::players[closest]->skeleton.drawmodel.textureptr.load("Textures/Wolf.jpg", 1, &Person::players[closest]->skeleton.skinText[0], &Person::players[closest]->skeleton.skinsize);
                     Person::players[closest]->whichskin = 0;
                     Person::players[closest]->creature = wolftype;
@@ -1936,7 +1936,7 @@ void doDebugKeys()
                     Person::players[closest]->damagetolerance = 300;
                 } else {
                     Person::players[closest]->skeleton.id = closest;
-                    Person::players[closest]->skeleton.Load((char *)"Skeleton/Basic Figure", (char *)"Skeleton/Basic Figurelow", (char *)"Skeleton/Rabbitbelt", (char *)"Models/Body.solid", (char *)"Models/Body2.solid", (char *)"Models/Body3.solid", (char *)"Models/Body4.solid", (char *)"Models/Body5.solid", (char *)"Models/Body6.solid", (char *)"Models/Body7.solid", (char *)"Models/Bodylow.solid", (char *)"Models/Belt.solid", 1);
+                    Person::players[closest]->skeleton.Load((char *)"Skeleton/BasicFigure", (char *)"Skeleton/BasicFigureLow", (char *)"Skeleton/RabbitBelt", (char *)"Models/Body.solid", (char *)"Models/Body2.solid", (char *)"Models/Body3.solid", (char *)"Models/Body4.solid", (char *)"Models/Body5.solid", (char *)"Models/Body6.solid", (char *)"Models/Body7.solid", (char *)"Models/BodyLow.solid", (char *)"Models/Belt.solid", 1);
                     Person::players[closest]->skeleton.drawmodel.textureptr.load("Textures/Fur3.jpg", 1, &Person::players[closest]->skeleton.skinText[0], &Person::players[closest]->skeleton.skinsize);
                     Person::players[closest]->whichskin = 0;
                     Person::players[closest]->creature = rabbittype;
@@ -2229,7 +2229,7 @@ void doDebugKeys()
                 Person::players.back()->creature = rabbittype;
                 Person::players.back()->howactive = editoractive;
                 Person::players.back()->skeleton.id = Person::players.size()-1;
-                Person::players.back()->skeleton.Load((char *)"Skeleton/Basic Figure", (char *)"Skeleton/Basic Figurelow", (char *)"Skeleton/Rabbitbelt", (char *)"Models/Body.solid", (char *)"Models/Body2.solid", (char *)"Models/Body3.solid", (char *)"Models/Body4.solid", (char *)"Models/Body5.solid", (char *)"Models/Body6.solid", (char *)"Models/Body7.solid", (char *)"Models/Bodylow.solid", (char *)"Models/Belt.solid", 1);
+                Person::players.back()->skeleton.Load((char *)"Skeleton/BasicFigure", (char *)"Skeleton/BasicFigureLow", (char *)"Skeleton/RabbitBelt", (char *)"Models/Body.solid", (char *)"Models/Body2.solid", (char *)"Models/Body3.solid", (char *)"Models/Body4.solid", (char *)"Models/Body5.solid", (char *)"Models/Body6.solid", (char *)"Models/Body7.solid", (char *)"Models/BodyLow.solid", (char *)"Models/Belt.solid", 1);
 
                 int k = abs(Random() % 2) + 1;
                 if (k == 0) {
