@@ -408,7 +408,8 @@ bool Model::loadnotex(const char *filename )
     type = notextype;
     color = 0;
 
-    tfile = fopen( Folders::getResourcePath(filename).c_str(), "rb" );
+    tfile = Folders::openMandatoryFile( Folders::getResourcePath(filename), "rb" );
+
     // read model settings
 
     fseek(tfile, 0, SEEK_SET);
@@ -459,7 +460,7 @@ bool Model::loadnotex(const char *filename )
     }
     boundingsphereradius = fast_sqrt(boundingsphereradius);
 
-    return 1;
+    return true;
 }
 
 
@@ -478,9 +479,9 @@ bool Model::load(const char *filename, bool texture )
     type = normaltype;
     color = 0;
 
-    tfile = fopen( Folders::getResourcePath(filename).c_str(), "rb" );
-    // read model settings
+    tfile = Folders::openMandatoryFile( Folders::getResourcePath(filename), "rb" );
 
+    // read model settings
 
     fseek(tfile, 0, SEEK_SET);
     funpackf(tfile, "Bs Bs", &vertexNum, &TriangleNum);
@@ -534,7 +535,7 @@ bool Model::load(const char *filename, bool texture )
     }
     boundingsphereradius = fast_sqrt(boundingsphereradius);
 
-    return 1;
+    return true;
 }
 
 bool Model::loaddecal(const char *filename, bool texture )
@@ -550,9 +551,9 @@ bool Model::loaddecal(const char *filename, bool texture )
     numdecals = 0;
     color = 0;
 
-    tfile = fopen( Folders::getResourcePath(filename).c_str(), "rb" );
-    // read model settings
+    tfile = Folders::openMandatoryFile( Folders::getResourcePath(filename), "rb" );
 
+    // read model settings
 
     fseek(tfile, 0, SEEK_SET);
     funpackf(tfile, "Bs Bs", &vertexNum, &TriangleNum);
@@ -629,7 +630,7 @@ bool Model::loaddecal(const char *filename, bool texture )
         decalposition = (XYZ*)malloc(sizeof(XYZ) * max_model_decals);
     }
 
-    return 1;
+    return true;
 }
 
 bool Model::loadraw(char *filename )
@@ -644,9 +645,9 @@ bool Model::loadraw(char *filename )
     type = rawtype;
     color = 0;
 
-    tfile = fopen( Folders::getResourcePath(filename).c_str(), "rb" );
-    // read model settings
+    tfile = Folders::openMandatoryFile( Folders::getResourcePath(filename), "rb" );
 
+    // read model settings
 
     fseek(tfile, 0, SEEK_SET);
     funpackf(tfile, "Bs Bs", &vertexNum, &TriangleNum);
@@ -684,7 +685,7 @@ bool Model::loadraw(char *filename )
         owner[i] = -1;
     }
 
-    return 1;
+    return true;
 }
 
 

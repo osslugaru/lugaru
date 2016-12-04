@@ -146,7 +146,10 @@ void LoadSave(const char *fileName, GLuint *textureid, bool mipmap, GLubyte *arr
 
     //Load Image
     ImageRec texture;
-    load_image(Folders::getResourcePath(fileName).c_str(), texture);
+    if (!load_image(Folders::getResourcePath(fileName).c_str(), texture)) {
+        texdetail = temptexdetail;
+        return;
+    }
     texdetail = temptexdetail;
 
     int bytesPerPixel = texture.bpp / 8;

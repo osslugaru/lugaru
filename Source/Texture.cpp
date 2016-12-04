@@ -34,7 +34,10 @@ void TextureRes::load()
     ImageRec texture;
 
     //load image into 'texture'
-    load_image(filename.c_str(), texture);
+    if (!load_image(filename.c_str(), texture)) {
+        cerr << "Texture " << filename << " loading failed" << endl;
+        return;
+    }
 
     skinsize = texture.sizeX;
     GLuint type = GL_RGBA;

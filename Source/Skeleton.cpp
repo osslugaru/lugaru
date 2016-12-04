@@ -692,76 +692,75 @@ void Animation::Load(const std::string& filename, int aheight, int aattack)
         Game::LoadingScreen();
 
     // read file in binary mode
-    tfile = fopen( filepath.c_str(), "rb" );
-    if (tfile) {
-        // read numframes, joints to know how much memory to allocate
-        funpackf(tfile, "Bi Bi", &numframes, &joints);
+    tfile = Folders::openMandatoryFile( filepath, "rb" );
 
-        // allocate memory for everything
+    // read numframes, joints to know how much memory to allocate
+    funpackf(tfile, "Bi Bi", &numframes, &joints);
 
-        position = (XYZ**)malloc(sizeof(XYZ*) * joints);
-        for (i = 0; i < joints; i++)
-            position[i] = (XYZ*)malloc(sizeof(XYZ) * numframes);
+    // allocate memory for everything
 
-        twist = (float**)malloc(sizeof(float*) * joints);
-        for (i = 0; i < joints; i++)
-            twist[i] = (float*)malloc(sizeof(float) * numframes);
+    position = (XYZ**)malloc(sizeof(XYZ*) * joints);
+    for (i = 0; i < joints; i++)
+        position[i] = (XYZ*)malloc(sizeof(XYZ) * numframes);
 
-        twist2 = (float**)malloc(sizeof(float*) * joints);
-        for (i = 0; i < joints; i++)
-            twist2[i] = (float*)malloc(sizeof(float) * numframes);
+    twist = (float**)malloc(sizeof(float*) * joints);
+    for (i = 0; i < joints; i++)
+        twist[i] = (float*)malloc(sizeof(float) * numframes);
 
-        speed = (float*)malloc(sizeof(float) * numframes);
+    twist2 = (float**)malloc(sizeof(float*) * joints);
+    for (i = 0; i < joints; i++)
+        twist2[i] = (float*)malloc(sizeof(float) * numframes);
 
-        onground = (bool**)malloc(sizeof(bool*) * joints);
-        for (i = 0; i < joints; i++)
-            onground[i] = (bool*)malloc(sizeof(bool) * numframes);
+    speed = (float*)malloc(sizeof(float) * numframes);
 
-        forward = (XYZ*)malloc(sizeof(XYZ) * numframes);
-        weapontarget = (XYZ*)malloc(sizeof(XYZ) * numframes);
-        label = (int*)malloc(sizeof(int) * numframes);
+    onground = (bool**)malloc(sizeof(bool*) * joints);
+    for (i = 0; i < joints; i++)
+        onground[i] = (bool*)malloc(sizeof(bool) * numframes);
 
-        // read binary data as animation
+    forward = (XYZ*)malloc(sizeof(XYZ) * numframes);
+    weapontarget = (XYZ*)malloc(sizeof(XYZ) * numframes);
+    label = (int*)malloc(sizeof(int) * numframes);
 
-        // for each frame...
-        for (i = 0; i < numframes; i++) {
-            // for each joint in the skeleton...
-            for (j = 0; j < joints; j++) {
-                // read joint position
-                funpackf(tfile, "Bf Bf Bf", &position[j][i].x, &position[j][i].y, &position[j][i].z);
-            }
-            for (j = 0; j < joints; j++) {
-                // read twist
-                funpackf(tfile, "Bf", &twist[j][i]);
-            }
-            for (j = 0; j < joints; j++) {
-                // read onground (boolean)
-                unsigned char uch;
-                funpackf(tfile, "Bb", &uch);
-                onground[j][i] = (uch != 0);
-            }
-            // read frame speed (?)
-            funpackf(tfile, "Bf", &speed[i]);
+    // read binary data as animation
+
+    // for each frame...
+    for (i = 0; i < numframes; i++) {
+        // for each joint in the skeleton...
+        for (j = 0; j < joints; j++) {
+            // read joint position
+            funpackf(tfile, "Bf Bf Bf", &position[j][i].x, &position[j][i].y, &position[j][i].z);
         }
-        // read twist2 for whole animation
-        for (i = 0; i < numframes; i++) {
-            for (j = 0; j < joints; j++) {
-                funpackf(tfile, "Bf", &twist2[j][i]);
-            }
+        for (j = 0; j < joints; j++) {
+            // read twist
+            funpackf(tfile, "Bf", &twist[j][i]);
         }
-        // read label for each frame
-        for (i = 0; i < numframes; i++) {
-            funpackf(tfile, "Bf", &label[i]);
+        for (j = 0; j < joints; j++) {
+            // read onground (boolean)
+            unsigned char uch;
+            funpackf(tfile, "Bb", &uch);
+            onground[j][i] = (uch != 0);
         }
-        // read weapontargetnum
-        funpackf(tfile, "Bi", &weapontargetnum);
-        // read weapontarget positions for each frame
-        for (i = 0; i < numframes; i++) {
-            funpackf(tfile, "Bf Bf Bf", &weapontarget[i].x, &weapontarget[i].y, &weapontarget[i].z);
-        }
-
-        fclose(tfile);
+        // read frame speed (?)
+        funpackf(tfile, "Bf", &speed[i]);
     }
+    // read twist2 for whole animation
+    for (i = 0; i < numframes; i++) {
+        for (j = 0; j < joints; j++) {
+            funpackf(tfile, "Bf", &twist2[j][i]);
+        }
+    }
+    // read label for each frame
+    for (i = 0; i < numframes; i++) {
+        funpackf(tfile, "Bf", &label[i]);
+    }
+    // read weapontargetnum
+    funpackf(tfile, "Bi", &weapontargetnum);
+    // read weapontarget positions for each frame
+    for (i = 0; i < numframes; i++) {
+        funpackf(tfile, "Bf Bf Bf", &weapontarget[i].x, &weapontarget[i].y, &weapontarget[i].z);
+    }
+
+    fclose(tfile);
 
     endoffset = 0;
     // find average position of certain joints on last frames
@@ -859,215 +858,211 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 
     // load skeleton
 
-    tfile = fopen( Folders::getResourcePath(filename).c_str(), "rb" );
+    tfile = Folders::openMandatoryFile( Folders::getResourcePath(filename), "rb" );
 
-    if (1) { // FIXME: should this be if(tfile) ?
-        // read num_joints
-        funpackf(tfile, "Bi", &num_joints);
+    // read num_joints
+    funpackf(tfile, "Bi", &num_joints);
 
-        // allocate memory
-        if (joints)
-            delete [] joints; //dealloc2(joints);
-        joints = (Joint*)new Joint[num_joints];
+    // allocate memory
+    if (joints)
+        delete [] joints; //dealloc2(joints);
+    joints = (Joint*)new Joint[num_joints];
 
-        // read info for each joint
-        for (i = 0; i < num_joints; i++) {
-            funpackf(tfile, "Bf Bf Bf Bf Bf", &joints[i].position.x, &joints[i].position.y, &joints[i].position.z, &joints[i].length, &joints[i].mass);
-            funpackf(tfile, "Bb Bb", &joints[i].hasparent, &joints[i].locked);
-            funpackf(tfile, "Bi", &joints[i].modelnum);
-            funpackf(tfile, "Bb Bb", &joints[i].visible, &joints[i].sametwist);
-            funpackf(tfile, "Bi Bi", &joints[i].label, &joints[i].hasgun);
-            funpackf(tfile, "Bb", &joints[i].lower);
-            funpackf(tfile, "Bi", &parentID);
-            if (joints[i].hasparent)
-                joints[i].parent = &joints[parentID];
-            joints[i].velocity = 0;
-            joints[i].oldposition = joints[i].position;
-        }
+    // read info for each joint
+    for (i = 0; i < num_joints; i++) {
+        funpackf(tfile, "Bf Bf Bf Bf Bf", &joints[i].position.x, &joints[i].position.y, &joints[i].position.z, &joints[i].length, &joints[i].mass);
+        funpackf(tfile, "Bb Bb", &joints[i].hasparent, &joints[i].locked);
+        funpackf(tfile, "Bi", &joints[i].modelnum);
+        funpackf(tfile, "Bb Bb", &joints[i].visible, &joints[i].sametwist);
+        funpackf(tfile, "Bi Bi", &joints[i].label, &joints[i].hasgun);
+        funpackf(tfile, "Bb", &joints[i].lower);
+        funpackf(tfile, "Bi", &parentID);
+        if (joints[i].hasparent)
+            joints[i].parent = &joints[parentID];
+        joints[i].velocity = 0;
+        joints[i].oldposition = joints[i].position;
+    }
 
-        // read num_muscles
-        funpackf(tfile, "Bi", &num_muscles);
+    // read num_muscles
+    funpackf(tfile, "Bi", &num_muscles);
 
-        // allocate memory
-        if (muscles)
-            delete [] muscles; //dealloc2(muscles);
-        muscles = (Muscle*)new Muscle[num_muscles]; //malloc(sizeof(Muscle)*num_muscles);
+    // allocate memory
+    if (muscles)
+        delete [] muscles; //dealloc2(muscles);
+    muscles = (Muscle*)new Muscle[num_muscles]; //malloc(sizeof(Muscle)*num_muscles);
 
-        // for each muscle...
-        for (i = 0; i < num_muscles; i++) {
-            // read info
-            funpackf(tfile, "Bf Bf Bf Bf Bf Bi Bi", &muscles[i].length, &muscles[i].targetlength, &muscles[i].minlength, &muscles[i].maxlength, &muscles[i].strength, &muscles[i].type, &muscles[i].numvertices);
+    // for each muscle...
+    for (i = 0; i < num_muscles; i++) {
+        // read info
+        funpackf(tfile, "Bf Bf Bf Bf Bf Bi Bi", &muscles[i].length, &muscles[i].targetlength, &muscles[i].minlength, &muscles[i].maxlength, &muscles[i].strength, &muscles[i].type, &muscles[i].numvertices);
 
-            // allocate memory for vertices
-            muscles[i].vertices = (int*)malloc(sizeof(int) * muscles[i].numvertices);
+        // allocate memory for vertices
+        muscles[i].vertices = (int*)malloc(sizeof(int) * muscles[i].numvertices);
 
-            // read vertices
-            edit = 0;
-            for (j = 0; j < muscles[i].numvertices - edit; j++) {
-                funpackf(tfile, "Bi", &muscles[i].vertices[j + edit]);
-                if (muscles[i].vertices[j + edit] >= model[0].vertexNum) {
-                    muscles[i].numvertices--;
-                    edit--;
-                }
-            }
-
-            // read more info
-            funpackf(tfile, "Bb Bi", &muscles[i].visible, &parentID);
-            muscles[i].parent1 = &joints[parentID];
-            funpackf(tfile, "Bi", &parentID);
-            muscles[i].parent2 = &joints[parentID];
-        }
-
-        // read forwardjoints (?)
-        for (j = 0; j < 3; j++) {
-            funpackf(tfile, "Bi", &forwardjoints[j]);
-        }
-        // read lowforwardjoints (?)
-        for (j = 0; j < 3; j++) {
-            funpackf(tfile, "Bi", &lowforwardjoints[j]);
-        }
-
-        // ???
-        for (j = 0; j < num_muscles; j++) {
-            for (i = 0; i < muscles[j].numvertices; i++) {
-                for (int k = 0; k < num_models; k++) {
-                    if (muscles[j].numvertices && muscles[j].vertices[i] < model[k].vertexNum)
-                        model[k].owner[muscles[j].vertices[i]] = j;
-                }
+        // read vertices
+        edit = 0;
+        for (j = 0; j < muscles[i].numvertices - edit; j++) {
+            funpackf(tfile, "Bi", &muscles[i].vertices[j + edit]);
+            if (muscles[i].vertices[j + edit] >= model[0].vertexNum) {
+                muscles[i].numvertices--;
+                edit--;
             }
         }
 
-        // calculate some stuff
-        FindForwards();
-        for (i = 0; i < num_joints; i++) {
-            joints[i].startpos = joints[i].position;
-        }
-        for (i = 0; i < num_muscles; i++) {
-            FindRotationMuscle(i, -1);
-        }
-        // this seems to use opengl purely for matrix calculations
-        for (int k = 0; k < num_models; k++) {
-            for (i = 0; i < model[k].vertexNum; i++) {
-                model[k].vertex[i] = model[k].vertex[i] - (muscles[model[k].owner[i]].parent1->position + muscles[model[k].owner[i]].parent2->position) / 2;
-                glMatrixMode(GL_MODELVIEW);
-                glPushMatrix();
-                glLoadIdentity();
-                glRotatef(muscles[model[k].owner[i]].rotate3, 0, 1, 0);
-                glRotatef(muscles[model[k].owner[i]].rotate2 - 90, 0, 0, 1);
-                glRotatef(muscles[model[k].owner[i]].rotate1 - 90, 0, 1, 0);
-                glTranslatef(model[k].vertex[i].x, model[k].vertex[i].y, model[k].vertex[i].z);
-                glGetFloatv(GL_MODELVIEW_MATRIX, M);
-                model[k].vertex[i].x = M[12] * 1;
-                model[k].vertex[i].y = M[13] * 1;
-                model[k].vertex[i].z = M[14] * 1;
-                glPopMatrix();
+        // read more info
+        funpackf(tfile, "Bb Bi", &muscles[i].visible, &parentID);
+        muscles[i].parent1 = &joints[parentID];
+        funpackf(tfile, "Bi", &parentID);
+        muscles[i].parent2 = &joints[parentID];
+    }
+
+    // read forwardjoints (?)
+    for (j = 0; j < 3; j++) {
+        funpackf(tfile, "Bi", &forwardjoints[j]);
+    }
+    // read lowforwardjoints (?)
+    for (j = 0; j < 3; j++) {
+        funpackf(tfile, "Bi", &lowforwardjoints[j]);
+    }
+
+    // ???
+    for (j = 0; j < num_muscles; j++) {
+        for (i = 0; i < muscles[j].numvertices; i++) {
+            for (int k = 0; k < num_models; k++) {
+                if (muscles[j].numvertices && muscles[j].vertices[i] < model[k].vertexNum)
+                    model[k].owner[muscles[j].vertices[i]] = j;
             }
-            model[k].CalculateNormals(0);
         }
+    }
+
+    // calculate some stuff
+    FindForwards();
+    for (i = 0; i < num_joints; i++) {
+        joints[i].startpos = joints[i].position;
+    }
+    for (i = 0; i < num_muscles; i++) {
+        FindRotationMuscle(i, -1);
+    }
+    // this seems to use opengl purely for matrix calculations
+    for (int k = 0; k < num_models; k++) {
+        for (i = 0; i < model[k].vertexNum; i++) {
+            model[k].vertex[i] = model[k].vertex[i] - (muscles[model[k].owner[i]].parent1->position + muscles[model[k].owner[i]].parent2->position) / 2;
+            glMatrixMode(GL_MODELVIEW);
+            glPushMatrix();
+            glLoadIdentity();
+            glRotatef(muscles[model[k].owner[i]].rotate3, 0, 1, 0);
+            glRotatef(muscles[model[k].owner[i]].rotate2 - 90, 0, 0, 1);
+            glRotatef(muscles[model[k].owner[i]].rotate1 - 90, 0, 1, 0);
+            glTranslatef(model[k].vertex[i].x, model[k].vertex[i].y, model[k].vertex[i].z);
+            glGetFloatv(GL_MODELVIEW_MATRIX, M);
+            model[k].vertex[i].x = M[12] * 1;
+            model[k].vertex[i].y = M[13] * 1;
+            model[k].vertex[i].z = M[14] * 1;
+            glPopMatrix();
+        }
+        model[k].CalculateNormals(0);
     }
     fclose(tfile);
 
     // load ???
 
-    tfile = fopen( Folders::getResourcePath(lowfilename).c_str(), "rb" );
+    tfile = Folders::openMandatoryFile( Folders::getResourcePath(lowfilename), "rb" );
 
-    if (1) { // FIXME: should this be if(tfile) ?
-        // skip joints section
+    // skip joints section
 
-        lSize = sizeof(num_joints);
+    lSize = sizeof(num_joints);
+    fseek(tfile, lSize, SEEK_CUR);
+    for (i = 0; i < num_joints; i++) {
+        // skip joint info
+        lSize = sizeof(XYZ)
+                + sizeof(float)
+                + sizeof(float)
+                + 1 //sizeof(bool)
+                + 1 //sizeof(bool)
+                + sizeof(int)
+                + 1 //sizeof(bool)
+                + 1 //sizeof(bool)
+                + sizeof(int)
+                + sizeof(int)
+                + 1 //sizeof(bool)
+                + sizeof(int);
         fseek(tfile, lSize, SEEK_CUR);
-        for (i = 0; i < num_joints; i++) {
-            // skip joint info
-            lSize = sizeof(XYZ)
-                    + sizeof(float)
-                    + sizeof(float)
-                    + 1 //sizeof(bool)
-                    + 1 //sizeof(bool)
-                    + sizeof(int)
-                    + 1 //sizeof(bool)
-                    + 1 //sizeof(bool)
-                    + sizeof(int)
-                    + sizeof(int)
-                    + 1 //sizeof(bool)
-                    + sizeof(int);
-            fseek(tfile, lSize, SEEK_CUR);
 
-            if (joints[i].hasparent)
-                joints[i].parent = &joints[parentID];
-            joints[i].velocity = 0;
-            joints[i].oldposition = joints[i].position;
-        }
+        if (joints[i].hasparent)
+            joints[i].parent = &joints[parentID];
+        joints[i].velocity = 0;
+        joints[i].oldposition = joints[i].position;
+    }
 
-        // read num_muscles
-        funpackf(tfile, "Bi", &num_muscles);
+    // read num_muscles
+    funpackf(tfile, "Bi", &num_muscles);
 
-        for (i = 0; i < num_muscles; i++) {
-            // skip muscle info
-            lSize = sizeof(float)
-                    + sizeof(float)
-                    + sizeof(float)
-                    + sizeof(float)
-                    + sizeof(float)
-                    + sizeof(int);
-            fseek(tfile, lSize, SEEK_CUR);
+    for (i = 0; i < num_muscles; i++) {
+        // skip muscle info
+        lSize = sizeof(float)
+                + sizeof(float)
+                + sizeof(float)
+                + sizeof(float)
+                + sizeof(float)
+                + sizeof(int);
+        fseek(tfile, lSize, SEEK_CUR);
 
-            // read numverticeslow
-            funpackf(tfile, "Bi", &muscles[i].numverticeslow);
+        // read numverticeslow
+        funpackf(tfile, "Bi", &muscles[i].numverticeslow);
 
-            if (muscles[i].numverticeslow) {
-                // allocate memory
-                muscles[i].verticeslow = (int*)malloc(sizeof(int) * muscles[i].numverticeslow);
+        if (muscles[i].numverticeslow) {
+            // allocate memory
+            muscles[i].verticeslow = (int*)malloc(sizeof(int) * muscles[i].numverticeslow);
 
-                // read verticeslow
-                edit = 0;
-                for (j = 0; j < muscles[i].numverticeslow - edit; j++) {
-                    funpackf(tfile, "Bi", &muscles[i].verticeslow[j + edit]);
-                    if (muscles[i].verticeslow[j + edit] >= modellow.vertexNum) {
-                        muscles[i].numverticeslow--;
-                        edit--;
-                    }
+            // read verticeslow
+            edit = 0;
+            for (j = 0; j < muscles[i].numverticeslow - edit; j++) {
+                funpackf(tfile, "Bi", &muscles[i].verticeslow[j + edit]);
+                if (muscles[i].verticeslow[j + edit] >= modellow.vertexNum) {
+                    muscles[i].numverticeslow--;
+                    edit--;
                 }
             }
-
-            // skip more stuff
-            lSize = 1; //sizeof(bool);
-            fseek ( tfile, lSize, SEEK_CUR);
-            lSize = sizeof(int);
-            fseek ( tfile, lSize, SEEK_CUR);
-            fseek ( tfile, lSize, SEEK_CUR);
         }
 
-        for (j = 0; j < num_muscles; j++) {
-            for (i = 0; i < muscles[j].numverticeslow; i++) {
-                if (muscles[j].verticeslow[i] < modellow.vertexNum)
-                    modellow.owner[muscles[j].verticeslow[i]] = j;
-            }
-        }
-
-        // use opengl for its matrix math
-        for (i = 0; i < modellow.vertexNum; i++) {
-            modellow.vertex[i] = modellow.vertex[i] - (muscles[modellow.owner[i]].parent1->position + muscles[modellow.owner[i]].parent2->position) / 2;
-            glMatrixMode(GL_MODELVIEW);
-            glPushMatrix();
-            glLoadIdentity();
-            glRotatef(muscles[modellow.owner[i]].rotate3, 0, 1, 0);
-            glRotatef(muscles[modellow.owner[i]].rotate2 - 90, 0, 0, 1);
-            glRotatef(muscles[modellow.owner[i]].rotate1 - 90, 0, 1, 0);
-            glTranslatef(modellow.vertex[i].x, modellow.vertex[i].y, modellow.vertex[i].z);
-            glGetFloatv(GL_MODELVIEW_MATRIX, M);
-            modellow.vertex[i].x = M[12];
-            modellow.vertex[i].y = M[13];
-            modellow.vertex[i].z = M[14];
-            glPopMatrix();
-        }
-
-        modellow.CalculateNormals(0);
+        // skip more stuff
+        lSize = 1; //sizeof(bool);
+        fseek ( tfile, lSize, SEEK_CUR);
+        lSize = sizeof(int);
+        fseek ( tfile, lSize, SEEK_CUR);
+        fseek ( tfile, lSize, SEEK_CUR);
     }
+
+    for (j = 0; j < num_muscles; j++) {
+        for (i = 0; i < muscles[j].numverticeslow; i++) {
+            if (muscles[j].verticeslow[i] < modellow.vertexNum)
+                modellow.owner[muscles[j].verticeslow[i]] = j;
+        }
+    }
+
+    // use opengl for its matrix math
+    for (i = 0; i < modellow.vertexNum; i++) {
+        modellow.vertex[i] = modellow.vertex[i] - (muscles[modellow.owner[i]].parent1->position + muscles[modellow.owner[i]].parent2->position) / 2;
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glLoadIdentity();
+        glRotatef(muscles[modellow.owner[i]].rotate3, 0, 1, 0);
+        glRotatef(muscles[modellow.owner[i]].rotate2 - 90, 0, 0, 1);
+        glRotatef(muscles[modellow.owner[i]].rotate1 - 90, 0, 1, 0);
+        glTranslatef(modellow.vertex[i].x, modellow.vertex[i].y, modellow.vertex[i].z);
+        glGetFloatv(GL_MODELVIEW_MATRIX, M);
+        modellow.vertex[i].x = M[12];
+        modellow.vertex[i].y = M[13];
+        modellow.vertex[i].z = M[14];
+        glPopMatrix();
+    }
+
+    modellow.CalculateNormals(0);
 
     // load clothes
 
     if (clothes) {
-        tfile = fopen( Folders::getResourcePath(clothesfilename).c_str(), "rb" ); // FIXME: where's the check for valid load
+        tfile = Folders::openMandatoryFile( Folders::getResourcePath(clothesfilename), "rb" );
 
         // skip num_joints
         lSize = sizeof(num_joints);

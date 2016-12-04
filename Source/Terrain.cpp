@@ -409,7 +409,9 @@ bool Terrain::load(const char *fileName)
     ImageRec texture;
 
     //Load Image
-    load_image(Folders::getResourcePath(fileName).c_str(), texture);
+    if (!load_image(Folders::getResourcePath(fileName).c_str(), texture)) {
+        return false;
+    }
 
     //Is it valid?
     if (texture.bpp > 24) {
@@ -643,7 +645,7 @@ bool Terrain::load(const char *fileName)
     patch_elements = (patch_size) * (patch_size) * 54;
     CalculateNormals();
 
-    return 1;
+    return true;
 }
 
 void Terrain::CalculateNormals()

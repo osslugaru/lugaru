@@ -27,6 +27,18 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #define DATA_DIR "Data"
 #endif
 
+struct FileNotFoundException: public std::exception
+{
+    std::string errorText;
+    FileNotFoundException (const std::string& filename) {
+        errorText = filename + " could not be found";
+    }
+
+    const char * what () const throw () {
+        return errorText.c_str();
+    }
+};
+
 class Folders
 {
     static const std::string dataDir;
@@ -43,6 +55,8 @@ public:
 
     /* Returns full path for config file */
     static std::string getConfigFilePath();
+
+    static FILE* openMandatoryFile(std::string filename, const char* mode);
 
 private:
     static const char* getHomeDirectory();

@@ -111,11 +111,6 @@ static void GLAPIENTRY glDeleteTextures_doNothing(GLsizei n, const GLuint *textu
 }
 #endif // __MINGW32__
 
-#ifdef MessageBox
-#undef MessageBox
-#endif
-#define MessageBox(hwnd,text,title,flags) STUBBED("msgbox")
-
 // Menu defs
 
 int kContextWidth;
@@ -749,7 +744,7 @@ int main(int argc, char **argv)
 
         LOG(e);
 
-        MessageBox(g_windowHandle, error.what(), "ERROR", MB_OK | MB_ICONEXCLAMATION);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Exception catched", error.what(), NULL);
 
         return -1;
     }

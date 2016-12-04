@@ -135,3 +135,12 @@ bool Folders::makeDirectory(std::string path) {
     }
 #endif
 }
+
+FILE* Folders::openMandatoryFile(std::string filename, const char* mode)
+{
+    FILE* tfile = fopen(filename.c_str(), mode);
+    if (tfile == NULL) {
+        throw FileNotFoundException(filename);
+    }
+    return tfile;
+}
