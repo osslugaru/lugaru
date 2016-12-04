@@ -26,6 +26,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Awards.h"
 #include "Game.h"
 #include "Dialog.h"
+#include "Utils/Folders.h"
 
 extern float multiplier;
 extern Terrain terrain;
@@ -6790,7 +6791,7 @@ bool Person::addClothes(const int& clothesId)
 
     //Load Image
     ImageRec texture;
-    bool opened = load_image(fileName, texture);
+    bool opened = load_image(Folders::getResourcePath(fileName).c_str(), texture);
 
     float alphanum;
     //Is it valid?
