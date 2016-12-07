@@ -28,6 +28,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #endif
 #if _WIN32
 #include <windows.h>
+#include <shlobj.h> // to get paths related functions
 #endif
 
 const std::string Folders::dataDir = DATA_DIR;
@@ -46,39 +47,39 @@ std::string Folders::getResourcePath(std::string filepath)
 
 std::string Folders::getUserDataPath()
 {
-#ifdef _WIN32
-    return dataDir;
-#else
     std::string userDataPath;
-#if (defined(__APPLE__) && defined(__MACH__))
+#ifdef _WIN32
+    char path[MAX_PATH];
+    // %APPDATA% (%USERPROFILE%\Application Data)
+    if(SUCCEEDED(SHGetFolderPathA(nullptr, CSIDL_APPDATA, nullptr, 0, path))) {
+        userDataPath = std::string(path) + "/Lugaru/";
+    } else {
+        return dataDir;
+    }
+#elif (defined(__APPLE__) && defined(__MACH__))
     const char* homePath = getHomeDirectory();
     if (homePath == NULL) {
         userDataPath = ".";
     } else {
         userDataPath = std::string(homePath) + "/Library/Application Support/Lugaru";
     }
-#else
+#else // Linux
     userDataPath = getGenericDirectory("XDG_DATA_HOME", ".local/share");
 #endif
     makeDirectory(userDataPath);
     return userDataPath;
-#endif
 }
 
 std::string Folders::getConfigFilePath()
 {
-#ifdef _WIN32
-    return dataDir + "/config.txt";
-#else
     std::string configFolder;
-#if (defined(__APPLE__) && defined(__MACH__))
+#if defined(_WIN32) || (defined(__APPLE__) && defined(__MACH__))
     configFolder = getUserDataPath();
-#else
+#else // Linux
     configFolder = getGenericDirectory("XDG_CONFIG_HOME", ".config");
-#endif
     makeDirectory(configFolder);
-    return configFolder + "/config.txt";
 #endif
+    return configFolder + "/config.txt";
 }
 
 #if PLATFORM_LINUX
