@@ -4,8 +4,16 @@ cmake_minimum_required(VERSION 3.5)
 cmake_policy(SET CMP0004 OLD)
 
 include(FindPkgConfig)
+include(GNUInstallDirs)
 
 set(SRCDIR "${CMAKE_CURRENT_SOURCE_DIR}/Source")
+
+
+### Helper
+
+if(UNIX AND NOT APPLE)
+    set(LINUX TRUE)
+endif()
 
 
 ### CMake config
@@ -14,10 +22,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 --std=c++11")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wno-parentheses -pedantic -g -pg --std=c++11")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wno-parentheses -O2 -std=c++11")
 
-if(NOT CMAKE_INSTALL_PREFIX AND WIN32)
-    set(CMAKE_INSTALL_PREFIX "C:/Lugaru")
-endif(NOT CMAKE_INSTALL_PREFIX AND WIN32)
-
 if(APPLE)
     set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "Build architectures for OSX")
     set(CMAKE_OSX_DEPLOYMENT_TARGET "10.10" CACHE STRING
@@ -25,6 +29,10 @@ if(APPLE)
     set(CMAKE_OSX_SYSROOT "/Developer/SDKs/MacOSX10.10.sdk" CACHE PATH
         "The product will be built against the headers and libraries located inside the indicated SDK.")
 endif(APPLE)
+
+if(LINUX)
+    option(SYSTEM_INSTALL "Enable system-wide installation, with hardcoded data directory defined with CMAKE_INSTALL_DATADIR" OFF)
+endif(LINUX)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
@@ -196,11 +204,23 @@ endif(WIN32)
 
 ### Installation
 
+if(NOT CMAKE_INSTALL_PREFIX AND WIN32)
+    set(CMAKE_INSTALL_PREFIX "C:/Lugaru")
+endif(NOT CMAKE_INSTALL_PREFIX AND WIN32)
+
+# OS-specific installation paths
+
+set(LUGARU_DOCDIR ${CMAKE_INSTALL_PREFIX})
+if(LINUX)
+endif(LINUX)
+
 if(APPLE)
-    set(APPS_ROOT "${CMAKE_INSTALL_PREFIX}/Lugaru.app")
-    set(APPS_BIN "${APPS_ROOT}/Contents/MacOS")
-    set(APPS_DATA "${APPS_ROOT}/Contents/Resources")
+    set(LUGARU_APP_ROOT ${CMAKE_INSTALL_PREFIX}/Lugaru.app)
+    set(LUGARU_BINDIR ${LUGARU_APP_ROOT}/Contents/MacOS)
+    set(LUGARU_RESDIR ${LUGARU_APP_ROOT}/Resources)
 endif(APPLE)
+
+# Actual installation instructions
 
 if(WIN32)
     install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru.exe DESTINATION ${CMAKE_INSTALL_PREFIX})
@@ -225,23 +245,32 @@ if(WIN32)
                       ${DLL_ROOT}/zlib1.dll
                 DESTINATION ${CMAKE_INSTALL_PREFIX})
     endif(MINGW)
-else(WIN32)
-    if(APPLE)
-        set(CMAKE_INSTALL_PREFIX "${APPS_BIN}")
-        install(FILES ${SRCDIR}/mac-res/lugaru.icns DESTINATION ${APPS_DATA})
-        install(FILES ${SRCDIR}/mac-res/Info.plist DESTINATION ${APPS_ROOT}/Contents)
-    endif(APPLE)
-    install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru DESTINATION ${CMAKE_INSTALL_PREFIX})
 endif(WIN32)
 
-if(NOT APPLE)
-    install(DIRECTORY ${CMAKE_SOURCE_DIR}/Data DESTINATION ${CMAKE_INSTALL_PREFIX})
-    install(FILES ${CMAKE_SOURCE_DIR}/README.md
-                  ${CMAKE_SOURCE_DIR}/COPYING.txt
-                  ${CMAKE_SOURCE_DIR}/CONTENT-LICENSE.txt
-            DESTINATION ${CMAKE_INSTALL_PREFIX})
-endif(NOT APPLE)
+if(LINUX)
+    if(SYSTEM_INSTALL)
+        add_definitions(-DDATA_DIR="${CMAKE_INSTALL_FULL_DATADIR}/${PROJECT_NAME}")
+        set(LUGARU_DOCDIR ${CMAKE_INSTALL_DOCDIR})
+        install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru DESTINATION ${CMAKE_INSTALL_BINDIR})
+        # Trailing '/' is significant, it installs and _renames_ Data/ as the destination folder
+        install(DIRECTORY ${CMAKE_SOURCE_DIR}/Data/ DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME})
+    else(SYSTEM_INSTALL)
+        message(WARNING "You are installing Lugaru without having enabled the SYSTEM_INSTALL option. It will default to looking for the data in the 'Data' directory next to the binary.")
+        install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru DESTINATION ${CMAKE_INSTALL_PREFIX})
+        install(DIRECTORY ${CMAKE_SOURCE_DIR}/Data DESTINATION ${CMAKE_INSTALL_PREFIX})
+    endif(SYSTEM_INSTALL)
+endif(LINUX)
 
 if(APPLE)
-    install(DIRECTORY ${CMAKE_SOURCE_DIR}/Data DESTINATION ${APPS_ROOT})
+    install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru DESTINATION ${LUGARU_BINDIR})
+    install(DIRECTORY ${CMAKE_SOURCE_DIR}/Data DESTINATION ${LUGARU_APP_ROOT})
+    install(FILES ${SRCDIR}/mac-res/lugaru.icns DESTINATION ${LUGARU_RESDIR})
+    install(FILES ${SRCDIR}/mac-res/Info.plist DESTINATION ${LUGARU_APP_ROOT}/Contents)
 endif(APPLE)
+
+# Documentation
+
+install(FILES ${CMAKE_SOURCE_DIR}/README.md
+              ${CMAKE_SOURCE_DIR}/COPYING.txt
+              ${CMAKE_SOURCE_DIR}/CONTENT-LICENSE.txt
+        DESTINATION ${LUGARU_DOCDIR})
