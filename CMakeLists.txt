@@ -264,8 +264,8 @@ endif(LINUX)
 if(APPLE)
     install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru DESTINATION ${LUGARU_BINDIR})
     install(DIRECTORY ${CMAKE_SOURCE_DIR}/Data DESTINATION ${LUGARU_APP_ROOT})
-    install(FILES ${SRCDIR}/mac-res/lugaru.icns DESTINATION ${LUGARU_RESDIR})
-    install(FILES ${SRCDIR}/mac-res/Info.plist DESTINATION ${LUGARU_APP_ROOT}/Contents)
+    install(FILES ${CMAKE_SOURCE_DIR}/Dist/OSX/lugaru.icns DESTINATION ${LUGARU_RESDIR})
+    install(FILES ${CMAKE_SOURCE_DIR}/Dist/OSX/Info.plist DESTINATION ${LUGARU_APP_ROOT}/Contents)
 endif(APPLE)
 
 # Documentation

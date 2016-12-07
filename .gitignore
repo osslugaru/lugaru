@@ -6,13 +6,14 @@ Xcode/*.xcodeproj/*.pbxuser
 build*
 *~
 .*.swp
-lugaru*
+*.aps
+lugaru
+lugaru.exe
 cmake_install.cmake
 cmake-build
 CMakeFiles
 CMakeCache.txt
 Makefile
 cscope.*
-tags
-Data/Users
+Data/users
 Data/config.txt
