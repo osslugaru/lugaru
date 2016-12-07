@@ -939,10 +939,12 @@ void Game::Loadlevel(const std::string& name)
         skyboxlightg = skyboxg;
         skyboxlightb = skyboxb;
     }
-    if (!stealthloading)
-        funpackf(tfile, "Bf Bf Bf Bf Bf Bi", &Person::players[0]->coords.x, &Person::players[0]->coords.y, &Person::players[0]->coords.z, &Person::players[0]->yaw, &Person::players[0]->targetyaw, &Person::players[0]->num_weapons);
-    if (stealthloading)
+    /* TODO - This should be done in an other way so that we can rebuild main player as well (so coords would need to be copied from old ones after rebuilding) */
+    if (stealthloading) {
         funpackf(tfile, "Bf Bf Bf Bf Bf Bi", &lamefloat, &lamefloat, &lamefloat, &lamefloat, &lamefloat, &Person::players[0]->num_weapons);
+    } else {
+        funpackf(tfile, "Bf Bf Bf Bf Bf Bi", &Person::players[0]->coords.x, &Person::players[0]->coords.y, &Person::players[0]->coords.z, &Person::players[0]->yaw, &Person::players[0]->targetyaw, &Person::players[0]->num_weapons);
+    }
     if (Person::players[0]->num_weapons > 0 && Person::players[0]->num_weapons < 5)
         for (int j = 0; j < Person::players[0]->num_weapons; j++) {
             Person::players[0]->weaponids[j] = weapons.size();
@@ -1093,15 +1095,17 @@ void Game::Loadlevel(const std::string& name)
     for (unsigned i = 0; i < Person::players.size(); i++) {
         if (visibleloading)
             LoadingScreen();
-        Person::players[i]->burnt = 0;
-        Person::players[i]->bled = 0;
-        Person::players[i]->onfire = 0;
-        if (i == 0 || Person::players[i]->scale < 0)
+        if (i == 0) {
+            Person::players[i]->burnt = 0;
+            Person::players[i]->bled = 0;
+            Person::players[i]->onfire = 0;
             Person::players[i]->scale = .2;
+        }
         Person::players[i]->skeleton.free = 0;
         Person::players[i]->skeleton.id = i;
-        if (i == 0 && mapvers < 9)
+        if (i == 0 && mapvers < 9) {
             Person::players[i]->creature = rabbittype;
+        }
         if (Person::players[i]->creature != wolftype) {
             Person::players[i]->skeleton.Load(
                 (char *)"Skeleton/BasicFigure",
@@ -1136,49 +1140,48 @@ void Game::Loadlevel(const std::string& name)
 
         Person::players[i]->addClothes();
 
-        Person::players[i]->animCurrent = bounceidleanim;
-        Person::players[i]->animTarget = bounceidleanim;
-        Person::players[i]->frameCurrent = 0;
-        Person::players[i]->frameTarget = 1;
-        Person::players[i]->target = 0;
+        if (i == 0) {
+            Person::players[i]->animCurrent = bounceidleanim;
+            Person::players[i]->animTarget = bounceidleanim;
+            Person::players[i]->frameCurrent = 0;
+            Person::players[i]->frameTarget = 1;
+            Person::players[i]->target = 0;
+        }
         Person::players[i]->speed = 1 + (float)(Random() % 100) / 1000;
         if (difficulty == 0)
             Person::players[i]->speed -= .2;
         if (difficulty == 1)
             Person::players[i]->speed -= .1;
 
-        Person::players[i]->velocity = 0;
-        Person::players[i]->oldcoords = Person::players[i]->coords;
-        Person::players[i]->realoldcoords = Person::players[i]->coords;
-
-        Person::players[i]->id = i;
-        Person::players[i]->skeleton.id = i;
-        Person::players[i]->updatedelay = 0;
-        Person::players[i]->normalsupdatedelay = 0;
-
-        Person::players[i]->aitype = passivetype;
-
         if (i == 0) {
+            Person::players[i]->velocity = 0;
+            Person::players[i]->oldcoords = Person::players[i]->coords;
+            Person::players[i]->realoldcoords = Person::players[i]->coords;
+
+            Person::players[i]->id = i;
+            Person::players[i]->updatedelay = 0;
+            Person::players[i]->normalsupdatedelay = 0;
+
             Person::players[i]->proportionhead = 1.2;
             Person::players[i]->proportionbody = 1.05;
             Person::players[i]->proportionarms = 1.00;
             Person::players[i]->proportionlegs = 1.1;
             Person::players[i]->proportionlegs.y = 1.05;
-        }
-        Person::players[i]->headless = 0;
-        Person::players[i]->currentoffset = 0;
-        Person::players[i]->targetoffset = 0;
-
-        Person::players[i]->damagetolerance = 200;
-
-        if (Person::players[i]->creature == wolftype) {
-            if (i == 0 || Person::players[i]->scale < 0)
+            Person::players[i]->headless = 0;
+            Person::players[i]->currentoffset = 0;
+            Person::players[i]->targetoffset = 0;
+            if (Person::players[i]->creature == wolftype) {
                 Person::players[i]->scale = .23;
-            Person::players[i]->damagetolerance = 300;
+                Person::players[i]->damagetolerance = 300;
+            } else {
+                Person::players[i]->damagetolerance = 200;
+            }
         }
+
 
         if (visibleloading)
             LoadingScreen();
+
         if (cellophane) {
             Person::players[i]->proportionhead.z = 0;
             Person::players[i]->proportionbody.z = 0;
@@ -1188,41 +1191,42 @@ void Game::Loadlevel(const std::string& name)
 
         Person::players[i]->tempanimation.Load((char *)"Tempanim", 0, 0);
 
-        Person::players[i]->headmorphness = 0;
-        Person::players[i]->targetheadmorphness = 1;
-        Person::players[i]->headmorphstart = 0;
-        Person::players[i]->headmorphend = 0;
+        if (i == 0) {
+            Person::players[i]->headmorphness = 0;
+            Person::players[i]->targetheadmorphness = 1;
+            Person::players[i]->headmorphstart = 0;
+            Person::players[i]->headmorphend = 0;
 
-        Person::players[i]->pausetime = 0;
+            Person::players[i]->pausetime = 0;
 
-        Person::players[i]->dead = 0;
-        Person::players[i]->jumppower = 5;
-        Person::players[i]->damage = 0;
-        Person::players[i]->permanentdamage = 0;
-        Person::players[i]->superpermanentdamage = 0;
+            Person::players[i]->dead = 0;
+            Person::players[i]->jumppower = 5;
+            Person::players[i]->damage = 0;
+            Person::players[i]->permanentdamage = 0;
+            Person::players[i]->superpermanentdamage = 0;
 
-        Person::players[i]->forwardkeydown = 0;
-        Person::players[i]->leftkeydown = 0;
-        Person::players[i]->backkeydown = 0;
-        Person::players[i]->rightkeydown = 0;
-        Person::players[i]->jumpkeydown = 0;
-        Person::players[i]->crouchkeydown = 0;
-        Person::players[i]->throwkeydown = 0;
+            Person::players[i]->forwardkeydown = 0;
+            Person::players[i]->leftkeydown = 0;
+            Person::players[i]->backkeydown = 0;
+            Person::players[i]->rightkeydown = 0;
+            Person::players[i]->jumpkeydown = 0;
+            Person::players[i]->crouchkeydown = 0;
+            Person::players[i]->throwkeydown = 0;
 
-        Person::players[i]->collided = -10;
-        Person::players[i]->loaded = 1;
-        Person::players[i]->bloodloss = 0;
-        Person::players[i]->weaponactive = -1;
-        Person::players[i]->weaponstuck = -1;
-        Person::players[i]->bleeding = 0;
-        Person::players[i]->deathbleeding = 0;
-        Person::players[i]->stunned = 0;
-        Person::players[i]->hasvictim = 0;
-        Person::players[i]->wentforweapon = 0;
+            Person::players[i]->collided = -10;
+            Person::players[i]->loaded = 1;
+            Person::players[i]->bloodloss = 0;
+            Person::players[i]->weaponactive = -1;
+            Person::players[i]->weaponstuck = -1;
+            Person::players[i]->bleeding = 0;
+            Person::players[i]->deathbleeding = 0;
+            Person::players[i]->stunned = 0;
+            Person::players[i]->hasvictim = 0;
+            Person::players[i]->wentforweapon = 0;
+        }
     }
 
     Person::players[0]->aitype = playercontrolled;
-    Person::players[0]->weaponactive = -1;
 
     if (difficulty == 1) {
         Person::players[0]->power = 1 / .9;

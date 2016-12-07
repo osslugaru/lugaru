@@ -74,10 +74,10 @@ std::vector<std::shared_ptr<Person>> Person::players(1, std::shared_ptr<Person>(
 Person::Person() :
     whichpatchx(0),
     whichpatchz(0),
-    animCurrent(0),
-    animTarget(0),
+    animCurrent(bounceidleanim),
+    animTarget(bounceidleanim),
     frameCurrent(0),
-    frameTarget(0),
+    frameTarget(1),
     oldanimCurrent(0),
     oldanimTarget(0),
     oldframeCurrent(0),
@@ -127,14 +127,14 @@ Person::Person() :
     deathbleeding(0),
     tempdeltav(0),
 
-    damagetolerance(0),
+    damagetolerance(200),
     damage(0),
     permanentdamage(0),
     superpermanentdamage(0),
     lastcollide(0),
     dead(0),
 
-    jumppower(0),
+    jumppower(5),
     onground(false),
 
     wentforweapon(0),
@@ -187,12 +187,12 @@ Person::Person() :
 
     turnspeed(0),
 
-    aitype(0),
+    aitype(passivetype),
     aiupdatedelay(0),
     losupdatedelay(0),
     ally(0),
     collide(0),
-    collided(0),
+    collided(-10),
     avoidcollided(0),
     loaded(false),
     whichdirection(false),
@@ -213,7 +213,7 @@ Person::Person() :
     tailmorphness(0),
     targetlefthandmorphness(0),
     targetrighthandmorphness(0),
-    targetheadmorphness(0),
+    targetheadmorphness(1),
     targetchestmorphness(0),
     targettailmorphness(0),
     lefthandmorphstart(0), lefthandmorphend(0),
@@ -262,7 +262,7 @@ Person::Person() :
 
     num_weapons(0),
     weaponactive(-1),
-    weaponstuck(0),
+    weaponstuck(-1),
     weaponstuckwhere(0),
 
     numwaypoints(0),
@@ -399,6 +399,20 @@ Person::Person(FILE *tfile, int mapvers, unsigned i) : Person()
         clothes[k][templength] = '\0';
         funpackf(tfile, "Bf Bf Bf", &clothestintr[k], &clothestintg[k], &clothestintb[k]);
     }
+
+    loaded = true;
+
+    if (scale < 0) {
+        if (creature == wolftype) {
+            scale = .23;
+            damagetolerance = 300;
+        } else {
+            scale = .2;
+        }
+    }
+
+    oldcoords = coords;
+    realoldcoords = coords;
 }
 
 /* EFFECT
