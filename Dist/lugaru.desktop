@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Lugaru HD
+GenericName=Fighting game
+Comment=Third person ninja rabbit fighting game
+Exec=lugaru
+Icon=lugaru
+Terminal=false
+Type=Application
+Categories=Game;ActionGame;
