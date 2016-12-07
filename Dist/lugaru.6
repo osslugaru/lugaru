@@ -1,0 +1,71 @@
+.\" Process this file with: groff -man -Tlatin1 lugaru.6
+.\" Please report any issue with this man page at
+.\" https://gitlab.com/osslugaru/lugaru/issues
+.TH LUGARU 6 "December 2016" Linux
+.SH NAME
+Lugaru \- free and open source ninja rabbit fighting game
+.SH DESCRIPTION
+Lugaru (pronounced Loo-GAH-roo) is a cross-platform third-person action game.
+The main character, Turner, is an anthropomorphic rebel bunny rabbit with
+impressive combat skills. In his quest to find those responsible for
+slaughtering his village, he uncovers a far-reaching conspiracy involving the
+corrupt leaders of the rabbit republic and the starving wolves from a nearby
+den. Turner takes it upon himself to fight against their plot and save his
+fellow rabbits from slavery.
+.SH SYNOPSIS
+.B lugaru
+.RI [ options ]
+.SH OPTIONS
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Print usage and exit.
+.TP
+\fB\-f\fR, \fB\-\-fullscreen\fR
+Start the game in fullscreen mode.
+.TP
+\fB\-w\fR, \fB\-\-windowed\fR
+Start the game in windowed mode (default).
+.TP
+\fB\-\-nomousegrab\fR
+Disable mousegrab.
+.TP
+\fB\-\-mousegrab\fR
+Enable mousegrab (default).
+.TP
+\fB\-\-nosound\fR
+Disable sound.
+.TP
+\fB\-\-force\-alsa\fR
+Force use of ALSA back\-end.
+.TP
+\fB\-\-force\-oss\fR
+Force use of OSS back\-end.
+.TP
+\fB\-\-openal\-info\fR
+Print info about OpenAL at launch.
+.HP
+\fB\-\-showresolutions\fR List the resolutions found by SDL at launch.
+.SH FILES
+XDG_CONFIG_HOME/lugaru/ or ~/.config/lugaru/
+.RS
+User-specific configuration folder, contains the config.txt file.
+.RE
+XDG_DATA_HOME/lugaru/ or ~/.local/share/lugaru/
+.RS
+User-specific data folder, contains saved user progress, screenshots and saved
+maps.
+.RE
+/usr/share/doc/lugaru/
+.RS
+Additional documentation files and licensing information.
+.RE
+.SH "SEE ALSO"
+See the project website at \fIhttps://osslugaru.gitlab.io/\fR and the source
+code repository at \fIhttps://gitlab.com/osslugaru/lugaru\fR for more details.
+.SH BUGS
+Lugaru is a free and open source game and welcomes any kind of contributions.
+In particular, you can report issues or make suggestions on Lugaru's issue
+tracker at \fIhttps://gitlab.com/osslugaru/lugaru/issues\fR.
+.SH AUTHOR
+Man page written by Rémi Verschelde <remi@verschelde.fr> on behalf of the
+OSS Lugaru development team.
