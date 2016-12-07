@@ -1117,37 +1117,19 @@ void Game::Loadlevel(const std::string& name)
                 (char *)"Models/BodyLow.solid",
                 (char *)"Models/Belt.solid", 0);
         } else {
-            if (Person::players[i]->creature != wolftype) {
-                Person::players[i]->skeleton.Load(
-                    (char *)"Skeleton/BasicFigure",
-                    (char *)"Skeleton/BasicFigureLow",
-                    (char *)"Skeleton/RabbitBelt",
-                    (char *)"Models/Body.solid",
-                    (char *)"Models/Body2.solid",
-                    (char *)"Models/Body3.solid",
-                    (char *)"Models/Body4.solid",
-                    (char *)"Models/Body5.solid",
-                    (char *)"Models/Body6.solid",
-                    (char *)"Models/Body7.solid",
-                    (char *)"Models/BodyLow.solid",
-                    (char *)"Models/Belt.solid", 1);
-                Person::players[i]->skeleton.drawmodelclothes.textureptr.load("Textures/Belt.png", 1);
-            }
-            if (Person::players[i]->creature == wolftype) {
-                Person::players[i]->skeleton.Load(
-                    (char *)"Skeleton/BasicFigureWolf",
-                    (char *)"Skeleton/BasicFigureWolfLow",
-                    (char *)"Skeleton/RabbitBelt",
-                    (char *)"Models/Wolf.solid",
-                    (char *)"Models/Wolf2.solid",
-                    (char *)"Models/Wolf3.solid",
-                    (char *)"Models/Wolf4.solid",
-                    (char *)"Models/Wolf5.solid",
-                    (char *)"Models/Wolf6.solid",
-                    (char *)"Models/Wolf7.solid",
-                    (char *)"Models/WolfLow.solid",
-                    (char *)"Models/Belt.solid", 0);
-            }
+            Person::players[i]->skeleton.Load(
+                (char *)"Skeleton/BasicFigureWolf",
+                (char *)"Skeleton/BasicFigureWolfLow",
+                (char *)"Skeleton/RabbitBelt",
+                (char *)"Models/Wolf.solid",
+                (char *)"Models/Wolf2.solid",
+                (char *)"Models/Wolf3.solid",
+                (char *)"Models/Wolf4.solid",
+                (char *)"Models/Wolf5.solid",
+                (char *)"Models/Wolf6.solid",
+                (char *)"Models/Wolf7.solid",
+                (char *)"Models/WolfLow.solid",
+                (char *)"Models/Belt.solid", 0);
         }
 
         Person::players[i]->skeleton.drawmodel.textureptr.load(creatureskin[Person::players[i]->creature][Person::players[i]->whichskin], 1, &Person::players[i]->skeleton.skinText[0], &Person::players[i]->skeleton.skinsize);
