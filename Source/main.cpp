@@ -63,54 +63,6 @@ set<pair<int,int>> resolutions;
 
 // statics/globals (internal only) ------------------------------------------
 
-#ifdef _MSC_VER
-#pragma warning(push)
-#pragma warning(disable: 4273)
-#endif
-
-#ifndef __MINGW32__ // FIXME: Temporary workaround for GL-8
-#define GL_FUNC(ret,fn,params,call,rt) \
-    extern "C" { \
-        static ret (GLAPIENTRY *p##fn) params = NULL; \
-        ret GLAPIENTRY fn params { rt p##fn call; } \
-    }
-#include "glstubs.h"
-#undef GL_FUNC
-#endif // __MINGW32__
-
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
-
-static bool lookup_glsym(const char *funcname, void **func)
-{
-    *func = SDL_GL_GetProcAddress(funcname);
-    if (*func == NULL) {
-        fprintf(stderr, "Failed to find OpenGL symbol \"%s\"\n", funcname);
-        return false;
-    }
-    return true;
-}
-
-static bool lookup_all_glsyms(void)
-{
-    bool retval = true;
-#ifndef __MINGW32__ // FIXME: Temporary workaround for GL-8
-#define GL_FUNC(ret,fn,params,call,rt) \
-        if (!lookup_glsym(#fn, (void **) &p##fn)) retval = false;
-#include "glstubs.h"
-#undef GL_FUNC
-#endif // __MINGW32__
-    return retval;
-}
-
-#ifndef __MINGW32__ // FIXME: Temporary workaround for GL-8
-static void GLAPIENTRY glDeleteTextures_doNothing(GLsizei n, const GLuint *textures)
-{
-    // no-op.
-}
-#endif // __MINGW32__
-
 // Menu defs
 
 int kContextWidth;
@@ -318,12 +270,6 @@ bool SetUp ()
 
     SDL_GL_MakeCurrent(sdlwindow, glctx);
 
-    if (!lookup_all_glsyms()) {
-        fprintf(stderr, "Missing required OpenGL functions.\n");
-        SDL_Quit();
-        return false;
-    }
-
     int dblbuf = 0;
     if ((SDL_GL_GetAttribute(SDL_GL_DOUBLEBUFFER, &dblbuf) == -1) || (!dblbuf))
     {
@@ -515,14 +461,6 @@ void CleanUp (void)
     delete[] commandLineOptionsBuffer;
 
     SDL_Quit();
-#ifndef __MINGW32__ // FIXME: Temporary workaround for GL-8
-#define GL_FUNC(ret,fn,params,call,rt) p##fn = NULL;
-#include "glstubs.h"
-#undef GL_FUNC
-    // cheat here...static destructors are calling glDeleteTexture() after
-    //  the context is destroyed and libGL unloaded by SDL_Quit().
-    pglDeleteTextures = glDeleteTextures_doNothing;
-#endif // __MINGW32__
 }
 
 // --------------------------------------------------------------------------

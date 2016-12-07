@@ -96,7 +96,6 @@ set(LUGARU_H
     ${SRCDIR}/openal_wrapper.h
     ${SRCDIR}/optionparser.h
     ${SRCDIR}/gamegl.h
-    ${SRCDIR}/glstubs.h
     ${SRCDIR}/private.h
     ${SRCDIR}/Settings.h
     ${SRCDIR}/Stereo.h
