@@ -1100,43 +1100,13 @@ void Game::Loadlevel(const std::string& name)
             Person::players[i]->bled = 0;
             Person::players[i]->onfire = 0;
             Person::players[i]->scale = .2;
+            if (mapvers < 9) {
+                Person::players[i]->creature = rabbittype;
+            }
         }
         Person::players[i]->skeleton.free = 0;
-        Person::players[i]->skeleton.id = i;
-        if (i == 0 && mapvers < 9) {
-            Person::players[i]->creature = rabbittype;
-        }
-        if (Person::players[i]->creature != wolftype) {
-            Person::players[i]->skeleton.Load(
-                (char *)"Skeleton/BasicFigure",
-                (char *)"Skeleton/BasicFigureLow",
-                (char *)"Skeleton/RabbitBelt",
-                (char *)"Models/Body.solid",
-                (char *)"Models/Body2.solid",
-                (char *)"Models/Body3.solid",
-                (char *)"Models/Body4.solid",
-                (char *)"Models/Body5.solid",
-                (char *)"Models/Body6.solid",
-                (char *)"Models/Body7.solid",
-                (char *)"Models/BodyLow.solid",
-                (char *)"Models/Belt.solid", 0);
-        } else {
-            Person::players[i]->skeleton.Load(
-                (char *)"Skeleton/BasicFigureWolf",
-                (char *)"Skeleton/BasicFigureWolfLow",
-                (char *)"Skeleton/RabbitBelt",
-                (char *)"Models/Wolf.solid",
-                (char *)"Models/Wolf2.solid",
-                (char *)"Models/Wolf3.solid",
-                (char *)"Models/Wolf4.solid",
-                (char *)"Models/Wolf5.solid",
-                (char *)"Models/Wolf6.solid",
-                (char *)"Models/Wolf7.solid",
-                (char *)"Models/WolfLow.solid",
-                (char *)"Models/Belt.solid", 0);
-        }
 
-        Person::players[i]->skeleton.drawmodel.textureptr.load(creatureskin[Person::players[i]->creature][Person::players[i]->whichskin], 1, &Person::players[i]->skeleton.skinText[0], &Person::players[i]->skeleton.skinsize);
+        Person::players[i]->skeletonLoad();
 
         Person::players[i]->addClothes();
 
@@ -1904,11 +1874,9 @@ void doDebugKeys()
 
 
                 if (Person::players[closest]->creature == rabbittype) {
-                    Person::players[closest]->skeleton.id = closest;
-                    Person::players[closest]->skeleton.Load((char *)"Skeleton/BasicFigureWolf", (char *)"Skeleton/BasicFigureWolfLow", (char *)"Skeleton/RabbitBelt", (char *)"Models/Wolf.solid", (char *)"Models/Wolf2.solid", (char *)"Models/Wolf3.solid", (char *)"Models/Wolf4.solid", (char *)"Models/Wolf5.solid", (char *)"Models/Wolf6.solid", (char *)"Models/Wolf7.solid", (char *)"Models/WolfLow.solid", (char *)"Models/Belt.solid", 0);
-                    Person::players[closest]->skeleton.drawmodel.textureptr.load("Textures/Wolf.jpg", 1, &Person::players[closest]->skeleton.skinText[0], &Person::players[closest]->skeleton.skinsize);
-                    Person::players[closest]->whichskin = 0;
                     Person::players[closest]->creature = wolftype;
+                    Person::players[closest]->whichskin = 0;
+                    Person::players[closest]->skeletonLoad();
 
                     Person::players[closest]->proportionhead = 1.1;
                     Person::players[closest]->proportionbody = 1.1;
@@ -1919,11 +1887,9 @@ void doDebugKeys()
 
                     Person::players[closest]->damagetolerance = 300;
                 } else {
-                    Person::players[closest]->skeleton.id = closest;
-                    Person::players[closest]->skeleton.Load((char *)"Skeleton/BasicFigure", (char *)"Skeleton/BasicFigureLow", (char *)"Skeleton/RabbitBelt", (char *)"Models/Body.solid", (char *)"Models/Body2.solid", (char *)"Models/Body3.solid", (char *)"Models/Body4.solid", (char *)"Models/Body5.solid", (char *)"Models/Body6.solid", (char *)"Models/Body7.solid", (char *)"Models/BodyLow.solid", (char *)"Models/Belt.solid", 1);
-                    Person::players[closest]->skeleton.drawmodel.textureptr.load("Textures/Fur3.jpg", 1, &Person::players[closest]->skeleton.skinText[0], &Person::players[closest]->skeleton.skinsize);
-                    Person::players[closest]->whichskin = 0;
                     Person::players[closest]->creature = rabbittype;
+                    Person::players[closest]->whichskin = 0;
+                    Person::players[closest]->skeletonLoad(true);
 
                     Person::players[closest]->proportionhead = 1.2;
                     Person::players[closest]->proportionbody = 1.05;
@@ -2209,48 +2175,32 @@ void doDebugKeys()
             if (Input::isKeyPressed(SDL_SCANCODE_P) && Input::isKeyDown(SDL_SCANCODE_LSHIFT) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
                 Person::players.push_back(shared_ptr<Person>(new Person()));
 
-                Person::players.back()->scale = .2 * 5 * Person::players[0]->scale;
+                Person::players.back()->id = Person::players.size()-1;
+
+                Person::players.back()->scale = Person::players[0]->scale;
                 Person::players.back()->creature = rabbittype;
                 Person::players.back()->howactive = editoractive;
-                Person::players.back()->skeleton.id = Person::players.size()-1;
-                Person::players.back()->skeleton.Load((char *)"Skeleton/BasicFigure", (char *)"Skeleton/BasicFigureLow", (char *)"Skeleton/RabbitBelt", (char *)"Models/Body.solid", (char *)"Models/Body2.solid", (char *)"Models/Body3.solid", (char *)"Models/Body4.solid", (char *)"Models/Body5.solid", (char *)"Models/Body6.solid", (char *)"Models/Body7.solid", (char *)"Models/BodyLow.solid", (char *)"Models/Belt.solid", 1);
 
                 int k = abs(Random() % 2) + 1;
                 if (k == 0) {
-                    Person::players.back()->skeleton.drawmodel.textureptr.load("Textures/Fur3.jpg", 1, &Person::players.back()->skeleton.skinText[0], &Person::players.back()->skeleton.skinsize);
                     Person::players.back()->whichskin = 0;
                 } else if (k == 1) {
-                    Person::players.back()->skeleton.drawmodel.textureptr.load("Textures/Fur.jpg", 1, &Person::players.back()->skeleton.skinText[0], &Person::players.back()->skeleton.skinsize);
                     Person::players.back()->whichskin = 1;
                 } else {
-                    Person::players.back()->skeleton.drawmodel.textureptr.load("Textures/Fur2.jpg", 1, &Person::players.back()->skeleton.skinText[0], &Person::players.back()->skeleton.skinsize);
                     Person::players.back()->whichskin = 2;
                 }
 
+                Person::players.back()->skeletonLoad(true);
+
                 Person::players.back()->skeleton.drawmodelclothes.textureptr.load("Textures/Belt.png", 1);
-                Person::players.back()->power = 1;
-                Person::players.back()->speedmult = 1;
-                Person::players.back()->animCurrent = bounceidleanim;
-                Person::players.back()->animTarget = bounceidleanim;
-                Person::players.back()->frameCurrent = 0;
-                Person::players.back()->frameTarget = 1;
-                Person::players.back()->target = 0;
-                Person::players.back()->bled = 0;
                 Person::players.back()->speed = 1 + (float)(Random() % 100) / 1000;
 
                 Person::players.back()->targetyaw = Person::players[0]->targetyaw;
                 Person::players.back()->yaw = Person::players[0]->yaw;
 
-                Person::players.back()->velocity = 0;
                 Person::players.back()->coords = Person::players[0]->coords;
                 Person::players.back()->oldcoords = Person::players.back()->coords;
                 Person::players.back()->realoldcoords = Person::players.back()->coords;
-
-                Person::players.back()->id = Person::players.size()-1;
-                Person::players.back()->updatedelay = 0;
-                Person::players.back()->normalsupdatedelay = 0;
-
-                Person::players.back()->aitype = passivetype;
 
                 if (Person::players[0]->creature == wolftype) {
                     headprop = Person::players[0]->proportionhead.x / 1.1;
@@ -2280,9 +2230,6 @@ void doDebugKeys()
                     Person::players.back()->proportionlegs = 1.1 * legprop;
                     Person::players.back()->proportionlegs.y = 1.05 * legprop;
                 }
-
-                Person::players.back()->headless = 0;
-                Person::players.back()->onfire = 0;
 
                 if (cellophane) {
                     Person::players.back()->proportionhead.z = 0;
@@ -2319,20 +2266,7 @@ void doDebugKeys()
                 Person::players.back()->power = Person::players[0]->power;
                 Person::players.back()->speedmult = Person::players[0]->speedmult;
 
-                Person::players.back()->damage = 0;
-                Person::players.back()->permanentdamage = 0;
-                Person::players.back()->superpermanentdamage = 0;
-                Person::players.back()->deathbleeding = 0;
-                Person::players.back()->bleeding = 0;
-                Person::players.back()->numwaypoints = 0;
-                Person::players.back()->waypoint = 0;
-                Person::players.back()->weaponstuck = -1;
-                Person::players.back()->weaponactive = -1;
-                Person::players.back()->num_weapons = 0;
-                Person::players.back()->bloodloss = 0;
-                Person::players.back()->dead = 0;
-
-                Person::players.back()->loaded = 1;
+                Person::players.back()->loaded = true;
             }
 
             if (Input::isKeyPressed(SDL_SCANCODE_P) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {

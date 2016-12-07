@@ -415,6 +415,46 @@ Person::Person(FILE *tfile, int mapvers, unsigned i) : Person()
     realoldcoords = coords;
 }
 
+void Person::skeletonLoad(bool clothes)
+{
+    skeleton.id = id;
+    if (creature != wolftype) {
+        skeleton.Load(
+            "Skeleton/BasicFigure",
+            "Skeleton/BasicFigureLow",
+            "Skeleton/RabbitBelt",
+            "Models/Body.solid",
+            "Models/Body2.solid",
+            "Models/Body3.solid",
+            "Models/Body4.solid",
+            "Models/Body5.solid",
+            "Models/Body6.solid",
+            "Models/Body7.solid",
+            "Models/BodyLow.solid",
+            "Models/Belt.solid",
+            clothes
+        );
+    } else {
+        skeleton.Load(
+            "Skeleton/BasicFigureWolf",
+            "Skeleton/BasicFigureWolfLow",
+            "Skeleton/RabbitBelt",
+            "Models/Wolf.solid",
+            "Models/Wolf2.solid",
+            "Models/Wolf3.solid",
+            "Models/Wolf4.solid",
+            "Models/Wolf5.solid",
+            "Models/Wolf6.solid",
+            "Models/Wolf7.solid",
+            "Models/WolfLow.solid",
+            "Models/Belt.solid",
+            clothes
+        );
+    }
+
+    skeleton.drawmodel.textureptr.load(creatureskin[creature][whichskin], 1, &skeleton.skinText[0], &skeleton.skinsize);
+}
+
 /* EFFECT
  *
  * USES:

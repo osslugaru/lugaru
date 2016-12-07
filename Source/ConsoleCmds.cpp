@@ -442,15 +442,8 @@ void ch_cellophane(const char *args)
 
 void ch_funnybunny(const char *args)
 {
-    Person::players[0]->skeleton.id = 0;
-    Person::players[0]->skeleton.Load("Skeleton/BasicFigure", "Skeleton/BasicFigureLow",
-                            "Skeleton/RabbitBelt", "Models/Body.solid",
-                            "Models/Body2.solid", "Models/Body3.solid",
-                            "Models/Body4.solid", "Models/Body5.solid",
-                            "Models/Body6.solid", "Models/Body7.solid",
-                            "Models/BodyLow.solid", "Models/Belt.solid", 1);
-    Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/Fur3.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
     Person::players[0]->creature = rabbittype;
+    Person::players[0]->skeletonLoad(true);
     Person::players[0]->scale = .2;
     Person::players[0]->headless = 0;
     Person::players[0]->damagetolerance = 200;
@@ -459,15 +452,8 @@ void ch_funnybunny(const char *args)
 
 void ch_wolfie(const char *args)
 {
-    Person::players[0]->skeleton.id = 0;
-    Person::players[0]->skeleton.Load("Skeleton/BasicFigureWolf", "Skeleton/BasicFigureWolfLow",
-                            "Skeleton/RabbitBelt", "Models/Wolf.solid",
-                            "Models/Wolf2.solid", "Models/Wolf3.solid",
-                            "Models/Wolf4.solid", "Models/Wolf5.solid",
-                            "Models/Wolf6.solid", "Models/Wolf7.solid",
-                            "Models/WolfLow.solid", "Models/Belt.solid", 0);
-    Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/Wolf.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
     Person::players[0]->creature = wolftype;
+    Person::players[0]->skeletonLoad();
     Person::players[0]->damagetolerance = 300;
     set_proportion(0, "1 1 1 1");
 }
