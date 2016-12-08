@@ -272,7 +272,9 @@ endif(APPLE)
 
 # Documentation
 
-install(FILES ${CMAKE_SOURCE_DIR}/README.md
-              ${CMAKE_SOURCE_DIR}/COPYING.txt
+install(FILES ${CMAKE_SOURCE_DIR}/AUTHORS
               ${CMAKE_SOURCE_DIR}/CONTENT-LICENSE.txt
+              ${CMAKE_SOURCE_DIR}/COPYING.txt
+              ${CMAKE_SOURCE_DIR}/DEBUG-OPTIONS.txt
+              ${CMAKE_SOURCE_DIR}/README.md
         DESTINATION ${LUGARU_DOCDIR})
