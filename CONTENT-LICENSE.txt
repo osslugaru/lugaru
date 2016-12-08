@@ -10,11 +10,11 @@ Attribution to Wolfire Games: http://www.wolfire.com
 Those assets are all the files in the `Data` folder, except from the
 ones listed below with different licenses or credits.
 
-## Slib assets (CC-BY-SA)
+## Slib assets (CC-BY-SA 3.0 Unported)
 
 http://forums.wolfire.com/viewtopic.php?f=7&t=1066&start=270#p109473
 
-These assets are from the Temple campaign by Slib under CC-BY-SA:
+These assets are from the Temple campaign by Slib under CC-BY-SA 3.0 Unported:
 
 Data/Campaign/temple.txt
 
