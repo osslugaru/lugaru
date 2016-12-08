@@ -18,7 +18,7 @@ endif()
 
 ### CMake config
 
-set(CMAKE_CXX_FLAGS "-Wall -Wno-parentheses --std=c++11 ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "-Wall -Wno-parentheses -pedantic --std=c++11 ${CMAKE_CXX_FLAGS}")
 
 if(APPLE)
     set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "Build architectures for OSX")
