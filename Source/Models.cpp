@@ -400,7 +400,7 @@ void Model::UpdateVertexArrayNoTexNoNorm()
     }
 }
 
-bool Model::loadnotex(const char *filename )
+bool Model::loadnotex(const std::string& filename )
 {
     FILE *tfile;
     long i;
@@ -464,7 +464,7 @@ bool Model::loadnotex(const char *filename )
 }
 
 
-bool Model::load(const char *filename, bool texture )
+bool Model::load(const std::string& filename, bool texture )
 {
     FILE *tfile;
     long i;
@@ -538,7 +538,7 @@ bool Model::load(const char *filename, bool texture )
     return true;
 }
 
-bool Model::loaddecal(const char *filename, bool texture )
+bool Model::loaddecal(const std::string& filename, bool texture )
 {
     FILE *tfile;
     long i, j;
@@ -633,7 +633,7 @@ bool Model::loaddecal(const char *filename, bool texture )
     return true;
 }
 
-bool Model::loadraw(char *filename )
+bool Model::loadraw(const std::string& filename)
 {
     FILE *tfile;
     long i;

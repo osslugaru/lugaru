@@ -60,8 +60,8 @@ public:
     void setDifficulty(int i) {
         difficulty = i;
     };
-    const char* getName() {
-        return name.c_str();
+    const std::string& getName() {
+        return name;
     };
     float getCampaignScore() {
         return campaignProgress[currentCampaign].score;

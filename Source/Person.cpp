@@ -6839,7 +6839,7 @@ void Person::addClothes()
 bool Person::addClothes(const int& clothesId)
 {
     LOGFUNC;
-    const char* fileName = clothes[clothesId];
+    const std::string fileName = clothes[clothesId];
 
     GLubyte* array = &skeleton.skinText[0];
 

@@ -29,8 +29,8 @@ extern float skyboxr;
 extern float skyboxg;
 extern float skyboxb;
 
-void SkyBox::load (const char *ffront, const char *fleft, const char *fback,
-                   const char *fright, const char *fup,   const char *fdown)
+void SkyBox::load (const std::string& ffront, const std::string& fleft, const std::string& fback,
+                   const std::string& fright, const std::string& fup,   const std::string& fdown)
 {
     front.load(ffront, true);
     left.load(fleft, true);

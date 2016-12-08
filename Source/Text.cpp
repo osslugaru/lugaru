@@ -22,7 +22,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Text.h"
 #include "Game.h"
 
-void Text::LoadFontTexture(const char *fileName)
+void Text::LoadFontTexture(const std::string& fileName)
 {
     LOGFUNC;
 

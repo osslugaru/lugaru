@@ -121,7 +121,7 @@ void InitStereo(StereoMode mode)
 
 }
 
-const char* StereoModeName(StereoMode mode)
+const std::string StereoModeName(StereoMode mode)
 {
     switch (mode) {
     case stereoNone:

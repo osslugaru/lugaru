@@ -827,7 +827,7 @@ void Game::Loadlevel(const std::string& name)
     hostiletime = 0;
     won = 0;
 
-    animation[bounceidleanim].Load((char *)"Idle", middleheight, neutral);
+    animation[bounceidleanim].Load("Idle", middleheight, neutral);
 
     Dialog::dialogs.clear();
 
@@ -1159,7 +1159,7 @@ void Game::Loadlevel(const std::string& name)
             Person::players[i]->proportionlegs.z = 0;
         }
 
-        Person::players[i]->tempanimation.Load((char *)"Tempanim", 0, 0);
+        Person::players[i]->tempanimation.Load("Tempanim", 0, 0);
 
         if (i == 0) {
             Person::players[i]->headmorphness = 0;
@@ -2238,7 +2238,7 @@ void doDebugKeys()
                     Person::players.back()->proportionlegs.z = 0;
                 }
 
-                Person::players.back()->tempanimation.Load((char *)"Tempanim", 0, 0);
+                Person::players.back()->tempanimation.Load("Tempanim", 0, 0);
 
                 Person::players.back()->damagetolerance = 200;
 
@@ -4644,7 +4644,7 @@ void updateSettingsMenu()
 void updateStereoConfigMenu()
 {
     char sbuf[256];
-    sprintf(sbuf, "Stereo mode: %s", StereoModeName(newstereomode));
+    sprintf(sbuf, "Stereo mode: %s", StereoModeName(newstereomode).c_str());
     Menu::setText(0, sbuf);
     sprintf(sbuf, "Stereo separation: %.3f", stereoseparation);
     Menu::setText(1, sbuf);
@@ -5152,7 +5152,7 @@ void MenuTick()
                 if (selected == 0) {
                     newstereomode = (StereoMode)(newstereomode + 1);
                     while (!CanInitStereo(newstereomode)) {
-                        printf("Failed to initialize mode %s (%i)\n", StereoModeName(newstereomode), newstereomode);
+                        printf("Failed to initialize mode %s (%i)\n", StereoModeName(newstereomode).c_str(), newstereomode);
                         newstereomode = (StereoMode)(newstereomode + 1);
                         if (newstereomode >= stereoCount)
                             newstereomode = stereoNone;

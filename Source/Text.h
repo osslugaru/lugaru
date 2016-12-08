@@ -36,7 +36,7 @@ public:
     Texture FontTexture;
     GLuint base;
 
-    void LoadFontTexture(const char *fileName);
+    void LoadFontTexture(const std::string& fileName);
     void BuildFont();
     void glPrint(float x, float y, const char *string, int set, float size, float width, float height);
     void glPrintOutline(float x, float y, const char *string, int set, float size, float width, float height);

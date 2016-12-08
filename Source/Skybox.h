@@ -32,8 +32,8 @@ class SkyBox
 public:
     Texture front, left, back, right, up, down;
 
-    void load(const char *ffront, const char *fleft, const char *fback,
-              const char *fright, const char *fup,   const char *fdown);
+    void load(const std::string& ffront, const std::string& fleft, const std::string& fback,
+              const std::string& fright, const std::string& fup,   const std::string& fdown);
     void draw();
 
     SkyBox() {}

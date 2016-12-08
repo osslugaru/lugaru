@@ -201,7 +201,7 @@ public:
     void FindRotationJoint(int which);
     void FindRotationJointSameTwist(int which);
     void FindRotationMuscle(int which, int animation);
-    void Load(const char *fileName, const char *lowfileName, const char *clothesfileName, const char *modelfileName, const char *model2fileName, const char *model3fileName, const char *model4fileName, const char *model5fileNamee, const char *model6fileName, const char *model7fileName, const char *modellowfileName, const char *modelclothesfileName, bool aclothes);
+    void Load(const std::string& fileName, const std::string& lowfileName, const std::string& clothesfileName, const std::string& modelfileName, const std::string& model2fileName, const std::string& model3fileName, const std::string& model4fileName, const std::string& model5fileNamee, const std::string& model6fileName, const std::string& model7fileName, const std::string& modellowfileName, const std::string& modelclothesfileName, bool aclothes);
 
     /*
     // unused

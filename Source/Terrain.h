@@ -117,7 +117,7 @@ public:
     void UpdateTransparency(int whichx, int whichy);
     void UpdateTransparencyother(int whichx, int whichy);
     void UpdateTransparencyotherother(int whichx, int whichy);
-    bool load(const char *fileName);
+    bool load(const std::string& fileName);
     void CalculateNormals();
     void drawdecals();
     void draw(int layer);

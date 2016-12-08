@@ -21,7 +21,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Animation.h"
 
 struct animation_data_elt {
-    const char *filename;
+    const std::string& filename;
     int height;
     int attack;
 };

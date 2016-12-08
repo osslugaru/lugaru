@@ -134,7 +134,7 @@ void Game::deleteGame()
 
 
 
-void LoadSave(const char *fileName, GLuint *textureid, bool mipmap, GLubyte *array, int *skinsize)
+void LoadSave(const std::string& fileName, GLuint *textureid, bool mipmap, GLubyte *array, int *skinsize)
 {
     LOGFUNC;
 
@@ -702,14 +702,14 @@ void Game::LoadStuff()
     Weapon::lightbloodswordtextureptr.load("Textures/SwordBloodLight.jpg", 1);
     Weapon::stafftextureptr.load("Textures/Staff.jpg", 1);
 
-    Weapon::throwingknifemodel.load((char *)"Models/ThrowingKnife.solid", 1);
+    Weapon::throwingknifemodel.load("Models/ThrowingKnife.solid", 1);
     Weapon::throwingknifemodel.Scale(.001, .001, .001);
     Weapon::throwingknifemodel.Rotate(90, 0, 0);
     Weapon::throwingknifemodel.Rotate(0, 90, 0);
     Weapon::throwingknifemodel.flat = 0;
     Weapon::throwingknifemodel.CalculateNormals(1);
 
-    Weapon::swordmodel.load((char *)"Models/Sword.solid", 1);
+    Weapon::swordmodel.load("Models/Sword.solid", 1);
     Weapon::swordmodel.Scale(.001, .001, .001);
     Weapon::swordmodel.Rotate(90, 0, 0);
     Weapon::swordmodel.Rotate(0, 90, 0);
@@ -717,7 +717,7 @@ void Game::LoadStuff()
     Weapon::swordmodel.flat = 1;
     Weapon::swordmodel.CalculateNormals(1);
 
-    Weapon::staffmodel.load((char *)"Models/Staff.solid", 1);
+    Weapon::staffmodel.load("Models/Staff.solid", 1);
     Weapon::staffmodel.Scale(.005, .005, .005);
     Weapon::staffmodel.Rotate(90, 0, 0);
     Weapon::staffmodel.Rotate(0, 90, 0);
@@ -788,7 +788,7 @@ void Game::LoadStuff()
     viewer.x = terrain.size / 2 * terrain.scale;
     viewer.z = terrain.size / 2 * terrain.scale;
 
-    hawk.load((char *)"Models/Hawk.solid", 1);
+    hawk.load("Models/Hawk.solid", 1);
     hawk.Scale(.03, .03, .03);
     hawk.Rotate(90, 1, 1);
     hawk.CalculateNormals(0);
@@ -797,15 +797,15 @@ void Game::LoadStuff()
     hawkcoords.z = terrain.size / 2 * terrain.scale - 5 - 7;
     hawkcoords.y = terrain.getHeight(hawkcoords.x, hawkcoords.z) + 25;
 
-    eye.load((char *)"Models/Eye.solid", 1);
+    eye.load("Models/Eye.solid", 1);
     eye.Scale(.03, .03, .03);
     eye.CalculateNormals(0);
 
-    cornea.load((char *)"Models/Cornea.solid", 1);
+    cornea.load("Models/Cornea.solid", 1);
     cornea.Scale(.03, .03, .03);
     cornea.CalculateNormals(0);
 
-    iris.load((char *)"Models/Iris.solid", 1);
+    iris.load("Models/Iris.solid", 1);
     iris.Scale(.03, .03, .03);
     iris.CalculateNormals(0);
 

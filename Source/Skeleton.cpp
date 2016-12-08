@@ -780,12 +780,12 @@ void Animation::Load(const std::string& filename, int aheight, int aattack)
  * load skeleton
  * takes filenames for three skeleton files and various models
  */
-void Skeleton::Load(const char *filename,       const char *lowfilename, const char *clothesfilename,
-                    const char *modelfilename,  const char *model2filename,
-                    const char *model3filename, const char *model4filename,
-                    const char *model5filename, const char *model6filename,
-                    const char *model7filename, const char *modellowfilename,
-                    const char *modelclothesfilename, bool clothes)
+void Skeleton::Load(const std::string& filename,       const std::string& lowfilename, const std::string& clothesfilename,
+                    const std::string& modelfilename,  const std::string& model2filename,
+                    const std::string& model3filename, const std::string& model4filename,
+                    const std::string& model5filename, const std::string& model6filename,
+                    const std::string& model7filename, const std::string& modellowfilename,
+                    const std::string& modelclothesfilename, bool clothes)
 {
     GLfloat M[16];
     int parentID;

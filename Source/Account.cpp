@@ -75,7 +75,7 @@ Account* Account::destroy(Account* a)
             return NULL;
         }
     }
-    printf("Unexpected error : User %s not found\n", a->getName());
+    printf("Unexpected error : User %s not found\n", a->getName().c_str());
     return accounts.front();
 }
 
@@ -199,13 +199,12 @@ void Account::saveFile(string filename, Account* accountactive)
 
     tfile = fopen(filename.c_str(), "wb" );
     if (tfile) {
-        printf("writing %d accounts :\n", getNbAccounts());
         fpackf(tfile, "Bi", getNbAccounts());
         fpackf(tfile, "Bi", indice(accountactive));
 
         for (int i = 0; i < getNbAccounts(); i++) {
             Account* a = Account::get(i);
-            printf("writing account %d/%d (%s)\n", i + 1, getNbAccounts(), a->getName());
+            printf("writing account %d/%d (%s)\n", i + 1, getNbAccounts(), a->getName().c_str());
             fpackf(tfile, "Bi", a->difficulty);
             fpackf(tfile, "Bi", a->progress);
             fpackf(tfile, "Bi", a->campaignProgress.size());
