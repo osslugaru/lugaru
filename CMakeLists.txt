@@ -6,10 +6,10 @@ cmake_policy(SET CMP0004 OLD)
 include(FindPkgConfig)
 include(GNUInstallDirs)
 
+
+### Helpers
+
 set(SRCDIR "${CMAKE_CURRENT_SOURCE_DIR}/Source")
-
-
-### Helper
 
 if(UNIX AND NOT APPLE)
     set(LINUX TRUE)
@@ -17,6 +17,11 @@ endif()
 
 
 ### CMake config
+
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE RelWithDebInfo)
+endif(NOT CMAKE_BUILD_TYPE)
+message("CMake build type: ${CMAKE_BUILD_TYPE}")
 
 set(CMAKE_CXX_FLAGS "-Wall -Wno-parentheses -pedantic --std=c++11 ${CMAKE_CXX_FLAGS}")
 
@@ -264,7 +269,7 @@ if(LINUX)
         install(FILES ${CMAKE_SOURCE_DIR}/Dist/lugaru.png DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/128x128/apps)
         install(FILES ${CMAKE_SOURCE_DIR}/Dist/lugaru.6 DESTINATION ${CMAKE_INSTALL_MANDIR}/man6)
     else(SYSTEM_INSTALL)
-        message(WARNING "You are installing Lugaru without having enabled the SYSTEM_INSTALL option. It will default to looking for the data in the 'Data' directory next to the binary.")
+        message("You are building Lugaru without having enabled the SYSTEM_INSTALL option. It will default to looking for the data in the 'Data' directory next to the binary.")
         install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru DESTINATION ${CMAKE_INSTALL_PREFIX})
         install(DIRECTORY ${CMAKE_SOURCE_DIR}/Data DESTINATION ${CMAKE_INSTALL_PREFIX})
     endif(SYSTEM_INSTALL)
