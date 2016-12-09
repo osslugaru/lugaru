@@ -28,8 +28,7 @@ std::vector<Animation> Animation::animations;
 
 void Animation::loadAll()
 {
-    int i = 0;
-#define DECLARE_ANIM(id, file, height, attack, ...) if (i++ < loadable_anim_end) animations.emplace_back(file, height, attack);
+#define DECLARE_ANIM(id, file, height, attack, ...) if (id < loadable_anim_end) animations.emplace_back(file, height, attack);
 #include "Animation.def"
 #undef DECLARE_ANIM
 }
@@ -73,8 +72,8 @@ void AnimationFrame::loadWeaponTarget(FILE* tfile)
 }
 
 Animation::Animation():
-    height(0),
-    attack(0),
+    height(lowheight),
+    attack(neutral),
     numjoints(0)
 {
 }
@@ -82,7 +81,7 @@ Animation::Animation():
 /* EFFECT
  * load an animation from file
  */
-Animation::Animation(const std::string& filename, int aheight, int aattack):
+Animation::Animation(const std::string& filename, anim_height_type aheight, anim_attack_type aattack):
     Animation()
 {
     FILE *tfile;

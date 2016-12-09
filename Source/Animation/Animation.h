@@ -84,8 +84,8 @@ public:
     static std::vector<Animation> animations;
     static void loadAll();
 
-    int height;
-    int attack;
+    anim_height_type height;
+    anim_attack_type attack;
     int numjoints;
 
     std::vector<AnimationFrame> frames;
@@ -93,7 +93,7 @@ public:
     XYZ offset;
 
     Animation();
-    Animation(const std::string& fileName, int aheight, int aattack);
+    Animation(const std::string& fileName, anim_height_type aheight, anim_attack_type aattack);
     ~Animation();
 };
 #endif

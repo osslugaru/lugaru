@@ -1159,7 +1159,7 @@ void Game::Loadlevel(const std::string& name)
             Person::players[i]->proportionlegs.z = 0;
         }
 
-        Person::players[i]->tempanimation = Animation("Tempanim", 0, 0);
+        Person::players[i]->tempanimation = Animation("Tempanim", lowheight, neutral);
 
         if (i == 0) {
             Person::players[i]->headmorphness = 0;
@@ -2238,7 +2238,7 @@ void doDebugKeys()
                     Person::players.back()->proportionlegs.z = 0;
                 }
 
-                Person::players.back()->tempanimation = Animation("Tempanim", 0, 0);
+                Person::players.back()->tempanimation = Animation("Tempanim", lowheight, neutral);
 
                 Person::players.back()->damagetolerance = 200;
 
