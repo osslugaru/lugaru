@@ -49,7 +49,7 @@ public:
 
     Muscle();
     ~Muscle();
-    void load(FILE* tfile, int vertexNum, Joint* joints);
+    void load(FILE* tfile, int vertexNum, std::vector<Joint>& joints);
     void loadVerticesLow(FILE* tfile, int vertexNum);
     void loadVerticesClothes(FILE* tfile, int vertexNum);
     void DoConstraint(bool spinny);

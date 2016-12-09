@@ -42,10 +42,6 @@ extern bool visibleloading;
 
 Skeleton::Skeleton()
 {
-    num_joints = 0;
-
-    num_muscles = 0;
-
     selected = 0;
 
     memset(forwardjoints, 0, sizeof(forwardjoints));
@@ -73,22 +69,10 @@ Skeleton::Skeleton()
     oldfree = 0;
     freetime = 0;
     freefall = 0;
-
-    joints = 0;
-    muscles = 0;
 }
 
 Skeleton::~Skeleton()
 {
-    if (muscles) {
-        delete [] muscles;
-    }
-    muscles = 0;
-
-    if (joints) {
-        delete [] joints;
-    }
-    joints = 0;
 }
 
 /* EFFECT
@@ -166,7 +150,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
         objects.SphereCheckPossible(&terrainlight, 1);
 
         //Add velocity
-        for (i = 0; i < num_joints; i++) {
+        for (i = 0; i < joints.size(); i++) {
             joints[i].position = joints[i].position + joints[i].velocity * multiplier;
 
             switch (joints[i].label) {
@@ -241,14 +225,14 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                 }
             }
 
-            for (i = 0; i < num_joints; i++) {
+            for (i = 0; i < joints.size(); i++) {
                 if (joints[i].locked && !spinny && findLengthfast(&joints[i].velocity) > 320)
                     joints[i].locked = 0;
                 if (spinny && findLengthfast(&joints[i].velocity) > 600)
                     joints[i].locked = 0;
                 if (joints[i].delay > 0) {
                     bool freely = true;
-                    for (j = 0; j < num_joints; j++) {
+                    for (j = 0; j < joints.size(); j++) {
                         if (joints[j].locked)
                             freely = false;
                     }
@@ -257,13 +241,12 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                 }
             }
 
-            if (num_muscles)
-                for (i = 0; i < num_muscles; i++) {
-                    //Length constraints
-                    muscles[i].DoConstraint(spinny);
-                }
+            for (i = 0; i < muscles.size(); i++) {
+                //Length constraints
+                muscles[i].DoConstraint(spinny);
+            }
 
-            for (i = 0; i < num_joints; i++) {
+            for (i = 0; i < joints.size(); i++) {
                 //Length constraints
                 //Ground constraint
                 groundlevel = 0;
@@ -451,7 +434,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                         whichhit = objects.model[k].LineCheckSlidePossible(&start, &end, &temp, &objects.position[k], &objects.yaw[k]);
                         if (whichhit != -1) {
                             joints[jointlabels[whichjointendarray[i]]].position = (end - *coords) / (*scale);
-                            for (j = 0; j < num_muscles; j++) {
+                            for (j = 0; j < muscles.size(); j++) {
                                 if ((muscles[j].parent1->label == whichjointstartarray[i] && muscles[j].parent2->label == whichjointendarray[i]) || (muscles[j].parent2->label == whichjointstartarray[i] && muscles[j].parent1->label == whichjointendarray[i]))
                                     muscles[j].DoConstraint(spinny);
                             }
@@ -460,7 +443,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                 }
             }
 
-        for (i = 0; i < num_joints; i++) {
+        for (i = 0; i < joints.size(); i++) {
             switch (joints[i].label) {
             case head:
                 groundlevel = .8;
@@ -490,7 +473,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
     }
 
     if (!free) {
-        for (i = 0; i < num_muscles; i++) {
+        for (i = 0; i < muscles.size(); i++) {
             if (muscles[i].type == boneconnect)
                 muscles[i].DoConstraint(0);
         }
@@ -508,7 +491,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
 void Skeleton::DoGravity(float *scale)
 {
     static int i;
-    for (i = 0; i < num_joints; i++) {
+    for (i = 0; i < joints.size(); i++) {
         if (
                 (
                     ((joints[i].label != leftknee) && (joints[i].label != rightknee)) ||
@@ -644,11 +627,9 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
                     const std::string& modelclothesfilename, bool clothes)
 {
     GLfloat M[16];
-    int parentID;
     FILE *tfile;
     float lSize;
-    int i, j;
-    int edit;
+    int i, j, num_joints, num_muscles;
 
     LOGFUNC;
 
@@ -719,34 +700,18 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
     // read num_joints
     funpackf(tfile, "Bi", &num_joints);
 
-    // allocate memory
-    if (joints)
-        delete [] joints; //dealloc2(joints);
-    joints = (Joint*)new Joint[num_joints];
+    joints.resize(num_joints);
 
     // read info for each joint
     for (i = 0; i < num_joints; i++) {
-        funpackf(tfile, "Bf Bf Bf Bf Bf", &joints[i].position.x, &joints[i].position.y, &joints[i].position.z, &joints[i].length, &joints[i].mass);
-        funpackf(tfile, "Bb Bb", &joints[i].hasparent, &joints[i].locked);
-        funpackf(tfile, "Bi", &joints[i].modelnum);
-        funpackf(tfile, "Bb Bb", &joints[i].visible, &joints[i].sametwist);
-        funpackf(tfile, "Bi Bi", &joints[i].label, &joints[i].hasgun);
-        funpackf(tfile, "Bb", &joints[i].lower);
-        funpackf(tfile, "Bi", &parentID);
-        if (joints[i].hasparent)
-            joints[i].parent = &joints[parentID];
-        joints[i].velocity = 0;
-        joints[i].oldposition = joints[i].position;
-        joints[i].startpos = joints[i].position;
+        joints[i].load(tfile, joints);
     }
 
     // read num_muscles
     funpackf(tfile, "Bi", &num_muscles);
 
     // allocate memory
-    if (muscles)
-        delete [] muscles; //dealloc2(muscles);
-    muscles = (Muscle*)new Muscle[num_muscles]; //malloc(sizeof(Muscle)*num_muscles);
+    muscles.resize(num_muscles);
 
     // for each muscle...
     for (i = 0; i < num_muscles; i++) {
@@ -804,8 +769,7 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
 
     // skip joints section
 
-    lSize = sizeof(num_joints);
-    fseek(tfile, lSize, SEEK_CUR);
+    fseek(tfile, sizeof(num_joints), SEEK_CUR);
     for (i = 0; i < num_joints; i++) {
         // skip joint info
         lSize = sizeof(XYZ)
@@ -823,8 +787,8 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
         fseek(tfile, lSize, SEEK_CUR);
     }
 
-    // read num_muscles
-    funpackf(tfile, "Bi", &num_muscles);
+    // skip num_muscles
+    fseek(tfile, sizeof(num_muscles), SEEK_CUR);
 
     for (i = 0; i < num_muscles; i++) {
         // skip muscle info
@@ -878,8 +842,7 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
         tfile = Folders::openMandatoryFile( Folders::getResourcePath(clothesfilename), "rb" );
 
         // skip num_joints
-        lSize = sizeof(num_joints);
-        fseek ( tfile, lSize, SEEK_CUR);
+        fseek(tfile, sizeof(num_joints), SEEK_CUR);
 
         for (i = 0; i < num_joints; i++) {
             // skip joint info
@@ -898,8 +861,8 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
             fseek(tfile, lSize, SEEK_CUR);
         }
 
-        // read num_muscles
-        funpackf(tfile, "Bi", &num_muscles);
+        // skip num_muscles
+        fseek(tfile, sizeof(num_muscles), SEEK_CUR);
 
         for (i = 0; i < num_muscles; i++) {
             // skip muscle info
@@ -960,302 +923,3 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
 
     free = 0;
 }
-
-#if 0
-
-// the following functions are not used anywhere
-
-/* EFFECT
- * sets forward, lowforward, specialforward[]
- *
- * USES:
- * NONE
- */
-void Skeleton::FindForwardsfirst()
-{
-    //Find forward vectors
-    CrossProduct(joints[forwardjoints[1]].position - joints[forwardjoints[0]].position, joints[forwardjoints[2]].position - joints[forwardjoints[0]].position, &forward);
-    Normalise(&forward);
-
-    CrossProduct(joints[lowforwardjoints[1]].position - joints[lowforwardjoints[0]].position, joints[lowforwardjoints[2]].position - joints[lowforwardjoints[0]].position, &lowforward);
-    Normalise(&lowforward);
-
-    //Special forwards
-    specialforward[0] = forward;
-    specialforward[1] = forward;
-    specialforward[2] = forward;
-    specialforward[3] = forward;
-    specialforward[4] = forward;
-
-}
-
-/* EFFECT
- *
- * USES:
- * NONE
- */
-void Skeleton::Draw(int muscleview)
-{
-    static float jointcolor[4];
-
-    if (muscleview == 2) {
-        jointcolor[0] = 0;
-        jointcolor[1] = 0;
-        jointcolor[2] = 0;
-        jointcolor[3] = .5;
-    } else {
-        jointcolor[0] = 0;
-        jointcolor[1] = 0;
-        jointcolor[2] = .5;
-        jointcolor[3] = 1;
-    }
-
-    //Calc motionblur-ness
-    for (int i = 0; i < num_joints; i++) {
-        joints[i].oldposition = joints[i].position;
-        joints[i].blurred = findDistance(&joints[i].position, &joints[i].oldposition) * 100;
-        if (joints[i].blurred < 1)
-            joints[i].blurred = 1;
-    }
-
-    //Do Motionblur
-    glDepthMask(0);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glBegin(GL_QUADS);
-    for (int i = 0; i < num_joints; i++) {
-        if (joints[i].hasparent) {
-            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / joints[i].blurred);
-            glVertex3f(joints[i].position.x, joints[i].position.y, joints[i].position.z);
-            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / joints[i].parent->blurred);
-            glVertex3f(joints[i].parent->position.x, joints[i].parent->position.y, joints[i].parent->position.z);
-            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / joints[i].parent->blurred);
-            glVertex3f(joints[i].parent->oldposition.x, joints[i].parent->oldposition.y, joints[i].parent->oldposition.z);
-            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / joints[i].blurred);
-            glVertex3f(joints[i].oldposition.x, joints[i].oldposition.y, joints[i].oldposition.z);
-        }
-    }
-    for (int i = 0; i < num_muscles; i++) {
-        if (muscles[i].type == boneconnect) {
-            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / muscles[i].parent2->blurred);
-            glVertex3f(muscles[i].parent1->position.x, muscles[i].parent1->position.y, muscles[i].parent1->position.z);
-            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / muscles[i].parent2->blurred);
-            glVertex3f(muscles[i].parent2->position.x, muscles[i].parent2->position.y, muscles[i].parent2->position.z);
-            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / muscles[i].parent2->blurred);
-            glVertex3f(muscles[i].parent2->oldposition.x, muscles[i].parent2->oldposition.y, muscles[i].parent2->oldposition.z);
-            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / muscles[i].parent1->blurred);
-            glVertex3f(muscles[i].parent1->oldposition.x, muscles[i].parent1->oldposition.y, muscles[i].parent1->oldposition.z);
-        }
-    }
-    glEnd();
-
-    glBegin(GL_LINES);
-    for (int i = 0; i < num_joints; i++) {
-        if (joints[i].hasparent) {
-            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / joints[i].blurred);
-            glVertex3f(joints[i].position.x, joints[i].position.y, joints[i].position.z);
-            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / joints[i].parent->blurred);
-            glVertex3f(joints[i].parent->position.x, joints[i].parent->position.y, joints[i].parent->position.z);
-        }
-    }
-    for (int i = 0; i < num_muscles; i++) {
-        if (muscles[i].type == boneconnect) {
-            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / muscles[i].parent1->blurred);
-            glVertex3f(muscles[i].parent1->position.x, muscles[i].parent1->position.y, muscles[i].parent1->position.z);
-            glColor4f(jointcolor[0], jointcolor[1], jointcolor[2], jointcolor[3] / muscles[i].parent2->blurred);
-            glVertex3f(muscles[i].parent2->position.x, muscles[i].parent2->position.y, muscles[i].parent2->position.z);
-        }
-    }
-    glColor3f(.6, .6, 0);
-    if (muscleview == 1)
-        for (int i = 0; i < num_muscles; i++) {
-            if (muscles[i].type != boneconnect) {
-                glVertex3f(muscles[i].parent1->position.x, muscles[i].parent1->position.y, muscles[i].parent1->position.z);
-                glVertex3f(muscles[i].parent2->position.x, muscles[i].parent2->position.y, muscles[i].parent2->position.z);
-            }
-        }
-    glEnd();
-
-    if (muscleview != 2) {
-        glPointSize(3);
-        glBegin(GL_POINTS);
-        for (int i = 0; i < num_joints; i++) {
-            if (i != selected)
-                glColor4f(0, 0, .5, 1);
-            if (i == selected)
-                glColor4f(1, 1, 0, 1);
-            if (joints[i].locked && i != selected)
-                glColor4f(1, 0, 0, 1);
-            glVertex3f(joints[i].position.x, joints[i].position.y, joints[i].position.z);
-        }
-        glEnd();
-    }
-
-    //Set old position to current position
-    if (muscleview == 2)
-        for (int i = 0; i < num_joints; i++) {
-            joints[i].oldposition = joints[i].position;
-        }
-    glDepthMask(1);
-}
-
-/* EFFECT
- *
- * USES:
- * NONE
- */
-void Skeleton::AddJoint(float x, float y, float z, int which)
-{
-    if (num_joints < max_joints - 1) {
-        joints[num_joints].velocity = 0;
-        joints[num_joints].position.x = x;
-        joints[num_joints].position.y = y;
-        joints[num_joints].position.z = z;
-        joints[num_joints].mass = 1;
-        joints[num_joints].locked = 0;
-
-        joints[num_joints].hasparent = 0;
-        num_joints++;
-        if (which < num_joints && which >= 0)
-            AddMuscle(num_joints - 1, which, 0, 10, boneconnect);
-    }
-}
-
-/* EFFECT
- *
- * USES:
- * NONE
- */
-void Skeleton::DeleteJoint(int whichjoint)
-{
-    if (whichjoint < num_joints && whichjoint >= 0) {
-        joints[whichjoint].velocity = joints[num_joints - 1].velocity;
-        joints[whichjoint].position = joints[num_joints - 1].position;
-        joints[whichjoint].oldposition = joints[num_joints - 1].oldposition;
-        joints[whichjoint].hasparent = joints[num_joints - 1].hasparent;
-        joints[whichjoint].parent = joints[num_joints - 1].parent;
-        joints[whichjoint].length = joints[num_joints - 1].length;
-        joints[whichjoint].locked = joints[num_joints - 1].locked;
-        joints[whichjoint].modelnum = joints[num_joints - 1].modelnum;
-        joints[whichjoint].visible = joints[num_joints - 1].visible;
-
-        for (int i = 0; i < num_muscles; i++) {
-            while (muscles[i].parent1 == &joints[whichjoint] && i < num_muscles)DeleteMuscle(i);
-            while (muscles[i].parent2 == &joints[whichjoint] && i < num_muscles)DeleteMuscle(i);
-        }
-        for (int i = 0; i < num_muscles; i++) {
-            while (muscles[i].parent1 == &joints[num_joints - 1] && i < num_muscles)muscles[i].parent1 = &joints[whichjoint];
-            while (muscles[i].parent2 == &joints[num_joints - 1] && i < num_muscles)muscles[i].parent2 = &joints[whichjoint];
-        }
-        for (int i = 0; i < num_joints; i++) {
-            if (joints[i].parent == &joints[whichjoint])
-                joints[i].hasparent = 0;
-        }
-        for (int i = 0; i < num_joints; i++) {
-            if (joints[i].parent == &joints[num_joints - 1])
-                joints[i].parent = &joints[whichjoint];
-        }
-
-        num_joints--;
-    }
-}
-
-/* EFFECT
- *
- * USES:
- * Skeleton::DeleteJoint - UNUSED
- */
-void Skeleton::DeleteMuscle(int whichmuscle)
-{
-    if (whichmuscle < num_muscles) {
-        muscles[whichmuscle].minlength = muscles[num_muscles - 1].minlength;
-        muscles[whichmuscle].maxlength = muscles[num_muscles - 1].maxlength;
-        muscles[whichmuscle].strength = muscles[num_muscles - 1].strength;
-        muscles[whichmuscle].parent1 = muscles[num_muscles - 1].parent1;
-        muscles[whichmuscle].parent2 = muscles[num_muscles - 1].parent2;
-        muscles[whichmuscle].length = muscles[num_muscles - 1].length;
-        muscles[whichmuscle].visible = muscles[num_muscles - 1].visible;
-        muscles[whichmuscle].type = muscles[num_muscles - 1].type;
-        muscles[whichmuscle].targetlength = muscles[num_muscles - 1].targetlength;
-
-        num_muscles--;
-    }
-}
-
-/* EFFECT
- *
- * USES:
- * NONE
- */
-void Skeleton::SetJoint(float x, float y, float z, int which, int whichjoint)
-{
-    if (whichjoint < num_joints) {
-        joints[whichjoint].velocity = 0;
-        joints[whichjoint].position.x = x;
-        joints[whichjoint].position.y = y;
-        joints[whichjoint].position.z = z;
-
-        if (which >= num_joints || which < 0)
-            joints[whichjoint].hasparent = 0;
-        if (which < num_joints && which >= 0) {
-            joints[whichjoint].parent = &joints[which];
-            joints[whichjoint].hasparent = 1;
-            joints[whichjoint].length = findDistance(&joints[whichjoint].position, &joints[whichjoint].parent->position);
-        }
-    }
-}
-
-/* EFFECT
- *
- * USES:
- * Skeleton::AddJoint - UNUSED
- */
-void Skeleton::AddMuscle(int attach1, int attach2, float minlength, float maxlength, int type)
-{
-    const int max_muscles = 100; // FIXME: Probably can be dropped
-    if (num_muscles < max_muscles - 1 && attach1 < num_joints && attach1 >= 0 && attach2 < num_joints && attach2 >= 0 && attach1 != attach2) {
-        muscles[num_muscles].parent1 = &joints[attach1];
-        muscles[num_muscles].parent2 = &joints[attach2];
-        muscles[num_muscles].length = findDistance(&muscles[num_muscles].parent1->position, &muscles[num_muscles].parent2->position);
-        muscles[num_muscles].targetlength = findDistance(&muscles[num_muscles].parent1->position, &muscles[num_muscles].parent2->position);
-        muscles[num_muscles].strength = .7;
-        muscles[num_muscles].type = type;
-        muscles[num_muscles].minlength = minlength;
-        muscles[num_muscles].maxlength = maxlength;
-
-        num_muscles++;
-    }
-}
-
-/* EFFECT
- *
- * USES:
- * NONE
- */
-void Skeleton::MusclesSet()
-{
-    for (int i = 0; i < num_muscles; i++) {
-        muscles[i].length = findDistance(&muscles[i].parent1->position, &muscles[i].parent2->position);
-    }
-}
-
-/* EFFECT
- *
- * USES:
- * NONE
- */
-void Skeleton::DoBalance()
-{
-    /*XYZ newpoint;
-    newpoint=joints[0].position;
-    newpoint.x=(joints[2].position.x+joints[4].position.x)/2;
-    newpoint.z=(joints[2].position.z+joints[4].position.z)/2;
-    joints[0].velocity=joints[0].velocity+(newpoint-joints[0].position);
-    //Move child point to within certain distance of parent point
-    joints[0].position=newpoint;
-
-    MusclesSet();*/
-}
-
-#endif
-

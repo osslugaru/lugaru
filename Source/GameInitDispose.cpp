@@ -825,9 +825,9 @@ void Game::LoadStuff()
     XYZ moveamount;
     moveamount = 0;
     moveamount.z = 2;
-    // FIXME - Why this uses skeleton.num_joints and not Animation::numjoints? (are they equal?)
-    // It seems skeleton.num_joints is 0 at this point, so this is useless.
-    for (i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
+    // FIXME - Why this uses skeleton.joints.size() and not Animation::numjoints? (are they equal?)
+    // It seems skeleton.joints.size() is 0 at this point, so this is useless.
+    for (i = 0; i < Person::players[0]->skeleton.joints.size(); i++) {
         for (j = 0; j < Animation::animations[knifesneakattackanim].frames.size(); j++) {
             Animation::animations[knifesneakattackanim].frames[j].joints[i].position += moveamount;
         }
@@ -835,7 +835,7 @@ void Game::LoadStuff()
 
     LoadingScreen();
 
-    for (i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
+    for (i = 0; i < Person::players[0]->skeleton.joints.size(); i++) {
         for (j = 0; j < Animation::animations[knifesneakattackedanim].frames.size(); j++) {
             Animation::animations[knifesneakattackedanim].frames[j].joints[i].position += moveamount;
         }
@@ -843,7 +843,7 @@ void Game::LoadStuff()
 
     LoadingScreen();
 
-    for (i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
+    for (i = 0; i < Person::players[0]->skeleton.joints.size(); i++) {
         Animation::animations[dead1anim].frames[1].joints[i].position = Animation::animations[dead1anim].frames[0].joints[i].position;
         Animation::animations[dead2anim].frames[1].joints[i].position = Animation::animations[dead2anim].frames[0].joints[i].position;
         Animation::animations[dead3anim].frames[1].joints[i].position = Animation::animations[dead3anim].frames[0].joints[i].position;
@@ -859,7 +859,7 @@ void Game::LoadStuff()
     Animation::animations[dead3anim].frames[1].speed = 0.001;
     Animation::animations[dead4anim].frames[1].speed = 0.001;
 
-    for (i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
+    for (i = 0; i < Person::players[0]->skeleton.joints.size(); i++) {
         for (j = 0; j < Animation::animations[swordsneakattackanim].frames.size(); j++) {
             Animation::animations[swordsneakattackanim].frames[j].joints[i].position += moveamount;
         }
@@ -871,7 +871,7 @@ void Game::LoadStuff()
 
     LoadingScreen();
 
-    for (i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
+    for (i = 0; i < Person::players[0]->skeleton.joints.size(); i++) {
         for (j = 0; j < Animation::animations[swordsneakattackedanim].frames.size(); j++) {
             Animation::animations[swordsneakattackedanim].frames[j].joints[i].position += moveamount;
         }

@@ -22,6 +22,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #define _JOINT_H_
 
 #include "Quaternions.h"
+#include <vector>
 
 class Joint
 {
@@ -48,6 +49,7 @@ public:
     XYZ velchange;
 
     Joint();
+    void load(FILE* tfile, std::vector<Joint>& joints);
 };
 
 #endif

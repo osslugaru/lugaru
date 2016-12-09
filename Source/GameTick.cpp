@@ -1309,7 +1309,7 @@ void doTutorial()
 
             emit_sound_at(fireendsound, Person::players[1]->coords);
 
-            for (int i = 0; i < Person::players[1]->skeleton.num_joints; i++) {
+            for (int i = 0; i < Person::players[1]->skeleton.joints.size(); i++) {
                 if (Random() % 2 == 0) {
                     if (!Person::players[1]->skeleton.free)
                         temp2 = (Person::players[1]->coords - Person::players[1]->oldcoords) / multiplier / 2; //velocity/2;
@@ -1579,7 +1579,7 @@ void doTutorial()
             XYZ temp, temp2;
             emit_sound_at(fireendsound, Person::players[1]->coords);
 
-            for (int i = 0; i < Person::players[1]->skeleton.num_joints; i++) {
+            for (int i = 0; i < Person::players[1]->skeleton.joints.size(); i++) {
                 if (Random() % 2 == 0) {
                     if (!Person::players[1]->skeleton.free)
                         temp2 = (Person::players[1]->coords - Person::players[1]->oldcoords) / multiplier / 2; //velocity/2;
@@ -1945,7 +1945,7 @@ void doDebugKeys()
                 XYZ headspurtdirection;
                 //int i = Person::players[closest]->skeleton.jointlabels[head];
                 Joint& headjoint = Person::players[closest]->joint(head);
-                for (int k = 0; k < Person::players[closest]->skeleton.num_joints; k++) {
+                for (int k = 0; k < Person::players[closest]->skeleton.joints.size(); k++) {
                     if (!Person::players[closest]->skeleton.free)
                         flatvelocity2 = Person::players[closest]->velocity;
                     if (Person::players[closest]->skeleton.free)
@@ -1988,7 +1988,7 @@ void doDebugKeys()
                 emit_sound_at(splattersound, blah);
                 emit_sound_at(breaksound2, blah);
 
-                for (int i = 0; i < Person::players[closest]->skeleton.num_joints; i++) {
+                for (int i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
                     if (!Person::players[closest]->skeleton.free)
                         flatvelocity2 = Person::players[closest]->velocity;
                     if (Person::players[closest]->skeleton.free)
@@ -2005,7 +2005,7 @@ void doDebugKeys()
                     Sprite::MakeSprite(cloudsprite, flatfacing2, flatvelocity2 * 0, .6, 0, 0, 1, .5);
                 }
 
-                for (int i = 0; i < Person::players[closest]->skeleton.num_joints; i++) {
+                for (int i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
                     if (!Person::players[closest]->skeleton.free)
                         flatvelocity2 = Person::players[closest]->velocity;
                     if (Person::players[closest]->skeleton.free)
@@ -2021,7 +2021,7 @@ void doDebugKeys()
                     Sprite::MakeSprite(bloodsprite, flatfacing2, flatvelocity2, 1, 1, 1, .4, 1);
                 }
 
-                for (int i = 0; i < Person::players[closest]->skeleton.num_joints; i++) {
+                for (int i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
                     if (!Person::players[closest]->skeleton.free)
                         flatvelocity2 = Person::players[closest]->velocity;
                     if (Person::players[closest]->skeleton.free)
@@ -2037,7 +2037,7 @@ void doDebugKeys()
                     Sprite::MakeSprite(bloodsprite, flatfacing2, flatvelocity2 * 2, 1, 1, 1, .4, 1);
                 }
 
-                for (int i = 0; i < Person::players[closest]->skeleton.num_joints; i++) {
+                for (int i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
                     if (!Person::players[closest]->skeleton.free)
                         flatvelocity2 = Person::players[closest]->velocity;
                     if (Person::players[closest]->skeleton.free)
@@ -2062,7 +2062,7 @@ void doDebugKeys()
                                 Person::players[j]->skeleton.free = 1;
                             Person::players[j]->skeleton.longdead = 0;
                             Person::players[j]->RagDoll(0);
-                            for (int i = 0; i < Person::players[j]->skeleton.num_joints; i++) {
+                            for (int i = 0; i < Person::players[j]->skeleton.joints.size(); i++) {
                                 temppos = Person::players[j]->skeleton.joints[i].position + Person::players[j]->coords;
                                 if (distsq(&temppos, &Person::players[closest]->coords) < 25) {
                                     flatvelocity2 = temppos - Person::players[closest]->coords;
@@ -3543,10 +3543,10 @@ void doPlayerCollisions()
                                                                                 }
                                                                                 Person::players[k]->DoDamage(findLengthfast(&rotatetarget) / 4);
 
-                                                                                for (int j = 0; j < Person::players[i]->skeleton.num_joints; j++) {
+                                                                                for (int j = 0; j < Person::players[i]->skeleton.joints.size(); j++) {
                                                                                     Person::players[i]->skeleton.joints[j].velocity = Person::players[i]->skeleton.joints[j].velocity / 5 + Person::players[k]->velocity;
                                                                                 }
-                                                                                for (int j = 0; j < Person::players[k]->skeleton.num_joints; j++) {
+                                                                                for (int j = 0; j < Person::players[k]->skeleton.joints.size(); j++) {
                                                                                     Person::players[k]->skeleton.joints[j].velocity = Person::players[k]->skeleton.joints[j].velocity / 5 + Person::players[i]->velocity;
                                                                                 }
 
@@ -6067,7 +6067,7 @@ void Game::Tick()
                                                                 Person::players[i]->victim->skeleton.free = 1;
                                                                 Person::players[i]->victim->skeleton.broken = 0;
 
-                                                                for (int l = 0; l < Person::players[i]->victim->skeleton.num_joints; l++) {
+                                                                for (int l = 0; l < Person::players[i]->victim->skeleton.joints.size(); l++) {
                                                                     Person::players[i]->victim->skeleton.joints[l].velchange = 0;
                                                                     Person::players[i]->victim->skeleton.joints[l].locked = 0;
                                                                 }
@@ -6694,7 +6694,7 @@ void Game::Tick()
                     if (distsq(&temp, &Person::players[1]->coords) >= distsq(&temp, &temp2) - 1 || distsq(&temp3, &Person::players[1]->coords) < 4) {
                         emit_sound_at(fireendsound, Person::players[1]->coords);
 
-                        for (int i = 0; i < Person::players[1]->skeleton.num_joints; i++) {
+                        for (int i = 0; i < Person::players[1]->skeleton.joints.size(); i++) {
                             if (Random() % 2 == 0) {
                                 if (!Person::players[1]->skeleton.free)
                                     temp2 = (Person::players[1]->coords - Person::players[1]->oldcoords) / multiplier / 2; //velocity/2;
@@ -6709,7 +6709,7 @@ void Game::Tick()
                         }
 
                         Person::players[1]->coords = (oldtemp + oldtemp2) / 2;
-                        for (int i = 0; i < Person::players[1]->skeleton.num_joints; i++) {
+                        for (int i = 0; i < Person::players[1]->skeleton.joints.size(); i++) {
                             Person::players[1]->skeleton.joints[i].velocity = 0;
                             if (Random() % 2 == 0) {
                                 if (!Person::players[1]->skeleton.free)
@@ -7112,7 +7112,7 @@ void Game::TickOnceAfter()
             target = Person::players[0]->oldcoords + Person::players[0]->currentoffset * (1 - Person::players[0]->target) * Person::players[0]->scale + Person::players[0]->targetoffset * Person::players[0]->target * Person::players[0]->scale - Person::players[0]->facing * .05;
         target.y += .1;
         if (Person::players[0]->skeleton.free) {
-            for (int i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
+            for (int i = 0; i < Person::players[0]->skeleton.joints.size(); i++) {
                 if (Person::players[0]->skeleton.joints[i].position.y * Person::players[0]->scale + Person::players[0]->coords.y > target.y)
                     target.y = Person::players[0]->skeleton.joints[i].position.y * Person::players[0]->scale + Person::players[0]->coords.y;
             }

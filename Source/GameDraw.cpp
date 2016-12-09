@@ -311,7 +311,7 @@ int Game::DrawGLScene(StereoSide side)
         for (unsigned k = 0; k < Person::players.size(); k++) {
             if (!Person::players[k]->skeleton.free && Person::players[k]->playerdetail && Person::players[k]->howactive < typesleeping)
                 if (frustum.SphereInFrustum(Person::players[k]->coords.x, Person::players[k]->coords.y + Person::players[k]->scale * 3, Person::players[k]->coords.z, Person::players[k]->scale * 7) && Person::players[k]->occluded < 25)
-                    for (int i = 0; i < Person::players[k]->skeleton.num_joints; i++) {
+                    for (int i = 0; i < Person::players[k]->skeleton.joints.size(); i++) {
                         if (Person::players[k]->skeleton.joints[i].label == leftknee || Person::players[k]->skeleton.joints[i].label == rightknee || Person::players[k]->skeleton.joints[i].label == groin) {
                             point = DoRotation(Person::players[k]->skeleton.joints[i].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords;
                             size = .4f;
@@ -336,7 +336,7 @@ int Game::DrawGLScene(StereoSide side)
                     }
             if ((Person::players[k]->skeleton.free || Person::players[k]->howactive >= typesleeping) && Person::players[k]->playerdetail)
                 if (frustum.SphereInFrustum(Person::players[k]->coords.x, Person::players[k]->coords.y, Person::players[k]->coords.z, Person::players[k]->scale * 5) && Person::players[k]->occluded < 25)
-                    for (int i = 0; i < Person::players[k]->skeleton.num_joints; i++) {
+                    for (int i = 0; i < Person::players[k]->skeleton.joints.size(); i++) {
                         if (Person::players[k]->skeleton.joints[i].label == leftknee || Person::players[k]->skeleton.joints[i].label == rightknee || Person::players[k]->skeleton.joints[i].label == groin || Person::players[k]->skeleton.joints[i].label == leftelbow || Person::players[k]->skeleton.joints[i].label == rightelbow || Person::players[k]->skeleton.joints[i].label == neck) {
                             if (Person::players[k]->skeleton.free)
                                 point = Person::players[k]->skeleton.joints[i].position * Person::players[k]->scale + Person::players[k]->coords;
@@ -422,7 +422,7 @@ int Game::DrawGLScene(StereoSide side)
                     if (distance >= 1)
                         glDisable(GL_BLEND);
                     if (distance >= .5) {
-                        checkpoint = DoRotation(Person::players[k]->skeleton.joints[abs(Random() % Person::players[k]->skeleton.num_joints)].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords;
+                        checkpoint = DoRotation(Person::players[k]->skeleton.joints[abs(Random() % Person::players[k]->skeleton.joints.size())].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords;
                         checkpoint.y += 1;
                         int i = -1;
                         if (Person::players[k]->occluded != 0)
@@ -487,7 +487,7 @@ int Game::DrawGLScene(StereoSide side)
                 if (distance >= 1)
                     glDisable(GL_BLEND);
                 if (distance >= .5) {
-                    checkpoint = DoRotation(Person::players[k]->skeleton.joints[abs(Random() % Person::players[k]->skeleton.num_joints)].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords;
+                    checkpoint = DoRotation(Person::players[k]->skeleton.joints[abs(Random() % Person::players[k]->skeleton.joints.size())].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords;
                     checkpoint.y += 1;
                     int i = -1;
                     if (Person::players[k]->occluded != 0)

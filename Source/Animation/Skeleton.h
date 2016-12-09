@@ -47,15 +47,9 @@ const int max_joints = 50;
 class Skeleton
 {
 public:
-    int num_joints;
-    //Joint joints[max_joints];
-    //Joint *joints;
-    Joint* joints;
+    std::vector<Joint> joints;
 
-    int num_muscles;
-    //Muscle muscles[max_muscles];
-    //Muscle *muscles;
-    Muscle* muscles;
+    std::vector<Muscle> muscles;
 
     int selected;
 
