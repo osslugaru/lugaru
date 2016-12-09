@@ -228,6 +228,7 @@ endif(APPLE)
 
 if(WIN32)
     install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru.exe DESTINATION ${CMAKE_INSTALL_PREFIX})
+    install(DIRECTORY ${CMAKE_SOURCE_DIR}/Data DESTINATION ${CMAKE_INSTALL_PREFIX})
     if(MINGW)
         # Based off Mageia/Fedora MinGW toolchain, might not work on other distros or Windows
         set(LIBGCC_S libgcc_s_sjlj-1.dll)
