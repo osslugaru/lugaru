@@ -23,7 +23,8 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "gamegl.h"
 #include "Quaternions.h"
 #include "Lights.h"
-#include "Skeleton.h"
+#include "Animation/Animation.h"
+#include "Animation/Skeleton.h"
 #include "Terrain.h"
 #include "Sprite.h"
 #include "Frustum.h"
@@ -34,7 +35,6 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "openal_wrapper.h"
 #include "Stereo.h"
 
-#include "Animation.h"
 
 bool visibleloading = 0;
 
@@ -66,7 +66,6 @@ int environment = 0;
 float texscale = 0;
 float gravity = 0;
 Light light;
-Animation animation[animation_count];
 Terrain terrain;
 
 SDL_Window *sdlwindow;

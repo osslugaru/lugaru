@@ -25,7 +25,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "gamegl.h"
 #include "Quaternions.h"
-#include "Skeleton.h"
+#include "Animation/Skeleton.h"
 #include "Models.h"
 #include "Terrain.h"
 #include "Sprite.h"

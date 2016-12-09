@@ -20,6 +20,8 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef ANIMATION_H
 #define ANIMATION_H
 
+#include <vector>
+
 enum anim_attack_type {
     neutral, normalattack, reversed, reversal
 };
@@ -54,7 +56,35 @@ static const int animation_bits[animation_count] = {
 #undef DECLARE_ANIM
 };
 
-extern Animation animation[animation_count];
+class Animation
+{
+public:
+    static std::vector<Animation> animations;
+    static void loadAll();
 
-extern void loadAllAnimations();
+    int numframes;
+    int height;
+    int attack;
+    int joints;
+    int weapontargetnum;
+
+    XYZ**  position;
+    float** twist;
+    float** twist2;
+    float* speed;
+    bool** onground;
+    XYZ* forward;
+    int* label;
+    XYZ* weapontarget;
+
+    XYZ offset;
+
+    Animation();
+    Animation(const std::string& fileName, int aheight, int aattack);
+    ~Animation();
+    Animation & operator = (const Animation & ani);
+
+protected:
+    void deallocate();
+};
 #endif

@@ -25,14 +25,14 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "gamegl.h"
 #include "Quaternions.h"
-#include "Skeleton.h"
+#include "Animation/Skeleton.h"
 #include "Models.h"
 #include "Terrain.h"
 #include "Sprite.h"
 #include <cmath>
 #include <memory>
 #include "Weapons.h"
-#include "Animation.h"
+#include "Animation/Animation.h"
 
 #define passivetype 0
 #define guardtype 1

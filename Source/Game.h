@@ -27,7 +27,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Terrain.h"
 #include "Skybox.h"
-#include "Skeleton.h"
+#include "Animation/Skeleton.h"
 #include "Models.h"
 #include "Lights.h"
 #include "Person.h"

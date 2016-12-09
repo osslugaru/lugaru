@@ -39,6 +39,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 set(LUGARU_SRCS
     ${SRCDIR}/main.cpp
+    ${SRCDIR}/Animation/Animation.cpp
+    ${SRCDIR}/Animation/Skeleton.cpp
     ${SRCDIR}/Frustum.cpp
     ${SRCDIR}/Account.cpp
     ${SRCDIR}/ConsoleCmds.cpp
@@ -56,7 +58,6 @@ set(LUGARU_SRCS
     ${SRCDIR}/Person.cpp
     ${SRCDIR}/private.c
     ${SRCDIR}/Quaternions.cpp
-    ${SRCDIR}/Skeleton.cpp
     ${SRCDIR}/Skybox.cpp
     ${SRCDIR}/Sprite.cpp
     ${SRCDIR}/Terrain.cpp
@@ -69,13 +70,14 @@ set(LUGARU_SRCS
     ${SRCDIR}/Input.cpp
     ${SRCDIR}/Settings.cpp
     ${SRCDIR}/Stereo.cpp
-    ${SRCDIR}/Animation.cpp
     ${SRCDIR}/Sounds.cpp
     ${SRCDIR}/Awards.cpp
     ${SRCDIR}/Utils/Folders.cpp
 )
 
 set(LUGARU_H
+    ${SRCDIR}/Animation/Animation.h
+    ${SRCDIR}/Animation/Skeleton.h
     ${SRCDIR}/Frustum.h
     ${SRCDIR}/Account.h
     ${SRCDIR}/ConsoleCmds.h
@@ -89,7 +91,6 @@ set(LUGARU_H
     ${SRCDIR}/PhysicsMath.h
     ${SRCDIR}/Quaternions.h
     ${SRCDIR}/Random.h
-    ${SRCDIR}/Skeleton.h
     ${SRCDIR}/Skybox.h
     ${SRCDIR}/Sprite.h
     ${SRCDIR}/ImageIO.h
@@ -105,7 +106,6 @@ set(LUGARU_H
     ${SRCDIR}/private.h
     ${SRCDIR}/Settings.h
     ${SRCDIR}/Stereo.h
-    ${SRCDIR}/Animation.h
     ${SRCDIR}/Sounds.h
     ${SRCDIR}/Utils/Folders.h
 )

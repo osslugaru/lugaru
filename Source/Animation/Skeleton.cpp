@@ -20,9 +20,9 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 /**> HEADER FILES <**/
 #include "Game.h"
-#include "Skeleton.h"
+#include "Animation/Skeleton.h"
 #include "openal_wrapper.h"
-#include "Animation.h"
+#include "Animation/Animation.h"
 #include "Utils/Folders.h"
 
 extern float multiplier;
@@ -667,116 +667,6 @@ void Skeleton::FindRotationMuscle(int which, int animation)
 }
 
 /* EFFECT
- * load an animation from file
- */
-void Animation::Load(const std::string& filename, int aheight, int aattack)
-{
-    FILE *tfile;
-    int i, j;
-    XYZ endoffset;
-
-    LOGFUNC;
-
-    // Changing the filename into something the OS can understand
-    std::string filepath = Folders::getResourcePath("Animations/"+filename);
-
-    LOG(std::string("Loading animation...") + filepath);
-
-    // clear existing data
-    deallocate();
-
-    height = aheight;
-    attack = aattack;
-
-    if (visibleloading)
-        Game::LoadingScreen();
-
-    // read file in binary mode
-    tfile = Folders::openMandatoryFile( filepath, "rb" );
-
-    // read numframes, joints to know how much memory to allocate
-    funpackf(tfile, "Bi Bi", &numframes, &joints);
-
-    // allocate memory for everything
-
-    position = (XYZ**)malloc(sizeof(XYZ*) * joints);
-    for (i = 0; i < joints; i++)
-        position[i] = (XYZ*)malloc(sizeof(XYZ) * numframes);
-
-    twist = (float**)malloc(sizeof(float*) * joints);
-    for (i = 0; i < joints; i++)
-        twist[i] = (float*)malloc(sizeof(float) * numframes);
-
-    twist2 = (float**)malloc(sizeof(float*) * joints);
-    for (i = 0; i < joints; i++)
-        twist2[i] = (float*)malloc(sizeof(float) * numframes);
-
-    speed = (float*)malloc(sizeof(float) * numframes);
-
-    onground = (bool**)malloc(sizeof(bool*) * joints);
-    for (i = 0; i < joints; i++)
-        onground[i] = (bool*)malloc(sizeof(bool) * numframes);
-
-    forward = (XYZ*)malloc(sizeof(XYZ) * numframes);
-    weapontarget = (XYZ*)malloc(sizeof(XYZ) * numframes);
-    label = (int*)malloc(sizeof(int) * numframes);
-
-    // read binary data as animation
-
-    // for each frame...
-    for (i = 0; i < numframes; i++) {
-        // for each joint in the skeleton...
-        for (j = 0; j < joints; j++) {
-            // read joint position
-            funpackf(tfile, "Bf Bf Bf", &position[j][i].x, &position[j][i].y, &position[j][i].z);
-        }
-        for (j = 0; j < joints; j++) {
-            // read twist
-            funpackf(tfile, "Bf", &twist[j][i]);
-        }
-        for (j = 0; j < joints; j++) {
-            // read onground (boolean)
-            unsigned char uch;
-            funpackf(tfile, "Bb", &uch);
-            onground[j][i] = (uch != 0);
-        }
-        // read frame speed (?)
-        funpackf(tfile, "Bf", &speed[i]);
-    }
-    // read twist2 for whole animation
-    for (i = 0; i < numframes; i++) {
-        for (j = 0; j < joints; j++) {
-            funpackf(tfile, "Bf", &twist2[j][i]);
-        }
-    }
-    // read label for each frame
-    for (i = 0; i < numframes; i++) {
-        funpackf(tfile, "Bf", &label[i]);
-    }
-    // read weapontargetnum
-    funpackf(tfile, "Bi", &weapontargetnum);
-    // read weapontarget positions for each frame
-    for (i = 0; i < numframes; i++) {
-        funpackf(tfile, "Bf Bf Bf", &weapontarget[i].x, &weapontarget[i].y, &weapontarget[i].z);
-    }
-
-    fclose(tfile);
-
-    endoffset = 0;
-    // find average position of certain joints on last frames
-    // and save in endoffset
-    // (not sure what exactly this accomplishes. the y < 1 test confuses me.)
-    for (j = 0; j < joints; j++) {
-        if (position[j][numframes - 1].y < 1)
-            endoffset += position[j][numframes - 1];
-    }
-    endoffset /= joints;
-    offset = endoffset;
-    offset.y = 0;
-}
-
-
-/* EFFECT
  * load skeleton
  * takes filenames for three skeleton files and various models
  */
@@ -1167,84 +1057,6 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
     free = 0;
 }
 
-Animation::Animation()
-{
-    numframes = 0;
-    height = 0;
-    attack = 0;
-    joints = 0;
-    weapontargetnum = 0;
-
-    position = 0;
-    twist = 0;
-    twist2 = 0;
-    speed = 0;
-    onground = 0;
-    forward = 0;
-    label = 0;
-    weapontarget = 0;
-}
-
-Animation::~Animation()
-{
-    deallocate();
-}
-
-void Animation::deallocate()
-{
-    int i = 0;
-
-    if (position) {
-        for (i = 0; i < joints; i++)
-            dealloc2(position[i]);
-
-        dealloc2(position);
-    }
-    position = 0;
-
-    if (twist) {
-        for (i = 0; i < joints; i++)
-            dealloc2(twist[i]);
-
-        dealloc2(twist);
-    }
-    twist = 0;
-
-    if (twist2) {
-        for (i = 0; i < joints; i++)
-            dealloc2(twist2[i]);
-
-        dealloc2(twist2);
-    }
-    twist2 = 0;
-
-    if (onground) {
-        for (i = 0; i < joints; i++)
-            dealloc2(onground[i]);
-
-        dealloc2(onground);
-    }
-    onground = 0;
-
-    if (speed)
-        dealloc2(speed);
-    speed = 0;
-
-    if (forward)
-        dealloc2(forward);
-    forward = 0;
-
-    if (weapontarget)
-        dealloc2(weapontarget);
-    weapontarget = 0;
-
-    if (label)
-        dealloc2(label);
-    label = 0;
-
-    joints = 0;
-}
-
 Skeleton::Skeleton()
 {
     num_joints = 0;
@@ -1337,76 +1149,6 @@ Muscle::~Muscle()
     dealloc2(verticeslow);
     dealloc2(verticesclothes);
 }
-
-Animation & Animation::operator = (const Animation & ani)
-{
-    int i = 0;
-
-    bool allocate = ((ani.numframes != numframes) || (ani.joints != joints));
-
-    if (allocate)
-        deallocate();
-
-    numframes = ani.numframes;
-    height = ani.height;
-    attack = ani.attack;
-    joints = ani.joints;
-    weapontargetnum = ani.weapontargetnum;
-    offset = ani.offset;
-
-    if (allocate)
-        position = (XYZ**)malloc(sizeof(XYZ*)*ani.joints);
-    for (i = 0; i < ani.joints; i++) {
-        if (allocate)
-            position[i] = (XYZ*)malloc(sizeof(XYZ) * ani.numframes);
-        memcpy(position[i], ani.position[i], sizeof(XYZ)*ani.numframes);
-    }
-
-    if (allocate)
-        twist = (float**)malloc(sizeof(float*)*ani.joints);
-    for (i = 0; i < ani.joints; i++) {
-        if (allocate)
-            twist[i] = (float*)malloc(sizeof(float) * ani.numframes);
-        memcpy(twist[i], ani.twist[i], sizeof(float)*ani.numframes);
-    }
-
-    if (allocate)
-        twist2 = (float**)malloc(sizeof(float*)*ani.joints);
-    for (i = 0; i < ani.joints; i++) {
-        if (allocate)
-            twist2[i] = (float*)malloc(sizeof(float) * ani.numframes);
-        memcpy(twist2[i], ani.twist2[i], sizeof(float)*ani.numframes);
-    }
-
-    if (allocate)
-        speed = (float*)malloc(sizeof(float) * ani.numframes);
-    memcpy(speed, ani.speed, sizeof(float)*ani.numframes);
-
-    if (allocate)
-        onground = (bool**)malloc(sizeof(bool*)*ani.joints);
-    for (i = 0; i < ani.joints; i++) {
-        if (allocate)
-            onground[i] = (bool*)malloc(sizeof(bool) * ani.numframes);
-        memcpy(onground[i], ani.onground[i], sizeof(bool)*ani.numframes);
-    }
-
-    if (allocate)
-        forward = (XYZ*)malloc(sizeof(XYZ) * ani.numframes);
-    memcpy(forward, ani.forward, sizeof(XYZ)*ani.numframes);
-
-    if (allocate)
-        weapontarget = (XYZ*)malloc(sizeof(XYZ) * ani.numframes);
-    memcpy(weapontarget, ani.weapontarget, sizeof(XYZ)*ani.numframes);
-
-    if (allocate)
-        label = (int*)malloc(sizeof(int) * ani.numframes);
-    memcpy(label, ani.label, sizeof(int)*ani.numframes);
-
-    return (*this);
-}
-
-
-
 
 #if 0
 

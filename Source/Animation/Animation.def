@@ -141,6 +141,8 @@ DECLARE_ANIM(dead2anim, "Dead2", lowheight, neutral, ab_sleep)
 DECLARE_ANIM(dead3anim, "Dead3", lowheight, neutral, ab_sleep)
 DECLARE_ANIM(dead4anim, "Dead4", lowheight, neutral, ab_sleep)
 
+DECLARE_ANIM(tempanim, "", 0, 0, 0)
+
 DECLARE_ANIM(loadable_anim_end, "", 0, 0, 0)
 
 /* Not implemented.  */
@@ -162,6 +164,4 @@ DECLARE_ANIM(wolftackledfrontanim, "", 0, 0, 0)
 DECLARE_ANIM(wolftacklereversal, "", 0, 0, 0)
 DECLARE_ANIM(wolftacklereversed, "", 0, 0, 0)
 DECLARE_ANIM(wolftacklinganim, "", 0, 0, 0)
-
-DECLARE_ANIM(tempanim, "", 0, 0, 0)
 #endif

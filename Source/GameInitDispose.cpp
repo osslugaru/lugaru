@@ -20,7 +20,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Game.h"
 #include "openal_wrapper.h"
-#include "Animation.h"
+#include "Animation/Animation.h"
 #include "Texture.h"
 #include "Utils/Folders.h"
 
@@ -628,6 +628,8 @@ void Game::InitGame()
     newscreenheight = screenheight;
 
     LoadMenu();
+
+    Animation::loadAll();
 }
 
 
@@ -819,58 +821,57 @@ void Game::LoadStuff()
 
     firstload = 0;
 
-    loadAllAnimations();
     //Fix knife stab, too lazy to do it manually
     XYZ moveamount;
     moveamount = 0;
     moveamount.z = 2;
     for (i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
-        for (j = 0; j < animation[knifesneakattackanim].numframes; j++) {
-            animation[knifesneakattackanim].position[i][j] += moveamount;
+        for (j = 0; j < Animation::animations[knifesneakattackanim].numframes; j++) {
+            Animation::animations[knifesneakattackanim].position[i][j] += moveamount;
         }
     }
 
     LoadingScreen();
 
     for (i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
-        for (j = 0; j < animation[knifesneakattackedanim].numframes; j++) {
-            animation[knifesneakattackedanim].position[i][j] += moveamount;
+        for (j = 0; j < Animation::animations[knifesneakattackedanim].numframes; j++) {
+            Animation::animations[knifesneakattackedanim].position[i][j] += moveamount;
         }
     }
 
     LoadingScreen();
 
     for (i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
-        animation[dead1anim].position[i][1] = animation[dead1anim].position[i][0];
-        animation[dead2anim].position[i][1] = animation[dead2anim].position[i][0];
-        animation[dead3anim].position[i][1] = animation[dead3anim].position[i][0];
-        animation[dead4anim].position[i][1] = animation[dead4anim].position[i][0];
+        Animation::animations[dead1anim].position[i][1] = Animation::animations[dead1anim].position[i][0];
+        Animation::animations[dead2anim].position[i][1] = Animation::animations[dead2anim].position[i][0];
+        Animation::animations[dead3anim].position[i][1] = Animation::animations[dead3anim].position[i][0];
+        Animation::animations[dead4anim].position[i][1] = Animation::animations[dead4anim].position[i][0];
     }
-    animation[dead1anim].speed[0] = 0.001;
-    animation[dead2anim].speed[0] = 0.001;
-    animation[dead3anim].speed[0] = 0.001;
-    animation[dead4anim].speed[0] = 0.001;
+    Animation::animations[dead1anim].speed[0] = 0.001;
+    Animation::animations[dead2anim].speed[0] = 0.001;
+    Animation::animations[dead3anim].speed[0] = 0.001;
+    Animation::animations[dead4anim].speed[0] = 0.001;
 
-    animation[dead1anim].speed[1] = 0.001;
-    animation[dead2anim].speed[1] = 0.001;
-    animation[dead3anim].speed[1] = 0.001;
-    animation[dead4anim].speed[1] = 0.001;
+    Animation::animations[dead1anim].speed[1] = 0.001;
+    Animation::animations[dead2anim].speed[1] = 0.001;
+    Animation::animations[dead3anim].speed[1] = 0.001;
+    Animation::animations[dead4anim].speed[1] = 0.001;
 
     for (i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
-        for (j = 0; j < animation[swordsneakattackanim].numframes; j++) {
-            animation[swordsneakattackanim].position[i][j] += moveamount;
+        for (j = 0; j < Animation::animations[swordsneakattackanim].numframes; j++) {
+            Animation::animations[swordsneakattackanim].position[i][j] += moveamount;
         }
     }
     LoadingScreen();
-    for (j = 0; j < animation[swordsneakattackanim].numframes; j++) {
-        animation[swordsneakattackanim].weapontarget[j] += moveamount;
+    for (j = 0; j < Animation::animations[swordsneakattackanim].numframes; j++) {
+        Animation::animations[swordsneakattackanim].weapontarget[j] += moveamount;
     }
 
     LoadingScreen();
 
     for (i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
-        for (j = 0; j < animation[swordsneakattackedanim].numframes; j++) {
-            animation[swordsneakattackedanim].position[i][j] += moveamount;
+        for (j = 0; j < Animation::animations[swordsneakattackedanim].numframes; j++) {
+            Animation::animations[swordsneakattackedanim].position[i][j] += moveamount;
         }
     }
 

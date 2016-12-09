@@ -31,6 +31,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Objects.h"
 #include "Sprite.h"
 #include "binio.h"
+#include "Animation/Animation.h"
 
 enum bodyparts {
     head, neck,
@@ -110,37 +111,6 @@ public:
     ~Muscle();
     void DoConstraint(bool spinny);
 };
-
-class Animation
-{
-public:
-    int numframes;
-    int height;
-    int attack;
-    int joints;
-    int weapontargetnum;
-
-    XYZ**  position;
-    float** twist;
-    float** twist2;
-    float* speed;
-    bool** onground;
-    XYZ* forward;
-    int* label;
-    XYZ* weapontarget;
-
-    XYZ offset;
-
-    Animation();
-    ~Animation();
-    Animation & operator = (const Animation & ani);
-
-    void Load(const std::string& fileName, int aheight, int aattack);
-
-protected:
-    void deallocate();
-};
-
 
 const int max_joints = 50;
 

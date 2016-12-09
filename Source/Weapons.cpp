@@ -23,7 +23,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 /**> HEADER FILES <**/
 #include "Weapons.h"
 #include "openal_wrapper.h"
-#include "Animation.h"
+#include "Animation/Animation.h"
 #include "Sounds.h"
 #include "Game.h"
 #include "Awards.h"
@@ -271,7 +271,7 @@ void Weapon::DoStuff(int i)
 
                             emit_sound_at(fleshstabsound, position, 128.);
 
-                            if (animation[Person::players[0]->animTarget].height == highheight)
+                            if (Animation::animations[Person::players[0]->animTarget].height == highheight)
                                 award_bonus(0, ninja);
                             else
                                 award_bonus(0, Bullseyebonus);
