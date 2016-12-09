@@ -21,6 +21,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef _MUSCLE_H_
 #define _MUSCLE_H_
 
+#include <vector>
 #include "Animation/Joint.h"
 
 enum muscle_type {boneconnect, constraint, muscle};
@@ -28,12 +29,9 @@ enum muscle_type {boneconnect, constraint, muscle};
 class Muscle
 {
 public:
-    int numvertices;
-    int* vertices;
-    int numverticeslow;
-    int* verticeslow;
-    int numverticesclothes;
-    int* verticesclothes;
+    std::vector<int> vertices;
+    std::vector<int> verticeslow;
+    std::vector<int> verticesclothes;
     float length;
     float targetlength;
     Joint* parent1;
@@ -51,6 +49,9 @@ public:
 
     Muscle();
     ~Muscle();
+    void load(FILE* tfile, int vertexNum, Joint* joints);
+    void loadVerticesLow(FILE* tfile, int vertexNum);
+    void loadVerticesClothes(FILE* tfile, int vertexNum);
     void DoConstraint(bool spinny);
 };
 

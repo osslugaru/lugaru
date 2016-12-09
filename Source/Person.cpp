@@ -6106,7 +6106,7 @@ int Person::DrawSkeleton()
                 const int p1 = skeleton.muscles[i].parent1->label;
                 const int p2 = skeleton.muscles[i].parent2->label;
 
-                if ((skeleton.muscles[i].numvertices > 0 && playerdetail) || (skeleton.muscles[i].numverticeslow > 0 && !playerdetail)) {
+                if ((skeleton.muscles[i].vertices.size() > 0 && playerdetail) || (skeleton.muscles[i].verticeslow.size() > 0 && !playerdetail)) {
                     morphness = 0;
                     start = 0;
                     endthing = 0;
@@ -6160,7 +6160,7 @@ int Person::DrawSkeleton()
                     glRotatef(-skeleton.muscles[i].lastrotate3, 0, 1, 0);
 
                     if (playerdetail || skeleton.free == 3) {
-                        for (j = 0; j < skeleton.muscles[i].numvertices; j++) {
+                        for (j = 0; j < skeleton.muscles[i].vertices.size(); j++) {
                             XYZ &v0 = skeleton.model[start].vertex[skeleton.muscles[i].vertices[j]];
                             XYZ &v1 = skeleton.model[endthing].vertex[skeleton.muscles[i].vertices[j]];
                             glMatrixMode(GL_MODELVIEW);
@@ -6189,7 +6189,7 @@ int Person::DrawSkeleton()
                         }
                     }
                     if (!playerdetail || skeleton.free == 3) {
-                        for (j = 0; j < skeleton.muscles[i].numverticeslow; j++) {
+                        for (j = 0; j < skeleton.muscles[i].verticeslow.size(); j++) {
                             XYZ &v0 = skeleton.modellow.vertex[skeleton.muscles[i].verticeslow[j]];
                             glMatrixMode(GL_MODELVIEW);
                             glPushMatrix();
@@ -6219,7 +6219,7 @@ int Person::DrawSkeleton()
                     }
                     glPopMatrix();
                 }
-                if (skeleton.clothes && skeleton.muscles[i].numverticesclothes > 0) {
+                if (skeleton.clothes && skeleton.muscles[i].verticesclothes.size() > 0) {
                     mid = (skeleton.muscles[i].parent1->position + skeleton.muscles[i].parent2->position) / 2;
 
                     glMatrixMode(GL_MODELVIEW);
@@ -6239,7 +6239,7 @@ int Person::DrawSkeleton()
                     skeleton.muscles[i].lastrotate3 = skeleton.muscles[i].rotate3;
                     glRotatef(-skeleton.muscles[i].lastrotate3, 0, 1, 0);
 
-                    for (j = 0; j < skeleton.muscles[i].numverticesclothes; j++) {
+                    for (j = 0; j < skeleton.muscles[i].verticesclothes.size(); j++) {
                         XYZ &v0 = skeleton.modelclothes.vertex[skeleton.muscles[i].verticesclothes[j]];
                         glMatrixMode(GL_MODELVIEW);
                         glPushMatrix();
@@ -6447,12 +6447,12 @@ int Person::DrawSkeleton()
                 if (weaponactive == k) {
                     if (weapons[i].getType() != staff) {
                         for (j = 0; j < skeleton.num_muscles; j++) {
-                            if ((skeleton.muscles[j].parent1->label == righthand || skeleton.muscles[j].parent2->label == righthand) && skeleton.muscles[j].numvertices > 0) {
+                            if ((skeleton.muscles[j].parent1->label == righthand || skeleton.muscles[j].parent2->label == righthand) && skeleton.muscles[j].vertices.size() > 0) {
                                 weaponattachmuscle = j;
                             }
                         }
                         for (j = 0; j < skeleton.num_muscles; j++) {
-                            if ((skeleton.muscles[j].parent1->label == rightwrist || skeleton.muscles[j].parent2->label == rightwrist) && (skeleton.muscles[j].parent1->label != righthand && skeleton.muscles[j].parent2->label != righthand) && skeleton.muscles[j].numvertices > 0) {
+                            if ((skeleton.muscles[j].parent1->label == rightwrist || skeleton.muscles[j].parent2->label == rightwrist) && (skeleton.muscles[j].parent1->label != righthand && skeleton.muscles[j].parent2->label != righthand) && skeleton.muscles[j].vertices.size() > 0) {
                                 weaponrotatemuscle = j;
                             }
                         }
@@ -6462,12 +6462,12 @@ int Person::DrawSkeleton()
                     }
                     if (weapons[i].getType() == staff) {
                         for (j = 0; j < skeleton.num_muscles; j++) {
-                            if ((skeleton.muscles[j].parent1->label == righthand || skeleton.muscles[j].parent2->label == righthand) && skeleton.muscles[j].numvertices > 0) {
+                            if ((skeleton.muscles[j].parent1->label == righthand || skeleton.muscles[j].parent2->label == righthand) && skeleton.muscles[j].vertices.size() > 0) {
                                 weaponattachmuscle = j;
                             }
                         }
                         for (j = 0; j < skeleton.num_muscles; j++) {
-                            if ((skeleton.muscles[j].parent1->label == rightelbow || skeleton.muscles[j].parent2->label == rightelbow) && (skeleton.muscles[j].parent1->label != rightshoulder && skeleton.muscles[j].parent2->label != rightshoulder) && skeleton.muscles[j].numvertices > 0) {
+                            if ((skeleton.muscles[j].parent1->label == rightelbow || skeleton.muscles[j].parent2->label == rightelbow) && (skeleton.muscles[j].parent1->label != rightshoulder && skeleton.muscles[j].parent2->label != rightshoulder) && skeleton.muscles[j].vertices.size() > 0) {
                                 weaponrotatemuscle = j;
                             }
                         }
@@ -6491,7 +6491,7 @@ int Person::DrawSkeleton()
                     if (weapons[i].getType() == staff)
                         weaponpoint = jointPos(abdomen) + (jointPos(lefthip) - jointPos(righthip)) * .09 + (jointPos(leftshoulder) - jointPos(rightshoulder)) * .33;
                     for (j = 0; j < skeleton.num_muscles; j++) {
-                        if ((skeleton.muscles[j].parent1->label == abdomen || skeleton.muscles[j].parent2->label == abdomen) && (skeleton.muscles[j].parent1->label == neck || skeleton.muscles[j].parent2->label == neck) && skeleton.muscles[j].numvertices > 0) {
+                        if ((skeleton.muscles[j].parent1->label == abdomen || skeleton.muscles[j].parent2->label == abdomen) && (skeleton.muscles[j].parent1->label == neck || skeleton.muscles[j].parent2->label == neck) && skeleton.muscles[j].vertices.size() > 0) {
                             weaponrotatemuscle = j;
                         }
                     }
@@ -6502,7 +6502,7 @@ int Person::DrawSkeleton()
                     else
                         weaponpoint = jointPos(abdomen) * .5 + jointPos(neck) * .5 + skeleton.forward * .8;
                     for (j = 0; j < skeleton.num_muscles; j++) {
-                        if ((skeleton.muscles[j].parent1->label == abdomen || skeleton.muscles[j].parent2->label == abdomen) && (skeleton.muscles[j].parent1->label == neck || skeleton.muscles[j].parent2->label == neck) && skeleton.muscles[j].numvertices > 0) {
+                        if ((skeleton.muscles[j].parent1->label == abdomen || skeleton.muscles[j].parent2->label == abdomen) && (skeleton.muscles[j].parent1->label == neck || skeleton.muscles[j].parent2->label == neck) && skeleton.muscles[j].vertices.size() > 0) {
                             weaponrotatemuscle = j;
                         }
                     }

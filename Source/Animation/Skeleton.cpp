@@ -40,11 +40,55 @@ extern int whichjointendarray[26];
 
 extern bool visibleloading;
 
-/* EFFECT
- */
-void dealloc2(void* param)
+Skeleton::Skeleton()
 {
-    free(param);
+    num_joints = 0;
+
+    num_muscles = 0;
+
+    selected = 0;
+
+    memset(forwardjoints, 0, sizeof(forwardjoints));
+
+    id = 0;
+
+    memset(lowforwardjoints, 0, sizeof(lowforwardjoints));
+
+    memset(jointlabels, 0, sizeof(jointlabels));
+
+    num_models = 0;
+
+    clothes = 0;
+    spinny = 0;
+
+    memset(skinText, 0, sizeof(skinText));
+    skinsize = 0;
+
+    checkdelay = 0;
+
+    longdead = 0;
+    broken = 0;
+
+    free = 0;
+    oldfree = 0;
+    freetime = 0;
+    freefall = 0;
+
+    joints = 0;
+    muscles = 0;
+}
+
+Skeleton::~Skeleton()
+{
+    if (muscles) {
+        delete [] muscles;
+    }
+    muscles = 0;
+
+    if (joints) {
+        delete [] joints;
+    }
+    joints = 0;
 }
 
 /* EFFECT
@@ -631,10 +675,10 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
     drawmodel.Rotate(180, 0, 0);
     drawmodel.Scale(.04, .04, .04);
     drawmodel.FlipTexCoords();
-    if (tutoriallevel == 1 && id != 0)
+    if ((tutoriallevel == 1) && (id != 0)) {
         drawmodel.UniformTexCoords();
-    if (tutoriallevel == 1 && id != 0)
         drawmodel.ScaleTexCoords(0.1);
+    }
     drawmodel.CalculateNormals(0);
 
     modellow.loadnotex(modellowfilename);
@@ -693,6 +737,7 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
             joints[i].parent = &joints[parentID];
         joints[i].velocity = 0;
         joints[i].oldposition = joints[i].position;
+        joints[i].startpos = joints[i].position;
     }
 
     // read num_muscles
@@ -705,27 +750,7 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
 
     // for each muscle...
     for (i = 0; i < num_muscles; i++) {
-        // read info
-        funpackf(tfile, "Bf Bf Bf Bf Bf Bi Bi", &muscles[i].length, &muscles[i].targetlength, &muscles[i].minlength, &muscles[i].maxlength, &muscles[i].strength, &muscles[i].type, &muscles[i].numvertices);
-
-        // allocate memory for vertices
-        muscles[i].vertices = (int*)malloc(sizeof(int) * muscles[i].numvertices);
-
-        // read vertices
-        edit = 0;
-        for (j = 0; j < muscles[i].numvertices - edit; j++) {
-            funpackf(tfile, "Bi", &muscles[i].vertices[j + edit]);
-            if (muscles[i].vertices[j + edit] >= model[0].vertexNum) {
-                muscles[i].numvertices--;
-                edit--;
-            }
-        }
-
-        // read more info
-        funpackf(tfile, "Bb Bi", &muscles[i].visible, &parentID);
-        muscles[i].parent1 = &joints[parentID];
-        funpackf(tfile, "Bi", &parentID);
-        muscles[i].parent2 = &joints[parentID];
+        muscles[i].load(tfile, model[0].vertexNum, joints);
     }
 
     // read forwardjoints (?)
@@ -739,9 +764,9 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
 
     // ???
     for (j = 0; j < num_muscles; j++) {
-        for (i = 0; i < muscles[j].numvertices; i++) {
+        for (i = 0; i < muscles[j].vertices.size(); i++) {
             for (int k = 0; k < num_models; k++) {
-                if (muscles[j].numvertices && muscles[j].vertices[i] < model[k].vertexNum)
+                if (muscles[j].vertices[i] < model[k].vertexNum)
                     model[k].owner[muscles[j].vertices[i]] = j;
             }
         }
@@ -749,9 +774,6 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
 
     // calculate some stuff
     FindForwards();
-    for (i = 0; i < num_joints; i++) {
-        joints[i].startpos = joints[i].position;
-    }
     for (i = 0; i < num_muscles; i++) {
         FindRotationMuscle(i, -1);
     }
@@ -799,11 +821,6 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
                 + 1 //sizeof(bool)
                 + sizeof(int);
         fseek(tfile, lSize, SEEK_CUR);
-
-        if (joints[i].hasparent)
-            joints[i].parent = &joints[parentID];
-        joints[i].velocity = 0;
-        joints[i].oldposition = joints[i].position;
     }
 
     // read num_muscles
@@ -819,23 +836,7 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
                 + sizeof(int);
         fseek(tfile, lSize, SEEK_CUR);
 
-        // read numverticeslow
-        funpackf(tfile, "Bi", &muscles[i].numverticeslow);
-
-        if (muscles[i].numverticeslow) {
-            // allocate memory
-            muscles[i].verticeslow = (int*)malloc(sizeof(int) * muscles[i].numverticeslow);
-
-            // read verticeslow
-            edit = 0;
-            for (j = 0; j < muscles[i].numverticeslow - edit; j++) {
-                funpackf(tfile, "Bi", &muscles[i].verticeslow[j + edit]);
-                if (muscles[i].verticeslow[j + edit] >= modellow.vertexNum) {
-                    muscles[i].numverticeslow--;
-                    edit--;
-                }
-            }
-        }
+        muscles[i].loadVerticesLow(tfile, modellow.vertexNum);
 
         // skip more stuff
         lSize = 1; //sizeof(bool);
@@ -846,7 +847,7 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
     }
 
     for (j = 0; j < num_muscles; j++) {
-        for (i = 0; i < muscles[j].numverticeslow; i++) {
+        for (i = 0; i < muscles[j].verticeslow.size(); i++) {
             if (muscles[j].verticeslow[i] < modellow.vertexNum)
                 modellow.owner[muscles[j].verticeslow[i]] = j;
         }
@@ -895,11 +896,6 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
                     + 1 //sizeof(bool)
                     + sizeof(int);
             fseek(tfile, lSize, SEEK_CUR);
-
-            if (joints[i].hasparent)
-                joints[i].parent = &joints[parentID];
-            joints[i].velocity = 0;
-            joints[i].oldposition = joints[i].position;
         }
 
         // read num_muscles
@@ -915,21 +911,7 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
                     + sizeof(int);
             fseek(tfile, lSize, SEEK_CUR);
 
-            // read numverticesclothes
-            funpackf(tfile, "Bi", &muscles[i].numverticesclothes);
-
-            // read verticesclothes
-            if (muscles[i].numverticesclothes) {
-                muscles[i].verticesclothes = (int*)malloc(sizeof(int) * muscles[i].numverticesclothes);
-                edit = 0;
-                for (j = 0; j < muscles[i].numverticesclothes - edit; j++) {
-                    funpackf(tfile, "Bi", &muscles[i].verticesclothes[j + edit]);
-                    if (muscles[i].verticesclothes[j + edit] >= modelclothes.vertexNum) {
-                        muscles[i].numverticesclothes--;
-                        edit--;
-                    }
-                }
-            }
+            muscles[i].loadVerticesClothes(tfile, modelclothes.vertexNum);
 
             // skip more stuff
             lSize = 1; //sizeof(bool);
@@ -942,8 +924,8 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
         // ???
         lSize = sizeof(int);
         for (j = 0; j < num_muscles; j++) {
-            for (i = 0; i < muscles[j].numverticesclothes; i++) {
-                if (muscles[j].numverticesclothes && muscles[j].verticesclothes[i] < modelclothes.vertexNum)
+            for (i = 0; i < muscles[j].verticesclothes.size(); i++) {
+                if (muscles[j].verticesclothes.size() && muscles[j].verticesclothes[i] < modelclothes.vertexNum)
                     modelclothes.owner[muscles[j].verticesclothes[i]] = j;
             }
         }
@@ -977,67 +959,6 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
     }
 
     free = 0;
-}
-
-Skeleton::Skeleton()
-{
-    num_joints = 0;
-
-    num_muscles = 0;
-
-    selected = 0;
-
-    memset(forwardjoints, 0, sizeof(forwardjoints));
-    // XYZ forward;
-
-    id = 0;
-
-    memset(lowforwardjoints, 0, sizeof(lowforwardjoints));
-    // XYZ lowforward;
-
-    // XYZ specialforward[5];
-    memset(jointlabels, 0, sizeof(jointlabels));
-
-    // Model model[7];
-    // Model modellow;
-    // Model modelclothes;
-    num_models = 0;
-
-    // Model drawmodel;
-    // Model drawmodellow;
-    // Model drawmodelclothes;
-
-    clothes = 0;
-    spinny = 0;
-
-    memset(skinText, 0, sizeof(skinText));
-    skinsize = 0;
-
-    checkdelay = 0;
-
-    longdead = 0;
-    broken = 0;
-
-    free = 0;
-    oldfree = 0;
-    freetime = 0;
-    freefall = 0;
-
-    joints = 0;
-    muscles = 0;
-}
-
-Skeleton::~Skeleton()
-{
-    if (muscles) {
-        delete [] muscles;
-    }
-    muscles = 0;
-
-    if (joints) {
-        delete [] joints;
-    }
-    joints = 0;
 }
 
 #if 0

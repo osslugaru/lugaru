@@ -19,19 +19,13 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "Animation/Muscle.h"
+#include "binio.h"
 
 extern float multiplier;
 extern bool freeze;
 
 Muscle::Muscle()
 {
-    vertices = 0;
-    verticeslow = 0;
-    verticesclothes = 0;
-
-    numvertices = 0;
-    numverticeslow = 0;
-    numverticesclothes = 0;
     length = 0;
     targetlength = 0;
     parent1 = 0;
@@ -50,9 +44,60 @@ Muscle::Muscle()
 
 Muscle::~Muscle()
 {
-    free(vertices);
-    free(verticeslow);
-    free(verticesclothes);
+}
+
+void Muscle::load(FILE* tfile, int vertexNum, Joint* joints)
+{
+    int numvertices, vertice, parentID;
+
+    // read info
+    funpackf(tfile, "Bf Bf Bf Bf Bf Bi Bi", &length, &targetlength, &minlength, &maxlength, &strength, &type, &numvertices);
+
+    // read vertices
+    for (int j = 0; j < numvertices; j++) {
+        funpackf(tfile, "Bi", &vertice);
+        if (vertice < vertexNum) {
+            vertices.push_back(vertice);
+        }
+    }
+
+    // read more info
+    funpackf(tfile, "Bb Bi", &visible, &parentID);
+    parent1 = &joints[parentID];
+    funpackf(tfile, "Bi", &parentID);
+    parent2 = &joints[parentID];
+}
+
+void Muscle::loadVerticesLow(FILE* tfile, int vertexNum)
+{
+    int numvertices, vertice;
+
+    // read numvertices
+    funpackf(tfile, "Bi", &numvertices);
+
+    // read vertices
+    for (int j = 0; j < numvertices; j++) {
+        funpackf(tfile, "Bi", &vertice);
+        if (vertice < vertexNum) {
+            verticeslow.push_back(vertice);
+        }
+    }
+}
+
+void Muscle::loadVerticesClothes(FILE* tfile, int vertexNum)
+{
+    int numvertices, vertice;
+
+    // read numvertices
+    funpackf(tfile, "Bi", &numvertices);
+
+    // read vertices
+    for (int j = 0; j < numvertices; j++) {
+        funpackf(tfile, "Bi", &vertice);
+        if (vertice < vertexNum) {
+            verticesclothes.push_back(vertice);
+        }
+    }
 }
 
 
