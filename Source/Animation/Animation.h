@@ -94,6 +94,5 @@ public:
 
     Animation();
     Animation(const std::string& fileName, anim_height_type aheight, anim_attack_type aattack);
-    ~Animation();
 };
 #endif

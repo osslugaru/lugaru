@@ -32,7 +32,7 @@ Joint::Joint() :
     visible(false),
     parent(nullptr),
     sametwist(false),
-    label(0),
+    label(head),
     hasgun(0),
     delay(0)
 {

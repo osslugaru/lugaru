@@ -24,6 +24,15 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Quaternions.h"
 #include <vector>
 
+enum bodypart {
+    head, neck,
+    leftshoulder,  leftelbow,  leftwrist,  lefthand,
+    rightshoulder, rightelbow, rightwrist, righthand,
+    abdomen, lefthip, righthip, groin,
+    leftknee,  leftankle,  leftfoot,
+    rightknee, rightankle, rightfoot
+};
+
 class Joint
 {
 public:
@@ -43,7 +52,7 @@ public:
     bool visible;
     Joint* parent;
     bool sametwist;
-    int label;
+    bodypart label;
     int hasgun;
     float delay;
     XYZ velchange;

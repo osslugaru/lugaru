@@ -33,15 +33,6 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Animation/Joint.h"
 #include "Animation/Muscle.h"
 
-enum bodyparts {
-    head, neck,
-    leftshoulder,  leftelbow,  leftwrist,  lefthand,
-    rightshoulder, rightelbow, rightwrist, righthand,
-    abdomen, lefthip, righthip, groin,
-    leftknee,  leftankle,  leftfoot,
-    rightknee, rightankle, rightfoot
-};
-
 const int max_joints = 50;
 
 class Skeleton
@@ -98,7 +89,6 @@ public:
     void Load(const std::string& fileName, const std::string& lowfileName, const std::string& clothesfileName, const std::string& modelfileName, const std::string& model2fileName, const std::string& model3fileName, const std::string& model4fileName, const std::string& model5fileNamee, const std::string& model6fileName, const std::string& model7fileName, const std::string& modellowfileName, const std::string& modelclothesfileName, bool aclothes);
 
     Skeleton();
-    ~Skeleton();
 
 private:
     // convenience functions

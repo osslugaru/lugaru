@@ -1839,7 +1839,7 @@ void Person::RagDoll(bool checkcollision)
 
 /* EFFECT
  */
-void Person::FootLand(bodyparts whichfoot, float opacity)
+void Person::FootLand(bodypart whichfoot, float opacity)
 {
     if ((whichfoot != leftfoot) && (whichfoot != rightfoot)) {
         cerr << "FootLand called on wrong bodypart" << endl;

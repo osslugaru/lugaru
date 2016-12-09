@@ -48,7 +48,6 @@ public:
     float strength;
 
     Muscle();
-    ~Muscle();
     void load(FILE* tfile, int vertexNum, std::vector<Joint>& joints);
     void loadVerticesLow(FILE* tfile, int vertexNum);
     void loadVerticesClothes(FILE* tfile, int vertexNum);

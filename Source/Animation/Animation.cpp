@@ -149,7 +149,3 @@ Animation::Animation(const std::string& filename, anim_height_type aheight, anim
     offset = endoffset;
     offset.y = 0;
 }
-
-Animation::~Animation()
-{
-}

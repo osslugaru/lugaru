@@ -40,39 +40,25 @@ extern int whichjointendarray[26];
 
 extern bool visibleloading;
 
-Skeleton::Skeleton()
+Skeleton::Skeleton() :
+    selected(0),
+    id(0),
+    num_models(0),
+    clothes(false),
+    spinny(false),
+    skinsize(0),
+    checkdelay(0),
+    longdead(0),
+    broken(false),
+    free(0),
+    oldfree(0),
+    freetime(0),
+    freefall(false)
 {
-    selected = 0;
-
     memset(forwardjoints, 0, sizeof(forwardjoints));
-
-    id = 0;
-
     memset(lowforwardjoints, 0, sizeof(lowforwardjoints));
-
     memset(jointlabels, 0, sizeof(jointlabels));
-
-    num_models = 0;
-
-    clothes = 0;
-    spinny = 0;
-
     memset(skinText, 0, sizeof(skinText));
-    skinsize = 0;
-
-    checkdelay = 0;
-
-    longdead = 0;
-    broken = 0;
-
-    free = 0;
-    oldfree = 0;
-    freetime = 0;
-    freefall = 0;
-}
-
-Skeleton::~Skeleton()
-{
 }
 
 /* EFFECT

@@ -42,10 +42,6 @@ Muscle::Muscle()
     strength = 0;
 }
 
-Muscle::~Muscle()
-{
-}
-
 void Muscle::load(FILE* tfile, int vertexNum, std::vector<Joint>& joints)
 {
     int numvertices, vertice, parentID;
