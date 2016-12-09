@@ -47,84 +47,6 @@ void dealloc2(void* param)
     free(param);
 }
 
-enum {boneconnect, constraint, muscle};
-
-
-/* EFFECT
- * sets strength, length,
- *      parent1->position, parent2->position,
- *      parent1->velocity, parent2->velocity
- * used for ragdolls?
- *
- * USES:
- * Skeleton::DoConstraints
- */
-void Muscle::DoConstraint(bool spinny)
-{
-    // FIXME: relaxlength shouldn't be static, but may not always be set
-    // so I don't want to change the existing behavior even though it's probably a bug
-    static float relaxlength;
-
-    float oldlength = length;
-
-    if (type != boneconnect)
-        relaxlength = findDistance(&parent1->position, &parent2->position);
-
-    if (type == boneconnect)
-        strength = 1;
-    if (type == constraint)
-        strength = 0;
-
-    // clamp strength
-    if (strength < 0)
-        strength = 0;
-    if (strength > 1)
-        strength = 1;
-
-    length -= (length - relaxlength) * (1 - strength) * multiplier * 10000;
-    length -= (length - targetlength) * (strength) * multiplier * 10000;
-    if (strength == 0)
-        length = relaxlength;
-
-    if ((relaxlength - length > 0 && relaxlength - oldlength < 0) || (relaxlength - length < 0 && relaxlength - oldlength > 0))
-        length = relaxlength;
-
-    // clamp length
-    if (length < minlength)
-        length = minlength;
-    if (length > maxlength)
-        length = maxlength;
-
-    if (length == relaxlength)
-        return;
-
-    // relax muscle?
-
-    //Find midpoint
-    XYZ midp = (parent1->position * parent1->mass + parent2->position * parent2->mass) / (parent1->mass + parent2->mass);
-
-    //Find vector from midpoint to second vector
-    XYZ vel = parent2->position - midp;
-
-    //Change to unit vector
-    Normalise(&vel);
-
-    //Apply velocity change
-    XYZ newpoint1 = midp - vel * length * (parent2->mass / (parent1->mass + parent2->mass));
-    XYZ newpoint2 = midp + vel * length * (parent1->mass / (parent1->mass + parent2->mass));
-    if (!freeze && spinny) {
-        parent1->velocity = parent1->velocity + (newpoint1 - parent1->position) / multiplier / 4;
-        parent2->velocity = parent2->velocity + (newpoint2 - parent2->position) / multiplier / 4;
-    } else {
-        parent1->velocity = parent1->velocity + (newpoint1 - parent1->position);
-        parent2->velocity = parent2->velocity + (newpoint2 - parent2->position);
-    }
-
-    //Move child point to within certain distance of parent point
-    parent1->position = newpoint1;
-    parent2->position = newpoint2;
-}
-
 /* EFFECT
  * sets forward, lowforward, specialforward[]
  *
@@ -1118,38 +1040,6 @@ Skeleton::~Skeleton()
     joints = 0;
 }
 
-Muscle::Muscle()
-{
-    vertices = 0;
-    verticeslow = 0;
-    verticesclothes = 0;
-
-    numvertices = 0;
-    numverticeslow = 0;
-    numverticesclothes = 0;
-    length = 0;
-    targetlength = 0;
-    parent1 = 0;
-    parent2 = 0;
-    maxlength = 0;
-    minlength = 0;
-    type = 0;
-    visible = 0;
-    rotate1 = 0, rotate2 = 0, rotate3 = 0;
-    lastrotate1 = 0, lastrotate2 = 0, lastrotate3 = 0;
-    oldrotate1 = 0, oldrotate2 = 0, oldrotate3 = 0;
-    newrotate1 = 0, newrotate2 = 0, newrotate3 = 0;
-
-    strength = 0;
-}
-
-Muscle::~Muscle()
-{
-    dealloc2(vertices);
-    dealloc2(verticeslow);
-    dealloc2(verticesclothes);
-}
-
 #if 0
 
 // the following functions are not used anywhere
@@ -1187,19 +1077,18 @@ void Skeleton::Draw(int muscleview)
 {
     static float jointcolor[4];
 
-    if (muscleview != 2) {
+    if (muscleview == 2) {
+        jointcolor[0] = 0;
+        jointcolor[1] = 0;
+        jointcolor[2] = 0;
+        jointcolor[3] = .5;
+    } else {
         jointcolor[0] = 0;
         jointcolor[1] = 0;
         jointcolor[2] = .5;
         jointcolor[3] = 1;
     }
 
-    if (muscleview == 2) {
-        jointcolor[0] = 0;
-        jointcolor[1] = 0;
-        jointcolor[2] = 0;
-        jointcolor[3] = .5;
-    }
     //Calc motionblur-ness
     for (int i = 0; i < num_joints; i++) {
         joints[i].oldposition = joints[i].position;

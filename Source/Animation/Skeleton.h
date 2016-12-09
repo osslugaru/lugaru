@@ -22,8 +22,6 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #define _SKELETON_H_
 
 #include "Models.h"
-#include "Quaternions.h"
-
 
 /**> HEADER FILES <**/
 #include "gamegl.h"
@@ -32,6 +30,8 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Sprite.h"
 #include "binio.h"
 #include "Animation/Animation.h"
+#include "Animation/Joint.h"
+#include "Animation/Muscle.h"
 
 enum bodyparts {
     head, neck,
@@ -40,76 +40,6 @@ enum bodyparts {
     abdomen, lefthip, righthip, groin,
     leftknee,  leftankle,  leftfoot,
     rightknee, rightankle, rightfoot
-};
-
-class Joint
-{
-public:
-    XYZ position;
-    XYZ oldposition;
-    XYZ realoldposition;
-    XYZ velocity;
-    XYZ oldvelocity;
-    XYZ startpos;
-    float blurred;
-    float length;
-    float mass;
-    bool lower;
-    bool hasparent;
-    bool locked;
-    int modelnum;
-    bool visible;
-    Joint* parent;
-    bool sametwist;
-    int label;
-    int hasgun;
-    float delay;
-    XYZ velchange;
-
-    Joint() {
-        blurred = 0;
-        length = 0;
-        mass = 0;
-        lower = 0;
-        hasparent = 0;
-        locked = 0;
-        modelnum = 0;
-        visible = 0;
-        parent = 0;
-        sametwist = 0;
-        label = 0;
-        hasgun = 0;
-        delay = 0;
-    }
-};
-
-class Muscle
-{
-public:
-    int numvertices;
-    int* vertices;
-    int numverticeslow;
-    int* verticeslow;
-    int numverticesclothes;
-    int* verticesclothes;
-    float length;
-    float targetlength;
-    Joint* parent1;
-    Joint* parent2;
-    float maxlength;
-    float minlength;
-    int type;
-    bool visible;
-    float rotate1, rotate2, rotate3;
-    float lastrotate1, lastrotate2, lastrotate3;
-    float oldrotate1, oldrotate2, oldrotate3;
-    float newrotate1, newrotate2, newrotate3;
-
-    float strength;
-
-    Muscle();
-    ~Muscle();
-    void DoConstraint(bool spinny);
 };
 
 const int max_joints = 50;

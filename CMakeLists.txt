@@ -40,6 +40,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 set(LUGARU_SRCS
     ${SRCDIR}/main.cpp
     ${SRCDIR}/Animation/Animation.cpp
+    ${SRCDIR}/Animation/Joint.cpp
+    ${SRCDIR}/Animation/Muscle.cpp
     ${SRCDIR}/Animation/Skeleton.cpp
     ${SRCDIR}/Frustum.cpp
     ${SRCDIR}/Account.cpp
@@ -77,6 +79,8 @@ set(LUGARU_SRCS
 
 set(LUGARU_H
     ${SRCDIR}/Animation/Animation.h
+    ${SRCDIR}/Animation/Joint.h
+    ${SRCDIR}/Animation/Muscle.h
     ${SRCDIR}/Animation/Skeleton.h
     ${SRCDIR}/Frustum.h
     ${SRCDIR}/Account.h
