@@ -56,35 +56,44 @@ static const int animation_bits[animation_count] = {
 #undef DECLARE_ANIM
 };
 
+struct AnimationFrameJointInfo
+{
+    XYZ  position;
+    float twist;
+    float twist2;
+    bool onground;
+};
+
+struct AnimationFrame
+{
+    void loadBaseInfo(FILE* tfile);
+    void loadTwist2(FILE* tfile);
+    void loadLabel(FILE* tfile);
+    void loadWeaponTarget(FILE* tfile);
+
+    std::vector<AnimationFrameJointInfo> joints;
+    XYZ forward;
+    int label;
+    XYZ weapontarget;
+    float speed;
+};
+
 class Animation
 {
 public:
     static std::vector<Animation> animations;
     static void loadAll();
 
-    int numframes;
     int height;
     int attack;
-    int joints;
-    int weapontargetnum;
+    int numjoints;
 
-    XYZ**  position;
-    float** twist;
-    float** twist2;
-    float* speed;
-    bool** onground;
-    XYZ* forward;
-    int* label;
-    XYZ* weapontarget;
+    std::vector<AnimationFrame> frames;
 
     XYZ offset;
 
     Animation();
     Animation(const std::string& fileName, int aheight, int aattack);
     ~Animation();
-    Animation & operator = (const Animation & ani);
-
-protected:
-    void deallocate();
 };
 #endif

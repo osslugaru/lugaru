@@ -825,53 +825,55 @@ void Game::LoadStuff()
     XYZ moveamount;
     moveamount = 0;
     moveamount.z = 2;
+    // FIXME - Why this uses skeleton.num_joints and not Animation::numjoints? (are they equal?)
+    // It seems skeleton.num_joints is 0 at this point, so this is useless.
     for (i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
-        for (j = 0; j < Animation::animations[knifesneakattackanim].numframes; j++) {
-            Animation::animations[knifesneakattackanim].position[i][j] += moveamount;
+        for (j = 0; j < Animation::animations[knifesneakattackanim].frames.size(); j++) {
+            Animation::animations[knifesneakattackanim].frames[j].joints[i].position += moveamount;
         }
     }
 
     LoadingScreen();
 
     for (i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
-        for (j = 0; j < Animation::animations[knifesneakattackedanim].numframes; j++) {
-            Animation::animations[knifesneakattackedanim].position[i][j] += moveamount;
+        for (j = 0; j < Animation::animations[knifesneakattackedanim].frames.size(); j++) {
+            Animation::animations[knifesneakattackedanim].frames[j].joints[i].position += moveamount;
         }
     }
 
     LoadingScreen();
 
     for (i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
-        Animation::animations[dead1anim].position[i][1] = Animation::animations[dead1anim].position[i][0];
-        Animation::animations[dead2anim].position[i][1] = Animation::animations[dead2anim].position[i][0];
-        Animation::animations[dead3anim].position[i][1] = Animation::animations[dead3anim].position[i][0];
-        Animation::animations[dead4anim].position[i][1] = Animation::animations[dead4anim].position[i][0];
+        Animation::animations[dead1anim].frames[1].joints[i].position = Animation::animations[dead1anim].frames[0].joints[i].position;
+        Animation::animations[dead2anim].frames[1].joints[i].position = Animation::animations[dead2anim].frames[0].joints[i].position;
+        Animation::animations[dead3anim].frames[1].joints[i].position = Animation::animations[dead3anim].frames[0].joints[i].position;
+        Animation::animations[dead4anim].frames[1].joints[i].position = Animation::animations[dead4anim].frames[0].joints[i].position;
     }
-    Animation::animations[dead1anim].speed[0] = 0.001;
-    Animation::animations[dead2anim].speed[0] = 0.001;
-    Animation::animations[dead3anim].speed[0] = 0.001;
-    Animation::animations[dead4anim].speed[0] = 0.001;
+    Animation::animations[dead1anim].frames[0].speed = 0.001;
+    Animation::animations[dead2anim].frames[0].speed = 0.001;
+    Animation::animations[dead3anim].frames[0].speed = 0.001;
+    Animation::animations[dead4anim].frames[0].speed = 0.001;
 
-    Animation::animations[dead1anim].speed[1] = 0.001;
-    Animation::animations[dead2anim].speed[1] = 0.001;
-    Animation::animations[dead3anim].speed[1] = 0.001;
-    Animation::animations[dead4anim].speed[1] = 0.001;
+    Animation::animations[dead1anim].frames[1].speed = 0.001;
+    Animation::animations[dead2anim].frames[1].speed = 0.001;
+    Animation::animations[dead3anim].frames[1].speed = 0.001;
+    Animation::animations[dead4anim].frames[1].speed = 0.001;
 
     for (i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
-        for (j = 0; j < Animation::animations[swordsneakattackanim].numframes; j++) {
-            Animation::animations[swordsneakattackanim].position[i][j] += moveamount;
+        for (j = 0; j < Animation::animations[swordsneakattackanim].frames.size(); j++) {
+            Animation::animations[swordsneakattackanim].frames[j].joints[i].position += moveamount;
         }
     }
     LoadingScreen();
-    for (j = 0; j < Animation::animations[swordsneakattackanim].numframes; j++) {
-        Animation::animations[swordsneakattackanim].weapontarget[j] += moveamount;
+    for (j = 0; j < Animation::animations[swordsneakattackanim].frames.size(); j++) {
+        Animation::animations[swordsneakattackanim].frames[j].weapontarget += moveamount;
     }
 
     LoadingScreen();
 
     for (i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
-        for (j = 0; j < Animation::animations[swordsneakattackedanim].numframes; j++) {
-            Animation::animations[swordsneakattackedanim].position[i][j] += moveamount;
+        for (j = 0; j < Animation::animations[swordsneakattackedanim].frames.size(); j++) {
+            Animation::animations[swordsneakattackedanim].frames[j].joints[i].position += moveamount;
         }
     }
 

@@ -2682,7 +2682,7 @@ void doAerialAcrobatics()
 
                         if (Person::players[k]->animTarget == jumpdownanim || Person::players[k]->isFlip()) {
                             //flipped into a rock
-                            if (Person::players[k]->isFlip() && Animation::animations[Person::players[k]->animTarget].label[Person::players[k]->frameTarget] == 7)
+                            if (Person::players[k]->isFlip() && Animation::animations[Person::players[k]->animTarget].frames[Person::players[k]->frameTarget].label == 7)
                                 Person::players[k]->RagDoll(0);
 
                             if (Person::players[k]->animTarget == jumpupanim) {
@@ -2988,7 +2988,7 @@ void doAttacks()
                                             Person::players[i]->animTarget != getupfrombackanim &&
                                             (Person::players[i]->animTarget != staggerbackhighanim &&
                                              (Person::players[i]->animTarget != staggerbackhardanim ||
-                                              Animation::animations[staggerbackhardanim].label[Person::players[i]->frameTarget] == 6)) &&
+                                              Animation::animations[staggerbackhardanim].frames[Person::players[i]->frameTarget].label == 6)) &&
                                             Person::players[i]->animTarget != jumpdownanim &&
                                             Person::players[i]->animTarget != jumpupanim &&
                                             Person::players[i]->animTarget != getupfromfrontanim) {
