@@ -47,6 +47,7 @@ set(LUGARU_SRCS
     ${SRCDIR}/Account.cpp
     ${SRCDIR}/ConsoleCmds.cpp
     ${SRCDIR}/Dialog.cpp
+    ${SRCDIR}/Hotspot.cpp
     ${SRCDIR}/Game.cpp
     ${SRCDIR}/GameDraw.cpp
     ${SRCDIR}/GameInitDispose.cpp
@@ -86,6 +87,7 @@ set(LUGARU_H
     ${SRCDIR}/Account.h
     ${SRCDIR}/ConsoleCmds.h
     ${SRCDIR}/Dialog.h
+    ${SRCDIR}/Hotspot.h
     ${SRCDIR}/Game.h
     ${SRCDIR}/Lights.h
     ${SRCDIR}/Menu.h

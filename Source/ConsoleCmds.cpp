@@ -21,6 +21,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "ConsoleCmds.h"
 #include "Game.h"
 #include "Dialog.h"
+#include "Hotspot.h"
 #include "Utils/Folders.h"
 
 const char *cmd_names[cmd_count] = {
@@ -49,12 +50,7 @@ extern float slomospeed;
 extern float slomofreq;
 extern int tutoriallevel;
 extern int hostile;
-extern XYZ hotspot[40];
-extern int hotspottype[40];
-extern float hotspotsize[40];
-extern char hotspottext[40][256];
 extern int maptype;
-extern int numhotspots;
 extern Objects objects;
 extern int slomo;
 extern float slomodelay;
@@ -219,13 +215,13 @@ void ch_save(const char *args)
         fpackf(tfile, "Bi Bf Bf Bf Bf Bf Bf", objects.type[k], objects.yaw[k], objects.pitch[k],
                objects.position[k].x, objects.position[k].y, objects.position[k].z, objects.scale[k]);
 
-    fpackf(tfile, "Bi", numhotspots);
-    for (int i = 0; i < numhotspots; i++) {
-        fpackf(tfile, "Bi Bf Bf Bf Bf", hotspottype[i], hotspotsize[i], hotspot[i].x, hotspot[i].y, hotspot[i].z);
-        int templength = strlen(hotspottext[i]);
+    fpackf(tfile, "Bi", Hotspot::hotspots.size());
+    for (int i = 0; i < Hotspot::hotspots.size(); i++) {
+        fpackf(tfile, "Bi Bf Bf Bf Bf", Hotspot::hotspots[i].type, Hotspot::hotspots[i].size, Hotspot::hotspots[i].position.x, Hotspot::hotspots[i].position.y, Hotspot::hotspots[i].position.z);
+        int templength = strlen(Hotspot::hotspots[i].text);
         fpackf(tfile, "Bi", templength);
         for (int l = 0; l < templength; l++)
-            fpackf(tfile, "Bb", hotspottext[i][l]);
+            fpackf(tfile, "Bb", Hotspot::hotspots[i].text[l]);
     }
 
     fpackf(tfile, "Bi", Person::players.size());
@@ -537,19 +533,14 @@ void ch_path(const char *args)
 
 void ch_hs(const char *args)
 {
-    hotspot[numhotspots] = Person::players[0]->coords;
-
     float size;
     int type, shift;
     sscanf(args, "%f%d %n", &size, &type, &shift);
 
-    hotspotsize[numhotspots] = size;
-    hotspottype[numhotspots] = type;
+    Hotspot::hotspots.emplace_back(Person::players[0]->coords, type, size);
 
-    strcpy(hotspottext[numhotspots], args + shift);
-    strcat(hotspottext[numhotspots], "\n");
-
-    numhotspots++;
+    strcpy(Hotspot::hotspots.back().text, args + shift);
+    strcat(Hotspot::hotspots.back().text, "\n");
 }
 
 void ch_dialogue(const char *args)
@@ -593,13 +584,16 @@ void ch_fixrotation(const char *args)
 
 void ch_ddialogue(const char *args)
 {
-    Dialog::dialogs.pop_back();
+    if (!Dialog::dialogs.empty()) {
+        Dialog::dialogs.pop_back();
+    }
 }
 
 void ch_dhs(const char *args)
 {
-    if (numhotspots)
-        numhotspots--;
+    if (!Hotspot::hotspots.empty()) {
+        Hotspot::hotspots.pop_back();
+    }
 }
 
 void ch_immobile(const char *args)

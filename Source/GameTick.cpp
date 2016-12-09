@@ -44,6 +44,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "ConsoleCmds.h"
 #include "Dialog.h"
 #include "Utils/Folders.h"
+#include "Hotspot.h"
 
 #include <algorithm>
 #include <set>
@@ -129,14 +130,6 @@ extern int editorpathtype;
 extern float hostiletime;
 
 extern bool gamestarted;
-
-extern int numhotspots;
-extern int killhotspot;
-extern XYZ hotspot[40];
-extern int hotspottype[40];
-extern float hotspotsize[40];
-extern char hotspottext[40][256];
-extern int currenthotspot;
 
 extern int hostile;
 
@@ -840,8 +833,8 @@ void Game::Loadlevel(const std::string& name)
     if (accountactive)
         difficulty = accountactive->getDifficulty();
 
-    numhotspots = 0;
-    currenthotspot = -1;
+    Hotspot::hotspots.clear();
+    Hotspot::current = -1;
     bonustime = 1;
 
     skyboxtexture = 1;
@@ -997,19 +990,22 @@ void Game::Loadlevel(const std::string& name)
     }
 
     if (mapvers >= 7) {
+        int numhotspots;
         funpackf(tfile, "Bi", &numhotspots);
-        for (int i = 0; i < numhotspots; i++) {
-            funpackf(tfile, "Bi Bf Bf Bf Bf", &hotspottype[i], &hotspotsize[i], &hotspot[i].x, &hotspot[i].y, &hotspot[i].z);
+        Hotspot::hotspots.resize(numhotspots);
+        for (int i = 0; i < Hotspot::hotspots.size(); i++) {
+            funpackf(tfile, "Bi Bf Bf Bf Bf", &Hotspot::hotspots[i].type, &Hotspot::hotspots[i].size, &Hotspot::hotspots[i].position.x, &Hotspot::hotspots[i].position.y, &Hotspot::hotspots[i].position.z);
             funpackf(tfile, "Bi", &templength);
             if (templength)
                 for (int l = 0; l < templength; l++)
-                    funpackf(tfile, "Bb", &hotspottext[i][l]);
-            hotspottext[i][templength] = '\0';
-            if (hotspottype[i] == -111)
+                    funpackf(tfile, "Bb", &Hotspot::hotspots[i].text[l]);
+            Hotspot::hotspots[i].text[templength] = '\0';
+            if (Hotspot::hotspots[i].type == -111)
                 indemo = 1;
         }
-    } else
-        numhotspots = 0;
+    } else {
+        Hotspot::hotspots.clear();
+    }
 
     if (visibleloading)
         LoadingScreen();
@@ -5438,27 +5434,27 @@ void Game::Tick()
 
             //hotspots
             static float hotspotvisual[40];
-            if (numhotspots) {
+            if (Hotspot::hotspots.size()) {
                 XYZ hotspotsprite;
                 if (editorenabled)
-                    for (int i = 0; i < numhotspots; i++)
+                    for (int i = 0; i < Hotspot::hotspots.size(); i++)
                         hotspotvisual[i] -= multiplier / 320;
 
-                for (int i = 0; i < numhotspots; i++) {
+                for (int i = 0; i < Hotspot::hotspots.size(); i++) {
                     while (hotspotvisual[i] < 0) {
                         hotspotsprite = 0;
-                        hotspotsprite.x = float(abs(Random() % 100000)) / 100000 * hotspotsize[i];
+                        hotspotsprite.x = float(abs(Random() % 100000)) / 100000 * Hotspot::hotspots[i].size;
                         hotspotsprite = DoRotation(hotspotsprite, 0, 0, Random() % 360);
                         hotspotsprite = DoRotation(hotspotsprite, 0, Random() % 360, 0);
-                        hotspotsprite += hotspot[i];
+                        hotspotsprite += Hotspot::hotspots[i].position;
                         Sprite::MakeSprite(breathsprite, hotspotsprite, hotspotsprite * 0, 1, 0.5, 0, 7, 0.4);
-                        hotspotvisual[i] += 0.1 / hotspotsize[i] / hotspotsize[i] / hotspotsize[i];
+                        hotspotvisual[i] += 0.1 / Hotspot::hotspots[i].size / Hotspot::hotspots[i].size / Hotspot::hotspots[i].size;
                     }
                 }
 
-                for (int i = 0; i < numhotspots; i++) {
-                    if (hotspottype[i] <= 10 && hotspottype[i] > 0) {
-                        hotspot[i] = Person::players[hotspottype[i]]->coords;
+                for (int i = 0; i < Hotspot::hotspots.size(); i++) {
+                    if (Hotspot::hotspots[i].type <= 10 && Hotspot::hotspots[i].type > 0) {
+                        Hotspot::hotspots[i].position = Person::players[Hotspot::hotspots[i].type]->coords;
                     }
                 }
             }
@@ -5667,11 +5663,7 @@ void Game::Tick()
                                 if (Dialog::currentScene().sound != 0) {
                                     playdialoguescenesound();
                                     if (Dialog::currentScene().sound == -5) {
-                                        hotspot[numhotspots] = Person::players[0]->coords;
-                                        hotspotsize[numhotspots] = 10;
-                                        hotspottype[numhotspots] = -1;
-
-                                        numhotspots++;
+                                        Hotspot::hotspots.emplace_back(Person::players[0]->coords, -1, 10);
                                     }
                                     if (Dialog::currentScene().sound == -6) {
                                         hostile = 1;
@@ -6911,23 +6903,23 @@ void Game::TickOnceAfter()
             }
         }
 
-        killhotspot = 2;
-        for (int i = 0; i < numhotspots; i++) {
-            if (hotspottype[i] > 10 && hotspottype[i] < 20) {
-                if (Person::players[hotspottype[i] - 10]->dead == 0)
-                    killhotspot = 0;
-                else if (killhotspot == 2)
-                    killhotspot = 1;
+        Hotspot::killhotspot = 2;
+        for (int i = 0; i < Hotspot::hotspots.size(); i++) {
+            if (Hotspot::hotspots[i].type > 10 && Hotspot::hotspots[i].type < 20) {
+                if (Person::players[Hotspot::hotspots[i].type - 10]->dead == 0)
+                    Hotspot::killhotspot = 0;
+                else if (Hotspot::killhotspot == 2)
+                    Hotspot::killhotspot = 1;
             }
         }
-        if (killhotspot == 2)
-            killhotspot = 0;
+        if (Hotspot::killhotspot == 2)
+            Hotspot::killhotspot = 0;
 
 
         winhotspot = false;
-        for (int i = 0; i < numhotspots; i++)
-            if (hotspottype[i] == -1)
-                if (distsq(&Person::players[0]->coords, &hotspot[i]) < hotspotsize[i])
+        for (int i = 0; i < Hotspot::hotspots.size(); i++)
+            if (Hotspot::hotspots[i].type == -1)
+                if (distsq(&Person::players[0]->coords, &Hotspot::hotspots[i].position) < Hotspot::hotspots[i].size)
                     winhotspot = true;
 
         int numalarmed = 0;
@@ -6965,7 +6957,7 @@ void Game::TickOnceAfter()
             }
 
 
-            if (killhotspot) {
+            if (Hotspot::killhotspot) {
                 changedelay = 1;
                 targetlevel = whichlevel + 1;
                 if (targetlevel > numchallengelevels - 1)
@@ -6991,7 +6983,7 @@ void Game::TickOnceAfter()
                 changedelay = .1;
                 alldead = false;
                 winhotspot = false;
-                killhotspot = 0;
+                Hotspot::killhotspot = 0;
             }
 
             if (!editorenabled && gameon && !mainmenu) {
@@ -7033,13 +7025,13 @@ void Game::TickOnceAfter()
                         (Person::players[0]->dead ||
                          (alldead && maptype == mapkilleveryone) ||
                          (winhotspot) ||
-                         (killhotspot)))
+                         (Hotspot::killhotspot)))
                     loading = 1;
                 if ((Person::players[0]->dead ||
                         (alldead && maptype == mapkilleveryone) ||
                         (winhotspot) ||
                         (windialogue) ||
-                        (killhotspot)) &&
+                        (Hotspot::killhotspot)) &&
                         changedelay <= 0) {
                     if (whichlevel != -2 && !loading && !Person::players[0]->dead) {
                         winfreeze = true;

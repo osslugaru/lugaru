@@ -24,6 +24,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Awards.h"
 #include "Menu.h"
 #include "Dialog.h"
+#include "Hotspot.h"
 
 extern XYZ viewer;
 extern int environment;
@@ -76,14 +77,6 @@ extern int tutorialstage;
 extern bool againbonus;
 extern float damagedealt;
 extern bool invertmouse;
-
-extern int numhotspots;
-extern int killhotspot;
-extern XYZ hotspot[40];
-extern int hotspottype[40];
-extern float hotspotsize[40];
-extern char hotspottext[40][256];
-extern int currenthotspot;
 
 extern bool campaign;
 extern bool winfreeze;
@@ -893,23 +886,23 @@ int Game::DrawGLScene(StereoSide side)
             }
 
             //Hot spots
-            if (numhotspots && (bonustime >= 1 || bonus <= 0 || bonustime < 0) && !tutoriallevel) {
+            if (Hotspot::hotspots.size() && (bonustime >= 1 || bonus <= 0 || bonustime < 0) && !tutoriallevel) {
                 float closestdist = -1;
                 float distance = 0;
-                int closest = currenthotspot;
-                for (int i = 0; i < numhotspots; i++) {
-                    distance = distsq(&Person::players[0]->coords, &hotspot[i]);
+                int closest = Hotspot::current;
+                for (int i = 0; i < Hotspot::hotspots.size(); i++) {
+                    distance = distsq(&Person::players[0]->coords, &Hotspot::hotspots[i].position);
                     if (closestdist == -1 || distance < closestdist) {
-                        if (distsq(&Person::players[0]->coords, &hotspot[i]) < hotspotsize[i] && ((hotspottype[i] <= 10 && hotspottype[i] >= 0) || (hotspottype[i] <= 40 && hotspottype[i] >= 20))) {
+                        if (distsq(&Person::players[0]->coords, &Hotspot::hotspots[i].position) < Hotspot::hotspots[i].size && ((Hotspot::hotspots[i].type <= 10 && Hotspot::hotspots[i].type >= 0) || (Hotspot::hotspots[i].type <= 40 && Hotspot::hotspots[i].type >= 20))) {
                             closestdist = distance;
                             closest = i;
                         }
                     }
                 }
                 if (closest != -1) {
-                    currenthotspot = closest;
-                    if (hotspottype[closest] <= 10) {
-                        if (distsq(&Person::players[0]->coords, &hotspot[closest]) < hotspotsize[closest])
+                    Hotspot::current = closest;
+                    if (Hotspot::hotspots[closest].type <= 10) {
+                        if (distsq(&Person::players[0]->coords, &Hotspot::hotspots[closest].position) < Hotspot::hotspots[closest].size)
                             tutorialstagetime = 0;
                         tutorialmaxtime = 1;
                         tutorialopac = tutorialmaxtime - tutorialstagetime;
@@ -918,7 +911,7 @@ int Game::DrawGLScene(StereoSide side)
                         if (tutorialopac < 0)
                             tutorialopac = 0;
 
-                        sprintf (string, "%s", hotspottext[closest]);
+                        sprintf (string, "%s", Hotspot::hotspots[closest].text);
 
                         int lastline = 0;
                         int line = 0;
@@ -939,8 +932,8 @@ int Game::DrawGLScene(StereoSide side)
                                 done = 1;
                             i++;
                         }
-                    } else if ((hotspottype[closest] >= 20) && (Dialog::dialogs[hotspottype[closest] - 20].gonethrough == 0)) {
-                        Dialog::whichdialogue = hotspottype[closest] - 20;
+                    } else if ((Hotspot::hotspots[closest].type >= 20) && (Dialog::dialogs[Hotspot::hotspots[closest].type - 20].gonethrough == 0)) {
+                        Dialog::whichdialogue = Hotspot::hotspots[closest].type - 20;
                         Dialog::currentDialog().play();
                         Dialog::currentDialog().gonethrough++;
                     }

@@ -108,14 +108,6 @@ int mainmenu = 0;
 int whichjointstartarray[26] = {0};
 int whichjointendarray[26] = {0};
 
-int numhotspots = 0;
-XYZ hotspot[40];
-int hotspottype[40] = {0};
-float hotspotsize[40] = {0};
-char hotspottext[40][256] = {0};
-int currenthotspot = 0;
-int killhotspot = 0;
-
 float smoketex = 0;
 
 float slomospeed = 0;
