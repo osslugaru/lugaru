@@ -97,19 +97,6 @@ public:
     void FindRotationMuscle(int which, int animation);
     void Load(const std::string& fileName, const std::string& lowfileName, const std::string& clothesfileName, const std::string& modelfileName, const std::string& model2fileName, const std::string& model3fileName, const std::string& model4fileName, const std::string& model5fileNamee, const std::string& model6fileName, const std::string& model7fileName, const std::string& modellowfileName, const std::string& modelclothesfileName, bool aclothes);
 
-    /*
-    // unused
-    void FindForwardsfirst();
-    void Draw(int muscleview);
-    void AddJoint(float x, float y, float z, int which);
-    void SetJoint(float x, float y, float z, int which, int whichjoint);
-    void DeleteJoint(int whichjoint);
-    void AddMuscle(int attach1, int attach2, float maxlength, float minlength, int type);
-    void DeleteMuscle(int whichmuscle);
-    void DoBalance();
-    void MusclesSet();
-    */
-
     Skeleton();
     ~Skeleton();
 
