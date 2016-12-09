@@ -141,7 +141,7 @@ DECLARE_ANIM(dead2anim, "Dead2", lowheight, neutral, ab_sleep)
 DECLARE_ANIM(dead3anim, "Dead3", lowheight, neutral, ab_sleep)
 DECLARE_ANIM(dead4anim, "Dead4", lowheight, neutral, ab_sleep)
 
-DECLARE_ANIM(tempanim, "", lowheight, neutral, 0)
+DECLARE_ANIM(tempanim, "Tempanim", lowheight, neutral, 0)
 
 DECLARE_ANIM(loadable_anim_end, "", lowheight, neutral, 0)
 
