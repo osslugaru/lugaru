@@ -328,6 +328,8 @@ public:
     inline Joint& joint(int bodypart) { return skeleton.joints[skeleton.jointlabels[bodypart]]; }
     inline XYZ& jointPos(int bodypart) { return joint(bodypart).position; }
     inline XYZ& jointVel(int bodypart) { return joint(bodypart).velocity; }
+    inline AnimationFrame& currentFrame() { return Animation::animations[animCurrent].frames[frameCurrent]; }
+    inline AnimationFrame& targetFrame() { return Animation::animations[animTarget].frames[frameTarget]; }
 
 
     void CheckKick();

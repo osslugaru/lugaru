@@ -1743,9 +1743,9 @@ void Person::RagDoll(bool checkcollision)
             skeleton.DoConstraints(&coords, &scale);
         }
 
-        speed = Animation::animations[animTarget].frames[frameTarget].speed * 2;
-        if (Animation::animations[animCurrent].frames[frameCurrent].speed > Animation::animations[animTarget].frames[frameTarget].speed) {
-            speed = Animation::animations[animCurrent].frames[frameCurrent].speed * 2;
+        speed = targetFrame().speed * 2;
+        if (currentFrame().speed > targetFrame().speed) {
+            speed = currentFrame().speed * 2;
         }
         if (transspeed)
             speed = transspeed * 2;
@@ -1754,7 +1754,7 @@ void Person::RagDoll(bool checkcollision)
 
         for (int i = 0; i < skeleton.num_joints; i++) {
             if ((Animation::animations[animCurrent].attack != reversed || animCurrent == swordslashreversedanim) && animCurrent != rabbitkickanim && !isLanding() && !wasLanding() && Animation::animations[animCurrent].height == Animation::animations[animTarget].height)
-                skeleton.joints[i].velocity = velocity / scale + facing * 5 + DoRotation(DoRotation(DoRotation((Animation::animations[animTarget].frames[frameTarget].joints[i].position - Animation::animations[animCurrent].frames[frameCurrent].joints[i].position) * speed, 0, 0, tilt), tilt2, 0, 0), 0, yaw, 0);
+                skeleton.joints[i].velocity = velocity / scale + facing * 5 + DoRotation(DoRotation(DoRotation((targetFrame().joints[i].position - currentFrame().joints[i].position) * speed, 0, 0, tilt), tilt2, 0, 0), 0, yaw, 0);
             else
                 skeleton.joints[i].velocity = velocity / scale + facing * 5;
             change.x = (float)(Random() % 100) / 100;
@@ -2015,7 +2015,7 @@ void Person::DoAnimations()
                 }
             }
 
-            if (!drawtogglekeydown && drawkeydown && (weaponactive == -1 || num_weapons == 1) && (Animation::animations[animTarget].frames[frameTarget].label || (animTarget != animCurrent && animCurrent == rollanim)) && num_weapons > 0 && creature != wolftype) {
+            if (!drawtogglekeydown && drawkeydown && (weaponactive == -1 || num_weapons == 1) && (targetFrame().label || (animTarget != animCurrent && animCurrent == rollanim)) && num_weapons > 0 && creature != wolftype) {
                 if (weapons[weaponids[0]].getType() == knife) {
                     if (weaponactive == -1)
                         weaponactive = 0;
@@ -2033,38 +2033,38 @@ void Person::DoAnimations()
             }
             //Footstep sounds
             if (tutoriallevel != 1 || id == 0)
-                if ((Animation::animations[animTarget].frames[frameTarget].label && (Animation::animations[animTarget].frames[frameTarget].label < 5 || Animation::animations[animTarget].frames[frameTarget].label == 8))/*||(animTarget==rollanim&&frameTarget==Animation::animations[rollanim].frames.size()-1)*/) {
+                if ((targetFrame().label && (targetFrame().label < 5 || targetFrame().label == 8))) {
                     int whichsound;
                     if (onterrain) {
                         if (terrain.getOpacity(coords.x, coords.z) < .2) {
-                            if (Animation::animations[animTarget].frames[frameTarget].label == 1)
+                            if (targetFrame().label == 1)
                                 whichsound = footstepsound;
                             else
                                 whichsound = footstepsound2;
-                            if (Animation::animations[animTarget].frames[frameTarget].label == 1)
+                            if (targetFrame().label == 1)
                                 FootLand(leftfoot, 1);
-                            if (Animation::animations[animTarget].frames[frameTarget].label == 2)
+                            if (targetFrame().label == 2)
                                 FootLand(rightfoot, 1);
-                            if (Animation::animations[animTarget].frames[frameTarget].label == 3 && isRun()) {
+                            if (targetFrame().label == 3 && isRun()) {
                                 FootLand(rightfoot, 1);
                                 FootLand(leftfoot, 1);
                             }
 
                         }
                         if (terrain.getOpacity(coords.x, coords.z) >= .2) {
-                            if (Animation::animations[animTarget].frames[frameTarget].label == 1)
+                            if (targetFrame().label == 1)
                                 whichsound = footstepsound3;
                             else
                                 whichsound = footstepsound4;
                         }
                     }
                     if (!onterrain) {
-                        if (Animation::animations[animTarget].frames[frameTarget].label == 1)
+                        if (targetFrame().label == 1)
                             whichsound = footstepsound3;
                         else
                             whichsound = footstepsound4;
                     }
-                    if (Animation::animations[animTarget].frames[frameTarget].label == 4 && (weaponactive == -1 || (animTarget != knifeslashstartanim && animTarget != knifethrowanim && animTarget != crouchstabanim && animTarget != swordgroundstabanim && animTarget != knifefollowanim))) {
+                    if (targetFrame().label == 4 && (weaponactive == -1 || (animTarget != knifeslashstartanim && animTarget != knifethrowanim && animTarget != crouchstabanim && animTarget != swordgroundstabanim && animTarget != knifefollowanim))) {
                         if (Animation::animations[animTarget].attack != neutral) {
                             unsigned r = abs(Random() % 3);
                             if (r == 0)
@@ -2076,9 +2076,9 @@ void Person::DoAnimations()
                         }
                         if (Animation::animations[animTarget].attack == neutral)
                             whichsound = movewhooshsound;
-                    } else if (Animation::animations[animTarget].frames[frameTarget].label == 4)
+                    } else if (targetFrame().label == 4)
                         whichsound = knifeswishsound;
-                    if (Animation::animations[animTarget].frames[frameTarget].label == 8 && tutoriallevel != 1)
+                    if (targetFrame().label == 8 && tutoriallevel != 1)
                         whichsound = landsound2;
 
                     emit_sound_at(whichsound, coords, 256.);
@@ -2092,7 +2092,7 @@ void Person::DoAnimations()
                             }
                         }
 
-                    if (Animation::animations[animTarget].frames[frameTarget].label == 3) {
+                    if (targetFrame().label == 3) {
                         whichsound--;
                         emit_sound_at(whichsound, coords, 128.);
                     }
@@ -2102,9 +2102,9 @@ void Person::DoAnimations()
             if (tutoriallevel != 1 || id == 0)
                 if (speechdelay <= 0)
                     if (animTarget != crouchstabanim && animTarget != swordgroundstabanim && animTarget != staffgroundsmashanim)
-                        if ((Animation::animations[animTarget].frames[frameTarget].label && (Animation::animations[animTarget].frames[frameTarget].label < 5 || Animation::animations[animTarget].frames[frameTarget].label == 8))/*||(animTarget==rollanim&&frameTarget==Animation::animations[rollanim].frames.size()-1)*/) {
+                        if ((targetFrame().label && (targetFrame().label < 5 || targetFrame().label == 8))) {
                             int whichsound = -1;
-                            if (Animation::animations[animTarget].frames[frameTarget].label == 4 && aitype != playercontrolled) {
+                            if (targetFrame().label == 4 && aitype != playercontrolled) {
                                 if (Animation::animations[animTarget].attack != neutral) {
                                     unsigned r = abs(Random() % 4);
                                     if (creature == rabbittype) {
@@ -4142,10 +4142,10 @@ void Person::DoAnimations()
             oldtarget = target;
             if (!transspeed && Animation::animations[animTarget].attack != 2 && Animation::animations[animTarget].attack != 3) {
                 if (!isRun() || !wasRun()) {
-                    if (Animation::animations[animTarget].frames[frameTarget].speed > Animation::animations[animCurrent].frames[frameCurrent].speed)
-                        target += multiplier * Animation::animations[animTarget].frames[frameTarget].speed * speed * 2;
-                    if (Animation::animations[animTarget].frames[frameTarget].speed <= Animation::animations[animCurrent].frames[frameCurrent].speed)
-                        target += multiplier * Animation::animations[animCurrent].frames[frameCurrent].speed * speed * 2;
+                    if (targetFrame().speed > currentFrame().speed)
+                        target += multiplier * targetFrame().speed * speed * 2;
+                    if (targetFrame().speed <= currentFrame().speed)
+                        target += multiplier * currentFrame().speed * speed * 2;
                 }
                 if (isRun() && wasRun()) {
                     float tempspeed;
@@ -4159,10 +4159,10 @@ void Person::DoAnimations()
                 target += multiplier * transspeed * speed * 2;
             else {
                 if (!isRun() || !wasRun()) {
-                    if (Animation::animations[animTarget].frames[frameTarget].speed > Animation::animations[animCurrent].frames[frameCurrent].speed)
-                        target += multiplier * Animation::animations[animTarget].frames[frameTarget].speed * 2;
-                    if (Animation::animations[animTarget].frames[frameTarget].speed <= Animation::animations[animCurrent].frames[frameCurrent].speed)
-                        target += multiplier * Animation::animations[animCurrent].frames[frameCurrent].speed * 2;
+                    if (targetFrame().speed > currentFrame().speed)
+                        target += multiplier * targetFrame().speed * 2;
+                    if (targetFrame().speed <= currentFrame().speed)
+                        target += multiplier * currentFrame().speed * 2;
                 }
             }
 
@@ -4184,7 +4184,7 @@ void Person::DoAnimations()
             if (animCurrent != oldanimCurrent || animTarget != oldanimTarget || ((frameCurrent != oldframeCurrent || frameTarget != oldframeTarget) && !calcrot)) {
                 //Old rotates
                 for (int i = 0; i < skeleton.num_joints; i++) {
-                    skeleton.joints[i].position = Animation::animations[animCurrent].frames[frameCurrent].joints[i].position;
+                    skeleton.joints[i].position = currentFrame().joints[i].position;
                 }
 
                 skeleton.FindForwards();
@@ -4207,7 +4207,7 @@ void Person::DoAnimations()
 
                 //New rotates
                 for (int i = 0; i < skeleton.num_joints; i++) {
-                    skeleton.joints[i].position = Animation::animations[animTarget].frames[frameTarget].joints[i].position;
+                    skeleton.joints[i].position = targetFrame().joints[i].position;
                 }
 
                 skeleton.FindForwards();
@@ -4244,8 +4244,8 @@ void Person::DoAnimations()
             oldframeCurrent = frameCurrent;
 
             for (int i = 0; i < skeleton.num_joints; i++) {
-                skeleton.joints[i].velocity = (Animation::animations[animCurrent].frames[frameCurrent].joints[i].position * (1 - target) + Animation::animations[animTarget].frames[frameTarget].joints[i].position * (target) - skeleton.joints[i].position) / multiplier;
-                skeleton.joints[i].position = Animation::animations[animCurrent].frames[frameCurrent].joints[i].position * (1 - target) + Animation::animations[animTarget].frames[frameTarget].joints[i].position * (target);
+                skeleton.joints[i].velocity = (currentFrame().joints[i].position * (1 - target) + targetFrame().joints[i].position * (target) - skeleton.joints[i].position) / multiplier;
+                skeleton.joints[i].position = currentFrame().joints[i].position * (1 - target) + targetFrame().joints[i].position * (target);
             }
             offset = currentoffset * (1 - target) + targetoffset * target;
             for (int i = 0; i < skeleton.num_muscles; i++) {
@@ -5711,7 +5711,7 @@ void Person::DoStuff()
             velocity = flatfacing * velspeed;
         }
 
-        if (animTarget == rollanim && Animation::animations[animTarget].frames[frameTarget].label != 6) {
+        if (animTarget == rollanim && targetFrame().label != 6) {
             velocity += facing * multiplier * speed * 700 * scale;
             velspeed = findLength(&velocity);
             if (velspeed > speed * 45 * scale) {
@@ -5833,7 +5833,7 @@ void Person::DoStuff()
             coords += velocity * multiplier;
 
         if (coords.y < terrain.getHeight(coords.x, coords.z) && (animTarget == jumpdownanim || animTarget == jumpupanim || isFlip())) {
-            if (isFlip() && Animation::animations[animTarget].frames[frameTarget].label == 7)
+            if (isFlip() && targetFrame().label == 7)
                 RagDoll(0);
 
             if (animTarget == jumpupanim) {
@@ -5868,7 +5868,7 @@ void Person::DoStuff()
         }
 
 
-        if (isIdle() || animTarget == drawrightanim || animTarget == drawleftanim || animTarget == crouchdrawrightanim || animTarget == crouchstabanim || animTarget == swordgroundstabanim || isStop() || animTarget == removeknifeanim || animTarget == crouchremoveknifeanim || isLanding() || isCrouch() || Animation::animations[animTarget].attack || (animTarget == rollanim && Animation::animations[animTarget].frames[frameTarget].label == 6)) {
+        if (isIdle() || animTarget == drawrightanim || animTarget == drawleftanim || animTarget == crouchdrawrightanim || animTarget == crouchstabanim || animTarget == swordgroundstabanim || isStop() || animTarget == removeknifeanim || animTarget == crouchremoveknifeanim || isLanding() || isCrouch() || Animation::animations[animTarget].attack || (animTarget == rollanim && targetFrame().label == 6)) {
             velspeed = findLength(&velocity);
             velocity.y = 0;
             if (velspeed < multiplier * 300 * scale) {
@@ -6081,7 +6081,7 @@ int Person::DrawSkeleton()
                 }
             }
 
-            if (!skeleton.free && (!Animation::animations[animTarget].attack && animTarget != getupfrombackanim && ((animTarget != rollanim && !isFlip()) || Animation::animations[animTarget].frames[frameTarget].label == 6) && animTarget != getupfromfrontanim && animTarget != wolfrunninganim && animTarget != rabbitrunninganim && animTarget != backhandspringanim && animTarget != walljumpfrontanim && animTarget != hurtidleanim && !isLandhard() && !isSleeping()))
+            if (!skeleton.free && (!Animation::animations[animTarget].attack && animTarget != getupfrombackanim && ((animTarget != rollanim && !isFlip()) || targetFrame().label == 6) && animTarget != getupfromfrontanim && animTarget != wolfrunninganim && animTarget != rabbitrunninganim && animTarget != backhandspringanim && animTarget != walljumpfrontanim && animTarget != hurtidleanim && !isLandhard() && !isSleeping()))
                 DoHead();
             else {
                 targetheadyaw = -targetyaw;
@@ -6536,7 +6536,7 @@ int Person::DrawSkeleton()
                             float distance;
 
                             temppoint1 = jointPos(righthand);
-                            temppoint2 = Animation::animations[animCurrent].frames[frameCurrent].weapontarget * (1 - target) + Animation::animations[animTarget].frames[frameTarget].weapontarget * (target);
+                            temppoint2 = currentFrame().weapontarget * (1 - target) + targetFrame().weapontarget * (target);
                             distance = findDistance(&temppoint1, &temppoint2);
                             weapons[i].rotation2 = asin((temppoint1.y - temppoint2.y) / distance);
                             weapons[i].rotation2 *= 360 / 6.28;
@@ -6555,7 +6555,7 @@ int Person::DrawSkeleton()
                             float distance;
 
                             temppoint1 = jointPos(righthand);
-                            temppoint2 = Animation::animations[animCurrent].frames[frameCurrent].weapontarget * (1 - target) + Animation::animations[animTarget].frames[frameTarget].weapontarget * (target);
+                            temppoint2 = currentFrame().weapontarget * (1 - target) + targetFrame().weapontarget * (target);
                             distance = findDistance(&temppoint1, &temppoint2);
                             weapons[i].rotation2 = asin((temppoint1.y - temppoint2.y) / distance);
                             weapons[i].rotation2 *= 360 / 6.28;
@@ -6598,8 +6598,8 @@ int Person::DrawSkeleton()
                             XYZ temppoint1, temppoint2;
                             float distance;
 
-                            temppoint1 = Animation::animations[animCurrent].frames[frameCurrent].joints[skeleton.jointlabels[righthand]].position * (1 - target) + Animation::animations[animTarget].frames[frameTarget].joints[skeleton.jointlabels[righthand]].position * (target); //jointPos(righthand);
-                            temppoint2 = Animation::animations[animCurrent].frames[frameCurrent].weapontarget * (1 - target) + Animation::animations[animTarget].frames[frameTarget].weapontarget * (target);
+                            temppoint1 = currentFrame().joints[skeleton.jointlabels[righthand]].position * (1 - target) + targetFrame().joints[skeleton.jointlabels[righthand]].position * (target); //jointPos(righthand);
+                            temppoint2 = currentFrame().weapontarget * (1 - target) + targetFrame().weapontarget * (target);
                             distance = findDistance(&temppoint1, &temppoint2);
                             weapons[i].rotation2 = asin((temppoint1.y - temppoint2.y) / distance);
                             weapons[i].rotation2 *= 360 / 6.28;
@@ -6621,8 +6621,8 @@ int Person::DrawSkeleton()
                             XYZ temppoint1, temppoint2;
                             float distance;
 
-                            temppoint1 = Animation::animations[animCurrent].frames[frameCurrent].joints[skeleton.jointlabels[righthand]].position * (1 - target) + Animation::animations[animTarget].frames[frameTarget].joints[skeleton.jointlabels[righthand]].position * (target); //jointPos(righthand);
-                            temppoint2 = Animation::animations[animCurrent].frames[frameCurrent].weapontarget * (1 - target) + Animation::animations[animTarget].frames[frameTarget].weapontarget * (target);
+                            temppoint1 = currentFrame().joints[skeleton.jointlabels[righthand]].position * (1 - target) + targetFrame().joints[skeleton.jointlabels[righthand]].position * (target); //jointPos(righthand);
+                            temppoint2 = currentFrame().weapontarget * (1 - target) + targetFrame().weapontarget * (target);
                             distance = findDistance(&temppoint1, &temppoint2);
                             weapons[i].rotation2 = asin((temppoint1.y - temppoint2.y) / distance);
                             weapons[i].rotation2 *= 360 / 6.28;
@@ -6728,7 +6728,7 @@ int Person::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate,
                         if (LineFacetd(&start, &end, &model->vertex[model->Triangles[j].vertex[0]], &model->vertex[model->Triangles[j].vertex[1]], &model->vertex[model->Triangles[j].vertex[2]], &model->facenormals[j], &point)) {
                             p1->y = point.y + radius;
                             if ((animTarget == jumpdownanim || isFlip())) {
-                                if (isFlip() && (frameTarget < 5 || Animation::animations[animTarget].frames[frameTarget].label == 7 || Animation::animations[animTarget].frames[frameTarget].label == 4))
+                                if (isFlip() && (frameTarget < 5 || targetFrame().label == 7 || targetFrame().label == 4))
                                     RagDoll(0);
 
                                 if (animTarget == jumpupanim) {
