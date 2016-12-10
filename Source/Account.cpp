@@ -27,7 +27,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace std;
 
-extern bool debugmode;
+extern bool devtools;
 
 vector<Account*> Account::accounts = vector<Account*>();
 
@@ -100,7 +100,7 @@ void Account::winCampaignLevel(int choice, float score, float time)
 
 void Account::winLevel(int level, float score, float time)
 {
-    if (!debugmode) {
+    if (!devtools) {
         if (score > highscore[level])
             highscore[level] = score;
         if (time < fasttime[level] || fasttime[level] == 0)

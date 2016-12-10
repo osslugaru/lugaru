@@ -217,7 +217,7 @@ SDL_bool sdlEventProc(const SDL_Event &e);
 
 
 
-enum  optionIndex { UNKNOWN, HELP, FULLSCREEN, NOMOUSEGRAB, SOUND, OPENALINFO, SHOWRESOLUTIONS, DEBUG };
+enum  optionIndex { UNKNOWN, HELP, FULLSCREEN, NOMOUSEGRAB, SOUND, OPENALINFO, SHOWRESOLUTIONS, DEVTOOLS };
 /* Number of options + 1 */
 const int commandLineOptionsNumber = 9;
 

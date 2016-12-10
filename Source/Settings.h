@@ -40,7 +40,7 @@ extern float oldgamespeed;
 extern int difficulty;
 extern bool damageeffects;
 extern bool texttoggle;
-extern bool debugmode;
+extern bool devtools;
 extern bool showpoints;
 extern bool showdamagebar;
 extern bool alwaysblur;

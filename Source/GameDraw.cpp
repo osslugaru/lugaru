@@ -62,7 +62,7 @@ extern float motionbluramount;
 extern bool isclient;
 extern bool alwaysblur;
 extern bool velocityblur;
-extern bool debugmode;
+extern bool devtools;
 extern int mainmenu;
 extern int bloodtoggle;
 extern int difficulty;
@@ -1150,7 +1150,7 @@ int Game::DrawGLScene(StereoSide side)
             glColor4f(.5, .5, .5, 1);
 
 
-            if ((texttoggle || editorenabled) && debugmode && !mainmenu) {
+            if ((texttoggle || editorenabled) && devtools && !mainmenu) {
                 sprintf (string, "The framespersecond is %d.", (int)(fps));
                 text->glPrint(10, 30, string, 0, .8, 1024, 768);
 

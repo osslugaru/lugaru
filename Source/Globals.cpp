@@ -148,7 +148,7 @@ float envsoundvol[30] = {0};
 float envsoundlife[30] = {0};
 int numenvsounds;
 
-bool debugmode = false;
+bool devtools = false;
 
 bool gamestarted = false;
 

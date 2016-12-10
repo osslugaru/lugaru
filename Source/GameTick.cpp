@@ -90,7 +90,7 @@ extern bool mousejump;
 extern float viewdistance;
 extern bool freeze;
 extern XYZ windvector;
-extern bool debugmode;
+extern bool devtools;
 int leveltheme;
 extern int mainmenu;
 extern int oldmainmenu;
@@ -1639,10 +1639,10 @@ void doTutorial()
     }
 }
 
-void doDebugKeys()
+void doDevKeys()
 {
     float headprop, bodyprop, armprop, legprop;
-    if (!debugmode) {
+    if (!devtools) {
         return;
     }
 
@@ -4604,14 +4604,14 @@ void Game::Tick()
             leveltime += multiplier;
 
         //keys
-        if (Input::isKeyDown(SDL_SCANCODE_LALT) && Input::isKeyPressed(SDL_SCANCODE_V) && debugmode) {
+        if (Input::isKeyDown(SDL_SCANCODE_LALT) && Input::isKeyPressed(SDL_SCANCODE_V) && devtools) {
             freeze = !freeze;
             if (freeze) {
                 OPENAL_SetFrequency(OPENAL_ALL);
             }
         }
 
-        if (Input::isKeyPressed(consolekey) && debugmode) {
+        if (Input::isKeyPressed(consolekey) && devtools) {
             console = !console;
             if (console) {
                 OPENAL_SetFrequency(OPENAL_ALL);
@@ -4976,7 +4976,7 @@ void Game::Tick()
                 hawkcalldelay = 16 + abs(Random() % 8);
             }
 
-            doDebugKeys();
+            doDevKeys();
 
             doAttacks();
 
@@ -5002,7 +5002,7 @@ void Game::Tick()
                     (whichlevel != -2 &&
                      (Input::isKeyDown(SDL_SCANCODE_Z) &&
                       Input::isKeyDown(SDL_SCANCODE_LGUI) &&
-                      debugmode) ||
+                      devtools) ||
                      (Input::isKeyDown(jumpkey) &&
                       !respawnkeydown &&
                       !oldattackkey &&
@@ -5772,7 +5772,7 @@ void Game::Tick()
                                     Person::players[i]->crouchtogglekeydown = 1;
                                 } else Person::players[i]->velocity.y = 5;
 
-                                if (mousejump && i == 0 && debugmode) {
+                                if (mousejump && i == 0 && devtools) {
                                     if (!Person::players[i]->isLanding())
                                         Person::players[i]->tempdeltav = deltav;
                                     if (Person::players[i]->tempdeltav < 0)
@@ -5797,7 +5797,7 @@ void Game::Tick()
                             if (Person::players[i]->animTarget == jumpupanim &&
                                     (((!floatjump &&
                                        !editorenabled) ||
-                                      !debugmode) ||
+                                      !devtools) ||
                                      Person::players[i]->aitype != playercontrolled)) {
                                 if (Person::players[i]->jumppower > multiplier * 6) {
                                     Person::players[i]->velocity.y += multiplier * 6;
@@ -5808,7 +5808,7 @@ void Game::Tick()
                                     Person::players[i]->jumppower = 0;
                                 }
                             }
-                            if (((floatjump || editorenabled) && debugmode) && i == 0)
+                            if (((floatjump || editorenabled) && devtools) && i == 0)
                                 Person::players[i]->velocity.y += multiplier * 30;
                         }
 

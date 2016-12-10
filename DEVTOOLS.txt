@@ -1,11 +1,25 @@
-Lugaru
+Lugaru Developer Tools
+======================
 
----------Pass --debug option to the binary for these to work----------
+Activation
+----------
 
-Note: debug key must be pressed as if on a qwerty
+- Pass --devtools option to the binary for these to work
+- Or add the following to your config.txt:
 
-~=console (map mapname, save mapname, quit)
-tab=minimap
+    Devtools:
+    1
+
+Key bindings
+------------
+
+Note: dev keys must be pressed as if on a QWERTY keyboard.
+
+General
+~~~~~~~
+
+~ = console (map mapname, save mapname, quit)
+tab = minimap
 
 super+z = restart level
 shift+k = win level
@@ -22,8 +36,9 @@ alt+shift+o = change enemy's type (rabbit/wolf) (main player if ctrl is pressed)
 alt+i = explode nearby head
 alt+shift+i = explode nearby enemy
 
+Map editor
+~~~~~~~~~~
 
-Map editor:
 alt+m = toggle editor mode
 m = place object
 p = place enemy
@@ -39,7 +54,9 @@ control+p = make/connect pathfind waypoint
 period/comma = select pathfind waypoints
 shift+comma = delete pathfind waypoint
 
-Console commands:
+Console commands
+----------------
+
 f is floating point, i is integer, b is boolean, str is string.
 
 Map mapname where mapname is the name of a map in the maps folder
@@ -54,18 +71,18 @@ Noclothes = remove all clothes
 Clothes str = add clothes str.png
 
 Included clothes include:
-shirt
-longsleeve
-earwrap
-footwrap
-pants
-fancypants
-scar
-headband
-leatherwristleft
-leatherwristright
-leatherarmor
-leatherpants
+Shirt
+LongSleeve
+EarWrap
+FootWrap
+Pants
+FancyPants
+Scar
+Headband
+LeatherWristLeft
+LeatherWristRight
+LeatherArmor
+LeatherPants
 
 Skybox = toggle skybox (i.e. turn off to get fog)
 Sky Tint f f f =  r,g,b colors from 0 to 1 for the sky
