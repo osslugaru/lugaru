@@ -908,12 +908,13 @@ void Game::Loadlevel(const std::string& name)
     if (numplayers > maxplayers) {
         cout << "Warning: this level contains more players than allowed" << endl;
     }
+    unsigned j = 1;
     for (int i = 1; i < numplayers; i++) {
-        unsigned j = 1;
         try {
             Person::players.push_back(shared_ptr<Person>(new Person(tfile, mapvers, j)));
             j++;
         } catch (InvalidPersonException e) {
+            cerr << "Invalid Person found in " << name << endl;
         }
     }
     if (visibleloading)
