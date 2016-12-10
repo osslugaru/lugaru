@@ -626,7 +626,9 @@ int main(int argc, char **argv)
 
     LOGFUNC;
 
+#ifndef NDEBUG
     try {
+#endif
         {
             newGame();
 
@@ -677,6 +679,7 @@ int main(int argc, char **argv)
         CleanUp ();
 
         return 0;
+#ifndef NDEBUG
     } catch (const std::exception& error) {
         CleanUp();
 
@@ -689,4 +692,5 @@ int main(int argc, char **argv)
 
         return -1;
     }
+#endif
 }
