@@ -899,6 +899,9 @@ void Game::Loadlevel(const std::string& name)
     Person::players.resize(1);
 
     funpackf(tfile, "Bi", &mapvers);
+    if (mapvers < 12) {
+        cerr << name << " has obsolete map version " << mapvers << endl;
+    }
     if (mapvers >= 15)
         funpackf(tfile, "Bi", &indemo);
     else
