@@ -581,6 +581,7 @@ const option::Descriptor usage[] =
     {SOUND,             OPENAL_OUTPUT_OSS,      "",     "force-oss",        option::Arg::None,  " --force-oss       Force use of OSS back-end." },
     {OPENALINFO,        0,                      "",     "openal-info",      option::Arg::None,  " --openal-info     Print info about OpenAL at launch." },
     {SHOWRESOLUTIONS,   0,                      "",     "showresolutions",  option::Arg::None,  " --showresolutions List the resolutions found by SDL at launch." },
+    {DEBUG,             0,                      "d",     "debug",           option::Arg::None,  " -d, --debug       Activates console, level editor and debug information." },
     {0,0,0,0,0,0}
 };
 
@@ -615,6 +616,8 @@ int main(int argc, char **argv)
         delete[] commandLineOptionsBuffer;
         return 1;
     }
+
+    debugmode = commandLineOptions[DEBUG];
 
     // !!! FIXME: we could use a Win32 API for this.  --ryan.
 #ifndef WIN32

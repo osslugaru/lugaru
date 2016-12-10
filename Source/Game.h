@@ -218,11 +218,11 @@ SDL_bool sdlEventProc(const SDL_Event &e);
 
 
 
-enum  optionIndex { UNKNOWN, HELP, FULLSCREEN, NOMOUSEGRAB, SOUND, OPENALINFO, SHOWRESOLUTIONS };
+enum  optionIndex { UNKNOWN, HELP, FULLSCREEN, NOMOUSEGRAB, SOUND, OPENALINFO, SHOWRESOLUTIONS, DEBUG };
 /* Number of options + 1 */
-const int commandLineOptionsNumber = 8;
+const int commandLineOptionsNumber = 9;
 
-extern const option::Descriptor usage[12];
+extern const option::Descriptor usage[13];
 
 extern option::Option commandLineOptions[commandLineOptionsNumber];
 extern option::Option* commandLineOptionsBuffer;

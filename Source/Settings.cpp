@@ -52,7 +52,6 @@ void DefaultSettings()
     velocityblur = 0;
     volume = 0.8f;
     ambientsound = 1;
-    debugmode = 0;
 
     crouchkey = SDL_SCANCODE_LSHIFT;
     jumpkey = SDL_SCANCODE_SPACE;
@@ -128,8 +127,6 @@ void SaveSettings()
     opstream << damageeffects;
     opstream << "\nText:\n";
     opstream << texttoggle;
-    opstream << "\nDebug:\n";
-    opstream << debugmode;
     opstream << "\nShow Points:\n";
     opstream << showpoints;
     opstream << "\nAlways Blur:\n";
@@ -244,8 +241,6 @@ bool LoadSettings()
             ipstream >> damageeffects;
         } else if ( !strncmp(setting, "Text", 4) ) {
             ipstream >> texttoggle;
-        } else if ( !strncmp(setting, "Debug", 5) ) {
-            ipstream >> debugmode;
         } else if ( !strncmp(setting, "Show Points", 11) ) {
             ipstream >> showpoints;
         } else if ( !strncmp(setting, "Always Blur", 11) ) {
