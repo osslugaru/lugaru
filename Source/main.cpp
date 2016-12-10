@@ -617,8 +617,6 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    debugmode = commandLineOptions[DEBUG];
-
     // !!! FIXME: we could use a Win32 API for this.  --ryan.
 #ifndef WIN32
     chdirToAppPath(argv[0]);
@@ -635,6 +633,10 @@ int main(int argc, char **argv)
             if (!SetUp ()) {
                 delete[] commandLineOptionsBuffer;
                 return 42;
+            }
+
+            if (commandLineOptions[DEBUG]) {
+                debugmode = true;
             }
 
             bool gameDone = false;
