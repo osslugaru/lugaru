@@ -1,9 +1,32 @@
-Lugaru
-Set debug to 1 in config.txt
-In the mac version you can find it in /User/~YourUserName~/Library/ApplicationSupport/Lugaru/Data/config.txt
-In the windows version you can find it in C:/users/yourusername/appdata/roaming/lugaru/config.txt
-In the linux version you can find it in ~/.config/lugaru/config.txt
-Keys
+Lugaru Developer Tools
+======================
+
+Activation
+----------
+
+There are two ways to activate developer tools:
+
+- Temporary: Pass the --devtools or -d option to the executable
+- Persistent: Add the following to your config.txt file:
+
+    Devtools:
+    1
+
+The config.txt file can be found in the following locations:
+
+- On Linux: ~/.config/lugaru/config.txt
+- On Mac: ~/Library/Application Support/Lugaru/config.txt
+- On Windows: C:/Users/yourusername/AppData/Roaming/Lugaru/config.txt
+
+
+Key bindings
+------------
+
+Note: dev keys must be pressed as if on a QWERTY keyboard.
+
+General
+~~~~~~~
+
 ~ = console (map mapname, save mapname, quit)
 tab = minimap
 
@@ -41,94 +64,173 @@ period/comma = select pathfind waypoints
 shift+comma = delete pathfind waypoint
 
 
-The Console Commands
+Console commands
+----------------
 
 Mapping
-map (string) loads the specified map. The string corresponds to the filename of a map in the Maps folder, located in Lugaru's Data folder.
-save (string) saves the state of the current map. The string corresponds to the filename that the map will be saved under in the Maps folder, located in Lugaru's Data folder. Caution: this command will overwrite other maps with the same name without prompting you.
+~~~~~~~
 
-Character Attributes
-wolfieisgod sets the player to a wolf. You gain all of the speed, strength, durability, and attacks of a wolf.
-funnybunny sets the player to a rabbit.
-size (floating point) changes the overall size of your character. The value is based on 1, that is, 1.5 is 50% larger.
-proportion (floating point) (floating point) (floating point) (floating point) changes the proportions of your character. The four floating point values correspond to the proportions of the character's head, body, arm and leg respectively. Each value is based on 1, that is, 1.5 is 50% larger.
-speed (floating point) sets your running speed. Each value is based on 1, that is, 1.5 is 50% faster.
-strength (floating point) set your attack strength. Each value is based on 1; that is, 1.5 is 50% stronger.
-power (floating point) sets the amount of health you have. Each value is based on 1; that is, 1.5 is 50% healthier.
-protection (floating point) (floating point) (floating point) sets your armor strength in terms of blunt resistance. Each floating point corresponds to the strength of your high, medium, or low resistance, respectively. Each value is based on 1; that is, 1.5 is 50% more durable.
-armor (floating point) (floating point) (floating point) sets your armor strength in terms of sharp attacks. Each floating point corresponds to the strength of your high, medium, or low resistance, respectively. Each value is based on 1; that is, 1.5 is 50% more durable.
-immobile makes character immobile. May gain some FPS in dialogue levels.
-mobile cancels 'immobile'.
-allimmobile does as name suggests. May be used when you are done with a dialogue level.
-armorreset, protectionreset reset the value of the armor and protection settings for your character.
-armornear, protectionnear, proportionnear, sizenear apply the changes to the character nearest to you instead of you.
-cellophane makes everyone invisible, except for the shadows.
+map (string) - loads the specified map.
+    The string corresponds to the filename of a map in the Maps folder, located
+    in Lugaru's Data folder.
+save (string) - saves the state of the current map.
+    The string corresponds to the filename that the map will be saved under in
+    the Maps folder, located in Lugaru's Data folder. Caution: this command
+    will overwrite other maps with the same name without prompting you.
 
-Character Appearance
-cellar door, rambo, kungfu, white, brown, black changes your skin to the respective outfit. Note: this command is a little glitchy sometimes. You may have to enter it multiple times before it changes.
-tintr (floating point) sets the redness of your clothes. This only affects the color of future clothes, so you must set it in advance. It must be a value from 0 to 1.
-tintg (floating point) sets the greenness of your clothes. This only affects the color of future clothes, so you must set it in advance. It must be a value from 0 to 1.
-tintb (floating point) sets the blueness of your clothes. This only affects the color of future clothes, so you must set it in advance. It must be a value from 0 to 1.
-tint (floating point) (floating point) (floating point) sets the collor of your clothes. This only affects the color of future clothes, so you must set it in advance. Each floating point corresponds to red, green, and blue, respectively. Each value must be a number from 0 to 1.
-noclothes removes all of your clothes.
-noclothesnear same, applied to the character nearest to you.
-clothes (string) adds clothes to your character. The string can be one of the following:
-shirt
-longsleeve
-earwrap
-footwrap
-pants
-fancypants
-scar
-headband
-leatherwristleft
-leatherwristright
-leatherarmor
-leatherpants
-fire
-Actually, these names come from the files in your Data/Lugaru/Textures folder of type ".png". You may add any png file in that folder and use it with the clothes command. See Decal Editing to create such files.
-clothesnear does the same for the character nearest to you.
+Character attributes
+~~~~~~~~~~~~~~~~~~~~
 
-Sky
-skybox toggles skybox on and off.
-sky tint (floating point) (floating point) (floating point) sets the color tint of the sky. Each floating point value corresponds to a red, green, or blue value, respectively, between 0 and 1.
-sky light (floating point) (floating point) (floating point) sets the color of the lighting of the sky. Each floating point value corresponds to a red, green, or blue value, respectively, between 0 and 1.
+wolfieisgod - sets the player to a wolf. You gain all of the speed, strength,
+    durability, and attacks of a wolf.
+funnybunny - sets the player to a rabbit.
+size (float) - changes the overall size of your character.
+    The value is based on 1, that is, 1.5 is 50% larger.
+proportion (float) (float) (float) (float) - changes the proportions of your
+    character. The four floating point values correspond to the proportions of
+    the character's head, body, arm and leg respectively. Each value is based
+    on 1, that is, 1.5 is 50% larger.
+speed (float) - sets your running speed.
+    Each value is based on 1, that is, 1.5 is 50% faster.
+strength (float) - sets your attack strength.
+    Each value is based on 1; that is, 1.5 is 50% stronger.
+power (float) - sets the amount of health you have.
+    Each value is based on 1; that is, 1.5 is 50% healthier.
+protection (float) (float) (float) - sets your armor strength in terms of blunt
+    resistance. Each floating point corresponds to the strength of your high,
+    medium, or low resistance, respectively. Each value is based on 1; that is,
+    1.5 is 50% more durable.
+armor (float) (float) (float) - sets your armor strength in terms of sharp
+    attacks. Each floating point corresponds to the strength of your high,
+    medium, or low resistance, respectively. Each value is based on 1; that is,
+    1.5 is 50% more durable.
+immobile - makes character immobile.
+    May gain some FPS in dialogue levels.
+mobile - cancels 'immobile'.
+allimmobile - does as name suggests.
+    May be used when you are done with a dialogue level.
+armorreset, protectionreset - reset the value of the armor and protection
+    settings for your character.
+armornear, protectionnear, proportionnear, sizenear - apply the changes to the
+    character nearest to you instead of you.
+cellophane - makes everyone invisible, except for the shadows.
 
-Miscellaneous Map
-tutorial (boolean) toggles tutorial mode on/off for the current map.
-hostile (boolean) toggles whether or not characters on the map are hostile.
-type (string) sets the initial state of the next character. The possible values are listed below:
-active
-sitting
-sitting wall
-sleeping
-dead1
-dead2
-dead3
-dead4
-path keepwalking or path pause determines whether enemies walk through the next pathpoint or pause briefly.
+Character appearance
+~~~~~~~~~~~~~~~~~~~~
 
-Map Objectives
-mapkilleveryone makes objective of the map to kill everyone
-mapgosomewhere makes objective of the map to go somewhere
-mapkillsomeone makes objective of the map to kill a specific enemy
-mapkillmost makes objective of the map to kill everyone but one
+cellar door, rambo, kungfu, white, brown, black - changes your skin to the
+    respective outfit. Note: this command is a little glitchy sometimes. You
+    may have to enter it multiple times before it changes.
+tintr (float) - sets the redness of your clothes.
+    This only affects the color of future clothes, so you must set it in
+    advance. It must be a value from 0 to 1.
+tintg (float) - sets the greenness of your clothes.
+    This only affects the color of future clothes, so you must set it in
+    advance. It must be a value from 0 to 1.
+tintb (float) - sets the blueness of your clothes.
+    This only affects the color of future clothes, so you must set it in
+    advance. It must be a value from 0 to 1.
+tint (float) (float) (float) - sets the color of your clothes.
+    This only affects the color of future clothes, so you must set it in
+    advance. Each floating point corresponds to red, green, and blue,
+    respectively. Each value must be a number from 0 to 1.
+noclothes - removes all of your clothes.
+noclothesnear - same, applied to the character nearest to you.
+clothes (string) - adds clothes to your character.
+    The string can be one of the following (case sensitive):
+        Shirt
+        LongSleeve
+        EarWrap
+        FootWrap
+        Pants
+        FancyPants
+        Scar
+        HeadBand
+        LeatherWristLeft
+        LeatherWristRight
+        LeatherArmor
+        LeatherPants
+    Actually, these names come from the files in your Data/Lugaru/Textures
+    folder of type ".png". You may add any png file in that folder and use it
+    with the clothes command. See Decal Editing to create such files.
+clothesnear - does the same for the character nearest to you.
+
+Skybox
+~~~~~~
+
+skybox - toggles skybox on and off.
+sky tint (float) (float) (float) - sets the color tint of the sky.
+    Each floating point value corresponds to a red, green, or blue value,
+    respectively, between 0 and 1.
+sky light (float) (float) (float) - sets the color of the lighting of the sky.
+    Each floating point value corresponds to a red, green, or blue value,
+    respectively, between 0 and 1.
+
+Miscellaneous map
+~~~~~~~~~~~~~~~~~
+
+tutorial (boolean) - toggles tutorial mode on/off for the current map.
+hostile (boolean) - toggles whether or not characters on the map are hostile.
+type (string) - sets the initial state of the next character.
+    The possible values are listed below:
+        active
+        sitting
+        sitting wall
+        sleeping
+        dead1
+        dead2
+        dead3
+        dead4
+path keepwalking/pause - determines whether enemies walk through the next
+    pathpoint or pause briefly.
+
+Map objectives
+~~~~~~~~~~~~~~
+
+mapkilleveryone - makes objective of the map to kill everyone.
+mapgosomewhere - makes objective of the map to go somewhere.
+mapkillsomeone - makes objective of the map to kill a specific enemy.
+mapkillmost - makes objective of the map to kill everyone but one.
 
 Hotspots
-hs (size) (type) (string) creates a hotspot underneath you. The three arguments correspond to the size, type, and text of the hotspot, respectively. See below for the explanations of each type integer.
-type 0 = static, display text
-type 1-10 = attached to player 1-10, display text
-type 11-20 = attached to player 1-10, must kill to win
-type -1 = win if approached
-dhs deletes the last hotspot.
-An example is "hs 15.0 0 sdf". Note that hotspots are very buggy, especially those not of type 0. Quitting and restarting Lugaru, then creating a hotspot in a simple map first, can help. You may have to fiddle around with this. Some strings may be randomly rejected, but if you know how to hex-edit, you can change them directly in the map file (make sure to change the byte before the string to the number of its characters).
+~~~~~~~~
+
+hs (size) (type) (string) - creates a hotspot underneath you.
+    The three arguments correspond to the size, type, and text of the hotspot,
+    respectively. See below for the explanations of each type integer:
+        type 0 = static, display text
+        type 1-10 = attached to player 1-10, display text
+        type 11-20 = attached to player 1-10, must kill to win
+        type -1 = win if approached
+dhs - deletes the last hotspot.
+    An example is "hs 15.0 0 sdf". Note that hotspots are very buggy (TODO:
+    review once bugs are fixed), especially those not of type 0. Quitting and
+    restarting Lugaru, then creating a hotspot in a simple map first, can help.
+    You may have to fiddle around with this. Some strings may be randomly
+    rejected, but if you know how to hex-edit, you can change them directly in
+    the map file (make sure to change the byte before the string to the number
+    of its characters).
 
 Graphics
-viewdistance (floating point) sets the far clipping plane. In other words, it controls how far you can see before the fog obscures it. Its value is based on 1, that is, 1.5 is 50% farther.
-fadestart (floating point) sets what fraction of the viewdistance an object must pass to begin fading. In other words, it controls how far an object has to be before it starts becoming transparent. Its value is based on 1, that is, 1.5 is 50% farther.
+~~~~~~~~
+
+viewdistance (float) - sets the far clipping plane.
+    In other words, it controls how far you can see before the fog obscures it.
+    Its value is based on 1, that is, 1.5 is 50% farther.
+fadestart (float) - sets what fraction of the viewdistance an object must pass
+    to begin fading. In other words, it controls how far an object has to be
+    before it starts becoming transparent. Its value is based on 1, that is,
+    1.5 is 50% farther.
 
 Miscellaneous
-quit quits Lugaru.
-slomo (floating point) Toggles slow motion on or off. If it's turning on, the gamespeed is controlled by the floating point value. The value is based on 1, that is, 0.5 is 50% slower than normal game speed.
-slofreq (integer) sets the slow motion sound frequency
-The following commands have unknown effects metal, sizemin, fixrotation, fixtype.
+~~~~~~~~~~~~~
+
+quit - quits Lugaru.
+slomo (float) - toggles slow motion on or off.
+    If it's turning on, the game speed is controlled by the floating point
+    value. The value is based on 1, that is, 0.5 is 50% slower than normal game
+    speed.
+slofreq (integer) - sets the slow motion sound frequency.
+
+The following commands have unknown effects: metal, sizemin, fixrotation,
+fixtype.
