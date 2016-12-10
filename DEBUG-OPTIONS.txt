@@ -1,9 +1,30 @@
 Lugaru
 
----------Set Debug to 1 in config.txt for these to work----------
+---------Pass --debug option to the binary for these to work----------
+
+Note: debug key must be pressed as if on a qwerty
+
+~=console (map mapname, save mapname, quit)
+tab=minimap
+
+super+z = restart level
+shift+k = win level
+
+alt+h = give 2000 health
+alt+j = toggle snow/grass/desert
+alt+c = toggle cameramode
+alt+b = slow motion (with motion blur that might work)
+alt+n = ragdoll
+alt+x = change weapon of nearby player (main player if ctrl is pressed)
+alt+f = spontaneously combust
+alt+o = change enemy's skin (main player if ctrl is pressed)
+alt+shift+o = change enemy's type (rabbit/wolf) (main player if ctrl is pressed)
+alt+i = explode nearby head
+alt+shift+i = explode nearby enemy
+
 
 Map editor:
-shift+m = toggle editor mode
+alt+m = toggle editor mode
 m = place object
 p = place enemy
 shift-p = place waypoint
@@ -13,29 +34,12 @@ up/down = change size of next object
 control+up/down = change tilt of next object
 left/right = change rotation of next object
 shift+left/right = change type of next object
-h = give 2000 health
-
-o = change enemy's skin
-shift+o = change enemy's type (rabbit/wolf)
 
 control+p = make/connect pathfind waypoint
 period/comma = select pathfind waypoints
 shift+comma = delete pathfind waypoint
 
-Random Keys:
-~=console (map mapname, save mapname, quit)
-tab=minimap
-command+z = restart level
-shift+k = win level
-n = die
-b = slow motion (with motion blur that might work)
-j = toggle snow/grass/desert
-f = spontaneously combust
-i = explode nearby head
-shift+i = explode nearby enemy
-
-
-Console commands: 
+Console commands:
 f is floating point, i is integer, b is boolean, str is string.
 
 Map mapname where mapname is the name of a map in the maps folder
@@ -87,7 +91,7 @@ mapgosomewhere = set the map objective to go somewhere
 mapkillsomeone = set the map objective to kill a specific enemy
 mapkillmost = set the map objective to kill everyone but one
 
-hs f i str = set the size, type, and text for a hotspot 
+hs f i str = set the size, type, and text for a hotspot
 (type 0 = static, display text
 type 1-10 = attached to player 1-10, display text
 type 11-20 = attached to player 1-10, must kill to win
