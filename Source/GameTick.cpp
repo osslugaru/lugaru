@@ -1774,352 +1774,368 @@ void doDebugKeys()
     if (!debugmode) {
         return;
     }
-    if (Input::isKeyPressed(SDL_SCANCODE_H)) {
-        Person::players[0]->damagetolerance = 200000;
-        Person::players[0]->damage = 0;
-        Person::players[0]->burnt = 0;
-        Person::players[0]->permanentdamage = 0;
-        Person::players[0]->superpermanentdamage = 0;
-    }
 
-    if (Input::isKeyPressed(SDL_SCANCODE_J)) {
-        environment++;
-        if (environment > 2)
-            environment = 0;
-        Setenvironment(environment);
-    }
-
-    if (Input::isKeyPressed(SDL_SCANCODE_C)) {
-        cameramode = !cameramode;
-    }
-
-    if (Input::isKeyPressed(SDL_SCANCODE_X) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
-        if (Person::players[0]->num_weapons > 0) {
-            if (weapons[Person::players[0]->weaponids[0]].getType() == sword)
-                weapons[Person::players[0]->weaponids[0]].setType(staff);
-            else if (weapons[Person::players[0]->weaponids[0]].getType() == staff)
-                weapons[Person::players[0]->weaponids[0]].setType(knife);
-            else
-                weapons[Person::players[0]->weaponids[0]].setType(sword);
-        }
-    }
-
-    if (Input::isKeyPressed(SDL_SCANCODE_X) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
-        int closest = findClosestPlayer();
-        if (closest >= 0) {
-            if (Person::players[closest]->num_weapons) {
-                if (weapons[Person::players[closest]->weaponids[0]].getType() == sword)
-                    weapons[Person::players[closest]->weaponids[0]].setType(staff);
-                else if (weapons[Person::players[closest]->weaponids[0]].getType() == staff)
-                    weapons[Person::players[closest]->weaponids[0]].setType(knife);
-                else
-                    weapons[Person::players[closest]->weaponids[0]].setType(sword);
-            }
-            if (!Person::players[closest]->num_weapons) {
-                Person::players[closest]->weaponids[0] = weapons.size();
-
-                weapons.push_back(Weapon(knife, closest));
-
-                Person::players[closest]->num_weapons = 1;
-            }
-        }
-    }
-
-    if (Input::isKeyDown(SDL_SCANCODE_U)) {
-        int closest = findClosestPlayer();
-        if (closest >= 0) {
-            Person::players[closest]->yaw += multiplier * 50;
-            Person::players[closest]->targetyaw = Person::players[closest]->yaw;
-        }
-    }
-
-
-    if (Input::isKeyPressed(SDL_SCANCODE_O) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
-        int closest = findClosestPlayer();
-        if (Input::isKeyDown(SDL_SCANCODE_LCTRL))
-            closest = 0;
-
-        if (closest >= 0) {
-            Person::players[closest]->whichskin++;
-            if (Person::players[closest]->whichskin > 9)
-                Person::players[closest]->whichskin = 0;
-            if (Person::players[closest]->whichskin > 2 && Person::players[closest]->creature == wolftype)
-                Person::players[closest]->whichskin = 0;
-
-            Person::players[closest]->skeleton.drawmodel.textureptr.load(creatureskin[Person::players[closest]->creature][Person::players[closest]->whichskin], 1,
-                    &Person::players[closest]->skeleton.skinText[0], &Person::players[closest]->skeleton.skinsize);
+    if (Input::isKeyDown(SDL_SCANCODE_LALT)) {
+        /* Invicible */
+        if (Input::isKeyPressed(SDL_SCANCODE_H)) {
+            Person::players[0]->damagetolerance = 200000;
+            Person::players[0]->damage = 0;
+            Person::players[0]->burnt = 0;
+            Person::players[0]->permanentdamage = 0;
+            Person::players[0]->superpermanentdamage = 0;
         }
 
-        Person::players[closest]->addClothes();
-    }
-
-    if (Input::isKeyPressed(SDL_SCANCODE_O) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
-        int closest = findClosestPlayer();
-        if (closest >= 0) {
-            if (Person::players[closest]->creature == wolftype) {
-                headprop = Person::players[closest]->proportionhead.x / 1.1;
-                bodyprop = Person::players[closest]->proportionbody.x / 1.1;
-                armprop = Person::players[closest]->proportionarms.x / 1.1;
-                legprop = Person::players[closest]->proportionlegs.x / 1.1;
-            }
-
-            if (Person::players[closest]->creature == rabbittype) {
-                headprop = Person::players[closest]->proportionhead.x / 1.2;
-                bodyprop = Person::players[closest]->proportionbody.x / 1.05;
-                armprop = Person::players[closest]->proportionarms.x / 1.00;
-                legprop = Person::players[closest]->proportionlegs.x / 1.1;
-            }
-
-
-            if (Person::players[closest]->creature == rabbittype) {
-                Person::players[closest]->creature = wolftype;
-                Person::players[closest]->whichskin = 0;
-                Person::players[closest]->skeletonLoad();
-
-                Person::players[closest]->proportionhead = 1.1;
-                Person::players[closest]->proportionbody = 1.1;
-                Person::players[closest]->proportionarms = 1.1;
-                Person::players[closest]->proportionlegs = 1.1;
-                Person::players[closest]->proportionlegs.y = 1.1;
-                Person::players[closest]->scale = .23 * 5 * Person::players[0]->scale;
-
-                Person::players[closest]->damagetolerance = 300;
-            } else {
-                Person::players[closest]->creature = rabbittype;
-                Person::players[closest]->whichskin = 0;
-                Person::players[closest]->skeletonLoad(true);
-
-                Person::players[closest]->proportionhead = 1.2;
-                Person::players[closest]->proportionbody = 1.05;
-                Person::players[closest]->proportionarms = 1.00;
-                Person::players[closest]->proportionlegs = 1.1;
-                Person::players[closest]->proportionlegs.y = 1.05;
-                Person::players[closest]->scale = .2 * 5 * Person::players[0]->scale;
-
-                Person::players[closest]->damagetolerance = 200;
-            }
-
-            if (Person::players[closest]->creature == wolftype) {
-                Person::players[closest]->proportionhead = 1.1 * headprop;
-                Person::players[closest]->proportionbody = 1.1 * bodyprop;
-                Person::players[closest]->proportionarms = 1.1 * armprop;
-                Person::players[closest]->proportionlegs = 1.1 * legprop;
-            }
-
-            if (Person::players[closest]->creature == rabbittype) {
-                Person::players[closest]->proportionhead = 1.2 * headprop;
-                Person::players[closest]->proportionbody = 1.05 * bodyprop;
-                Person::players[closest]->proportionarms = 1.00 * armprop;
-                Person::players[closest]->proportionlegs = 1.1 * legprop;
-                Person::players[closest]->proportionlegs.y = 1.05 * legprop;
-            }
-
+        /* Change environment */
+        if (Input::isKeyPressed(SDL_SCANCODE_J)) {
+            environment++;
+            if (environment > 2)
+                environment = 0;
+            Setenvironment(environment);
         }
-    }
 
-    if (Input::isKeyPressed(SDL_SCANCODE_B) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
-        slomo = 1 - slomo;
-        slomodelay = 1000;
-    }
+        /* Camera mode */
+        if (Input::isKeyPressed(SDL_SCANCODE_C)) {
+            cameramode = !cameramode;
+        }
 
+        /* Toggle Slow motion */
+        if (Input::isKeyPressed(SDL_SCANCODE_B)) {
+            slomo = 1 - slomo;
+            slomodelay = 1000;
+        }
 
-    if (((Input::isKeyPressed(SDL_SCANCODE_I) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT)))) {
-        int closest = -1;
-        float closestdist = std::numeric_limits<float>::max();
+        /* Ragdoll */
+        if (Input::isKeyPressed(SDL_SCANCODE_N)) {
+            Person::players[0]->RagDoll(0);
 
-        for (unsigned i = 1; i < Person::players.size(); i++) {
-            float distance = distsq(&Person::players[i]->coords, &Person::players[0]->coords);
-            if (!Person::players[i]->headless)
-                if (distance < closestdist) {
-                    closestdist = distance;
-                    closest = i;
+            emit_sound_at(whooshsound, Person::players[0]->coords, 128.);
+        }
+
+        /* Grow tree leaves?? */
+        if (Input::isKeyPressed(SDL_SCANCODE_Y)) {
+            for (int i = 0; i < objects.numobjects; i++) {
+                if (objects.type[i] == treeleavestype) {
+                    objects.scale[i] *= .9;
                 }
-        }
-
-        XYZ flatfacing2, flatvelocity2;
-        XYZ blah;
-        if (closest != -1 && distsq(&Person::players[closest]->coords, &Person::players[0]->coords) < 144) {
-            blah = Person::players[closest]->coords;
-            XYZ headspurtdirection;
-            //int i = Person::players[closest]->skeleton.jointlabels[head];
-            Joint& headjoint = Person::players[closest]->joint(head);
-            for (int k = 0; k < Person::players[closest]->skeleton.joints.size(); k++) {
-                if (!Person::players[closest]->skeleton.free)
-                    flatvelocity2 = Person::players[closest]->velocity;
-                if (Person::players[closest]->skeleton.free)
-                    flatvelocity2 = headjoint.velocity;
-                if (!Person::players[closest]->skeleton.free)
-                    flatfacing2 = DoRotation(DoRotation(DoRotation(headjoint.position, 0, 0, Person::players[closest]->tilt), Person::players[closest]->tilt2, 0, 0), 0, Person::players[closest]->yaw, 0) * Person::players[closest]->scale + Person::players[closest]->coords;
-                if (Person::players[closest]->skeleton.free)
-                    flatfacing2 = headjoint.position * Person::players[closest]->scale + Person::players[closest]->coords;
-                flatvelocity2.x += (float)(abs(Random() % 100) - 50) / 10;
-                flatvelocity2.y += (float)(abs(Random() % 100) - 50) / 10;
-                flatvelocity2.z += (float)(abs(Random() % 100) - 50) / 10;
-                headspurtdirection = headjoint.position - Person::players[closest]->jointPos(neck);
-                Normalise(&headspurtdirection);
-                Sprite::MakeSprite(bloodflamesprite, flatfacing2, flatvelocity2, 1, 1, 1, .6, 1);
-                flatvelocity2 += headspurtdirection * 8;
-                Sprite::MakeSprite(bloodsprite, flatfacing2, flatvelocity2 / 2, 1, 1, 1, .16, 1);
             }
-            Sprite::MakeSprite(cloudsprite, flatfacing2, flatvelocity2 * 0, .6, 0, 0, 1, .5);
-
-            emit_sound_at(splattersound, blah);
-            emit_sound_at(breaksound2, blah, 100.);
-
-            if (Person::players[closest]->skeleton.free == 2)
-                Person::players[closest]->skeleton.free = 0;
-            Person::players[closest]->RagDoll(0);
-            Person::players[closest]->dead = 2;
-            Person::players[closest]->headless = 1;
-            Person::players[closest]->DoBloodBig(3, 165);
-
-            camerashake += .3;
         }
-    }
 
-    if (((Input::isKeyPressed(SDL_SCANCODE_I) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)))) {
-        int closest = findClosestPlayer();
-        XYZ flatfacing2, flatvelocity2;
-        XYZ blah;
-        if (closest >= 0 && distsq(&Person::players[closest]->coords, &Person::players[0]->coords) < 144) {
-            blah = Person::players[closest]->coords;
-            emit_sound_at(splattersound, blah);
-            emit_sound_at(breaksound2, blah);
+        /* Change (or add) weapon */
+        if (Input::isKeyPressed(SDL_SCANCODE_X)) {
+            int closest = 0;
+            if (!Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
+                closest = findClosestPlayer();
+            }
 
-            for (int i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
-                if (!Person::players[closest]->skeleton.free)
-                    flatvelocity2 = Person::players[closest]->velocity;
-                if (Person::players[closest]->skeleton.free)
-                    flatvelocity2 = Person::players[closest]->skeleton.joints[i].velocity;
-                if (!Person::players[closest]->skeleton.free)
-                    flatfacing2 = DoRotation(DoRotation(DoRotation(Person::players[closest]->skeleton.joints[i].position, 0, 0, Person::players[closest]->tilt), Person::players[closest]->tilt2, 0, 0), 0, Person::players[closest]->yaw, 0) * Person::players[closest]->scale + Person::players[closest]->coords;
-                if (Person::players[closest]->skeleton.free)
-                    flatfacing2 = Person::players[closest]->skeleton.joints[i].position * Person::players[closest]->scale + Person::players[closest]->coords;
-                flatvelocity2.x += (float)(abs(Random() % 100) - 50) / 10;
-                flatvelocity2.y += (float)(abs(Random() % 100) - 50) / 10;
-                flatvelocity2.z += (float)(abs(Random() % 100) - 50) / 10;
-                Sprite::MakeSprite(bloodflamesprite, flatfacing2, flatvelocity2, 1, 1, 1, 3, 1);
-                Sprite::MakeSprite(bloodsprite, flatfacing2, flatvelocity2, 1, 1, 1, .3, 1);
+            if (closest >= 0) {
+                if (Person::players[closest]->num_weapons > 0) {
+                    if (weapons[Person::players[closest]->weaponids[0]].getType() == sword)
+                        weapons[Person::players[closest]->weaponids[0]].setType(staff);
+                    else if (weapons[Person::players[closest]->weaponids[0]].getType() == staff)
+                        weapons[Person::players[closest]->weaponids[0]].setType(knife);
+                    else
+                        weapons[Person::players[closest]->weaponids[0]].setType(sword);
+                } else {
+                    Person::players[closest]->weaponids[0] = weapons.size();
+
+                    weapons.push_back(Weapon(knife, closest));
+
+                    Person::players[closest]->num_weapons = 1;
+                }
+            }
+        }
+
+        /* Change yaw? */
+        if (Input::isKeyDown(SDL_SCANCODE_U)) {
+            int closest = 0;
+            if (!Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
+                closest = findClosestPlayer();
+            }
+
+            if (closest >= 0) {
+                Person::players[closest]->yaw += multiplier * 50;
+                Person::players[closest]->targetyaw = Person::players[closest]->yaw;
+            }
+        }
+
+        /* Toggle fire */
+        if (Input::isKeyPressed(SDL_SCANCODE_F)) {
+            Person::players[0]->onfire = 1 - Person::players[0]->onfire;
+            if (Person::players[0]->onfire) {
+                Person::players[0]->CatchFire();
+            }
+            if (!Person::players[0]->onfire) {
+                emit_sound_at(fireendsound, Person::players[0]->coords);
+                pause_sound(stream_firesound);
+            }
+        }
+
+        /* Change skin */
+        if (Input::isKeyPressed(SDL_SCANCODE_O) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
+            int closest = 0;
+            if (!Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
+                closest = findClosestPlayer();
+            }
+
+            if (closest >= 0) {
+                Person::players[closest]->whichskin++;
+                if (Person::players[closest]->whichskin > 9)
+                    Person::players[closest]->whichskin = 0;
+                if (Person::players[closest]->whichskin > 2 && Person::players[closest]->creature == wolftype)
+                    Person::players[closest]->whichskin = 0;
+
+                Person::players[closest]->skeleton.drawmodel.textureptr.load(creatureskin[Person::players[closest]->creature][Person::players[closest]->whichskin], 1,
+                        &Person::players[closest]->skeleton.skinText[0], &Person::players[closest]->skeleton.skinsize);
+            }
+
+            Person::players[closest]->addClothes();
+        }
+
+        /* Change creature type */
+        if (Input::isKeyPressed(SDL_SCANCODE_O) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
+            int closest = 0;
+            if (!Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
+                closest = findClosestPlayer();
+            }
+
+            if (closest >= 0) {
+                if (Person::players[closest]->creature == wolftype) {
+                    headprop = Person::players[closest]->proportionhead.x / 1.1;
+                    bodyprop = Person::players[closest]->proportionbody.x / 1.1;
+                    armprop = Person::players[closest]->proportionarms.x / 1.1;
+                    legprop = Person::players[closest]->proportionlegs.x / 1.1;
+                }
+
+                if (Person::players[closest]->creature == rabbittype) {
+                    headprop = Person::players[closest]->proportionhead.x / 1.2;
+                    bodyprop = Person::players[closest]->proportionbody.x / 1.05;
+                    armprop = Person::players[closest]->proportionarms.x / 1.00;
+                    legprop = Person::players[closest]->proportionlegs.x / 1.1;
+                }
+
+
+                if (Person::players[closest]->creature == rabbittype) {
+                    Person::players[closest]->creature = wolftype;
+                    Person::players[closest]->whichskin = 0;
+                    Person::players[closest]->skeletonLoad();
+
+                    Person::players[closest]->proportionhead = 1.1;
+                    Person::players[closest]->proportionbody = 1.1;
+                    Person::players[closest]->proportionarms = 1.1;
+                    Person::players[closest]->proportionlegs = 1.1;
+                    Person::players[closest]->proportionlegs.y = 1.1;
+                    Person::players[closest]->scale = .23 * 5 * Person::players[0]->scale;
+
+                    Person::players[closest]->damagetolerance = 300;
+                } else {
+                    Person::players[closest]->creature = rabbittype;
+                    Person::players[closest]->whichskin = 0;
+                    Person::players[closest]->skeletonLoad(true);
+
+                    Person::players[closest]->proportionhead = 1.2;
+                    Person::players[closest]->proportionbody = 1.05;
+                    Person::players[closest]->proportionarms = 1.00;
+                    Person::players[closest]->proportionlegs = 1.1;
+                    Person::players[closest]->proportionlegs.y = 1.05;
+                    Person::players[closest]->scale = .2 * 5 * Person::players[0]->scale;
+
+                    Person::players[closest]->damagetolerance = 200;
+                }
+
+                if (Person::players[closest]->creature == wolftype) {
+                    Person::players[closest]->proportionhead = 1.1 * headprop;
+                    Person::players[closest]->proportionbody = 1.1 * bodyprop;
+                    Person::players[closest]->proportionarms = 1.1 * armprop;
+                    Person::players[closest]->proportionlegs = 1.1 * legprop;
+                }
+
+                if (Person::players[closest]->creature == rabbittype) {
+                    Person::players[closest]->proportionhead = 1.2 * headprop;
+                    Person::players[closest]->proportionbody = 1.05 * bodyprop;
+                    Person::players[closest]->proportionarms = 1.00 * armprop;
+                    Person::players[closest]->proportionlegs = 1.1 * legprop;
+                    Person::players[closest]->proportionlegs.y = 1.05 * legprop;
+                }
+
+            }
+        }
+
+        /* Decapitate */
+        if (((Input::isKeyPressed(SDL_SCANCODE_I) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT)))) {
+            int closest = -1;
+            float closestdist = std::numeric_limits<float>::max();
+
+            for (unsigned i = 1; i < Person::players.size(); i++) {
+                float distance = distsq(&Person::players[i]->coords, &Person::players[0]->coords);
+                if (!Person::players[i]->headless)
+                    if (distance < closestdist) {
+                        closestdist = distance;
+                        closest = i;
+                    }
+            }
+
+            XYZ flatfacing2, flatvelocity2;
+            XYZ blah;
+            if (closest != -1 && distsq(&Person::players[closest]->coords, &Person::players[0]->coords) < 144) {
+                blah = Person::players[closest]->coords;
+                XYZ headspurtdirection;
+                //int i = Person::players[closest]->skeleton.jointlabels[head];
+                Joint& headjoint = Person::players[closest]->joint(head);
+                for (int k = 0; k < Person::players[closest]->skeleton.joints.size(); k++) {
+                    if (!Person::players[closest]->skeleton.free)
+                        flatvelocity2 = Person::players[closest]->velocity;
+                    if (Person::players[closest]->skeleton.free)
+                        flatvelocity2 = headjoint.velocity;
+                    if (!Person::players[closest]->skeleton.free)
+                        flatfacing2 = DoRotation(DoRotation(DoRotation(headjoint.position, 0, 0, Person::players[closest]->tilt), Person::players[closest]->tilt2, 0, 0), 0, Person::players[closest]->yaw, 0) * Person::players[closest]->scale + Person::players[closest]->coords;
+                    if (Person::players[closest]->skeleton.free)
+                        flatfacing2 = headjoint.position * Person::players[closest]->scale + Person::players[closest]->coords;
+                    flatvelocity2.x += (float)(abs(Random() % 100) - 50) / 10;
+                    flatvelocity2.y += (float)(abs(Random() % 100) - 50) / 10;
+                    flatvelocity2.z += (float)(abs(Random() % 100) - 50) / 10;
+                    headspurtdirection = headjoint.position - Person::players[closest]->jointPos(neck);
+                    Normalise(&headspurtdirection);
+                    Sprite::MakeSprite(bloodflamesprite, flatfacing2, flatvelocity2, 1, 1, 1, .6, 1);
+                    flatvelocity2 += headspurtdirection * 8;
+                    Sprite::MakeSprite(bloodsprite, flatfacing2, flatvelocity2 / 2, 1, 1, 1, .16, 1);
+                }
                 Sprite::MakeSprite(cloudsprite, flatfacing2, flatvelocity2 * 0, .6, 0, 0, 1, .5);
-            }
 
-            for (int i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
-                if (!Person::players[closest]->skeleton.free)
-                    flatvelocity2 = Person::players[closest]->velocity;
-                if (Person::players[closest]->skeleton.free)
-                    flatvelocity2 = Person::players[closest]->skeleton.joints[i].velocity;
-                if (!Person::players[closest]->skeleton.free)
-                    flatfacing2 = DoRotation(DoRotation(DoRotation(Person::players[closest]->skeleton.joints[i].position, 0, 0, Person::players[closest]->tilt), Person::players[closest]->tilt2, 0, 0), 0, Person::players[closest]->yaw, 0) * Person::players[closest]->scale + Person::players[closest]->coords;
-                if (Person::players[closest]->skeleton.free)
-                    flatfacing2 = Person::players[closest]->skeleton.joints[i].position * Person::players[closest]->scale + Person::players[closest]->coords;
-                flatvelocity2.x += (float)(abs(Random() % 100) - 50) / 10;
-                flatvelocity2.y += (float)(abs(Random() % 100) - 50) / 10;
-                flatvelocity2.z += (float)(abs(Random() % 100) - 50) / 10;
-                Sprite::MakeSprite(bloodflamesprite, flatfacing2, flatvelocity2, 1, 1, 1, 3, 1);
-                Sprite::MakeSprite(bloodsprite, flatfacing2, flatvelocity2, 1, 1, 1, .4, 1);
-            }
+                emit_sound_at(splattersound, blah);
+                emit_sound_at(breaksound2, blah, 100.);
 
-            for (int i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
-                if (!Person::players[closest]->skeleton.free)
-                    flatvelocity2 = Person::players[closest]->velocity;
-                if (Person::players[closest]->skeleton.free)
-                    flatvelocity2 = Person::players[closest]->skeleton.joints[i].velocity;
-                if (!Person::players[closest]->skeleton.free)
-                    flatfacing2 = DoRotation(DoRotation(DoRotation(Person::players[closest]->skeleton.joints[i].position, 0, 0, Person::players[closest]->tilt), Person::players[closest]->tilt2, 0, 0), 0, Person::players[closest]->yaw, 0) * Person::players[closest]->scale + Person::players[closest]->coords;
-                if (Person::players[closest]->skeleton.free)
-                    flatfacing2 = Person::players[closest]->skeleton.joints[i].position * Person::players[closest]->scale + Person::players[closest]->coords;
-                flatvelocity2.x += (float)(abs(Random() % 100) - 50) / 10;
-                flatvelocity2.y += (float)(abs(Random() % 100) - 50) / 10;
-                flatvelocity2.z += (float)(abs(Random() % 100) - 50) / 10;
-                Sprite::MakeSprite(bloodflamesprite, flatfacing2, flatvelocity2 * 2, 1, 1, 1, 3, 1);
-                Sprite::MakeSprite(bloodsprite, flatfacing2, flatvelocity2 * 2, 1, 1, 1, .4, 1);
-            }
+                if (Person::players[closest]->skeleton.free == 2)
+                    Person::players[closest]->skeleton.free = 0;
+                Person::players[closest]->RagDoll(0);
+                Person::players[closest]->dead = 2;
+                Person::players[closest]->headless = 1;
+                Person::players[closest]->DoBloodBig(3, 165);
 
-            for (int i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
-                if (!Person::players[closest]->skeleton.free)
-                    flatvelocity2 = Person::players[closest]->velocity;
-                if (Person::players[closest]->skeleton.free)
-                    flatvelocity2 = Person::players[closest]->skeleton.joints[i].velocity;
-                if (!Person::players[closest]->skeleton.free)
-                    flatfacing2 = DoRotation(DoRotation(DoRotation(Person::players[closest]->skeleton.joints[i].position, 0, 0, Person::players[closest]->tilt), Person::players[closest]->tilt2, 0, 0), 0, Person::players[closest]->yaw, 0) * Person::players[closest]->scale + Person::players[closest]->coords;
-                if (Person::players[closest]->skeleton.free)
-                    flatfacing2 = Person::players[closest]->skeleton.joints[i].position * Person::players[closest]->scale + Person::players[closest]->coords;
-                flatvelocity2.x += (float)(abs(Random() % 100) - 50) / 10;
-                flatvelocity2.y += (float)(abs(Random() % 100) - 50) / 10;
-                flatvelocity2.z += (float)(abs(Random() % 100) - 50) / 10;
-                Sprite::MakeSprite(bloodflamesprite, flatfacing2, flatvelocity2 * 2, 1, 1, 1, 3, 1);
-                Sprite::MakeSprite(bloodsprite, flatfacing2, flatvelocity2 * 2, 1, 1, 1, .4, 1);
+                camerashake += .3;
             }
+        }
 
-            XYZ temppos;
-            for (unsigned j = 0; j < Person::players.size(); j++) {
-                if (int(j) != closest) {
-                    if (distsq(&Person::players[j]->coords, &Person::players[closest]->coords) < 25) {
-                        Person::players[j]->DoDamage((25 - distsq(&Person::players[j]->coords, &Person::players[closest]->coords)) * 60);
-                        if (Person::players[j]->skeleton.free == 2)
-                            Person::players[j]->skeleton.free = 1;
-                        Person::players[j]->skeleton.longdead = 0;
-                        Person::players[j]->RagDoll(0);
-                        for (int i = 0; i < Person::players[j]->skeleton.joints.size(); i++) {
-                            temppos = Person::players[j]->skeleton.joints[i].position + Person::players[j]->coords;
-                            if (distsq(&temppos, &Person::players[closest]->coords) < 25) {
-                                flatvelocity2 = temppos - Person::players[closest]->coords;
-                                Normalise(&flatvelocity2);
-                                Person::players[j]->skeleton.joints[i].velocity += flatvelocity2 * ((20 - distsq(&temppos, &Person::players[closest]->coords)) * 20);
+        /* Explode */
+        if (((Input::isKeyPressed(SDL_SCANCODE_I) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)))) {
+            int closest = findClosestPlayer();
+            XYZ flatfacing2, flatvelocity2;
+            XYZ blah;
+            if (closest >= 0 && distsq(&Person::players[closest]->coords, &Person::players[0]->coords) < 144) {
+                blah = Person::players[closest]->coords;
+                emit_sound_at(splattersound, blah);
+                emit_sound_at(breaksound2, blah);
+
+                for (int i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
+                    if (!Person::players[closest]->skeleton.free)
+                        flatvelocity2 = Person::players[closest]->velocity;
+                    if (Person::players[closest]->skeleton.free)
+                        flatvelocity2 = Person::players[closest]->skeleton.joints[i].velocity;
+                    if (!Person::players[closest]->skeleton.free)
+                        flatfacing2 = DoRotation(DoRotation(DoRotation(Person::players[closest]->skeleton.joints[i].position, 0, 0, Person::players[closest]->tilt), Person::players[closest]->tilt2, 0, 0), 0, Person::players[closest]->yaw, 0) * Person::players[closest]->scale + Person::players[closest]->coords;
+                    if (Person::players[closest]->skeleton.free)
+                        flatfacing2 = Person::players[closest]->skeleton.joints[i].position * Person::players[closest]->scale + Person::players[closest]->coords;
+                    flatvelocity2.x += (float)(abs(Random() % 100) - 50) / 10;
+                    flatvelocity2.y += (float)(abs(Random() % 100) - 50) / 10;
+                    flatvelocity2.z += (float)(abs(Random() % 100) - 50) / 10;
+                    Sprite::MakeSprite(bloodflamesprite, flatfacing2, flatvelocity2, 1, 1, 1, 3, 1);
+                    Sprite::MakeSprite(bloodsprite, flatfacing2, flatvelocity2, 1, 1, 1, .3, 1);
+                    Sprite::MakeSprite(cloudsprite, flatfacing2, flatvelocity2 * 0, .6, 0, 0, 1, .5);
+                }
+
+                for (int i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
+                    if (!Person::players[closest]->skeleton.free)
+                        flatvelocity2 = Person::players[closest]->velocity;
+                    if (Person::players[closest]->skeleton.free)
+                        flatvelocity2 = Person::players[closest]->skeleton.joints[i].velocity;
+                    if (!Person::players[closest]->skeleton.free)
+                        flatfacing2 = DoRotation(DoRotation(DoRotation(Person::players[closest]->skeleton.joints[i].position, 0, 0, Person::players[closest]->tilt), Person::players[closest]->tilt2, 0, 0), 0, Person::players[closest]->yaw, 0) * Person::players[closest]->scale + Person::players[closest]->coords;
+                    if (Person::players[closest]->skeleton.free)
+                        flatfacing2 = Person::players[closest]->skeleton.joints[i].position * Person::players[closest]->scale + Person::players[closest]->coords;
+                    flatvelocity2.x += (float)(abs(Random() % 100) - 50) / 10;
+                    flatvelocity2.y += (float)(abs(Random() % 100) - 50) / 10;
+                    flatvelocity2.z += (float)(abs(Random() % 100) - 50) / 10;
+                    Sprite::MakeSprite(bloodflamesprite, flatfacing2, flatvelocity2, 1, 1, 1, 3, 1);
+                    Sprite::MakeSprite(bloodsprite, flatfacing2, flatvelocity2, 1, 1, 1, .4, 1);
+                }
+
+                for (int i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
+                    if (!Person::players[closest]->skeleton.free)
+                        flatvelocity2 = Person::players[closest]->velocity;
+                    if (Person::players[closest]->skeleton.free)
+                        flatvelocity2 = Person::players[closest]->skeleton.joints[i].velocity;
+                    if (!Person::players[closest]->skeleton.free)
+                        flatfacing2 = DoRotation(DoRotation(DoRotation(Person::players[closest]->skeleton.joints[i].position, 0, 0, Person::players[closest]->tilt), Person::players[closest]->tilt2, 0, 0), 0, Person::players[closest]->yaw, 0) * Person::players[closest]->scale + Person::players[closest]->coords;
+                    if (Person::players[closest]->skeleton.free)
+                        flatfacing2 = Person::players[closest]->skeleton.joints[i].position * Person::players[closest]->scale + Person::players[closest]->coords;
+                    flatvelocity2.x += (float)(abs(Random() % 100) - 50) / 10;
+                    flatvelocity2.y += (float)(abs(Random() % 100) - 50) / 10;
+                    flatvelocity2.z += (float)(abs(Random() % 100) - 50) / 10;
+                    Sprite::MakeSprite(bloodflamesprite, flatfacing2, flatvelocity2 * 2, 1, 1, 1, 3, 1);
+                    Sprite::MakeSprite(bloodsprite, flatfacing2, flatvelocity2 * 2, 1, 1, 1, .4, 1);
+                }
+
+                for (int i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
+                    if (!Person::players[closest]->skeleton.free)
+                        flatvelocity2 = Person::players[closest]->velocity;
+                    if (Person::players[closest]->skeleton.free)
+                        flatvelocity2 = Person::players[closest]->skeleton.joints[i].velocity;
+                    if (!Person::players[closest]->skeleton.free)
+                        flatfacing2 = DoRotation(DoRotation(DoRotation(Person::players[closest]->skeleton.joints[i].position, 0, 0, Person::players[closest]->tilt), Person::players[closest]->tilt2, 0, 0), 0, Person::players[closest]->yaw, 0) * Person::players[closest]->scale + Person::players[closest]->coords;
+                    if (Person::players[closest]->skeleton.free)
+                        flatfacing2 = Person::players[closest]->skeleton.joints[i].position * Person::players[closest]->scale + Person::players[closest]->coords;
+                    flatvelocity2.x += (float)(abs(Random() % 100) - 50) / 10;
+                    flatvelocity2.y += (float)(abs(Random() % 100) - 50) / 10;
+                    flatvelocity2.z += (float)(abs(Random() % 100) - 50) / 10;
+                    Sprite::MakeSprite(bloodflamesprite, flatfacing2, flatvelocity2 * 2, 1, 1, 1, 3, 1);
+                    Sprite::MakeSprite(bloodsprite, flatfacing2, flatvelocity2 * 2, 1, 1, 1, .4, 1);
+                }
+
+                XYZ temppos;
+                for (unsigned j = 0; j < Person::players.size(); j++) {
+                    if (int(j) != closest) {
+                        if (distsq(&Person::players[j]->coords, &Person::players[closest]->coords) < 25) {
+                            Person::players[j]->DoDamage((25 - distsq(&Person::players[j]->coords, &Person::players[closest]->coords)) * 60);
+                            if (Person::players[j]->skeleton.free == 2)
+                                Person::players[j]->skeleton.free = 1;
+                            Person::players[j]->skeleton.longdead = 0;
+                            Person::players[j]->RagDoll(0);
+                            for (int i = 0; i < Person::players[j]->skeleton.joints.size(); i++) {
+                                temppos = Person::players[j]->skeleton.joints[i].position + Person::players[j]->coords;
+                                if (distsq(&temppos, &Person::players[closest]->coords) < 25) {
+                                    flatvelocity2 = temppos - Person::players[closest]->coords;
+                                    Normalise(&flatvelocity2);
+                                    Person::players[j]->skeleton.joints[i].velocity += flatvelocity2 * ((20 - distsq(&temppos, &Person::players[closest]->coords)) * 20);
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            Person::players[closest]->DoDamage(10000);
-            Person::players[closest]->RagDoll(0);
-            Person::players[closest]->dead = 2;
-            Person::players[closest]->coords = 20;
-            Person::players[closest]->skeleton.free = 2;
+                Person::players[closest]->DoDamage(10000);
+                Person::players[closest]->RagDoll(0);
+                Person::players[closest]->dead = 2;
+                Person::players[closest]->coords = 20;
+                Person::players[closest]->skeleton.free = 2;
 
-            camerashake += .6;
+                camerashake += .6;
 
-        }
-    }
-
-    if (Input::isKeyPressed(SDL_SCANCODE_F)) {
-        Person::players[0]->onfire = 1 - Person::players[0]->onfire;
-        if (Person::players[0]->onfire) {
-            Person::players[0]->CatchFire();
-        }
-        if (!Person::players[0]->onfire) {
-            emit_sound_at(fireendsound, Person::players[0]->coords);
-            pause_sound(stream_firesound);
-        }
-    }
-
-    if (Input::isKeyPressed(SDL_SCANCODE_N) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
-        Person::players[0]->RagDoll(0);
-
-        emit_sound_at(whooshsound, Person::players[0]->coords, 128.);
-    }
-
-    if (Input::isKeyPressed(SDL_SCANCODE_N) && Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
-        for (int i = 0; i < objects.numobjects; i++) {
-            if (objects.type[i] == treeleavestype) {
-                objects.scale[i] *= .9;
             }
         }
-    }
 
-    if (Input::isKeyPressed(SDL_SCANCODE_M) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
-        editorenabled = !editorenabled;
-        if (editorenabled) {
-            Person::players[0]->damagetolerance = 100000;
-        } else {
-            Person::players[0]->damagetolerance = 200;
+        /* Enable editor */
+        if (Input::isKeyPressed(SDL_SCANCODE_M) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
+            editorenabled = !editorenabled;
+            if (editorenabled) {
+                Person::players[0]->damagetolerance = 100000;
+            } else {
+                Person::players[0]->damagetolerance = 200;
+            }
+            Person::players[0]->damage = 0; // these lines were in both if and else, but I think they would better fit in the if
+            Person::players[0]->permanentdamage = 0;
+            Person::players[0]->superpermanentdamage = 0;
+            Person::players[0]->bloodloss = 0;
+            Person::players[0]->deathbleeding = 0;
         }
-        Person::players[0]->damage = 0; // these lines were in both if and else, but I think they would better fit in the if
-        Person::players[0]->permanentdamage = 0;
-        Person::players[0]->superpermanentdamage = 0;
-        Person::players[0]->bloodloss = 0;
-        Person::players[0]->deathbleeding = 0;
     }
 
     //skip level
@@ -5352,7 +5368,7 @@ void Game::Tick()
             leveltime += multiplier;
 
         //keys
-        if (Input::isKeyPressed(SDL_SCANCODE_V) && debugmode) {
+        if (Input::isKeyDown(SDL_SCANCODE_LALT) && Input::isKeyPressed(SDL_SCANCODE_V) && debugmode) {
             freeze = !freeze;
             if (freeze) {
                 OPENAL_SetFrequency(OPENAL_ALL);
