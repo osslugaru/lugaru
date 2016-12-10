@@ -4181,6 +4181,9 @@ void Person::DoAnimations()
                 oldrot = 0;
                 targetrot = 0;
             }
+            if (frameCurrent >= Animation::animations[animCurrent].frames.size()) {
+                frameCurrent = Animation::animations[animCurrent].frames.size() - 1;
+            }
             if (animCurrent != oldanimCurrent || animTarget != oldanimTarget || ((frameCurrent != oldframeCurrent || frameTarget != oldframeTarget) && !calcrot)) {
                 //Old rotates
                 for (int i = 0; i < skeleton.joints.size(); i++) {
@@ -4233,9 +4236,6 @@ void Person::DoAnimations()
                         if (skeleton.muscles[i].newrotate1 < skeleton.muscles[i].oldrotate1 - 180) skeleton.muscles[i].newrotate1 += 360;
                     }
                 }
-            }
-            if (frameCurrent >= Animation::animations[animCurrent].frames.size()) {
-                frameCurrent = Animation::animations[animCurrent].frames.size() - 1;
             }
 
             oldanimCurrent = animCurrent;
