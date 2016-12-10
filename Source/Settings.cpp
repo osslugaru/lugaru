@@ -64,6 +64,8 @@ void DefaultSettings()
     throwkey = SDL_SCANCODE_Q;
     attackkey = MOUSEBUTTON1;
     consolekey = SDL_SCANCODE_GRAVE;
+
+    newdetail = detail;
 }
 
 void SaveSettings()
@@ -166,6 +168,7 @@ void SaveSettings()
     opstream << stereoseparation;
     opstream << "\nStereoReverse:\n";
     opstream << stereoreverse;
+    opstream << "\n";
     opstream.close();
 }
 
@@ -313,5 +316,6 @@ bool LoadSettings()
     if (screenheight < 0)
         screenheight = 768;
 
+    newdetail = detail;
     return true;
 }
