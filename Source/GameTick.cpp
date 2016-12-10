@@ -992,6 +992,10 @@ void Game::Loadlevel(const std::string& name)
     if (mapvers >= 7) {
         int numhotspots;
         funpackf(tfile, "Bi", &numhotspots);
+        if (numhotspots < 0) {
+            cerr << "Map " << name << " have an invalid number of hotspots" << endl;
+            numhotspots = 0;
+        }
         Hotspot::hotspots.resize(numhotspots);
         for (int i = 0; i < Hotspot::hotspots.size(); i++) {
             funpackf(tfile, "Bi Bf Bf Bf Bf", &Hotspot::hotspots[i].type, &Hotspot::hotspots[i].size, &Hotspot::hotspots[i].position.x, &Hotspot::hotspots[i].position.y, &Hotspot::hotspots[i].position.z);

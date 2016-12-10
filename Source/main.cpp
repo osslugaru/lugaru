@@ -626,7 +626,7 @@ int main(int argc, char **argv)
 
     LOGFUNC;
 
-    try {
+    //~ try {
         {
             newGame();
 
@@ -677,16 +677,16 @@ int main(int argc, char **argv)
         CleanUp ();
 
         return 0;
-    } catch (const std::exception& error) {
-        CleanUp();
+    //~ } catch (const std::exception& error) {
+        //~ CleanUp();
 
-        std::string e = "Caught exception: ";
-        e += error.what();
+        //~ std::string e = "Caught exception: ";
+        //~ e += error.what();
 
-        LOG(e);
+        //~ LOG(e);
 
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Exception catched", error.what(), NULL);
+        //~ SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Exception catched", error.what(), NULL);
 
-        return -1;
-    }
+        //~ return -1;
+    //~ }
 }
