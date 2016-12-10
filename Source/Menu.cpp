@@ -23,52 +23,10 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "gamegl.h"
 
 #include "Menu.h"
-using namespace Menu;
 
 extern float multiplier;
 
-struct MenuItem {
-    enum MenuItemType {NONE, LABEL, BUTTON, IMAGE, IMAGEBUTTON, MAPMARKER, MAPLINE, MAPLABEL} type;
-    int id;
-    string text;
-    Texture texture;
-    int x, y, w, h;
-    float r, g, b;
-    float effectfade;
-
-    float linestartsize;
-    float lineendsize;
-
-    void init(MenuItemType _type, int _id, const string& _text, Texture _texture,
-              int _x, int _y, int _w, int _h, float _r, float _g, float _b,
-              float _linestartsize = 1, float _lineendsize = 1) {
-        type = _type;
-        id = _id;
-        text = _text;
-        texture = _texture;
-        x = _x;
-        y = _y;
-        w = _w;
-        h = _h;
-        r = _r;
-        g = _g;
-        b = _b;
-        effectfade = 0;
-        linestartsize = _linestartsize;
-        lineendsize = _lineendsize;
-        if (type == MenuItem::BUTTON) {
-            if (w == -1)
-                w = text.length() * 10;
-            if (h == -1)
-                h = 20;
-        }
-    }
-};
-
-vector<MenuItem> items;
-
-
-
+std::vector<MenuItem> Menu::items;
 
 void Menu::clearMenu()
 {
@@ -152,7 +110,7 @@ int Menu::getSelected(int mousex, int mousey)
     return -1;
 }
 
-void GUITick()
+void Menu::handleFadeEffect()
 {
     for (vector<MenuItem>::iterator it = items.begin(); it != items.end(); it++) {
         if (it->id == Game::selected) {
@@ -169,7 +127,7 @@ void GUITick()
 
 void Menu::drawItems()
 {
-    GUITick();
+    handleFadeEffect();
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_ALPHA_TEST);
     glEnable(GL_BLEND);
