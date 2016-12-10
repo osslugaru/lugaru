@@ -28,6 +28,34 @@ extern float multiplier;
 
 std::vector<MenuItem> Menu::items;
 
+MenuItem::MenuItem(MenuItemType _type, int _id, const string& _text, Texture _texture,
+          int _x, int _y, int _w, int _h, float _r, float _g, float _b,
+          float _linestartsize, float _lineendsize):
+    type(_type),
+    id(_id),
+    text(_text),
+    texture(_texture),
+    x(_x),
+    y(_y),
+    w(_w),
+    h(_h),
+    r(_r),
+    g(_g),
+    b(_b),
+    effectfade(0),
+    linestartsize(_linestartsize),
+    lineendsize(_lineendsize)
+{
+    if (type == MenuItem::BUTTON) {
+        if (w == -1) {
+            w = text.length() * 10;
+        }
+        if (h == -1) {
+            h = 20;
+        }
+    }
+}
+
 void Menu::clearMenu()
 {
     items.clear();
@@ -35,38 +63,31 @@ void Menu::clearMenu()
 
 void Menu::addLabel(int id, const string& text, int x, int y, float r, float g, float b)
 {
-    items.push_back(MenuItem());
-    items.back().init(MenuItem::LABEL, id, text, Texture(), x, y, -1, -1, r, g, b);
+    items.emplace_back(MenuItem::LABEL, id, text, Texture(), x, y, -1, -1, r, g, b);
 }
 void Menu::addButton(int id, const string& text, int x, int y, float r, float g, float b)
 {
-    items.push_back(MenuItem());
-    items.back().init(MenuItem::BUTTON, id, text, Texture(), x, y, -1, -1, r, g, b);
+    items.emplace_back(MenuItem::BUTTON, id, text, Texture(), x, y, -1, -1, r, g, b);
 }
 void Menu::addImage(int id, Texture texture, int x, int y, int w, int h, float r, float g, float b)
 {
-    items.push_back(MenuItem());
-    items.back().init(MenuItem::IMAGE, id, "", texture, x, y, w, h, r, g, b);
+    items.emplace_back(MenuItem::IMAGE, id, "", texture, x, y, w, h, r, g, b);
 }
 void Menu::addButtonImage(int id, Texture texture, int x, int y, int w, int h, float r, float g, float b)
 {
-    items.push_back(MenuItem());
-    items.back().init(MenuItem::IMAGEBUTTON, id, "", texture, x, y, w, h, r, g, b);
+    items.emplace_back(MenuItem::IMAGEBUTTON, id, "", texture, x, y, w, h, r, g, b);
 }
 void Menu::addMapLine(int x, int y, int w, int h, float startsize, float endsize, float r, float g, float b)
 {
-    items.push_back(MenuItem());
-    items.back().init(MenuItem::MAPLINE, -1, "", Texture(), x, y, w, h, r, g, b, startsize, endsize);
+    items.emplace_back(MenuItem::MAPLINE, -1, "", Texture(), x, y, w, h, r, g, b, startsize, endsize);
 }
 void Menu::addMapMarker(int id, Texture texture, int x, int y, int w, int h, float r, float g, float b)
 {
-    items.push_back(MenuItem());
-    items.back().init(MenuItem::MAPMARKER, id, "", texture, x, y, w, h, r, g, b);
+    items.emplace_back(MenuItem::MAPMARKER, id, "", texture, x, y, w, h, r, g, b);
 }
 void Menu::addMapLabel(int id, const string& text, int x, int y, float r, float g, float b)
 {
-    items.push_back(MenuItem());
-    items.back().init(MenuItem::MAPLABEL, id, text, Texture(), x, y, -1, -1, r, g, b);
+    items.emplace_back(MenuItem::MAPLABEL, id, text, Texture(), x, y, -1, -1, r, g, b);
 }
 
 void Menu::setText(int id, const string& text)

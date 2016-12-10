@@ -35,30 +35,9 @@ struct MenuItem {
     float linestartsize;
     float lineendsize;
 
-    void init(MenuItemType _type, int _id, const string& _text, Texture _texture,
+    MenuItem(MenuItemType _type, int _id, const string& _text, Texture _texture,
               int _x, int _y, int _w, int _h, float _r, float _g, float _b,
-              float _linestartsize = 1, float _lineendsize = 1) {
-        type = _type;
-        id = _id;
-        text = _text;
-        texture = _texture;
-        x = _x;
-        y = _y;
-        w = _w;
-        h = _h;
-        r = _r;
-        g = _g;
-        b = _b;
-        effectfade = 0;
-        linestartsize = _linestartsize;
-        lineendsize = _lineendsize;
-        if (type == MenuItem::BUTTON) {
-            if (w == -1)
-                w = text.length() * 10;
-            if (h == -1)
-                h = 20;
-        }
-    }
+              float _linestartsize = 1, float _lineendsize = 1);
 };
 
 class Menu
