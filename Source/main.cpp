@@ -581,7 +581,7 @@ const option::Descriptor usage[] =
     {SOUND,             OPENAL_OUTPUT_OSS,      "",     "force-oss",        option::Arg::None,  " --force-oss       Force use of OSS back-end." },
     {OPENALINFO,        0,                      "",     "openal-info",      option::Arg::None,  " --openal-info     Print info about OpenAL at launch." },
     {SHOWRESOLUTIONS,   0,                      "",     "showresolutions",  option::Arg::None,  " --showresolutions List the resolutions found by SDL at launch." },
-    {DEVTOOLS,          0,                      "d",    "devtools",         option::Arg::None,  " -d, --devtools    Activates developer tools: console, level editor and debug information." },
+    {DEVTOOLS,          0,                      "d",    "devtools",         option::Arg::None,  " -d, --devtools    Enable dev tools: console, level editor and debug info." },
     {0,0,0,0,0,0}
 };
 
