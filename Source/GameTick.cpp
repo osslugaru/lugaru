@@ -1105,6 +1105,7 @@ void Game::Loadlevel(const std::string& name)
         firstload = 1;
 
     leveltime = 0;
+    wonleveltime = 0;
     visibleloading = 0;
 }
 
@@ -6218,6 +6219,7 @@ void Game::TickOnceAfter()
                     accountactive->winCampaignLevel(whichchoice, bonustotal, leveltime);
                     scoreadded = 1;
                 } else {
+                    wonleveltime = leveltime;
                     accountactive->winLevel(whichlevel, bonustotal - startbonustotal, leveltime);
                 }
                 won = 1;

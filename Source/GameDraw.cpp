@@ -1610,21 +1610,19 @@ int Game::DrawGLScene(StereoSide side)
             sprintf (string, "Score:     %d", (int)(bonustotal - startbonustotal));
             text->glPrintOutlined(1024 / 30, 768 * 6 / 8, string, 1, 2, 1024, 768);
 
-            if (campaign)
-                sprintf (string, "Press Escape or Space to continue");
-            else
-                sprintf (string, "Press Escape to return to menu or Space to continue");
+            sprintf (string, "Press Escape to return to menu or Space to continue");
             text->glPrintOutlined(640 / 2 - strlen(string) * 5, 480 * 1 / 16, string, 1, 1, 640, 480);
 
             char temp[255];
 
             for (int i = 0; i < 255; i++)
                 string[i] = '\0';
-            sprintf (temp, "Time:      %d:", (int)(((int)leveltime - (int)(leveltime) % 60) / 60));
+            int wontime = (int)round(wonleveltime);
+            sprintf (temp, "Time:      %d:", int((wontime - wontime % 60) / 60));
             strcat(string, temp);
-            if ((int)(leveltime) % 60 < 10)
+            if (wontime % 60 < 10)
                 strcat(string, "0");
-            sprintf (temp, "%d", (int)(leveltime) % 60);
+            sprintf (temp, "%d", wontime % 60);
             strcat(string, temp);
             text->glPrintOutlined(1024 / 30, 768 * 6 / 8 - 40, string, 1, 2, 1024, 768);
 

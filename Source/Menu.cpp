@@ -464,11 +464,12 @@ void Menu::Load()
             if (name.size() < 32) {
                 name.append((32 - name.size()), ' ');
             }
-            name += to_string(int((int(accountactive->getFastTime(i)) - int(accountactive->getFastTime(i)) % 60) / 60));
+            int fasttime = (int)round(accountactive->getFastTime(i));
+            name += to_string(int((fasttime - fasttime % 60) / 60));
             name += ":";
-            if ((int)(accountactive->getFastTime(i)) % 60 < 10)
+            if (fasttime % 60 < 10)
                 name += "0";
-            name += to_string((int)(accountactive->getFastTime(i)) % 60);
+            name += to_string(fasttime % 60);
 
             addButton(i, name, 10, 400 - i * 25, i > accountactive->getProgress() ? 0.5 : 1, 0, 0);
         }

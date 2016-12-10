@@ -67,7 +67,9 @@ bool firstload = 0;
 Texture hawktexture;
 float hawkyaw = 0;
 float hawkcalldelay = 0;
+
 float leveltime = 0;
+float wonleveltime = 0;
 float loadtime = 0;
 
 Model hawk;

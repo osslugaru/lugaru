@@ -76,6 +76,7 @@ extern bool cameramode;
 extern bool firstload;
 
 extern float leveltime;
+extern float wonleveltime;
 extern float loadtime;
 
 extern Model hawk;
