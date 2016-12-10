@@ -626,7 +626,7 @@ int main(int argc, char **argv)
 
     LOGFUNC;
 
-#ifndef NDEBUG
+#ifdef NDEBUG
     try {
 #endif
         {
@@ -679,7 +679,7 @@ int main(int argc, char **argv)
         CleanUp ();
 
         return 0;
-#ifndef NDEBUG
+#ifdef NDEBUG
     } catch (const std::exception& error) {
         CleanUp();
 
