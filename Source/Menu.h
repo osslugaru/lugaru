@@ -56,6 +56,13 @@ public:
     static int getSelected(int mousex, int mousey);
     static void drawItems();
 
+    static void Load();
+    static void Tick();
+    static void updateSettingsMenu();
+    static void updateStereoConfigMenu();
+    static void updateControlsMenu();
+    static void setKeySelected();
+
 private:
     static void handleFadeEffect();
 

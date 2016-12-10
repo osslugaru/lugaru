@@ -50,6 +50,7 @@ set(LUGARU_SRCS
     ${SRCDIR}/Animation/Skeleton.cpp
     ${SRCDIR}/Frustum.cpp
     ${SRCDIR}/Account.cpp
+    ${SRCDIR}/Campaign.cpp
     ${SRCDIR}/ConsoleCmds.cpp
     ${SRCDIR}/Dialog.cpp
     ${SRCDIR}/Hotspot.cpp
@@ -90,6 +91,7 @@ set(LUGARU_H
     ${SRCDIR}/Animation/Skeleton.h
     ${SRCDIR}/Frustum.h
     ${SRCDIR}/Account.h
+    ${SRCDIR}/Campaign.h
     ${SRCDIR}/ConsoleCmds.h
     ${SRCDIR}/Dialog.h
     ${SRCDIR}/Hotspot.h

@@ -23,6 +23,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Animation/Animation.h"
 #include "Texture.h"
 #include "Utils/Folders.h"
+#include "Menu.h"
 
 extern float screenwidth, screenheight;
 extern float viewdistance;
@@ -627,7 +628,7 @@ void Game::InitGame()
     newscreenwidth = screenwidth;
     newscreenheight = screenheight;
 
-    LoadMenu();
+    Menu::Load();
 
     Animation::loadAll();
 }

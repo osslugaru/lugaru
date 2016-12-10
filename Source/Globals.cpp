@@ -150,8 +150,6 @@ int numenvsounds;
 
 bool debugmode = false;
 
-bool campaign = false;
-
 bool gamestarted = false;
 
 StereoMode stereomode =  stereoNone;

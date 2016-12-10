@@ -147,7 +147,6 @@ void LoadStuff();
 void LoadScreenTexture();
 void LoadingScreen();
 int DrawGLScene(StereoSide side);
-void LoadMenu();
 void playdialoguescenesound();
 int findClosestPlayer();
 void Loadlevel(int which);
@@ -161,7 +160,6 @@ int checkcollide(XYZ startpoint, XYZ endpoint);
 int checkcollide(XYZ startpoint, XYZ endpoint, int what);
 
 void fireSound(int sound = fireendsound);
-void setKeySelected();
 
 void inputText(std::string& str, unsigned* charselected);
 void flash(float amount = 1, int delay = 1);
