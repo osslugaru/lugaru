@@ -30,7 +30,7 @@ using namespace std;
 extern bool devtools;
 
 vector<Account*> Account::accounts = vector<Account*>();
-Account* Account::_active = nullptr;
+int Account::i_active = -1;
 
 Account::Account(const string& name) : name(name), campaignProgress()
 {
@@ -52,36 +52,47 @@ void Account::setCurrentCampaign(const string& name)
 void Account::add(const string& name)
 {
     accounts.push_back(new Account(name));
-    _active = accounts.back();
+    i_active = accounts.size() - 1;
 }
 
 Account* Account::get(int i)
 {
-    if ((i >= 0) && (i < int(accounts.size()))) {
-        return accounts[i];
-    } else
-        return NULL;
+    return accounts.at(i);
+}
+
+int Account::getNbAccounts()
+{
+    return accounts.size();
+}
+
+bool Account::hasActive()
+{
+    return (i_active >= 0);
+}
+
+Account& Account::active()
+{
+    return *(accounts.at(i_active));
 }
 
 void Account::setActive(int i)
 {
-    _active = get(i);
+    if ((i >= 0) && (i < int(accounts.size()))) {
+        i_active = i;
+    } else {
+        cerr << "Tried to set active account to " << i << " but there is not such account" << endl;
+        i_active = -1;
+    }
 }
 
 void Account::destroyActive()
 {
-    for (unsigned i = 0; i < accounts.size(); i++) {
-        if (accounts[i] == _active) {
-            accounts.erase(accounts.begin() + i);
-            _active = nullptr;
-            return;
-        }
-    }
-    cerr << "Unexpected error : User " << _active->getName() << " not found" << endl;
-    if (accounts.empty()) {
-        _active = nullptr;
+    if ((i_active >= 0) && (i_active < int(accounts.size()))) {
+        accounts.erase(accounts.begin() + i_active);
+        i_active = -1;
     } else {
-        _active = accounts.front();
+        cerr << "Tried to destroy active account " << i_active << " but there is not such account" << endl;
+        i_active = -1;
     }
 }
 
@@ -191,10 +202,10 @@ void Account::loadFile(string filename)
         }
 
         fclose(tfile);
-        _active = get(iactive);
+        setActive(iactive);
     } else {
         perror(("Couldn't load users from " + filename).c_str());
-        _active = nullptr;
+        i_active = -1;
     }
 }
 
@@ -206,7 +217,7 @@ void Account::saveFile(string filename)
     tfile = fopen(filename.c_str(), "wb" );
     if (tfile) {
         fpackf(tfile, "Bi", getNbAccounts());
-        fpackf(tfile, "Bi", indice(Account::_active));
+        fpackf(tfile, "Bi", i_active);
 
         for (int i = 0; i < getNbAccounts(); i++) {
             Account* a = Account::get(i);
@@ -254,13 +265,4 @@ void Account::saveFile(string filename)
     } else {
         perror(("Couldn't save users in " + filename).c_str());
     }
-}
-
-int Account::indice(Account* a)
-{
-    for (unsigned i = 0; i < accounts.size(); i++) {
-        if (accounts[i] == a)
-            return i;
-    }
-    return -1;
 }

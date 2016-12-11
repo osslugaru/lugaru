@@ -49,11 +49,10 @@ public:
     static Account* get(int i);
     static void loadFile(std::string filename);
     static void saveFile(std::string filename);
-    static int indice(Account* a);
+    static int getNbAccounts();
 
-    static bool hasActive() { return (_active != nullptr); }
-    static Account& active() { return *_active; }
-    static Account* _active;
+    static bool hasActive();
+    static Account& active();
 
     void endGame();
     void winCampaignLevel(int choice, float score, float time);
@@ -109,10 +108,11 @@ public:
     };
     void setCurrentCampaign(const std::string& name);
 
-    static int getNbAccounts() {
-        return accounts.size();
-    };
 private:
+    //statics
+    static std::vector<Account*> accounts;
+    static int i_active;
+
     Account(const std::string& name = "");
     int difficulty;
     int progress; // progress in challenge levels
@@ -124,9 +124,6 @@ private:
 
     std::string currentCampaign;
     std::map<std::string, CampaignProgress> campaignProgress;
-
-    //statics
-    static std::vector<Account*> accounts;
 };
 
 #endif
