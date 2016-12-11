@@ -21,6 +21,8 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Folders.hpp"
 
 #include <cstring>
+#include <cstdlib>
+#include <cerrno>
 #include <unistd.h>
 
 #if PLATFORM_UNIX
