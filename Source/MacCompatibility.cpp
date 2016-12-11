@@ -20,11 +20,11 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "MacCompatibility.hpp"
 
-#include <errno.h>
-#include <time.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cerrno>
+#include <ctime>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #ifdef WIN32
 #include <windows.h>

@@ -21,7 +21,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef _RANDOM_HPP_
 #define _RANDOM_HPP_
 
-#include <stdlib.h>
+#include <cstdlib>
 
 static inline short Random()
 {
