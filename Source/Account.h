@@ -43,11 +43,11 @@ struct CampaignProgress {
 class Account
 {
 public:
-    static void destroy(int i);
-    static Account* destroy(Account* a);
-    static Account* add(const std::string& name);
+    static void destroyActive();
+    static void setActive(int i);
+    static void add(const std::string& name);
     static Account* get(int i);
-    static Account* loadFile(std::string filename);
+    static void loadFile(std::string filename);
     static void saveFile(std::string filename);
     static int indice(Account* a);
 

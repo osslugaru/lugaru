@@ -414,9 +414,10 @@ void Menu::Load()
         for (int i = 0; i < numlevels; i++) {
             XYZ midpoint = campaignlevels[i].getCenter();
             float itemsize = campaignlevels[i].getWidth();
-            const bool active = i >= Account::active->getCampaignChoicesMade();
-            if (!active)
+            const bool active = (i >= Account::active->getCampaignChoicesMade());
+            if (!active) {
                 itemsize /= 2;
+            }
 
             if (i >= 1) {
                 XYZ start = campaignlevels[i - 1].getCenter();
@@ -445,8 +446,9 @@ void Menu::Load()
             addLabel(0, "No More Users", 10, 400);
         addLabel(-2, "", 20, 400);
         addButton(Account::getNbAccounts() + 1, "Back", 10, 10);
-        for (int i = 0; i < Account::getNbAccounts(); i++)
+        for (int i = 0; i < Account::getNbAccounts(); i++) {
             addButton(i + 1, Account::get(i)->getName(), 10, 340 - 20 * (i + 1));
+        }
         break;
     case 8:
         addButton(0, "Easier", 10, 400);
@@ -771,7 +773,7 @@ void Menu::Tick()
             fireSound();
             if (selected == 1) {
                 flash();
-                Account::active = Account::destroy(Account::active);
+                Account::destroyActive();
                 mainmenu = 7;
             } else if (selected == 2) {
                 flash();
@@ -785,13 +787,14 @@ void Menu::Tick()
             } else if (selected < Account::getNbAccounts() + 1) {
                 flash();
                 mainmenu = 5;
-                Account::active = Account::get(selected - 1);
+                Account::setActive(selected - 1);
             } else if (selected == Account::getNbAccounts() + 1) {
                 flash();
-                if (Account::active)
+                if (Account::active) {
                     mainmenu = 5;
-                else
+                } else {
                     mainmenu = 1;
+                }
                 displaytext[0].clear();
                 displayselected = 0;
                 entername = 0;
@@ -872,7 +875,7 @@ void Menu::Tick()
         inputText(displaytext[0], &displayselected);
         if (!waiting) { // the input as finished
             if (!displaytext[0].empty()) { // with enter
-                Account::active = Account::add(string(displaytext[0]));
+                Account::add(string(displaytext[0]));
 
                 mainmenu = 8;
 

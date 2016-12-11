@@ -458,7 +458,7 @@ void Game::InitGame()
 
     numchallengelevels = 14;
 
-    Account::active = Account::loadFile(Folders::getUserDataPath()+"/users");
+    Account::loadFile(Folders::getUserDataPath()+"/users");
 
     whichjointstartarray[0] = righthip;
     whichjointendarray[0] = rightfoot;

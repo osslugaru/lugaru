@@ -49,35 +49,40 @@ void Account::setCurrentCampaign(const string& name)
     currentCampaign = name;
 }
 
-Account* Account::add(const string& name)
+void Account::add(const string& name)
 {
     accounts.push_back(new Account(name));
-    return accounts.back();
+    active = accounts.back();
 }
 
 Account* Account::get(int i)
 {
-
     if ((i >= 0) && (i < int(accounts.size()))) {
         return accounts[i];
     } else
         return NULL;
 }
 
-void Account::destroy(int i)
+void Account::setActive(int i)
 {
-    accounts.erase(accounts.begin() + i);
+    active = get(i);
 }
-Account* Account::destroy(Account* a)
+
+void Account::destroyActive()
 {
     for (unsigned i = 0; i < accounts.size(); i++) {
-        if (accounts[i] == a) {
+        if (accounts[i] == active) {
             accounts.erase(accounts.begin() + i);
-            return NULL;
+            active = nullptr;
+            return;
         }
     }
-    printf("Unexpected error : User %s not found\n", a->getName().c_str());
-    return accounts.front();
+    cerr << "Unexpected error : User " << active->getName() << " not found" << endl;
+    if (accounts.empty()) {
+        active = nullptr;
+    } else {
+        active = accounts.front();
+    }
 }
 
 int Account::getDifficulty()
@@ -111,7 +116,7 @@ void Account::winLevel(int level, float score, float time)
         progress = level + 1;
 }
 
-Account* Account::loadFile(string filename)
+void Account::loadFile(string filename)
 {
     FILE *tfile;
     int numaccounts;
@@ -186,10 +191,10 @@ Account* Account::loadFile(string filename)
         }
 
         fclose(tfile);
-        return get(iactive);
+        active = get(iactive);
     } else {
         perror(("Couldn't load users from " + filename).c_str());
-        return NULL;
+        active = nullptr;
     }
 }
 
