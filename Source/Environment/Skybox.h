@@ -18,47 +18,26 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _JOINT_H_
-#define _JOINT_H_
+#ifndef _SKYBOX_H_
+#define _SKYBOX_H_
 
+#include "Graphic/gamegl.h"
+#include "Graphic/Texture.h"
 #include "Math/Quaternions.h"
-#include <vector>
+#include "Math/Quaternions.h"
+#include "Utils/ImageIO.h"
 
-enum bodypart {
-    head, neck,
-    leftshoulder,  leftelbow,  leftwrist,  lefthand,
-    rightshoulder, rightelbow, rightwrist, righthand,
-    abdomen, lefthip, righthip, groin,
-    leftknee,  leftankle,  leftfoot,
-    rightknee, rightankle, rightfoot
-};
-
-class Joint
+class SkyBox
 {
 public:
-    XYZ position;
-    XYZ oldposition;
-    XYZ realoldposition;
-    XYZ velocity;
-    XYZ oldvelocity;
-    XYZ startpos;
-    float blurred;
-    float length;
-    float mass;
-    bool lower;
-    bool hasparent;
-    bool locked;
-    int modelnum;
-    bool visible;
-    Joint* parent;
-    bool sametwist;
-    bodypart label;
-    int hasgun;
-    float delay;
-    XYZ velchange;
+    Texture front, left, back, right, up, down;
 
-    Joint();
-    void load(FILE* tfile, std::vector<Joint>& joints);
+    void load(const std::string& ffront, const std::string& fleft, const std::string& fback,
+              const std::string& fright, const std::string& fup,   const std::string& fdown);
+    void draw();
+
+    SkyBox() {}
+    ~SkyBox();
 };
 
 #endif

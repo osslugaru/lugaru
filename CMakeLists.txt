@@ -48,40 +48,41 @@ set(LUGARU_SRCS
     ${SRCDIR}/Animation/Joint.cpp
     ${SRCDIR}/Animation/Muscle.cpp
     ${SRCDIR}/Animation/Skeleton.cpp
-    ${SRCDIR}/Frustum.cpp
-    ${SRCDIR}/Account.cpp
-    ${SRCDIR}/Campaign.cpp
-    ${SRCDIR}/ConsoleCmds.cpp
-    ${SRCDIR}/Dialog.cpp
-    ${SRCDIR}/Hotspot.cpp
+    ${SRCDIR}/Audio/openal_wrapper.cpp
+    ${SRCDIR}/Audio/Sounds.cpp
+    ${SRCDIR}/Devtools/ConsoleCmds.cpp
+    ${SRCDIR}/Environment/Lights.cpp
+    ${SRCDIR}/Environment/Skybox.cpp
+    ${SRCDIR}/Environment/Terrain.cpp
+    ${SRCDIR}/Graphic/Models.cpp
+    ${SRCDIR}/Graphic/Sprite.cpp
+    ${SRCDIR}/Graphic/Stereo.cpp
+    ${SRCDIR}/Graphic/Text.cpp
+    ${SRCDIR}/Graphic/Texture.cpp
+    ${SRCDIR}/Level/Awards.cpp
+    ${SRCDIR}/Level/Campaign.cpp
+    ${SRCDIR}/Level/Dialog.cpp
+    ${SRCDIR}/Level/Hotspot.cpp
+    ${SRCDIR}/Math/Frustum.cpp
+    ${SRCDIR}/Math/Quaternions.cpp
+    ${SRCDIR}/Menu/Menu.cpp
+    ${SRCDIR}/Objects/Objects.cpp
+    ${SRCDIR}/Objects/Person.cpp
+    ${SRCDIR}/Objects/Weapons.cpp
+    ${SRCDIR}/User/Account.cpp
+    ${SRCDIR}/User/Settings.cpp
+    ${SRCDIR}/Utils/Folders.cpp
+    ${SRCDIR}/Utils/ImageIO.cpp
+    ${SRCDIR}/Utils/Input.cpp
+    ${SRCDIR}/Utils/pack.c
+    ${SRCDIR}/Utils/private.c
+    ${SRCDIR}/Utils/unpack.c
     ${SRCDIR}/Game.cpp
     ${SRCDIR}/GameDraw.cpp
     ${SRCDIR}/GameInitDispose.cpp
     ${SRCDIR}/GameTick.cpp
     ${SRCDIR}/Globals.cpp
-    ${SRCDIR}/Lights.cpp
-    ${SRCDIR}/Menu.cpp
-    ${SRCDIR}/Models.cpp
-    ${SRCDIR}/Objects.cpp
-    ${SRCDIR}/pack.c
-    ${SRCDIR}/Person.cpp
-    ${SRCDIR}/private.c
-    ${SRCDIR}/Quaternions.cpp
-    ${SRCDIR}/Skybox.cpp
-    ${SRCDIR}/Sprite.cpp
-    ${SRCDIR}/Terrain.cpp
-    ${SRCDIR}/Texture.cpp
-    ${SRCDIR}/Text.cpp
-    ${SRCDIR}/ImageIO.cpp
-    ${SRCDIR}/unpack.c
-    ${SRCDIR}/Weapons.cpp
-    ${SRCDIR}/openal_wrapper.cpp
-    ${SRCDIR}/Input.cpp
-    ${SRCDIR}/Settings.cpp
-    ${SRCDIR}/Stereo.cpp
-    ${SRCDIR}/Sounds.cpp
-    ${SRCDIR}/Awards.cpp
-    ${SRCDIR}/Utils/Folders.cpp
+
 )
 
 set(LUGARU_H
@@ -89,38 +90,39 @@ set(LUGARU_H
     ${SRCDIR}/Animation/Joint.h
     ${SRCDIR}/Animation/Muscle.h
     ${SRCDIR}/Animation/Skeleton.h
-    ${SRCDIR}/Frustum.h
-    ${SRCDIR}/Account.h
-    ${SRCDIR}/Campaign.h
-    ${SRCDIR}/ConsoleCmds.h
-    ${SRCDIR}/Dialog.h
-    ${SRCDIR}/Hotspot.h
-    ${SRCDIR}/Game.h
-    ${SRCDIR}/Lights.h
-    ${SRCDIR}/Menu.h
-    ${SRCDIR}/Models.h
-    ${SRCDIR}/Objects.h
-    ${SRCDIR}/Person.h
-    ${SRCDIR}/PhysicsMath.h
-    ${SRCDIR}/Quaternions.h
-    ${SRCDIR}/Random.h
-    ${SRCDIR}/Skybox.h
-    ${SRCDIR}/Sprite.h
-    ${SRCDIR}/ImageIO.h
-    ${SRCDIR}/Terrain.h
-    ${SRCDIR}/Texture.h
-    ${SRCDIR}/Text.h
-    ${SRCDIR}/Weapons.h
-    ${SRCDIR}/Input.h
-    ${SRCDIR}/binio.h
-    ${SRCDIR}/openal_wrapper.h
-    ${SRCDIR}/optionparser.h
-    ${SRCDIR}/gamegl.h
-    ${SRCDIR}/private.h
-    ${SRCDIR}/Settings.h
-    ${SRCDIR}/Stereo.h
-    ${SRCDIR}/Sounds.h
+    ${SRCDIR}/Audio/openal_wrapper.h
+    ${SRCDIR}/Audio/Sounds.h
+    ${SRCDIR}/Devtools/ConsoleCmds.h
+    ${SRCDIR}/Environment/Lights.h
+    ${SRCDIR}/Environment/Skybox.h
+    ${SRCDIR}/Environment/Terrain.h
+    ${SRCDIR}/Graphic/gamegl.h
+    ${SRCDIR}/Graphic/Models.h
+    ${SRCDIR}/Graphic/Sprite.h
+    ${SRCDIR}/Graphic/Stereo.h
+    ${SRCDIR}/Graphic/Text.h
+    ${SRCDIR}/Graphic/Texture.h
+    ${SRCDIR}/Level/Campaign.h
+    ${SRCDIR}/Level/Dialog.h
+    ${SRCDIR}/Level/Hotspot.h
+    ${SRCDIR}/Math/Frustum.h
+    ${SRCDIR}/Math/PhysicsMath.h
+    ${SRCDIR}/Math/Quaternions.h
+    ${SRCDIR}/Math/Random.h
+    ${SRCDIR}/Menu/Menu.h
+    ${SRCDIR}/Objects/Objects.h
+    ${SRCDIR}/Objects/Person.h
+    ${SRCDIR}/Objects/Weapons.h
+    ${SRCDIR}/Thirdparty/optionparser.h
+    ${SRCDIR}/User/Account.h
+    ${SRCDIR}/User/Settings.h
+    ${SRCDIR}/Utils/binio.h
     ${SRCDIR}/Utils/Folders.h
+    ${SRCDIR}/Utils/ImageIO.h
+    ${SRCDIR}/Utils/Input.h
+    ${SRCDIR}/Utils/private.h
+    ${SRCDIR}/Game.h
+
 )
 
 if(UNIX)

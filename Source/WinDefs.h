@@ -48,7 +48,7 @@ typedef signed char SInt8;
 typedef unsigned int UInt32;
 
 
-#include "Random.h"
+#include "Math/Random.h"
 
 
 typedef struct AbsoluteTime {

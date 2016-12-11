@@ -20,9 +20,9 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 /**> HEADER FILES <**/
 #include "Game.h"
-#include "Animation/Skeleton.h"
-#include "openal_wrapper.h"
 #include "Animation/Animation.h"
+#include "Animation/Skeleton.h"
+#include "Audio/openal_wrapper.h"
 #include "Utils/Folders.h"
 
 extern float multiplier;

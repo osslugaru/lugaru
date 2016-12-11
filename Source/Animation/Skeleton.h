@@ -21,17 +21,16 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef _SKELETON_H_
 #define _SKELETON_H_
 
-#include "Models.h"
-
 /**> HEADER FILES <**/
-#include "gamegl.h"
-#include "Quaternions.h"
-#include "Objects.h"
-#include "Sprite.h"
-#include "binio.h"
 #include "Animation/Animation.h"
 #include "Animation/Joint.h"
 #include "Animation/Muscle.h"
+#include "Graphic/gamegl.h"
+#include "Graphic/Models.h"
+#include "Graphic/Sprite.h"
+#include "Math/Quaternions.h"
+#include "Objects/Objects.h"
+#include "Utils/binio.h"
 
 const int max_joints = 50;
 

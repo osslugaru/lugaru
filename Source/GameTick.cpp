@@ -35,17 +35,17 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include <cmath>
 #include <dirent.h>
 #include "Game.h"
-#include "openal_wrapper.h"
-#include "Settings.h"
-#include "Input.h"
 #include "Animation/Animation.h"
-#include "Awards.h"
-#include "Menu.h"
-#include "ConsoleCmds.h"
-#include "Dialog.h"
+#include "Audio/openal_wrapper.h"
+#include "Devtools/ConsoleCmds.h"
+#include "Level/Awards.h"
+#include "Level/Campaign.h"
+#include "Level/Dialog.h"
+#include "Level/Hotspot.h"
+#include "Menu/Menu.h"
+#include "User/Settings.h"
 #include "Utils/Folders.h"
-#include "Hotspot.h"
-#include "Campaign.h"
+#include "Utils/Input.h"
 
 #include <algorithm>
 #include <set>

@@ -25,15 +25,15 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include <iostream>
 #include <zlib.h>
 #include <set>
-#include "gamegl.h"
 #include "MacCompatibility.h"
-#include "Settings.h"
+#include "Graphic/gamegl.h"
+#include "User/Settings.h"
 
 #include "Game.h"
 
 using namespace Game;
 
-#include "openal_wrapper.h"
+#include "Audio/openal_wrapper.h"
 
 #ifdef WIN32
 #include <windows.h>

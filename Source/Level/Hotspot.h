@@ -18,47 +18,26 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _JOINT_H_
-#define _JOINT_H_
+#ifndef _HOTSPOT_H_
+#define _HOTSPOT_H_
 
 #include "Math/Quaternions.h"
 #include <vector>
 
-enum bodypart {
-    head, neck,
-    leftshoulder,  leftelbow,  leftwrist,  lefthand,
-    rightshoulder, rightelbow, rightwrist, righthand,
-    abdomen, lefthip, righthip, groin,
-    leftknee,  leftankle,  leftfoot,
-    rightknee, rightankle, rightfoot
-};
-
-class Joint
+class Hotspot
 {
 public:
-    XYZ position;
-    XYZ oldposition;
-    XYZ realoldposition;
-    XYZ velocity;
-    XYZ oldvelocity;
-    XYZ startpos;
-    float blurred;
-    float length;
-    float mass;
-    bool lower;
-    bool hasparent;
-    bool locked;
-    int modelnum;
-    bool visible;
-    Joint* parent;
-    bool sametwist;
-    bodypart label;
-    int hasgun;
-    float delay;
-    XYZ velchange;
+    static std::vector<Hotspot> hotspots;
+    static int current;
+    static int killhotspot;
 
-    Joint();
-    void load(FILE* tfile, std::vector<Joint>& joints);
+    Hotspot();
+    Hotspot(XYZ position, int type, float size);
+
+    XYZ position;
+    int type;
+    float size;
+    char text[256] = {0};
 };
 
 #endif

@@ -19,11 +19,11 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "Game.h"
-#include "openal_wrapper.h"
 #include "Animation/Animation.h"
-#include "Texture.h"
+#include "Audio/openal_wrapper.h"
+#include "Graphic/Texture.h"
+#include "Menu/Menu.h"
 #include "Utils/Folders.h"
-#include "Menu.h"
 
 extern float screenwidth, screenheight;
 extern float viewdistance;

@@ -20,21 +20,11 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "SDL.h"
 
-#include "gamegl.h"
-#include "Quaternions.h"
-#include "Lights.h"
-#include "Animation/Animation.h"
-#include "Animation/Skeleton.h"
-#include "Terrain.h"
-#include "Sprite.h"
-#include "Frustum.h"
-#include "Objects.h"
-#include "Weapons.h"
-#include "Person.h"
-#include "ImageIO.h"
-#include "openal_wrapper.h"
-#include "Stereo.h"
+#include <string>
 
+#include "Graphic/Stereo.h"
+#include "Math/Quaternions.h"
+#include "Objects/Weapons.h"
 
 bool visibleloading = 0;
 

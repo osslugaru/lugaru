@@ -17,8 +17,8 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Animation/Skeleton.h"
 #include "Animation/Animation.h"
+#include "Animation/Skeleton.h"
 #include "Utils/Folders.h"
 #include "Game.h"
 

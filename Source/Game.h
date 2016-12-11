@@ -23,26 +23,26 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "SDL.h"
 
-#include "ImageIO.h"
-
-#include "Terrain.h"
-#include "Skybox.h"
 #include "Animation/Skeleton.h"
-#include "Models.h"
-#include "Lights.h"
-#include "Person.h"
-#include "Sprite.h"
-#include "Text.h"
-#include "Objects.h"
-#include "Weapons.h"
-#include "binio.h"
+#include "Audio/Sounds.h"
+#include "Environment/Lights.h"
+#include "Environment/Skybox.h"
+#include "Environment/Terrain.h"
+#include "Graphic/gamegl.h"
+#include "Graphic/Models.h"
+#include "Graphic/Sprite.h"
+#include "Graphic/Stereo.h"
+#include "Graphic/Text.h"
+#include "Graphic/Texture.h"
+#include "Objects/Objects.h"
+#include "Objects/Person.h"
+#include "Objects/Weapons.h"
+#include "Thirdparty/optionparser.h"
+#include "User/Account.h"
+#include "Utils/binio.h"
+#include "Utils/ImageIO.h"
+
 #include <fstream>
-#include "gamegl.h"
-#include "Stereo.h"
-#include "Account.h"
-#include "Sounds.h"
-#include "Texture.h"
-#include "optionparser.h"
 
 #define NB_CAMPAIGN_MENU_ITEM 7
 

@@ -19,12 +19,12 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "Game.h"
-#include "openal_wrapper.h"
-#include "Input.h"
-#include "Awards.h"
-#include "Menu.h"
-#include "Dialog.h"
-#include "Hotspot.h"
+#include "Audio/openal_wrapper.h"
+#include "Level/Awards.h"
+#include "Level/Dialog.h"
+#include "Level/Hotspot.h"
+#include "Menu/Menu.h"
+#include "Utils/Input.h"
 
 extern XYZ viewer;
 extern int environment;

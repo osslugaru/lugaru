@@ -19,7 +19,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "Animation/Muscle.h"
-#include "binio.h"
+#include "Utils/binio.h"
 
 extern float multiplier;
 extern bool freeze;

@@ -21,6 +21,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #define ANIMATION_H
 
 #include <vector>
+#include "Math/Quaternions.h"
 
 enum anim_attack_type {
     neutral, normalattack, reversed, reversal
