@@ -30,6 +30,7 @@ using namespace std;
 extern bool devtools;
 
 vector<Account*> Account::accounts = vector<Account*>();
+Account* Account::active = nullptr;
 
 Account::Account(const string& name) : name(name), campaignProgress()
 {
@@ -114,14 +115,14 @@ Account* Account::loadFile(string filename)
 {
     FILE *tfile;
     int numaccounts;
-    int accountactive;
+    int iactive;
     errno = 0;
 
     tfile = fopen(filename.c_str(), "rb" );
 
     if (tfile) {
         funpackf(tfile, "Bi", &numaccounts);
-        funpackf(tfile, "Bi", &accountactive);
+        funpackf(tfile, "Bi", &iactive);
         printf("number of accounts %d\n", numaccounts);
         for (int i = 0; i < numaccounts; i++) {
             printf("loading account %d/%d\n", i, numaccounts);
@@ -185,14 +186,14 @@ Account* Account::loadFile(string filename)
         }
 
         fclose(tfile);
-        return get(accountactive);
+        return get(iactive);
     } else {
         perror(("Couldn't load users from " + filename).c_str());
         return NULL;
     }
 }
 
-void Account::saveFile(string filename, Account* accountactive)
+void Account::saveFile(string filename)
 {
     FILE *tfile;
     errno = 0;
@@ -200,7 +201,7 @@ void Account::saveFile(string filename, Account* accountactive)
     tfile = fopen(filename.c_str(), "wb" );
     if (tfile) {
         fpackf(tfile, "Bi", getNbAccounts());
-        fpackf(tfile, "Bi", indice(accountactive));
+        fpackf(tfile, "Bi", indice(Account::active));
 
         for (int i = 0; i < getNbAccounts(); i++) {
             Account* a = Account::get(i);

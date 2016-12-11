@@ -1051,9 +1051,9 @@ int Game::DrawGLScene(StereoSide side)
             if (!tutoriallevel && !winfreeze && !Dialog::inDialog() && !mainmenu) {
                 if (campaign) {
                     if (scoreadded)
-                        sprintf (string, "Score: %d", (int)accountactive->getCampaignScore());
+                        sprintf (string, "Score: %d", (int)Account::active->getCampaignScore());
                     else
-                        sprintf (string, "Score: %d", (int)accountactive->getCampaignScore() + (int)bonustotal);
+                        sprintf (string, "Score: %d", (int)Account::active->getCampaignScore() + (int)bonustotal);
                 }
                 if (!campaign)
                     sprintf (string, "Score: %d", (int)bonustotal);

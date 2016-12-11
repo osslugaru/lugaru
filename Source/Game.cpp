@@ -129,7 +129,6 @@ int targetlevel = 0;
 float changedelay = 0;
 
 bool waiting = false;
-Account* accountactive = NULL;
 }
 
 void Game::fireSound(int sound)

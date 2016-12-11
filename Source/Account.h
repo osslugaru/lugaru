@@ -48,8 +48,10 @@ public:
     static Account* add(const std::string& name);
     static Account* get(int i);
     static Account* loadFile(std::string filename);
-    static void saveFile(std::string filename, Account* accountactive);
+    static void saveFile(std::string filename);
     static int indice(Account* a);
+
+    static Account* active;
 
     void endGame();
     void winCampaignLevel(int choice, float score, float time);

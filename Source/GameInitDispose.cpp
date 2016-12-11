@@ -79,11 +79,11 @@ void Dispose()
     LOGFUNC;
 
     if (Game::endgame == 2) {
-        Game::accountactive->endGame();
+        Account::active->endGame();
         Game::endgame = 0;
     }
 
-    Account::saveFile(Folders::getUserDataPath()+"/users", Game::accountactive);
+    Account::saveFile(Folders::getUserDataPath()+"/users");
 
     //textures.clear();
 
@@ -458,7 +458,7 @@ void Game::InitGame()
 
     numchallengelevels = 14;
 
-    accountactive = Account::loadFile(Folders::getUserDataPath()+"/users");
+    Account::active = Account::loadFile(Folders::getUserDataPath()+"/users");
 
     whichjointstartarray[0] = righthip;
     whichjointendarray[0] = rightfoot;

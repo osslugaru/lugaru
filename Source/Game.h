@@ -135,7 +135,6 @@ extern int targetlevel;
 extern float changedelay;
 
 extern bool waiting;
-extern Account* accountactive;
 
 extern unsigned short crouchkey, jumpkey, forwardkey, backkey, leftkey, rightkey, drawkey, throwkey, attackkey;
 extern unsigned short consolekey;
