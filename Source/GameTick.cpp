@@ -692,8 +692,9 @@ void Game::Loadlevel(const std::string& name)
     damagedealt = 0;
     damagetaken = 0;
 
-    if (Account::active)
-        difficulty = Account::active->getDifficulty();
+    if (Account::hasActive()) {
+        difficulty = Account::active().getDifficulty();
+    }
 
     Hotspot::hotspots.clear();
     Hotspot::current = -1;
@@ -6217,11 +6218,11 @@ void Game::TickOnceAfter()
             if (changedelay > 0 && !Person::players[0]->dead && !won) {
                 //high scores, awards, win
                 if (campaign) {
-                    Account::active->winCampaignLevel(whichchoice, bonustotal, leveltime);
+                    Account::active().winCampaignLevel(whichchoice, bonustotal, leveltime);
                     scoreadded = 1;
                 } else {
                     wonleveltime = leveltime;
-                    Account::active->winLevel(whichlevel, bonustotal - startbonustotal, leveltime);
+                    Account::active().winLevel(whichlevel, bonustotal - startbonustotal, leveltime);
                 }
                 won = 1;
             }
@@ -6264,7 +6265,7 @@ void Game::TickOnceAfter()
 
                     fireSound(firestartsound);
 
-                    Loadlevel(campaignlevels[Account::active->getCampaignChoicesMade()].mapname.c_str());
+                    Loadlevel(campaignlevels[Account::active().getCampaignChoicesMade()].mapname.c_str());
 
                     fireSound();
 

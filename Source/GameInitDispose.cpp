@@ -79,7 +79,7 @@ void Dispose()
     LOGFUNC;
 
     if (Game::endgame == 2) {
-        Account::active->endGame();
+        Account::active().endGame();
         Game::endgame = 0;
     }
 

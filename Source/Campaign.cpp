@@ -55,16 +55,17 @@ std::vector<std::string> ListCampaigns()
 
 void LoadCampaign()
 {
-    if (!Account::active)
+    if (!Account::hasActive()) {
         return;
-    std::ifstream ipstream(Folders::getResourcePath("Campaigns/" + Account::active->getCurrentCampaign() + ".txt"));
+    }
+    std::ifstream ipstream(Folders::getResourcePath("Campaigns/" + Account::active().getCurrentCampaign() + ".txt"));
     if (!ipstream.good()) {
-        if (Account::active->getCurrentCampaign() == "main") {
+        if (Account::active().getCurrentCampaign() == "main") {
             cerr << "Could not found main campaign!" << endl;
             return;
         }
-        cerr << "Could not found campaign \"" << Account::active->getCurrentCampaign() << "\", falling back to main." << endl;
-        Account::active->setCurrentCampaign("main");
+        cerr << "Could not found campaign \"" << Account::active().getCurrentCampaign() << "\", falling back to main." << endl;
+        Account::active().setCurrentCampaign("main");
         return LoadCampaign();
     }
     ipstream.ignore(256, ':');
@@ -78,16 +79,16 @@ void LoadCampaign()
     }
     ipstream.close();
 
-    std::ifstream test(Folders::getResourcePath("Textures/" + Account::active->getCurrentCampaign() + "/World.png"));
+    std::ifstream test(Folders::getResourcePath("Textures/" + Account::active().getCurrentCampaign() + "/World.png"));
     if (test.good()) {
-        Mainmenuitems[7].load("Textures/" + Account::active->getCurrentCampaign() + "/World.png", 0);
+        Mainmenuitems[7].load("Textures/" + Account::active().getCurrentCampaign() + "/World.png", 0);
     } else {
         Mainmenuitems[7].load("Textures/World.png", 0);
     }
 
-    if (Account::active->getCampaignChoicesMade() == 0) {
-        Account::active->setCampaignScore(0);
-        Account::active->resetFasttime();
+    if (Account::active().getCampaignChoicesMade() == 0) {
+        Account::active().setCampaignScore(0);
+        Account::active().resetFasttime();
     }
 }
 

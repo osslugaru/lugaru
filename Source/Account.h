@@ -51,7 +51,9 @@ public:
     static void saveFile(std::string filename);
     static int indice(Account* a);
 
-    static Account* active;
+    static bool hasActive() { return (_active != nullptr); }
+    static Account& active() { return *_active; }
+    static Account* _active;
 
     void endGame();
     void winCampaignLevel(int choice, float score, float time);

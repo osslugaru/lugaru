@@ -397,24 +397,24 @@ void Menu::Load()
         break;
     case 5: {
         LoadCampaign();
-        addLabel(-1, Account::active->getName(), 5, 400);
+        addLabel(-1, Account::active().getName(), 5, 400);
         addButton(1, "Tutorial", 5, 300);
         addButton(2, "Challenge", 5, 240);
         addButton(3, "Delete User", 400, 10);
         addButton(4, "Main Menu", 5, 10);
         addButton(5, "Change User", 5, 180);
-        addButton(6, "Campaign : " + Account::active->getCurrentCampaign(), 200, 420);
+        addButton(6, "Campaign : " + Account::active().getCurrentCampaign(), 200, 420);
 
         //show campaign map
         //with (2,-5) offset from old code
         addImage(-1, Mainmenuitems[7], 150 + 2, 60 - 5, 400, 400);
         //show levels
-        int numlevels = Account::active->getCampaignChoicesMade();
+        int numlevels = Account::active().getCampaignChoicesMade();
         numlevels += numlevels > 0 ? campaignlevels[numlevels - 1].nextlevel.size() : 1;
         for (int i = 0; i < numlevels; i++) {
             XYZ midpoint = campaignlevels[i].getCenter();
             float itemsize = campaignlevels[i].getWidth();
-            const bool active = (i >= Account::active->getCampaignChoicesMade());
+            const bool active = (i >= Account::active().getCampaignChoicesMade());
             if (!active) {
                 itemsize /= 2;
             }
@@ -462,18 +462,18 @@ void Menu::Load()
             if (name.size() < 17) {
                 name.append((17 - name.size()), ' ');
             }
-            name += to_string(int(Account::active->getHighScore(i)));
+            name += to_string(int(Account::active().getHighScore(i)));
             if (name.size() < 32) {
                 name.append((32 - name.size()), ' ');
             }
-            int fasttime = (int)round(Account::active->getFastTime(i));
+            int fasttime = (int)round(Account::active().getFastTime(i));
             name += to_string(int((fasttime - fasttime % 60) / 60));
             name += ":";
             if (fasttime % 60 < 10)
                 name += "0";
             name += to_string(fasttime % 60);
 
-            addButton(i, name, 10, 400 - i * 25, i > Account::active->getProgress() ? 0.5 : 1, 0, 0);
+            addButton(i, name, 10, 400 - i * 25, i > Account::active().getProgress() ? 0.5 : 1, 0, 0);
         }
 
         addButton(-1, "             High Score      Best Time", 10, 440);
@@ -484,8 +484,8 @@ void Menu::Load()
         addLabel(1, "You have avenged your family and", 140, 300);
         addLabel(2, "restored peace to the island of Lugaru.", 110, 270);
         addButton(3, "Back", 10, 10);
-        addLabel(4, string("Your score:         ") + to_string((int)Account::active->getCampaignScore()), 190, 200);
-        addLabel(5, string("Highest score:      ") + to_string((int)Account::active->getCampaignHighScore()), 190, 180);
+        addLabel(4, string("Your score:         ") + to_string((int)Account::active().getCampaignScore()), 190, 200);
+        addLabel(5, string("Highest score:      ") + to_string((int)Account::active().getCampaignHighScore()), 190, 180);
     }
     break;
     case 18:
@@ -537,7 +537,7 @@ void Menu::Tick()
 
     // some specific case where we do something even if the left mouse button is not pressed.
     if ((mainmenu == 5) && (endgame == 2)) {
-        Account::active->endGame();
+        Account::active().endGame();
         endgame = 0;
     }
     if (mainmenu == 10)
@@ -563,7 +563,7 @@ void Menu::Tick()
                 } else { //new game
                     fireSound(firestartsound);
                     flash();
-                    mainmenu = (Account::active ? 5 : 7);
+                    mainmenu = (Account::hasActive() ? 5 : 7);
                     selected = -1;
                 }
                 break;
@@ -704,7 +704,7 @@ void Menu::Tick()
         case 5:
             fireSound();
             flash();
-            if ((selected - NB_CAMPAIGN_MENU_ITEM >= Account::active->getCampaignChoicesMade())) {
+            if ((selected - NB_CAMPAIGN_MENU_ITEM >= Account::active().getCampaignChoicesMade())) {
                 startbonustotal = 0;
 
                 loading = 2;
@@ -714,8 +714,8 @@ void Menu::Tick()
                     TickOnceAfter();
                 else
                     LoadStuff();
-                whichchoice = selected - NB_CAMPAIGN_MENU_ITEM - Account::active->getCampaignChoicesMade();
-                actuallevel = (Account::active->getCampaignChoicesMade() > 0 ? campaignlevels[Account::active->getCampaignChoicesMade() - 1].nextlevel[whichchoice] : 0);
+                whichchoice = selected - NB_CAMPAIGN_MENU_ITEM - Account::active().getCampaignChoicesMade();
+                actuallevel = (Account::active().getCampaignChoicesMade() > 0 ? campaignlevels[Account::active().getCampaignChoicesMade() - 1].nextlevel[whichchoice] : 0);
                 visibleloading = 1;
                 stillloading = 1;
                 Loadlevel(campaignlevels[actuallevel].mapname.c_str());
@@ -756,14 +756,14 @@ void Menu::Tick()
             case 6:
                 vector<string> campaigns = ListCampaigns();
                 vector<string>::iterator c;
-                if ((c = find(campaigns.begin(), campaigns.end(), Account::active->getCurrentCampaign())) == campaigns.end()) {
+                if ((c = find(campaigns.begin(), campaigns.end(), Account::active().getCurrentCampaign())) == campaigns.end()) {
                     if (!campaigns.empty())
-                        Account::active->setCurrentCampaign(campaigns.front());
+                        Account::active().setCurrentCampaign(campaigns.front());
                 } else {
                     c++;
                     if (c == campaigns.end())
                         c = campaigns.begin();
-                    Account::active->setCurrentCampaign(*c);
+                    Account::active().setCurrentCampaign(*c);
                 }
                 Load();
                 break;
@@ -790,7 +790,7 @@ void Menu::Tick()
                 Account::setActive(selected - 1);
             } else if (selected == Account::getNbAccounts() + 1) {
                 flash();
-                if (Account::active) {
+                if (Account::hasActive()) {
                     mainmenu = 5;
                 } else {
                     mainmenu = 1;
@@ -804,11 +804,11 @@ void Menu::Tick()
             fireSound();
             flash();
             if (selected <= 2)
-                Account::active->setDifficulty(selected);
+                Account::active().setDifficulty(selected);
             mainmenu = 5;
             break;
         case 9:
-            if (selected < numchallengelevels && selected <= Account::active->getProgress()) {
+            if (selected < numchallengelevels && selected <= Account::active().getProgress()) {
                 fireSound();
                 flash();
 

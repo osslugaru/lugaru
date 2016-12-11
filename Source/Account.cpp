@@ -30,7 +30,7 @@ using namespace std;
 extern bool devtools;
 
 vector<Account*> Account::accounts = vector<Account*>();
-Account* Account::active = nullptr;
+Account* Account::_active = nullptr;
 
 Account::Account(const string& name) : name(name), campaignProgress()
 {
@@ -52,7 +52,7 @@ void Account::setCurrentCampaign(const string& name)
 void Account::add(const string& name)
 {
     accounts.push_back(new Account(name));
-    active = accounts.back();
+    _active = accounts.back();
 }
 
 Account* Account::get(int i)
@@ -65,23 +65,23 @@ Account* Account::get(int i)
 
 void Account::setActive(int i)
 {
-    active = get(i);
+    _active = get(i);
 }
 
 void Account::destroyActive()
 {
     for (unsigned i = 0; i < accounts.size(); i++) {
-        if (accounts[i] == active) {
+        if (accounts[i] == _active) {
             accounts.erase(accounts.begin() + i);
-            active = nullptr;
+            _active = nullptr;
             return;
         }
     }
-    cerr << "Unexpected error : User " << active->getName() << " not found" << endl;
+    cerr << "Unexpected error : User " << _active->getName() << " not found" << endl;
     if (accounts.empty()) {
-        active = nullptr;
+        _active = nullptr;
     } else {
-        active = accounts.front();
+        _active = accounts.front();
     }
 }
 
@@ -191,10 +191,10 @@ void Account::loadFile(string filename)
         }
 
         fclose(tfile);
-        active = get(iactive);
+        _active = get(iactive);
     } else {
         perror(("Couldn't load users from " + filename).c_str());
-        active = nullptr;
+        _active = nullptr;
     }
 }
 
@@ -206,7 +206,7 @@ void Account::saveFile(string filename)
     tfile = fopen(filename.c_str(), "wb" );
     if (tfile) {
         fpackf(tfile, "Bi", getNbAccounts());
-        fpackf(tfile, "Bi", indice(Account::active));
+        fpackf(tfile, "Bi", indice(Account::_active));
 
         for (int i = 0; i < getNbAccounts(); i++) {
             Account* a = Account::get(i);
