@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>lugaru</string>
 	<key>CFBundleIconFile</key>
-	<string>lugaru.icns</string>
+	<string>Lugaru.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.wolfire.Lugaru</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -21,7 +21,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.1</string>
 	<key>LSMinimumSystemVersion</key>
-	<string>10.5.0</string>
+	<string>10.11.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>NSMainNibFile</key>
