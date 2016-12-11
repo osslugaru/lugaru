@@ -930,15 +930,7 @@ void Model::drawdifftex(GLuint texture)
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 
-
-#ifndef WIN32
-    glLockArraysEXT( 0, TriangleNum * 3);
-#endif
     glDrawArrays(GL_TRIANGLES, 0, TriangleNum * 3);
-#ifndef WIN32
-    glUnlockArraysEXT();
-#endif
-
 
     if (!color)
         glDisableClientState(GL_NORMAL_ARRAY);
@@ -962,15 +954,7 @@ void Model::drawdifftex(Texture texture)
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 
-
-#ifndef WIN32
-    glLockArraysEXT( 0, TriangleNum * 3);
-#endif
     glDrawArrays(GL_TRIANGLES, 0, TriangleNum * 3);
-#ifndef WIN32
-    glUnlockArraysEXT();
-#endif
-
 
     if (!color)
         glDisableClientState(GL_NORMAL_ARRAY);
