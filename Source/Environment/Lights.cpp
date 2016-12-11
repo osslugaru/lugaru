@@ -18,8 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/**> HEADER FILES <**/
-#include "Environment/Lights.h"
+#include "Environment/Lights.hpp"
 
 void SetUpLight(Light* whichsource, int whichlight)
 {

@@ -17,9 +17,10 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Level/Awards.h"
-#include "Objects/Person.h"
-#include "Game.h"
+#include "Level/Awards.hpp"
+
+#include "Game.hpp"
+#include "Objects/Person.hpp"
 
 int bonus;
 float bonusvalue;

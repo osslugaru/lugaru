@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Level/Hotspot.h"
+#include "Level/Hotspot.hpp"
 
 std::vector<Hotspot> Hotspot::hotspots;
 int Hotspot::current = 0;

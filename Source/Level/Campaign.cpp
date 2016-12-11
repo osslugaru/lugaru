@@ -18,9 +18,10 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Game.h"
-#include "Level/Campaign.h"
-#include "Utils/Folders.h"
+#include "Level/Campaign.hpp"
+
+#include "Game.hpp"
+#include "Utils/Folders.hpp"
 
 #include <dirent.h>
 

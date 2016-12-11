@@ -18,13 +18,12 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "SDL.h"
+#include "Graphic/Stereo.hpp"
+#include "Math/Quaternions.hpp"
+#include "Objects/Weapons.hpp"
 
+#include <SDL.h>
 #include <string>
-
-#include "Graphic/Stereo.h"
-#include "Math/Quaternions.h"
-#include "Objects/Weapons.h"
 
 bool visibleloading = 0;
 

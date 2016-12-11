@@ -18,10 +18,11 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Game.h"
-#include "User/Settings.h"
-#include "Utils/Folders.h"
-#include "Utils/Input.h"
+#include "User/Settings.hpp"
+
+#include "Game.hpp"
+#include "Utils/Folders.hpp"
+#include "Utils/Input.hpp"
 
 using namespace Game;
 

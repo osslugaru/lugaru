@@ -18,12 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/**> HEADER FILES <**/
-#include "MacCompatibility.h"
-
-#ifdef WIN32
-#include <windows.h>
-#endif
+#include "MacCompatibility.hpp"
 
 #include <errno.h>
 #include <time.h>
@@ -31,11 +26,16 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 #if PLATFORM_UNIX
-#include <unistd.h>
-#include <sys/time.h>
-#include <sys/stat.h>
 #include <assert.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/time.h>
+
 typedef long long __int64;
 typedef __int64 LARGE_INTEGER;
 static int QueryPerformanceFrequency(LARGE_INTEGER *liptr)

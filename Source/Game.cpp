@@ -18,11 +18,12 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "SDL_thread.h"
-#include "Game.h"
-#include "Audio/openal_wrapper.h"
-#include "Level/Dialog.h"
+#include "Game.hpp"
 
+#include "Audio/openal_wrapper.hpp"
+#include "Level/Dialog.hpp"
+
+#include <SDL_thread.h>
 
 extern int mainmenu;
 

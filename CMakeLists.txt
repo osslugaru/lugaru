@@ -86,42 +86,42 @@ set(LUGARU_SRCS
 )
 
 set(LUGARU_H
-    ${SRCDIR}/Animation/Animation.h
-    ${SRCDIR}/Animation/Joint.h
-    ${SRCDIR}/Animation/Muscle.h
-    ${SRCDIR}/Animation/Skeleton.h
-    ${SRCDIR}/Audio/openal_wrapper.h
-    ${SRCDIR}/Audio/Sounds.h
-    ${SRCDIR}/Devtools/ConsoleCmds.h
-    ${SRCDIR}/Environment/Lights.h
-    ${SRCDIR}/Environment/Skybox.h
-    ${SRCDIR}/Environment/Terrain.h
-    ${SRCDIR}/Graphic/gamegl.h
-    ${SRCDIR}/Graphic/Models.h
-    ${SRCDIR}/Graphic/Sprite.h
-    ${SRCDIR}/Graphic/Stereo.h
-    ${SRCDIR}/Graphic/Text.h
-    ${SRCDIR}/Graphic/Texture.h
-    ${SRCDIR}/Level/Campaign.h
-    ${SRCDIR}/Level/Dialog.h
-    ${SRCDIR}/Level/Hotspot.h
-    ${SRCDIR}/Math/Frustum.h
-    ${SRCDIR}/Math/PhysicsMath.h
-    ${SRCDIR}/Math/Quaternions.h
-    ${SRCDIR}/Math/Random.h
-    ${SRCDIR}/Menu/Menu.h
-    ${SRCDIR}/Objects/Objects.h
-    ${SRCDIR}/Objects/Person.h
-    ${SRCDIR}/Objects/Weapons.h
+    ${SRCDIR}/Animation/Animation.hpp
+    ${SRCDIR}/Animation/Joint.hpp
+    ${SRCDIR}/Animation/Muscle.hpp
+    ${SRCDIR}/Animation/Skeleton.hpp
+    ${SRCDIR}/Audio/openal_wrapper.hpp
+    ${SRCDIR}/Audio/Sounds.hpp
+    ${SRCDIR}/Devtools/ConsoleCmds.hpp
+    ${SRCDIR}/Environment/Lights.hpp
+    ${SRCDIR}/Environment/Skybox.hpp
+    ${SRCDIR}/Environment/Terrain.hpp
+    ${SRCDIR}/Graphic/gamegl.hpp
+    ${SRCDIR}/Graphic/Models.hpp
+    ${SRCDIR}/Graphic/Sprite.hpp
+    ${SRCDIR}/Graphic/Stereo.hpp
+    ${SRCDIR}/Graphic/Text.hpp
+    ${SRCDIR}/Graphic/Texture.hpp
+    ${SRCDIR}/Level/Campaign.hpp
+    ${SRCDIR}/Level/Dialog.hpp
+    ${SRCDIR}/Level/Hotspot.hpp
+    ${SRCDIR}/Math/Frustum.hpp
+    ${SRCDIR}/Math/PhysicsMath.hpp
+    ${SRCDIR}/Math/Quaternions.hpp
+    ${SRCDIR}/Math/Random.hpp
+    ${SRCDIR}/Menu/Menu.hpp
+    ${SRCDIR}/Objects/Objects.hpp
+    ${SRCDIR}/Objects/Person.hpp
+    ${SRCDIR}/Objects/Weapons.hpp
     ${SRCDIR}/Thirdparty/optionparser.h
-    ${SRCDIR}/User/Account.h
-    ${SRCDIR}/User/Settings.h
+    ${SRCDIR}/User/Account.hpp
+    ${SRCDIR}/User/Settings.hpp
     ${SRCDIR}/Utils/binio.h
-    ${SRCDIR}/Utils/Folders.h
-    ${SRCDIR}/Utils/ImageIO.h
-    ${SRCDIR}/Utils/Input.h
+    ${SRCDIR}/Utils/Folders.hpp
+    ${SRCDIR}/Utils/ImageIO.hpp
+    ${SRCDIR}/Utils/Input.hpp
     ${SRCDIR}/Utils/private.h
-    ${SRCDIR}/Game.h
+    ${SRCDIR}/Game.hpp
 
 )
 
@@ -132,7 +132,7 @@ if(UNIX)
     )
     set(LUGARU_H
         ${LUGARU_H}
-        ${SRCDIR}/MacCompatibility.h
+        ${SRCDIR}/MacCompatibility.hpp
     )
 endif(UNIX)
 
@@ -152,8 +152,8 @@ if(WIN32)
 
     set(LUGARU_H
         ${LUGARU_H}
-        ${SRCDIR}/WinDefs.h
-        ${SRCDIR}/win-res/resource.h)
+        ${SRCDIR}/WinDefs.hpp
+        ${SRCDIR}/win-res/resource.hpp)
 endif(WIN32)
 
 if(APPLE)

@@ -17,10 +17,10 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Audio/openal_wrapper.h"
-#include "Audio/Sounds.h"
-#include "Math/Quaternions.h"
-#include "Utils/Folders.h"
+#include "Audio/Sounds.hpp"
+
+#include "Audio/openal_wrapper.hpp"
+#include "Utils/Folders.hpp"
 
 struct OPENAL_SAMPLE *samp[sounds_count];
 

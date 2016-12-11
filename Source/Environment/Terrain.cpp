@@ -18,10 +18,11 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Game.h"
-#include "Environment/Terrain.h"
-#include "Objects/Objects.h"
-#include "Utils/Folders.h"
+#include "Environment/Terrain.hpp"
+
+#include "Game.hpp"
+#include "Objects/Objects.hpp"
+#include "Utils/Folders.hpp"
 
 extern XYZ viewer;
 extern float viewdistance;

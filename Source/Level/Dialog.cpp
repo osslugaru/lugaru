@@ -18,13 +18,13 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Game.h"
+#include "Level/Dialog.hpp"
 
-#include "Level/Dialog.h"
-#include "Objects/Person.h"
+#include "Game.hpp"
+#include "Objects/Person.hpp"
 #include "Utils/binio.h"
-#include "Utils/Folders.h"
-#include "Utils/Input.h"
+#include "Utils/Folders.hpp"
+#include "Utils/Input.hpp"
 
 extern int hostile;
 

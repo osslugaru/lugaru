@@ -18,16 +18,15 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/**> HEADER FILES <**/
-#include "Animation/Animation.h"
-#include "Audio/openal_wrapper.h"
-#include "Audio/Sounds.h"
-#include "Level/Awards.h"
-#include "Level/Dialog.h"
-#include "Objects/Person.h"
-#include "Utils/Folders.h"
+#include "Objects/Person.hpp"
 
-#include "Game.h"
+#include "Animation/Animation.hpp"
+#include "Audio/openal_wrapper.hpp"
+#include "Audio/Sounds.hpp"
+#include "Game.hpp"
+#include "Level/Awards.hpp"
+#include "Level/Dialog.hpp"
+#include "Utils/Folders.hpp"
 
 extern float multiplier;
 extern Terrain terrain;

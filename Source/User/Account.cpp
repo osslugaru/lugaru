@@ -18,12 +18,14 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "User/Account.h"
+#include "User/Account.hpp"
+
+#include "MacCompatibility.hpp"
 #include "Utils/binio.h"
-#include "MacCompatibility.h"
+
 #include <fstream>
-#include "string.h"
 #include <iostream>
+#include <string.h>
 
 using namespace std;
 

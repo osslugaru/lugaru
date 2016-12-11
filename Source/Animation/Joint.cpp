@@ -18,7 +18,8 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Animation/Joint.h"
+#include "Animation/Joint.hpp"
+
 #include "Utils/binio.h"
 
 Joint::Joint() :

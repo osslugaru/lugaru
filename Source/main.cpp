@@ -18,27 +18,27 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
+#include "Game.hpp"
+
+#include "Audio/openal_wrapper.hpp"
+#include "Graphic/gamegl.hpp"
+#include "MacCompatibility.hpp"
+#include "User/Settings.hpp"
+
 #include <fstream>
 #include <iostream>
-#include <zlib.h>
+#include <math.h>
 #include <set>
-#include "MacCompatibility.h"
-#include "Graphic/gamegl.h"
-#include "User/Settings.h"
-
-#include "Game.h"
+#include <stdio.h>
+#include <string.h>
+#include <zlib.h>
 
 using namespace Game;
 
-#include "Audio/openal_wrapper.h"
-
 #ifdef WIN32
-#include <windows.h>
 #include <shellapi.h>
-#include "win-res/resource.h"
+#include <windows.h>
+#include "win-res/resource.hpp"
 #endif
 
 extern float multiplier;

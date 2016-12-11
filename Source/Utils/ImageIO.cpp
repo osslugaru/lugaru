@@ -18,16 +18,15 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/**> HEADER FILES <**/
+#include "Utils/ImageIO.hpp"
 
-#include <stdio.h>
+#include "Game.hpp"
+#include "Utils/Folders.hpp"
+
 #include <jpeglib.h>
 #include <png.h>
+#include <stdio.h>
 #include <zlib.h>
-
-#include "Game.h"
-#include "Utils/ImageIO.h"
-#include "Utils/Folders.h"
 
 extern bool visibleloading;
 

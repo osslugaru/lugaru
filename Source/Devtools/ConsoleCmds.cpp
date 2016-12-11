@@ -18,11 +18,12 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Game.h"
-#include "Devtools/ConsoleCmds.h"
-#include "Level/Dialog.h"
-#include "Level/Hotspot.h"
-#include "Utils/Folders.h"
+#include "Devtools/ConsoleCmds.hpp"
+
+#include "Game.hpp"
+#include "Level/Dialog.hpp"
+#include "Level/Hotspot.hpp"
+#include "Utils/Folders.hpp"
 
 const char *cmd_names[cmd_count] = {
 #define DECLARE_COMMAND(cmd) #cmd,

@@ -21,6 +21,20 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 // Enable full math definitions
 #define _USE_MATH_DEFINES
 
+#include "Game.hpp"
+
+#include "Animation/Animation.hpp"
+#include "Audio/openal_wrapper.hpp"
+#include "Devtools/ConsoleCmds.hpp"
+#include "Level/Awards.hpp"
+#include "Level/Campaign.hpp"
+#include "Level/Dialog.hpp"
+#include "Level/Hotspot.hpp"
+#include "Menu/Menu.hpp"
+#include "User/Settings.hpp"
+#include "Utils/Folders.hpp"
+#include "Utils/Input.hpp"
+
 #if PLATFORM_UNIX
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -29,25 +43,11 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include <direct.h>
 #endif
 
-
-#include <limits>
-#include <ctime>
-#include <cmath>
-#include <dirent.h>
-#include "Game.h"
-#include "Animation/Animation.h"
-#include "Audio/openal_wrapper.h"
-#include "Devtools/ConsoleCmds.h"
-#include "Level/Awards.h"
-#include "Level/Campaign.h"
-#include "Level/Dialog.h"
-#include "Level/Hotspot.h"
-#include "Menu/Menu.h"
-#include "User/Settings.h"
-#include "Utils/Folders.h"
-#include "Utils/Input.h"
-
 #include <algorithm>
+#include <cmath>
+#include <ctime>
+#include <dirent.h>
+#include <limits>
 #include <set>
 
 using namespace std;

@@ -18,8 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/**> HEADER FILES <**/
-#include "Utils/Input.h"
+#include "Utils/Input.hpp"
 
 bool keyDown[SDL_NUM_SCANCODES + 6];
 bool keyPressed[SDL_NUM_SCANCODES + 6];

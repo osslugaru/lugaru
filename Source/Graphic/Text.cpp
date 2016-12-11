@@ -18,9 +18,9 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/**> HEADER FILES <**/
-#include "Graphic/Text.h"
-#include "Game.h"
+#include "Graphic/Text.hpp"
+
+#include "Game.hpp"
 
 void Text::LoadFontTexture(const std::string& fileName)
 {

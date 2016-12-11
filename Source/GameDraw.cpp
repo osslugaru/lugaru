@@ -18,13 +18,14 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Game.h"
-#include "Audio/openal_wrapper.h"
-#include "Level/Awards.h"
-#include "Level/Dialog.h"
-#include "Level/Hotspot.h"
-#include "Menu/Menu.h"
-#include "Utils/Input.h"
+#include "Game.hpp"
+
+#include "Audio/openal_wrapper.hpp"
+#include "Level/Awards.hpp"
+#include "Level/Dialog.hpp"
+#include "Level/Hotspot.hpp"
+#include "Menu/Menu.hpp"
+#include "Utils/Input.hpp"
 
 extern XYZ viewer;
 extern int environment;

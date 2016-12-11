@@ -18,12 +18,12 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/**> HEADER FILES <**/
-#include "WinDefs.h"
-#include <windows.h>
+#include "WinDefs.hpp"
+
 #include <errno.h>
-#include <time.h>
 #include <stdio.h>
+#include <time.h>
+#include <windows.h>
 
 
 class AppTime

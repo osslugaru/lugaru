@@ -18,17 +18,20 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Folders.h"
+#include "Folders.hpp"
+
 #include <cstring>
 #include <unistd.h>
+
 #if PLATFORM_UNIX
+#include <pwd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <pwd.h>
 #endif
+
 #if _WIN32
-#include <windows.h>
 #include <shlobj.h> // to get paths related functions
+#include <windows.h>
 #endif
 
 const std::string Folders::dataDir = DATA_DIR;

@@ -18,19 +18,20 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <vector>
-#include <string>
-#include <set>
+#include "Menu/Menu.hpp"
 
-#include "Graphic/gamegl.h"
-#include "Level/Campaign.h"
-#include "Menu/Menu.h"
-#include "User/Settings.h"
-#include "Utils/Input.h"
+#include "Audio/openal_wrapper.hpp"
+#include "Graphic/gamegl.hpp"
+#include "Level/Campaign.hpp"
+#include "User/Settings.hpp"
+#include "Utils/Input.hpp"
 
 // Should not be needed, Menu should call methods from other classes to launch maps and challenges and so on
-#include "Level/Awards.h"
-#include "Audio/openal_wrapper.h"
+#include "Level/Awards.hpp"
+
+#include <set>
+#include <string>
+#include <vector>
 
 using namespace Game;
 

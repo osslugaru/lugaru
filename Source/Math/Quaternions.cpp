@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Math/Quaternions.h"
+#include "Math/Quaternions.hpp"
 
 // Functions
 quaternion Quat_Mult(quaternion q1, quaternion q2)

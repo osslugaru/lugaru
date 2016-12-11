@@ -18,14 +18,15 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "Audio/openal_wrapper.hpp"
+
+#include "Audio/Sounds.hpp"
+#include "Game.hpp"
+#include "Math/Quaternions.hpp"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "Math/Quaternions.h"
-#include "Audio/openal_wrapper.h"
-#include "Audio/Sounds.h"
-#include "Game.h"
 
 extern float slomofreq;
 

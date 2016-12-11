@@ -18,9 +18,10 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Game.h"
-#include "Graphic/Sprite.h"
-#include "Objects/Person.h"
+#include "Graphic/Sprite.hpp"
+
+#include "Game.hpp"
+#include "Objects/Person.hpp"
 
 extern XYZ viewer;
 extern float viewdistance;

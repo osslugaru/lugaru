@@ -18,10 +18,10 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <stdlib.h>
-
 #include "binio.h"
 #include "private.h"
+
+#include <stdlib.h>
 
 struct BinIOUnpackContext {
     const uint8_t *data;

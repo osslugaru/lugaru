@@ -18,9 +18,9 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Game.h"
-#include "Graphic/Stereo.h"
+#include "Graphic/Stereo.hpp"
 
+#include "Game.hpp"
 
 extern int kContextWidth;
 extern int kContextHeight;

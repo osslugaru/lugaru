@@ -18,10 +18,10 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Graphic/gamegl.h"
-#include "Graphic/Texture.h"
-#include "Utils/Folders.h"
-#include "Utils/ImageIO.h"
+#include "Graphic/Texture.hpp"
+
+#include "Utils/Folders.hpp"
+#include "Utils/ImageIO.hpp"
 
 using namespace std;
 

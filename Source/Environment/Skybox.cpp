@@ -18,8 +18,9 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Environment/Skybox.h"
-#include "Game.h"
+#include "Environment/Skybox.hpp"
+
+#include "Game.hpp"
 
 extern float viewdistance;
 extern float blurness;

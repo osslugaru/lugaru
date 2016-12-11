@@ -18,9 +18,10 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Game.h"
-#include "Graphic/Models.h"
-#include "Utils/Folders.h"
+#include "Graphic/Models.hpp"
+
+#include "Game.hpp"
+#include "Utils/Folders.hpp"
 
 extern float multiplier;
 extern float viewdistance;

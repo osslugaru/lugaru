@@ -18,9 +18,9 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <string.h>
-
 #include "private.h"
+
+#include <string.h>
 
 void BinIOConvert1(int from_byte_order, int to_byte_order,
                    const uint8_t *src, uint8_t *dst,

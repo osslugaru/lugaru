@@ -18,11 +18,11 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Math/Frustum.h"
+#include "Math/Frustum.hpp"
+
+#include "Graphic/gamegl.hpp"
+
 #include <math.h>
-
-#include "Graphic/gamegl.h"
-
 
 void FRUSTUM::
 GetFrustum()

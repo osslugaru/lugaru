@@ -18,12 +18,12 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/**> HEADER FILES <**/
-#include "Game.h"
-#include "Animation/Animation.h"
-#include "Animation/Skeleton.h"
-#include "Audio/openal_wrapper.h"
-#include "Utils/Folders.h"
+#include "Animation/Skeleton.hpp"
+
+#include "Animation/Animation.hpp"
+#include "Audio/openal_wrapper.hpp"
+#include "Game.hpp"
+#include "Utils/Folders.hpp"
 
 extern float multiplier;
 extern float gravity;

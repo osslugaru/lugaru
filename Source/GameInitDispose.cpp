@@ -18,12 +18,13 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Game.h"
-#include "Animation/Animation.h"
-#include "Audio/openal_wrapper.h"
-#include "Graphic/Texture.h"
-#include "Menu/Menu.h"
-#include "Utils/Folders.h"
+#include "Game.hpp"
+
+#include "Animation/Animation.hpp"
+#include "Audio/openal_wrapper.hpp"
+#include "Graphic/Texture.hpp"
+#include "Menu/Menu.hpp"
+#include "Utils/Folders.hpp"
 
 extern float screenwidth, screenheight;
 extern float viewdistance;
@@ -650,7 +651,7 @@ void Game::LoadScreenTexture()
     glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, kTextureSize, kTextureSize, 0);
 }
 
-//TODO: move LoadStuff() closer to GameTick.cpp to get rid of various vars shared in Game.h
+//TODO: move LoadStuff() closer to GameTick.cpp to get rid of various vars shared in Game.hpp
 void Game::LoadStuff()
 {
     static float temptexdetail;
