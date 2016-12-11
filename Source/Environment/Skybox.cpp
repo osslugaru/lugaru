@@ -167,5 +167,4 @@ SkyBox::~SkyBox()
     right.destroy();
     up.destroy();
     down.destroy();
-};
-
+}

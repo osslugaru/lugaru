@@ -863,7 +863,7 @@ void Game::Loadlevel(const std::string& name)
             numhotspots = 0;
         }
         Hotspot::hotspots.resize(numhotspots);
-        for (int i = 0; i < Hotspot::hotspots.size(); i++) {
+        for (unsigned i = 0; i < Hotspot::hotspots.size(); i++) {
             funpackf(tfile, "Bi Bf Bf Bf Bf", &Hotspot::hotspots[i].type, &Hotspot::hotspots[i].size, &Hotspot::hotspots[i].position.x, &Hotspot::hotspots[i].position.y, &Hotspot::hotspots[i].position.z);
             funpackf(tfile, "Bi", &templength);
             if (templength)
@@ -1177,7 +1177,7 @@ void doTutorial()
 
             emit_sound_at(fireendsound, Person::players[1]->coords);
 
-            for (int i = 0; i < Person::players[1]->skeleton.joints.size(); i++) {
+            for (unsigned i = 0; i < Person::players[1]->skeleton.joints.size(); i++) {
                 if (Random() % 2 == 0) {
                     if (!Person::players[1]->skeleton.free)
                         temp2 = (Person::players[1]->coords - Person::players[1]->oldcoords) / multiplier / 2; //velocity/2;
@@ -1447,7 +1447,7 @@ void doTutorial()
             XYZ temp, temp2;
             emit_sound_at(fireendsound, Person::players[1]->coords);
 
-            for (int i = 0; i < Person::players[1]->skeleton.joints.size(); i++) {
+            for (unsigned i = 0; i < Person::players[1]->skeleton.joints.size(); i++) {
                 if (Random() % 2 == 0) {
                     if (!Person::players[1]->skeleton.free)
                         temp2 = (Person::players[1]->coords - Person::players[1]->oldcoords) / multiplier / 2; //velocity/2;
@@ -1776,9 +1776,8 @@ void doDevKeys()
                     bodyprop = Person::players[closest]->proportionbody.x / 1.1;
                     armprop = Person::players[closest]->proportionarms.x / 1.1;
                     legprop = Person::players[closest]->proportionlegs.x / 1.1;
-                }
-
-                if (Person::players[closest]->creature == rabbittype) {
+                } else {
+                    // rabbittype
                     headprop = Person::players[closest]->proportionhead.x / 1.2;
                     bodyprop = Person::players[closest]->proportionbody.x / 1.05;
                     armprop = Person::players[closest]->proportionarms.x / 1.00;
@@ -1853,7 +1852,7 @@ void doDevKeys()
                 XYZ headspurtdirection;
                 //int i = Person::players[closest]->skeleton.jointlabels[head];
                 Joint& headjoint = Person::players[closest]->joint(head);
-                for (int k = 0; k < Person::players[closest]->skeleton.joints.size(); k++) {
+                for (unsigned k = 0; k < Person::players[closest]->skeleton.joints.size(); k++) {
                     if (!Person::players[closest]->skeleton.free)
                         flatvelocity2 = Person::players[closest]->velocity;
                     if (Person::players[closest]->skeleton.free)
@@ -1897,7 +1896,7 @@ void doDevKeys()
                 emit_sound_at(splattersound, blah);
                 emit_sound_at(breaksound2, blah);
 
-                for (int i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
+                for (unsigned i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
                     if (!Person::players[closest]->skeleton.free)
                         flatvelocity2 = Person::players[closest]->velocity;
                     if (Person::players[closest]->skeleton.free)
@@ -1914,7 +1913,7 @@ void doDevKeys()
                     Sprite::MakeSprite(cloudsprite, flatfacing2, flatvelocity2 * 0, .6, 0, 0, 1, .5);
                 }
 
-                for (int i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
+                for (unsigned i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
                     if (!Person::players[closest]->skeleton.free)
                         flatvelocity2 = Person::players[closest]->velocity;
                     if (Person::players[closest]->skeleton.free)
@@ -1930,7 +1929,7 @@ void doDevKeys()
                     Sprite::MakeSprite(bloodsprite, flatfacing2, flatvelocity2, 1, 1, 1, .4, 1);
                 }
 
-                for (int i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
+                for (unsigned i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
                     if (!Person::players[closest]->skeleton.free)
                         flatvelocity2 = Person::players[closest]->velocity;
                     if (Person::players[closest]->skeleton.free)
@@ -1946,7 +1945,7 @@ void doDevKeys()
                     Sprite::MakeSprite(bloodsprite, flatfacing2, flatvelocity2 * 2, 1, 1, 1, .4, 1);
                 }
 
-                for (int i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
+                for (unsigned i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
                     if (!Person::players[closest]->skeleton.free)
                         flatvelocity2 = Person::players[closest]->velocity;
                     if (Person::players[closest]->skeleton.free)
@@ -1971,7 +1970,7 @@ void doDevKeys()
                                 Person::players[j]->skeleton.free = 1;
                             Person::players[j]->skeleton.longdead = 0;
                             Person::players[j]->RagDoll(0);
-                            for (int i = 0; i < Person::players[j]->skeleton.joints.size(); i++) {
+                            for (unsigned i = 0; i < Person::players[j]->skeleton.joints.size(); i++) {
                                 temppos = Person::players[j]->skeleton.joints[i].position + Person::players[j]->coords;
                                 if (distsq(&temppos, &Person::players[closest]->coords) < 25) {
                                     flatvelocity2 = temppos - Person::players[closest]->coords;
@@ -2093,9 +2092,8 @@ void doDevKeys()
                 bodyprop = Person::players[0]->proportionbody.x / 1.1;
                 armprop = Person::players[0]->proportionarms.x / 1.1;
                 legprop = Person::players[0]->proportionlegs.x / 1.1;
-            }
-
-            if (Person::players[0]->creature == rabbittype) {
+            } else {
+                // rabbittype
                 headprop = Person::players[0]->proportionhead.x / 1.2;
                 bodyprop = Person::players[0]->proportionbody.x / 1.05;
                 armprop = Person::players[0]->proportionarms.x / 1.00;
@@ -3428,10 +3426,10 @@ void doPlayerCollisions()
                                                                                 }
                                                                                 Person::players[k]->DoDamage(findLengthfast(&rotatetarget) / 4);
 
-                                                                                for (int j = 0; j < Person::players[i]->skeleton.joints.size(); j++) {
+                                                                                for (unsigned j = 0; j < Person::players[i]->skeleton.joints.size(); j++) {
                                                                                     Person::players[i]->skeleton.joints[j].velocity = Person::players[i]->skeleton.joints[j].velocity / 5 + Person::players[k]->velocity;
                                                                                 }
-                                                                                for (int j = 0; j < Person::players[k]->skeleton.joints.size(); j++) {
+                                                                                for (unsigned j = 0; j < Person::players[k]->skeleton.joints.size(); j++) {
                                                                                     Person::players[k]->skeleton.joints[j].velocity = Person::players[k]->skeleton.joints[j].velocity / 5 + Person::players[i]->velocity;
                                                                                 }
 
@@ -3536,16 +3534,17 @@ void doAI(unsigned i)
                 XYZ colpoint;
                 closest = -1;
                 closestdistance = -1;
-                for (int j = 0; j < numpathpoints; j++)
+                for (int j = 0; j < numpathpoints; j++) {
                     if (closest == -1 || distsq(&Person::players[i]->finalfinaltarget, &pathpoint[j]) < closestdistance) {
                         closestdistance = distsq(&Person::players[i]->finalfinaltarget, &pathpoint[j]);
                         closest = j;
                         Person::players[i]->finaltarget = pathpoint[j];
                     }
+                }
                 Person::players[i]->finalpathfindpoint = closest;
-                for (int j = 0; j < numpathpoints; j++)
+                for (int j = 0; j < numpathpoints; j++) {
                     for (int k = 0; k < numpathpointconnect[j]; k++) {
-                        DistancePointLine(&Person::players[i]->finalfinaltarget, &pathpoint[j], &pathpoint[pathpointconnect[j][k]], &tempdist, &colpoint );
+                        DistancePointLine(&Person::players[i]->finalfinaltarget, &pathpoint[j], &pathpoint[pathpointconnect[j][k]], &tempdist, &colpoint);
                         if (sq(tempdist) < closestdistance)
                             if (findDistance(&colpoint, &pathpoint[j]) + findDistance(&colpoint, &pathpoint[pathpointconnect[j][k]]) <
                                     findDistance(&pathpoint[j], &pathpoint[pathpointconnect[j][k]]) + .1) {
@@ -3554,6 +3553,7 @@ void doAI(unsigned i)
                                 Person::players[i]->finaltarget = colpoint;
                             }
                     }
+                }
                 Person::players[i]->finalpathfindpoint = closest;
 
             }
@@ -4679,7 +4679,7 @@ void Game::Tick()
             talkdelay -= multiplier;
 
             if (talkdelay <= 0 && !Dialog::inDialog() && Animation::animations[Person::players[0]->animTarget].height != highheight) {
-                for (int i = 0; i < Dialog::dialogs.size(); i++) {
+                for (unsigned i = 0; i < Dialog::dialogs.size(); i++) {
                     Dialog::dialogs[i].tick(i);
                 }
             }
@@ -4692,11 +4692,13 @@ void Game::Tick()
             static float hotspotvisual[40];
             if (Hotspot::hotspots.size()) {
                 XYZ hotspotsprite;
-                if (editorenabled)
-                    for (int i = 0; i < Hotspot::hotspots.size(); i++)
+                if (editorenabled) {
+                    for (unsigned i = 0; i < Hotspot::hotspots.size(); i++) {
                         hotspotvisual[i] -= multiplier / 320;
+                    }
+                }
 
-                for (int i = 0; i < Hotspot::hotspots.size(); i++) {
+                for (unsigned i = 0; i < Hotspot::hotspots.size(); i++) {
                     while (hotspotvisual[i] < 0) {
                         hotspotsprite = 0;
                         hotspotsprite.x = float(abs(Random() % 100000)) / 100000 * Hotspot::hotspots[i].size;
@@ -4708,7 +4710,7 @@ void Game::Tick()
                     }
                 }
 
-                for (int i = 0; i < Hotspot::hotspots.size(); i++) {
+                for (unsigned i = 0; i < Hotspot::hotspots.size(); i++) {
                     if (Hotspot::hotspots[i].type <= 10 && Hotspot::hotspots[i].type > 0) {
                         Hotspot::hotspots[i].position = Person::players[Hotspot::hotspots[i].type]->coords;
                     }
@@ -4866,7 +4868,7 @@ void Game::Tick()
                         Dialog::currentScene().camerayaw = yaw;
                         Dialog::currentScene().camerapitch = pitch;
                         Dialog::indialogue++;
-                        if (Dialog::indialogue < Dialog::currentDialog().scenes.size()) {
+                        if (Dialog::indialogue < int(Dialog::currentDialog().scenes.size())) {
                             if (Dialog::currentScene().sound != 0) {
                                 playdialoguescenesound();
                             }
@@ -4900,7 +4902,7 @@ void Game::Tick()
                         if (Input::isKeyDown(SDL_SCANCODE_KP_0)) whichend = 0;
                         Dialog::currentScene().participantfacing[whichend] = facing;
                     }
-                    if (Dialog::indialogue >= Dialog::currentDialog().scenes.size()) {
+                    if (Dialog::indialogue >= int(Dialog::currentDialog().scenes.size())) {
                         Dialog::indialogue = -1;
                         Dialog::directing = false;
                         cameramode = 0;
@@ -4915,7 +4917,7 @@ void Game::Tick()
                     if (Dialog::dialoguetime > 0.5) {
                         if (Input::isKeyPressed(attackkey)) {
                             Dialog::indialogue++;
-                            if (Dialog::indialogue < Dialog::currentDialog().scenes.size()) {
+                            if (Dialog::indialogue < int(Dialog::currentDialog().scenes.size())) {
                                 if (Dialog::currentScene().sound != 0) {
                                     playdialoguescenesound();
                                     if (Dialog::currentScene().sound == -5) {
@@ -4934,7 +4936,7 @@ void Game::Tick()
                             }
                         }
                     }
-                    if (Dialog::indialogue >= Dialog::currentDialog().scenes.size()) {
+                    if (Dialog::indialogue >= int(Dialog::currentDialog().scenes.size())) {
                         Dialog::indialogue = -1;
                         Dialog::directing = false;
                         cameramode = 0;
@@ -5310,7 +5312,7 @@ void Game::Tick()
                                                                 Person::players[i]->victim->skeleton.free = 1;
                                                                 Person::players[i]->victim->skeleton.broken = 0;
 
-                                                                for (int l = 0; l < Person::players[i]->victim->skeleton.joints.size(); l++) {
+                                                                for (unsigned l = 0; l < Person::players[i]->victim->skeleton.joints.size(); l++) {
                                                                     Person::players[i]->victim->skeleton.joints[l].velchange = 0;
                                                                     Person::players[i]->victim->skeleton.joints[l].locked = 0;
                                                                 }
@@ -5937,7 +5939,7 @@ void Game::Tick()
                     if (distsq(&temp, &Person::players[1]->coords) >= distsq(&temp, &temp2) - 1 || distsq(&temp3, &Person::players[1]->coords) < 4) {
                         emit_sound_at(fireendsound, Person::players[1]->coords);
 
-                        for (int i = 0; i < Person::players[1]->skeleton.joints.size(); i++) {
+                        for (unsigned i = 0; i < Person::players[1]->skeleton.joints.size(); i++) {
                             if (Random() % 2 == 0) {
                                 if (!Person::players[1]->skeleton.free)
                                     temp2 = (Person::players[1]->coords - Person::players[1]->oldcoords) / multiplier / 2; //velocity/2;
@@ -5952,7 +5954,7 @@ void Game::Tick()
                         }
 
                         Person::players[1]->coords = (oldtemp + oldtemp2) / 2;
-                        for (int i = 0; i < Person::players[1]->skeleton.joints.size(); i++) {
+                        for (unsigned i = 0; i < Person::players[1]->skeleton.joints.size(); i++) {
                             Person::players[1]->skeleton.joints[i].velocity = 0;
                             if (Random() % 2 == 0) {
                                 if (!Person::players[1]->skeleton.free)
@@ -6155,7 +6157,7 @@ void Game::TickOnceAfter()
         }
 
         Hotspot::killhotspot = 2;
-        for (int i = 0; i < Hotspot::hotspots.size(); i++) {
+        for (unsigned i = 0; i < Hotspot::hotspots.size(); i++) {
             if (Hotspot::hotspots[i].type > 10 && Hotspot::hotspots[i].type < 20) {
                 if (Person::players[Hotspot::hotspots[i].type - 10]->dead == 0)
                     Hotspot::killhotspot = 0;
@@ -6168,17 +6170,23 @@ void Game::TickOnceAfter()
 
 
         winhotspot = false;
-        for (int i = 0; i < Hotspot::hotspots.size(); i++)
-            if (Hotspot::hotspots[i].type == -1)
-                if (distsq(&Person::players[0]->coords, &Hotspot::hotspots[i].position) < Hotspot::hotspots[i].size)
+        for (unsigned i = 0; i < Hotspot::hotspots.size(); i++) {
+            if (Hotspot::hotspots[i].type == -1) {
+                if (distsq(&Person::players[0]->coords, &Hotspot::hotspots[i].position) < Hotspot::hotspots[i].size) {
                     winhotspot = true;
+                }
+            }
+        }
 
         int numalarmed = 0;
-        for (unsigned i = 1; i < Person::players.size(); i++)
-            if (!Person::players[i]->dead && Person::players[i]->aitype == attacktypecutoff && Person::players[i]->surprised <= 0)
+        for (unsigned i = 1; i < Person::players.size(); i++) {
+            if (!Person::players[i]->dead && Person::players[i]->aitype == attacktypecutoff && Person::players[i]->surprised <= 0) {
                 numalarmed++;
-        if (numalarmed > maxalarmed)
+            }
+        }
+        if (numalarmed > maxalarmed) {
             maxalarmed = numalarmed;
+        }
 
         if (changedelay <= 0 && !loading && !editorenabled && gameon && !tutoriallevel && changedelay != -999 && !won) {
             if (Person::players[0]->dead && changedelay <= 0) {
@@ -6356,7 +6364,7 @@ void Game::TickOnceAfter()
             target = Person::players[0]->oldcoords + Person::players[0]->currentoffset * (1 - Person::players[0]->target) * Person::players[0]->scale + Person::players[0]->targetoffset * Person::players[0]->target * Person::players[0]->scale - Person::players[0]->facing * .05;
         target.y += .1;
         if (Person::players[0]->skeleton.free) {
-            for (int i = 0; i < Person::players[0]->skeleton.joints.size(); i++) {
+            for (unsigned i = 0; i < Person::players[0]->skeleton.joints.size(); i++) {
                 if (Person::players[0]->skeleton.joints[i].position.y * Person::players[0]->scale + Person::players[0]->coords.y > target.y)
                     target.y = Person::players[0]->skeleton.joints[i].position.y * Person::players[0]->scale + Person::players[0]->coords.y;
             }

@@ -838,5 +838,4 @@ Objects::~Objects()
     treetextureptr.destroy();
     bushtextureptr.destroy();
     rocktextureptr.destroy();
-};
-
+}

@@ -305,7 +305,7 @@ int Game::DrawGLScene(StereoSide side)
         for (unsigned k = 0; k < Person::players.size(); k++) {
             if (!Person::players[k]->skeleton.free && Person::players[k]->playerdetail && Person::players[k]->howactive < typesleeping)
                 if (frustum.SphereInFrustum(Person::players[k]->coords.x, Person::players[k]->coords.y + Person::players[k]->scale * 3, Person::players[k]->coords.z, Person::players[k]->scale * 7) && Person::players[k]->occluded < 25)
-                    for (int i = 0; i < Person::players[k]->skeleton.joints.size(); i++) {
+                    for (unsigned i = 0; i < Person::players[k]->skeleton.joints.size(); i++) {
                         if (Person::players[k]->skeleton.joints[i].label == leftknee || Person::players[k]->skeleton.joints[i].label == rightknee || Person::players[k]->skeleton.joints[i].label == groin) {
                             point = DoRotation(Person::players[k]->skeleton.joints[i].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords;
                             size = .4f;
@@ -330,7 +330,7 @@ int Game::DrawGLScene(StereoSide side)
                     }
             if ((Person::players[k]->skeleton.free || Person::players[k]->howactive >= typesleeping) && Person::players[k]->playerdetail)
                 if (frustum.SphereInFrustum(Person::players[k]->coords.x, Person::players[k]->coords.y, Person::players[k]->coords.z, Person::players[k]->scale * 5) && Person::players[k]->occluded < 25)
-                    for (int i = 0; i < Person::players[k]->skeleton.joints.size(); i++) {
+                    for (unsigned i = 0; i < Person::players[k]->skeleton.joints.size(); i++) {
                         if (Person::players[k]->skeleton.joints[i].label == leftknee || Person::players[k]->skeleton.joints[i].label == rightknee || Person::players[k]->skeleton.joints[i].label == groin || Person::players[k]->skeleton.joints[i].label == leftelbow || Person::players[k]->skeleton.joints[i].label == rightelbow || Person::players[k]->skeleton.joints[i].label == neck) {
                             if (Person::players[k]->skeleton.free)
                                 point = Person::players[k]->skeleton.joints[i].position * Person::players[k]->scale + Person::players[k]->coords;
@@ -891,7 +891,7 @@ int Game::DrawGLScene(StereoSide side)
                 float closestdist = -1;
                 float distance = 0;
                 int closest = Hotspot::current;
-                for (int i = 0; i < Hotspot::hotspots.size(); i++) {
+                for (unsigned i = 0; i < Hotspot::hotspots.size(); i++) {
                     distance = distsq(&Person::players[0]->coords, &Hotspot::hotspots[i].position);
                     if (closestdist == -1 || distance < closestdist) {
                         if (distsq(&Person::players[0]->coords, &Hotspot::hotspots[i].position) < Hotspot::hotspots[i].size && ((Hotspot::hotspots[i].type <= 10 && Hotspot::hotspots[i].type >= 0) || (Hotspot::hotspots[i].type <= 40 && Hotspot::hotspots[i].type >= 20))) {
@@ -983,18 +983,20 @@ int Game::DrawGLScene(StereoSide side)
                 float starty;
 
                 startx = screenwidth * 1 / 5;
-                if (Dialog::currentScene().location == 1)
+                if (Dialog::currentScene().location == 1) {
                     starty = screenheight / 16 + screenheight * 4 / 5;
-                if (Dialog::currentScene().location == 2)
+                } else {
                     starty = screenheight * 1 / 5 - screenheight / 16;
+                }
 
+                // FIXME - What is that char[] building for?
                 char tempname[264];
                 int tempnum = 0;
                 for (int i = 0; i < 264; i++) {
                     tempname[i] = '\0';
                 }
 
-                for (int i = 0; i < Dialog::currentScene().name.size(); i++) {
+                for (unsigned i = 0; i < Dialog::currentScene().name.size(); i++) {
                     tempname[tempnum] = Dialog::currentScene().name[i];
                     if (tempname[tempnum] == '#' || tempname[tempnum] == '\0')
                         tempname[tempnum] = '\0';
@@ -1015,7 +1017,7 @@ int Game::DrawGLScene(StereoSide side)
                 }
 
                 tempnum = 0;
-                for (int i = 0; i < Dialog::currentScene().text.size() + 1; i++) {
+                for (unsigned i = 0; i < Dialog::currentScene().text.size() + 1; i++) {
                     tempname[tempnum] = Dialog::currentScene().text[i];
                     if (Dialog::currentScene().text[i] != '#')
                         tempnum++;

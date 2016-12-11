@@ -1447,7 +1447,7 @@ void Model::deallocate()
     free(decalposition);
     decalposition = 0;
 
-};
+}
 
 Model::Model()
 {

@@ -86,7 +86,8 @@ Animation::Animation(const std::string& filename, anim_height_type aheight, anim
     Animation()
 {
     FILE *tfile;
-    int i, j, numframes;
+    int numframes;
+    unsigned i;
 
     LOGFUNC;
 
@@ -141,9 +142,9 @@ Animation::Animation(const std::string& filename, anim_height_type aheight, anim
     // find average position of certain joints on last frames
     // and save in endoffset
     // (not sure what exactly this accomplishes. the y < 1 test confuses me.)
-    for (j = 0; j < numjoints; j++) {
-        if (frames.back().joints[j].position.y < 1) {
-            endoffset += frames.back().joints[j].position;
+    for (i = 0; i < frames.back().joints.size(); i++) {
+        if (frames.back().joints[i].position.y < 1) {
+            endoffset += frames.back().joints[i].position;
         }
     }
     endoffset /= numjoints;

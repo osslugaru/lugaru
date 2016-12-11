@@ -217,7 +217,7 @@ void ch_save(const char *args)
                objects.position[k].x, objects.position[k].y, objects.position[k].z, objects.scale[k]);
 
     fpackf(tfile, "Bi", Hotspot::hotspots.size());
-    for (int i = 0; i < Hotspot::hotspots.size(); i++) {
+    for (unsigned i = 0; i < Hotspot::hotspots.size(); i++) {
         fpackf(tfile, "Bi Bf Bf Bf Bf", Hotspot::hotspots[i].type, Hotspot::hotspots[i].size, Hotspot::hotspots[i].position.x, Hotspot::hotspots[i].position.y, Hotspot::hotspots[i].position.z);
         int templength = strlen(Hotspot::hotspots[i].text);
         fpackf(tfile, "Bi", templength);
@@ -262,7 +262,8 @@ void ch_save(const char *args)
             bodyprop = Person::players[j]->proportionbody.x / 1.1;
             armprop = Person::players[j]->proportionarms.x / 1.1;
             legprop = Person::players[j]->proportionlegs.x / 1.1;
-        } else if (Person::players[j]->creature == rabbittype) {
+        } else {
+            // rabbittype
             headprop = Person::players[j]->proportionhead.x / 1.2;
             bodyprop = Person::players[j]->proportionbody.x / 1.05;
             armprop = Person::players[j]->proportionarms.x / 1.00;
@@ -656,7 +657,7 @@ void ch_play(const char *args)
     sscanf(args, "%d", &dlg);
     Dialog::whichdialogue = dlg;
 
-    if (Dialog::whichdialogue >= Dialog::dialogs.size()) {
+    if (Dialog::whichdialogue >= int(Dialog::dialogs.size())) {
         return;
     }
 

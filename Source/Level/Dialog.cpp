@@ -80,10 +80,11 @@ std::string funpackf_string(FILE* tfile, int maxlength)
 void fpackf_string(FILE* tfile, std::string text)
 {
     fpackf(tfile, "Bi", text.size());
-    for (int m = 0; m < text.size(); m++) {
-        fpackf(tfile, "Bb", text[m]);
-        if (text[m] == '\0')
+    for (unsigned i = 0; i < text.size(); i++) {
+        fpackf(tfile, "Bb", text[i]);
+        if (text[i] == '\0') {
             break;
+        }
     }
 }
 
@@ -170,7 +171,7 @@ void Dialog::tick(int id)
 
 void Dialog::play()
 {
-    for (int i = 0; i < scenes.size(); i++) {
+    for (unsigned i = 0; i < scenes.size(); i++) {
         int playerId = scenes[i].participantfocus;
         Person::players[playerId]->coords = participantlocation[playerId];
         Person::players[playerId]->yaw = participantyaw[playerId];
@@ -192,8 +193,8 @@ void Dialog::saveDialogs(FILE* tfile)
 {
     fpackf(tfile, "Bi", dialogs.size());
 
-    for (int k = 0; k < dialogs.size(); k++) {
-        dialogs[k].save(tfile);
+    for (unsigned i = 0; i < dialogs.size(); i++) {
+        dialogs[i].save(tfile);
     }
 }
 
@@ -205,7 +206,7 @@ void Dialog::save(FILE* tfile)
         fpackf(tfile, "Bf Bf Bf", participantlocation[l].x, participantlocation[l].y, participantlocation[l].z);
         fpackf(tfile, "Bf", participantyaw[l]);
     }
-    for (int l = 0; l < scenes.size(); l++) {
+    for (unsigned l = 0; l < scenes.size(); l++) {
         scenes[l].save(tfile);
     }
 }

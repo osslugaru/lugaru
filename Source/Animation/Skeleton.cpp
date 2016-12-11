@@ -115,7 +115,8 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
     XYZ bounceness;
     const int numrepeats = 3;
     float groundlevel = .15;
-    int i, j, k, m;
+    int k, m;
+    unsigned i;
     XYZ temp;
     XYZ terrainnormal;
     int whichhit;
@@ -163,7 +164,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
         float tempmult = multiplier;
         //multiplier/=numrepeats;
 
-        for (j = 0; j < numrepeats; j++) {
+        for (int j = 0; j < numrepeats; j++) {
             float r = .05;
             // right leg constraints?
             if (!joint(rightknee).locked && !joint(righthip).locked) {
@@ -218,7 +219,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                     joints[i].locked = 0;
                 if (joints[i].delay > 0) {
                     bool freely = true;
-                    for (j = 0; j < joints.size(); j++) {
+                    for (unsigned j = 0; j < joints.size(); j++) {
                         if (joints[j].locked)
                             freely = false;
                     }
@@ -420,7 +421,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                         whichhit = objects.model[k].LineCheckSlidePossible(&start, &end, &temp, &objects.position[k], &objects.yaw[k]);
                         if (whichhit != -1) {
                             joints[jointlabels[whichjointendarray[i]]].position = (end - *coords) / (*scale);
-                            for (j = 0; j < muscles.size(); j++) {
+                            for (unsigned j = 0; j < muscles.size(); j++) {
                                 if ((muscles[j].parent1->label == whichjointstartarray[i] && muscles[j].parent2->label == whichjointendarray[i]) || (muscles[j].parent2->label == whichjointstartarray[i] && muscles[j].parent1->label == whichjointendarray[i]))
                                     muscles[j].DoConstraint(spinny);
                             }
@@ -476,8 +477,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
  */
 void Skeleton::DoGravity(float *scale)
 {
-    static int i;
-    for (i = 0; i < joints.size(); i++) {
+    for (unsigned i = 0; i < joints.size(); i++) {
         if (
                 (
                     ((joints[i].label != leftknee) && (joints[i].label != rightknee)) ||
@@ -487,8 +487,9 @@ void Skeleton::DoGravity(float *scale)
                     ((joints[i].label != leftelbow) && (joints[i].label != rightelbow)) ||
                     (forward.y < .3)
                 )
-            )
+            ) {
             joints[i].velocity.y += gravity * multiplier / (*scale);
+        }
     }
 }
 
@@ -615,7 +616,7 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
     GLfloat M[16];
     FILE *tfile;
     float lSize;
-    int i, j, num_joints, num_muscles;
+    int j, num_joints, num_muscles;
 
     LOGFUNC;
 
@@ -632,7 +633,7 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
     model[5].loadnotex(model6filename);
     model[6].loadnotex(model7filename);
 
-    for (i = 0; i < num_models; i++) {
+    for (int i = 0; i < num_models; i++) {
         model[i].Rotate(180, 0, 0);
         model[i].Scale(.04, .04, .04);
         model[i].CalculateNormals(0);
@@ -689,7 +690,7 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
     joints.resize(num_joints);
 
     // read info for each joint
-    for (i = 0; i < num_joints; i++) {
+    for (int i = 0; i < num_joints; i++) {
         joints[i].load(tfile, joints);
     }
 
@@ -700,7 +701,7 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
     muscles.resize(num_muscles);
 
     // for each muscle...
-    for (i = 0; i < num_muscles; i++) {
+    for (int i = 0; i < num_muscles; i++) {
         muscles[i].load(tfile, model[0].vertexNum, joints);
     }
 
@@ -715,22 +716,23 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
 
     // ???
     for (j = 0; j < num_muscles; j++) {
-        for (i = 0; i < muscles[j].vertices.size(); i++) {
+        for (unsigned i = 0; i < muscles[j].vertices.size(); i++) {
             for (int k = 0; k < num_models; k++) {
-                if (muscles[j].vertices[i] < model[k].vertexNum)
+                if (muscles[j].vertices[i] < model[k].vertexNum) {
                     model[k].owner[muscles[j].vertices[i]] = j;
+                }
             }
         }
     }
 
     // calculate some stuff
     FindForwards();
-    for (i = 0; i < num_muscles; i++) {
+    for (int i = 0; i < num_muscles; i++) {
         FindRotationMuscle(i, -1);
     }
     // this seems to use opengl purely for matrix calculations
     for (int k = 0; k < num_models; k++) {
-        for (i = 0; i < model[k].vertexNum; i++) {
+        for (int i = 0; i < model[k].vertexNum; i++) {
             model[k].vertex[i] = model[k].vertex[i] - (muscles[model[k].owner[i]].parent1->position + muscles[model[k].owner[i]].parent2->position) / 2;
             glMatrixMode(GL_MODELVIEW);
             glPushMatrix();
@@ -756,7 +758,7 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
     // skip joints section
 
     fseek(tfile, sizeof(num_joints), SEEK_CUR);
-    for (i = 0; i < num_joints; i++) {
+    for (int i = 0; i < num_joints; i++) {
         // skip joint info
         lSize = sizeof(XYZ)
                 + sizeof(float)
@@ -776,7 +778,7 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
     // skip num_muscles
     fseek(tfile, sizeof(num_muscles), SEEK_CUR);
 
-    for (i = 0; i < num_muscles; i++) {
+    for (int i = 0; i < num_muscles; i++) {
         // skip muscle info
         lSize = sizeof(float)
                 + sizeof(float)
@@ -797,14 +799,15 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
     }
 
     for (j = 0; j < num_muscles; j++) {
-        for (i = 0; i < muscles[j].verticeslow.size(); i++) {
-            if (muscles[j].verticeslow[i] < modellow.vertexNum)
+        for (unsigned i = 0; i < muscles[j].verticeslow.size(); i++) {
+            if (muscles[j].verticeslow[i] < modellow.vertexNum) {
                 modellow.owner[muscles[j].verticeslow[i]] = j;
+            }
         }
     }
 
     // use opengl for its matrix math
-    for (i = 0; i < modellow.vertexNum; i++) {
+    for (int i = 0; i < modellow.vertexNum; i++) {
         modellow.vertex[i] = modellow.vertex[i] - (muscles[modellow.owner[i]].parent1->position + muscles[modellow.owner[i]].parent2->position) / 2;
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
@@ -830,7 +833,7 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
         // skip num_joints
         fseek(tfile, sizeof(num_joints), SEEK_CUR);
 
-        for (i = 0; i < num_joints; i++) {
+        for (int i = 0; i < num_joints; i++) {
             // skip joint info
             lSize = sizeof(XYZ)
                     + sizeof(float)
@@ -850,7 +853,7 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
         // skip num_muscles
         fseek(tfile, sizeof(num_muscles), SEEK_CUR);
 
-        for (i = 0; i < num_muscles; i++) {
+        for (int i = 0; i < num_muscles; i++) {
             // skip muscle info
             lSize = sizeof(float)
                     + sizeof(float)
@@ -873,14 +876,15 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
         // ???
         lSize = sizeof(int);
         for (j = 0; j < num_muscles; j++) {
-            for (i = 0; i < muscles[j].verticesclothes.size(); i++) {
-                if (muscles[j].verticesclothes.size() && muscles[j].verticesclothes[i] < modelclothes.vertexNum)
+            for (unsigned i = 0; i < muscles[j].verticesclothes.size(); i++) {
+                if (muscles[j].verticesclothes.size() && muscles[j].verticesclothes[i] < modelclothes.vertexNum) {
                     modelclothes.owner[muscles[j].verticesclothes[i]] = j;
+                }
             }
         }
 
         // use opengl for its matrix math
-        for (i = 0; i < modelclothes.vertexNum; i++) {
+        for (int i = 0; i < modelclothes.vertexNum; i++) {
             modelclothes.vertex[i] = modelclothes.vertex[i] - (muscles[modelclothes.owner[i]].parent1->position + muscles[modelclothes.owner[i]].parent2->position) / 2;
             glMatrixMode(GL_MODELVIEW);
             glPushMatrix();
@@ -900,7 +904,7 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
     }
     fclose(tfile);
 
-    for (i = 0; i < num_joints; i++) {
+    for (int i = 0; i < num_joints; i++) {
         for (j = 0; j < num_joints; j++) {
             if (joints[i].label == j)
                 jointlabels[j] = i;
