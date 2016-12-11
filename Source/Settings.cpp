@@ -42,7 +42,6 @@ void DefaultSettings()
     musictoggle = 1;
     trilinear = 1;
     gamespeed = 1;
-    difficulty = 1;
     damageeffects = 0;
     texttoggle = 1;
     alwaysblur = 0;
@@ -124,8 +123,6 @@ void SaveSettings()
     if (oldgamespeed == 0)
         oldgamespeed = 1;
     opstream << oldgamespeed;
-    opstream << "\nDifficulty(0,1,2) higher=harder:\n";
-    opstream << difficulty;
     opstream << "\nDamage effects(blackout, doublevision):\n";
     opstream << damageeffects;
     opstream << "\nText:\n";
@@ -239,8 +236,6 @@ bool LoadSettings()
                 gamespeed = 1;
                 oldgamespeed = 1;
             }
-        } else if ( !strncmp(setting, "Difficulty", 10) ) {
-            ipstream >> difficulty;
         } else if ( !strncmp(setting, "Damage effects", 14) ) {
             ipstream >> damageeffects;
         } else if ( !strncmp(setting, "Text", 4) ) {

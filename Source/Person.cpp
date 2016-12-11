@@ -1468,14 +1468,15 @@ void Person::Reverse()
     velocity = 0;
     victim->velocity = 0;
 
-    if (aitype != playercontrolled)
+    if (aitype != playercontrolled) {
         feint = 0;
-    if (aitype != playercontrolled && Random() % 3 == 0 && escapednum < 2 && difficulty == 2)
-        feint = 1;
-    if (aitype != playercontrolled && Random() % 5 == 0 && escapednum < 2 && difficulty == 1)
-        feint = 1;
-    if (aitype != playercontrolled && Random() % 10 == 0 && escapednum < 2 && difficulty == 0)
-        feint = 1;
+        if (escapednum < 2) {
+            int chances = ((difficulty == 2) ? 3 : ((difficulty == 1) ? 5 : 10));
+            if ((Random() % chances) == 0) {
+                feint = 1;
+            }
+        }
+    }
 
     if (victim->id == 0 && Animation::animations[victim->animTarget].attack == reversal)
         numreversals++;

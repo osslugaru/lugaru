@@ -48,7 +48,6 @@ extern float camerashake;
 extern float woozy;
 extern float viewdistance;
 extern float blackout;
-extern int difficulty;
 extern bool freeze;
 extern int tutoriallevel;
 extern int numthrowkill;

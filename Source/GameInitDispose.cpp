@@ -57,7 +57,6 @@ extern float flashamount, flashr, flashg, flashb;
 extern int flashdelay;
 extern int whichjointstartarray[26];
 extern int whichjointendarray[26];
-extern int difficulty;
 extern float slomospeed;
 extern bool gamestarted;
 

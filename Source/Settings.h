@@ -37,7 +37,6 @@ extern bool decals;
 extern bool invertmouse;
 extern float gamespeed;
 extern float oldgamespeed;
-extern int difficulty;
 extern bool damageeffects;
 extern bool texttoggle;
 extern bool devtools;

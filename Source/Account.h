@@ -46,13 +46,16 @@ public:
     static void destroyActive();
     static void setActive(int i);
     static void add(const std::string& name);
-    static Account* get(int i);
+    static Account& get(int i);
     static void loadFile(std::string filename);
     static void saveFile(std::string filename);
     static int getNbAccounts();
 
     static bool hasActive();
     static Account& active();
+
+    Account(const std::string& name = "");
+    Account(FILE* tfile);
 
     void endGame();
     void winCampaignLevel(int choice, float score, float time);
@@ -110,10 +113,11 @@ public:
 
 private:
     //statics
-    static std::vector<Account*> accounts;
+    static std::vector<Account> accounts;
     static int i_active;
 
-    Account(const std::string& name = "");
+    void save(FILE* tfile);
+
     int difficulty;
     int progress; // progress in challenge levels
     float points;

@@ -55,6 +55,8 @@ extern float slomospeed;
 extern float slomofreq;
 extern bool visibleloading;
 
+extern int difficulty;
+
 extern SDL_Window *sdlwindow;
 
 using namespace std;

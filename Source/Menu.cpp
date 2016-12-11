@@ -294,9 +294,6 @@ void Menu::updateSettingsMenu()
     if (bloodtoggle == 0) setText(2, "Blood: Off");
     if (bloodtoggle == 1) setText(2, "Blood: On, low detail");
     if (bloodtoggle == 2) setText(2, "Blood: On, high detail (slower)");
-    if (difficulty == 0) setText(3, "Difficulty: Easier");
-    if (difficulty == 1) setText(3, "Difficulty: Difficult");
-    if (difficulty == 2) setText(3, "Difficulty: Insane");
     setText(4, ismotionblur ? "Blur Effects: Enabled (less compatible)" : "Blur Effects: Disabled (more compatible)");
     setText(5, decals ? "Decals: Enabled (slower)" : "Decals: Disabled");
     setText(6, musictoggle ? "Music: Enabled" : "Music: Disabled");
@@ -366,7 +363,6 @@ void Menu::Load()
         addButton(14, "", 10 + 400, 440);
         addButton( 1, "", 10 + 60, 405);
         addButton( 2, "", 10 + 70, 370);
-        addButton( 3, "", 10 + 20 - 1000, 335 - 1000);
         addButton( 4, "", 10   , 335);
         addButton( 5, "", 10 + 60, 300);
         addButton( 6, "", 10 + 70, 265);
@@ -447,7 +443,7 @@ void Menu::Load()
         addLabel(-2, "", 20, 400);
         addButton(Account::getNbAccounts() + 1, "Back", 10, 10);
         for (int i = 0; i < Account::getNbAccounts(); i++) {
-            addButton(i + 1, Account::get(i)->getName(), 10, 340 - 20 * (i + 1));
+            addButton(i + 1, Account::get(i).getName(), 10, 340 - 20 * (i + 1));
         }
         break;
     case 8:
@@ -620,11 +616,6 @@ void Menu::Tick()
                 bloodtoggle++;
                 if (bloodtoggle > 2)
                     bloodtoggle = 0;
-                break;
-            case 3:
-                difficulty++;
-                if (difficulty > 2)
-                    difficulty = 0;
                 break;
             case 4:
                 ismotionblur = !ismotionblur;
