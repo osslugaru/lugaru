@@ -287,13 +287,13 @@ int Game::DrawGLScene(StereoSide side)
             blurness -= multiplier * 5;
 
         if (environment == desertenvironment && detail == 2)
-            glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, blurness + .4 );
+            glTexEnvf( GL_TEXTURE_FILTER_CONTROL, GL_TEXTURE_LOD_BIAS, blurness + .4 );
         if (environment == desertenvironment) {
             glRotatef((float)(abs(Random() % 100)) / 1000, 1, 0, 0);
             glRotatef((float)(abs(Random() % 100)) / 1000, 0, 1, 0);
         }
         skybox->draw();
-        glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, 0);
+        glTexEnvf( GL_TEXTURE_FILTER_CONTROL, GL_TEXTURE_LOD_BIAS, 0);
         glPopMatrix();
         glTranslatef(-viewer.x, -viewer.y, -viewer.z);
         frustum.GetFrustum();
@@ -1643,12 +1643,12 @@ int Game::DrawGLScene(StereoSide side)
             if (!drawtoggle || drawmode != realmotionblurmode || (drawtoggle == 2 || change == 1)) {
                 if (screentexture) {
 
-                    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT);
+                    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
                     GLfloat subtractColor[4] = { 0.5, 0.5, 0.5, 0.0 };
                     glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, subtractColor);
-                    glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB_EXT, GL_TEXTURE);
-                    glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB_EXT, GL_CONSTANT_EXT);
-                    glTexEnvf(GL_TEXTURE_ENV, GL_RGB_SCALE_EXT, 2.0f);
+                    glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE);
+                    glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_CONSTANT);
+                    glTexEnvf(GL_TEXTURE_ENV, GL_RGB_SCALE, 2.0f);
 
                     glBindTexture( GL_TEXTURE_2D, screentexture);
                     glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, texviewwidth, texviewheight);
