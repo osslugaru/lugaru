@@ -531,7 +531,7 @@ void Person::CatchFire()
     XYZ flatfacing, flatvelocity;
     int howmany;
     for (int i = 0; i < 10; i++) {
-        howmany = abs(Random() % (skeleton.joints.size()));
+        howmany = fabs(Random() % (skeleton.joints.size()));
         if (skeleton.free) {
             flatvelocity = skeleton.joints[howmany].velocity;
             flatfacing = skeleton.joints[howmany].position * scale + coords;
@@ -1762,13 +1762,13 @@ void Person::RagDoll(bool checkcollision)
             change.y = (float)(Random() % 100) / 100;
             change.z = (float)(Random() % 100) / 100;
             skeleton.joints[i].velocity += change;
-            skeleton.joints[abs(Random() % skeleton.joints.size())].velocity -= change;
+            skeleton.joints[fabs(Random() % skeleton.joints.size())].velocity -= change;
 
             change.x = (float)(Random() % 100) / 100;
             change.y = (float)(Random() % 100) / 100;
             change.z = (float)(Random() % 100) / 100;
             skeleton.joints[i].velchange += change;
-            skeleton.joints[abs(Random() % skeleton.joints.size())].velchange -= change;
+            skeleton.joints[fabs(Random() % skeleton.joints.size())].velchange -= change;
         }
 
         if (checkcollision) {
@@ -4387,7 +4387,7 @@ void Person::DoStuff()
     }
     while (flamedelay < 0 && onfire) {
         flamedelay += .006;
-        howmany = abs(Random() % (skeleton.joints.size()));
+        howmany = fabs(Random() % (skeleton.joints.size()));
         if (skeleton.free) {
             flatvelocity = skeleton.joints[howmany].velocity * scale / 2;
             flatfacing = skeleton.joints[howmany].position * scale + coords;
@@ -4400,7 +4400,7 @@ void Person::DoStuff()
 
     while (flamedelay < 0 && !onfire && tutoriallevel == 1 && id != 0) {
         flamedelay += .05;
-        howmany = abs(Random() % (skeleton.joints.size()));
+        howmany = fabs(Random() % (skeleton.joints.size()));
         if (skeleton.free) {
             flatvelocity = skeleton.joints[howmany].velocity * scale / 2;
             flatfacing = skeleton.joints[howmany].position * scale + coords;
