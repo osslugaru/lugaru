@@ -100,7 +100,6 @@ void Weapon::setType(int t)
 
 void Weapon::DoStuff(int i)
 {
-    //~ cout << position.x << "," << position.y << "," << position.z << "|" << tippoint.x << "," << tippoint.y << "," << tippoint.z << endl;
     static int whichpatchx, whichpatchz, whichhit;
     static XYZ start, end, colpoint, normalrot, footvel, footpoint;
     static XYZ terrainnormal;
@@ -117,6 +116,10 @@ void Weapon::DoStuff(int i)
     static XYZ closestpoint;
     static XYZ closestswordpoint;
     static float tempmult;
+
+    if (multiplier <= 0) {
+        return;
+    }
 
     if (owner != -1) {
         oldowner = owner;
