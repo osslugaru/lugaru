@@ -26,6 +26,8 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Math/Quaternions.hpp"
 #include "Utils/ImageIO.hpp"
 
+#include <string>
+
 class Text
 {
 public:
@@ -34,18 +36,18 @@ public:
 
     void LoadFontTexture(const std::string& fileName);
     void BuildFont();
-    void glPrint(float x, float y, const char *string, int set, float size, float width, float height);
-    void glPrintOutline(float x, float y, const char *string, int set, float size, float width, float height);
-    void glPrint(float x, float y, const char *string, int set, float size, float width, float height, int start, int end);
-    void glPrintOutline(float x, float y, const char *string, int set, float size, float width, float height, int start, int end);
-    void glPrintOutlined(float x, float y, const char *string, int set, float size, float width, float height);
-    void glPrintOutlined(float r, float g, float b, float x, float y, const char *string, int set, float size, float width, float height);
+    void glPrint(float x, float y, const std::string& string, int set, float size, float width, float height);
+    void glPrintOutline(float x, float y, const std::string& string, int set, float size, float width, float height);
+    void glPrint(float x, float y, const std::string& string, int set, float size, float width, float height, int start, int end);
+    void glPrintOutline(float x, float y, const std::string& string, int set, float size, float width, float height, int start, int end);
+    void glPrintOutlined(float x, float y, const std::string& string, int set, float size, float width, float height);
+    void glPrintOutlined(float r, float g, float b, float x, float y, const std::string& string, int set, float size, float width, float height);
 
     Text();
     ~Text();
 
 private:
-    void _glPrint(float x, float y, const char *string, int set, float size, float width, float height, int start, int end, int offset);
+    void _glPrint(float x, float y, const std::string& string, int set, float size, float width, float height, int start, int end, int offset);
 };
 
 #endif

@@ -122,9 +122,9 @@ int Game::DrawGLScene(StereoSide side)
     static XYZ checkpoint;
     static float tempmult;
     float tutorialopac;
-    static char string[256] = "";
-    static char string2[256] = "";
-    static char string3[256] = "";
+    std::string string;
+    std::string string2;
+    std::string string3;
     static int drawmode = 0;
 
     if ( stereomode == stereoAnaglyph ) {
@@ -572,11 +572,11 @@ int Game::DrawGLScene(StereoSide side)
                     glColor4f(1, 0, 0, 1 - bonustime);
                     text->glPrint(1024 / 2 - 10 * strlen(bonus_name), 768 / 16 + 768 * 4 / 5, bonus_name, 1, 2, 1024, 768);
 
-                    sprintf (string, "%d", (int)bonusvalue);
+                    string = to_string((int)bonusvalue);
                     glColor4f(0, 0, 0, 1 - bonustime);
-                    text->glPrintOutline(1024 / 2 - 10 * strlen(string) - 4, 768 / 16 - 4 - 20 + 768 * 4 / 5, string, 1, 2.5 * .8, 1024, 768);
+                    text->glPrintOutline(1024 / 2 - 10 * string.size() - 4, 768 / 16 - 4 - 20 + 768 * 4 / 5, string, 1, 2.5 * .8, 1024, 768);
                     glColor4f(1, 0, 0, 1 - bonustime);
-                    text->glPrint(1024 / 2 - 10 * strlen(string), 768 / 16 - 20 + 768 * 4 / 5, string, 1, 2 * .8, 1024, 768);
+                    text->glPrint(1024 / 2 - 10 * string.size(), 768 / 16 - 20 + 768 * 4 / 5, string, 1, 2 * .8, 1024, 768);
                     glColor4f(.5, .5, .5, 1);
                 }
 
@@ -587,303 +587,310 @@ int Game::DrawGLScene(StereoSide side)
                 if (tutorialopac < 0)
                     tutorialopac = 0;
 
-                sprintf (string, " ");
-                sprintf (string2, " ");
-                sprintf (string3, " ");
+                string = " ";
+                string2 = " ";
+                string3 = " ";
                 if (tutorialstage == 0) {
-                    sprintf (string, " ");
-                    sprintf (string2, " ");
-                    sprintf (string3, " ");
+                    string = " ";
+                    string2 = " ";
+                    string3 = " ";
                 }
                 if (tutorialstage == 1) {
-                    sprintf (string, "Welcome to the Lugaru training level!");
-                    sprintf (string2, " ");
-                    sprintf (string3, " ");
+                    string = "Welcome to the Lugaru training level!";
+                    string2 = " ";
+                    string3 = " ";
                 }
                 if (tutorialstage == 2) {
-                    sprintf (string, "BASIC MOVEMENT:");
-                    sprintf (string2, " ");
-                    sprintf (string3, " ");
+                    string = "BASIC MOVEMENT:";
+                    string2 = " ";
+                    string3 = " ";
                 }
                 if (tutorialstage == 3) {
-                    sprintf (string, "You can move the mouse to rotate the camera.");
-                    sprintf (string2, " ");
-                    sprintf (string3, " ");
+                    string = "You can move the mouse to rotate the camera.";
+                    string2 = " ";
+                    string3 = " ";
                 }
                 if (tutorialstage == 4) {
-                    sprintf (string, "Try using the %s, %s, %s and %s keys to move around.", Input::keyToChar(forwardkey), Input::keyToChar(leftkey), Input::keyToChar(backkey), Input::keyToChar(rightkey));
-                    sprintf (string2, "All movement is relative to the camera.");
-                    sprintf (string3, " ");
+                    string = std::string("Try using the ") +
+                            Input::keyToChar(forwardkey) + ", " +
+                            Input::keyToChar(leftkey) + ", " +
+                            Input::keyToChar(backkey) + " and " +
+                            Input::keyToChar(rightkey) + " keys to move around.";
+                    string2 = "All movement is relative to the camera.";
+                    string3 = " ";
                 }
                 if (tutorialstage == 5) {
-                    sprintf (string, "Please press %s to jump.", Input::keyToChar(jumpkey));
-                    sprintf (string2, "You can hold it longer to jump higher.");
-                    sprintf (string3, " ");
+                    string = std::string("Please press ") + Input::keyToChar(jumpkey) + " to jump.";
+                    string2 = "You can hold it longer to jump higher.";
+                    string3 = " ";
                 }
                 if (tutorialstage == 6) {
-                    sprintf (string, "You can press %s to crouch.", Input::keyToChar(crouchkey));
-                    sprintf (string2, "You can jump higher from a crouching position.");
-                    sprintf (string3, " ");
+                    string = std::string("You can press ") + Input::keyToChar(crouchkey) + " to crouch.";
+                    string2 = "You can jump higher from a crouching position.";
+                    string3 = " ";
                 }
                 if (tutorialstage == 7) {
-                    sprintf (string, "While running, you can press %s to roll.", Input::keyToChar(crouchkey));
-                    sprintf (string2, " ");
-                    sprintf (string3, " ");
+                    string = std::string("While running, you can press ") + Input::keyToChar(crouchkey) + " to roll.";
+                    string2 = " ";
+                    string3 = " ";
                 }
                 if (tutorialstage == 8) {
-                    sprintf (string, "While crouching, you can sneak around silently");
-                    sprintf (string2, "using the movement keys.");
-                    sprintf (string3, " ");
+                    string = "While crouching, you can sneak around silently";
+                    string2 = "using the movement keys.";
+                    string3 = " ";
                 }
                 if (tutorialstage == 9) {
-                    sprintf (string, "Release the crouch key while sneaking and hold the movement keys");
-                    sprintf (string2, "to run animal-style.");
-                    sprintf (string3, " ");
+                    string = "Release the crouch key while sneaking and hold the movement keys";
+                    string2 = "to run animal-style.";
+                    string3 = " ";
                 }
                 if (tutorialstage == 10) {
-                    sprintf (string, "ADVANCED MOVEMENT:");
-                    sprintf (string2, " ");
-                    sprintf (string3, " ");
+                    string = "ADVANCED MOVEMENT:";
+                    string2 = " ";
+                    string3 = " ";
                 }
                 if (tutorialstage == 11) {
-                    sprintf (string, "When you jump at a wall, you can hold %s again", Input::keyToChar(jumpkey));
-                    sprintf (string2, "during impact to perform a walljump.");
-                    sprintf (string3, "Be sure to use the movement keys to press against the wall");
+                    string = std::string("When you jump at a wall, you can hold ") + Input::keyToChar(jumpkey) + " again";
+                    string2 = "during impact to perform a walljump.";
+                    string3 = "Be sure to use the movement keys to press against the wall";
                 }
                 if (tutorialstage == 12) {
-                    sprintf (string, "While in the air, you can press crouch to flip.");
-                    sprintf (string2, "Walljumps and flips confuse enemies and give you more control.");
-                    sprintf (string3, " ");
+                    string = "While in the air, you can press crouch to flip.";
+                    string2 = "Walljumps and flips confuse enemies and give you more control.";
+                    string3 = " ";
                 }
                 if (tutorialstage == 13) {
-                    sprintf (string, "BASIC COMBAT:");
-                    sprintf (string2, " ");
-                    sprintf (string3, " ");
+                    string = "BASIC COMBAT:";
+                    string2 = " ";
+                    string3 = " ";
                 }
                 if (tutorialstage == 14) {
-                    sprintf (string, "There is now an imaginary enemy");
-                    sprintf (string2, "in the middle of the training area.");
-                    sprintf (string3, " ");
+                    string = "There is now an imaginary enemy";
+                    string2 = "in the middle of the training area.";
+                    string3 = " ";
                 }
                 if (tutorialstage == 15) {
-                    if (attackkey == MOUSEBUTTON1)
-                        sprintf (string, "Click to attack when you are near an enemy.");
-                    else
-                        sprintf (string, "Press %s to attack when you are near an enemy.", Input::keyToChar(attackkey));
-                    sprintf (string2, "You can punch by standing still near an enemy and attacking.");
-                    sprintf (string3, " ");
+                    if (attackkey == MOUSEBUTTON1) {
+                        string = "Click to attack when you are near an enemy.";
+                    } else {
+                        string = std::string("Press ") + Input::keyToChar(attackkey) + " to attack when you are near an enemy.";
+                    }
+                    string2 = "You can punch by standing still near an enemy and attacking.";
+                    string3 = " ";
                 }
                 if (tutorialstage == 16) {
-                    sprintf (string, "If you are close, you will perform a weak punch.");
-                    sprintf (string2, "The weak punch is excellent for starting attack combinations.");
-                    sprintf (string3, " ");
+                    string = "If you are close, you will perform a weak punch.";
+                    string2 = "The weak punch is excellent for starting attack combinations.";
+                    string3 = " ";
                 }
                 if (tutorialstage == 17) {
-                    sprintf (string, "Attacking while running results in a spin kick.");
-                    sprintf (string2, "This is one of your most powerful ground attacks.");
-                    sprintf (string3, " ");
+                    string = "Attacking while running results in a spin kick.";
+                    string2 = "This is one of your most powerful ground attacks.";
+                    string3 = " ";
                 }
                 if (tutorialstage == 18) {
-                    sprintf (string, "Sweep the enemy's legs out by attacking while crouched.");
-                    sprintf (string2, "This is a very fast attack, and easy to follow up.");
-                    sprintf (string3, " ");
+                    string = "Sweep the enemy's legs out by attacking while crouched.";
+                    string2 = "This is a very fast attack, and easy to follow up.";
+                    string3 = " ";
                 }
                 if (tutorialstage == 19) {
-                    sprintf (string, "When an enemy is on the ground, you can deal some extra");
-                    sprintf (string2, "damage by running up and drop-kicking him.");
-                    sprintf (string3, "(Try knocking them down with a sweep first)");
+                    string = "When an enemy is on the ground, you can deal some extra";
+                    string2 = "damage by running up and drop-kicking him.";
+                    string3 = "(Try knocking them down with a sweep first)";
                 }
                 if (tutorialstage == 20) {
-                    sprintf (string, "Your most powerful individual attack is the rabbit kick.");
-                    if (attackkey == MOUSEBUTTON1)
-                        sprintf (string2, "Run at the enemy while holding the mouse button, and press");
-                    else
-                        sprintf (string2, "Run at the enemy while holding %s, and press", Input::keyToChar(attackkey));
-                    sprintf (string3, "the jump key (%s) to attack.", Input::keyToChar(jumpkey));
+                    string = "Your most powerful individual attack is the rabbit kick.";
+                    if (attackkey == MOUSEBUTTON1) {
+                        string2 = "Run at the enemy while holding the mouse button, and press";
+                    } else {
+                        string2 = std::string("Run at the enemy while holding ") + Input::keyToChar(attackkey) + ", and press";
+                    }
+                    string3 = std::string("the jump key (") + Input::keyToChar(jumpkey) + ") to attack.";
                 }
                 if (tutorialstage == 21) {
-                    sprintf (string, "This attack is devastating if timed correctly.");
-                    sprintf (string2, "Even if timed incorrectly, it will knock the enemy over.");
+                    string = "This attack is devastating if timed correctly.";
+                    string2 = "Even if timed incorrectly, it will knock the enemy over.";
                     if (againbonus)
-                        sprintf (string3, "Try rabbit-kicking the imaginary enemy again.");
+                        string3 = "Try rabbit-kicking the imaginary enemy again.";
                     else
-                        sprintf (string3, "Try rabbit-kicking the imaginary enemy.");
+                        string3 = "Try rabbit-kicking the imaginary enemy.";
                 }
                 if (tutorialstage == 22) {
-                    sprintf (string, "If you sneak behind an enemy unnoticed, you can kill");
-                    sprintf (string2, "him instantly. Move close behind this enemy");
-                    sprintf (string3, "and attack.");
+                    string = "If you sneak behind an enemy unnoticed, you can kill";
+                    string2 = "him instantly. Move close behind this enemy";
+                    string3 = "and attack.";
                 }
                 if (tutorialstage == 23) {
-                    sprintf (string, "Another important attack is the wall kick. When an enemy");
-                    sprintf (string2, "is near a wall, perform a walljump nearby and hold");
-                    sprintf (string3, "the attack key during impact with the wall.");
+                    string = "Another important attack is the wall kick. When an enemy";
+                    string2 = "is near a wall, perform a walljump nearby and hold";
+                    string3 = "the attack key during impact with the wall.";
                 }
                 if (tutorialstage == 24) {
-                    sprintf (string, "You can tackle enemies by running at them animal-style");
-                    if (attackkey == MOUSEBUTTON1)
-                        sprintf (string2, "and pressing jump (%s) or attack(mouse button).", Input::keyToChar(jumpkey));
-                    else
-                        sprintf (string2, "and pressing jump (%s) or attack(%s).", Input::keyToChar(jumpkey), Input::keyToChar(attackkey));
-                    sprintf (string3, "This is especially useful when they are running away.");
+                    string = "You can tackle enemies by running at them animal-style";
+                    if (attackkey == MOUSEBUTTON1) {
+                        string2 = std::string("and pressing jump (") + Input::keyToChar(jumpkey) + ") or attack(mouse button).";
+                    } else {
+                        string2 = std::string("and pressing jump (") + Input::keyToChar(jumpkey) + ") or attack(" + Input::keyToChar(attackkey) + ").";
+                    }
+                    string3 = "This is especially useful when they are running away.";
                 }
                 if (tutorialstage == 25) {
-                    sprintf (string, "Dodge by pressing back and attack. Dodging is essential");
-                    sprintf (string2, "against enemies with swords or other long weapons.");
-                    sprintf (string3, " ");
+                    string = "Dodge by pressing back and attack. Dodging is essential";
+                    string2 = "against enemies with swords or other long weapons.";
+                    string3 = " ";
                 }
                 if (tutorialstage == 26) {
-                    sprintf (string, "REVERSALS AND COUNTER-REVERSALS");
-                    sprintf (string2, " ");
-                    sprintf (string3, " ");
+                    string = "REVERSALS AND COUNTER-REVERSALS";
+                    string2 = " ";
+                    string3 = " ";
                 }
                 if (tutorialstage == 27) {
-                    sprintf (string, "The enemy can now reverse your attacks.");
-                    sprintf (string2, " ");
-                    sprintf (string3, " ");
+                    string = "The enemy can now reverse your attacks.";
+                    string2 = " ";
+                    string3 = " ";
                 }
                 if (tutorialstage == 28) {
-                    sprintf (string, "If you attack, you will notice that the enemy now sometimes");
-                    sprintf (string2, "catches your attack and uses it against you. Hold");
-                    sprintf (string3, "crouch (%s) after attacking to escape from reversals.", Input::keyToChar(crouchkey));
+                    string = "If you attack, you will notice that the enemy now sometimes";
+                    string2 = "catches your attack and uses it against you. Hold";
+                    string3 = std::string("crouch (") + Input::keyToChar(crouchkey) + ") after attacking to escape from reversals.";
                 }
                 if (tutorialstage == 29) {
-                    sprintf (string, "Try escaping from two more reversals in a row.");
-                    sprintf (string2, " ");
-                    sprintf (string3, " ");
+                    string = "Try escaping from two more reversals in a row.";
+                    string2 = " ";
+                    string3 = " ";
                 }
                 if (tutorialstage == 30) {
-                    sprintf (string, "Good!");
-                    sprintf (string2, " ");
-                    sprintf (string3, " ");
+                    string = "Good!";
+                    string2 = " ";
+                    string3 = " ";
                 }
                 if (tutorialstage == 31) {
-                    sprintf (string, "To reverse an attack, you must tap crouch (%s) during the", Input::keyToChar(crouchkey));
-                    sprintf (string2, "enemy's attack. You must also be close to the enemy;");
-                    sprintf (string3, "this is especially important against armed opponents.");
+                    string = std::string("To reverse an attack, you must tap crouch (") + Input::keyToChar(crouchkey) + ") during the";
+                    string2 = "enemy's attack. You must also be close to the enemy;";
+                    string3 = "this is especially important against armed opponents.";
                 }
                 if (tutorialstage == 32) {
-                    sprintf (string, "The enemy can attack in %d seconds.", (int)(tutorialmaxtime - tutorialstagetime));
-                    sprintf (string2, "This imaginary opponents attacks will be highlighted");
-                    sprintf (string3, "to make this easier.");
+                    string = "The enemy can attack in " + to_string(int(tutorialmaxtime - tutorialstagetime)) + " seconds.";
+                    string2 = "This imaginary opponents attacks will be highlighted";
+                    string3 = "to make this easier.";
                 }
                 if (tutorialstage == 33) {
-                    sprintf (string, "Reverse three enemy attacks!");
-                    sprintf (string2, " ");
-                    sprintf (string3, " ");
+                    string = "Reverse three enemy attacks!";
+                    string2 = " ";
+                    string3 = " ";
                 }
                 if (tutorialstage == 34) {
-                    sprintf (string, "Reverse two more enemy attacks!");
-                    sprintf (string2, " ");
-                    sprintf (string3, " ");
+                    string = "Reverse two more enemy attacks!";
+                    string2 = " ";
+                    string3 = " ";
                 }
                 if (tutorialstage == 35) {
-                    sprintf (string, "Reverse one more enemy attack!");
-                    sprintf (string2, " ");
-                    sprintf (string3, " ");
+                    string = "Reverse one more enemy attack!";
+                    string2 = " ";
+                    string3 = " ";
                 }
                 if (tutorialstage == 36) {
-                    sprintf (string, "Excellent!");
-                    sprintf (string2, " ");
-                    sprintf (string3, " ");
+                    string = "Excellent!";
+                    string2 = " ";
+                    string3 = " ";
                 }
                 if (tutorialstage == 37) {
-                    sprintf (string, "Now spar with the enemy for %d more seconds.", (int)(tutorialmaxtime - tutorialstagetime));
-                    sprintf (string2, "Damage dealt: %d", (int)damagedealt);
-                    sprintf (string3, "Damage taken: %d.", (int)damagetaken);
+                    string = "Now spar with the enemy for " + to_string(int(tutorialmaxtime - tutorialstagetime)) + " more seconds.";
+                    string2 = "Damage dealt: " + to_string(int(damagedealt));
+                    string3 = "Damage taken: " + to_string(int(damagetaken));
                 }
                 if (tutorialstage == 38) {
-                    sprintf (string, "WEAPONS:");
-                    sprintf (string2, " ");
-                    sprintf (string3, " ");
+                    string = "WEAPONS:";
+                    string2 = " ";
+                    string3 = " ";
                 }
                 if (tutorialstage == 39) {
-                    sprintf (string, "There is now an imaginary knife");
-                    sprintf (string2, "in the center of the training area.");
-                    sprintf (string3, " ");
+                    string = "There is now an imaginary knife";
+                    string2 = "in the center of the training area.";
+                    string3 = " ";
                 }
                 if (tutorialstage == 40) {
-                    sprintf (string, "Stand, roll or handspring over the knife");
-                    sprintf (string2, "while pressing %s to pick it up.", Input::keyToChar(throwkey));
-                    sprintf (string3, "You can crouch and press the same key to drop it again.");
+                    string = "Stand, roll or handspring over the knife";
+                    string2 = std::string("while pressing ") + Input::keyToChar(throwkey) + " to pick it up.";
+                    string3 = "You can crouch and press the same key to drop it again.";
                 }
                 if (tutorialstage == 41) {
-                    sprintf (string, "You can equip and unequip weapons using the %s key.", Input::keyToChar(drawkey));
-                    sprintf (string2, "Sometimes it is best to keep them unequipped to");
-                    sprintf (string3, "prevent enemies from taking them. ");
+                    string = std::string("You can equip and unequip weapons using the ") + Input::keyToChar(drawkey) + " key.";
+                    string2 = "Sometimes it is best to keep them unequipped to";
+                    string3 = "prevent enemies from taking them. ";
                 }
                 if (tutorialstage == 42) {
-                    sprintf (string, "The knife is the smallest weapon and the least encumbering.");
-                    sprintf (string2, "You can equip or unequip it while standing, crouching,");
-                    sprintf (string3, "running or flipping.");
+                    string = "The knife is the smallest weapon and the least encumbering.";
+                    string2 = "You can equip or unequip it while standing, crouching,";
+                    string3 = "running or flipping.";
                 }
                 if (tutorialstage == 43) {
-                    sprintf (string, "You perform weapon attacks the same way as unarmed attacks,");
-                    sprintf (string2, "but sharp weapons cause permanent damage, instead of the");
-                    sprintf (string3, "temporary trauma from blunt weapons, fists and feet.");
+                    string = "You perform weapon attacks the same way as unarmed attacks,";
+                    string2 = "but sharp weapons cause permanent damage, instead of the";
+                    string3 = "temporary trauma from blunt weapons, fists and feet.";
                 }
                 if (tutorialstage == 44) {
-                    sprintf (string, "The enemy now has your knife!");
-                    sprintf (string2, "Please reverse two of his knife attacks.");
-                    sprintf (string3, " ");
+                    string = "The enemy now has your knife!";
+                    string2 = "Please reverse two of his knife attacks.";
+                    string3 = " ";
                 }
                 if (tutorialstage == 45) {
-                    sprintf (string, "Please reverse one more of his knife attacks.");
-                    sprintf (string2, " ");
-                    sprintf (string3, " ");
+                    string = "Please reverse one more of his knife attacks.";
+                    string2 = " ";
+                    string3 = " ";
                 }
                 if (tutorialstage == 46) {
-                    sprintf (string, "Now he has a sword!");
-                    sprintf (string2, "The sword has longer reach than your arms, so you");
-                    sprintf (string3, "must move close to reverse the sword slash.");
+                    string = "Now he has a sword!";
+                    string2 = "The sword has longer reach than your arms, so you";
+                    string3 = "must move close to reverse the sword slash.";
                 }
                 if (tutorialstage == 47) {
-                    sprintf (string, "Long weapons like the sword and staff are also useful for defense;");
-                    sprintf (string2, "you can parry enemy weapon attacks by pressing the attack key");
-                    sprintf (string3, "at the right time. Please try parrying the enemy's attacks!");
+                    string = "Long weapons like the sword and staff are also useful for defense;";
+                    string2 = "you can parry enemy weapon attacks by pressing the attack key";
+                    string3 = "at the right time. Please try parrying the enemy's attacks!";
                 }
                 if (tutorialstage == 48) {
-                    sprintf (string, "The staff is like the sword, but has two main attacks.");
-                    sprintf (string2, "The standing smash is fast and effective, and the running");
-                    sprintf (string3, "spin smash is slower and more powerful.");
+                    string = "The staff is like the sword, but has two main attacks.";
+                    string2 = "The standing smash is fast and effective, and the running";
+                    string3 = "spin smash is slower and more powerful.";
                 }
                 if (tutorialstage == 49) {
-                    sprintf (string, "When facing an enemy, you can throw the knife with %s.", Input::keyToChar(throwkey));
-                    sprintf (string2, "It is possible to throw the knife while flipping,");
-                    sprintf (string3, "but it is very inaccurate.");
+                    string = std::string("When facing an enemy, you can throw the knife with ") + Input::keyToChar(throwkey) + ".";
+                    string2 = "It is possible to throw the knife while flipping,";
+                    string3 = "but it is very inaccurate.";
                 }
                 if (tutorialstage == 50) {
-                    sprintf (string, "You now know everything you can learn from training.");
-                    sprintf (string2, "Everything else you must learn from experience!");
-                    sprintf (string3, " ");
+                    string = "You now know everything you can learn from training.";
+                    string2 = "Everything else you must learn from experience!";
+                    string3 = " ";
                 }
                 if (tutorialstage == 51) {
-                    sprintf (string, "Walk out of the training area to return to the main menu.");
-                    sprintf (string2, " ");
-                    sprintf (string3, " ");
+                    string = "Walk out of the training area to return to the main menu.";
+                    string2 = " ";
+                    string3 = " ";
                 }
 
                 glColor4f(0, 0, 0, tutorialopac);
-                text->glPrintOutline(screenwidth / 2 - 7.6 * strlen(string)*screenwidth / 1024 - 4, screenheight / 16 - 4 + screenheight * 4 / 5, string, 1, 1.5 * 1.25 * screenwidth / 1024, screenwidth, screenheight);
-                text->glPrintOutline(screenwidth / 2 - 7.6 * strlen(string2)*screenwidth / 1024 - 4, screenheight / 16 - 4 + screenheight * 4 / 5 - 20 * screenwidth / 1024, string2, 1, 1.5 * 1.25 * screenwidth / 1024, screenwidth, screenheight);
-                text->glPrintOutline(screenwidth / 2 - 7.6 * strlen(string3)*screenwidth / 1024 - 4, screenheight / 16 - 4 + screenheight * 4 / 5 - 40 * screenwidth / 1024, string3, 1, 1.5 * 1.25 * screenwidth / 1024, screenwidth, screenheight);
+                text->glPrintOutline(screenwidth / 2 - 7.6 * string.size()*screenwidth / 1024 - 4, screenheight / 16 - 4 + screenheight * 4 / 5, string, 1, 1.5 * 1.25 * screenwidth / 1024, screenwidth, screenheight);
+                text->glPrintOutline(screenwidth / 2 - 7.6 * string2.size()*screenwidth / 1024 - 4, screenheight / 16 - 4 + screenheight * 4 / 5 - 20 * screenwidth / 1024, string2, 1, 1.5 * 1.25 * screenwidth / 1024, screenwidth, screenheight);
+                text->glPrintOutline(screenwidth / 2 - 7.6 * string3.size()*screenwidth / 1024 - 4, screenheight / 16 - 4 + screenheight * 4 / 5 - 40 * screenwidth / 1024, string3, 1, 1.5 * 1.25 * screenwidth / 1024, screenwidth, screenheight);
                 glColor4f(1, 1, 1, tutorialopac);
-                text->glPrint(screenwidth / 2 - 7.6 * strlen(string)*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
-                text->glPrint(screenwidth / 2 - 7.6 * strlen(string2)*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 20 * screenwidth / 1024, string2, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
-                text->glPrint(screenwidth / 2 - 7.6 * strlen(string3)*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 40 * screenwidth / 1024, string3, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
+                text->glPrint(screenwidth / 2 - 7.6 * string.size()*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
+                text->glPrint(screenwidth / 2 - 7.6 * string2.size()*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 20 * screenwidth / 1024, string2, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
+                text->glPrint(screenwidth / 2 - 7.6 * string3.size()*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 40 * screenwidth / 1024, string3, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
 
-                sprintf (string, "Press 'tab' to skip to the next item.");
-                sprintf (string2, "Press escape at any time to");
-                sprintf (string3, "pause or exit the tutorial.");
+                string = "Press 'tab' to skip to the next item.";
+                string2 = "Press escape at any time to";
+                string3 = "pause or exit the tutorial.";
 
                 glColor4f(0, 0, 0, 1);
-                text->glPrintOutline(screenwidth / 2 - 7.6 * strlen(string)*screenwidth / 1024 * .8 - 4, 0 - 4 + screenheight * 1 / 10, string, 1, 1.5 * 1.25 * screenwidth / 1024 * .8, screenwidth, screenheight);
-                text->glPrintOutline(screenwidth / 2 - 7.6 * strlen(string2)*screenwidth / 1024 * .8 - 4, 0 - 4 + screenheight * 1 / 10 - 20 * .8 * screenwidth / 1024, string2, 1, 1.5 * 1.25 * screenwidth / 1024 * .8, screenwidth, screenheight);
-                text->glPrintOutline(screenwidth / 2 - 7.6 * strlen(string3)*screenwidth / 1024 * .8 - 4, 0 - 4 + screenheight * 1 / 10 - 40 * .8 * screenwidth / 1024, string3, 1, 1.5 * 1.25 * screenwidth / 1024 * .8, screenwidth, screenheight);
+                text->glPrintOutline(screenwidth / 2 - 7.6 * string.size()*screenwidth / 1024 * .8 - 4, 0 - 4 + screenheight * 1 / 10, string, 1, 1.5 * 1.25 * screenwidth / 1024 * .8, screenwidth, screenheight);
+                text->glPrintOutline(screenwidth / 2 - 7.6 * string2.size()*screenwidth / 1024 * .8 - 4, 0 - 4 + screenheight * 1 / 10 - 20 * .8 * screenwidth / 1024, string2, 1, 1.5 * 1.25 * screenwidth / 1024 * .8, screenwidth, screenheight);
+                text->glPrintOutline(screenwidth / 2 - 7.6 * string3.size()*screenwidth / 1024 * .8 - 4, 0 - 4 + screenheight * 1 / 10 - 40 * .8 * screenwidth / 1024, string3, 1, 1.5 * 1.25 * screenwidth / 1024 * .8, screenwidth, screenheight);
                 glColor4f(0.5, 0.5, 0.5, 1);
-                text->glPrint(screenwidth / 2 - 7.6 * strlen(string)*screenwidth / 1024 * .8, 0 + screenheight * 1 / 10, string, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
-                text->glPrint(screenwidth / 2 - 7.6 * strlen(string2)*screenwidth / 1024 * .8, 0 + screenheight * 1 / 10 - 20 * .8 * screenwidth / 1024, string2, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
-                text->glPrint(screenwidth / 2 - 7.6 * strlen(string3)*screenwidth / 1024 * .8, 0 + screenheight * 1 / 10 - 40 * .8 * screenwidth / 1024, string3, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
+                text->glPrint(screenwidth / 2 - 7.6 * string.size()*screenwidth / 1024 * .8, 0 + screenheight * 1 / 10, string, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
+                text->glPrint(screenwidth / 2 - 7.6 * string2.size()*screenwidth / 1024 * .8, 0 + screenheight * 1 / 10 - 20 * .8 * screenwidth / 1024, string2, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
+                text->glPrint(screenwidth / 2 - 7.6 * string3.size()*screenwidth / 1024 * .8, 0 + screenheight * 1 / 10 - 40 * .8 * screenwidth / 1024, string3, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
             }
 
             //Hot spots
@@ -912,7 +919,7 @@ int Game::DrawGLScene(StereoSide side)
                         if (tutorialopac < 0)
                             tutorialopac = 0;
 
-                        sprintf (string, "%s", Hotspot::hotspots[closest].text);
+                        string = Hotspot::hotspots[closest].text;
 
                         int lastline = 0;
                         int line = 0;
@@ -1004,16 +1011,16 @@ int Game::DrawGLScene(StereoSide side)
                         tempnum++;
                 }
 
-                sprintf (string, "%s: ", tempname);
+                string = std::string(tempname) + ": ";
 
                 if (Dialog::currentScene().color[0] + Dialog::currentScene().color[1] + Dialog::currentScene().color[2] < 1.5) {
                     glColor4f(0, 0, 0, tutorialopac);
-                    text->glPrintOutline(startx - 2 * 7.6 * strlen(string)*screenwidth / 1024 - 4, starty - 4, string, 1, 1.5 * 1.25 * screenwidth / 1024, screenwidth, screenheight);
+                    text->glPrintOutline(startx - 2 * 7.6 * string.size()*screenwidth / 1024 - 4, starty - 4, string, 1, 1.5 * 1.25 * screenwidth / 1024, screenwidth, screenheight);
                     glColor4f(0.7, 0.7, 0.7, tutorialopac);
-                    text->glPrint(startx - 2 * 7.6 * strlen(string)*screenwidth / 1024, starty, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
+                    text->glPrint(startx - 2 * 7.6 * string.size()*screenwidth / 1024, starty, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
                 } else {
                     glColor4f(0, 0, 0, tutorialopac);
-                    text->glPrintOutline(startx - 2 * 7.6 * strlen(string)*screenwidth / 1024 - 4, starty - 4, string, 1, 1.5 * 1.25 * screenwidth / 1024, screenwidth, screenheight);
+                    text->glPrintOutline(startx - 2 * 7.6 * string.size()*screenwidth / 1024 - 4, starty - 4, string, 1, 1.5 * 1.25 * screenwidth / 1024, screenwidth, screenheight);
                 }
 
                 tempnum = 0;
@@ -1023,7 +1030,7 @@ int Game::DrawGLScene(StereoSide side)
                         tempnum++;
                 }
 
-                sprintf (string, "%s", tempname);
+                string = tempname;
 
                 int lastline = 0;
                 int line = 0;
@@ -1053,13 +1060,14 @@ int Game::DrawGLScene(StereoSide side)
 
             if (!tutoriallevel && !winfreeze && !Dialog::inDialog() && !mainmenu) {
                 if (campaign) {
-                    if (scoreadded)
-                        sprintf (string, "Score: %d", (int)Account::active().getCampaignScore());
-                    else
-                        sprintf (string, "Score: %d", (int)Account::active().getCampaignScore() + (int)bonustotal);
+                    if (scoreadded) {
+                        string = "Score: " + to_string(int(Account::active().getCampaignScore()));
+                    } else {
+                        string = "Score: " + to_string(int(Account::active().getCampaignScore() + bonustotal));
+                    }
+                } else {
+                    string = "Score: " + to_string(int(bonustotal));
                 }
-                if (!campaign)
-                    sprintf (string, "Score: %d", (int)bonustotal);
                 glColor4f(0, 0, 0, 1);
                 text->glPrintOutline(1024 / 40 - 4, 768 / 16 - 4 + 768 * 14 / 16, string, 1, 1.5 * 1.25, 1024, 768);
                 glColor4f(1, 0, 0, 1);
@@ -1142,7 +1150,7 @@ int Game::DrawGLScene(StereoSide side)
                     glEnable(GL_TEXTURE_2D);
 
                     // writing the numbers :
-                    sprintf (string, "Damages : %d/%d (%d)", (int)(Person::players[0]->damage), (int)(Person::players[0]->damagetolerance), (int)(Person::players[0]->bloodloss));
+                    string = "Damages : " + to_string(int(Person::players[0]->damage)) + "/" + to_string(int(Person::players[0]->damagetolerance)) + " (" + to_string(int(Person::players[0]->bloodloss)) + ")";
                     glColor4f(0, 0, 0, 1);
                     text->glPrintOutline(1024 / 40 - 4, 768 / 16 - 4 + 768 * 14 / 16 - 40, string, 1, 1.5 * 1.25, 1024, 768);
                     glColor4f(1, 0, 0, 1);
@@ -1154,75 +1162,78 @@ int Game::DrawGLScene(StereoSide side)
 
 
             if ((texttoggle || editorenabled) && devtools && !mainmenu) {
-                sprintf (string, "The framespersecond is %d.", (int)(fps));
+                string = "The framespersecond is " + to_string(int(fps));
                 text->glPrint(10, 30, string, 0, .8, 1024, 768);
 
-                if (editorenabled)
-                    sprintf (string, "Map editor enabled.");
-                else
-                    sprintf (string, "Map editor disabled.");
+                if (editorenabled) {
+                    string = "Map editor enabled.";
+                } else {
+                    string = "Map editor disabled.";
+                }
                 text->glPrint(10, 60, string, 0, .8, 1024, 768);
                 if (editorenabled) {
-                    sprintf (string, "Object size: %f", editorsize);
+                    string = "Object size: " + to_string(editorsize);
                     text->glPrint(10, 75, string, 0, .8, 1024, 768);
-                    if (editoryaw >= 0)
-                        sprintf (string, "Object yaw: %f", editoryaw);
-                    else
-                        sprintf (string, "Object yaw: Random");
+                    if (editoryaw >= 0) {
+                        string = "Object yaw: " + to_string(editoryaw);
+                    } else {
+                        string = "Object yaw: Random";
+                    }
                     text->glPrint(10, 90, string, 0, .8, 1024, 768);
-                    if (editorpitch >= 0)
-                        sprintf (string, "Object pitch: %f", editorpitch);
-                    else
-                        sprintf (string, "Object pitch: Random");
+                    if (editorpitch >= 0) {
+                        string = "Object pitch: " + to_string(editorpitch);
+                    } else {
+                        string = "Object pitch: Random";
+                    }
                     text->glPrint(10, 105, string, 0, .8, 1024, 768);
-                    sprintf (string, "Object type: %d", editortype);
+                    string = "Object type: " + to_string(editortype);
                     text->glPrint(10, 120, string, 0, .8, 1024, 768);
                     switch (editortype) {
                     case boxtype:
-                        sprintf (string, "(box)");
+                        string = "(box)";
                         break;
                     case treetrunktype:
-                        sprintf (string, "(tree)");
+                        string = "(tree)";
                         break;
                     case walltype:
-                        sprintf (string, "(wall)");
+                        string = "(wall)";
                         break;
                     case weirdtype:
-                        sprintf (string, "(weird)");
+                        string = "(weird)";
                         break;
                     case spiketype:
-                        sprintf (string, "(spike)");
+                        string = "(spike)";
                         break;
                     case rocktype:
-                        sprintf (string, "(rock)");
+                        string = "(rock)";
                         break;
                     case bushtype:
-                        sprintf (string, "(bush)");
+                        string = "(bush)";
                         break;
                     case tunneltype:
-                        sprintf (string, "(tunnel)");
+                        string = "(tunnel)";
                         break;
                     case chimneytype:
-                        sprintf (string, "(chimney)");
+                        string = "(chimney)";
                         break;
                     case platformtype:
-                        sprintf (string, "(platform)");
+                        string = "(platform)";
                         break;
                     case cooltype:
-                        sprintf (string, "(cool)");
+                        string = "(cool)";
                         break;
                     case firetype:
-                        sprintf (string, "(fire)");
+                        string = "(fire)";
                         break;
                     }
                     text->glPrint(130, 120, string, 0, .8, 1024, 768);
 
-                    sprintf (string, "Numplayers: %lu", Person::players.size());
+                    string = "Numplayers: " + to_string(Person::players.size());
                     text->glPrint(10, 155, string, 0, .8, 1024, 768);
-                    sprintf (string, "Player %d: numwaypoints: %d", (int(Person::players.size()) - 1), Person::players.back()->numwaypoints);
+                    string = "Player " + to_string(int(Person::players.size()) - 1) + ": numwaypoints: " + to_string(Person::players.back()->numwaypoints);
                     text->glPrint(10, 140, string, 0, .8, 1024, 768);
                 }
-                sprintf (string, "Difficulty: %d", difficulty);
+                string = "Difficulty: " + to_string(difficulty);
                 text->glPrint(10, 240, string, 0, .8, 1024, 768);
 
             }
@@ -1358,7 +1369,7 @@ int Game::DrawGLScene(StereoSide side)
                 if (displaytime[i] < 4)
                     for (unsigned j = 0; j < displaytext[i].size(); j++) {
                         glColor4f(1, 1, 1, 4 - displaytime[i]);
-                        sprintf (string, "%c", displaytext[i][j]);
+                        string = std::string(1, displaytext[i][j]);
                         text->glPrint(30 + j * 10, 30 + i * 20 + (screenheight - 330), string, 0, 1, screenwidth, screenheight);
                     }
         }
@@ -1558,7 +1569,7 @@ int Game::DrawGLScene(StereoSide side)
             if (loading != 4) {
                 glEnable(GL_TEXTURE_2D);
                 glColor4f(1, 1, 1, 1);
-                sprintf (string, "Loading...");
+                string = "Loading...";
                 text->glPrint(1024 / 2 - 90, 768 / 2, string, 1, 2, 1024, 768);
             }
             loading = 2;
@@ -1607,26 +1618,21 @@ int Game::DrawGLScene(StereoSide side)
 
             glEnable(GL_TEXTURE_2D);
             glColor4f(1, 1, 1, 1);
-            sprintf (string, "Level Cleared!");
-            text->glPrintOutlined(1024 / 2 - strlen(string) * 10, 768 * 7 / 8, string, 1, 2, 1024, 768);
+            string = "Level Cleared!";
+            text->glPrintOutlined(1024 / 2 - string.size() * 10, 768 * 7 / 8, string, 1, 2, 1024, 768);
 
-            sprintf (string, "Score:     %d", (int)(bonustotal - startbonustotal));
+            string = "Score:     " + to_string(int(bonustotal - startbonustotal));
             text->glPrintOutlined(1024 / 30, 768 * 6 / 8, string, 1, 2, 1024, 768);
 
-            sprintf (string, "Press Escape to return to menu or Space to continue");
-            text->glPrintOutlined(640 / 2 - strlen(string) * 5, 480 * 1 / 16, string, 1, 1, 640, 480);
+            string = "Press Escape to return to menu or Space to continue";
+            text->glPrintOutlined(640 / 2 - string.size() * 5, 480 * 1 / 16, string, 1, 1, 640, 480);
 
-            char temp[255];
-
-            for (int i = 0; i < 255; i++)
-                string[i] = '\0';
             int wontime = (int)round(wonleveltime);
-            sprintf (temp, "Time:      %d:", int((wontime - wontime % 60) / 60));
-            strcat(string, temp);
-            if (wontime % 60 < 10)
-                strcat(string, "0");
-            sprintf (temp, "%d", wontime % 60);
-            strcat(string, temp);
+            string = "Time:      " + to_string(int((wontime - wontime % 60) / 60));
+            if (wontime % 60 < 10) {
+                string += "0";
+            }
+            string += to_string(int(wontime % 60));
             text->glPrintOutlined(1024 / 30, 768 * 6 / 8 - 40, string, 1, 2, 1024, 768);
 
             //Awards
@@ -1890,17 +1896,14 @@ int Game::DrawGLScene(StereoSide side)
             int offset = 0;
             if (consoleselected >= 60)
                 offset = consoleselected - 60;
-            sprintf (string, " ]");
-            text->glPrint(10, 30, string, 0, 1, 1024, 768);
+            text->glPrint(10, 30, " ]", 0, 1, 1024, 768);
             if (consoleblink) {
-                sprintf (string, "_");
-                text->glPrint(30 + (float)(consoleselected) * 10 - offset * 10, 30, string, 0, 1, 1024, 768);
+                text->glPrint(30 + (float)(consoleselected) * 10 - offset * 10, 30, "_", 0, 1, 1024, 768);
             }
             for (unsigned i = 0; i < 15; i++)
                 for (unsigned j = 0; j < consoletext[i].size(); j++) {
                     glColor4f(1, 1, 1, 1 - (float)(i) / 16);
-                    sprintf (string, "%c", consoletext[i][j]);
-                    text->glPrint(30 + j * 10 - offset * 10, 30 + i * 20, string, 0, 1, 1024, 768);
+                    text->glPrint(30 + j * 10 - offset * 10, 30 + i * 20, std::string(1, consoletext[i][j]), 0, 1, 1024, 768);
                 }
         }
     }

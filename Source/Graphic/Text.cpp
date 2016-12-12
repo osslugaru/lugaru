@@ -77,12 +77,12 @@ void Text::BuildFont() // Build Our Font Display List
     } // Loop Until All 256 Are Built
 }
 
-void Text::glPrint(float x, float y, const char *string, int set, float size, float width, float height) // Where The Printing Happens
+void Text::glPrint(float x, float y, const std::string& string, int set, float size, float width, float height) // Where The Printing Happens
 {
-    glPrint(x, y, string, set, size, width, height, 0, strlen(string));
+    glPrint(x, y, string, set, size, width, height, 0, string.size());
 }
 
-void Text::_glPrint(float x, float y, const char *string, int set, float size, float width, float height, int start, int end, int offset) // Where The Printing Happens
+void Text::_glPrint(float x, float y, const std::string& string, int set, float size, float width, float height, int start, int end, int offset) // Where The Printing Happens
 {
     if (set > 1) {
         set = 1;
@@ -112,26 +112,26 @@ void Text::_glPrint(float x, float y, const char *string, int set, float size, f
     glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 }
 
-void Text::glPrint(float x, float y, const char *string, int set, float size, float width, float height, int start, int end) // Where The Printing Happens
+void Text::glPrint(float x, float y, const std::string& string, int set, float size, float width, float height, int start, int end) // Where The Printing Happens
 {
     _glPrint(x, y, string, set, size, width, height, start, end, 0);
 }
 
-void Text::glPrintOutline(float x, float y, const char *string, int set, float size, float width, float height) // Where The Printing Happens
+void Text::glPrintOutline(float x, float y, const std::string& string, int set, float size, float width, float height) // Where The Printing Happens
 {
-    glPrintOutline(x, y, string, set, size, width, height, 0, strlen(string));
+    glPrintOutline(x, y, string, set, size, width, height, 0, string.size());
 }
 
-void Text::glPrintOutline(float x, float y, const char *string, int set, float size, float width, float height, int start, int end) // Where The Printing Happens
+void Text::glPrintOutline(float x, float y, const std::string& string, int set, float size, float width, float height, int start, int end) // Where The Printing Happens
 {
     _glPrint(x, y, string, set, size, width, height, start, end, 256);
 }
-void Text::glPrintOutlined(float x, float y, const char *string, int set, float size, float width, float height) // Where The Printing Happens
+void Text::glPrintOutlined(float x, float y, const std::string& string, int set, float size, float width, float height) // Where The Printing Happens
 {
     glPrintOutlined(1, 1, 1, x, y, string, set, size, width, height);
 }
 
-void Text::glPrintOutlined(float r, float g, float b, float x, float y, const char *string, int set, float size, float width, float height) // Where The Printing Happens
+void Text::glPrintOutlined(float r, float g, float b, float x, float y, const std::string& string, int set, float size, float width, float height) // Where The Printing Happens
 {
     glColor4f(0, 0, 0, 1);
     glPrintOutline( x - 2 * size,  y - 2 * size, string,  set,  size * 2.5 / 2,  width,  height);
