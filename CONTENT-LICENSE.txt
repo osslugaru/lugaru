@@ -16,6 +16,7 @@ Data/Textures/ClFeng.png
 Data/Textures/ClHuo.png
 Data/Textures/ClShan.png
 Data/Textures/ClShui.png
+Data/Textures/FurBW.jpg
 
 ## Slib assets (CC-BY-SA 3.0 Unported)
 

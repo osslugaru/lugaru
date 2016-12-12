@@ -293,4 +293,5 @@ install(FILES ${CMAKE_SOURCE_DIR}/AUTHORS
               ${CMAKE_SOURCE_DIR}/COPYING.txt
               ${CMAKE_SOURCE_DIR}/DEVTOOLS.txt
               ${CMAKE_SOURCE_DIR}/README.md
+              ${CMAKE_SOURCE_DIR}/RELEASE-NOTES.md
         DESTINATION ${LUGARU_DOCDIR})
