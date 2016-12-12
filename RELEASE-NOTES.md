@@ -19,6 +19,7 @@ therefore more advanced than the preceding Lugaru HD release by Wolfire.
   official campaign:
   * Temple, by Silb
   * Empire, by Jendraz
+  * The Seven Tasks, by Philtron R.
 - All assets (animations, textures, models, maps, sounds, etc.) of Lugaru HD
   by Wolfire are under a free and open source license (CC-BY-SA 3.0)!
 - Window and input management ported from SDL 1.2 to SDL 2.0, improving the
