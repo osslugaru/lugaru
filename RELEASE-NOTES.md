@@ -50,6 +50,8 @@ therefore more advanced than the preceding Lugaru HD release by Wolfire.
 - Renamed debug mode to devtools and improved the corresponding documentation
   Devtools are toggled with `--devtools` switch or adding a `Devtools: 1`
   entry to the config.txt (#32)
+- Added automatic progress saving upon level completion, and not only when
+  closing the game.
 - Use standard directories to store game config and user data (#22):
   * Linux: XDG_CONFIG_HOME (default `~/.config/lugaru`) and XDG_DATA_HOME
     (default `~/.local/share/lugaru`)

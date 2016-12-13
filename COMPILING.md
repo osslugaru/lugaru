@@ -34,10 +34,28 @@ The resulting `lugaru` binary will expect to find the `Data/` folder next to
 it, so either copy `build/lugaru` in the main directory, or create a symbolic
 link to run the game.
 
+### Packaging
+
+If you want to package Lugaru for a GNU/Linux distribution, or if you want to
+install it system-wide locally, you need to set the `SYSTEM_INSTALL` CMake
+option, and (optionally) define the CMAKE_INSTALL_BINDIR and _DATADIR if they
+differ from the default ones (`bin` and `share` appended to the prefix).
+Example:
+
+```
+mkdir build && cd build
+cmake -DSYSTEM_INSTALL=ON \
+      -DCMAKE_INSTALL_BINDIR=games \
+      -DCMAKE_INSTALL_DATADIR=share/games \
+      ..
+make
+sudo make install
+```
+
 ## Mac OSX
 
-The instructions should be similar to the GNU/Linux ones, but have not been
-tested in a Mac environment recently.
+The instructions are similar to the GNU/Linux ones, provided you have
+installed Xcode and the required dependencies (e.g. via homebrew).
 
 ## Windows
 
