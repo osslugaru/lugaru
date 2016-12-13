@@ -83,7 +83,7 @@ void Dispose()
         Game::endgame = 0;
     }
 
-    Account::saveFile(Folders::getUserDataPath()+"/users");
+    Account::saveFile(Folders::getUserSavePath());
 
     //textures.clear();
 
@@ -458,7 +458,7 @@ void Game::InitGame()
 
     numchallengelevels = 14;
 
-    Account::loadFile(Folders::getUserDataPath()+"/users");
+    Account::loadFile(Folders::getUserSavePath());
 
     whichjointstartarray[0] = righthip;
     whichjointendarray[0] = rightfoot;

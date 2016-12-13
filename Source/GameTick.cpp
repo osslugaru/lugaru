@@ -6233,6 +6233,7 @@ void Game::TickOnceAfter()
                     Account::active().winLevel(whichlevel, bonustotal - startbonustotal, leveltime);
                 }
                 won = 1;
+                Account::active().saveFile(Folders::getUserSavePath());
             }
         }
 

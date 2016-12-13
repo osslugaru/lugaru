@@ -47,9 +47,6 @@ public:
     /* Returns path to the screenshot directory. Creates it if needed. */
     static std::string getScreenshotDir();
 
-    /* Returns full path for a game resource */
-    static std::string getResourcePath(std::string filepath);
-
     /* Returns full path for user data */
     static std::string getUserDataPath();
 
@@ -57,6 +54,12 @@ public:
     static std::string getConfigFilePath();
 
     static FILE* openMandatoryFile(std::string filename, const char* mode);
+
+    /* Returns full path for a game resource */
+    static inline std::string getResourcePath(std::string filepath) { return dataDir + '/' + filepath; }
+
+    /* Returns full path for user progress save */
+    static inline std::string getUserSavePath() { return getUserDataPath() + "/users"; }
 
 private:
     static const char* getHomeDirectory();
