@@ -5316,7 +5316,7 @@ void Person::DoStuff()
                                 addEnvSound(coords, 4 * findLength(&velocity));
                             }
 
-                            int howmany;
+                            int howmany = 0;
                             if (environment == grassyenvironment)
                                 howmany = findLength(&velocity) * 4;
                             if (environment == snowyenvironment)
@@ -5376,7 +5376,7 @@ void Person::DoStuff()
                                 addEnvSound(coords, 4 * findLength(&velocity));
                             }
 
-                            int howmany;
+                            int howmany = 0;
                             if (environment == grassyenvironment)
                                 howmany = findLength(&velocity) * 4;
                             if (environment == snowyenvironment)
