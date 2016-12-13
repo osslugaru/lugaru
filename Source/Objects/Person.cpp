@@ -2147,7 +2147,7 @@ void Person::DoAnimations()
             animCurrent = animTarget;
             frameTarget++;
 
-            if (animTarget == removeknifeanim && Animation::animations[animTarget].frames[frameCurrent].label == 5) {
+            if (animTarget == removeknifeanim && currentFrame().label == 5) {
                 for (unsigned i = 0; i < weapons.size(); i++) {
                     if (weapons[i].owner == -1)
                         if (distsqflat(&coords, &weapons[i].position) < 4 && weaponactive == -1) {
@@ -2162,7 +2162,7 @@ void Person::DoAnimations()
                 }
             }
 
-            if (animTarget == crouchremoveknifeanim && Animation::animations[animTarget].frames[frameCurrent].label == 5) {
+            if (animTarget == crouchremoveknifeanim && currentFrame().label == 5) {
                 for (unsigned i = 0; i < weapons.size(); i++) {
                     bool willwork = true;
                     if (weapons[i].owner != -1)
@@ -2238,7 +2238,7 @@ void Person::DoAnimations()
                 }
             }
 
-            if (animCurrent == drawleftanim && Animation::animations[animTarget].frames[frameCurrent].label == 5) {
+            if (animCurrent == drawleftanim && currentFrame().label == 5) {
                 if (weaponactive == -1)
                     weaponactive = 0;
                 else if (weaponactive == 0) {
@@ -3734,7 +3734,7 @@ void Person::DoAnimations()
 
 
             //Animation end
-            if (frameTarget > int(Animation::animations[animCurrent].frames.size()) - 1) {
+            if (frameTarget >= int(Animation::animations[animCurrent].frames.size())) {
                 frameTarget = 0;
                 if (wasStop()) {
                     animTarget = getIdle();
@@ -4161,9 +4161,9 @@ void Person::DoAnimations()
                     /* FIXME - mixed of target and current here, is that intended? */
                     target += multiplier * Animation::animations[animTarget].frames[frameCurrent].speed * speed * 1.7 * tempspeed / (speed * 45 * scale);
                 }
-            } else if (transspeed)
+            } else if (transspeed) {
                 target += multiplier * transspeed * speed * 2;
-            else {
+            } else {
                 if (!isRun() || !wasRun()) {
                     if (targetFrame().speed > currentFrame().speed)
                         target += multiplier * targetFrame().speed * 2;
@@ -4179,6 +4179,11 @@ void Person::DoAnimations()
                 frameCurrent = frameTarget;
                 target = 1;
             }
+
+            if (frameCurrent >= int(Animation::animations[animCurrent].frames.size())) {
+                frameCurrent = Animation::animations[animCurrent].frames.size() - 1;
+            }
+
             oldrot = rot;
             rot = targetrot * target;
             yaw += rot - oldrot;
@@ -4187,9 +4192,7 @@ void Person::DoAnimations()
                 oldrot = 0;
                 targetrot = 0;
             }
-            if (frameCurrent >= int(Animation::animations[animCurrent].frames.size())) {
-                frameCurrent = Animation::animations[animCurrent].frames.size() - 1;
-            }
+
             if (animCurrent != oldanimCurrent || animTarget != oldanimTarget || ((frameCurrent != oldframeCurrent || frameTarget != oldframeTarget) && !calcrot)) {
                 //Old rotates
                 for (unsigned i = 0; i < skeleton.joints.size(); i++) {
