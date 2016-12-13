@@ -20,7 +20,7 @@ Data/Textures/FurBW.jpg
 
 ## Slib assets (CC-BY-SA 3.0 Unported)
 
-http://forums.wolfire.com/viewtopic.php?f=7&t=1066&start=270#p109473
+https://web.archive.org/web/20161213062413/http://forums.wolfire.com/viewtopic.php?f=7&t=1066
 
 These assets are from the Temple campaign by Slib under CC-BY-SA 3.0 Unported:
 
@@ -34,3 +34,14 @@ Data/Textures/GiTeared.png
 Data/Textures/GiBottom.png
 Data/Textures/Mask.png
 Data/Textures/temple/World.png
+
+## Jendraz assets (CC-BY-SA 4.0 International)
+
+https://web.archive.org/web/20161213062036/http://forums.wolfire.com/viewtopic.php?f=7&t=3797
+
+These assets are from the Empire campaign by Jendraz, licensed under CC-BY-SA
+4.0 International:
+
+Data/Campaigns/empire.txt
+
+Data/Maps/jendraz*

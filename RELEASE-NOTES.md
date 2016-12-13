@@ -15,8 +15,10 @@ therefore more advanced than the preceding Lugaru HD release by Wolfire.
 ### Highlights
 
 - Multiple campaigns support, making it easier to install and play mods!
-- The Temple campaign by Silb is included by default as alternative to the
-  Turner official campaign.
+- Those Lugaru mods are included by default as alternative to the Turner
+  official campaign:
+  * Temple, by Silb
+  * Empire, by Jendraz
 - All assets (animations, textures, models, maps, sounds, etc.) of Lugaru HD
   by Wolfire are under a free and open source license (CC-BY-SA 3.0)!
 - Window and input management ported from SDL 1.2 to SDL 2.0, improving the
