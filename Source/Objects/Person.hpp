@@ -324,8 +324,32 @@ public:
     inline Joint& joint(int bodypart) { return skeleton.joints[skeleton.jointlabels[bodypart]]; }
     inline XYZ& jointPos(int bodypart) { return joint(bodypart).position; }
     inline XYZ& jointVel(int bodypart) { return joint(bodypart).velocity; }
-    inline AnimationFrame& currentFrame() { return Animation::animations.at(animCurrent).frames.at(frameCurrent); }
-    inline AnimationFrame& targetFrame() { return Animation::animations.at(animTarget).frames.at(frameTarget); }
+    AnimationFrame& currentFrame() {
+        /* FIXME - try/catch is a temporary fix to avoid crashes but game logic should be fixed instead */
+        try {
+            return Animation::animations.at(animCurrent).frames.at(frameCurrent);
+        } catch (const std::exception& error) {
+            /* Most likely frameCurrent is too big, work around */
+            if ((unsigned)frameCurrent >=
+Animation::animations.at(animCurrent).frames.size()) {
+                frameCurrent = Animation::animations.at(animCurrent).frames.size() - 1;
+            }
+            return Animation::animations.at(animCurrent).frames.back();
+        }
+    }
+    AnimationFrame& targetFrame() {
+        /* FIXME - try/catch is a temporary fix to avoid crashes but game logic should be fixed instead */
+        try {
+            return Animation::animations.at(animTarget).frames.at(frameTarget);
+        } catch (const std::exception& error) {
+            /* Most likely frameTarget is too big, work around */
+            if ((unsigned)frameTarget >=
+Animation::animations.at(animTarget).frames.size()) {
+                frameTarget = Animation::animations.at(animTarget).frames.size() - 1;
+            }
+            return Animation::animations.at(animTarget).frames.back();
+        }
+    }
 
     void setProportions(float head, float body, float arms, float legs);
     float getProportion(int part) const;
