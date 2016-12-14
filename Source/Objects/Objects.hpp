@@ -86,7 +86,6 @@ public:
 
     void SphereCheckPossible(XYZ *p1, float radius);
     void DeleteObject(int which);
-    void MakeObject(int atype, XYZ where, float ayaw, float ascale);
     void MakeObject(int atype, XYZ where, float ayaw, float apitch, float ascale);
     void Draw();
     void DoShadows();

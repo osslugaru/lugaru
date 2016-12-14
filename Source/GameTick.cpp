@@ -2038,7 +2038,6 @@ void doDevKeys()
                     scenecoords.y = Person::players[0]->coords.y - .5;
                 if (editortype == firetype)
                     scenecoords.y = Person::players[0]->coords.y - .5;
-                //objects.MakeObject(abs(Random()%3),scenecoords,Random()%360);
                 float temprotat, temprotat2;
                 temprotat = editoryaw;
                 temprotat2 = editorpitch;
