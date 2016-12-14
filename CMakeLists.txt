@@ -173,9 +173,13 @@ else(WIN32)
     find_package(OpenAL REQUIRED)
 endif(WIN32)
 
-# Not all distros provide sdl2-config.cmake yet
-#find_package(sdl2 REQUIRED)
-pkg_check_modules(SDL2 sdl2 REQUIRED)
+# macOS has problems with using pkgconfig to find SDL2
+if(APPLE)
+    find_package(sdl2 REQUIRED)
+else(APPLE)
+    pkg_check_modules(SDL2 sdl2 REQUIRED)
+endif(APPLE)
+
 find_package(PNG REQUIRED)
 find_package(JPEG REQUIRED)
 find_package(ZLIB REQUIRED)
