@@ -51,21 +51,24 @@ ImageRec::~ImageRec()
 
 bool load_image(const char *file_name, ImageRec &tex)
 {
-    if (visibleloading)
+    if (visibleloading) {
         Game::LoadingScreen();
+    }
 
-    if ( tex.data == NULL )
+    if ( tex.data == NULL ) {
         return false;
+    }
 
     const char *ptr = strrchr((char *)file_name, '.');
     if (ptr) {
-        if (strcasecmp(ptr + 1, "png") == 0)
+        if (strcasecmp(ptr + 1, "png") == 0) {
             return load_png(file_name, tex);
-        else if (strcasecmp(ptr + 1, "jpg") == 0)
+        } else if (strcasecmp(ptr + 1, "jpg") == 0) {
             return load_jpg(file_name, tex);
+        }
     }
 
-    STUBBED("Unsupported image type");
+    std::cerr << "Unsupported image type" << std::endl;
     return false;
 }
 
@@ -73,11 +76,12 @@ bool save_screenshot(const char *file_name)
 {
     const char *ptr = strrchr((char *)file_name, '.');
     if (ptr) {
-        if (strcasecmp(ptr + 1, "png") == 0)
+        if (strcasecmp(ptr + 1, "png") == 0) {
             return save_screenshot_png((Folders::getScreenshotDir() + '/' + file_name).c_str());
+        }
     }
 
-    STUBBED("Unsupported image type");
+    std::cerr << "Unsupported image type" << std::endl;
     return false;
 }
 
