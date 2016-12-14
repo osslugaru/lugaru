@@ -567,16 +567,11 @@ int Game::DrawGLScene(StereoSide side)
                     else
                         bonus_name = "Excellent!"; // When does this happen?
 
-                    glColor4f(0, 0, 0, 1 - bonustime);
-                    text->glPrintOutline(1024 / 2 - 10 * strlen(bonus_name) - 4, 768 / 16 - 4 + 768 * 4 / 5, bonus_name, 1, 2.5, 1024, 768);
-                    glColor4f(1, 0, 0, 1 - bonustime);
-                    text->glPrint(1024 / 2 - 10 * strlen(bonus_name), 768 / 16 + 768 * 4 / 5, bonus_name, 1, 2, 1024, 768);
+                    text->glPrintOutlined(1, 0, 0, 1 - bonustime, 1024 / 2 - 10 * strlen(bonus_name), 768 / 16 + 768 * 4 / 5, bonus_name, 1, 2, 1024, 768);
 
                     string = to_string((int)bonusvalue);
-                    glColor4f(0, 0, 0, 1 - bonustime);
-                    text->glPrintOutline(1024 / 2 - 10 * string.size() - 4, 768 / 16 - 4 - 20 + 768 * 4 / 5, string, 1, 2.5 * .8, 1024, 768);
-                    glColor4f(1, 0, 0, 1 - bonustime);
-                    text->glPrint(1024 / 2 - 10 * string.size(), 768 / 16 - 20 + 768 * 4 / 5, string, 1, 2 * .8, 1024, 768);
+                    text->glPrintOutlined(1, 0, 0, 1 - bonustime, 1024 / 2 - 10 * string.size(), 768 / 16 - 20 + 768 * 4 / 5, string, 1, 2 * .8, 1024, 768);
+
                     glColor4f(.5, .5, .5, 1);
                 }
 
@@ -870,27 +865,17 @@ int Game::DrawGLScene(StereoSide side)
                     string3 = " ";
                 }
 
-                glColor4f(0, 0, 0, tutorialopac);
-                text->glPrintOutline(screenwidth / 2 - 7.6 * string.size()*screenwidth / 1024 - 4, screenheight / 16 - 4 + screenheight * 4 / 5, string, 1, 1.5 * 1.25 * screenwidth / 1024, screenwidth, screenheight);
-                text->glPrintOutline(screenwidth / 2 - 7.6 * string2.size()*screenwidth / 1024 - 4, screenheight / 16 - 4 + screenheight * 4 / 5 - 20 * screenwidth / 1024, string2, 1, 1.5 * 1.25 * screenwidth / 1024, screenwidth, screenheight);
-                text->glPrintOutline(screenwidth / 2 - 7.6 * string3.size()*screenwidth / 1024 - 4, screenheight / 16 - 4 + screenheight * 4 / 5 - 40 * screenwidth / 1024, string3, 1, 1.5 * 1.25 * screenwidth / 1024, screenwidth, screenheight);
-                glColor4f(1, 1, 1, tutorialopac);
-                text->glPrint(screenwidth / 2 - 7.6 * string.size()*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
-                text->glPrint(screenwidth / 2 - 7.6 * string2.size()*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 20 * screenwidth / 1024, string2, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
-                text->glPrint(screenwidth / 2 - 7.6 * string3.size()*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 40 * screenwidth / 1024, string3, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
+                text->glPrintOutlined(1, 1, 1, tutorialopac, screenwidth / 2 - 7.6 * string.size()*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
+                text->glPrintOutlined(1, 1, 1, tutorialopac, screenwidth / 2 - 7.6 * string2.size()*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 20 * screenwidth / 1024, string2, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
+                text->glPrintOutlined(1, 1, 1, tutorialopac, screenwidth / 2 - 7.6 * string3.size()*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 40 * screenwidth / 1024, string3, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
 
                 string = "Press 'tab' to skip to the next item.";
                 string2 = "Press escape at any time to";
                 string3 = "pause or exit the tutorial.";
 
-                glColor4f(0, 0, 0, 1);
-                text->glPrintOutline(screenwidth / 2 - 7.6 * string.size()*screenwidth / 1024 * .8 - 4, 0 - 4 + screenheight * 1 / 10, string, 1, 1.5 * 1.25 * screenwidth / 1024 * .8, screenwidth, screenheight);
-                text->glPrintOutline(screenwidth / 2 - 7.6 * string2.size()*screenwidth / 1024 * .8 - 4, 0 - 4 + screenheight * 1 / 10 - 20 * .8 * screenwidth / 1024, string2, 1, 1.5 * 1.25 * screenwidth / 1024 * .8, screenwidth, screenheight);
-                text->glPrintOutline(screenwidth / 2 - 7.6 * string3.size()*screenwidth / 1024 * .8 - 4, 0 - 4 + screenheight * 1 / 10 - 40 * .8 * screenwidth / 1024, string3, 1, 1.5 * 1.25 * screenwidth / 1024 * .8, screenwidth, screenheight);
-                glColor4f(0.5, 0.5, 0.5, 1);
-                text->glPrint(screenwidth / 2 - 7.6 * string.size()*screenwidth / 1024 * .8, 0 + screenheight * 1 / 10, string, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
-                text->glPrint(screenwidth / 2 - 7.6 * string2.size()*screenwidth / 1024 * .8, 0 + screenheight * 1 / 10 - 20 * .8 * screenwidth / 1024, string2, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
-                text->glPrint(screenwidth / 2 - 7.6 * string3.size()*screenwidth / 1024 * .8, 0 + screenheight * 1 / 10 - 40 * .8 * screenwidth / 1024, string3, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
+                text->glPrintOutlined(0.5, 0.5, 0.5, 1, screenwidth / 2 - 7.6 * string.size()*screenwidth / 1024 * .8, 0 + screenheight * 1 / 10, string, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
+                text->glPrintOutlined(0.5, 0.5, 0.5, 1, screenwidth / 2 - 7.6 * string2.size()*screenwidth / 1024 * .8, 0 + screenheight * 1 / 10 - 20 * .8 * screenwidth / 1024, string2, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
+                text->glPrintOutlined(0.5, 0.5, 0.5, 1, screenwidth / 2 - 7.6 * string3.size()*screenwidth / 1024 * .8, 0 + screenheight * 1 / 10 - 40 * .8 * screenwidth / 1024, string3, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
             }
 
             //Hot spots
@@ -927,10 +912,7 @@ int Game::DrawGLScene(StereoSide side)
                         int i = 0;
                         while (!done) {
                             if (string[i] == '\n' || string[i] > 'z' || string[i] < ' ' || string[i] == '\0') {
-                                glColor4f(0, 0, 0, tutorialopac);
-                                text->glPrintOutline(screenwidth / 2 - 7.6 * (i - lastline)*screenwidth / 1024 - 4, screenheight / 16 - 4 + screenheight * 4 / 5 - 20 * screenwidth / 1024 * line, string, 1, 1.5 * 1.25 * screenwidth / 1024, screenwidth, screenheight, lastline, i);
-                                glColor4f(1, 1, 1, tutorialopac);
-                                text->glPrint(screenwidth / 2 - 7.6 * (i - lastline)*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 20 * screenwidth / 1024 * line, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight, lastline, i);
+                                text->glPrintOutlined(1, 1, 1, tutorialopac, screenwidth / 2 - 7.6 * (i - lastline)*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 20 * screenwidth / 1024 * line, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight, lastline, i);
                                 lastline = i + 1;
                                 line++;
                                 if (string[i] == '\0')
@@ -1014,10 +996,7 @@ int Game::DrawGLScene(StereoSide side)
                 string = std::string(tempname) + ": ";
 
                 if (Dialog::currentScene().color[0] + Dialog::currentScene().color[1] + Dialog::currentScene().color[2] < 1.5) {
-                    glColor4f(0, 0, 0, tutorialopac);
-                    text->glPrintOutline(startx - 2 * 7.6 * string.size()*screenwidth / 1024 - 4, starty - 4, string, 1, 1.5 * 1.25 * screenwidth / 1024, screenwidth, screenheight);
-                    glColor4f(0.7, 0.7, 0.7, tutorialopac);
-                    text->glPrint(startx - 2 * 7.6 * string.size()*screenwidth / 1024, starty, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
+                    text->glPrintOutlined(0.7, 0.7, 0.7, tutorialopac, startx - 2 * 7.6 * string.size()*screenwidth / 1024, starty, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
                 } else {
                     glColor4f(0, 0, 0, tutorialopac);
                     text->glPrintOutline(startx - 2 * 7.6 * string.size()*screenwidth / 1024 - 4, starty - 4, string, 1, 1.5 * 1.25 * screenwidth / 1024, screenwidth, screenheight);
@@ -1039,13 +1018,10 @@ int Game::DrawGLScene(StereoSide side)
                 while (!done) {
                     if (string[i] == '\n' || string[i] > 'z' || string[i] < ' ' || string[i] == '\0') {
                         if (Dialog::currentScene().color[0] + Dialog::currentScene().color[1] + Dialog::currentScene().color[2] < 1.5) {
-                            glColor4f(0, 0, 0, tutorialopac);
-                            text->glPrintOutline(startx/*-7.6*(i-lastline)*screenwidth/1024*/ - 4, starty - 4 - 20 * screenwidth / 1024 * line, string, 1, 1.5 * 1.25 * screenwidth / 1024, screenwidth, screenheight, lastline, i);
-                            glColor4f(1, 1, 1, tutorialopac);
-                            text->glPrint(startx/*-7.6*(i-lastline)*screenwidth/1024*/, starty - 20 * screenwidth / 1024 * line, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight, lastline, i);
+                            text->glPrintOutlined(1, 1, 1, tutorialopac, startx, starty - 20 * screenwidth / 1024 * line, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight, lastline, i);
                         } else {
                             glColor4f(0, 0, 0, tutorialopac);
-                            text->glPrint(startx/*-7.6*(i-lastline)*screenwidth/1024*/, starty - 20 * screenwidth / 1024 * line, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight, lastline, i);
+                            text->glPrint(startx, starty - 20 * screenwidth / 1024 * line, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight, lastline, i);
                         }
                         lastline = i + 1;
                         line++;
@@ -1068,10 +1044,7 @@ int Game::DrawGLScene(StereoSide side)
                 } else {
                     string = "Score: " + to_string(int(bonustotal));
                 }
-                glColor4f(0, 0, 0, 1);
-                text->glPrintOutline(1024 / 40 - 4, 768 / 16 - 4 + 768 * 14 / 16, string, 1, 1.5 * 1.25, 1024, 768);
-                glColor4f(1, 0, 0, 1);
-                text->glPrint(1024 / 40, 768 / 16 + 768 * 14 / 16, string, 1, 1.5, 1024, 768);
+                text->glPrintOutlined(1, 0, 0, 1, 1024 / 40, 768 / 16 + 768 * 14 / 16, string, 1, 1.5, 1024, 768);
                 if (showdamagebar) {
                     glDisable(GL_DEPTH_TEST);
                     glDisable(GL_CULL_FACE);
@@ -1151,10 +1124,7 @@ int Game::DrawGLScene(StereoSide side)
 
                     // writing the numbers :
                     string = "Damages : " + to_string(int(Person::players[0]->damage)) + "/" + to_string(int(Person::players[0]->damagetolerance)) + " (" + to_string(int(Person::players[0]->bloodloss)) + ")";
-                    glColor4f(0, 0, 0, 1);
-                    text->glPrintOutline(1024 / 40 - 4, 768 / 16 - 4 + 768 * 14 / 16 - 40, string, 1, 1.5 * 1.25, 1024, 768);
-                    glColor4f(1, 0, 0, 1);
-                    text->glPrint(1024 / 40, 768 / 16 + 768 * 14 / 16 - 40, string, 1, 1.5, 1024, 768);
+                    text->glPrintOutlined(1, 0, 0, 1, 1024 / 40, 768 / 16 + 768 * 14 / 16 - 40, string, 1, 1.5, 1024, 768);
                 }
             }
 

@@ -239,7 +239,7 @@ void Menu::drawItems()
             }
             break;
         case MenuItem::MAPLABEL:
-            Game::text->glPrintOutlined(0.9, 0, 0, it->x, it->y, it->text.c_str(), 0, 0.6, 640, 480);
+            Game::text->glPrintOutlined(0.9, 0, 0, 1, it->x, it->y, it->text.c_str(), 0, 0.6, 640, 480);
             break;
         case MenuItem::MAPLINE: {
             XYZ linestart;
