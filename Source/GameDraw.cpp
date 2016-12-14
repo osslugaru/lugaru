@@ -237,10 +237,11 @@ int Game::DrawGLScene(StereoSide side)
 
         static XYZ terrainlight;
         static float distance;
-        if (drawmode == normalmode)
+        if (drawmode == normalmode) {
             Game::ReSizeGLScene(90, .1f);
-        if (drawmode != normalmode)
+        } else {
             glViewport(0, 0, texviewwidth, texviewheight);
+        }
         glDepthFunc(GL_LEQUAL);
         glDepthMask(1);
         glAlphaFunc(GL_GREATER, 0.0001f);
@@ -286,9 +287,10 @@ int Game::DrawGLScene(StereoSide side)
         else
             blurness -= multiplier * 5;
 
-        if (environment == desertenvironment && detail == 2)
-            glTexEnvf( GL_TEXTURE_FILTER_CONTROL, GL_TEXTURE_LOD_BIAS, blurness + .4 );
         if (environment == desertenvironment) {
+            if (detail == 2) {
+                glTexEnvf( GL_TEXTURE_FILTER_CONTROL, GL_TEXTURE_LOD_BIAS, blurness + .4 );
+            }
             glRotatef((float)(abs(Random() % 100)) / 1000, 1, 0, 0);
             glRotatef((float)(abs(Random() % 100)) / 1000, 0, 1, 0);
         }

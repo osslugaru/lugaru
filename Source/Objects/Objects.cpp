@@ -595,14 +595,14 @@ void Objects::MakeObject(int atype, XYZ where, float ayaw, float ascale)
         model[numobjects].CalculateNormals(1);
         model[numobjects].ScaleNormals(-1, -1, -1);
 
-        if (atype == treetrunktype && position[numobjects].y < terrain.getHeight(position[numobjects].x, position[numobjects].z) + 1) {
-            if (detail == 2)
+        if (detail == 2) {
+            if (atype == treetrunktype && position[numobjects].y < terrain.getHeight(position[numobjects].x, position[numobjects].z) + 1) {
                 terrain.MakeDecal(shadowdecalpermanent, position[numobjects], 2, .4, 0);
-        }
+            }
 
-        if (atype == bushtype && position[numobjects].y < terrain.getHeight(position[numobjects].x, position[numobjects].z) + 1) {
-            if (detail == 2)
+            if (atype == bushtype && position[numobjects].y < terrain.getHeight(position[numobjects].x, position[numobjects].z) + 1) {
                 terrain.MakeDecal(shadowdecalpermanent, position[numobjects], 1, .4, 0);
+            }
         }
 
         if (atype != treeleavestype && atype != bushtype && atype != firetype)
@@ -689,18 +689,19 @@ void Objects::MakeObject(int atype, XYZ where, float ayaw, float apitch, float a
         model[numobjects].CalculateNormals(1);
         model[numobjects].ScaleNormals(-1, -1, -1);
 
-        if (atype == treetrunktype && position[numobjects].y < terrain.getHeight(position[numobjects].x, position[numobjects].z) + 1) {
-            if (detail == 2)
+        if (detail == 2) {
+            if (atype == treetrunktype && position[numobjects].y < terrain.getHeight(position[numobjects].x, position[numobjects].z) + 1) {
                 terrain.MakeDecal(shadowdecalpermanent, position[numobjects], 2, .4, 0);
-        }
+            }
 
-        if (atype == bushtype && position[numobjects].y < terrain.getHeight(position[numobjects].x, position[numobjects].z) + 1) {
-            if (detail == 2)
+            if (atype == bushtype && position[numobjects].y < terrain.getHeight(position[numobjects].x, position[numobjects].z) + 1) {
                 terrain.MakeDecal(shadowdecalpermanent, position[numobjects], 1, .4, 0);
+            }
         }
 
-        if (atype != treeleavestype && atype != bushtype && atype != firetype)
+        if (atype != treeleavestype && atype != bushtype && atype != firetype) {
             terrain.AddObject(where + DoRotation(model[numobjects].boundingspherecenter, 0, ayaw, 0), model[numobjects].boundingsphereradius, numobjects);
+        }
 
         numobjects++;
     }
