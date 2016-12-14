@@ -66,7 +66,7 @@ set(LUGARU_SRCS
     ${SRCDIR}/Math/Frustum.cpp
     ${SRCDIR}/Math/Quaternions.cpp
     ${SRCDIR}/Menu/Menu.cpp
-    ${SRCDIR}/Objects/Objects.cpp
+    ${SRCDIR}/Objects/Object.cpp
     ${SRCDIR}/Objects/Person.cpp
     ${SRCDIR}/Objects/Weapons.cpp
     ${SRCDIR}/User/Account.cpp
@@ -110,7 +110,7 @@ set(LUGARU_H
     ${SRCDIR}/Math/Quaternions.hpp
     ${SRCDIR}/Math/Random.hpp
     ${SRCDIR}/Menu/Menu.hpp
-    ${SRCDIR}/Objects/Objects.hpp
+    ${SRCDIR}/Objects/Object.hpp
     ${SRCDIR}/Objects/Person.hpp
     ${SRCDIR}/Objects/Weapons.hpp
     ${SRCDIR}/Thirdparty/optionparser.h

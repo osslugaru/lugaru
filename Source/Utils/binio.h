@@ -35,10 +35,10 @@ extern "C" {
     an optional byte-order marker (defaults to H, "host-native"),
     and a  data-type specifier.
     * when unpacking, each variable argument is a pointer to the
-    appropriate number of objects of the appropriate type.
+    appropriate number of Object::objects of the appropriate type.
     * when packing, each variable argument is an object of the
     appropriate type if the count is omitted, or a pointer to the
-    appropriate number of objects of the appropriate type if the
+    appropriate number of Object::objects of the appropriate type if the
     count is specified.
     * the buffer supplied to pack/unpack must be of sufficient length
     to hold all the data, or the behavior is unspecified.

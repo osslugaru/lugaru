@@ -44,7 +44,6 @@ extern float realtexdetail;
 extern GLubyte bloodText[512 * 512 * 3];
 extern GLubyte wolfbloodText[512 * 512 * 3];
 extern int bloodtoggle;
-extern Objects objects;
 extern bool autoslomo;
 extern float camerashake;
 extern float woozy;
@@ -1794,7 +1793,7 @@ void Person::RagDoll(bool checkcollision)
                     i = terrain.patchobjects[whichpatchx][whichpatchz][l];
                     lowpoint = coords;
                     lowpoint.y += 1;
-                    if (SphereCheck(&lowpoint, 3, &colpoint, &objects.position[i], &objects.yaw[i], &objects.model[i]) != -1) {
+                    if (SphereCheck(&lowpoint, 3, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw, &Object::objects[i]->model) != -1) {
                         coords.x = lowpoint.x;
                         coords.z = lowpoint.z;
                     }
@@ -4833,11 +4832,11 @@ void Person::DoStuff()
         if (bloodtoggle && !bled)
             for (l = 0; l < terrain.patchobjectnum[whichpatchx][whichpatchz]; l++) {
                 int j = terrain.patchobjects[whichpatchx][whichpatchz][l];
-                XYZ point = DoRotation(headpoint - objects.position[j], 0, -objects.yaw[j], 0);
+                XYZ point = DoRotation(headpoint - Object::objects[j]->position, 0, -Object::objects[j]->yaw, 0);
                 float size = .8;
                 float opacity = .6;
                 float yaw = 0;
-                objects.model[j].MakeDecal(blooddecalslow, &point, &size, &opacity, &yaw);
+                Object::objects[j]->model.MakeDecal(blooddecalslow, &point, &size, &opacity, &yaw);
             }
         bled = 1;
     }
@@ -5043,11 +5042,11 @@ void Person::DoStuff()
                     if (bloodtoggle && !bled)
                         for (l = 0; l < terrain.patchobjectnum[whichpatchx][whichpatchz]; l++) {
                             int j = terrain.patchobjects[whichpatchx][whichpatchz][l];
-                            XYZ point = DoRotation(headpoint - objects.position[j], 0, -objects.yaw[j], 0);
+                            XYZ point = DoRotation(headpoint - Object::objects[j]->position, 0, -Object::objects[j]->yaw, 0);
                             float size = .2 * 1.2;
                             float opacity = .6;
                             float yaw = 0;
-                            objects.model[j].MakeDecal(blooddecal, &point, &size, &opacity, &yaw);
+                            Object::objects[j]->model.MakeDecal(blooddecal, &point, &size, &opacity, &yaw);
                         }
                     bled = 1;
                 }
@@ -5062,11 +5061,11 @@ void Person::DoStuff()
                     if (bloodtoggle && !bled)
                         for (l = 0; l < terrain.patchobjectnum[whichpatchx][whichpatchz]; l++) {
                             int j = terrain.patchobjects[whichpatchx][whichpatchz][l];
-                            XYZ point = DoRotation(headpoint - objects.position[j], 0, -objects.yaw[j], 0);
+                            XYZ point = DoRotation(headpoint - Object::objects[j]->position, 0, -Object::objects[j]->yaw, 0);
                             float size = .8;
                             float opacity = .6;
                             float yaw = 0;
-                            objects.model[j].MakeDecal(blooddecalslow, &point, &size, &opacity, &yaw);
+                            Object::objects[j]->model.MakeDecal(blooddecalslow, &point, &size, &opacity, &yaw);
                         }
                     bled = 1;
                 }
@@ -5083,11 +5082,11 @@ void Person::DoStuff()
                 canrecover = 0;
             if (velocity.y < -30)
                 canrecover = 0;
-            for (i = 0; i < objects.numobjects; i++) {
-                if (objects.type[i] != treeleavestype && objects.type[i] != bushtype && objects.type[i] != firetype) {
+            for (i = 0; i < Object::objects.size(); i++) {
+                if (Object::objects[i]->type != treeleavestype && Object::objects[i]->type != bushtype && Object::objects[i]->type != firetype) {
                     colviewer = startpoint;
                     coltarget = endpoint;
-                    if (objects.model[i].LineCheck(&colviewer, &coltarget, &colpoint, &objects.position[i], &objects.yaw[i]) != -1)
+                    if (Object::objects[i]->model.LineCheck(&colviewer, &coltarget, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw) != -1)
                         canrecover = 0;
                 }
             }
@@ -5275,36 +5274,36 @@ void Person::DoStuff()
 
     if (aitype != passivetype || skeleton.free == 1)
         if (findLengthfast(&velocity) > .1)
-            for (i = 0; i < objects.numobjects; i++) {
-                if (objects.type[i] == firetype)
-                    if (distsqflat(&coords, &objects.position[i]) < objects.scale[i]*objects.scale[i] * 12 && distsq(&coords, &objects.position[i]) < objects.scale[i]*objects.scale[i] * 49) {
+            for (i = 0; i < Object::objects.size(); i++) {
+                if (Object::objects[i]->type == firetype)
+                    if (distsqflat(&coords, &Object::objects[i]->position) < Object::objects[i]->scale*Object::objects[i]->scale * 12 && distsq(&coords, &Object::objects[i]->position) < Object::objects[i]->scale*Object::objects[i]->scale * 49) {
                         if (onfire) {
-                            if (!objects.onfire[i]) {
-                                emit_sound_at(firestartsound, objects.position[i]);
+                            if (!Object::objects[i]->onfire) {
+                                emit_sound_at(firestartsound, Object::objects[i]->position);
                             }
-                            objects.onfire[i] = 1;
+                            Object::objects[i]->onfire = 1;
                         }
                         if (!onfire) {
-                            if (objects.onfire[i]) {
+                            if (Object::objects[i]->onfire) {
                                 CatchFire();
                             }
                         }
                     }
-                if (objects.type[i] == bushtype)
-                    if (distsqflat(&coords, &objects.position[i]) < objects.scale[i]*objects.scale[i] * 12 && distsq(&coords, &objects.position[i]) < objects.scale[i]*objects.scale[i] * 49) {
+                if (Object::objects[i]->type == bushtype)
+                    if (distsqflat(&coords, &Object::objects[i]->position) < Object::objects[i]->scale*Object::objects[i]->scale * 12 && distsq(&coords, &Object::objects[i]->position) < Object::objects[i]->scale*Object::objects[i]->scale * 49) {
                         if (onfire) {
-                            if (!objects.onfire[i]) {
-                                emit_sound_at(firestartsound, objects.position[i]);
+                            if (!Object::objects[i]->onfire) {
+                                emit_sound_at(firestartsound, Object::objects[i]->position);
                             }
-                            objects.onfire[i] = 1;
+                            Object::objects[i]->onfire = 1;
                         }
 
                         if (!onfire) {
-                            if (objects.onfire[i]) {
+                            if (Object::objects[i]->onfire) {
                                 CatchFire();
                             }
                         }
-                        if (objects.messedwith[i] <= 0) {
+                        if (Object::objects[i]->messedwith <= 0) {
                             XYZ tempvel;
                             XYZ pos;
 
@@ -5349,22 +5348,22 @@ void Person::DoStuff()
                                         Sprite::setLastSpriteSpecial(2);
                                     }
                         }
-                        objects.rotx[i] += velocity.x * multiplier * 6;
-                        objects.roty[i] += velocity.z * multiplier * 6;
-                        objects.messedwith[i] = .5;
+                        Object::objects[i]->rotx += velocity.x * multiplier * 6;
+                        Object::objects[i]->roty += velocity.z * multiplier * 6;
+                        Object::objects[i]->messedwith = .5;
                     }
                 XYZ tempcoord;
-                if (objects.type[i] == treeleavestype && environment != desertenvironment) {
-                    if (objects.pitch[i] == 0)
+                if (Object::objects[i]->type == treeleavestype && environment != desertenvironment) {
+                    if (Object::objects[i]->pitch == 0)
                         tempcoord = coords;
                     else {
-                        tempcoord = coords - objects.position[i];
-                        tempcoord = DoRotation(tempcoord, 0, -objects.yaw[i], 0);
-                        tempcoord = DoRotation(tempcoord, -objects.pitch[i], 0, 0);
-                        tempcoord += objects.position[i];
+                        tempcoord = coords - Object::objects[i]->position;
+                        tempcoord = DoRotation(tempcoord, 0, -Object::objects[i]->yaw, 0);
+                        tempcoord = DoRotation(tempcoord, -Object::objects[i]->pitch, 0, 0);
+                        tempcoord += Object::objects[i]->position;
                     }
-                    if (distsqflat(&tempcoord, &objects.position[i]) < objects.scale[i]*objects.scale[i] * 8 && distsq(&tempcoord, &objects.position[i]) < objects.scale[i]*objects.scale[i] * 300 && tempcoord.y > objects.position[i].y + 3 * objects.scale[i]) {
-                        if (objects.messedwith[i] <= 0) {
+                    if (distsqflat(&tempcoord, &Object::objects[i]->position) < Object::objects[i]->scale*Object::objects[i]->scale * 8 && distsq(&tempcoord, &Object::objects[i]->position) < Object::objects[i]->scale*Object::objects[i]->scale * 300 && tempcoord.y > Object::objects[i]->position.y + 3 * Object::objects[i]->scale) {
+                        if (Object::objects[i]->messedwith <= 0) {
                             XYZ tempvel;
                             XYZ pos;
 
@@ -5411,7 +5410,7 @@ void Person::DoStuff()
                                         Sprite::setLastSpriteSpecial(2);
                                     }
                         }
-                        objects.messedwith[i] = .5;
+                        Object::objects[i]->messedwith = .5;
                     }
                 }
             }

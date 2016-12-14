@@ -65,7 +65,6 @@ FRUSTUM frustum;
 float texdetail = 0;
 float realtexdetail = 0;
 float playerdist = 0;
-Objects objects;
 int slomo = 0;
 float slomodelay = 0;
 GLubyte bloodText[512 * 512 * 3] = {0};

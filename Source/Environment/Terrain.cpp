@@ -21,7 +21,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Environment/Terrain.hpp"
 
 #include "Game.hpp"
-#include "Objects/Objects.hpp"
+#include "Objects/Object.hpp"
 #include "Utils/Folders.hpp"
 
 extern XYZ viewer;
@@ -37,7 +37,6 @@ extern int detail;
 extern bool decals;
 extern float blurness;
 extern float targetblurness;
-extern Objects objects;
 extern bool visibleloading;
 extern bool skyboxtexture;
 extern int tutoriallevel;
@@ -1387,10 +1386,10 @@ void Terrain::DoShadows()
             if (patchobjectnum[patchx][patchz]) {
                 for (k = 0; k < patchobjectnum[patchx][patchz]; k++) {
                     l = patchobjects[patchx][patchz][k];
-                    if (objects.type[l] != treetrunktype) {
+                    if (Object::objects[l]->type != treetrunktype) {
                         testpoint = terrainpoint;
                         testpoint2 = terrainpoint + lightloc * 50 * (1 - shadowed);
-                        if (objects.model[l].LineCheck(&testpoint, &testpoint2, &col, &objects.position[l], &objects.yaw[l]) != -1) {
+                        if (Object::objects[l]->model.LineCheck(&testpoint, &testpoint2, &col, &Object::objects[l]->position, &Object::objects[l]->yaw) != -1) {
                             shadowed = 1 - (findDistance(&terrainpoint, &col) / 50);
                         }
                     }

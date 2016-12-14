@@ -28,7 +28,6 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 extern float multiplier;
 extern float gravity;
 extern Terrain terrain;
-extern Objects objects;
 extern int environment;
 extern float camerashake;
 extern bool freeze;
@@ -134,7 +133,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
         whichpatchz = coords->z / (terrain.size / subdivision * terrain.scale);
 
         terrainlight = *coords;
-        objects.SphereCheckPossible(&terrainlight, 1);
+        Object::SphereCheckPossible(&terrainlight, 1);
 
         //Add velocity
         for (i = 0; i < joints.size(); i++) {
@@ -276,7 +275,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                             // FIXME: this crashes because k is not initialized!
                             // to reproduce, type 'wolfie' in console and play a while
                             // I'll just comment it out for now
-                            //objects.model[k].MakeDecal(breakdecal, DoRotation(temp - objects.position[k], 0, -objects.yaw[k], 0), .4, .5, Random() % 360);
+                            //Object::objects[k]->model.MakeDecal(breakdecal, DoRotation(temp - Object::objects[k]->position, 0, -Object::objects[k]->yaw, 0), .4, .5, Random() % 360);
                             Sprite::MakeSprite(cloudsprite, joints[i].position * (*scale) + *coords, joints[i].velocity * .06, 1, 1, 1, 4, .2);
                             breaking = false;
                             camerashake += .6;
@@ -327,12 +326,12 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                 if (terrain.patchobjectnum[whichpatchx][whichpatchz])
                     for (m = 0; m < terrain.patchobjectnum[whichpatchx][whichpatchz]; m++) {
                         k = terrain.patchobjects[whichpatchx][whichpatchz][m];
-                        if (k < objects.numobjects && k >= 0)
-                            if (objects.possible[k]) {
-                                friction = objects.friction[k];
+                        if (k < Object::objects.size() && k >= 0)
+                            if (Object::objects[k]->possible) {
+                                friction = Object::objects[k]->friction;
                                 XYZ start = joints[i].realoldposition;
                                 XYZ end = joints[i].position * (*scale) + *coords;
-                                whichhit = objects.model[k].LineCheckPossible(&start, &end, &temp, &objects.position[k], &objects.yaw[k]);
+                                whichhit = Object::objects[k]->model.LineCheckPossible(&start, &end, &temp, &Object::objects[k]->position, &Object::objects[k]->yaw);
                                 if (whichhit != -1) {
                                     if (joints[i].label == groin && !joints[i].locked && joints[i].delay <= 0) {
                                         joints[i].locked = 1;
@@ -351,7 +350,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                                         }
                                     }
 
-                                    terrainnormal = DoRotation(objects.model[k].facenormals[whichhit], 0, objects.yaw[k], 0) * -1;
+                                    terrainnormal = DoRotation(Object::objects[k]->model.facenormals[whichhit], 0, Object::objects[k]->yaw, 0) * -1;
                                     if (terrainnormal.y > .8)
                                         freefall = 0;
                                     bounceness = terrainnormal * findLength(&joints[i].velocity) * (abs(normaldotproduct(joints[i].velocity, terrainnormal)));
@@ -361,7 +360,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                                     }
                                     if (tutoriallevel != 1 || id == 0)
                                         if (findLengthfast(&bounceness) > 4000 && breaking) {
-                                            objects.model[k].MakeDecal(breakdecal, DoRotation(temp - objects.position[k], 0, -objects.yaw[k], 0), .4, .5, Random() % 360);
+                                            Object::objects[k]->model.MakeDecal(breakdecal, DoRotation(temp - Object::objects[k]->position, 0, -Object::objects[k]->yaw, 0), .4, .5, Random() % 360);
                                             Sprite::MakeSprite(cloudsprite, joints[i].position * (*scale) + *coords, joints[i].velocity * .06, 1, 1, 1, 4, .2);
                                             breaking = false;
                                             camerashake += .6;
@@ -370,11 +369,11 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
 
                                             addEnvSound(*coords, 64);
                                         }
-                                    if (objects.type[k] == treetrunktype) {
-                                        objects.rotx[k] += joints[i].velocity.x * multiplier * .4;
-                                        objects.roty[k] += joints[i].velocity.z * multiplier * .4;
-                                        objects.rotx[k + 1] += joints[i].velocity.x * multiplier * .4;
-                                        objects.roty[k + 1] += joints[i].velocity.z * multiplier * .4;
+                                    if (Object::objects[k]->type == treetrunktype) {
+                                        Object::objects[k]->rotx += joints[i].velocity.x * multiplier * .4;
+                                        Object::objects[k]->roty += joints[i].velocity.z * multiplier * .4;
+                                        Object::objects[k + 1]->rotx += joints[i].velocity.x * multiplier * .4;
+                                        Object::objects[k + 1]->roty += joints[i].velocity.z * multiplier * .4;
                                     }
                                     if (!joints[i].locked)
                                         damage += findLengthfast(&bounceness) / 2500;
@@ -413,12 +412,12 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
         if (terrain.patchobjectnum[whichpatchx][whichpatchz])
             for (m = 0; m < terrain.patchobjectnum[whichpatchx][whichpatchz]; m++) {
                 k = terrain.patchobjects[whichpatchx][whichpatchz][m];
-                if (objects.possible[k]) {
+                if (Object::objects[k]->possible) {
                     for (i = 0; i < 26; i++) {
                         //Make this less stupid
                         XYZ start = joints[jointlabels[whichjointstartarray[i]]].position * (*scale) + *coords;
                         XYZ end = joints[jointlabels[whichjointendarray[i]]].position * (*scale) + *coords;
-                        whichhit = objects.model[k].LineCheckSlidePossible(&start, &end, &temp, &objects.position[k], &objects.yaw[k]);
+                        whichhit = Object::objects[k]->model.LineCheckSlidePossible(&start, &end, &temp, &Object::objects[k]->position, &Object::objects[k]->yaw);
                         if (whichhit != -1) {
                             joints[jointlabels[whichjointendarray[i]]].position = (end - *coords) / (*scale);
                             for (unsigned j = 0; j < muscles.size(); j++) {

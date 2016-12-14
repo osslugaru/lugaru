@@ -32,7 +32,6 @@ extern Light light;
 extern float multiplier;
 extern float gravity;
 extern Terrain terrain;
-extern Objects objects;
 extern int detail;
 extern XYZ viewerfacing;
 extern int bloodtoggle;
@@ -358,9 +357,9 @@ void Sprite::Draw()
                                 start = sprites[i]->oldposition;
                                 end = sprites[i]->position;
                                 if (!spritehit)
-                                    if (objects.model[k].LineCheck(&start, &end, &colpoint, &objects.position[k], &objects.yaw[k]) != -1) {
+                                    if (Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw) != -1) {
                                         if (detail == 2 || (detail == 1 && abs(Random() % 4) == 0) || (detail == 0 && abs(Random() % 8) == 0))
-                                            objects.model[k].MakeDecal(blooddecalfast, DoRotation(colpoint - objects.position[k], 0, -objects.yaw[k], 0), sprites[i]->size * 1.6, .5, Random() % 360);
+                                            Object::objects[k]->model.MakeDecal(blooddecalfast, DoRotation(colpoint - Object::objects[k]->position, 0, -Object::objects[k]->yaw, 0), sprites[i]->size * 1.6, .5, Random() % 360);
                                         DeleteSprite(i);
                                         spritehit = 1;
                                     }

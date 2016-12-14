@@ -27,7 +27,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Graphic/Texture.hpp"
 #include "Math/Frustum.hpp"
 #include "Math/Quaternions.hpp"
-#include "Objects/Objects.hpp"
+#include "Objects/Object.hpp"
 #include "Utils/ImageIO.hpp"
 
 #include <vector>

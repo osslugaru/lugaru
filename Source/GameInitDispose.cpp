@@ -38,7 +38,6 @@ extern int kTextureSize;
 extern float texdetail;
 extern float realtexdetail;
 extern float volume;
-extern Objects objects;
 extern int detail;
 extern bool cellophane;
 extern GLubyte bloodText[512 * 512 * 3];

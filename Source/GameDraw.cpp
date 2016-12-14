@@ -39,7 +39,6 @@ extern float screenwidth, screenheight;
 extern int kTextureSize;
 extern FRUSTUM frustum;
 extern Light light;
-extern Objects objects;
 extern int detail;
 extern float usermousesensitivity;
 extern float camerashake;
@@ -300,7 +299,7 @@ int Game::DrawGLScene(StereoSide side)
         glTranslatef(-viewer.x, -viewer.y, -viewer.z);
         frustum.GetFrustum();
 
-        //make shadow decals on terrain and objects
+        //make shadow decals on terrain and Object::objects
         static XYZ point;
         static float size, opacity, rotation;
         rotation = 0;
@@ -318,14 +317,14 @@ int Game::DrawGLScene(StereoSide side)
                             terrain.MakeDecal(shadowdecal, point, size, opacity, rotation);
                             for (l = 0; l < terrain.patchobjectnum[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz]; l++) {
                                 int j = terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz][l];
-                                if (objects.position[j].y < Person::players[k]->coords.y || objects.type[j] == tunneltype || objects.type[j] == weirdtype) {
-                                    point = DoRotation(DoRotation(Person::players[k]->skeleton.joints[i].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords - objects.position[j], 0, -objects.yaw[j], 0);
+                                if (Object::objects[j]->position.y < Person::players[k]->coords.y || Object::objects[j]->type == tunneltype || Object::objects[j]->type == weirdtype) {
+                                    point = DoRotation(DoRotation(Person::players[k]->skeleton.joints[i].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords - Object::objects[j]->position, 0, -Object::objects[j]->yaw, 0);
                                     size = .4f;
                                     opacity = .4f;
                                     if (k != 0 && tutoriallevel == 1) {
                                         opacity = .2 + .2 * sin(smoketex * 6 + i);
                                     }
-                                    objects.model[j].MakeDecal(shadowdecal, &point, &size, &opacity, &rotation);
+                                    Object::objects[j]->model.MakeDecal(shadowdecal, &point, &size, &opacity, &rotation);
                                 }
                             }
                         }
@@ -346,17 +345,17 @@ int Game::DrawGLScene(StereoSide side)
                             terrain.MakeDecal(shadowdecal, point, size, opacity * .7, rotation);
                             for (l = 0; l < terrain.patchobjectnum[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz]; l++) {
                                 int j = terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz][l];
-                                if (objects.position[j].y < Person::players[k]->coords.y || objects.type[j] == tunneltype || objects.type[j] == weirdtype) {
+                                if (Object::objects[j]->position.y < Person::players[k]->coords.y || Object::objects[j]->type == tunneltype || Object::objects[j]->type == weirdtype) {
                                     if (Person::players[k]->skeleton.free)
-                                        point = DoRotation(Person::players[k]->skeleton.joints[i].position * Person::players[k]->scale + Person::players[k]->coords - objects.position[j], 0, -objects.yaw[j], 0);
+                                        point = DoRotation(Person::players[k]->skeleton.joints[i].position * Person::players[k]->scale + Person::players[k]->coords - Object::objects[j]->position, 0, -Object::objects[j]->yaw, 0);
                                     else
-                                        point = DoRotation(DoRotation(Person::players[k]->skeleton.joints[i].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords - objects.position[j], 0, -objects.yaw[j], 0);
+                                        point = DoRotation(DoRotation(Person::players[k]->skeleton.joints[i].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords - Object::objects[j]->position, 0, -Object::objects[j]->yaw, 0);
                                     size = .4f;
                                     opacity = .4f;
                                     if (k != 0 && tutoriallevel == 1) {
                                         opacity = .2 + .2 * sin(smoketex * 6 + i);
                                     }
-                                    objects.model[j].MakeDecal(shadowdecal, &point, &size, &opacity, &rotation);
+                                    Object::objects[j]->model.MakeDecal(shadowdecal, &point, &size, &opacity, &rotation);
                                 }
                             }
                         }
@@ -370,10 +369,10 @@ int Game::DrawGLScene(StereoSide side)
                     terrain.MakeDecal(shadowdecal, point, size, opacity * .7, rotation);
                     for (l = 0; l < terrain.patchobjectnum[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz]; l++) {
                         int j = terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz][l];
-                        point = DoRotation(Person::players[k]->coords - objects.position[j], 0, -objects.yaw[j], 0);
+                        point = DoRotation(Person::players[k]->coords - Object::objects[j]->position, 0, -Object::objects[j]->yaw, 0);
                         size = .7;
                         opacity = .4f;
-                        objects.model[j].MakeDecal(shadowdecal, &point, &size, &opacity, &rotation);
+                        Object::objects[j]->model.MakeDecal(shadowdecal, &point, &size, &opacity, &rotation);
                     }
                 }
         }
@@ -445,7 +444,7 @@ int Game::DrawGLScene(StereoSide side)
         glPushMatrix();
         glCullFace(GL_BACK);
         glEnable(GL_TEXTURE_2D);
-        objects.Draw();
+        Object::Draw();
         glPopMatrix();
 
         //draw hawk
@@ -1374,15 +1373,15 @@ int Game::DrawGLScene(StereoSide side)
             glPopMatrix();
             glRotatef(Person::players[0]->lookyaw * -1 + 180, 0, 0, 1);
             glTranslatef(-(center.x / terrain.scale / 256 * -2 + 1), (center.z / terrain.scale / 256 * -2 + 1), 0);
-            for (int i = 0; i < objects.numobjects; i++) {
-                if (objects.type[i] == treetrunktype) {
-                    distcheck = distsq(&Person::players[0]->coords, &objects.position[i]);
+            for (int i = 0; i < Object::objects.size(); i++) {
+                if (Object::objects[i]->type == treetrunktype) {
+                    distcheck = distsq(&Person::players[0]->coords, &Object::objects[i]->position);
                     if (distcheck < mapviewdist) {
                         Mapcircletexture.bind();
                         glColor4f(0, .3, 0, opac * (1 - distcheck / mapviewdist));
                         glPushMatrix();
-                        glTranslatef(objects.position[i].x / terrain.scale / 256 * -2 + 1, objects.position[i].z / terrain.scale / 256 * 2 - 1, 0);
-                        glRotatef(objects.yaw[i], 0, 0, 1);
+                        glTranslatef(Object::objects[i]->position.x / terrain.scale / 256 * -2 + 1, Object::objects[i]->position.z / terrain.scale / 256 * 2 - 1, 0);
+                        glRotatef(Object::objects[i]->yaw, 0, 0, 1);
                         glScalef(.003, .003, .003);
                         glBegin(GL_QUADS);
                         glTexCoord2f(0, 0);
@@ -1397,15 +1396,15 @@ int Game::DrawGLScene(StereoSide side)
                         glPopMatrix();
                     }
                 }
-                if (objects.type[i] == boxtype) {
-                    distcheck = distsq(&Person::players[0]->coords, &objects.position[i]);
+                if (Object::objects[i]->type == boxtype) {
+                    distcheck = distsq(&Person::players[0]->coords, &Object::objects[i]->position);
                     if (distcheck < mapviewdist) {
                         Mapboxtexture.bind();
                         glColor4f(.4, .4, .4, opac * (1 - distcheck / mapviewdist));
                         glPushMatrix();
-                        glTranslatef(objects.position[i].x / terrain.scale / 256 * -2 + 1, objects.position[i].z / terrain.scale / 256 * 2 - 1, 0);
-                        glRotatef(objects.yaw[i], 0, 0, 1);
-                        glScalef(.01 * objects.scale[i], .01 * objects.scale[i], .01 * objects.scale[i]);
+                        glTranslatef(Object::objects[i]->position.x / terrain.scale / 256 * -2 + 1, Object::objects[i]->position.z / terrain.scale / 256 * 2 - 1, 0);
+                        glRotatef(Object::objects[i]->yaw, 0, 0, 1);
+                        glScalef(.01 * Object::objects[i]->scale, .01 * Object::objects[i]->scale, .01 * Object::objects[i]->scale);
                         glBegin(GL_QUADS);
                         glTexCoord2f(0, 0);
                         glVertex3f(-1, -1, 0.0f);

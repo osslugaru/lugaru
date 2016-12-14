@@ -1100,7 +1100,7 @@ public:
    *            Note, that once the argument vector has been reordered, the @c gnu flag will have
    *            no further effect on this argument vector. So it is enough to pass @c gnu==true when
    *            creating Stats.
-   * @param usage Array of Descriptor objects that describe the options to support. The last entry
+   * @param usage Array of Descriptor Object::objects that describe the options to support. The last entry
    *              of this array must have 0 in all fields.
    * @param argc The number of elements from @c argv that are to be parsed. If you pass -1, the number
    *             will be determined automatically. In that case the @c argv list must end with a NULL
@@ -1137,10 +1137,10 @@ public:
    *               -1 (or not pass @c bufmax at all) which tells parse() that the buffer is
    *               "large enough".
    * @attention
-   * Remember that @c options and @c buffer store Option @e objects, not pointers. Therefore it
+   * Remember that @c options and @c buffer store Option @e Object::objects, not pointers. Therefore it
    * is not possible for the same object to be in both arrays. For those options that are found in
-   * both @c buffer[] and @c options[] the respective objects are independent copies. And only the
-   * objects in @c options[] are properly linked via Option::next() and Option::prev().
+   * both @c buffer[] and @c options[] the respective Object::objects are independent copies. And only the
+   * Object::objects in @c options[] are properly linked via Option::next() and Option::prev().
    * You can iterate over @c buffer[] to
    * process all options in the order they appear in the argument vector, but if you want access to
    * the other Options with the same Descriptor::index, then you @e must access the linked list via
@@ -1172,7 +1172,7 @@ public:
   }
 
   /**
-   * @brief Returns the number of valid Option objects in @c buffer[].
+   * @brief Returns the number of valid Option Object::objects in @c buffer[].
    *
    * @note
    * @li The returned value always reflects the number of Options in the buffer[] array used for
@@ -2724,8 +2724,8 @@ struct PrintUsageImplementation
  * @par Notes:
  * @li the @c write() method of a class that is to be passed as a temporary
  *     as @c MyWriter() is in the example, must be a @c const method, because
- *     temporary objects are passed as const reference. This only applies to
- *     temporary objects that are created and destroyed in the same statement.
+ *     temporary Object::objects are passed as const reference. This only applies to
+ *     temporary Object::objects that are created and destroyed in the same statement.
  *     If you create an object like @c writer in the example, this restriction
  *     does not apply.
  * @li a functor like @c MyWriteFunctor in the example must be passed as a pointer.

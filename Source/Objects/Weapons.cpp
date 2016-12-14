@@ -42,7 +42,6 @@ extern bool cellophane;
 extern float texdetail;
 extern GLubyte bloodText[512 * 512 * 3];
 extern int bloodtoggle;
-extern Objects objects;
 extern bool autoslomo;
 extern float camerashake;
 extern float woozy;
@@ -158,16 +157,16 @@ void Weapon::DoStuff(int i)
         whichpatchx = position.x / (terrain.size / subdivision * terrain.scale);
         whichpatchz = position.z / (terrain.size / subdivision * terrain.scale);
         if (whichpatchx > 0 && whichpatchz > 0 && whichpatchx < subdivision && whichpatchz < subdivision) {
-            if (terrain.patchobjectnum[whichpatchx][whichpatchz]) { // if there are objects where the weapon is
+            if (terrain.patchobjectnum[whichpatchx][whichpatchz]) { // if there are Object::objects where the weapon is
                 for (int j = 0; j < terrain.patchobjectnum[whichpatchx][whichpatchz]; j++) { // check for collision
                     int k = terrain.patchobjects[whichpatchx][whichpatchz][j];
                     start = oldtippoint;
                     end = tippoint;
-                    whichhit = objects.model[k].LineCheck(&start, &end, &colpoint, &objects.position[k], &objects.yaw[k]);
+                    whichhit = Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw);
                     if (whichhit != -1) {
-                        if (objects.type[k] == treetrunktype) {
-                            objects.model[k].MakeDecal(breakdecal, DoRotation(colpoint - objects.position[k], 0, -objects.yaw[k], 0), .1, 1, Random() % 360);
-                            normalrot = DoRotation(objects.model[k].facenormals[whichhit], 0, objects.yaw[k], 0);
+                        if (Object::objects[k]->type == treetrunktype) {
+                            Object::objects[k]->model.MakeDecal(breakdecal, DoRotation(colpoint - Object::objects[k]->position, 0, -Object::objects[k]->yaw, 0), .1, 1, Random() % 360);
+                            normalrot = DoRotation(Object::objects[k]->model.facenormals[whichhit], 0, Object::objects[k]->yaw, 0);
                             velocity = 0;
                             if (type == knife)
                                 position = colpoint - normalrot * .1;
@@ -416,7 +415,7 @@ void Weapon::DoStuff(int i)
                             if (type == staff) {
                                 start = tippoint - (position - tippoint) / 5;
                                 end = position + (position - tippoint) / 30;
-                                whichhit = objects.model[k].LineCheck(&start, &end, &colpoint, &objects.position[k], &objects.yaw[k]);
+                                whichhit = Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw);
                                 if (whichhit != -1) {
                                     XYZ diff;
                                     diff = (colpoint - position);
@@ -431,7 +430,7 @@ void Weapon::DoStuff(int i)
                             } else {
                                 start = position - (tippoint - position) / 5;
                                 end = tippoint + (tippoint - position) / 30;
-                                whichhit = objects.model[k].LineCheck(&start, &end, &colpoint, &objects.position[k], &objects.yaw[k]);
+                                whichhit = Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw);
                                 if (whichhit != -1) {
                                     XYZ diff;
                                     diff = (colpoint - tippoint);
@@ -448,11 +447,11 @@ void Weapon::DoStuff(int i)
 
                         start = oldposition;
                         end = position;
-                        whichhit = objects.model[k].LineCheck(&start, &end, &colpoint, &objects.position[k], &objects.yaw[k]);
+                        whichhit = Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw);
                         if (whichhit != -1) {
                             hitsomething = 1;
                             position = colpoint;
-                            terrainnormal = DoRotation(objects.model[k].facenormals[whichhit], 0, objects.yaw[k], 0) * -1;
+                            terrainnormal = DoRotation(Object::objects[k]->model.facenormals[whichhit], 0, Object::objects[k]->yaw, 0) * -1;
                             ReflectVector(&velocity, &terrainnormal);
                             position += terrainnormal * .002;
 
@@ -478,11 +477,11 @@ void Weapon::DoStuff(int i)
                         }
                         start = oldtippoint;
                         end = tippoint;
-                        whichhit = objects.model[k].LineCheck(&start, &end, &colpoint, &objects.position[k], &objects.yaw[k]);
+                        whichhit = Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw);
                         if (whichhit != -1) {
                             hitsomething = 1;
                             tippoint = colpoint;
-                            terrainnormal = DoRotation(objects.model[k].facenormals[whichhit], 0, objects.yaw[k], 0) * -1;
+                            terrainnormal = DoRotation(Object::objects[k]->model.facenormals[whichhit], 0, Object::objects[k]->yaw, 0) * -1;
                             ReflectVector(&tipvelocity, &terrainnormal);
                             tippoint += terrainnormal * .002;
 
@@ -507,7 +506,7 @@ void Weapon::DoStuff(int i)
                             }
                         }
 
-                        if ((objects.type[k] != boxtype && objects.type[k] != platformtype && objects.type[k] != walltype && objects.type[k] != weirdtype) || objects.pitch[k] != 0)
+                        if ((Object::objects[k]->type != boxtype && Object::objects[k]->type != platformtype && Object::objects[k]->type != walltype && Object::objects[k]->type != weirdtype) || Object::objects[k]->pitch != 0)
                             for (int m = 0; m < 2; m++) {
                                 mid = (position * (21 + (float)m * 10) + tippoint * (19 - (float)m * 10)) / 40;
                                 oldmid2 = mid;
@@ -515,11 +514,11 @@ void Weapon::DoStuff(int i)
 
                                 start = oldmid;
                                 end = mid;
-                                whichhit = objects.model[k].LineCheck(&start, &end, &colpoint, &objects.position[k], &objects.yaw[k]);
+                                whichhit = Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw);
                                 if (whichhit != -1) {
                                     hitsomething = 1;
                                     mid = colpoint;
-                                    terrainnormal = DoRotation(objects.model[k].facenormals[whichhit], 0, objects.yaw[k], 0) * -1;
+                                    terrainnormal = DoRotation(Object::objects[k]->model.facenormals[whichhit], 0, Object::objects[k]->yaw, 0) * -1;
                                     ReflectVector(&velocity, &terrainnormal);
 
                                     bounceness = terrainnormal * findLength(&velocity) * (abs(normaldotproduct(velocity, terrainnormal)));
@@ -550,11 +549,11 @@ void Weapon::DoStuff(int i)
 
                                 start = oldmid;
                                 end = mid;
-                                whichhit = objects.model[k].LineCheck(&start, &end, &colpoint, &objects.position[k], &objects.yaw[k]);
+                                whichhit = Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw);
                                 if (whichhit != -1) {
                                     hitsomething = 1;
                                     mid = colpoint;
-                                    terrainnormal = DoRotation(objects.model[k].facenormals[whichhit], 0, objects.yaw[k], 0) * -1;
+                                    terrainnormal = DoRotation(Object::objects[k]->model.facenormals[whichhit], 0, Object::objects[k]->yaw, 0) * -1;
                                     ReflectVector(&tipvelocity, &terrainnormal);
 
                                     bounceness = terrainnormal * findLength(&tipvelocity) * (abs(normaldotproduct(tipvelocity, terrainnormal)));
@@ -582,14 +581,14 @@ void Weapon::DoStuff(int i)
                         else {
                             start = position;
                             end = tippoint;
-                            whichhit = objects.model[k].LineCheck(&start, &end, &colpoint, &objects.position[k], &objects.yaw[k]);
+                            whichhit = Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw);
                             if (whichhit != -1) {
                                 hitsomething = 1;
                                 closestdistance = -1;
                                 closestswordpoint = colpoint; //(position+tippoint)/2;
-                                point[0] = DoRotation(objects.model[k].vertex[objects.model[k].Triangles[whichhit].vertex[0]], 0, objects.yaw[k], 0) + objects.position[k];
-                                point[1] = DoRotation(objects.model[k].vertex[objects.model[k].Triangles[whichhit].vertex[1]], 0, objects.yaw[k], 0) + objects.position[k];
-                                point[2] = DoRotation(objects.model[k].vertex[objects.model[k].Triangles[whichhit].vertex[2]], 0, objects.yaw[k], 0) + objects.position[k];
+                                point[0] = DoRotation(Object::objects[k]->model.vertex[Object::objects[k]->model.Triangles[whichhit].vertex[0]], 0, Object::objects[k]->yaw, 0) + Object::objects[k]->position;
+                                point[1] = DoRotation(Object::objects[k]->model.vertex[Object::objects[k]->model.Triangles[whichhit].vertex[1]], 0, Object::objects[k]->yaw, 0) + Object::objects[k]->position;
+                                point[2] = DoRotation(Object::objects[k]->model.vertex[Object::objects[k]->model.Triangles[whichhit].vertex[2]], 0, Object::objects[k]->yaw, 0) + Object::objects[k]->position;
                                 if (DistancePointLine(&closestswordpoint, &point[0], &point[1], &distance, &colpoint )) {
                                     if (distance < closestdistance || closestdistance == -1) {
                                         closestpoint = colpoint;

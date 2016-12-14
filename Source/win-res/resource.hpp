@@ -24,8 +24,8 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 //
 #define IDI_LUGARU                      104
 
-// Next default values for new objects
-// 
+// Next default values for new Object::objects
+//
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        105

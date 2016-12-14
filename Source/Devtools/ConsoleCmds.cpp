@@ -52,7 +52,6 @@ extern float slomofreq;
 extern int tutoriallevel;
 extern int hostile;
 extern int maptype;
-extern Objects objects;
 extern int slomo;
 extern float slomodelay;
 extern bool skyboxtexture;
@@ -210,11 +209,11 @@ void ch_save(const char *args)
 
     fpackf(tfile, "Bi", environment);
 
-    fpackf(tfile, "Bi", objects.numobjects);
+    fpackf(tfile, "Bi", Object::objects.size());
 
-    for (int k = 0; k < objects.numobjects; k++)
-        fpackf(tfile, "Bi Bf Bf Bf Bf Bf Bf", objects.type[k], objects.yaw[k], objects.pitch[k],
-               objects.position[k].x, objects.position[k].y, objects.position[k].z, objects.scale[k]);
+    for (int k = 0; k < Object::objects.size(); k++)
+        fpackf(tfile, "Bi Bf Bf Bf Bf Bf Bf", Object::objects[k]->type, Object::objects[k]->yaw, Object::objects[k]->pitch,
+               Object::objects[k]->position.x, Object::objects[k]->position.y, Object::objects[k]->position.z, Object::objects[k]->scale);
 
     fpackf(tfile, "Bi", Hotspot::hotspots.size());
     for (unsigned i = 0; i < Hotspot::hotspots.size(); i++) {
@@ -717,7 +716,7 @@ void ch_skytint(const char *args)
     SetUpLighting();
 
     terrain.DoShadows();
-    objects.DoShadows();
+    Object::DoShadows();
 }
 
 void ch_skylight(const char *args)
@@ -727,7 +726,7 @@ void ch_skylight(const char *args)
     SetUpLighting();
 
     terrain.DoShadows();
-    objects.DoShadows();
+    Object::DoShadows();
 }
 
 void ch_skybox(const char *args)
@@ -737,5 +736,5 @@ void ch_skybox(const char *args)
     SetUpLighting();
 
     terrain.DoShadows();
-    objects.DoShadows();
+    Object::DoShadows();
 }

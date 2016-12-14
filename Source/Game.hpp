@@ -32,7 +32,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Graphic/Stereo.hpp"
 #include "Graphic/Text.hpp"
 #include "Graphic/Texture.hpp"
-#include "Objects/Objects.hpp"
+#include "Objects/Object.hpp"
 #include "Objects/Person.hpp"
 #include "Objects/Weapons.hpp"
 #include "Thirdparty/optionparser.h"
@@ -152,6 +152,7 @@ void SetUpLighting();
 GLvoid ReSizeGLScene(float fov, float near);
 int checkcollide(XYZ startpoint, XYZ endpoint);
 int checkcollide(XYZ startpoint, XYZ endpoint, int what);
+int checkcollide(XYZ startpoint, XYZ endpoint, float minx, float miny, float minz, float maxx, float maxy, float maxz, int what);
 
 void fireSound(int sound = fireendsound);
 

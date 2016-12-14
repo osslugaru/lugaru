@@ -31,6 +31,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Math/Quaternions.hpp"
 #include "Utils/ImageIO.hpp"
 
+#include <memory>
 #include <vector>
 //
 // Model Structures
@@ -53,46 +54,58 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #define firetype 13
 
 
-class Objects
+class Object
 {
 public:
-    XYZ center;
-    float radius;
-    XYZ position[max_objects];
-    int type[max_objects];
-    float yaw[max_objects];
-    float pitch[max_objects];
-    float rotx[max_objects];
-    float rotxvel[max_objects];
-    float roty[max_objects];
-    float rotyvel[max_objects];
-    int numobjects;
-    bool possible[max_objects];
-    Model model[max_objects];
-    Model displaymodel[max_objects];
-    float friction[max_objects];
-    float scale[max_objects];
-    float messedwith[max_objects];
-    float checked[max_objects];
-    Texture boxtextureptr;
-    Texture treetextureptr;
-    Texture bushtextureptr;
-    Texture rocktextureptr;
-    float shadowed[max_objects];
-    float occluded[max_objects];
-    bool checkcollide(XYZ startpoint, XYZ endpoint, int which);
-    bool onfire[max_objects];
-    float flamedelay[max_objects];
+    static std::vector<std::unique_ptr<Object>> objects;
+    static XYZ center;
+    static float radius;
+    static Texture boxtextureptr;
+    static Texture treetextureptr;
+    static Texture bushtextureptr;
+    static Texture rocktextureptr;
 
-    void SphereCheckPossible(XYZ *p1, float radius);
-    void DeleteObject(int which);
-    void MakeObject(int atype, XYZ where, float ayaw, float apitch, float ascale);
-    void Draw();
-    void DoShadows();
-    void DoStuff();
+    XYZ position;
+    int type;
+    float yaw;
+    float pitch;
+    float rotx;
+    float rotxvel;
+    float roty;
+    float rotyvel;
+    bool possible;
+    Model model;
+    Model displaymodel;
+    float friction;
+    float scale;
+    float messedwith;
+    float checked;
+    float shadowed;
+    float occluded;
+    bool onfire;
+    float flamedelay;
 
-    Objects();
-    ~Objects();
+    Object();
+    Object(int _type, XYZ _position, float _yaw, float _pitch, float _scale);
+
+    static void ComputeCenter();
+    static void ComputeRadius();
+    static bool Checkcollide(XYZ startpoint, XYZ endpoint, int which);
+    static void AddObjectsToTerrain();
+    static void LoadObjectsFromFile(FILE* tfile, bool skip);
+    static void SphereCheckPossible(XYZ *p1, float radius);
+    static void DeleteObject(int which);
+    static void MakeObject(int atype, XYZ where, float ayaw, float apitch, float ascale);
+    static void Draw();
+    static void DoShadows();
+    static void DoStuff();
+
+private:
+    void handleFire();
+    void doShadows(XYZ lightloc);
+    void draw();
+    void drawSecondPass();
+    void addToTerrain(unsigned id);
 };
 
 #endif

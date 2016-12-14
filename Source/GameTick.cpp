@@ -68,7 +68,6 @@ extern float screenwidth, screenheight;
 extern float gravity;
 extern int detail;
 extern float texdetail;
-extern Objects objects;
 extern int slomo;
 extern float slomodelay;
 extern bool floatjump;
@@ -318,8 +317,8 @@ static int findClosestObject()
     int closest = -1;
     float closestdist = std::numeric_limits<float>::max();
 
-    for (int i = 0; i < objects.numobjects; i++) {
-        float distance = distsq(&objects.position[i], &Person::players[0]->coords);
+    for (int i = 0; i < Object::objects.size(); i++) {
+        float distance = distsq(&Object::objects[i]->position, &Person::players[0]->coords);
         if (distance < closestdist) {
             closestdist = distance;
             closest = i;
@@ -431,19 +430,19 @@ int Game::checkcollide(XYZ startpoint, XYZ endpoint)
     maxy = max(startpoint.y, endpoint.y) + 1;
     maxz = max(startpoint.z, endpoint.z) + 1;
 
-    for (int i = 0; i < objects.numobjects; i++) {
-        if (     objects.position[i].x > minx - objects.model[i].boundingsphereradius &&
-                 objects.position[i].x < maxx + objects.model[i].boundingsphereradius &&
-                 objects.position[i].y > miny - objects.model[i].boundingsphereradius &&
-                 objects.position[i].y < maxy + objects.model[i].boundingsphereradius &&
-                 objects.position[i].z > minz - objects.model[i].boundingsphereradius &&
-                 objects.position[i].z < maxz + objects.model[i].boundingsphereradius) {
-            if (     objects.type[i] != treeleavestype &&
-                     objects.type[i] != bushtype &&
-                     objects.type[i] != firetype) {
+    for (int i = 0; i < Object::objects.size(); i++) {
+        if (     Object::objects[i]->position.x > minx - Object::objects[i]->model.boundingsphereradius &&
+                 Object::objects[i]->position.x < maxx + Object::objects[i]->model.boundingsphereradius &&
+                 Object::objects[i]->position.y > miny - Object::objects[i]->model.boundingsphereradius &&
+                 Object::objects[i]->position.y < maxy + Object::objects[i]->model.boundingsphereradius &&
+                 Object::objects[i]->position.z > minz - Object::objects[i]->model.boundingsphereradius &&
+                 Object::objects[i]->position.z < maxz + Object::objects[i]->model.boundingsphereradius) {
+            if (     Object::objects[i]->type != treeleavestype &&
+                     Object::objects[i]->type != bushtype &&
+                     Object::objects[i]->type != firetype) {
                 colviewer = startpoint;
                 coltarget = endpoint;
-                if (objects.model[i].LineCheck(&colviewer, &coltarget, &colpoint, &objects.position[i], &objects.yaw[i]) != -1)
+                if (Object::objects[i]->model.LineCheck(&colviewer, &coltarget, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw) != -1)
                     return i;
             }
         }
@@ -466,19 +465,19 @@ int Game::checkcollide(XYZ startpoint, XYZ endpoint, int what)
     maxz = max(startpoint.z, endpoint.z) + 1;
 
     if (what != 1000) {
-        if (     objects.position[what].x > minx - objects.model[what].boundingsphereradius &&
-                 objects.position[what].x < maxx + objects.model[what].boundingsphereradius &&
-                 objects.position[what].y > miny - objects.model[what].boundingsphereradius &&
-                 objects.position[what].y < maxy + objects.model[what].boundingsphereradius &&
-                 objects.position[what].z > minz - objects.model[what].boundingsphereradius &&
-                 objects.position[what].z < maxz + objects.model[what].boundingsphereradius) {
-            if (     objects.type[what] != treeleavestype &&
-                     objects.type[what] != bushtype &&
-                     objects.type[what] != firetype) {
+        if (     Object::objects[what]->position.x > minx - Object::objects[what]->model.boundingsphereradius &&
+                 Object::objects[what]->position.x < maxx + Object::objects[what]->model.boundingsphereradius &&
+                 Object::objects[what]->position.y > miny - Object::objects[what]->model.boundingsphereradius &&
+                 Object::objects[what]->position.y < maxy + Object::objects[what]->model.boundingsphereradius &&
+                 Object::objects[what]->position.z > minz - Object::objects[what]->model.boundingsphereradius &&
+                 Object::objects[what]->position.z < maxz + Object::objects[what]->model.boundingsphereradius) {
+            if (     Object::objects[what]->type != treeleavestype &&
+                     Object::objects[what]->type != bushtype &&
+                     Object::objects[what]->type != firetype) {
                 colviewer = startpoint;
                 coltarget = endpoint;
                 //FIXME: i/what
-                if (objects.model[what].LineCheck(&colviewer, &coltarget, &colpoint, &objects.position[what], &objects.yaw[what]) != -1)
+                if (Object::objects[what]->model.LineCheck(&colviewer, &coltarget, &colpoint, &Object::objects[what]->position, &Object::objects[what]->yaw) != -1)
                     return i;
             }
         }
@@ -513,10 +512,10 @@ void Setenvironment(int which)
         if (ambientsound)
             emit_stream_np(stream_wind);
 
-        objects.treetextureptr.load("Textures/SnowTree.png", 0);
-        objects.bushtextureptr.load("Textures/BushSnow.png", 0);
-        objects.rocktextureptr.load("Textures/BoulderSnow.jpg", 1);
-        objects.boxtextureptr.load("Textures/SnowBox.jpg", 1);
+        Object::treetextureptr.load("Textures/SnowTree.png", 0);
+        Object::bushtextureptr.load("Textures/BushSnow.png", 0);
+        Object::rocktextureptr.load("Textures/BoulderSnow.jpg", 1);
+        Object::boxtextureptr.load("Textures/SnowBox.jpg", 1);
 
         footstepsound = footstepsn1;
         footstepsound2 = footstepsn2;
@@ -544,10 +543,10 @@ void Setenvironment(int which)
     } else if (environment == desertenvironment) {
         windvector = 0;
         windvector.z = 2;
-        objects.treetextureptr.load("Textures/DesertTree.png", 0);
-        objects.bushtextureptr.load("Textures/BushDesert.png", 0);
-        objects.rocktextureptr.load("Textures/BoulderDesert.jpg", 1);
-        objects.boxtextureptr.load("Textures/DesertBox.jpg", 1);
+        Object::treetextureptr.load("Textures/DesertTree.png", 0);
+        Object::bushtextureptr.load("Textures/BushDesert.png", 0);
+        Object::rocktextureptr.load("Textures/BoulderDesert.jpg", 1);
+        Object::boxtextureptr.load("Textures/DesertBox.jpg", 1);
 
 
         if (ambientsound)
@@ -579,10 +578,10 @@ void Setenvironment(int which)
     } else if (environment == grassyenvironment) {
         windvector = 0;
         windvector.z = 2;
-        objects.treetextureptr.load("Textures/Tree.png", 0);
-        objects.bushtextureptr.load("Textures/Bush.png", 0);
-        objects.rocktextureptr.load("Textures/Boulder.jpg", 1);
-        objects.boxtextureptr.load("Textures/GrassBox.jpg", 1);
+        Object::treetextureptr.load("Textures/Tree.png", 0);
+        Object::bushtextureptr.load("Textures/Bush.png", 0);
+        Object::rocktextureptr.load("Textures/Boulder.jpg", 1);
+        Object::boxtextureptr.load("Textures/GrassBox.jpg", 1);
 
         if (ambientsound)
             emit_stream_np(stream_wind, 100.);
@@ -737,19 +736,12 @@ void Game::Loadlevel(const std::string& name)
     if (!stealthloading) {
         terrain.numdecals = 0;
         Sprite::deleteSprites();
-        for (int i = 0; i < objects.numobjects; i++)
-            objects.model[i].numdecals = 0;
 
-        int j = objects.numobjects;
-        for (int i = 0; i < j; i++) {
-            objects.DeleteObject(0);
-            if (visibleloading)
-                LoadingScreen();
-        }
-
-        for (int i = 0; i < subdivision; i++)
-            for (int j = 0; j < subdivision; j++)
+        for (int i = 0; i < subdivision; i++) {
+            for (int j = 0; j < subdivision; j++) {
                 terrain.patchobjectnum[i][j] = 0;
+            }
+        }
         if (visibleloading)
             LoadingScreen();
     }
@@ -844,12 +836,7 @@ void Game::Loadlevel(const std::string& name)
 
     funpackf(tfile, "Bi", &environment);
 
-    funpackf(tfile, "Bi", &objects.numobjects);
-    for (int i = 0; i < objects.numobjects; i++) {
-        funpackf(tfile, "Bi Bf Bf Bf Bf Bf Bf", &objects.type[i], &objects.yaw[i], &objects.pitch[i], &objects.position[i].x, &objects.position[i].y, &objects.position[i].z, &objects.scale[i]);
-        if (objects.type[i] == treeleavestype)
-            objects.scale[i] = objects.scale[i - 1];
-    }
+    Object::LoadObjectsFromFile(tfile, stealthloading);
 
     if (mapvers >= 7) {
         int numhotspots;
@@ -877,24 +864,12 @@ void Game::Loadlevel(const std::string& name)
         LoadingScreen();
 
     if (!stealthloading) {
-        objects.center = 0;
-        for (int i = 0; i < objects.numobjects; i++)
-            objects.center += objects.position[i];
-        objects.center /= objects.numobjects;
-
+        Object::ComputeCenter();
 
         if (visibleloading)
             LoadingScreen();
 
-        float maxdistance = 0;
-        float tempdist;
-        for (int i = 0; i < objects.numobjects; i++) {
-            tempdist = distsq(&objects.center, &objects.position[i]);
-            if (tempdist > maxdistance) {
-                maxdistance = tempdist;
-            }
-        }
-        objects.radius = fast_sqrt(maxdistance);
+        Object::ComputeRadius();
     }
 
     if (visibleloading)
@@ -937,18 +912,11 @@ void Game::Loadlevel(const std::string& name)
     oldenvironment = environment;
 
     if (!stealthloading) {
-        int j = objects.numobjects;
-        objects.numobjects = 0;
-        for (int i = 0; i < j; i++) {
-            objects.MakeObject(objects.type[i], objects.position[i], objects.yaw[i], objects.pitch[i], objects.scale[i]);
-            if (visibleloading)
-                LoadingScreen();
-        }
-
+        Object::AddObjectsToTerrain();
         terrain.DoShadows();
         if (visibleloading)
             LoadingScreen();
-        objects.DoShadows();
+        Object::DoShadows();
         if (visibleloading)
             LoadingScreen();
     }
@@ -1681,9 +1649,9 @@ void doDevKeys()
 
         /* Grow tree leaves?? */
         if (Input::isKeyPressed(SDL_SCANCODE_Y)) {
-            for (int i = 0; i < objects.numobjects; i++) {
-                if (objects.type[i] == treeleavestype) {
-                    objects.scale[i] *= .9;
+            for (int i = 0; i < Object::objects.size(); i++) {
+                if (Object::objects[i]->type == treeleavestype) {
+                    Object::objects[i]->scale *= .9;
                 }
             }
         }
@@ -2024,12 +1992,13 @@ void doDevKeys()
 
         if (Input::isKeyPressed(SDL_SCANCODE_DELETE) && Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
             int closest = findClosestObject();
-            if (closest >= 0)
-                objects.position[closest].y -= 500;
+            if (closest >= 0) {
+                Object::objects[closest]->position.y -= 500;
+            }
         }
 
         if (Input::isKeyPressed(SDL_SCANCODE_M) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
-            if (objects.numobjects < max_objects - 1) {
+            if (Object::objects.size() < max_objects - 1) {
                 XYZ scenecoords;
                 scenecoords.x = Person::players[0]->coords.x;
                 scenecoords.z = Person::players[0]->coords.z;
@@ -2046,9 +2015,9 @@ void doDevKeys()
                 if (temprotat2 < 0)
                     temprotat2 = Random() % 360;
 
-                objects.MakeObject(editortype, scenecoords, (int)temprotat - ((int)temprotat) % 30, (int)temprotat2, editorsize);
+                Object::MakeObject(editortype, scenecoords, (int)temprotat - ((int)temprotat) % 30, (int)temprotat2, editorsize);
                 if (editortype == treetrunktype)
-                    objects.MakeObject(treeleavestype, scenecoords, Random() % 360 * (temprotat2 < 2) + (int)editoryaw - ((int)editoryaw) % 30, editorpitch, editorsize);
+                    Object::MakeObject(treeleavestype, scenecoords, Random() % 360 * (temprotat2 < 2) + (int)editoryaw - ((int)editoryaw) % 30, editorpitch, editorsize);
             }
         }
 
@@ -2193,11 +2162,13 @@ void doDevKeys()
             if (pathpointselected >= numpathpoints)
                 pathpointselected = -1;
         }
+
         if (Input::isKeyPressed(SDL_SCANCODE_COMMA) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
             pathpointselected--;
             if (pathpointselected <= -2)
                 pathpointselected = numpathpoints - 1;
         }
+
         if (Input::isKeyPressed(SDL_SCANCODE_COMMA) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
             if (pathpointselected != -1) {
                 numpathpoints--;
@@ -2265,6 +2236,7 @@ void doDevKeys()
         if (Input::isKeyPressed(SDL_SCANCODE_RIGHT) && Input::isKeyDown(SDL_SCANCODE_LSHIFT) && Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
             mapradius += multiplier * 10;
         }
+
         if (Input::isKeyDown(SDL_SCANCODE_UP) && Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
             editorpitch += multiplier * 100;
         }
@@ -2274,10 +2246,12 @@ void doDevKeys()
             if (editorpitch < -.01)
                 editorpitch = -.01;
         }
-        if (Input::isKeyPressed(SDL_SCANCODE_DELETE) && objects.numobjects && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
+
+        if (Input::isKeyPressed(SDL_SCANCODE_DELETE) && Object::objects.size() && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
             int closest = findClosestObject();
-            if (closest >= 0)
-                objects.DeleteObject(closest);
+            if (closest >= 0) {
+                Object::DeleteObject(closest);
+            }
         }
     }
 }
@@ -2444,9 +2418,9 @@ void doAerialAcrobatics()
 
             for (int l = 0; l < terrain.patchobjectnum[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz]; l++) {
                 int i = terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz][l];
-                if (objects.type[i] != rocktype ||
-                        objects.scale[i] > .5 && Person::players[k]->aitype == playercontrolled ||
-                        objects.position[i].y > Person::players[k]->coords.y) {
+                if (Object::objects[i]->type != rocktype ||
+                        Object::objects[i]->scale > .5 && Person::players[k]->aitype == playercontrolled ||
+                        Object::objects[i]->position.y > Person::players[k]->coords.y) {
                     lowpoint = Person::players[k]->coords;
                     if (Person::players[k]->animTarget != jumpupanim &&
                             Person::players[k]->animTarget != jumpdownanim &&
@@ -2457,7 +2431,7 @@ void doAerialAcrobatics()
                     if (     Person::players[k]->coords.y < terrain.getHeight(Person::players[k]->coords.x, Person::players[k]->coords.z) &&
                              Person::players[k]->coords.y > terrain.getHeight(Person::players[k]->coords.x, Person::players[k]->coords.z) - .1)
                         Person::players[k]->coords.y = terrain.getHeight(Person::players[k]->coords.x, Person::players[k]->coords.z);
-                    if (Person::players[k]->SphereCheck(&lowpoint, 1.3, &colpoint, &objects.position[i], &objects.yaw[i], &objects.model[i]) != -1) {
+                    if (Person::players[k]->SphereCheck(&lowpoint, 1.3, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw, &Object::objects[i]->model) != -1) {
                         flatfacing = lowpoint - Person::players[k]->coords;
                         Person::players[k]->coords = lowpoint;
                         Person::players[k]->coords.y -= 1.3;
@@ -2473,14 +2447,14 @@ void doAerialAcrobatics()
                                 Person::players[k]->jumpkeydown) {
                             lowpointtarget = lowpoint + DoRotation(Person::players[k]->facing, 0, -90, 0) * 1.5;
                             XYZ tempcoords1 = lowpoint;
-                            whichhit = objects.model[i].LineCheck(&lowpoint, &lowpointtarget, &colpoint, &objects.position[i], &objects.yaw[i]);
-                            if (whichhit != -1 && fabs(objects.model[i].facenormals[whichhit].y) < .3) {
+                            whichhit = Object::objects[i]->model.LineCheck(&lowpoint, &lowpointtarget, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw);
+                            if (whichhit != -1 && fabs(Object::objects[i]->model.facenormals[whichhit].y) < .3) {
                                 Person::players[k]->setAnimation(walljumpleftanim);
                                 emit_sound_at(movewhooshsound, Person::players[k]->coords);
                                 if (k == 0)
                                     pause_sound(whooshsound);
 
-                                lowpointtarget = DoRotation(objects.model[i].facenormals[whichhit], 0, objects.yaw[i], 0);
+                                lowpointtarget = DoRotation(Object::objects[i]->model.facenormals[whichhit], 0, Object::objects[i]->yaw, 0);
                                 Person::players[k]->yaw = -asin(0 - lowpointtarget.x) * 180 / M_PI;
                                 if (lowpointtarget.z < 0)
                                     Person::players[k]->yaw = 180 - Person::players[k]->yaw;
@@ -2491,14 +2465,14 @@ void doAerialAcrobatics()
                             } else {
                                 lowpoint = tempcoords1;
                                 lowpointtarget = lowpoint + DoRotation(Person::players[k]->facing, 0, 90, 0) * 1.5;
-                                whichhit = objects.model[i].LineCheck(&lowpoint, &lowpointtarget, &colpoint, &objects.position[i], &objects.yaw[i]);
-                                if (whichhit != -1 && fabs(objects.model[i].facenormals[whichhit].y) < .3) {
+                                whichhit = Object::objects[i]->model.LineCheck(&lowpoint, &lowpointtarget, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw);
+                                if (whichhit != -1 && fabs(Object::objects[i]->model.facenormals[whichhit].y) < .3) {
                                     Person::players[k]->setAnimation(walljumprightanim);
                                     emit_sound_at(movewhooshsound, Person::players[k]->coords);
                                     if (k == 0)
                                         pause_sound(whooshsound);
 
-                                    lowpointtarget = DoRotation(objects.model[i].facenormals[whichhit], 0, objects.yaw[i], 0);
+                                    lowpointtarget = DoRotation(Object::objects[i]->model.facenormals[whichhit], 0, Object::objects[i]->yaw, 0);
                                     Person::players[k]->yaw = -asin(0 - lowpointtarget.x) * 180 / M_PI;
                                     if (lowpointtarget.z < 0)
                                         Person::players[k]->yaw = 180 - Person::players[k]->yaw;
@@ -2509,14 +2483,14 @@ void doAerialAcrobatics()
                                 } else {
                                     lowpoint = tempcoords1;
                                     lowpointtarget = lowpoint + Person::players[k]->facing * 2;
-                                    whichhit = objects.model[i].LineCheck(&lowpoint, &lowpointtarget, &colpoint, &objects.position[i], &objects.yaw[i]);
-                                    if (whichhit != -1 && fabs(objects.model[i].facenormals[whichhit].y) < .3) {
+                                    whichhit = Object::objects[i]->model.LineCheck(&lowpoint, &lowpointtarget, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw);
+                                    if (whichhit != -1 && fabs(Object::objects[i]->model.facenormals[whichhit].y) < .3) {
                                         Person::players[k]->setAnimation(walljumpbackanim);
                                         emit_sound_at(movewhooshsound, Person::players[k]->coords);
                                         if (k == 0)
                                             pause_sound(whooshsound);
 
-                                        lowpointtarget = DoRotation(objects.model[i].facenormals[whichhit], 0, objects.yaw[i], 0);
+                                        lowpointtarget = DoRotation(Object::objects[i]->model.facenormals[whichhit], 0, Object::objects[i]->yaw, 0);
                                         Person::players[k]->yaw = -asin(0 - lowpointtarget.x) * 180 / M_PI;
                                         if (lowpointtarget.z < 0)
                                             Person::players[k]->yaw = 180 - Person::players[k]->yaw;
@@ -2527,14 +2501,14 @@ void doAerialAcrobatics()
                                     } else {
                                         lowpoint = tempcoords1;
                                         lowpointtarget = lowpoint - Person::players[k]->facing * 2;
-                                        whichhit = objects.model[i].LineCheck(&lowpoint, &lowpointtarget, &colpoint, &objects.position[i], &objects.yaw[i]);
-                                        if (whichhit != -1 && fabs(objects.model[i].facenormals[whichhit].y) < .3) {
+                                        whichhit = Object::objects[i]->model.LineCheck(&lowpoint, &lowpointtarget, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw);
+                                        if (whichhit != -1 && fabs(Object::objects[i]->model.facenormals[whichhit].y) < .3) {
                                             Person::players[k]->setAnimation(walljumpfrontanim);
                                             emit_sound_at(movewhooshsound, Person::players[k]->coords);
                                             if (k == 0)
                                                 pause_sound(whooshsound);
 
-                                            lowpointtarget = DoRotation(objects.model[i].facenormals[whichhit], 0, objects.yaw[i], 0);
+                                            lowpointtarget = DoRotation(Object::objects[i]->model.facenormals[whichhit], 0, Object::objects[i]->yaw, 0);
                                             Person::players[k]->yaw = -asin(0 - lowpointtarget.x) * 180 / M_PI;
                                             if (lowpointtarget.z < 0)
                                                 Person::players[k]->yaw = 180 - Person::players[k]->yaw;
@@ -2549,11 +2523,11 @@ void doAerialAcrobatics()
                             }
                         }
                     }
-                } else if (objects.type[i] == rocktype) {
+                } else if (Object::objects[i]->type == rocktype) {
                     lowpoint2 = Person::players[k]->coords;
                     lowpoint = Person::players[k]->coords;
                     lowpoint.y += 2;
-                    if (objects.model[i].LineCheck(&lowpoint, &lowpoint2, &colpoint, &objects.position[i], &objects.yaw[i]) != -1) {
+                    if (Object::objects[i]->model.LineCheck(&lowpoint, &lowpoint2, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw) != -1) {
                         Person::players[k]->coords = colpoint;
                         Person::players[k]->collide = 1;
                         tempcollide = 1;
@@ -2596,8 +2570,8 @@ void doAerialAcrobatics()
                     int i = terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz][l];
                     lowpoint = Person::players[k]->coords;
                     lowpoint.y += 1.35;
-                    if (objects.type[i] != rocktype)
-                        if (Person::players[k]->SphereCheck(&lowpoint, 1.33, &colpoint, &objects.position[i], &objects.yaw[i], &objects.model[i]) != -1) {
+                    if (Object::objects[i]->type != rocktype)
+                        if (Person::players[k]->SphereCheck(&lowpoint, 1.33, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw, &Object::objects[i]->model) != -1) {
                             if (Person::players[k]->animTarget != jumpupanim &&
                                     Person::players[k]->animTarget != jumpdownanim &&
                                     Person::players[k]->onterrain)
@@ -2613,14 +2587,14 @@ void doAerialAcrobatics()
                                      Person::players[k]->animTarget == jumpupanim ||
                                      Person::players[k]->animTarget == jumpdownanim)) {
                                 lowpoint = Person::players[k]->coords;
-                                objects.model[i].SphereCheckPossible(&lowpoint, 1.5, &objects.position[i], &objects.yaw[i]);
+                                Object::objects[i]->model.SphereCheckPossible(&lowpoint, 1.5, &Object::objects[i]->position, &Object::objects[i]->yaw);
                                 lowpoint = Person::players[k]->coords;
                                 lowpoint.y += .05;
                                 facing = 0;
                                 facing.z = -1;
                                 facing = DoRotation(facing, 0, Person::players[k]->targetyaw + 180, 0);
                                 lowpointtarget = lowpoint + facing * 1.4;
-                                whichhit = objects.model[i].LineCheckPossible(&lowpoint, &lowpointtarget, &colpoint, &objects.position[i], &objects.yaw[i]);
+                                whichhit = Object::objects[i]->model.LineCheckPossible(&lowpoint, &lowpointtarget, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw);
                                 if (whichhit != -1) {
                                     lowpoint = Person::players[k]->coords;
                                     lowpoint.y += .1;
@@ -2649,27 +2623,27 @@ void doAerialAcrobatics()
                                     lowpointtarget6.y += 45 / 13;
                                     lowpointtarget6 += facing * .6;
                                     lowpointtarget7.y += 90 / 13;
-                                    whichhit = objects.model[i].LineCheckPossible(&lowpoint, &lowpointtarget, &colpoint, &objects.position[i], &objects.yaw[i]);
-                                    if (objects.friction[i] > .5)
+                                    whichhit = Object::objects[i]->model.LineCheckPossible(&lowpoint, &lowpointtarget, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw);
+                                    if (Object::objects[i]->friction > .5)
                                         if (whichhit != -1) {
                                             if (whichhit != -1 && Person::players[k]->animTarget != jumpupanim && Person::players[k]->animTarget != jumpdownanim)
                                                 Person::players[k]->collided = 1;
                                             if (checkcollide(lowpoint7, lowpointtarget7) == -1)
                                                 if (checkcollide(lowpoint6, lowpointtarget6) == -1)
-                                                    if (     objects.model[i].LineCheckPossible(&lowpoint2, &lowpointtarget2,
-                                                             &colpoint, &objects.position[i], &objects.yaw[i]) != -1 &&
-                                                             objects.model[i].LineCheckPossible(&lowpoint3, &lowpointtarget3,
-                                                                     &colpoint, &objects.position[i], &objects.yaw[i]) != -1 &&
-                                                             objects.model[i].LineCheckPossible(&lowpoint4, &lowpointtarget4,
-                                                                     &colpoint, &objects.position[i], &objects.yaw[i]) != -1 &&
-                                                             objects.model[i].LineCheckPossible(&lowpoint5, &lowpointtarget5,
-                                                                     &colpoint, &objects.position[i], &objects.yaw[i]) != -1)
+                                                    if (     Object::objects[i]->model.LineCheckPossible(&lowpoint2, &lowpointtarget2,
+                                                             &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw) != -1 &&
+                                                             Object::objects[i]->model.LineCheckPossible(&lowpoint3, &lowpointtarget3,
+                                                                     &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw) != -1 &&
+                                                             Object::objects[i]->model.LineCheckPossible(&lowpoint4, &lowpointtarget4,
+                                                                     &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw) != -1 &&
+                                                             Object::objects[i]->model.LineCheckPossible(&lowpoint5, &lowpointtarget5,
+                                                                     &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw) != -1)
                                                         for (int j = 0; j < 45; j++) {
                                                             lowpoint = Person::players[k]->coords;
                                                             lowpoint.y += (float)j / 13;
                                                             lowpointtarget = lowpoint + facing * 1.4;
-                                                            if (objects.model[i].LineCheckPossible(&lowpoint, &lowpointtarget,
-                                                                                                   &colpoint2, &objects.position[i], &objects.yaw[i]) == -1) {
+                                                            if (Object::objects[i]->model.LineCheckPossible(&lowpoint, &lowpointtarget,
+                                                                                                   &colpoint2, &Object::objects[i]->position, &Object::objects[i]->yaw) == -1) {
                                                                 if (j <= 6 || j <= 25 && Person::players[k]->animTarget == jumpdownanim)
                                                                     break;
                                                                 if (Person::players[k]->animTarget == jumpupanim || Person::players[k]->animTarget == jumpdownanim) {
@@ -2677,7 +2651,7 @@ void doAerialAcrobatics()
                                                                     lowpoint.y += (float)j / 13;
                                                                     lowpointtarget = lowpoint + facing * 1.3;
                                                                     flatfacing = Person::players[k]->coords;
-                                                                    Person::players[k]->coords = colpoint - DoRotation(objects.model[i].facenormals[whichhit], 0, objects.yaw[k], 0) * .01;
+                                                                    Person::players[k]->coords = colpoint - DoRotation(Object::objects[i]->model.facenormals[whichhit], 0, Object::objects[k]->yaw, 0) * .01;
                                                                     Person::players[k]->coords.y = lowpointtarget.y - .07;
                                                                     Person::players[k]->currentoffset = (flatfacing - Person::players[k]->coords) / Person::players[k]->scale;
 
@@ -2688,7 +2662,7 @@ void doAerialAcrobatics()
                                                                         }
                                                                         emit_sound_at(jumpsound, Person::players[k]->coords, 128.);
 
-                                                                        lowpointtarget = DoRotation(objects.model[i].facenormals[whichhit], 0, objects.yaw[i], 0);
+                                                                        lowpointtarget = DoRotation(Object::objects[i]->model.facenormals[whichhit], 0, Object::objects[i]->yaw, 0);
                                                                         Person::players[k]->yaw = -asin(0 - lowpointtarget.x) * 180 / M_PI;
                                                                         if (lowpointtarget.z < 0)
                                                                             Person::players[k]->yaw = 180 - Person::players[k]->yaw;
@@ -3163,13 +3137,13 @@ void doAttacks()
                                                             terrain.decalalivetime[j] < 2)
                                                         terrain.DeleteDecal(j);
                                                 }
-                                                for (int l = 0; l < objects.numobjects; l++) {
-                                                    if (objects.model[l].type == decalstype)
-                                                        for (int j = 0; j < objects.model[l].numdecals; j++) {
-                                                            if ((objects.model[l].decaltype[j] == blooddecal ||
-                                                                    objects.model[l].decaltype[j] == blooddecalslow) &&
-                                                                    objects.model[l].decalalivetime[j] < 2)
-                                                                objects.model[l].DeleteDecal(j);
+                                                for (int l = 0; l < Object::objects.size(); l++) {
+                                                    if (Object::objects[l]->model.type == decalstype)
+                                                        for (int j = 0; j < Object::objects[l]->model.numdecals; j++) {
+                                                            if ((Object::objects[l]->model.decaltype[j] == blooddecal ||
+                                                                    Object::objects[l]->model.decaltype[j] == blooddecalslow) &&
+                                                                    Object::objects[l]->model.decalalivetime[j] < 2)
+                                                                Object::objects[l]->model.DeleteDecal(j);
                                                         }
                                                 }
                                             }
@@ -3189,13 +3163,13 @@ void doAttacks()
                                                             terrain.DeleteDecal(j);
                                                         }
                                                     }
-                                                    for (int l = 0; l < objects.numobjects; l++) {
-                                                        if (objects.model[l].type == decalstype)
-                                                            for (int j = 0; j < objects.model[l].numdecals; j++) {
-                                                                if ((objects.model[l].decaltype[j] == blooddecal ||
-                                                                        objects.model[l].decaltype[j] == blooddecalslow) &&
-                                                                        objects.model[l].decalalivetime[j] < 2) {
-                                                                    objects.model[l].DeleteDecal(j);
+                                                    for (int l = 0; l < Object::objects.size(); l++) {
+                                                        if (Object::objects[l]->model.type == decalstype)
+                                                            for (int j = 0; j < Object::objects[l]->model.numdecals; j++) {
+                                                                if ((Object::objects[l]->model.decaltype[j] == blooddecal ||
+                                                                        Object::objects[l]->model.decaltype[j] == blooddecalslow) &&
+                                                                        Object::objects[l]->model.decalalivetime[j] < 2) {
+                                                                    Object::objects[l]->model.DeleteDecal(j);
                                                                 }
                                                             }
                                                     }
@@ -5083,17 +5057,17 @@ void Game::Tick()
                     Person::players[i]->avoidsomething = 0;
 
                     //avoid flaming things
-                    for (int j = 0; j < objects.numobjects; j++)
-                        if (objects.onfire[j])
-                            if (distsq(&Person::players[i]->coords, &objects.position[j]) < sq(objects.scale[j]) * 200)
-                                if (     distsq(&Person::players[i]->coords, &objects.position[j]) <
+                    for (int j = 0; j < Object::objects.size(); j++)
+                        if (Object::objects[j]->onfire)
+                            if (distsq(&Person::players[i]->coords, &Object::objects[j]->position) < sq(Object::objects[j]->scale) * 200)
+                                if (     distsq(&Person::players[i]->coords, &Object::objects[j]->position) <
                                          distsq(&Person::players[i]->coords, &Person::players[0]->coords)) {
                                     Person::players[i]->collided = 0;
                                     Person::players[i]->avoidcollided = 1;
                                     if (Person::players[i]->avoidsomething == 0 ||
-                                            distsq(&Person::players[i]->coords, &objects.position[j]) <
+                                            distsq(&Person::players[i]->coords, &Object::objects[j]->position) <
                                             distsq(&Person::players[i]->coords, &Person::players[i]->avoidwhere)) {
-                                        Person::players[i]->avoidwhere = objects.position[j];
+                                        Person::players[i]->avoidwhere = Object::objects[j]->position;
                                         Person::players[i]->avoidsomething = 1;
                                     }
                                 }
@@ -5875,7 +5849,7 @@ void Game::Tick()
             }
 
             //do stuff
-            objects.DoStuff();
+            Object::DoStuff();
 
             for (int j = numenvsounds - 1; j >= 0; j--) {
                 envsoundlife[j] -= multiplier;
@@ -6387,20 +6361,20 @@ void Game::TickOnceAfter()
             viewer = cameraloc - facing * cameradist;
             colviewer = viewer;
             coltarget = cameraloc;
-            objects.SphereCheckPossible(&colviewer, findDistance(&colviewer, &coltarget));
+            Object::SphereCheckPossible(&colviewer, findDistance(&colviewer, &coltarget));
             if (terrain.patchobjectnum[Person::players[0]->whichpatchx][Person::players[0]->whichpatchz])
                 for (int j = 0; j < terrain.patchobjectnum[Person::players[0]->whichpatchx][Person::players[0]->whichpatchz]; j++) {
                     int i = terrain.patchobjects[Person::players[0]->whichpatchx][Person::players[0]->whichpatchz][j];
                     colviewer = viewer;
                     coltarget = cameraloc;
-                    if (objects.model[i].LineCheckPossible(&colviewer, &coltarget, &col, &objects.position[i], &objects.yaw[i]) != -1)
+                    if (Object::objects[i]->model.LineCheckPossible(&colviewer, &coltarget, &col, &Object::objects[i]->position, &Object::objects[i]->yaw) != -1)
                         viewer = col;
                 }
             if (terrain.patchobjectnum[Person::players[0]->whichpatchx][Person::players[0]->whichpatchz])
                 for (int j = 0; j < terrain.patchobjectnum[Person::players[0]->whichpatchx][Person::players[0]->whichpatchz]; j++) {
                     int i = terrain.patchobjects[Person::players[0]->whichpatchx][Person::players[0]->whichpatchz][j];
                     colviewer = viewer;
-                    if (objects.model[i].SphereCheck(&colviewer, .15, &col, &objects.position[i], &objects.yaw[i]) != -1) {
+                    if (Object::objects[i]->model.SphereCheck(&colviewer, .15, &col, &Object::objects[i]->position, &Object::objects[i]->yaw) != -1) {
                         viewer = colviewer;
                     }
                 }
