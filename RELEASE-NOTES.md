@@ -6,7 +6,7 @@ released by the OSS Lugaru team, in reverse chronological order.
 The numbers preceded by a hash (e.g. #9) reference GitLab issue numbers on
 the [OSS Lugaru repository](https://gitlab.com/osslugaru/lugaru).
 
-## Version 1.1
+## Version 1.1 - 2016, December 14
 
 First release of the open source Lugaru project! It contains most commits
 made from various contributors since the open sourcing in 2010, and is
