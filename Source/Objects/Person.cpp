@@ -1772,20 +1772,19 @@ void Person::RagDoll(bool checkcollision)
         }
 
         if (checkcollision) {
-            XYZ average;
             XYZ lowpoint;
             XYZ colpoint;
-            int howmany;
-            average = 0;
-            howmany = 0;
-            for (unsigned j = 0; j < skeleton.joints.size(); j++) {
-                average += skeleton.joints[j].position;
-                howmany++;
-            }
-            average /= howmany;
-            coords += average * scale;
-            for (unsigned j = 0; j < skeleton.joints.size(); j++) {
-                skeleton.joints[j].position -= average;
+            if (!skeleton.joints.empty()) {
+                XYZ average;
+                average = 0;
+                for (unsigned j = 0; j < skeleton.joints.size(); j++) {
+                    average += skeleton.joints[j].position;
+                }
+                average /= skeleton.joints.size();
+                coords += average * scale;
+                for (unsigned j = 0; j < skeleton.joints.size(); j++) {
+                    skeleton.joints[j].position -= average;
+                }
             }
 
             whichpatchx = coords.x / (terrain.size / subdivision * terrain.scale);
@@ -4287,8 +4286,6 @@ void Person::DoStuff()
     static XYZ flatvelocity;
     static float flatvelspeed;
     static int i, l;
-    static XYZ average;
-    static int howmany;
     static int bloodsize;
     static int startx, starty, endx, endy;
     static GLubyte color;
@@ -4387,7 +4384,7 @@ void Person::DoStuff()
     }
     while (flamedelay < 0 && onfire) {
         flamedelay += .006;
-        howmany = fabs(Random() % (skeleton.joints.size()));
+        int howmany = fabs(Random() % (skeleton.joints.size()));
         if (skeleton.free) {
             flatvelocity = skeleton.joints[howmany].velocity * scale / 2;
             flatfacing = skeleton.joints[howmany].position * scale + coords;
@@ -4400,7 +4397,7 @@ void Person::DoStuff()
 
     while (flamedelay < 0 && !onfire && tutoriallevel == 1 && id != 0) {
         flamedelay += .05;
-        howmany = fabs(Random() % (skeleton.joints.size()));
+        int howmany = fabs(Random() % (skeleton.joints.size()));
         if (skeleton.free) {
             flatvelocity = skeleton.joints[howmany].velocity * scale / 2;
             flatfacing = skeleton.joints[howmany].position * scale + coords;
@@ -5002,18 +4999,19 @@ void Person::DoStuff()
             award_bonus(id, deepimpact);
         DoDamage(damageamount / ((protectionhigh + protectionhead + protectionlow) / 3));
 
+        XYZ average;
         average = 0;
-        howmany = 0;
-        for (unsigned j = 0; j < skeleton.joints.size(); j++) {
-            average += skeleton.joints[j].position;
-            howmany++;
+        if (!skeleton.joints.empty()) {
+            for (unsigned j = 0; j < skeleton.joints.size(); j++) {
+                average += skeleton.joints[j].position;
+            }
+            average /= skeleton.joints.size();
+            coords += average * scale;
+            for (unsigned j = 0; j < skeleton.joints.size(); j++) {
+                skeleton.joints[j].position -= average;
+            }
+            average /= multiplier;
         }
-        average /= howmany;
-        coords += average * scale;
-        for (unsigned j = 0; j < skeleton.joints.size(); j++) {
-            skeleton.joints[j].position -= average;
-        }
-        average /= multiplier;
 
         velocity = 0;
         for (unsigned i = 0; i < skeleton.joints.size(); i++) {
