@@ -236,7 +236,7 @@ endif(LINUX)
 if(APPLE)
     set(LUGARU_APP_ROOT ${CMAKE_INSTALL_PREFIX}/Lugaru.app)
     set(LUGARU_BINDIR ${LUGARU_APP_ROOT}/Contents/MacOS)
-    set(LUGARU_RESDIR ${LUGARU_APP_ROOT}/Resources)
+    set(LUGARU_RESDIR ${LUGARU_APP_ROOT}/Contents/Resources)
 endif(APPLE)
 
 # Actual installation instructions
