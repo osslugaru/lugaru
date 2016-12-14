@@ -1,6 +1,6 @@
 project(lugaru)
 
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.0)
 cmake_policy(SET CMP0004 OLD)
 
 include(FindPkgConfig)
@@ -173,7 +173,9 @@ else(WIN32)
     find_package(OpenAL REQUIRED)
 endif(WIN32)
 
-find_package(sdl2 REQUIRED)
+# Not all distros provide sdl2-config.cmake yet
+#find_package(sdl2 REQUIRED)
+pkg_check_modules(SDL2 sdl2 REQUIRED)
 find_package(PNG REQUIRED)
 find_package(JPEG REQUIRED)
 find_package(ZLIB REQUIRED)
@@ -295,5 +297,6 @@ install(FILES ${CMAKE_SOURCE_DIR}/AUTHORS
               ${CMAKE_SOURCE_DIR}/RELEASE-NOTES.md
               ${CMAKE_SOURCE_DIR}/Docs/DEVTOOLS.txt
               ${CMAKE_SOURCE_DIR}/Docs/README.Empire.txt
+              ${CMAKE_SOURCE_DIR}/Docs/README.SevenTasks.txt
               ${CMAKE_SOURCE_DIR}/Docs/README.Temple.txt
         DESTINATION ${LUGARU_DOCDIR})
