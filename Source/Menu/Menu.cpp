@@ -49,6 +49,10 @@ extern int leveltheme;
 extern void toggleFullscreen();
 
 int entername = 0;
+std::string newusername = "";
+unsigned newuserselected = 0;
+float newuserblinkdelay = 0;
+bool newuserblink = false;
 
 std::vector<MenuItem> Menu::items;
 
@@ -787,8 +791,8 @@ void Menu::Tick()
                 } else {
                     mainmenu = 1;
                 }
-                displaytext[0].clear();
-                displayselected = 0;
+                newusername.clear();
+                newuserselected = 0;
                 entername = 0;
             }
             break;
@@ -864,10 +868,10 @@ void Menu::Tick()
     OPENAL_SetFrequency(channels[stream_menutheme]);
 
     if (entername) {
-        inputText(displaytext[0], &displayselected);
+        inputText(newusername, &newuserselected);
         if (!waiting) { // the input as finished
-            if (!displaytext[0].empty()) { // with enter
-                Account::add(string(displaytext[0]));
+            if (!newusername.empty()) { // with enter
+                Account::add(string(newusername));
 
                 mainmenu = 8;
 
@@ -875,24 +879,24 @@ void Menu::Tick()
 
                 fireSound(firestartsound);
 
-                displaytext[0].clear();
+                newusername.clear();
 
-                displayselected = 0;
+                newuserselected = 0;
             }
             entername = 0;
             Load();
         }
 
-        displayblinkdelay -= multiplier;
-        if (displayblinkdelay <= 0) {
-            displayblinkdelay = .3;
-            displayblink = !displayblink;
+        newuserblinkdelay -= multiplier;
+        if (newuserblinkdelay <= 0) {
+            newuserblinkdelay = .3;
+            newuserblink = !newuserblink;
         }
     }
 
     if (entername) {
-        setText(0, displaytext[0], 20, 400, -1, -1);
-        setText(-2, displayblink ? "_" : "", 20 + displayselected * 10, 400, -1, -1);
+        setText(0, newusername, 20, 400, -1, -1);
+        setText(-2, newuserblink ? "_" : "", 20 + newuserselected * 10, 400, -1, -1);
     }
 
     if (oldmainmenu != mainmenu)

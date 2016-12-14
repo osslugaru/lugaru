@@ -120,11 +120,6 @@ extern int numchallengelevels;
 
 extern bool console;
 extern std::string consoletext[15];
-extern std::string displaytext[15];
-extern float displaytime[15];
-extern float displayblinkdelay;
-extern bool displayblink;
-extern unsigned displayselected;
 extern float consoleblinkdelay;
 extern bool consoleblink;
 extern unsigned consoleselected;

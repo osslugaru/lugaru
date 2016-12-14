@@ -1331,19 +1331,6 @@ int Game::DrawGLScene(StereoSide side)
             glDepthMask(1);
         }
 
-        if (!console) {
-            displaytime[0] = 0;
-            glEnable(GL_TEXTURE_2D);
-            glColor4f(1, 1, 1, 1);
-            for (unsigned i = 1; i < 15; i++)
-                if (displaytime[i] < 4)
-                    for (unsigned j = 0; j < displaytext[i].size(); j++) {
-                        glColor4f(1, 1, 1, 4 - displaytime[i]);
-                        string = std::string(1, displaytext[i][j]);
-                        text->glPrint(30 + j * 10, 30 + i * 20 + (screenheight - 330), string, 0, 1, screenwidth, screenheight);
-                    }
-        }
-
         if (difficulty < 2 && !Dialog::inDialog()) { // minimap
             float mapviewdist = 20000;
 
@@ -1870,11 +1857,9 @@ int Game::DrawGLScene(StereoSide side)
             if (consoleblink) {
                 text->glPrint(30 + (float)(consoleselected) * 10 - offset * 10, 30, "_", 0, 1, 1024, 768);
             }
-            for (unsigned i = 0; i < 15; i++)
-                for (unsigned j = 0; j < consoletext[i].size(); j++) {
-                    glColor4f(1, 1, 1, 1 - (float)(i) / 16);
-                    text->glPrint(30 + j * 10 - offset * 10, 30 + i * 20, std::string(1, consoletext[i][j]), 0, 1, 1024, 768);
-                }
+            for (unsigned i = 0; i < 15; i++) {
+                text->glPrint(30 - offset * 10, 30 + i * 20, consoletext[i], 0, 1, 1024, 768);
+            }
         }
     }
 

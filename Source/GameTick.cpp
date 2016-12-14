@@ -4490,10 +4490,6 @@ void Game::Tick()
     static XYZ facing, flatfacing;
     static int target;
 
-    for (int i = 0; i < 15; i++) {
-        displaytime[i] += multiplier;
-    }
-
     Input::Tick();
 
     if (Input::isKeyPressed(SDL_SCANCODE_F6)) {

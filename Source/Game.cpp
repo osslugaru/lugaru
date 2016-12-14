@@ -112,11 +112,6 @@ int numchallengelevels = 0;
 
 bool console = false;
 std::string consoletext[15] = {};
-std::string displaytext[15] = {};
-float displaytime[15] = {};
-float displayblinkdelay = 0;
-bool displayblink = 0;
-unsigned displayselected = 0;
 float consoleblinkdelay = 0;
 bool consoleblink = 0;
 unsigned consoleselected = 0;
