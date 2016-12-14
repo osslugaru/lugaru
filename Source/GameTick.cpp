@@ -348,12 +348,8 @@ void Screenshot (void)
     char filename[1024];
     time_t t = time(NULL);
     struct tm *tme = localtime(&t);
-    sprintf(filename, "Screenshots/Screenshot-%04d%02d%02d-%02d%02d%02d.png",
+    sprintf(filename, "Screenshot-%04d%02d%02d-%02d%02d%02d.png",
             tme->tm_year + 1900, tme->tm_mon + 1, tme->tm_mday, tme->tm_hour, tme->tm_min, tme->tm_sec);
-
-#if defined(_WIN32)
-    mkdir("Screenshots");
-#endif
 
     save_screenshot(filename);
 }
