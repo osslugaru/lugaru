@@ -27,8 +27,6 @@ using namespace std;
 
 extern bool trilinear;
 
-vector<TextureRes*> TextureRes::list;
-
 void TextureRes::load()
 {
     ImageRec texture;
@@ -83,7 +81,6 @@ TextureRes::TextureRes(const string& _filename, bool _hasMipmap):
     skinsize(0), data(NULL), datalen(0)
 {
     load();
-    list.push_back(this);
 }
 
 TextureRes::TextureRes(const string& _filename, bool _hasMipmap, GLubyte* array, int* skinsizep):
@@ -94,18 +91,12 @@ TextureRes::TextureRes(const string& _filename, bool _hasMipmap, GLubyte* array,
     *skinsizep = skinsize;
     for (int i = 0; i < datalen; i++)
         array[i] = data[i];
-    list.push_back(this);
 }
 
 TextureRes::~TextureRes()
 {
     free(data);
     glDeleteTextures(1, &id);
-    for (vector<TextureRes*>::iterator it = list.begin(); it != list.end(); it++)
-        if (*it == this) {
-            list.erase(it);
-            break;
-        }
 }
 
 void Texture::load(const string& filename, bool hasMipmap)

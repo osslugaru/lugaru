@@ -32,8 +32,6 @@ using namespace std;
 class TextureRes
 {
 private:
-    static vector<TextureRes*> list;
-
     GLuint id;
     string filename;
     bool hasMipmap;
