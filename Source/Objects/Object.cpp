@@ -788,7 +788,6 @@ void Object::MakeObject(int atype, XYZ where, float ayaw, float apitch, float as
 {
     if ((atype != treeleavestype && atype != bushtype) || foliage == 1) {
         unsigned nextid = objects.size();
-        cout << "Adding object " << nextid << endl;
         objects.emplace_back(new Object(atype, where, ayaw, apitch, ascale));
         objects.back()->addToTerrain(nextid);
     }
