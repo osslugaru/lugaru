@@ -814,6 +814,70 @@ void Object::DoShadows()
     }
 }
 
+int Object::checkcollide(XYZ startpoint, XYZ endpoint)
+{
+    float minx, minz, maxx, maxz, miny, maxy;
+
+    minx = min(startpoint.x, endpoint.x) - 1;
+    miny = min(startpoint.y, endpoint.y) - 1;
+    minz = min(startpoint.z, endpoint.z) - 1;
+    maxx = max(startpoint.x, endpoint.x) + 1;
+    maxy = max(startpoint.y, endpoint.y) + 1;
+    maxz = max(startpoint.z, endpoint.z) + 1;
+
+    for (int i = 0; i < objects.size(); i++) {
+        if (checkcollide(startpoint, endpoint, i, minx, miny, minz, maxx, maxy, maxz) != -1) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+int Object::checkcollide(XYZ startpoint, XYZ endpoint, int what)
+{
+    float minx, minz, maxx, maxz, miny, maxy;
+
+    minx = min(startpoint.x, endpoint.x) - 1;
+    miny = min(startpoint.y, endpoint.y) - 1;
+    minz = min(startpoint.z, endpoint.z) - 1;
+    maxx = max(startpoint.x, endpoint.x) + 1;
+    maxy = max(startpoint.y, endpoint.y) + 1;
+    maxz = max(startpoint.z, endpoint.z) + 1;
+
+    return checkcollide(startpoint, endpoint, what, minx, miny, minz, maxx, maxy, maxz);
+}
+
+int Object::checkcollide(XYZ startpoint, XYZ endpoint, int what, float minx, float miny, float minz, float maxx, float maxy, float maxz)
+{
+    XYZ colpoint, colviewer, coltarget;
+
+    if (what == 1000) {
+        if (terrain.lineTerrain(startpoint, endpoint, &colpoint) != -1) {
+            return what;
+        }
+    } else {
+        if (     objects[what]->position.x > minx - objects[what]->model.boundingsphereradius &&
+                 objects[what]->position.x < maxx + objects[what]->model.boundingsphereradius &&
+                 objects[what]->position.y > miny - objects[what]->model.boundingsphereradius &&
+                 objects[what]->position.y < maxy + objects[what]->model.boundingsphereradius &&
+                 objects[what]->position.z > minz - objects[what]->model.boundingsphereradius &&
+                 objects[what]->position.z < maxz + objects[what]->model.boundingsphereradius) {
+            if (     objects[what]->type != treeleavestype &&
+                     objects[what]->type != bushtype &&
+                     objects[what]->type != firetype) {
+                colviewer = startpoint;
+                coltarget = endpoint;
+                if (objects[what]->model.LineCheck(&colviewer, &coltarget, &colpoint, &objects[what]->position, &objects[what]->yaw) != -1) {
+                    return what;
+                }
+            }
+        }
+    }
+
+    return -1;
+}
+
 //~ Object::~Objects()
 //~ {
     //~ boxtextureptr.destroy();

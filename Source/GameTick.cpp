@@ -418,70 +418,6 @@ int findPathDist(int start, int end)
     return smallestcount;
 }
 
-int Game::checkcollide(XYZ startpoint, XYZ endpoint)
-{
-    float minx, minz, maxx, maxz, miny, maxy;
-
-    minx = min(startpoint.x, endpoint.x) - 1;
-    miny = min(startpoint.y, endpoint.y) - 1;
-    minz = min(startpoint.z, endpoint.z) - 1;
-    maxx = max(startpoint.x, endpoint.x) + 1;
-    maxy = max(startpoint.y, endpoint.y) + 1;
-    maxz = max(startpoint.z, endpoint.z) + 1;
-
-    for (int i = 0; i < Object::objects.size(); i++) {
-        if (checkcollide(startpoint, endpoint, i, minx, miny, minz, maxx, maxy, maxz) != -1) {
-            return i;
-        }
-    }
-
-    return -1;
-}
-
-int Game::checkcollide(XYZ startpoint, XYZ endpoint, int what)
-{
-    float minx, minz, maxx, maxz, miny, maxy;
-
-    minx = min(startpoint.x, endpoint.x) - 1;
-    miny = min(startpoint.y, endpoint.y) - 1;
-    minz = min(startpoint.z, endpoint.z) - 1;
-    maxx = max(startpoint.x, endpoint.x) + 1;
-    maxy = max(startpoint.y, endpoint.y) + 1;
-    maxz = max(startpoint.z, endpoint.z) + 1;
-
-    return checkcollide(startpoint, endpoint, what, minx, miny, minz, maxx, maxy, maxz);
-}
-
-int Game::checkcollide(XYZ startpoint, XYZ endpoint, int what, float minx, float miny, float minz, float maxx, float maxy, float maxz)
-{
-    XYZ colpoint, colviewer, coltarget;
-
-    if (what == 1000) {
-        if (terrain.lineTerrain(startpoint, endpoint, &colpoint) != -1) {
-            return what;
-        }
-    } else {
-        if (     Object::objects[what]->position.x > minx - Object::objects[what]->model.boundingsphereradius &&
-                 Object::objects[what]->position.x < maxx + Object::objects[what]->model.boundingsphereradius &&
-                 Object::objects[what]->position.y > miny - Object::objects[what]->model.boundingsphereradius &&
-                 Object::objects[what]->position.y < maxy + Object::objects[what]->model.boundingsphereradius &&
-                 Object::objects[what]->position.z > minz - Object::objects[what]->model.boundingsphereradius &&
-                 Object::objects[what]->position.z < maxz + Object::objects[what]->model.boundingsphereradius) {
-            if (     Object::objects[what]->type != treeleavestype &&
-                     Object::objects[what]->type != bushtype &&
-                     Object::objects[what]->type != firetype) {
-                colviewer = startpoint;
-                coltarget = endpoint;
-                if (Object::objects[what]->model.LineCheck(&colviewer, &coltarget, &colpoint, &Object::objects[what]->position, &Object::objects[what]->yaw) != -1) {
-                    return what;
-                }
-            }
-        }
-    }
-
-    return -1;
-}
-
 void Setenvironment(int which)
 {
     LOGFUNC;
@@ -2620,8 +2556,8 @@ void doAerialAcrobatics()
                                         if (whichhit != -1) {
                                             if (whichhit != -1 && Person::players[k]->animTarget != jumpupanim && Person::players[k]->animTarget != jumpdownanim)
                                                 Person::players[k]->collided = 1;
-                                            if (checkcollide(lowpoint7, lowpointtarget7) == -1)
-                                                if (checkcollide(lowpoint6, lowpointtarget6) == -1)
+                                            if (Object::checkcollide(lowpoint7, lowpointtarget7) == -1)
+                                                if (Object::checkcollide(lowpoint6, lowpointtarget6) == -1)
                                                     if (     Object::objects[i]->model.LineCheckPossible(&lowpoint2, &lowpointtarget2,
                                                              &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw) != -1 &&
                                                              Object::objects[i]->model.LineCheckPossible(&lowpoint3, &lowpointtarget3,
@@ -3639,7 +3575,7 @@ void doAI(unsigned i)
                                 if (distsq(&Person::players[i]->coords, &Person::players[j]->coords) < 400)
                                     if (normaldotproduct(Person::players[i]->facing, Person::players[j]->coords - Person::players[i]->coords) > 0)
                                         if (Person::players[j]->coords.y < Person::players[i]->coords.y + 5 || Person::players[j]->onterrain)
-                                            if (!Person::players[j]->isWallJump() && -1 == checkcollide(
+                                            if (!Person::players[j]->isWallJump() && -1 == Object::checkcollide(
                                                         DoRotation(Person::players[i]->jointPos(head), 0, Person::players[i]->yaw, 0)
                                                         *Person::players[i]->scale + Person::players[i]->coords,
                                                         DoRotation(Person::players[j]->jointPos(head), 0, Person::players[j]->yaw, 0)
@@ -3782,7 +3718,7 @@ void doAI(unsigned i)
                             if (abs(Random() % 2) || Animation::animations[Person::players[j]->animTarget].height != lowheight || j != 0)
                                 if (distsq(&Person::players[i]->coords, &Person::players[j]->coords) < 400)
                                     if (normaldotproduct(Person::players[i]->facing, Person::players[j]->coords - Person::players[i]->coords) > 0)
-                                        if ((-1 == checkcollide(
+                                        if ((-1 == Object::checkcollide(
                                                     DoRotation(Person::players[i]->jointPos(head), 0, Person::players[i]->yaw, 0)*
                                                     Person::players[i]->scale + Person::players[i]->coords,
                                                     DoRotation(Person::players[j]->jointPos(head), 0, Person::players[j]->yaw, 0)*
@@ -3835,9 +3771,9 @@ void doAI(unsigned i)
                     test2.y += 5;
                     XYZ test = Person::players[i]->coords + Person::players[i]->facing;
                     test.y -= 10;
-                    j = checkcollide(test2, test, Person::players[i]->laststanding);
+                    j = Object::checkcollide(test2, test, Person::players[i]->laststanding);
                     if (j == -1)
-                        j = checkcollide(test2, test);
+                        j = Object::checkcollide(test2, test);
                     if (j == -1) {
                         Person::players[i]->velocity = 0;
                         Person::players[i]->setAnimation(Person::players[i]->getStop());
@@ -3921,7 +3857,7 @@ void doAI(unsigned i)
                     //TODO: factor out canSeePlayer()
                     if (distsq(&Person::players[i]->coords, &Person::players[0]->coords) < 400)
                         if (normaldotproduct(Person::players[i]->facing, Person::players[0]->coords - Person::players[i]->coords) > 0)
-                            if ((checkcollide(
+                            if ((Object::checkcollide(
                                         DoRotation(Person::players[i]->jointPos(head), 0, Person::players[i]->yaw, 0)*
                                         Person::players[i]->scale + Person::players[i]->coords,
                                         DoRotation(Person::players[0]->jointPos(head), 0, Person::players[0]->yaw, 0)*
@@ -3995,7 +3931,7 @@ void doAI(unsigned i)
                 XYZ flatfacing = Person::players[Person::players[i]->ally]->coords;
                 facing.y += Person::players[i]->jointPos(head).y * Person::players[i]->scale;
                 flatfacing.y += Person::players[Person::players[i]->ally]->jointPos(head).y * Person::players[Person::players[i]->ally]->scale;
-                if (-1 != checkcollide(facing, flatfacing))
+                if (-1 != Object::checkcollide(facing, flatfacing))
                     Person::players[i]->lastseentime -= .1;
 
                 //no available ally, run back to player
@@ -4212,9 +4148,9 @@ void doAI(unsigned i)
                     test2.y += 5;
                     XYZ test = Person::players[i]->coords + Person::players[i]->facing;
                     test.y -= 10;
-                    j = checkcollide(test2, test, Person::players[i]->laststanding);
+                    j = Object::checkcollide(test2, test, Person::players[i]->laststanding);
                     if (j == -1)
-                        j = checkcollide(test2, test);
+                        j = Object::checkcollide(test2, test);
                     if (j == -1) {
                         Person::players[i]->velocity = 0;
                         Person::players[i]->setAnimation(Person::players[i]->getStop());
@@ -4380,7 +4316,7 @@ void doAI(unsigned i)
                 facing.y += Person::players[i]->jointPos(head).y * Person::players[i]->scale;
                 flatfacing.y += Person::players[0]->jointPos(head).y * Person::players[0]->scale;
                 if (Person::players[i]->occluded >= 2)
-                    if (-1 != checkcollide(facing, flatfacing)) {
+                    if (-1 != Object::checkcollide(facing, flatfacing)) {
                         if (!Person::players[i]->pause)
                             Person::players[i]->lastseentime -= .2;
                         if (Person::players[i]->lastseentime <= 0 &&
@@ -4401,7 +4337,7 @@ void doAI(unsigned i)
             if (Person::players[0]->coords.y > terrain.getHeight(Person::players[0]->coords.x, Person::players[0]->coords.z) + 10) {
                 XYZ test = Person::players[0]->coords;
                 test.y -= 40;
-                if (-1 == checkcollide(Person::players[0]->coords, test))
+                if (-1 == Object::checkcollide(Person::players[0]->coords, test))
                     Person::players[i]->stunned = 1;
             }
         //stunned
@@ -5329,7 +5265,7 @@ void Game::Tick()
                                                                 distsq(&Person::players[i]->coords, &Person::players[j]->coords) < 100 &&
                                                                 distsq(&Person::players[i]->coords, &Person::players[j]->coords) > 1.5 &&
                                                                 !Person::players[j]->skeleton.free &&
-                                                                -1 == checkcollide(DoRotation(Person::players[j]->jointPos(head), 0, Person::players[j]->yaw, 0)*Person::players[j]->scale + Person::players[j]->coords, DoRotation(Person::players[i]->jointPos(head), 0, Person::players[i]->yaw, 0)*Person::players[i]->scale + Person::players[i]->coords)) {
+                                                                -1 == Object::checkcollide(DoRotation(Person::players[j]->jointPos(head), 0, Person::players[j]->yaw, 0)*Person::players[j]->scale + Person::players[j]->coords, DoRotation(Person::players[i]->jointPos(head), 0, Person::players[i]->yaw, 0)*Person::players[i]->scale + Person::players[i]->coords)) {
                                                             if (!Person::players[i]->isFlip()) {
                                                                 Person::players[i]->throwtogglekeydown = 1;
                                                                 Person::players[i]->victim = Person::players[j];

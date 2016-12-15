@@ -150,9 +150,6 @@ void TickOnce();
 void TickOnceAfter();
 void SetUpLighting();
 GLvoid ReSizeGLScene(float fov, float near);
-int checkcollide(XYZ startpoint, XYZ endpoint);
-int checkcollide(XYZ startpoint, XYZ endpoint, int what);
-int checkcollide(XYZ startpoint, XYZ endpoint, float minx, float miny, float minz, float maxx, float maxy, float maxz, int what);
 
 void fireSound(int sound = fireendsound);
 

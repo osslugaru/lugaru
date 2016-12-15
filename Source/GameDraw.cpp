@@ -421,9 +421,9 @@ int Game::DrawGLScene(StereoSide side)
                         checkpoint.y += 1;
                         int i = -1;
                         if (Person::players[k]->occluded != 0)
-                            i = checkcollide(viewer, checkpoint, Person::players[k]->lastoccluded);
+                            i = Object::checkcollide(viewer, checkpoint, Person::players[k]->lastoccluded);
                         if (i == -1)
-                            i = checkcollide(viewer, checkpoint);
+                            i = Object::checkcollide(viewer, checkpoint);
                         if (i != -1) {
                             Person::players[k]->occluded += 1;
                             Person::players[k]->lastoccluded = i;
@@ -485,18 +485,21 @@ int Game::DrawGLScene(StereoSide side)
                     checkpoint = DoRotation(Person::players[k]->skeleton.joints[fabs(Random() % Person::players[k]->skeleton.joints.size())].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords;
                     checkpoint.y += 1;
                     int i = -1;
-                    if (Person::players[k]->occluded != 0)
-                        i = checkcollide(viewer, checkpoint, Person::players[k]->lastoccluded);
-                    if (i == -1)
-                        i = checkcollide(viewer, checkpoint);
+                    if (Person::players[k]->occluded != 0) {
+                        i = Object::checkcollide(viewer, checkpoint, Person::players[k]->lastoccluded);
+                    }
+                    if (i == -1) {
+                        i = Object::checkcollide(viewer, checkpoint);
+                    }
                     if (i != -1) {
                         Person::players[k]->occluded += 1;
                         Person::players[k]->lastoccluded = i;
                     } else {
                         Person::players[k]->occluded = 0;
                     }
-                    if (Person::players[k]->occluded < 25)
+                    if (Person::players[k]->occluded < 25) {
                         Person::players[k]->DrawSkeleton();
+                    }
                 }
             }
         }

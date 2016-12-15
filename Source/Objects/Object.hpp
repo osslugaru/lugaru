@@ -98,6 +98,8 @@ public:
     static void Draw();
     static void DoShadows();
     static void DoStuff();
+    static int checkcollide(XYZ startpoint, XYZ endpoint);
+    static int checkcollide(XYZ startpoint, XYZ endpoint, int what);
 
 private:
     void handleFire();
@@ -105,6 +107,7 @@ private:
     void draw();
     void drawSecondPass();
     void addToTerrain(unsigned id);
+    static int checkcollide(XYZ startpoint, XYZ endpoint, int what, float minx, float miny, float minz, float maxx, float maxy, float maxz);
 };
 
 #endif
