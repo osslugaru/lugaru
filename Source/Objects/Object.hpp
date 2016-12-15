@@ -90,7 +90,6 @@ public:
 
     static void ComputeCenter();
     static void ComputeRadius();
-    static bool Checkcollide(XYZ startpoint, XYZ endpoint, int which);
     static void AddObjectsToTerrain();
     static void LoadObjectsFromFile(FILE* tfile, bool skip);
     static void SphereCheckPossible(XYZ *p1, float radius);

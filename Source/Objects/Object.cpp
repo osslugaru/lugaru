@@ -744,28 +744,6 @@ void Object::AddObjectsToTerrain()
     }
 }
 
-bool Object::Checkcollide(XYZ startpoint, XYZ endpoint, int which)
-{
-    static XYZ colpoint, colviewer, coltarget;
-    static int i;
-
-    startpoint.y += .1;
-    endpoint.y += .1;
-    startpoint.y -= .1;
-    endpoint.y -= .1;
-
-    for (i = 0; i < objects.size(); i++) {
-        if (objects[i]->type != treeleavestype && objects[i]->type != treetrunktype && objects[i]->type != bushtype && objects[i]->type != firetype && i != which) {
-            colviewer = startpoint;
-            coltarget = endpoint;
-            if (objects[i]->model.LineCheck(&colviewer, &coltarget, &colpoint, &objects[i]->position, &objects[i]->yaw) != -1)
-                return 1;
-        }
-    }
-
-    return 0;
-}
-
 void Object::SphereCheckPossible(XYZ *p1, float radius)
 {
     int whichpatchx = p1->x / (terrain.size / subdivision * terrain.scale);
