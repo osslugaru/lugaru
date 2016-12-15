@@ -158,13 +158,3 @@ void SkyBox::draw()
     glDepthMask(1);
     glPopMatrix();
 }
-
-SkyBox::~SkyBox()
-{
-    front.destroy();
-    left.destroy();
-    back.destroy();
-    right.destroy();
-    up.destroy();
-    down.destroy();
-}

@@ -122,7 +122,6 @@ class Weapons : public std::vector<Weapon>
 {
 public:
     Weapons();
-    ~Weapons();
 
     int Draw();
     void DoStuff();

@@ -462,19 +462,3 @@ Sprite::Sprite()
     speed = 0;
     rotatespeed = 0;
 }
-
-void Sprite::clearTextures()
-{
-    toothtexture.destroy();
-    cloudtexture.destroy();
-    cloudimpacttexture.destroy();
-    bloodtexture.destroy();
-    flametexture.destroy();
-    bloodflametexture.destroy();
-    smoketexture.destroy();
-    snowflaketexture.destroy();
-    shinetexture.destroy();
-    splintertexture.destroy();
-    leaftexture.destroy();
-}
-

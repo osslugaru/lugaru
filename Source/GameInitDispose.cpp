@@ -114,17 +114,6 @@ void Game::deleteGame()
         delete skybox;
     if (text)
         delete text;
-    terraintexture.destroy();
-    terraintexture2.destroy();
-    cursortexture.destroy();
-    Maparrowtexture.destroy();
-    Mapboxtexture.destroy();
-    Mapcircletexture.destroy();
-    hawktexture.destroy();
-    loadscreentexture.destroy();
-
-    for (int i = 0; i < 10; i++)
-        Mainmenuitems[i].destroy();
 
     glDeleteTextures(1, &screentexture);
     glDeleteTextures(1, &screentexture2);
@@ -662,10 +651,6 @@ void Game::LoadStuff()
     loadtime = 0;
 
     stillloading = 1;
-
-    for (auto p:Person::players) {
-        p->skeleton.drawmodel.textureptr.destroy();
-    }
 
     visibleloading = 0; //don't use loadscreentexture yet
     loadscreentexture.load("Textures/Fire.jpg", 1);

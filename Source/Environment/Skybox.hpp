@@ -37,7 +37,6 @@ public:
     void draw();
 
     SkyBox() {}
-    ~SkyBox();
 };
 
 #endif

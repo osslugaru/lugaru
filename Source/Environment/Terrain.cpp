@@ -1515,14 +1515,3 @@ Terrain::Terrain()
     memset(decalposition, 0, sizeof(decalposition));
     numdecals = 0;
 }
-Terrain::~Terrain()
-{
-    terraintexture.destroy();
-    shadowtexture.destroy();
-    bodyprinttexture.destroy();
-    footprinttexture.destroy();
-    bloodtexture.destroy();
-    bloodtexture2.destroy();
-    breaktexture.destroy();
-}
-

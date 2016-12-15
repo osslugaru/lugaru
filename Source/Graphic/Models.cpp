@@ -1358,7 +1358,6 @@ void Model::MakeDecal(int atype, XYZ where, float size, float opacity, float rot
 Model::~Model()
 {
     deallocate();
-    textureptr.destroy();
 }
 
 void Model::deallocate()

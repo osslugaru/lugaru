@@ -147,6 +147,5 @@ Text::~Text()
         glDeleteLists(base, 512);
         base = 0;
     }
-    FontTexture.destroy();
 }
 

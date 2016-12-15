@@ -26,8 +26,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include <map>
 #include <string>
 #include <vector>
-
-using namespace std;
+#include <memory>
 
 class TextureRes
 {
@@ -47,17 +46,20 @@ public:
     TextureRes(const string& filename, bool hasMipmap, GLubyte* array, int* skinsize);
     ~TextureRes();
     void bind();
+
+    /* Make sure TextureRes never gets copied */
+    TextureRes(TextureRes const& other) = delete;
+    TextureRes & operator=(TextureRes const& other) = delete;
 };
 
 class Texture
 {
 private:
-    TextureRes* tex;
+    std::shared_ptr<TextureRes> tex;
 public:
-    inline Texture(): tex(NULL) {}
+    inline Texture(): tex(nullptr) {}
     void load(const string& filename, bool hasMipmap);
     void load(const string& filename, bool hasMipmap, GLubyte* array, int* skinsizep);
-    void destroy();
     void bind();
 };
 

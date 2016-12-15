@@ -126,7 +126,6 @@ public:
     void DoShadows();
 
     Terrain();
-    ~Terrain();
 };
 
 #endif

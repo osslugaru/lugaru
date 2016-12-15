@@ -89,8 +89,9 @@ TextureRes::TextureRes(const string& _filename, bool _hasMipmap, GLubyte* array,
 {
     load();
     *skinsizep = skinsize;
-    for (int i = 0; i < datalen; i++)
+    for (int i = 0; i < datalen; i++) {
         array[i] = data[i];
+    }
 }
 
 TextureRes::~TextureRes()
@@ -101,22 +102,12 @@ TextureRes::~TextureRes()
 
 void Texture::load(const string& filename, bool hasMipmap)
 {
-    destroy();
-    tex = new TextureRes(Folders::getResourcePath(filename), hasMipmap);
+    tex.reset(new TextureRes(Folders::getResourcePath(filename), hasMipmap));
 }
 
 void Texture::load(const string& filename, bool hasMipmap, GLubyte* array, int* skinsizep)
 {
-    destroy();
-    tex = new TextureRes(Folders::getResourcePath(filename), hasMipmap, array, skinsizep);
-}
-
-void Texture::destroy()
-{
-    if (tex) {
-        delete tex;
-        tex = NULL;
-    }
+    tex.reset(new TextureRes(Folders::getResourcePath(filename), hasMipmap, array, skinsizep));
 }
 
 void Texture::bind()

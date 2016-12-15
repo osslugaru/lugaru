@@ -1111,15 +1111,3 @@ int Weapons::Draw()
 Weapons::Weapons()
 {
 }
-
-Weapons::~Weapons()
-{
-    Weapon::stafftextureptr.destroy();
-    Weapon::knifetextureptr.destroy();
-    Weapon::lightbloodknifetextureptr.destroy();
-    Weapon::bloodknifetextureptr.destroy();
-    Weapon::swordtextureptr.destroy();
-    Weapon::lightbloodswordtextureptr.destroy();
-    Weapon::bloodswordtextureptr.destroy();
-}
-

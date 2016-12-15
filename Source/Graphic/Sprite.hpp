@@ -86,7 +86,6 @@ public:
     static void setLastSpriteAlivetime(float al) {
         sprites.back()->alivetime = al;
     }
-    static void clearTextures();
 
     static Texture cloudtexture;
     static Texture bloodtexture;
