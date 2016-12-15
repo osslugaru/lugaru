@@ -39,19 +39,21 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #define max_objects 300
 
-#define boxtype 0
-#define weirdtype 1
-#define spiketype 2
-#define treetrunktype 3
-#define treeleavestype 4
-#define bushtype 5
-#define rocktype 6
-#define walltype 7
-#define chimneytype 8
-#define platformtype 9
-#define tunneltype 11
-#define cooltype 12
-#define firetype 13
+enum object_type {
+    boxtype = 0,
+    weirdtype = 1,
+    spiketype = 2,
+    treetrunktype = 3,
+    treeleavestype = 4,
+    bushtype = 5,
+    rocktype = 6,
+    walltype = 7,
+    chimneytype = 8,
+    platformtype = 9,
+    tunneltype = 11,
+    cooltype = 12,
+    firetype = 13
+};
 
 
 class Object
@@ -66,7 +68,7 @@ public:
     static Texture rocktextureptr;
 
     XYZ position;
-    int type;
+    object_type type;
     float yaw;
     float pitch;
     float rotx;
@@ -86,7 +88,7 @@ public:
     float flamedelay;
 
     Object();
-    Object(int _type, XYZ _position, float _yaw, float _pitch, float _scale);
+    Object(object_type _type, XYZ _position, float _yaw, float _pitch, float _scale);
 
     static void ComputeCenter();
     static void ComputeRadius();

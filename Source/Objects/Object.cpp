@@ -49,7 +49,7 @@ Texture Object::rocktextureptr;
 
 Object::Object() :
     position(),
-    type(0),
+    type(boxtype),
     yaw(0),
     pitch(0),
     rotx(0),
@@ -70,7 +70,7 @@ Object::Object() :
 {
 }
 
-Object::Object(int _type, XYZ _position, float _yaw, float _pitch, float _scale) : Object()
+Object::Object(object_type _type, XYZ _position, float _yaw, float _pitch, float _scale) : Object()
 {
     scale = _scale;
     type = _type;
@@ -714,7 +714,7 @@ void Object::LoadObjectsFromFile(FILE* tfile, bool skip)
             if (type == treeleavestype) {
                 scale = lastscale;
             }
-            objects.emplace_back(new Object(type, position, yaw, pitch, scale));
+            objects.emplace_back(new Object(object_type(type), position, yaw, pitch, scale));
             lastscale = scale;
         }
     }
@@ -788,7 +788,7 @@ void Object::MakeObject(int atype, XYZ where, float ayaw, float apitch, float as
 {
     if ((atype != treeleavestype && atype != bushtype) || foliage == 1) {
         unsigned nextid = objects.size();
-        objects.emplace_back(new Object(atype, where, ayaw, apitch, ascale));
+        objects.emplace_back(new Object(object_type(atype), where, ayaw, apitch, ascale));
         objects.back()->addToTerrain(nextid);
     }
 }
