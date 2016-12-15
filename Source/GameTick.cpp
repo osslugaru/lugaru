@@ -420,8 +420,7 @@ int findPathDist(int start, int end)
 
 int Game::checkcollide(XYZ startpoint, XYZ endpoint)
 {
-    static XYZ colpoint, colviewer, coltarget;
-    static float minx, minz, maxx, maxz, miny, maxy;
+    float minx, minz, maxx, maxz, miny, maxy;
 
     minx = min(startpoint.x, endpoint.x) - 1;
     miny = min(startpoint.y, endpoint.y) - 1;
@@ -431,20 +430,8 @@ int Game::checkcollide(XYZ startpoint, XYZ endpoint)
     maxz = max(startpoint.z, endpoint.z) + 1;
 
     for (int i = 0; i < Object::objects.size(); i++) {
-        if (     Object::objects[i]->position.x > minx - Object::objects[i]->model.boundingsphereradius &&
-                 Object::objects[i]->position.x < maxx + Object::objects[i]->model.boundingsphereradius &&
-                 Object::objects[i]->position.y > miny - Object::objects[i]->model.boundingsphereradius &&
-                 Object::objects[i]->position.y < maxy + Object::objects[i]->model.boundingsphereradius &&
-                 Object::objects[i]->position.z > minz - Object::objects[i]->model.boundingsphereradius &&
-                 Object::objects[i]->position.z < maxz + Object::objects[i]->model.boundingsphereradius) {
-            if (     Object::objects[i]->type != treeleavestype &&
-                     Object::objects[i]->type != bushtype &&
-                     Object::objects[i]->type != firetype) {
-                colviewer = startpoint;
-                coltarget = endpoint;
-                if (Object::objects[i]->model.LineCheck(&colviewer, &coltarget, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw) != -1)
-                    return i;
-            }
+        if (checkcollide(startpoint, endpoint, i, minx, miny, minz, maxx, maxy, maxz) != -1) {
+            return i;
         }
     }
 
@@ -453,9 +440,7 @@ int Game::checkcollide(XYZ startpoint, XYZ endpoint)
 
 int Game::checkcollide(XYZ startpoint, XYZ endpoint, int what)
 {
-    static XYZ colpoint, colviewer, coltarget;
-    static float minx, minz, maxx, maxz, miny, maxy;
-    static int i; //FIXME: see below
+    float minx, minz, maxx, maxz, miny, maxy;
 
     minx = min(startpoint.x, endpoint.x) - 1;
     miny = min(startpoint.y, endpoint.y) - 1;
@@ -464,7 +449,18 @@ int Game::checkcollide(XYZ startpoint, XYZ endpoint, int what)
     maxy = max(startpoint.y, endpoint.y) + 1;
     maxz = max(startpoint.z, endpoint.z) + 1;
 
-    if (what != 1000) {
+    return checkcollide(startpoint, endpoint, what, minx, miny, minz, maxx, maxy, maxz);
+}
+
+int Game::checkcollide(XYZ startpoint, XYZ endpoint, int what, float minx, float miny, float minz, float maxx, float maxy, float maxz)
+{
+    XYZ colpoint, colviewer, coltarget;
+
+    if (what == 1000) {
+        if (terrain.lineTerrain(startpoint, endpoint, &colpoint) != -1) {
+            return what;
+        }
+    } else {
         if (     Object::objects[what]->position.x > minx - Object::objects[what]->model.boundingsphereradius &&
                  Object::objects[what]->position.x < maxx + Object::objects[what]->model.boundingsphereradius &&
                  Object::objects[what]->position.y > miny - Object::objects[what]->model.boundingsphereradius &&
@@ -476,16 +472,12 @@ int Game::checkcollide(XYZ startpoint, XYZ endpoint, int what)
                      Object::objects[what]->type != firetype) {
                 colviewer = startpoint;
                 coltarget = endpoint;
-                //FIXME: i/what
-                if (Object::objects[what]->model.LineCheck(&colviewer, &coltarget, &colpoint, &Object::objects[what]->position, &Object::objects[what]->yaw) != -1)
-                    return i;
+                if (Object::objects[what]->model.LineCheck(&colviewer, &coltarget, &colpoint, &Object::objects[what]->position, &Object::objects[what]->yaw) != -1) {
+                    return what;
+                }
             }
         }
     }
-
-    if (what == 1000)
-        if (terrain.lineTerrain(startpoint, endpoint, &colpoint) != -1)
-            return 1000;
 
     return -1;
 }
