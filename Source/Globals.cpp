@@ -101,12 +101,6 @@ float smoketex = 0;
 float slomospeed = 0;
 float slomofreq = 0;
 
-int tutoriallevel = 0;
-int tutorialstage = 0;
-float tutorialstagetime = 0;
-float tutorialmaxtime = 0;
-float tutorialsuccess = 0;
-
 bool againbonus = false;
 
 float damagedealt = 0;

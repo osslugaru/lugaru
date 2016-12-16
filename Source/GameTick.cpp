@@ -34,6 +34,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "User/Settings.hpp"
 #include "Utils/Folders.hpp"
 #include "Utils/Input.hpp"
+#include "Tutorial.hpp"
 
 #if PLATFORM_UNIX
 #include <sys/stat.h>
@@ -112,12 +113,7 @@ extern float skyboxlightb;
 extern float fadestart;
 extern float slomospeed;
 extern float slomofreq;
-extern int tutoriallevel;
 extern float smoketex;
-extern float tutorialstagetime;
-extern int tutorialstage;
-extern float tutorialmaxtime;
-extern float tutorialsuccess;
 extern bool againbonus;
 extern bool reversaltrain;
 extern bool canattack;
@@ -550,8 +546,7 @@ void Game::Loadlevel(int which)
     whichlevel = which;
 
     if (which == -1) {
-        tutoriallevel = -1;
-        Loadlevel("tutorial");
+        Loadlevel("tutorial", true);
     } else if (which >= 0 && which <= 15) {
         char buf[32];
         snprintf(buf, 32, "map%d", which + 1); // challenges
@@ -560,7 +555,7 @@ void Game::Loadlevel(int which)
         Loadlevel("mapsave");
 }
 
-void Game::Loadlevel(const std::string& name)
+void Game::Loadlevel(const std::string& name, bool tutorial)
 {
     int indemo; // FIXME this should be removed
     int templength;
@@ -580,16 +575,14 @@ void Game::Loadlevel(const std::string& name)
 
     numenvsounds = 0;
 
-    if (tutoriallevel != -1)
-        tutoriallevel = 0;
-    else
-        tutoriallevel = 1;
+    Tutorial::active = tutorial;
 
-    if (tutoriallevel == 1)
-        tutorialstage = 0;
-    if (tutorialstage == 0) {
-        tutorialstagetime = 0;
-        tutorialmaxtime = 1;
+    if (Tutorial::active) {
+        Tutorial::stage = 0;
+    }
+    if (Tutorial::stage == 0) {
+        Tutorial::stagetime = 0;
+        Tutorial::maxtime = 1;
     }
     pause_sound(whooshsound);
     pause_sound(stream_firesound);
@@ -1001,535 +994,6 @@ void Game::Loadlevel(const std::string& name)
     leveltime = 0;
     wonleveltime = 0;
     visibleloading = 0;
-}
-
-void doTutorial()
-{
-    if (tutorialstagetime > tutorialmaxtime) {
-        tutorialstage++;
-        tutorialsuccess = 0;
-        if (tutorialstage <= 1) {
-            canattack = 0;
-            cananger = 0;
-            reversaltrain = 0;
-        }
-        switch (tutorialstage) {
-        case 1:
-            tutorialmaxtime = 5;
-            break;
-        case 2:
-            tutorialmaxtime = 2;
-            break;
-        case 3:
-            tutorialmaxtime = 600;
-            break;
-        case 4:
-            tutorialmaxtime = 1000;
-            break;
-        case 5:
-            tutorialmaxtime = 600;
-            break;
-        case 6:
-            tutorialmaxtime = 600;
-            break;
-        case 7:
-            tutorialmaxtime = 600;
-            break;
-        case 8:
-            tutorialmaxtime = 600;
-            break;
-        case 9:
-            tutorialmaxtime = 600;
-            break;
-        case 10:
-            tutorialmaxtime = 2;
-            break;
-        case 11:
-            tutorialmaxtime = 1000;
-            break;
-        case 12:
-            tutorialmaxtime = 1000;
-            break;
-        case 13:
-            tutorialmaxtime = 2;
-            break;
-        case 14: {
-            tutorialmaxtime = 3;
-
-            XYZ temp, temp2;
-
-            temp.x = 1011;
-            temp.y = 84;
-            temp.z = 491;
-            temp2.x = 1025;
-            temp2.y = 75;
-            temp2.z = 447;
-
-            Person::players[1]->coords = (temp + temp2) / 2;
-
-            emit_sound_at(fireendsound, Person::players[1]->coords);
-
-            for (unsigned i = 0; i < Person::players[1]->skeleton.joints.size(); i++) {
-                if (Random() % 2 == 0) {
-                    if (!Person::players[1]->skeleton.free)
-                        temp2 = (Person::players[1]->coords - Person::players[1]->oldcoords) / multiplier / 2; //velocity/2;
-                    if (Person::players[1]->skeleton.free)
-                        temp2 = Person::players[1]->skeleton.joints[i].velocity * Person::players[1]->scale / 2;
-                    if (!Person::players[1]->skeleton.free)
-                        temp = DoRotation(DoRotation(DoRotation(Person::players[1]->skeleton.joints[i].position, 0, 0, Person::players[1]->tilt), Person::players[1]->tilt2, 0, 0), 0, Person::players[1]->yaw, 0) * Person::players[1]->scale + Person::players[1]->coords;
-                    if (Person::players[1]->skeleton.free)
-                        temp = Person::players[1]->skeleton.joints[i].position * Person::players[1]->scale + Person::players[1]->coords;
-                    Sprite::MakeSprite(breathsprite, temp, temp2, 1, 1, 1, .6 + (float)abs(Random() % 100) / 200 - .25, 1);
-                }
-            }
-        }
-        break;
-        case 15:
-            tutorialmaxtime = 500;
-            break;
-        case 16:
-            tutorialmaxtime = 500;
-            break;
-        case 17:
-            tutorialmaxtime = 500;
-            break;
-        case 18:
-            tutorialmaxtime = 500;
-            break;
-        case 19:
-            tutorialstage = 20;
-            break;
-        case 20:
-            tutorialmaxtime = 500;
-            break;
-        case 21:
-            tutorialmaxtime = 500;
-            if (bonus == cannon) {
-                bonus = Slicebonus;
-                againbonus = 1;
-            } else
-                againbonus = 0;
-            break;
-        case 22:
-            tutorialmaxtime = 500;
-            break;
-        case 23:
-            tutorialmaxtime = 500;
-            break;
-        case 24:
-            tutorialmaxtime = 500;
-            break;
-        case 25:
-            tutorialmaxtime = 500;
-            break;
-        case 26:
-            tutorialmaxtime = 2;
-            break;
-        case 27:
-            tutorialmaxtime = 4;
-            reversaltrain = 1;
-            cananger = 1;
-            Person::players[1]->aitype = attacktypecutoff;
-            break;
-        case 28:
-            tutorialmaxtime = 400;
-            break;
-        case 29:
-            tutorialmaxtime = 400;
-            Person::players[0]->escapednum = 0;
-            break;
-        case 30:
-            tutorialmaxtime = 4;
-            reversaltrain = 0;
-            cananger = 0;
-            Person::players[1]->aitype = passivetype;
-            break;
-        case 31:
-            tutorialmaxtime = 13;
-            break;
-        case 32:
-            tutorialmaxtime = 8;
-            break;
-        case 33:
-            tutorialmaxtime = 400;
-            cananger = 1;
-            canattack = 1;
-            Person::players[1]->aitype = attacktypecutoff;
-            break;
-        case 34:
-            tutorialmaxtime = 400;
-            break;
-        case 35:
-            tutorialmaxtime = 400;
-            break;
-        case 36:
-            tutorialmaxtime = 2;
-            reversaltrain = 0;
-            cananger = 0;
-            Person::players[1]->aitype = passivetype;
-            break;
-        case 37:
-            damagedealt = 0;
-            damagetaken = 0;
-            tutorialmaxtime = 50;
-            cananger = 1;
-            canattack = 1;
-            Person::players[1]->aitype = attacktypecutoff;
-            break;
-        case 38:
-            tutorialmaxtime = 4;
-            canattack = 0;
-            cananger = 0;
-            Person::players[1]->aitype = passivetype;
-            break;
-        case 39: {
-            XYZ temp, temp2;
-
-            temp.x = 1011;
-            temp.y = 84;
-            temp.z = 491;
-            temp2.x = 1025;
-            temp2.y = 75;
-            temp2.z = 447;
-
-            Weapon w(knife, -1);
-            w.position = (temp + temp2) / 2;
-            w.tippoint = (temp + temp2) / 2;
-
-            w.velocity = 0.1;
-            w.tipvelocity = 0.1;
-            w.missed = 1;
-            w.hitsomething = 0;
-            w.freetime = 0;
-            w.firstfree = 1;
-            w.physics = 1;
-
-            weapons.push_back(w);
-        }
-        break;
-        case 40:
-            tutorialmaxtime = 300;
-            break;
-        case 41:
-            tutorialmaxtime = 300;
-            break;
-        case 42:
-            tutorialmaxtime = 8;
-            break;
-        case 43:
-            tutorialmaxtime = 300;
-            break;
-        case 44:
-            weapons[0].owner = 1;
-            Person::players[0]->weaponactive = -1;
-            Person::players[0]->num_weapons = 0;
-            Person::players[1]->weaponactive = 0;
-            Person::players[1]->num_weapons = 1;
-            Person::players[1]->weaponids[0] = 0;
-
-            cananger = 1;
-            canattack = 1;
-            Person::players[1]->aitype = attacktypecutoff;
-
-            tutorialmaxtime = 300;
-            break;
-        case 45:
-            weapons[0].owner = 1;
-            Person::players[0]->weaponactive = -1;
-            Person::players[0]->num_weapons = 0;
-            Person::players[1]->weaponactive = 0;
-            Person::players[1]->num_weapons = 1;
-            Person::players[1]->weaponids[0] = 0;
-
-            tutorialmaxtime = 300;
-            break;
-        case 46:
-            weapons[0].owner = 1;
-            Person::players[0]->weaponactive = -1;
-            Person::players[0]->num_weapons = 0;
-            Person::players[1]->weaponactive = 0;
-            Person::players[1]->num_weapons = 1;
-            Person::players[1]->weaponids[0] = 0;
-
-            weapons[0].setType(sword);
-
-            tutorialmaxtime = 300;
-            break;
-        case 47: {
-            tutorialmaxtime = 10;
-
-            XYZ temp, temp2;
-
-            temp.x = 1011;
-            temp.y = 84;
-            temp.z = 491;
-            temp2.x = 1025;
-            temp2.y = 75;
-            temp2.z = 447;
-
-            Weapon w(sword, -1);
-            w.position = (temp + temp2) / 2;
-            w.tippoint = (temp + temp2) / 2;
-
-            w.velocity = 0.1;
-            w.tipvelocity = 0.1;
-            w.missed = 1;
-            w.hitsomething = 0;
-            w.freetime = 0;
-            w.firstfree = 1;
-            w.physics = 1;
-
-            weapons.push_back(w);
-
-            weapons[0].owner = 1;
-            weapons[1].owner = 0;
-            Person::players[0]->weaponactive = 0;
-            Person::players[0]->num_weapons = 1;
-            Person::players[0]->weaponids[0] = 1;
-            Person::players[1]->weaponactive = 0;
-            Person::players[1]->num_weapons = 1;
-            Person::players[1]->weaponids[0] = 0;
-
-        }
-        break;
-        case 48:
-            canattack = 0;
-            cananger = 0;
-            Person::players[1]->aitype = passivetype;
-
-            tutorialmaxtime = 15;
-
-            weapons[0].owner = 1;
-            weapons[1].owner = 0;
-            Person::players[0]->weaponactive = 0;
-            Person::players[0]->num_weapons = 1;
-            Person::players[0]->weaponids[0] = 1;
-            Person::players[1]->weaponactive = 0;
-            Person::players[1]->num_weapons = 1;
-            Person::players[1]->weaponids[0] = 0;
-
-            if (Person::players[0]->weaponactive != -1)
-                weapons[Person::players[0]->weaponids[Person::players[0]->weaponactive]].setType(staff);
-            else
-                weapons[0].setType(staff);
-            break;
-        case 49:
-            canattack = 0;
-            cananger = 0;
-            Person::players[1]->aitype = passivetype;
-
-            tutorialmaxtime = 200;
-
-            weapons[1].position = 1000;
-            weapons[1].tippoint = 1000;
-
-            weapons[0].setType(knife);
-
-            weapons[0].owner = 0;
-            Person::players[1]->weaponactive = -1;
-            Person::players[1]->num_weapons = 0;
-            Person::players[0]->weaponactive = 0;
-            Person::players[0]->num_weapons = 1;
-            Person::players[0]->weaponids[0] = 0;
-
-            break;
-        case 50: {
-            tutorialmaxtime = 8;
-
-            XYZ temp, temp2;
-            emit_sound_at(fireendsound, Person::players[1]->coords);
-
-            for (unsigned i = 0; i < Person::players[1]->skeleton.joints.size(); i++) {
-                if (Random() % 2 == 0) {
-                    if (!Person::players[1]->skeleton.free)
-                        temp2 = (Person::players[1]->coords - Person::players[1]->oldcoords) / multiplier / 2; //velocity/2;
-                    if (Person::players[1]->skeleton.free)
-                        temp2 = Person::players[1]->skeleton.joints[i].velocity * Person::players[1]->scale / 2;
-                    if (!Person::players[1]->skeleton.free)
-                        temp = DoRotation(DoRotation(DoRotation(Person::players[1]->skeleton.joints[i].position, 0, 0, Person::players[1]->tilt), Person::players[1]->tilt2, 0, 0), 0, Person::players[1]->yaw, 0) * Person::players[1]->scale + Person::players[1]->coords;
-                    if (Person::players[1]->skeleton.free)
-                        temp = Person::players[1]->skeleton.joints[i].position * Person::players[1]->scale + Person::players[1]->coords;
-                    Sprite::MakeSprite(breathsprite, temp, temp2, 1, 1, 1, .6 + (float)abs(Random() % 100) / 200 - .25, 1);
-                }
-            }
-
-            Person::players[1]->num_weapons = 0;
-            Person::players[1]->weaponstuck = -1;
-            Person::players[1]->weaponactive = -1;
-
-            weapons.clear();
-        }
-        break;
-        case 51:
-            tutorialmaxtime = 80000;
-            break;
-        default:
-            break;
-        }
-        if (tutorialstage <= 51)
-            tutorialstagetime = 0;
-    }
-
-    //Tutorial success
-    if (tutorialstagetime < tutorialmaxtime - 3) {
-        switch (tutorialstage) {
-        case 3:
-            if (deltah || deltav)
-                tutorialsuccess += multiplier;
-            break;
-        case 4:
-            if (Person::players[0]->forwardkeydown || Person::players[0]->backkeydown || Person::players[0]->leftkeydown || Person::players[0]->rightkeydown)
-                tutorialsuccess += multiplier;
-            break;
-        case 5:
-            if (Person::players[0]->jumpkeydown)
-                tutorialsuccess = 1;
-            break;
-        case 6:
-            if (Person::players[0]->isCrouch())
-                tutorialsuccess = 1;
-            break;
-        case 7:
-            if (Person::players[0]->animTarget == rollanim)
-                tutorialsuccess = 1;
-            break;
-        case 8:
-            if (Person::players[0]->animTarget == sneakanim)
-                tutorialsuccess += multiplier;
-            break;
-        case 9:
-            if (Person::players[0]->animTarget == rabbitrunninganim || Person::players[0]->animTarget == wolfrunninganim)
-                tutorialsuccess += multiplier;
-            break;
-        case 11:
-            if (Person::players[0]->isWallJump())
-                tutorialsuccess = 1;
-            break;
-        case 12:
-            if (Person::players[0]->animTarget == flipanim)
-                tutorialsuccess = 1;
-            break;
-        case 15:
-            if (Person::players[0]->animTarget == upunchanim || Person::players[0]->animTarget == winduppunchanim)
-                tutorialsuccess = 1;
-            break;
-        case 16:
-            if (Person::players[0]->animTarget == winduppunchanim)
-                tutorialsuccess = 1;
-            break;
-        case 17:
-            if (Person::players[0]->animTarget == spinkickanim)
-                tutorialsuccess = 1;
-            break;
-        case 18:
-            if (Person::players[0]->animTarget == sweepanim)
-                tutorialsuccess = 1;
-            break;
-        case 19:
-            if (Person::players[0]->animTarget == dropkickanim)
-                tutorialsuccess = 1;
-            break;
-        case 20:
-            if (Person::players[0]->animTarget == rabbitkickanim)
-                tutorialsuccess = 1;
-            break;
-        case 21:
-            if (bonus == cannon)
-                tutorialsuccess = 1;
-            break;
-        case 22:
-            if (bonus == spinecrusher)
-                tutorialsuccess = 1;
-            break;
-        case 23:
-            if (Person::players[0]->animTarget == walljumprightkickanim || Person::players[0]->animTarget == walljumpleftkickanim)
-                tutorialsuccess = 1;
-            break;
-        case 24:
-            if (Person::players[0]->animTarget == rabbittacklinganim)
-                tutorialsuccess = 1;
-            break;
-        case 25:
-            if (Person::players[0]->animTarget == backhandspringanim)
-                tutorialsuccess = 1;
-            break;
-        case 28:
-            if (Animation::animations[Person::players[0]->animTarget].attack == reversed && Person::players[0]->feint)
-                tutorialsuccess = 1;
-            break;
-        case 29:
-            if (Person::players[0]->escapednum == 2) {
-                tutorialsuccess = 1;
-                reversaltrain = 0;
-                cananger = 0;
-                Person::players[1]->aitype = passivetype;
-            }
-            break;
-        case 33:
-            if (Animation::animations[Person::players[0]->animTarget].attack == reversal)
-                tutorialsuccess = 1;
-            break;
-        case 34:
-            if (Animation::animations[Person::players[0]->animTarget].attack == reversal)
-                tutorialsuccess = 1;
-            break;
-        case 35:
-            if (Animation::animations[Person::players[0]->animTarget].attack == reversal) {
-                tutorialsuccess = 1;
-                reversaltrain = 0;
-                cananger = 0;
-                Person::players[1]->aitype = passivetype;
-            }
-            break;
-        case 40:
-            if (Person::players[0]->num_weapons > 0)
-                tutorialsuccess = 1;
-            break;
-        case 41:
-            if (Person::players[0]->weaponactive == -1 && Person::players[0]->num_weapons > 0)
-                tutorialsuccess = 1;
-            break;
-        case 43:
-            if (Person::players[0]->animTarget == knifeslashstartanim)
-                tutorialsuccess = 1;
-            break;
-        case 44:
-            if (Animation::animations[Person::players[0]->animTarget].attack == reversal)
-                tutorialsuccess = 1;
-            break;
-        case 45:
-            if (Animation::animations[Person::players[0]->animTarget].attack == reversal)
-                tutorialsuccess = 1;
-            break;
-        case 46:
-            if (Animation::animations[Person::players[0]->animTarget].attack == reversal)
-                tutorialsuccess = 1;
-            break;
-        case 49:
-            if (Person::players[1]->weaponstuck != -1)
-                tutorialsuccess = 1;
-            break;
-        default:
-            break;
-        }
-        if (tutorialsuccess >= 1)
-            tutorialstagetime = tutorialmaxtime - 3;
-
-
-        if (tutorialstagetime == tutorialmaxtime - 3) {
-            emit_sound_np(consolesuccesssound);
-        }
-
-        if (tutorialsuccess >= 1) {
-            if (tutorialstage == 34 || tutorialstage == 35)
-                tutorialstagetime = tutorialmaxtime - 1;
-        }
-    }
-
-    if (tutorialstage < 14 || tutorialstage >= 50) {
-        Person::players[1]->coords.y = 300;
-        Person::players[1]->velocity = 0;
-    }
 }
 
 void doDevKeys()
@@ -2867,7 +2331,7 @@ void doAttacks()
                                                 }
                                                 if (attackweapon) {
                                                     //sweep
-                                                    if ((tutoriallevel != 1 || !attackweapon) &&
+                                                    if ((!Tutorial::active || !attackweapon) &&
                                                             distance < 2.5 * sq(Person::players[k]->scale * 5) &&
                                                             randattack == 0 &&
                                                             Animation::animations[Person::players[i]->animTarget].height != lowheight)
@@ -2901,7 +2365,7 @@ void doAttacks()
                                                              randattack >= 3)
                                                         Person::players[k]->animTarget = staffspinhitanim;
                                                     //spinkick
-                                                    else if ((tutoriallevel != 1 || !attackweapon) &&
+                                                    else if ((!Tutorial::active || !attackweapon) &&
                                                              distance < 2.5 * sq(Person::players[k]->scale * 5) &&
                                                              randattack == 1 &&
                                                              Animation::animations[Person::players[i]->animTarget].height != lowheight)
@@ -2919,7 +2383,7 @@ void doAttacks()
                                             Person::players[k]->animTarget = wolfslapanim;
                                     }
                                     //sneak attacks
-                                    if ((k == 0) && (tutoriallevel != 1 || tutorialstage == 22) &&
+                                    if ((k == 0) && (!Tutorial::active || Tutorial::stage == 22) &&
                                             Person::players[i]->howactive < typedead1 &&
                                             distance < 1.5 * sq(Person::players[k]->scale * 5) &&
                                             !Person::players[i]->skeleton.free &&
@@ -3040,7 +2504,7 @@ void doAttacks()
                                                   distance < 1.5 * sq(Person::players[k]->scale * 5)))) {
                                             Person::players[k]->victim = Person::players[i];
                                             Person::players[k]->hasvictim = 1;
-                                            if (attackweapon && tutoriallevel != 1) {
+                                            if (attackweapon && !Tutorial::active) {
                                                 //crouchstab
                                                 if (Person::players[k]->crouchkeydown && attackweapon == knife && distance < 1.5 * sq(Person::players[k]->scale * 5))
                                                     Person::players[k]->animTarget = crouchstabanim;
@@ -3308,7 +2772,7 @@ void doPlayerCollisions()
                                                                                      (k != 0 || Person::players[k]->skeleton.free) ||
                                                                                      (Animation::animations[Person::players[i]->animTarget].height == highheight &&
                                                                                       Animation::animations[Person::players[k]->animTarget].height == highheight)) {
-                                                                                if (tutoriallevel != 1) {
+                                                                                if (!Tutorial::active) {
                                                                                     emit_sound_at(heavyimpactsound, Person::players[i]->coords);
                                                                                 }
 
@@ -3552,7 +3016,7 @@ void doAI(unsigned i)
             if ((Person::players[i]->collided > .8 && Person::players[i]->jumppower >= 5))
                 Person::players[i]->jumpkeydown = 1;
 
-            if ((tutoriallevel != 1 || cananger) &&
+            if ((!Tutorial::active || cananger) &&
                     hostile &&
                     !Person::players[0]->dead &&
                     distsq(&Person::players[i]->coords, &Person::players[0]->coords) < 400 &&
@@ -3660,7 +3124,7 @@ void doAI(unsigned i)
             //hearing sounds
             if (!editorenabled) {
                 if (Person::players[i]->howactive <= typesleeping)
-                    if (numenvsounds > 0 && (tutoriallevel != 1 || cananger) && hostile)
+                    if (numenvsounds > 0 && (!Tutorial::active || cananger) && hostile)
                         for (int j = 0; j < numenvsounds; j++) {
                             float vol = Person::players[i]->howactive == typesleeping ? envsoundvol[j] - 14 : envsoundvol[j];
                             if (vol > 0 && distsq(&Person::players[i]->coords, &envsound[j]) <
@@ -3676,7 +3140,7 @@ void doAI(unsigned i)
             }
 
             if (Person::players[i]->howactive < typesleeping &&
-                    ((tutoriallevel != 1 || cananger) && hostile) &&
+                    ((!Tutorial::active || cananger) && hostile) &&
                     !Person::players[0]->dead &&
                     distsq(&Person::players[i]->coords, &Person::players[0]->coords) < 400 &&
                     Person::players[i]->occluded < 25) {
@@ -3836,7 +3300,7 @@ void doAI(unsigned i)
             if ((Person::players[i]->collided > .8 && Person::players[i]->jumppower >= 5))
                 Person::players[i]->jumpkeydown = 1;
 
-            if (numenvsounds > 0 && ((tutoriallevel != 1 || cananger) && hostile))
+            if (numenvsounds > 0 && ((!Tutorial::active || cananger) && hostile))
                 for (int k = 0; k < numenvsounds; k++) {
                     if (distsq(&Person::players[i]->coords, &envsound[k]) < 2 * (envsoundvol[k] + envsoundvol[k] * (Person::players[i]->creature == rabbittype) * 3)) {
                         Person::players[i]->aitype = attacktypecutoff;
@@ -3847,7 +3311,7 @@ void doAI(unsigned i)
                     Person::players[i]->losupdatedelay < 0 &&
                     !editorenabled &&
                     Person::players[i]->occluded < 2 &&
-                    ((tutoriallevel != 1 || cananger) && hostile)) {
+                    ((!Tutorial::active || cananger) && hostile)) {
                 Person::players[i]->losupdatedelay = .2;
                 if (distsq(&Person::players[i]->coords, &Person::players[0]->coords) < 4 && Animation::animations[Person::players[i]->animTarget].height != lowheight) {
                     Person::players[i]->aitype = attacktypecutoff;
@@ -4020,7 +3484,7 @@ void doAI(unsigned i)
 
                 Person::players[i]->lastseentime = 12;
 
-                if (!Person::players[0]->dead && ((tutoriallevel != 1 || cananger) && hostile))
+                if (!Person::players[0]->dead && ((!Tutorial::active || cananger) && hostile))
                     if (Person::players[i]->ally < 0 || Person::players[i]->weaponactive != -1 || Person::players[i]->lastchecktime <= 0) {
                         Person::players[i]->aitype = attacktypecutoff;
                         Person::players[i]->lastseentime = 1;
@@ -4255,7 +3719,7 @@ void doAI(unsigned i)
                     for (unsigned j = 0; j < Person::players.size(); j++)
                         if (j != i && !Person::players[j]->skeleton.free &&
                                 Person::players[j]->hasvictim &&
-                                (tutoriallevel == 1 && reversaltrain ||
+                                (Tutorial::active && reversaltrain ||
                                  Random() % 2 == 0 && difficulty == 2 ||
                                  Random() % 4 == 0 && difficulty == 1 ||
                                  Random() % 8 == 0 && difficulty == 0 ||
@@ -4306,7 +3770,7 @@ void doAI(unsigned i)
                 if (Person::players[i]->jumpkeydown)
                     Person::players[i]->attackkeydown = 0;
 
-                if (tutoriallevel == 1)
+                if (Tutorial::active)
                     if (!canattack)
                         Person::players[i]->attackkeydown = 0;
 
@@ -4422,9 +3886,10 @@ void Game::Tick()
     }
 
 
-    if (Input::isKeyPressed(SDL_SCANCODE_TAB) && tutoriallevel) {
-        if (tutorialstage != 51)
-            tutorialstagetime = tutorialmaxtime;
+    if (Input::isKeyPressed(SDL_SCANCODE_TAB) && Tutorial::active) {
+        if (Tutorial::stage != 51) {
+            Tutorial::stagetime = Tutorial::maxtime;
+        }
         emit_sound_np(consolefailsound, 128.);
     }
 
@@ -4579,7 +4044,7 @@ void Game::Tick()
 
             windvar += multiplier;
             smoketex += multiplier;
-            tutorialstagetime += multiplier;
+            Tutorial::stagetime += multiplier;
 
             //hotspots
             static float hotspotvisual[40];
@@ -4611,12 +4076,12 @@ void Game::Tick()
             }
 
             //Tutorial
-            if (tutoriallevel) {
-                doTutorial();
+            if (Tutorial::active) {
+                Tutorial::Do(multiplier);
             }
 
             //bonuses
-            if (tutoriallevel != 1) {
+            if (!Tutorial::active) {
                 if (bonustime == 0 &&
                         bonus != solidhit &&
                         bonus != spinecrusher &&
@@ -4637,7 +4102,7 @@ void Game::Tick()
                     bonusnum[bonus]++;
                 else
                     bonusnum[bonus] += 0.15;
-                if (tutoriallevel)
+                if (Tutorial::active)
                     bonusvalue = 0;
                 bonusvalue /= bonusnum[bonus];
                 bonustotal += bonusvalue;
@@ -5259,7 +4724,7 @@ void Game::Tick()
                                     if (Person::players.size() > 1)
                                         for (unsigned j = 0; j < Person::players.size(); j++) {
                                             if (i != j)
-                                                if (tutoriallevel != 1 || tutorialstage == 49)
+                                                if (!Tutorial::active || Tutorial::stage == 49)
                                                     if (hostile)
                                                         if (normaldotproduct(Person::players[i]->facing, Person::players[i]->coords - Person::players[j]->coords) < 0 &&
                                                                 distsq(&Person::players[i]->coords, &Person::players[j]->coords) < 100 &&
@@ -5789,79 +5254,8 @@ void Game::Tick()
             }
             OPENAL_SetFrequency(OPENAL_ALL, slomo);
 
-            if (tutoriallevel == 1) {
-                XYZ temp;
-                XYZ temp2;
-                XYZ temp3;
-                XYZ oldtemp;
-                XYZ oldtemp2;
-                temp.x = 1011;
-                temp.y = 84;
-                temp.z = 491;
-                temp2.x = 1025;
-                temp2.y = 75;
-                temp2.z = 447;
-                temp3.x = 1038;
-                temp3.y = 76;
-                temp3.z = 453;
-                oldtemp = temp;
-                oldtemp2 = temp2;
-                if (tutorialstage >= 51)
-                    if (distsq(&temp, &Person::players[0]->coords) >= distsq(&temp, &temp2) - 1 || distsq(&temp3, &Person::players[0]->coords) < 4) {
-                        OPENAL_StopSound(OPENAL_ALL);  // hack...OpenAL renderer isn't stopping music after tutorial goes to level menu...
-                        OPENAL_SetFrequency(OPENAL_ALL);
-
-                        emit_stream_np(stream_menutheme);
-
-                        gameon = 0;
-                        mainmenu = 5;
-
-                        fireSound();
-
-                        flash();
-                    }
-                if (tutorialstage < 51)
-                    if (distsq(&temp, &Person::players[0]->coords) >= distsq(&temp, &temp2) - 1 || distsq(&temp3, &Person::players[0]->coords) < 4) {
-                        emit_sound_at(fireendsound, Person::players[0]->coords);
-
-                        Person::players[0]->coords = (oldtemp + oldtemp2) / 2;
-
-                        flash();
-                    }
-                if (tutorialstage >= 14 && tutorialstage < 50)
-                    if (distsq(&temp, &Person::players[1]->coords) >= distsq(&temp, &temp2) - 1 || distsq(&temp3, &Person::players[1]->coords) < 4) {
-                        emit_sound_at(fireendsound, Person::players[1]->coords);
-
-                        for (unsigned i = 0; i < Person::players[1]->skeleton.joints.size(); i++) {
-                            if (Random() % 2 == 0) {
-                                if (!Person::players[1]->skeleton.free)
-                                    temp2 = (Person::players[1]->coords - Person::players[1]->oldcoords) / multiplier / 2; //velocity/2;
-                                if (Person::players[1]->skeleton.free)
-                                    temp2 = Person::players[1]->skeleton.joints[i].velocity * Person::players[1]->scale / 2;
-                                if (!Person::players[1]->skeleton.free)
-                                    temp = DoRotation(DoRotation(DoRotation(Person::players[1]->skeleton.joints[i].position, 0, 0, Person::players[1]->tilt), Person::players[1]->tilt2, 0, 0), 0, Person::players[1]->yaw, 0) * Person::players[1]->scale + Person::players[1]->coords;
-                                if (Person::players[1]->skeleton.free)
-                                    temp = Person::players[1]->skeleton.joints[i].position * Person::players[1]->scale + Person::players[1]->coords;
-                                Sprite::MakeSprite(breathsprite, temp, temp2, 1, 1, 1, .6 + (float)abs(Random() % 100) / 200 - .25, 1);
-                            }
-                        }
-
-                        Person::players[1]->coords = (oldtemp + oldtemp2) / 2;
-                        for (unsigned i = 0; i < Person::players[1]->skeleton.joints.size(); i++) {
-                            Person::players[1]->skeleton.joints[i].velocity = 0;
-                            if (Random() % 2 == 0) {
-                                if (!Person::players[1]->skeleton.free)
-                                    temp2 = (Person::players[1]->coords - Person::players[1]->oldcoords) / multiplier / 2; //velocity/2;
-                                if (Person::players[1]->skeleton.free)
-                                    temp2 = Person::players[1]->skeleton.joints[i].velocity * Person::players[1]->scale / 2;
-                                if (!Person::players[1]->skeleton.free)
-                                    temp = DoRotation(DoRotation(DoRotation(Person::players[1]->skeleton.joints[i].position, 0, 0, Person::players[1]->tilt), Person::players[1]->tilt2, 0, 0), 0, Person::players[1]->yaw, 0) * Person::players[1]->scale + Person::players[1]->coords;
-                                if (Person::players[1]->skeleton.free)
-                                    temp = Person::players[1]->skeleton.joints[i].position * Person::players[1]->scale + Person::players[1]->coords;
-                                Sprite::MakeSprite(breathsprite, temp, temp2, 1, 1, 1, .6 + (float)abs(Random() % 100) / 200 - .25, 1);
-                            }
-                        }
-                    }
+            if (Tutorial::active) {
+                Tutorial::DoStuff(multiplier);
             }
 
 
@@ -6081,7 +5475,7 @@ void Game::TickOnceAfter()
             maxalarmed = numalarmed;
         }
 
-        if (changedelay <= 0 && !loading && !editorenabled && gameon && !tutoriallevel && changedelay != -999 && !won) {
+        if (changedelay <= 0 && !loading && !editorenabled && gameon && !Tutorial::active && changedelay != -999 && !won) {
             if (Person::players[0]->dead && changedelay <= 0) {
                 changedelay = 1;
                 targetlevel = whichlevel;

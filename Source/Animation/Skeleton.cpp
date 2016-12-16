@@ -24,6 +24,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Audio/openal_wrapper.hpp"
 #include "Game.hpp"
 #include "Utils/Folders.hpp"
+#include "Tutorial.hpp"
 
 extern float multiplier;
 extern float gravity;
@@ -32,7 +33,6 @@ extern int environment;
 extern float camerashake;
 extern bool freeze;
 extern int detail;
-extern int tutoriallevel;
 
 extern int whichjointstartarray[26];
 extern int whichjointendarray[26];
@@ -242,7 +242,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                     if (joints[i].label == groin && !joints[i].locked && joints[i].delay <= 0) {
                         joints[i].locked = 1;
                         joints[i].delay = 1;
-                        if (tutoriallevel != 1 || id == 0) {
+                        if (!Tutorial::active || id == 0) {
                             emit_sound_at(landsound1, joints[i].position * (*scale) + *coords, 128.);
                         }
                         breaking = true;
@@ -251,7 +251,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                     if (joints[i].label == head && !joints[i].locked && joints[i].delay <= 0) {
                         joints[i].locked = 1;
                         joints[i].delay = 1;
-                        if (tutoriallevel != 1 || id == 0) {
+                        if (!Tutorial::active || id == 0) {
                             emit_sound_at(landsound2, joints[i].position * (*scale) + *coords, 128.);
                         }
                     }
@@ -270,7 +270,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                     else
                         joints[i].velocity = 0;
 
-                    if (tutoriallevel != 1 || id == 0)
+                    if (!Tutorial::active || id == 0)
                         if (findLengthfast(&bounceness) > 8000 && breaking) {
                             // FIXME: this crashes because k is not initialized!
                             // to reproduce, type 'wolfie' in console and play a while
@@ -336,7 +336,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                                     if (joints[i].label == groin && !joints[i].locked && joints[i].delay <= 0) {
                                         joints[i].locked = 1;
                                         joints[i].delay = 1;
-                                        if (tutoriallevel != 1 || id == 0) {
+                                        if (!Tutorial::active || id == 0) {
                                             emit_sound_at(landsound1, joints[i].position * (*scale) + *coords, 128.);
                                         }
                                         breaking = true;
@@ -345,7 +345,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                                     if (joints[i].label == head && !joints[i].locked && joints[i].delay <= 0) {
                                         joints[i].locked = 1;
                                         joints[i].delay = 1;
-                                        if (tutoriallevel != 1 || id == 0) {
+                                        if (!Tutorial::active || id == 0) {
                                             emit_sound_at(landsound2, joints[i].position * (*scale) + *coords, 128.);
                                         }
                                     }
@@ -358,7 +358,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                                         bounceness = 0;
                                         joints[i].velocity = joints[i].oldvelocity;
                                     }
-                                    if (tutoriallevel != 1 || id == 0)
+                                    if (!Tutorial::active || id == 0)
                                         if (findLengthfast(&bounceness) > 4000 && breaking) {
                                             Object::objects[k]->model.MakeDecal(breakdecal, DoRotation(temp - Object::objects[k]->position, 0, -Object::objects[k]->yaw, 0), .4, .5, Random() % 360);
                                             Sprite::MakeSprite(cloudsprite, joints[i].position * (*scale) + *coords, joints[i].velocity * .06, 1, 1, 1, 4, .2);
@@ -642,7 +642,7 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
     drawmodel.Rotate(180, 0, 0);
     drawmodel.Scale(.04, .04, .04);
     drawmodel.FlipTexCoords();
-    if ((tutoriallevel == 1) && (id != 0)) {
+    if ((Tutorial::active) && (id != 0)) {
         drawmodel.UniformTexCoords();
         drawmodel.ScaleTexCoords(0.1);
     }
@@ -657,9 +657,9 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
     drawmodellow.Rotate(180, 0, 0);
     drawmodellow.Scale(.04, .04, .04);
     drawmodellow.FlipTexCoords();
-    if (tutoriallevel == 1 && id != 0)
+    if (Tutorial::active && id != 0)
         drawmodellow.UniformTexCoords();
-    if (tutoriallevel == 1 && id != 0)
+    if (Tutorial::active && id != 0)
         drawmodellow.ScaleTexCoords(0.1);
     drawmodellow.CalculateNormals(0);
 

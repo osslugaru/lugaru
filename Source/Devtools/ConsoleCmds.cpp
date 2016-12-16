@@ -24,6 +24,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Level/Dialog.hpp"
 #include "Level/Hotspot.hpp"
 #include "Utils/Folders.hpp"
+#include "Tutorial.hpp"
 
 const char *cmd_names[cmd_count] = {
 #define DECLARE_COMMAND(cmd) #cmd,
@@ -49,7 +50,6 @@ extern int environment;
 extern float fadestart;
 extern float slomospeed;
 extern float slomofreq;
-extern int tutoriallevel;
 extern int hostile;
 extern int maptype;
 extern int slomo;
@@ -504,7 +504,7 @@ void ch_sizemin(const char *args)
 
 void ch_tutorial(const char *args)
 {
-    tutoriallevel = atoi(args);
+    Tutorial::active = atoi(args);
 }
 
 void ch_hostile(const char *args)

@@ -144,7 +144,7 @@ int DrawGLScene(StereoSide side);
 void playdialoguescenesound();
 int findClosestPlayer();
 void Loadlevel(int which);
-void Loadlevel(const std::string& name);
+void Loadlevel(const std::string& name, bool tutorial = false);
 void Tick();
 void TickOnce();
 void TickOnceAfter();

@@ -26,6 +26,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Level/Hotspot.hpp"
 #include "Menu/Menu.hpp"
 #include "Utils/Input.hpp"
+#include "Tutorial.hpp"
 
 extern XYZ viewer;
 extern int environment;
@@ -69,11 +70,7 @@ extern int difficulty;
 extern bool decals;
 extern float texdetail;
 extern bool musictoggle;
-extern int tutoriallevel;
 extern float smoketex;
-extern float tutorialstagetime;
-extern float tutorialmaxtime;
-extern int tutorialstage;
 extern bool againbonus;
 extern float damagedealt;
 extern bool invertmouse;
@@ -311,7 +308,7 @@ int Game::DrawGLScene(StereoSide side)
                             point = DoRotation(Person::players[k]->skeleton.joints[i].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords;
                             size = .4f;
                             opacity = .4 - Person::players[k]->skeleton.joints[i].position.y * Person::players[k]->scale / 5 - (Person::players[k]->coords.y - terrain.getHeight(Person::players[k]->coords.x, Person::players[k]->coords.z)) / 10;
-                            if (k != 0 && tutoriallevel == 1) {
+                            if (k != 0 && Tutorial::active) {
                                 opacity = .2 + .2 * sin(smoketex * 6 + i) - Person::players[k]->skeleton.joints[i].position.y * Person::players[k]->scale / 5 - (Person::players[k]->coords.y - terrain.getHeight(Person::players[k]->coords.x, Person::players[k]->coords.z)) / 10;
                             }
                             terrain.MakeDecal(shadowdecal, point, size, opacity, rotation);
@@ -321,7 +318,7 @@ int Game::DrawGLScene(StereoSide side)
                                     point = DoRotation(DoRotation(Person::players[k]->skeleton.joints[i].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords - Object::objects[j]->position, 0, -Object::objects[j]->yaw, 0);
                                     size = .4f;
                                     opacity = .4f;
-                                    if (k != 0 && tutoriallevel == 1) {
+                                    if (k != 0 && Tutorial::active) {
                                         opacity = .2 + .2 * sin(smoketex * 6 + i);
                                     }
                                     Object::objects[j]->model.MakeDecal(shadowdecal, &point, &size, &opacity, &rotation);
@@ -339,7 +336,7 @@ int Game::DrawGLScene(StereoSide side)
                                 point = DoRotation(Person::players[k]->skeleton.joints[i].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords;
                             size = .4f;
                             opacity = .4 - Person::players[k]->skeleton.joints[i].position.y * Person::players[k]->scale / 5 - (Person::players[k]->coords.y - terrain.getHeight(Person::players[k]->coords.x, Person::players[k]->coords.z)) / 5;
-                            if (k != 0 && tutoriallevel == 1) {
+                            if (k != 0 && Tutorial::active) {
                                 opacity = .2 + .2 * sin(smoketex * 6 + i) - Person::players[k]->skeleton.joints[i].position.y * Person::players[k]->scale / 5 - (Person::players[k]->coords.y - terrain.getHeight(Person::players[k]->coords.x, Person::players[k]->coords.z)) / 10;
                             }
                             terrain.MakeDecal(shadowdecal, point, size, opacity * .7, rotation);
@@ -352,7 +349,7 @@ int Game::DrawGLScene(StereoSide side)
                                         point = DoRotation(DoRotation(Person::players[k]->skeleton.joints[i].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords - Object::objects[j]->position, 0, -Object::objects[j]->yaw, 0);
                                     size = .4f;
                                     opacity = .4f;
-                                    if (k != 0 && tutoriallevel == 1) {
+                                    if (k != 0 && Tutorial::active) {
                                         opacity = .2 + .2 * sin(smoketex * 6 + i);
                                     }
                                     Object::objects[j]->model.MakeDecal(shadowdecal, &point, &size, &opacity, &rotation);
@@ -407,7 +404,7 @@ int Game::DrawGLScene(StereoSide side)
             glCullFace(GL_FRONT);
             glDepthMask(1);
             for (unsigned k = 0; k < Person::players.size(); k++) {
-                if (k == 0 || tutoriallevel != 1) {
+                if (k == 0 || !Tutorial::active) {
                     glEnable(GL_BLEND);
                     glEnable(GL_LIGHTING);
                     terrainlight = terrain.getLighting(Person::players[k]->coords.x, Person::players[k]->coords.z);
@@ -472,7 +469,7 @@ int Game::DrawGLScene(StereoSide side)
         glCullFace(GL_FRONT);
         glDepthMask(1);
         for (unsigned k = 0; k < Person::players.size(); k++) {
-            if (!(k == 0 || tutoriallevel != 1)) {
+            if (!(k == 0 || !Tutorial::active)) {
                 glEnable(GL_BLEND);
                 glEnable(GL_LIGHTING);
                 terrainlight = terrain.getLighting(Person::players[k]->coords.x, Person::players[k]->coords.z);
@@ -563,7 +560,7 @@ int Game::DrawGLScene(StereoSide side)
         glEnable(GL_TEXTURE_2D);
         glColor4f(.5, .5, .5, 1);
         if (!console) {
-            if (!tutoriallevel)
+            if (!Tutorial::active)
                 if (bonus > 0 && bonustime < 1 && !winfreeze && !Dialog::inDialog()) {
                     const char *bonus_name;
                     if (bonus < bonus_count)
@@ -579,311 +576,12 @@ int Game::DrawGLScene(StereoSide side)
                     glColor4f(.5, .5, .5, 1);
                 }
 
-            if (tutoriallevel == 1) {
-                tutorialopac = tutorialmaxtime - tutorialstagetime;
-                if (tutorialopac > 1)
-                    tutorialopac = 1;
-                if (tutorialopac < 0)
-                    tutorialopac = 0;
-
-                string = " ";
-                string2 = " ";
-                string3 = " ";
-                if (tutorialstage == 0) {
-                    string = " ";
-                    string2 = " ";
-                    string3 = " ";
-                }
-                if (tutorialstage == 1) {
-                    string = "Welcome to the Lugaru training level!";
-                    string2 = " ";
-                    string3 = " ";
-                }
-                if (tutorialstage == 2) {
-                    string = "BASIC MOVEMENT:";
-                    string2 = " ";
-                    string3 = " ";
-                }
-                if (tutorialstage == 3) {
-                    string = "You can move the mouse to rotate the camera.";
-                    string2 = " ";
-                    string3 = " ";
-                }
-                if (tutorialstage == 4) {
-                    string = std::string("Try using the ") +
-                            Input::keyToChar(forwardkey) + ", " +
-                            Input::keyToChar(leftkey) + ", " +
-                            Input::keyToChar(backkey) + " and " +
-                            Input::keyToChar(rightkey) + " keys to move around.";
-                    string2 = "All movement is relative to the camera.";
-                    string3 = " ";
-                }
-                if (tutorialstage == 5) {
-                    string = std::string("Please press ") + Input::keyToChar(jumpkey) + " to jump.";
-                    string2 = "You can hold it longer to jump higher.";
-                    string3 = " ";
-                }
-                if (tutorialstage == 6) {
-                    string = std::string("You can press ") + Input::keyToChar(crouchkey) + " to crouch.";
-                    string2 = "You can jump higher from a crouching position.";
-                    string3 = " ";
-                }
-                if (tutorialstage == 7) {
-                    string = std::string("While running, you can press ") + Input::keyToChar(crouchkey) + " to roll.";
-                    string2 = " ";
-                    string3 = " ";
-                }
-                if (tutorialstage == 8) {
-                    string = "While crouching, you can sneak around silently";
-                    string2 = "using the movement keys.";
-                    string3 = " ";
-                }
-                if (tutorialstage == 9) {
-                    string = "Release the crouch key while sneaking and hold the movement keys";
-                    string2 = "to run animal-style.";
-                    string3 = " ";
-                }
-                if (tutorialstage == 10) {
-                    string = "ADVANCED MOVEMENT:";
-                    string2 = " ";
-                    string3 = " ";
-                }
-                if (tutorialstage == 11) {
-                    string = std::string("When you jump at a wall, you can hold ") + Input::keyToChar(jumpkey) + " again";
-                    string2 = "during impact to perform a walljump.";
-                    string3 = "Be sure to use the movement keys to press against the wall";
-                }
-                if (tutorialstage == 12) {
-                    string = "While in the air, you can press crouch to flip.";
-                    string2 = "Walljumps and flips confuse enemies and give you more control.";
-                    string3 = " ";
-                }
-                if (tutorialstage == 13) {
-                    string = "BASIC COMBAT:";
-                    string2 = " ";
-                    string3 = " ";
-                }
-                if (tutorialstage == 14) {
-                    string = "There is now an imaginary enemy";
-                    string2 = "in the middle of the training area.";
-                    string3 = " ";
-                }
-                if (tutorialstage == 15) {
-                    if (attackkey == MOUSEBUTTON1) {
-                        string = "Click to attack when you are near an enemy.";
-                    } else {
-                        string = std::string("Press ") + Input::keyToChar(attackkey) + " to attack when you are near an enemy.";
-                    }
-                    string2 = "You can punch by standing still near an enemy and attacking.";
-                    string3 = " ";
-                }
-                if (tutorialstage == 16) {
-                    string = "If you are close, you will perform a weak punch.";
-                    string2 = "The weak punch is excellent for starting attack combinations.";
-                    string3 = " ";
-                }
-                if (tutorialstage == 17) {
-                    string = "Attacking while running results in a spin kick.";
-                    string2 = "This is one of your most powerful ground attacks.";
-                    string3 = " ";
-                }
-                if (tutorialstage == 18) {
-                    string = "Sweep the enemy's legs out by attacking while crouched.";
-                    string2 = "This is a very fast attack, and easy to follow up.";
-                    string3 = " ";
-                }
-                if (tutorialstage == 19) {
-                    string = "When an enemy is on the ground, you can deal some extra";
-                    string2 = "damage by running up and drop-kicking him.";
-                    string3 = "(Try knocking them down with a sweep first)";
-                }
-                if (tutorialstage == 20) {
-                    string = "Your most powerful individual attack is the rabbit kick.";
-                    if (attackkey == MOUSEBUTTON1) {
-                        string2 = "Run at the enemy while holding the mouse button, and press";
-                    } else {
-                        string2 = std::string("Run at the enemy while holding ") + Input::keyToChar(attackkey) + ", and press";
-                    }
-                    string3 = std::string("the jump key (") + Input::keyToChar(jumpkey) + ") to attack.";
-                }
-                if (tutorialstage == 21) {
-                    string = "This attack is devastating if timed correctly.";
-                    string2 = "Even if timed incorrectly, it will knock the enemy over.";
-                    if (againbonus)
-                        string3 = "Try rabbit-kicking the imaginary enemy again.";
-                    else
-                        string3 = "Try rabbit-kicking the imaginary enemy.";
-                }
-                if (tutorialstage == 22) {
-                    string = "If you sneak behind an enemy unnoticed, you can kill";
-                    string2 = "him instantly. Move close behind this enemy";
-                    string3 = "and attack.";
-                }
-                if (tutorialstage == 23) {
-                    string = "Another important attack is the wall kick. When an enemy";
-                    string2 = "is near a wall, perform a walljump nearby and hold";
-                    string3 = "the attack key during impact with the wall.";
-                }
-                if (tutorialstage == 24) {
-                    string = "You can tackle enemies by running at them animal-style";
-                    if (attackkey == MOUSEBUTTON1) {
-                        string2 = std::string("and pressing jump (") + Input::keyToChar(jumpkey) + ") or attack(mouse button).";
-                    } else {
-                        string2 = std::string("and pressing jump (") + Input::keyToChar(jumpkey) + ") or attack(" + Input::keyToChar(attackkey) + ").";
-                    }
-                    string3 = "This is especially useful when they are running away.";
-                }
-                if (tutorialstage == 25) {
-                    string = "Dodge by pressing back and attack. Dodging is essential";
-                    string2 = "against enemies with swords or other long weapons.";
-                    string3 = " ";
-                }
-                if (tutorialstage == 26) {
-                    string = "REVERSALS AND COUNTER-REVERSALS";
-                    string2 = " ";
-                    string3 = " ";
-                }
-                if (tutorialstage == 27) {
-                    string = "The enemy can now reverse your attacks.";
-                    string2 = " ";
-                    string3 = " ";
-                }
-                if (tutorialstage == 28) {
-                    string = "If you attack, you will notice that the enemy now sometimes";
-                    string2 = "catches your attack and uses it against you. Hold";
-                    string3 = std::string("crouch (") + Input::keyToChar(crouchkey) + ") after attacking to escape from reversals.";
-                }
-                if (tutorialstage == 29) {
-                    string = "Try escaping from two more reversals in a row.";
-                    string2 = " ";
-                    string3 = " ";
-                }
-                if (tutorialstage == 30) {
-                    string = "Good!";
-                    string2 = " ";
-                    string3 = " ";
-                }
-                if (tutorialstage == 31) {
-                    string = std::string("To reverse an attack, you must tap crouch (") + Input::keyToChar(crouchkey) + ") during the";
-                    string2 = "enemy's attack. You must also be close to the enemy;";
-                    string3 = "this is especially important against armed opponents.";
-                }
-                if (tutorialstage == 32) {
-                    string = "The enemy can attack in " + to_string(int(tutorialmaxtime - tutorialstagetime)) + " seconds.";
-                    string2 = "This imaginary opponents attacks will be highlighted";
-                    string3 = "to make this easier.";
-                }
-                if (tutorialstage == 33) {
-                    string = "Reverse three enemy attacks!";
-                    string2 = " ";
-                    string3 = " ";
-                }
-                if (tutorialstage == 34) {
-                    string = "Reverse two more enemy attacks!";
-                    string2 = " ";
-                    string3 = " ";
-                }
-                if (tutorialstage == 35) {
-                    string = "Reverse one more enemy attack!";
-                    string2 = " ";
-                    string3 = " ";
-                }
-                if (tutorialstage == 36) {
-                    string = "Excellent!";
-                    string2 = " ";
-                    string3 = " ";
-                }
-                if (tutorialstage == 37) {
-                    string = "Now spar with the enemy for " + to_string(int(tutorialmaxtime - tutorialstagetime)) + " more seconds.";
-                    string2 = "Damage dealt: " + to_string(int(damagedealt));
-                    string3 = "Damage taken: " + to_string(int(damagetaken));
-                }
-                if (tutorialstage == 38) {
-                    string = "WEAPONS:";
-                    string2 = " ";
-                    string3 = " ";
-                }
-                if (tutorialstage == 39) {
-                    string = "There is now an imaginary knife";
-                    string2 = "in the center of the training area.";
-                    string3 = " ";
-                }
-                if (tutorialstage == 40) {
-                    string = "Stand, roll or handspring over the knife";
-                    string2 = std::string("while pressing ") + Input::keyToChar(throwkey) + " to pick it up.";
-                    string3 = "You can crouch and press the same key to drop it again.";
-                }
-                if (tutorialstage == 41) {
-                    string = std::string("You can equip and unequip weapons using the ") + Input::keyToChar(drawkey) + " key.";
-                    string2 = "Sometimes it is best to keep them unequipped to";
-                    string3 = "prevent enemies from taking them. ";
-                }
-                if (tutorialstage == 42) {
-                    string = "The knife is the smallest weapon and the least encumbering.";
-                    string2 = "You can equip or unequip it while standing, crouching,";
-                    string3 = "running or flipping.";
-                }
-                if (tutorialstage == 43) {
-                    string = "You perform weapon attacks the same way as unarmed attacks,";
-                    string2 = "but sharp weapons cause permanent damage, instead of the";
-                    string3 = "temporary trauma from blunt weapons, fists and feet.";
-                }
-                if (tutorialstage == 44) {
-                    string = "The enemy now has your knife!";
-                    string2 = "Please reverse two of his knife attacks.";
-                    string3 = " ";
-                }
-                if (tutorialstage == 45) {
-                    string = "Please reverse one more of his knife attacks.";
-                    string2 = " ";
-                    string3 = " ";
-                }
-                if (tutorialstage == 46) {
-                    string = "Now he has a sword!";
-                    string2 = "The sword has longer reach than your arms, so you";
-                    string3 = "must move close to reverse the sword slash.";
-                }
-                if (tutorialstage == 47) {
-                    string = "Long weapons like the sword and staff are also useful for defense;";
-                    string2 = "you can parry enemy weapon attacks by pressing the attack key";
-                    string3 = "at the right time. Please try parrying the enemy's attacks!";
-                }
-                if (tutorialstage == 48) {
-                    string = "The staff is like the sword, but has two main attacks.";
-                    string2 = "The standing smash is fast and effective, and the running";
-                    string3 = "spin smash is slower and more powerful.";
-                }
-                if (tutorialstage == 49) {
-                    string = std::string("When facing an enemy, you can throw the knife with ") + Input::keyToChar(throwkey) + ".";
-                    string2 = "It is possible to throw the knife while flipping,";
-                    string3 = "but it is very inaccurate.";
-                }
-                if (tutorialstage == 50) {
-                    string = "You now know everything you can learn from training.";
-                    string2 = "Everything else you must learn from experience!";
-                    string3 = " ";
-                }
-                if (tutorialstage == 51) {
-                    string = "Walk out of the training area to return to the main menu.";
-                    string2 = " ";
-                    string3 = " ";
-                }
-
-                text->glPrintOutlined(1, 1, 1, tutorialopac, screenwidth / 2 - 7.6 * string.size()*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
-                text->glPrintOutlined(1, 1, 1, tutorialopac, screenwidth / 2 - 7.6 * string2.size()*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 20 * screenwidth / 1024, string2, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
-                text->glPrintOutlined(1, 1, 1, tutorialopac, screenwidth / 2 - 7.6 * string3.size()*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 40 * screenwidth / 1024, string3, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
-
-                string = "Press 'tab' to skip to the next item.";
-                string2 = "Press escape at any time to";
-                string3 = "pause or exit the tutorial.";
-
-                text->glPrintOutlined(0.5, 0.5, 0.5, 1, screenwidth / 2 - 7.6 * string.size()*screenwidth / 1024 * .8, 0 + screenheight * 1 / 10, string, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
-                text->glPrintOutlined(0.5, 0.5, 0.5, 1, screenwidth / 2 - 7.6 * string2.size()*screenwidth / 1024 * .8, 0 + screenheight * 1 / 10 - 20 * .8 * screenwidth / 1024, string2, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
-                text->glPrintOutlined(0.5, 0.5, 0.5, 1, screenwidth / 2 - 7.6 * string3.size()*screenwidth / 1024 * .8, 0 + screenheight * 1 / 10 - 40 * .8 * screenwidth / 1024, string3, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
+            if (Tutorial::active) {
+                Tutorial::DrawText();
             }
 
             //Hot spots
-            if (Hotspot::hotspots.size() && (bonustime >= 1 || bonus <= 0 || bonustime < 0) && !tutoriallevel) {
+            if (Hotspot::hotspots.size() && (bonustime >= 1 || bonus <= 0 || bonustime < 0) && !Tutorial::active) {
                 float closestdist = -1;
                 float distance = 0;
                 int closest = Hotspot::current;
@@ -900,9 +598,9 @@ int Game::DrawGLScene(StereoSide side)
                     Hotspot::current = closest;
                     if (Hotspot::hotspots[closest].type <= 10) {
                         if (distsq(&Person::players[0]->coords, &Hotspot::hotspots[closest].position) < Hotspot::hotspots[closest].size)
-                            tutorialstagetime = 0;
-                        tutorialmaxtime = 1;
-                        tutorialopac = tutorialmaxtime - tutorialstagetime;
+                            Tutorial::stagetime = 0;
+                        Tutorial::maxtime = 1;
+                        tutorialopac = Tutorial::maxtime - Tutorial::stagetime;
                         if (tutorialopac > 1)
                             tutorialopac = 1;
                         if (tutorialopac < 0)
@@ -1038,7 +736,7 @@ int Game::DrawGLScene(StereoSide side)
                 }
             }
 
-            if (!tutoriallevel && !winfreeze && !Dialog::inDialog() && !mainmenu) {
+            if (!Tutorial::active && !winfreeze && !Dialog::inDialog() && !mainmenu) {
                 if (campaign) {
                     if (scoreadded) {
                         string = "Score: " + to_string(int(Account::active().getCampaignScore()));

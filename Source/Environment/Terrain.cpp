@@ -23,6 +23,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Game.hpp"
 #include "Objects/Object.hpp"
 #include "Utils/Folders.hpp"
+#include "Tutorial.hpp"
 
 extern XYZ viewer;
 extern float viewdistance;
@@ -39,7 +40,6 @@ extern float blurness;
 extern float targetblurness;
 extern bool visibleloading;
 extern bool skyboxtexture;
-extern int tutoriallevel;
 
 //Functions
 
@@ -1366,7 +1366,7 @@ void Terrain::DoShadows()
         lightloc.x = 0;
         lightloc.z = 0;
     }
-    if (skyboxtexture && tutoriallevel) {
+    if (skyboxtexture && Tutorial::active) {
         lightloc.x *= .4;
         lightloc.z *= .4;
     }

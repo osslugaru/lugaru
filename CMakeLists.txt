@@ -82,6 +82,7 @@ set(LUGARU_SRCS
     ${SRCDIR}/GameInitDispose.cpp
     ${SRCDIR}/GameTick.cpp
     ${SRCDIR}/Globals.cpp
+    ${SRCDIR}/Tutorial.cpp
 
 )
 
@@ -122,6 +123,7 @@ set(LUGARU_H
     ${SRCDIR}/Utils/Input.hpp
     ${SRCDIR}/Utils/private.h
     ${SRCDIR}/Game.hpp
+    ${SRCDIR}/Tutorial.hpp
 
 )
 
