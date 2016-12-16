@@ -152,6 +152,7 @@ void Tutorial::Do(float multiplier)
                 maxtime = 13;
                 break;
             case 32:
+            case 42:
                 maxtime = 8;
                 break;
             case 33:
@@ -209,9 +210,6 @@ void Tutorial::Do(float multiplier)
             case 41:
             case 43:
                 maxtime = 300;
-                break;
-            case 42:
-                maxtime = 8;
                 break;
             case 44:
                 weapons[0].owner = 1;
@@ -461,6 +459,9 @@ void Tutorial::Do(float multiplier)
                 break;
             case 33:
             case 34:
+            case 44:
+            case 45:
+            case 46:
                 if (Animation::animations[Person::players[0]->animTarget].attack == reversal) {
                     success = 1;
                 }
@@ -485,13 +486,6 @@ void Tutorial::Do(float multiplier)
                 break;
             case 43:
                 if (Person::players[0]->animTarget == knifeslashstartanim) {
-                    success = 1;
-                }
-                break;
-            case 44:
-            case 45:
-            case 46:
-                if (Animation::animations[Person::players[0]->animTarget].attack == reversal) {
                     success = 1;
                 }
                 break;
