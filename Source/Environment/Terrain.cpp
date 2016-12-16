@@ -38,7 +38,6 @@ extern int detail;
 extern bool decals;
 extern float blurness;
 extern float targetblurness;
-extern bool visibleloading;
 extern bool skyboxtexture;
 
 //Functions
@@ -426,8 +425,7 @@ bool Terrain::load(const std::string& fileName)
         }
     }
     texture.bpp = 24;
-    if (visibleloading)
-        Game::LoadingScreen();
+    Game::LoadingScreen();
 
     texdetail = temptexdetail;
 
@@ -439,8 +437,7 @@ bool Terrain::load(const std::string& fileName)
         }
     }
 
-    if (visibleloading)
-        Game::LoadingScreen();
+    Game::LoadingScreen();
 
     float slopeness;
 
@@ -449,8 +446,7 @@ bool Terrain::load(const std::string& fileName)
             textureness[i][j] = -1;
         }
     }
-    if (visibleloading)
-        Game::LoadingScreen();
+    Game::LoadingScreen();
 
 
     for (i = 0; i < size; i++) {
@@ -499,8 +495,7 @@ bool Terrain::load(const std::string& fileName)
             }
         }
     }
-    if (visibleloading)
-        Game::LoadingScreen();
+    Game::LoadingScreen();
 
     for (i = 0; i < size; i++) {
         for (j = 0; j < size; j++) {
@@ -512,8 +507,7 @@ bool Terrain::load(const std::string& fileName)
             }
         }
     }
-    if (visibleloading)
-        Game::LoadingScreen();
+    Game::LoadingScreen();
 
     for (i = 0; i < size; i++) {
         for (j = 0; j < size; j++) {
@@ -638,8 +632,7 @@ bool Terrain::load(const std::string& fileName)
             }
         }
     }
-    if (visibleloading)
-        Game::LoadingScreen();
+    Game::LoadingScreen();
 
     patch_size = size / subdivision;
     patch_elements = (patch_size) * (patch_size) * 54;
@@ -732,7 +725,9 @@ void Terrain::drawpatch(int whichx, int whichy, float opacity)
         glEnable(GL_BLEND);
         UpdateTransparency(whichx, whichy);
     }
+
     glColor4f(1, 1, 1, 1);
+
     //Set up vertex array
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_COLOR_ARRAY);
@@ -756,7 +751,9 @@ void Terrain::drawpatchother(int whichx, int whichy, float opacity)
         UpdateTransparency(whichx, whichy);
     }
     UpdateTransparencyother(whichx, whichy);
+
     glColor4f(1, 1, 1, 1);
+
     //Set up vertex array
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_COLOR_ARRAY);
@@ -1394,8 +1391,7 @@ void Terrain::DoShadows()
                         }
                     }
                 }
-                if (visibleloading)
-                    Game::LoadingScreen();
+                Game::LoadingScreen();
             }
             brightness = dotproduct(&lightloc, &normals[i][j]);
             if (shadowed)
@@ -1419,8 +1415,7 @@ void Terrain::DoShadows()
         }
     }
 
-    if (visibleloading)
-        Game::LoadingScreen();
+    Game::LoadingScreen();
 
     //Smooth shadows
     for (i = 0; i < size; i++) {

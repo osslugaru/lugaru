@@ -25,7 +25,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include <SDL.h>
 #include <string>
 
-bool visibleloading = 0;
+bool visibleloading = false;
 
 float volume = 0;
 bool ismotionblur = false;

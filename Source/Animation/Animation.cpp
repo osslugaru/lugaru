@@ -23,8 +23,6 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Game.hpp"
 #include "Utils/Folders.hpp"
 
-extern bool visibleloading;
-
 std::vector<Animation> Animation::animations;
 
 void Animation::loadAll()
@@ -99,8 +97,7 @@ Animation::Animation(const std::string& filename, anim_height_type aheight, anim
     height = aheight;
     attack = aattack;
 
-    if (visibleloading)
-        Game::LoadingScreen();
+    Game::LoadingScreen();
 
     // read file in binary mode
     tfile = Folders::openMandatoryFile( filepath, "rb" );

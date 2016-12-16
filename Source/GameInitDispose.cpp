@@ -174,6 +174,10 @@ GLvoid Game::ReSizeGLScene(float fov, float pnear)
 
 void Game::LoadingScreen()
 {
+    if (!visibleloading) {
+        return;
+    }
+
     static float loadprogress;
     static AbsoluteTime frametime = {0, 0};
     AbsoluteTime currTime = UpTime ();
@@ -652,9 +656,9 @@ void Game::LoadStuff()
 
     stillloading = 1;
 
-    visibleloading = 0; //don't use loadscreentexture yet
+    visibleloading = false; //don't use loadscreentexture yet
     loadscreentexture.load("Textures/Fire.jpg", 1);
-    visibleloading = 1;
+    visibleloading = true;
 
     temptexdetail = texdetail;
     texdetail = 1;
@@ -872,6 +876,6 @@ void Game::LoadStuff()
     loading = 0;
     changedelay = 1;
 
-    visibleloading = 0;
+    visibleloading = false;
 }
 

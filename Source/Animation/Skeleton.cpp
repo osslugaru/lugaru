@@ -37,8 +37,6 @@ extern int detail;
 extern int whichjointstartarray[26];
 extern int whichjointendarray[26];
 
-extern bool visibleloading;
-
 Skeleton::Skeleton() :
     selected(0),
     id(0),

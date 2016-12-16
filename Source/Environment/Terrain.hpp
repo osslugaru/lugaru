@@ -113,19 +113,21 @@ public:
     XYZ getLighting(float pointx, float pointz);
     XYZ getNormal(float pointx, float pointz);
     void UpdateVertexArray(int whichx, int whichy);
-    void UpdateTransparency(int whichx, int whichy);
-    void UpdateTransparencyother(int whichx, int whichy);
-    void UpdateTransparencyotherother(int whichx, int whichy);
     bool load(const std::string& fileName);
     void CalculateNormals();
     void drawdecals();
     void draw(int layer);
-    void drawpatch(int whichx, int whichy, float opacity);
-    void drawpatchother(int whichx, int whichy, float opacity);
-    void drawpatchotherother(int whichx, int whichy, float opacity);
     void DoShadows();
 
     Terrain();
+
+private:
+    void drawpatch(int whichx, int whichy, float opacity);
+    void drawpatchother(int whichx, int whichy, float opacity);
+    void drawpatchotherother(int whichx, int whichy, float opacity);
+    void UpdateTransparency(int whichx, int whichy);
+    void UpdateTransparencyother(int whichx, int whichy);
+    void UpdateTransparencyotherother(int whichx, int whichy);
 };
 
 #endif

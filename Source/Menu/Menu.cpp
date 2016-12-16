@@ -712,7 +712,7 @@ void Menu::Tick()
                     LoadStuff();
                 whichchoice = selected - NB_CAMPAIGN_MENU_ITEM - Account::active().getCampaignChoicesMade();
                 actuallevel = (Account::active().getCampaignChoicesMade() > 0 ? campaignlevels[Account::active().getCampaignChoicesMade() - 1].nextlevel[whichchoice] : 0);
-                visibleloading = 1;
+                visibleloading = true;
                 stillloading = 1;
                 Loadlevel(campaignlevels[actuallevel].mapname.c_str());
                 campaign = 1;

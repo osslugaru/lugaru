@@ -28,8 +28,6 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdio.h>
 #include <zlib.h>
 
-extern bool visibleloading;
-
 /* These two are needed for screenshot */
 extern int kContextWidth;
 extern int kContextHeight;
@@ -51,9 +49,7 @@ ImageRec::~ImageRec()
 
 bool load_image(const char *file_name, ImageRec &tex)
 {
-    if (visibleloading) {
-        Game::LoadingScreen();
-    }
+    Game::LoadingScreen();
 
     if ( tex.data == NULL ) {
         return false;

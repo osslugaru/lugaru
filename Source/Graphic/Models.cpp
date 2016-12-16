@@ -30,8 +30,6 @@ extern float fadestart;
 extern float texdetail;
 extern bool decals;
 
-extern bool visibleloading;
-
 int Model::LineCheck(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate)
 {
     static int j;
@@ -474,8 +472,7 @@ bool Model::load(const std::string& filename, bool texture )
 
     LOG(std::string("Loading model...") + filename);
 
-    if (visibleloading)
-        Game::LoadingScreen();
+    Game::LoadingScreen();
 
     type = normaltype;
     color = 0;
@@ -819,8 +816,7 @@ void Model::Rotate(float xang, float yang, float zang)
 
 void Model::CalculateNormals(bool facenormalise)
 {
-    if (visibleloading)
-        Game::LoadingScreen();
+    Game::LoadingScreen();
     static int i;
     if (type != normaltype && type != decalstype)
         return;

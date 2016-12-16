@@ -53,7 +53,6 @@ extern int mainmenu;
 
 extern float slomospeed;
 extern float slomofreq;
-extern bool visibleloading;
 
 extern int difficulty;
 

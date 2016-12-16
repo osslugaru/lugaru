@@ -566,9 +566,9 @@ void Game::Loadlevel(const std::string& name, bool tutorial)
     LOG(std::string("Loading level...") + name);
 
     if (!gameon)
-        visibleloading = 1;
+        visibleloading = true;
     if (stealthloading)
-        visibleloading = 0;
+        visibleloading = false;
     if (!stillloading)
         loadtime = 0;
     gamestarted = 1;
@@ -663,8 +663,7 @@ void Game::Loadlevel(const std::string& name, bool tutorial)
                 terrain.patchobjectnum[i][j] = 0;
             }
         }
-        if (visibleloading)
-            LoadingScreen();
+        Game::LoadingScreen();
     }
 
     weapons.clear();
@@ -721,8 +720,7 @@ void Game::Loadlevel(const std::string& name, bool tutorial)
             weapons.push_back(Weapon(type, 0));
         }
 
-    if (visibleloading)
-        LoadingScreen();
+    Game::LoadingScreen();
 
     funpackf(tfile, "Bf Bf Bf", &Person::players[0]->armorhead, &Person::players[0]->armorhigh, &Person::players[0]->armorlow);
     funpackf(tfile, "Bf Bf Bf", &Person::players[0]->protectionhead, &Person::players[0]->protectionhigh, &Person::players[0]->protectionlow);
@@ -781,20 +779,14 @@ void Game::Loadlevel(const std::string& name, bool tutorial)
         Hotspot::hotspots.clear();
     }
 
-    if (visibleloading)
-        LoadingScreen();
+    Game::LoadingScreen();
 
     if (!stealthloading) {
         Object::ComputeCenter();
-
-        if (visibleloading)
-            LoadingScreen();
-
         Object::ComputeRadius();
     }
 
-    if (visibleloading)
-        LoadingScreen();
+    Game::LoadingScreen();
 
     int numplayers;
     funpackf(tfile, "Bi", &numplayers);
@@ -810,8 +802,7 @@ void Game::Loadlevel(const std::string& name, bool tutorial)
             cerr << "Invalid Person found in " << name << endl;
         }
     }
-    if (visibleloading)
-        LoadingScreen();
+    Game::LoadingScreen();
 
     funpackf(tfile, "Bi", &numpathpoints);
     if (numpathpoints > 30 || numpathpoints < 0)
@@ -822,8 +813,7 @@ void Game::Loadlevel(const std::string& name, bool tutorial)
             funpackf(tfile, "Bi", &pathpointconnect[j][k]);
         }
     }
-    if (visibleloading)
-        LoadingScreen();
+    Game::LoadingScreen();
 
     funpackf(tfile, "Bf Bf Bf Bf", &mapcenter.x, &mapcenter.y, &mapcenter.z, &mapradius);
 
@@ -835,18 +825,15 @@ void Game::Loadlevel(const std::string& name, bool tutorial)
     if (!stealthloading) {
         Object::AddObjectsToTerrain();
         terrain.DoShadows();
-        if (visibleloading)
-            LoadingScreen();
+        Game::LoadingScreen();
         Object::DoShadows();
-        if (visibleloading)
-            LoadingScreen();
+        Game::LoadingScreen();
     }
 
     fclose(tfile);
 
     for (unsigned i = 0; i < Person::players.size(); i++) {
-        if (visibleloading)
-            LoadingScreen();
+        Game::LoadingScreen();
         if (i == 0) {
             Person::players[i]->burnt = 0;
             Person::players[i]->bled = 0;
@@ -901,8 +888,7 @@ void Game::Loadlevel(const std::string& name, bool tutorial)
         }
 
 
-        if (visibleloading)
-            LoadingScreen();
+        Game::LoadingScreen();
 
         if (cellophane) {
             Person::players[i]->proportionhead.z = 0;
@@ -968,8 +954,7 @@ void Game::Loadlevel(const std::string& name, bool tutorial)
     hawkcoords = Person::players[0]->coords;
     hawkcoords.y += 30;
 
-    if (visibleloading)
-        LoadingScreen();
+    Game::LoadingScreen();
 
     LOG("Starting background music...");
 
@@ -993,7 +978,7 @@ void Game::Loadlevel(const std::string& name, bool tutorial)
 
     leveltime = 0;
     wonleveltime = 0;
-    visibleloading = 0;
+    visibleloading = false;
 }
 
 void doDevKeys()
@@ -5618,7 +5603,7 @@ void Game::TickOnceAfter()
                         LoadStuff();
                     whichchoice = 0;
                     actuallevel = campaignlevels[actuallevel].nextlevel.front();
-                    visibleloading = 1;
+                    visibleloading = true;
                     stillloading = 1;
                     Loadlevel(campaignlevels[actuallevel].mapname.c_str());
                     campaign = 1;
