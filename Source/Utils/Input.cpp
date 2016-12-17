@@ -56,7 +56,7 @@ bool Input::isKeyPressed(int k)
 const char* Input::keyToChar(unsigned short i)
 {
     if (i < SDL_NUM_SCANCODES)
-        return SDL_GetScancodeName(SDL_Scancode(i));
+        return SDL_GetKeyName(SDL_GetKeyFromScancode(SDL_Scancode(i)));
     else if (i == MOUSEBUTTON1)
         return "mouse1";
     else if (i == MOUSEBUTTON2)
@@ -65,24 +65,6 @@ const char* Input::keyToChar(unsigned short i)
         return "mouse3";
     else
         return "unknown";
-}
-
-unsigned short Input::CharToKey(const char* which)
-{
-    for (unsigned short i = 0; i < SDL_NUM_SCANCODES; i++) {
-        if (!strcasecmp(which, SDL_GetScancodeName(SDL_Scancode(i))))
-            return i;
-    }
-    if (!strcasecmp(which, "mouse1")) {
-        return MOUSEBUTTON1;
-    }
-    if (!strcasecmp(which, "mouse2")) {
-        return MOUSEBUTTON2;
-    }
-    if (!strcasecmp(which, "mouse3")) {
-        return MOUSEBUTTON3;
-    }
-    return SDL_NUM_SCANCODES;
 }
 
 bool Input::MouseClicked()

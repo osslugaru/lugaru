@@ -38,7 +38,6 @@ public:
     static bool isKeyDown(int k);
     static bool isKeyPressed(int k);
     static const char* keyToChar(unsigned short which);
-    static unsigned short CharToKey(const char* which);
     static bool MouseClicked();
 };
 
