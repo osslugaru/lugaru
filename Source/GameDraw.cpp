@@ -577,7 +577,7 @@ int Game::DrawGLScene(StereoSide side)
                 }
 
             if (Tutorial::active) {
-                Tutorial::DrawText();
+                Tutorial::DrawTextInfo();
             }
 
             //Hot spots

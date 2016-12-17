@@ -30,7 +30,7 @@ public:
     static float maxtime;
 
     static void Do(float multiplier);
-    static void DrawText();
+    static void DrawTextInfo();
     static void DoStuff(float multiplier);
 
 private:

@@ -518,7 +518,7 @@ void Tutorial::Do(float multiplier)
     }
 }
 
-void Tutorial::DrawText()
+void Tutorial::DrawTextInfo()
 {
     std::string string;
     std::string string2;
