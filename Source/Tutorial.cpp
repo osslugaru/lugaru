@@ -520,301 +520,254 @@ void Tutorial::Do(float multiplier)
 
 void Tutorial::DrawTextInfo()
 {
-    std::string string;
-    std::string string2;
-    std::string string3;
-    float tutorialopac = maxtime - stagetime;
-    if (tutorialopac > 1)
-        tutorialopac = 1;
-    if (tutorialopac < 0)
-        tutorialopac = 0;
+    std::string string = " ";
+    std::string string2 = " ";
+    std::string string3 = " ";
 
-    string = " ";
-    string2 = " ";
-    string3 = " ";
-    if (stage == 0) {
-        string = " ";
-        string2 = " ";
-        string3 = " ";
-    }
-    if (stage == 1) {
-        string = "Welcome to the Lugaru training level!";
-        string2 = " ";
-        string3 = " ";
-    }
-    if (stage == 2) {
-        string = "BASIC MOVEMENT:";
-        string2 = " ";
-        string3 = " ";
-    }
-    if (stage == 3) {
-        string = "You can move the mouse to rotate the camera.";
-        string2 = " ";
-        string3 = " ";
-    }
-    if (stage == 4) {
-        string = std::string("Try using the ") +
-                Input::keyToChar(Game::forwardkey) + ", " +
-                Input::keyToChar(Game::leftkey) + ", " +
-                Input::keyToChar(Game::backkey) + " and " +
-                Input::keyToChar(Game::rightkey) + " keys to move around.";
-        string2 = "All movement is relative to the camera.";
-        string3 = " ";
-    }
-    if (stage == 5) {
-        string = std::string("Please press ") + Input::keyToChar(Game::jumpkey) + " to jump.";
-        string2 = "You can hold it longer to jump higher.";
-        string3 = " ";
-    }
-    if (stage == 6) {
-        string = std::string("You can press ") + Input::keyToChar(Game::crouchkey) + " to crouch.";
-        string2 = "You can jump higher from a crouching position.";
-        string3 = " ";
-    }
-    if (stage == 7) {
-        string = std::string("While running, you can press ") + Input::keyToChar(Game::crouchkey) + " to roll.";
-        string2 = " ";
-        string3 = " ";
-    }
-    if (stage == 8) {
-        string = "While crouching, you can sneak around silently";
-        string2 = "using the movement keys.";
-        string3 = " ";
-    }
-    if (stage == 9) {
-        string = "Release the crouch key while sneaking and hold the movement keys";
-        string2 = "to run animal-style.";
-        string3 = " ";
-    }
-    if (stage == 10) {
-        string = "ADVANCED MOVEMENT:";
-        string2 = " ";
-        string3 = " ";
-    }
-    if (stage == 11) {
-        string = std::string("When you jump at a wall, you can hold ") + Input::keyToChar(Game::jumpkey) + " again";
-        string2 = "during impact to perform a walljump.";
-        string3 = "Be sure to use the movement keys to press against the wall";
-    }
-    if (stage == 12) {
-        string = "While in the air, you can press crouch to flip.";
-        string2 = "Walljumps and flips confuse enemies and give you more control.";
-        string3 = " ";
-    }
-    if (stage == 13) {
-        string = "BASIC COMBAT:";
-        string2 = " ";
-        string3 = " ";
-    }
-    if (stage == 14) {
-        string = "There is now an imaginary enemy";
-        string2 = "in the middle of the training area.";
-        string3 = " ";
-    }
-    if (stage == 15) {
-        if (Game::attackkey == MOUSEBUTTON1) {
-            string = "Click to attack when you are near an enemy.";
-        } else {
-            string = std::string("Press ") + Input::keyToChar(Game::attackkey) + " to attack when you are near an enemy.";
-        }
-        string2 = "You can punch by standing still near an enemy and attacking.";
-        string3 = " ";
-    }
-    if (stage == 16) {
-        string = "If you are close, you will perform a weak punch.";
-        string2 = "The weak punch is excellent for starting attack combinations.";
-        string3 = " ";
-    }
-    if (stage == 17) {
-        string = "Attacking while running results in a spin kick.";
-        string2 = "This is one of your most powerful ground attacks.";
-        string3 = " ";
-    }
-    if (stage == 18) {
-        string = "Sweep the enemy's legs out by attacking while crouched.";
-        string2 = "This is a very fast attack, and easy to follow up.";
-        string3 = " ";
-    }
-    if (stage == 19) {
-        string = "When an enemy is on the ground, you can deal some extra";
-        string2 = "damage by running up and drop-kicking him.";
-        string3 = "(Try knocking them down with a sweep first)";
-    }
-    if (stage == 20) {
-        string = "Your most powerful individual attack is the rabbit kick.";
-        if (Game::attackkey == MOUSEBUTTON1) {
-            string2 = "Run at the enemy while holding the mouse button, and press";
-        } else {
-            string2 = std::string("Run at the enemy while holding ") + Input::keyToChar(Game::attackkey) + ", and press";
-        }
-        string3 = std::string("the jump key (") + Input::keyToChar(Game::jumpkey) + ") to attack.";
-    }
-    if (stage == 21) {
-        string = "This attack is devastating if timed correctly.";
-        string2 = "Even if timed incorrectly, it will knock the enemy over.";
-        if (againbonus)
-            string3 = "Try rabbit-kicking the imaginary enemy again.";
-        else
-            string3 = "Try rabbit-kicking the imaginary enemy.";
-    }
-    if (stage == 22) {
-        string = "If you sneak behind an enemy unnoticed, you can kill";
-        string2 = "him instantly. Move close behind this enemy";
-        string3 = "and attack.";
-    }
-    if (stage == 23) {
-        string = "Another important attack is the wall kick. When an enemy";
-        string2 = "is near a wall, perform a walljump nearby and hold";
-        string3 = "the attack key during impact with the wall.";
-    }
-    if (stage == 24) {
-        string = "You can tackle enemies by running at them animal-style";
-        if (Game::attackkey == MOUSEBUTTON1) {
-            string2 = std::string("and pressing jump (") + Input::keyToChar(Game::jumpkey) + ") or attack(mouse button).";
-        } else {
-            string2 = std::string("and pressing jump (") + Input::keyToChar(Game::jumpkey) + ") or attack(" + Input::keyToChar(Game::attackkey) + ").";
-        }
-        string3 = "This is especially useful when they are running away.";
-    }
-    if (stage == 25) {
-        string = "Dodge by pressing back and attack. Dodging is essential";
-        string2 = "against enemies with swords or other long weapons.";
-        string3 = " ";
-    }
-    if (stage == 26) {
-        string = "REVERSALS AND COUNTER-REVERSALS";
-        string2 = " ";
-        string3 = " ";
-    }
-    if (stage == 27) {
-        string = "The enemy can now reverse your attacks.";
-        string2 = " ";
-        string3 = " ";
-    }
-    if (stage == 28) {
-        string = "If you attack, you will notice that the enemy now sometimes";
-        string2 = "catches your attack and uses it against you. Hold";
-        string3 = std::string("crouch (") + Input::keyToChar(Game::crouchkey) + ") after attacking to escape from reversals.";
-    }
-    if (stage == 29) {
-        string = "Try escaping from two more reversals in a row.";
-        string2 = " ";
-        string3 = " ";
-    }
-    if (stage == 30) {
-        string = "Good!";
-        string2 = " ";
-        string3 = " ";
-    }
-    if (stage == 31) {
-        string = std::string("To reverse an attack, you must tap crouch (") + Input::keyToChar(Game::crouchkey) + ") during the";
-        string2 = "enemy's attack. You must also be close to the enemy;";
-        string3 = "this is especially important against armed opponents.";
-    }
-    if (stage == 32) {
-        string = "The enemy can attack in " + to_string(int(maxtime - stagetime)) + " seconds.";
-        string2 = "This imaginary opponents attacks will be highlighted";
-        string3 = "to make this easier.";
-    }
-    if (stage == 33) {
-        string = "Reverse three enemy attacks!";
-        string2 = " ";
-        string3 = " ";
-    }
-    if (stage == 34) {
-        string = "Reverse two more enemy attacks!";
-        string2 = " ";
-        string3 = " ";
-    }
-    if (stage == 35) {
-        string = "Reverse one more enemy attack!";
-        string2 = " ";
-        string3 = " ";
-    }
-    if (stage == 36) {
-        string = "Excellent!";
-        string2 = " ";
-        string3 = " ";
-    }
-    if (stage == 37) {
-        string = "Now spar with the enemy for " + to_string(int(maxtime - stagetime)) + " more seconds.";
-        string2 = "Damage dealt: " + to_string(int(damagedealt));
-        string3 = "Damage taken: " + to_string(int(damagetaken));
-    }
-    if (stage == 38) {
-        string = "WEAPONS:";
-        string2 = " ";
-        string3 = " ";
-    }
-    if (stage == 39) {
-        string = "There is now an imaginary knife";
-        string2 = "in the center of the training area.";
-        string3 = " ";
-    }
-    if (stage == 40) {
-        string = "Stand, roll or handspring over the knife";
-        string2 = std::string("while pressing ") + Input::keyToChar(Game::throwkey) + " to pick it up.";
-        string3 = "You can crouch and press the same key to drop it again.";
-    }
-    if (stage == 41) {
-        string = std::string("You can equip and unequip weapons using the ") + Input::keyToChar(Game::drawkey) + " key.";
-        string2 = "Sometimes it is best to keep them unequipped to";
-        string3 = "prevent enemies from taking them. ";
-    }
-    if (stage == 42) {
-        string = "The knife is the smallest weapon and the least encumbering.";
-        string2 = "You can equip or unequip it while standing, crouching,";
-        string3 = "running or flipping.";
-    }
-    if (stage == 43) {
-        string = "You perform weapon attacks the same way as unarmed attacks,";
-        string2 = "but sharp weapons cause permanent damage, instead of the";
-        string3 = "temporary trauma from blunt weapons, fists and feet.";
-    }
-    if (stage == 44) {
-        string = "The enemy now has your knife!";
-        string2 = "Please reverse two of his knife attacks.";
-        string3 = " ";
-    }
-    if (stage == 45) {
-        string = "Please reverse one more of his knife attacks.";
-        string2 = " ";
-        string3 = " ";
-    }
-    if (stage == 46) {
-        string = "Now he has a sword!";
-        string2 = "The sword has longer reach than your arms, so you";
-        string3 = "must move close to reverse the sword slash.";
-    }
-    if (stage == 47) {
-        string = "Long weapons like the sword and staff are also useful for defense;";
-        string2 = "you can parry enemy weapon attacks by pressing the attack key";
-        string3 = "at the right time. Please try parrying the enemy's attacks!";
-    }
-    if (stage == 48) {
-        string = "The staff is like the sword, but has two main attacks.";
-        string2 = "The standing smash is fast and effective, and the running";
-        string3 = "spin smash is slower and more powerful.";
-    }
-    if (stage == 49) {
-        string = std::string("When facing an enemy, you can throw the knife with ") + Input::keyToChar(Game::throwkey) + ".";
-        string2 = "It is possible to throw the knife while flipping,";
-        string3 = "but it is very inaccurate.";
-    }
-    if (stage == 50) {
-        string = "You now know everything you can learn from training.";
-        string2 = "Everything else you must learn from experience!";
-        string3 = " ";
-    }
-    if (stage == 51) {
-        string = "Walk out of the training area to return to the main menu.";
-        string2 = " ";
-        string3 = " ";
+    switch (stage) {
+        case 0:
+        default:
+        break;
+        case 1:
+            string = "Welcome to the Lugaru training level!";
+            break;
+        case 2:
+            string = "BASIC MOVEMENT:";
+            break;
+        case 3:
+            string = "You can move the mouse to rotate the camera.";
+            break;
+        case 4:
+            string = std::string("Try using the ") +
+                    Input::keyToChar(Game::forwardkey) + ", " +
+                    Input::keyToChar(Game::leftkey) + ", " +
+                    Input::keyToChar(Game::backkey) + " and " +
+                    Input::keyToChar(Game::rightkey) + " keys to move around.";
+            string2 = "All movement is relative to the camera.";
+            break;
+        case 5:
+            string = std::string("Please press ") + Input::keyToChar(Game::jumpkey) + " to jump.";
+            string2 = "You can hold it longer to jump higher.";
+            break;
+        case 6:
+            string = std::string("You can press ") + Input::keyToChar(Game::crouchkey) + " to crouch.";
+            string2 = "You can jump higher from a crouching position.";
+            break;
+        case 7:
+            string = std::string("While running, you can press ") + Input::keyToChar(Game::crouchkey) + " to roll.";
+            break;
+        case 8:
+            string = "While crouching, you can sneak around silently";
+            string2 = "using the movement keys.";
+            break;
+        case 9:
+            string = "Release the crouch key while sneaking and hold the movement keys";
+            string2 = "to run animal-style.";
+            break;
+        case 10:
+            string = "ADVANCED MOVEMENT:";
+            break;
+        case 11:
+            string = std::string("When you jump at a wall, you can hold ") + Input::keyToChar(Game::jumpkey) + " again";
+            string2 = "during impact to perform a walljump.";
+            string3 = "Be sure to use the movement keys to press against the wall";
+            break;
+        case 12:
+            string = "While in the air, you can press crouch to flip.";
+            string2 = "Walljumps and flips confuse enemies and give you more control.";
+            break;
+        case 13:
+            string = "BASIC COMBAT:";
+            break;
+        case 14:
+            string = "There is now an imaginary enemy";
+            string2 = "in the middle of the training area.";
+            break;
+        case 15:
+            if (Game::attackkey == MOUSEBUTTON1) {
+                string = "Click to attack when you are near an enemy.";
+            } else {
+                string = std::string("Press ") + Input::keyToChar(Game::attackkey) + " to attack when you are near an enemy.";
+            }
+            string2 = "You can punch by standing still near an enemy and attacking.";
+            break;
+        case 16:
+            string = "If you are close, you will perform a weak punch.";
+            string2 = "The weak punch is excellent for starting attack combinations.";
+            break;
+        case 17:
+            string = "Attacking while running results in a spin kick.";
+            string2 = "This is one of your most powerful ground attacks.";
+            break;
+        case 18:
+            string = "Sweep the enemy's legs out by attacking while crouched.";
+            string2 = "This is a very fast attack, and easy to follow up.";
+            break;
+        case 19:
+            string = "When an enemy is on the ground, you can deal some extra";
+            string2 = "damage by running up and drop-kicking him.";
+            string3 = "(Try knocking them down with a sweep first)";
+            break;
+        case 20:
+            string = "Your most powerful individual attack is the rabbit kick.";
+            if (Game::attackkey == MOUSEBUTTON1) {
+                string2 = "Run at the enemy while holding the mouse button, and press";
+            } else {
+                string2 = std::string("Run at the enemy while holding ") + Input::keyToChar(Game::attackkey) + ", and press";
+            }
+            string3 = std::string("the jump key (") + Input::keyToChar(Game::jumpkey) + ") to attack.";
+            break;
+        case 21:
+            string = "This attack is devastating if timed correctly.";
+            string2 = "Even if timed incorrectly, it will knock the enemy over.";
+            if (againbonus) {
+                string3 = "Try rabbit-kicking the imaginary enemy again.";
+            } else {
+                string3 = "Try rabbit-kicking the imaginary enemy.";
+            }
+            break;
+        case 22:
+            string = "If you sneak behind an enemy unnoticed, you can kill";
+            string2 = "him instantly. Move close behind this enemy";
+            string3 = "and attack.";
+            break;
+        case 23:
+            string = "Another important attack is the wall kick. When an enemy";
+            string2 = "is near a wall, perform a walljump nearby and hold";
+            string3 = "the attack key during impact with the wall.";
+            break;
+        case 24:
+            string = "You can tackle enemies by running at them animal-style";
+            if (Game::attackkey == MOUSEBUTTON1) {
+                string2 = std::string("and pressing jump (") + Input::keyToChar(Game::jumpkey) + ") or attack(mouse button).";
+            } else {
+                string2 = std::string("and pressing jump (") + Input::keyToChar(Game::jumpkey) + ") or attack(" + Input::keyToChar(Game::attackkey) + ").";
+            }
+            string3 = "This is especially useful when they are running away.";
+            break;
+        case 25:
+            string = "Dodge by pressing back and attack. Dodging is essential";
+            string2 = "against enemies with swords or other long weapons.";
+            break;
+        case 26:
+            string = "REVERSALS AND COUNTER-REVERSALS";
+            break;
+        case 27:
+            string = "The enemy can now reverse your attacks.";
+            break;
+        case 28:
+            string = "If you attack, you will notice that the enemy now sometimes";
+            string2 = "catches your attack and uses it against you. Hold";
+            string3 = std::string("crouch (") + Input::keyToChar(Game::crouchkey) + ") after attacking to escape from reversals.";
+            break;
+        case 29:
+            string = "Try escaping from two more reversals in a row.";
+            break;
+        case 30:
+            string = "Good!";
+            break;
+        case 31:
+            string = std::string("To reverse an attack, you must tap crouch (") + Input::keyToChar(Game::crouchkey) + ") during the";
+            string2 = "enemy's attack. You must also be close to the enemy;";
+            string3 = "this is especially important against armed opponents.";
+            break;
+        case 32:
+            string = "The enemy can attack in " + to_string(int(maxtime - stagetime)) + " seconds.";
+            string2 = "This imaginary opponents attacks will be highlighted";
+            string3 = "to make this easier.";
+            break;
+        case 33:
+            string = "Reverse three enemy attacks!";
+            break;
+        case 34:
+            string = "Reverse two more enemy attacks!";
+            break;
+        case 35:
+            string = "Reverse one more enemy attack!";
+            break;
+        case 36:
+            string = "Excellent!";
+            break;
+        case 37:
+            string = "Now spar with the enemy for " + to_string(int(maxtime - stagetime)) + " more seconds.";
+            string2 = "Damage dealt: " + to_string(int(damagedealt));
+            string3 = "Damage taken: " + to_string(int(damagetaken));
+            break;
+        case 38:
+            string = "WEAPONS:";
+            break;
+        case 39:
+            string = "There is now an imaginary knife";
+            string2 = "in the center of the training area.";
+            break;
+        case 40:
+            string = "Stand, roll or handspring over the knife";
+            string2 = std::string("while pressing ") + Input::keyToChar(Game::throwkey) + " to pick it up.";
+            string3 = "You can crouch and press the same key to drop it again.";
+            break;
+        case 41:
+            string = std::string("You can equip and unequip weapons using the ") + Input::keyToChar(Game::drawkey) + " key.";
+            string2 = "Sometimes it is best to keep them unequipped to";
+            string3 = "prevent enemies from taking them. ";
+            break;
+        case 42:
+            string = "The knife is the smallest weapon and the least encumbering.";
+            string2 = "You can equip or unequip it while standing, crouching,";
+            string3 = "running or flipping.";
+            break;
+        case 43:
+            string = "You perform weapon attacks the same way as unarmed attacks,";
+            string2 = "but sharp weapons cause permanent damage, instead of the";
+            string3 = "temporary trauma from blunt weapons, fists and feet.";
+            break;
+        case 44:
+            string = "The enemy now has your knife!";
+            string2 = "Please reverse two of his knife attacks.";
+            break;
+        case 45:
+            string = "Please reverse one more of his knife attacks.";
+            break;
+        case 46:
+            string = "Now he has a sword!";
+            string2 = "The sword has longer reach than your arms, so you";
+            string3 = "must move close to reverse the sword slash.";
+            break;
+        case 47:
+            string = "Long weapons like the sword and staff are also useful for defense;";
+            string2 = "you can parry enemy weapon attacks by pressing the attack key";
+            string3 = "at the right time. Please try parrying the enemy's attacks!";
+            break;
+        case 48:
+            string = "The staff is like the sword, but has two main attacks.";
+            string2 = "The standing smash is fast and effective, and the running";
+            string3 = "spin smash is slower and more powerful.";
+            break;
+        case 49:
+            string = std::string("When facing an enemy, you can throw the knife with ") + Input::keyToChar(Game::throwkey) + ".";
+            string2 = "It is possible to throw the knife while flipping,";
+            string3 = "but it is very inaccurate.";
+            break;
+        case 50:
+            string = "You now know everything you can learn from training.";
+            string2 = "Everything else you must learn from experience!";
+            break;
+        case 51:
+            string = "Walk out of the training area to return to the main menu.";
+            break;
     }
 
-    Game::text->glPrintOutlined(1, 1, 1, tutorialopac, screenwidth / 2 - 7.6 * string.size()*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
-    Game::text->glPrintOutlined(1, 1, 1, tutorialopac, screenwidth / 2 - 7.6 * string2.size()*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 20 * screenwidth / 1024, string2, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
-    Game::text->glPrintOutlined(1, 1, 1, tutorialopac, screenwidth / 2 - 7.6 * string3.size()*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 40 * screenwidth / 1024, string3, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
+    float opacity = maxtime - stagetime;
+
+    if (opacity > 1) {
+        opacity = 1;
+    }
+    if (opacity < 0) {
+        opacity = 0;
+    }
+
+    Game::text->glPrintOutlined(1, 1, 1, opacity, screenwidth / 2 - 7.6 * string.size()*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
+    Game::text->glPrintOutlined(1, 1, 1, opacity, screenwidth / 2 - 7.6 * string2.size()*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 20 * screenwidth / 1024, string2, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
+    Game::text->glPrintOutlined(1, 1, 1, opacity, screenwidth / 2 - 7.6 * string3.size()*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 40 * screenwidth / 1024, string3, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
 
     string = "Press 'tab' to skip to the next item.";
     string2 = "Press escape at any time to";
