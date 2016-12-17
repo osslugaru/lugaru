@@ -543,7 +543,7 @@ void Menu::Tick()
     }
     if (mainmenu == 10)
         endgame = 2;
-    if (mainmenu == 18 && Input::isKeyPressed(MOUSEBUTTON2) && selected == 1) {
+    if (mainmenu == 18 && Input::isKeyPressed(MOUSEBUTTON_RIGHT) && selected == 1) {
         stereoseparation -= 0.001;
         updateStereoConfigMenu();
     }

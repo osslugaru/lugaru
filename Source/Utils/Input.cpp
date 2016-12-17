@@ -41,33 +41,40 @@ void Input::Tick()
 
 bool Input::isKeyDown(int k)
 {
-    if (k >= SDL_NUM_SCANCODES + 6) // really useful? check that.
+    if (k >= SDL_NUM_SCANCODES + 6) {
         return false;
+    }
     return keyDown[k];
 }
 
 bool Input::isKeyPressed(int k)
 {
-    if (k >= SDL_NUM_SCANCODES + 6)
+    if (k >= SDL_NUM_SCANCODES + 6) {
         return false;
+    }
     return keyPressed[k];
 }
 
 const char* Input::keyToChar(unsigned short i)
 {
-    if (i < SDL_NUM_SCANCODES)
+    if (i < SDL_NUM_SCANCODES) {
         return SDL_GetKeyName(SDL_GetKeyFromScancode(SDL_Scancode(i)));
-    else if (i == MOUSEBUTTON1)
-        return "mouse1";
-    else if (i == MOUSEBUTTON2)
-        return "mouse2";
-    else if (i == MOUSEBUTTON3)
-        return "mouse3";
-    else
+    } else if (i == MOUSEBUTTON_LEFT) {
+        return "mouse left button";
+    } else if (i == MOUSEBUTTON_RIGHT) {
+        return "mouse right button";
+    } else if (i == MOUSEBUTTON_MIDDLE) {
+        return "mouse middle button";
+    } else if (i == MOUSEBUTTON_X1) {
+        return "mouse button 4";
+    } else if (i == MOUSEBUTTON_X2) {
+        return "mouse button 5";
+    } else {
         return "unknown";
+    }
 }
 
 bool Input::MouseClicked()
 {
-    return isKeyPressed(SDL_NUM_SCANCODES + SDL_BUTTON_LEFT);
+    return isKeyPressed(MOUSEBUTTON_LEFT);
 }

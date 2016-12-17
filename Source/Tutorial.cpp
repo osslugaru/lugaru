@@ -584,11 +584,7 @@ void Tutorial::DrawTextInfo()
             string2 = "in the middle of the training area.";
             break;
         case 15:
-            if (Game::attackkey == MOUSEBUTTON1) {
-                string = "Click to attack when you are near an enemy.";
-            } else {
-                string = std::string("Press ") + Input::keyToChar(Game::attackkey) + " to attack when you are near an enemy.";
-            }
+            string = std::string("Press ") + Input::keyToChar(Game::attackkey) + " to attack when you are near an enemy.";
             string2 = "You can punch by standing still near an enemy and attacking.";
             break;
         case 16:
@@ -610,11 +606,7 @@ void Tutorial::DrawTextInfo()
             break;
         case 20:
             string = "Your most powerful individual attack is the rabbit kick.";
-            if (Game::attackkey == MOUSEBUTTON1) {
-                string2 = "Run at the enemy while holding the mouse button, and press";
-            } else {
-                string2 = std::string("Run at the enemy while holding ") + Input::keyToChar(Game::attackkey) + ", and press";
-            }
+            string2 = std::string("Run at the enemy while holding ") + Input::keyToChar(Game::attackkey) + ", and press";
             string3 = std::string("the jump key (") + Input::keyToChar(Game::jumpkey) + ") to attack.";
             break;
         case 21:
@@ -638,11 +630,7 @@ void Tutorial::DrawTextInfo()
             break;
         case 24:
             string = "You can tackle enemies by running at them animal-style";
-            if (Game::attackkey == MOUSEBUTTON1) {
-                string2 = std::string("and pressing jump (") + Input::keyToChar(Game::jumpkey) + ") or attack(mouse button).";
-            } else {
-                string2 = std::string("and pressing jump (") + Input::keyToChar(Game::jumpkey) + ") or attack(" + Input::keyToChar(Game::attackkey) + ").";
-            }
+            string2 = std::string("and pressing jump (") + Input::keyToChar(Game::jumpkey) + ") or attack (" + Input::keyToChar(Game::attackkey) + ").";
             string3 = "This is especially useful when they are running away.";
             break;
         case 25:

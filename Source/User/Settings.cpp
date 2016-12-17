@@ -62,7 +62,7 @@ void DefaultSettings()
     rightkey = SDL_SCANCODE_D;
     drawkey = SDL_SCANCODE_E;
     throwkey = SDL_SCANCODE_Q;
-    attackkey = MOUSEBUTTON1;
+    attackkey = MOUSEBUTTON_LEFT;
     consolekey = SDL_SCANCODE_GRAVE;
 
     newdetail = detail;
