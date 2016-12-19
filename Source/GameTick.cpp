@@ -176,7 +176,7 @@ STATIC_ASSERT (rabbittype == 0 && wolftype == 1)
 // utility functions
 
 // TODO: this is slightly incorrect
-inline float roughDirection(XYZ vec)
+float roughDirection(XYZ vec)
 {
     Normalise(&vec);
     float angle = -asin(-vec.x) * 180 / M_PI;
@@ -184,7 +184,7 @@ inline float roughDirection(XYZ vec)
         angle = 180 - angle;
     return angle;
 }
-inline float roughDirectionTo(XYZ start, XYZ end)
+float roughDirectionTo(XYZ start, XYZ end)
 {
     return roughDirection(end - start);
 }
@@ -193,11 +193,11 @@ inline float pitchOf(XYZ vec)
     Normalise(&vec);
     return -asin(vec.y) * 180 / M_PI;
 }
-inline float pitchTo(XYZ start, XYZ end)
+float pitchTo(XYZ start, XYZ end)
 {
     return pitchOf(end - start);
 }
-inline float sq(float n)
+float sq(float n)
 {
     return n * n;
 }

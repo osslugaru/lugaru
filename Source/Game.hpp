@@ -156,6 +156,10 @@ void fireSound(int sound = fireendsound);
 void inputText(std::string& str, unsigned* charselected);
 void flash(float amount = 1, int delay = 1);
 }
+float roughDirection(XYZ vec);
+float roughDirectionTo(XYZ start, XYZ end);
+float pitchTo(XYZ start, XYZ end);
+float sq(float n);
 
 #ifndef __forceinline
 #  ifdef __GNUC__

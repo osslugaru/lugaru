@@ -6945,10 +6945,6 @@ bool Person::addClothes(const int& clothesId)
     }
 }
 
-extern float sq(float n);
-extern float roughDirectionTo(XYZ start, XYZ end);
-extern float pitchTo(XYZ start, XYZ end);
-
 void Person::doAI()
 {
     if (aitype != playercontrolled && !Dialog::inDialog()) {
