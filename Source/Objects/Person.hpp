@@ -395,6 +395,8 @@ public:
 
     bool addClothes(const int& clothesId);
     void addClothes();
+
+    void doAI();
 };
 
 const int maxplayers = 10;

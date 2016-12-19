@@ -67,6 +67,13 @@ extern float hostiletime;
 
 extern bool gamestarted;
 
+extern XYZ envsound[30];
+extern float envsoundvol[30];
+extern int numenvsounds;
+extern float envsoundlife[30];
+
+extern XYZ windvector;
+
 std::vector<std::shared_ptr<Person>> Person::players(1, std::shared_ptr<Person>(new Person()));
 
 Person::Person() :
@@ -6820,6 +6827,51 @@ int Person::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate,
     return firstintersecting;
 }
 
+int findPathDist(int start, int end)
+{
+    int smallestcount, count, connected;
+    int last, last2, last3, last4;
+    int closest;
+
+    smallestcount = 1000;
+    for (int i = 0; i < 50; i++) {
+        count = 0;
+        last = start;
+        last2 = -1;
+        last3 = -1;
+        last4 = -1;
+        while (last != end && count < 30) {
+            closest = -1;
+            for (int j = 0; j < Game::numpathpoints; j++) {
+                if (j != last && j != last2 && j != last3 && j != last4) {
+                    connected = 0;
+                    if (Game::numpathpointconnect[j])
+                        for (int k = 0; k < Game::numpathpointconnect[j]; k++) {
+                            if (Game::pathpointconnect[j][k] == last)connected = 1;
+                        }
+                    if (!connected)
+                        if (Game::numpathpointconnect[last])
+                            for (int k = 0; k < Game::numpathpointconnect[last]; k++) {
+                                if (Game::pathpointconnect[last][k] == j)connected = 1;
+                            }
+                    if (connected)
+                        if (closest == -1 || Random() % 2 == 0) {
+                            closest = j;
+                        }
+                }
+            }
+            last4 = last3;
+            last3 = last2;
+            last2 = last;
+            last = closest;
+            count++;
+        }
+        if (count < smallestcount)
+            smallestcount = count;
+    }
+    return smallestcount;
+}
+
 void Person::takeWeapon(int weaponId)
 {
     weaponactive = 0;
@@ -6890,5 +6942,989 @@ bool Person::addClothes(const int& clothesId)
         return 1;
     } else {
         return 0;
+    }
+}
+
+extern float sq(float n);
+extern float roughDirectionTo(XYZ start, XYZ end);
+extern float pitchTo(XYZ start, XYZ end);
+
+void Person::doAI()
+{
+    if (aitype != playercontrolled && !Dialog::inDialog()) {
+        jumpclimb = 0;
+        //disable movement in editor
+        if (Game::editorenabled)
+            stunned = 1;
+
+        pause = 0;
+        if (distsqflat(&Person::players[0]->coords, &coords) < 30 &&
+                Person::players[0]->coords.y > coords.y + 2 &&
+                !Person::players[0]->onterrain)
+            pause = 1;
+
+        //pathfinding
+        if (aitype == pathfindtype) {
+            if (finalpathfindpoint == -1) {
+                float closestdistance;
+                float tempdist;
+                int closest;
+                XYZ colpoint;
+                closest = -1;
+                closestdistance = -1;
+                for (int j = 0; j < Game::numpathpoints; j++) {
+                    if (closest == -1 || distsq(&finalfinaltarget, &Game::pathpoint[j]) < closestdistance) {
+                        closestdistance = distsq(&finalfinaltarget, &Game::pathpoint[j]);
+                        closest = j;
+                        finaltarget = Game::pathpoint[j];
+                    }
+                }
+                finalpathfindpoint = closest;
+                for (int j = 0; j < Game::numpathpoints; j++) {
+                    for (int k = 0; k < Game::numpathpointconnect[j]; k++) {
+                        DistancePointLine(&finalfinaltarget, &Game::pathpoint[j], &Game::pathpoint[Game::pathpointconnect[j][k]], &tempdist, &colpoint);
+                        if (sq(tempdist) < closestdistance)
+                            if (findDistance(&colpoint, &Game::pathpoint[j]) + findDistance(&colpoint, &Game::pathpoint[Game::pathpointconnect[j][k]]) <
+                                    findDistance(&Game::pathpoint[j], &Game::pathpoint[Game::pathpointconnect[j][k]]) + .1) {
+                                closestdistance = sq(tempdist);
+                                closest = j;
+                                finaltarget = colpoint;
+                            }
+                    }
+                }
+                finalpathfindpoint = closest;
+
+            }
+            if (targetpathfindpoint == -1) {
+                float closestdistance;
+                float tempdist;
+                int closest;
+                XYZ colpoint;
+                closest = -1;
+                closestdistance = -1;
+                if (lastpathfindpoint == -1) {
+                    for (int j = 0; j < Game::numpathpoints; j++) {
+                        if (j != lastpathfindpoint)
+                            if (closest == -1 || (distsq(&coords, &Game::pathpoint[j]) < closestdistance)) {
+                                closestdistance = distsq(&coords, &Game::pathpoint[j]);
+                                closest = j;
+                            }
+                    }
+                    targetpathfindpoint = closest;
+                    for (int j = 0; j < Game::numpathpoints; j++)
+                        if (j != lastpathfindpoint)
+                            for (int k = 0; k < Game::numpathpointconnect[j]; k++) {
+                                DistancePointLine(&coords, &Game::pathpoint[j], &Game::pathpoint[Game::pathpointconnect[j][k]], &tempdist, &colpoint );
+                                if (sq(tempdist) < closestdistance) {
+                                    if (findDistance(&colpoint, &Game::pathpoint[j]) + findDistance(&colpoint, &Game::pathpoint[Game::pathpointconnect[j][k]]) <
+                                            findDistance(&Game::pathpoint[j], &Game::pathpoint[Game::pathpointconnect[j][k]]) + .1) {
+                                        closestdistance = sq(tempdist);
+                                        closest = j;
+                                    }
+                                }
+                            }
+                    targetpathfindpoint = closest;
+                } else {
+                    for (int j = 0; j < Game::numpathpoints; j++)
+                        if (j != lastpathfindpoint &&
+                                j != lastpathfindpoint2 &&
+                                j != lastpathfindpoint3 &&
+                                j != lastpathfindpoint4) {
+                            bool connected = 0;
+                            if (Game::numpathpointconnect[j])
+                                for (int k = 0; k < Game::numpathpointconnect[j]; k++)
+                                    if (Game::pathpointconnect[j][k] == lastpathfindpoint)
+                                        connected = 1;
+                            if (!connected)
+                                if (Game::numpathpointconnect[lastpathfindpoint])
+                                    for (int k = 0; k < Game::numpathpointconnect[lastpathfindpoint]; k++)
+                                        if (Game::pathpointconnect[lastpathfindpoint][k] == j)
+                                            connected = 1;
+                            if (connected) {
+                                tempdist = findPathDist(j, finalpathfindpoint);
+                                if (closest == -1 || tempdist < closestdistance) {
+                                    closestdistance = tempdist;
+                                    closest = j;
+                                }
+                            }
+                        }
+                    targetpathfindpoint = closest;
+                }
+            }
+            losupdatedelay -= multiplier;
+
+            targetyaw = roughDirectionTo(coords, Game::pathpoint[targetpathfindpoint]);
+            lookyaw = targetyaw;
+
+            //reached target point
+            if (distsqflat(&coords, &Game::pathpoint[targetpathfindpoint]) < .6) {
+                lastpathfindpoint4 = lastpathfindpoint3;
+                lastpathfindpoint3 = lastpathfindpoint2;
+                lastpathfindpoint2 = lastpathfindpoint;
+                lastpathfindpoint = targetpathfindpoint;
+                if (lastpathfindpoint2 == -1)
+                    lastpathfindpoint2 = lastpathfindpoint;
+                if (lastpathfindpoint3 == -1)
+                    lastpathfindpoint3 = lastpathfindpoint2;
+                if (lastpathfindpoint4 == -1)
+                    lastpathfindpoint4 = lastpathfindpoint3;
+                targetpathfindpoint = -1;
+            }
+            if (     distsqflat(&coords, &finalfinaltarget) <
+                     distsqflat(&coords, &finaltarget) ||
+                     distsqflat(&coords, &finaltarget) < .6 * sq(scale * 5) ||
+                     lastpathfindpoint == finalpathfindpoint) {
+                aitype = passivetype;
+            }
+
+            forwardkeydown = 1;
+            leftkeydown = 0;
+            backkeydown = 0;
+            rightkeydown = 0;
+            crouchkeydown = 0;
+            attackkeydown = 0;
+            throwkeydown = 0;
+
+            if (avoidcollided > .8 && !jumpkeydown && collided < .8)
+                targetyaw += 90 * (whichdirection * 2 - 1);
+
+            if (collided < 1 || animTarget != jumpupanim)
+                jumpkeydown = 0;
+            if ((collided > .8 && jumppower >= 5))
+                jumpkeydown = 1;
+
+            if ((!Tutorial::active || cananger) &&
+                    hostile &&
+                    !Person::players[0]->dead &&
+                    distsq(&coords, &Person::players[0]->coords) < 400 &&
+                    occluded < 25) {
+                if (distsq(&coords, &Person::players[0]->coords) < 12 &&
+                        Animation::animations[Person::players[0]->animTarget].height != lowheight &&
+                        !Game::editorenabled &&
+                        (Person::players[0]->coords.y < coords.y + 5 || Person::players[0]->onterrain))
+                    aitype = attacktypecutoff;
+                if (distsq(&coords, &Person::players[0]->coords) < 30 &&
+                        Animation::animations[Person::players[0]->animTarget].height == highheight &&
+                        !Game::editorenabled)
+                    aitype = attacktypecutoff;
+
+                if (losupdatedelay < 0 && !Game::editorenabled && occluded < 2) {
+                    losupdatedelay = .2;
+                    for (unsigned j = 0; j < Person::players.size(); j++)
+                        if (j == 0 || Person::players[j]->skeleton.free || Person::players[j]->aitype != passivetype)
+                            if (abs(Random() % 2) || Animation::animations[Person::players[j]->animTarget].height != lowheight || j != 0)
+                                if (distsq(&coords, &Person::players[j]->coords) < 400)
+                                    if (normaldotproduct(facing, Person::players[j]->coords - coords) > 0)
+                                        if (Person::players[j]->coords.y < coords.y + 5 || Person::players[j]->onterrain)
+                                            if (!Person::players[j]->isWallJump() && -1 == Object::checkcollide(
+                                                        DoRotation(jointPos(head), 0, yaw, 0)
+                                                        *scale + coords,
+                                                        DoRotation(Person::players[j]->jointPos(head), 0, Person::players[j]->yaw, 0)
+                                                        *Person::players[j]->scale + Person::players[j]->coords) ||
+                                                    (Person::players[j]->animTarget == hanganim &&
+                                                     normaldotproduct(Person::players[j]->facing, coords - Person::players[j]->coords) < 0)) {
+                                                aitype = searchtype;
+                                                lastchecktime = 12;
+                                                lastseen = Person::players[j]->coords;
+                                                lastseentime = 12;
+                                            }
+                }
+            }
+            if (aitype == attacktypecutoff && Game::musictype != 2)
+                if (creature != wolftype) {
+                    stunned = .6;
+                    surprised = .6;
+                }
+        }
+
+        if (aitype != passivetype && Game::leveltime > .5)
+            howactive = typeactive;
+
+        if (aitype == passivetype) {
+            aiupdatedelay -= multiplier;
+            losupdatedelay -= multiplier;
+            lastseentime += multiplier;
+            pausetime -= multiplier;
+            if (lastseentime > 1)
+                lastseentime = 1;
+
+            if (aiupdatedelay < 0) {
+                if (numwaypoints > 1 && howactive == typeactive && pausetime <= 0) {
+                    targetyaw = roughDirectionTo(coords, waypoints[waypoint]);
+                    lookyaw = targetyaw;
+                    aiupdatedelay = .05;
+
+                    if (distsqflat(&coords, &waypoints[waypoint]) < 1) {
+                        if (waypointtype[waypoint] == wppause)
+                            pausetime = 4;
+                        waypoint++;
+                        if (waypoint > numwaypoints - 1)
+                            waypoint = 0;
+
+                    }
+                }
+
+                if (numwaypoints > 1 && howactive == typeactive && pausetime <= 0)
+                    forwardkeydown = 1;
+                else
+                    forwardkeydown = 0;
+                leftkeydown = 0;
+                backkeydown = 0;
+                rightkeydown = 0;
+                crouchkeydown = 0;
+                attackkeydown = 0;
+                throwkeydown = 0;
+
+                if (avoidcollided > .8 && !jumpkeydown && collided < .8) {
+                    if (!avoidsomething)
+                        targetyaw += 90 * (whichdirection * 2 - 1);
+                    else {
+                        XYZ leftpos, rightpos;
+                        float leftdist, rightdist;
+                        leftpos = coords + DoRotation(facing, 0, 90, 0);
+                        rightpos = coords - DoRotation(facing, 0, 90, 0);
+                        leftdist = distsq(&leftpos, &avoidwhere);
+                        rightdist = distsq(&rightpos, &avoidwhere);
+                        if (leftdist < rightdist)
+                            targetyaw += 90;
+                        else
+                            targetyaw -= 90;
+                    }
+                }
+            }
+            if (collided < 1 || animTarget != jumpupanim)
+                jumpkeydown = 0;
+            if ((collided > .8 && jumppower >= 5))
+                jumpkeydown = 1;
+
+
+            //hearing sounds
+            if (!Game::editorenabled) {
+                if (howactive <= typesleeping)
+                    if (numenvsounds > 0 && (!Tutorial::active || cananger) && hostile)
+                        for (int j = 0; j < numenvsounds; j++) {
+                            float vol = howactive == typesleeping ? envsoundvol[j] - 14 : envsoundvol[j];
+                            if (vol > 0 && distsq(&coords, &envsound[j]) <
+                                    2 * (vol + vol * (creature == rabbittype) * 3))
+                                aitype = attacktypecutoff;
+                        }
+
+                if (aitype != passivetype) {
+                    if (howactive == typesleeping)
+                        setAnimation(getupfromfrontanim);
+                    howactive = typeactive;
+                }
+            }
+
+            if (howactive < typesleeping &&
+                    ((!Tutorial::active || cananger) && hostile) &&
+                    !Person::players[0]->dead &&
+                    distsq(&coords, &Person::players[0]->coords) < 400 &&
+                    occluded < 25) {
+                if (distsq(&coords, &Person::players[0]->coords) < 12 &&
+                        Animation::animations[Person::players[0]->animTarget].height != lowheight && !Game::editorenabled)
+                    aitype = attacktypecutoff;
+                if (distsq(&coords, &Person::players[0]->coords) < 30 &&
+                        Animation::animations[Person::players[0]->animTarget].height == highheight && !Game::editorenabled)
+                    aitype = attacktypecutoff;
+
+                //wolf smell
+                if (creature == wolftype) {
+                    XYZ windsmell;
+                    for (unsigned j = 0; j < Person::players.size(); j++) {
+                        if (j == 0 || (Person::players[j]->dead && Person::players[j]->bloodloss > 0)) {
+                            float smelldistance = 50;
+                            if (j == 0 && Person::players[j]->num_weapons > 0) {
+                                if (weapons[Person::players[j]->weaponids[0]].bloody)
+                                    smelldistance = 100;
+                                if (Person::players[j]->num_weapons == 2)
+                                    if (weapons[Person::players[j]->weaponids[1]].bloody)
+                                        smelldistance = 100;
+                            }
+                            if (j != 0)
+                                smelldistance = 100;
+                            windsmell = windvector;
+                            Normalise(&windsmell);
+                            windsmell = windsmell * 2 + Person::players[j]->coords;
+                            if (distsq(&coords, &windsmell) < smelldistance && !Game::editorenabled)
+                                aitype = attacktypecutoff;
+                        }
+                    }
+                }
+
+                if (howactive < typesleeping && losupdatedelay < 0 && !Game::editorenabled && occluded < 2) {
+                    losupdatedelay = .2;
+                    for (unsigned j = 0; j < Person::players.size(); j++) {
+                        if (j == 0 || Person::players[j]->skeleton.free || Person::players[j]->aitype != passivetype) {
+                            if (abs(Random() % 2) || Animation::animations[Person::players[j]->animTarget].height != lowheight || j != 0)
+                                if (distsq(&coords, &Person::players[j]->coords) < 400)
+                                    if (normaldotproduct(facing, Person::players[j]->coords - coords) > 0)
+                                        if ((-1 == Object::checkcollide(
+                                                    DoRotation(jointPos(head), 0, yaw, 0)*
+                                                    scale + coords,
+                                                    DoRotation(Person::players[j]->jointPos(head), 0, Person::players[j]->yaw, 0)*
+                                                    Person::players[j]->scale + Person::players[j]->coords) &&
+                                                !Person::players[j]->isWallJump()) ||
+                                                (Person::players[j]->animTarget == hanganim &&
+                                                 normaldotproduct(Person::players[j]->facing, coords - Person::players[j]->coords) < 0)) {
+                                            lastseentime -= .2;
+                                            if (j == 0 && Animation::animations[Person::players[j]->animTarget].height == lowheight)
+                                                lastseentime -= .4;
+                                            else
+                                                lastseentime -= .6;
+                                        }
+                            if (lastseentime <= 0) {
+                                aitype = searchtype;
+                                lastchecktime = 12;
+                                lastseen = Person::players[j]->coords;
+                                lastseentime = 12;
+                            }
+                        }
+                    }
+                }
+            }
+            //alerted surprise
+            if (aitype == attacktypecutoff && Game::musictype != 2) {
+                if (creature != wolftype) {
+                    stunned = .6;
+                    surprised = .6;
+                }
+                if (creature == wolftype) {
+                    stunned = .47;
+                    surprised = .47;
+                }
+                numseen++;
+            }
+        }
+
+        //search for player
+        int j;
+        if (aitype == searchtype) {
+            aiupdatedelay -= multiplier;
+            losupdatedelay -= multiplier;
+            if (!pause)
+                lastseentime -= multiplier;
+            lastchecktime -= multiplier;
+
+            if (isRun() && !onground) {
+                if (coords.y > terrain.getHeight(coords.x, coords.z) + 10) {
+                    XYZ test2 = coords + facing;
+                    test2.y += 5;
+                    XYZ test = coords + facing;
+                    test.y -= 10;
+                    j = Object::checkcollide(test2, test, laststanding);
+                    if (j == -1)
+                        j = Object::checkcollide(test2, test);
+                    if (j == -1) {
+                        velocity = 0;
+                        setAnimation(getStop());
+                        targetyaw += 180;
+                        stunned = .5;
+                        //aitype=passivetype;
+                        aitype = pathfindtype;
+                        finalfinaltarget = waypoints[waypoint];
+                        finalpathfindpoint = -1;
+                        targetpathfindpoint = -1;
+                        lastpathfindpoint = -1;
+                        lastpathfindpoint2 = -1;
+                        lastpathfindpoint3 = -1;
+                        lastpathfindpoint4 = -1;
+                    } else
+                        laststanding = j;
+                }
+            }
+            //check out last seen location
+            if (aiupdatedelay < 0) {
+                targetyaw = roughDirectionTo(coords, lastseen);
+                lookyaw = targetyaw;
+                aiupdatedelay = .05;
+                forwardkeydown = 1;
+
+                if (distsqflat(&coords, &lastseen) < 1 * sq(scale * 5) || lastchecktime < 0) {
+                    forwardkeydown = 0;
+                    aiupdatedelay = 1;
+                    lastseen.x += (float(Random() % 100) - 50) / 25;
+                    lastseen.z += (float(Random() % 100) - 50) / 25;
+                    lastchecktime = 3;
+                }
+
+                leftkeydown = 0;
+                backkeydown = 0;
+                rightkeydown = 0;
+                crouchkeydown = 0;
+                attackkeydown = 0;
+                throwkeydown = 0;
+
+                if (avoidcollided > .8 && !jumpkeydown && collided < .8) {
+                    if (!avoidsomething)
+                        targetyaw += 90 * (whichdirection * 2 - 1);
+                    else {
+                        XYZ leftpos, rightpos;
+                        float leftdist, rightdist;
+                        leftpos = coords + DoRotation(facing, 0, 90, 0);
+                        rightpos = coords - DoRotation(facing, 0, 90, 0);
+                        leftdist = distsq(&leftpos, &avoidwhere);
+                        rightdist = distsq(&rightpos, &avoidwhere);
+                        if (leftdist < rightdist)
+                            targetyaw += 90;
+                        else
+                            targetyaw -= 90;
+                    }
+                }
+            }
+            if (collided < 1 || animTarget != jumpupanim)
+                jumpkeydown = 0;
+            if ((collided > .8 && jumppower >= 5))
+                jumpkeydown = 1;
+
+            if (numenvsounds > 0 && ((!Tutorial::active || cananger) && hostile))
+                for (int k = 0; k < numenvsounds; k++) {
+                    if (distsq(&coords, &envsound[k]) < 2 * (envsoundvol[k] + envsoundvol[k] * (creature == rabbittype) * 3)) {
+                        aitype = attacktypecutoff;
+                    }
+                }
+
+            if (!Person::players[0]->dead &&
+                    losupdatedelay < 0 &&
+                    !Game::editorenabled &&
+                    occluded < 2 &&
+                    ((!Tutorial::active || cananger) && hostile)) {
+                losupdatedelay = .2;
+                if (distsq(&coords, &Person::players[0]->coords) < 4 && Animation::animations[animTarget].height != lowheight) {
+                    aitype = attacktypecutoff;
+                    lastseentime = 1;
+                }
+                if (abs(Random() % 2) || Animation::animations[animTarget].height != lowheight)
+                    //TODO: factor out canSeePlayer()
+                    if (distsq(&coords, &Person::players[0]->coords) < 400)
+                        if (normaldotproduct(facing, Person::players[0]->coords - coords) > 0)
+                            if ((Object::checkcollide(
+                                        DoRotation(jointPos(head), 0, yaw, 0)*
+                                        scale + coords,
+                                        DoRotation(Person::players[0]->jointPos(head), 0, Person::players[0]->yaw, 0)*
+                                        Person::players[0]->scale + Person::players[0]->coords) == -1) ||
+                                    (Person::players[0]->animTarget == hanganim && normaldotproduct(
+                                         Person::players[0]->facing, coords - Person::players[0]->coords) < 0)) {
+                                /* //TODO: changed j to 0 on a whim, make sure this is correct
+                                (Person::players[j]->animTarget==hanganim&&normaldotproduct(
+                                    Person::players[j]->facing,coords-Person::players[j]->coords)<0)
+                                */
+                                aitype = attacktypecutoff;
+                                lastseentime = 1;
+                            }
+            }
+            //player escaped
+            if (lastseentime < 0) {
+                //aitype=passivetype;
+                numescaped++;
+                aitype = pathfindtype;
+                finalfinaltarget = waypoints[waypoint];
+                finalpathfindpoint = -1;
+                targetpathfindpoint = -1;
+                lastpathfindpoint = -1;
+                lastpathfindpoint2 = -1;
+                lastpathfindpoint3 = -1;
+                lastpathfindpoint4 = -1;
+            }
+        }
+
+        if (aitype != gethelptype)
+            runninghowlong = 0;
+
+        //get help from buddies
+        if (aitype == gethelptype) {
+            runninghowlong += multiplier;
+            aiupdatedelay -= multiplier;
+
+            if (aiupdatedelay < 0 || ally == 0) {
+                aiupdatedelay = .2;
+
+                //find closest ally
+                //TODO: factor out closest search somehow
+                if (!ally) {
+                    int closest = -1;
+                    float closestdist = -1;
+                    for (unsigned k = 0; k < Person::players.size(); k++) {
+                        if ((k != id) && (k != 0) && !Person::players[k]->dead &&
+                                (Person::players[k]->howactive < typedead1) &&
+                                !Person::players[k]->skeleton.free &&
+                                (Person::players[k]->aitype == passivetype)) {
+                            float distance = distsq(&coords, &Person::players[k]->coords);
+                            if (closestdist == -1 || distance < closestdist) {
+                                closestdist = distance;
+                                closest = k;
+                            }
+                            closest = k;
+                        }
+                    }
+                    if (closest != -1) {
+                        ally = closest;
+                    } else {
+                        ally = 0;
+                    }
+                    lastseen = Person::players[0]->coords;
+                    lastseentime = 12;
+                }
+
+
+                lastchecktime = 12;
+
+                XYZ facing = coords;
+                XYZ flatfacing = Person::players[ally]->coords;
+                facing.y += jointPos(head).y * scale;
+                flatfacing.y += Person::players[ally]->jointPos(head).y * Person::players[ally]->scale;
+                if (-1 != Object::checkcollide(facing, flatfacing))
+                    lastseentime -= .1;
+
+                //no available ally, run back to player
+                if (ally <= 0 ||
+                        Person::players[ally]->skeleton.free ||
+                        Person::players[ally]->aitype != passivetype ||
+                        lastseentime <= 0) {
+                    aitype = searchtype;
+                    lastseentime = 12;
+                }
+
+                //seek out ally
+                if (ally > 0) {
+                    targetyaw = roughDirectionTo(coords, Person::players[ally]->coords);
+                    lookyaw = targetyaw;
+                    aiupdatedelay = .05;
+                    forwardkeydown = 1;
+
+                    if (distsqflat(&coords, &Person::players[ally]->coords) < 3) {
+                        aitype = searchtype;
+                        lastseentime = 12;
+                        Person::players[ally]->aitype = searchtype;
+                        if (Person::players[ally]->lastseentime < lastseentime) {
+                            Person::players[ally]->lastseen = lastseen;
+                            Person::players[ally]->lastseentime = lastseentime;
+                            Person::players[ally]->lastchecktime = lastchecktime;
+                        }
+                    }
+
+                    if (avoidcollided > .8 && !jumpkeydown && collided < .8) {
+                        if (!avoidsomething)
+                            targetyaw += 90 * (whichdirection * 2 - 1);
+                        else {
+                            XYZ leftpos, rightpos;
+                            float leftdist, rightdist;
+                            leftpos = coords + DoRotation(facing, 0, 90, 0);
+                            rightpos = coords - DoRotation(facing, 0, 90, 0);
+                            leftdist = distsq(&leftpos, &avoidwhere);
+                            rightdist = distsq(&rightpos, &avoidwhere);
+                            if (leftdist < rightdist)
+                                targetyaw += 90;
+                            else
+                                targetyaw -= 90;
+                        }
+                    }
+                }
+
+                leftkeydown = 0;
+                backkeydown = 0;
+                rightkeydown = 0;
+                crouchkeydown = 0;
+                attackkeydown = 0;
+            }
+            if (collided < 1 || animTarget != jumpupanim)
+                jumpkeydown = 0;
+            if (collided > .8 && jumppower >= 5)
+                jumpkeydown = 1;
+        }
+
+        //retreiving a weapon on the ground
+        if (aitype == getweapontype) {
+            aiupdatedelay -= multiplier;
+            lastchecktime -= multiplier;
+
+            if (aiupdatedelay < 0) {
+                aiupdatedelay = .2;
+
+                //ALLY IS WEPON
+                if (ally < 0) {
+                    int closest = -1;
+                    float closestdist = -1;
+                    for (unsigned k = 0; k < weapons.size(); k++)
+                        if (weapons[k].owner == -1) {
+                            float distance = distsq(&coords, &weapons[k].position);
+                            if (closestdist == -1 || distance < closestdist) {
+                                closestdist = distance;
+                                closest = k;
+                            }
+                            closest = k;
+                        }
+                    if (closest != -1)
+                        ally = closest;
+                    else
+                        ally = -1;
+                }
+
+                lastseentime = 12;
+
+                if (!Person::players[0]->dead && ((!Tutorial::active || cananger) && hostile))
+                    if (ally < 0 || weaponactive != -1 || lastchecktime <= 0) {
+                        aitype = attacktypecutoff;
+                        lastseentime = 1;
+                    }
+                if (!Person::players[0]->dead)
+                    if (ally >= 0) {
+                        if (weapons[ally].owner != -1 ||
+                                distsq(&coords, &weapons[ally].position) > 16) {
+                            aitype = attacktypecutoff;
+                            lastseentime = 1;
+                        }
+                        //TODO: factor these out as moveToward()
+                        targetyaw = roughDirectionTo(coords, weapons[ally].position);
+                        lookyaw = targetyaw;
+                        aiupdatedelay = .05;
+                        forwardkeydown = 1;
+
+
+                        if (avoidcollided > .8 && !jumpkeydown && collided < .8) {
+                            if (!avoidsomething)
+                                targetyaw += 90 * (whichdirection * 2 - 1);
+                            else {
+                                XYZ leftpos, rightpos;
+                                float leftdist, rightdist;
+                                leftpos = coords + DoRotation(facing, 0, 90, 0);
+                                rightpos = coords - DoRotation(facing, 0, 90, 0);
+                                leftdist = distsq(&leftpos, &avoidwhere);
+                                rightdist = distsq(&rightpos, &avoidwhere);
+                                if (leftdist < rightdist)
+                                    targetyaw += 90;
+                                else
+                                    targetyaw -= 90;
+                            }
+                        }
+                    }
+
+                leftkeydown = 0;
+                backkeydown = 0;
+                rightkeydown = 0;
+                attackkeydown = 0;
+                throwkeydown = 1;
+                crouchkeydown = 0;
+                if (animTarget != crouchremoveknifeanim &&
+                        animTarget != removeknifeanim)
+                    throwtogglekeydown = 0;
+                drawkeydown = 0;
+            }
+            if (collided < 1 || animTarget != jumpupanim)
+                jumpkeydown = 0;
+            if ((collided > .8 && jumppower >= 5))
+                jumpkeydown = 1;
+        }
+
+        if (aitype == attacktypecutoff) {
+            aiupdatedelay -= multiplier;
+            //dodge or reverse rabbit kicks, knife throws, flips
+            if (damage < damagetolerance * 2 / 3)
+                if ((Person::players[0]->animTarget == rabbitkickanim ||
+                        Person::players[0]->animTarget == knifethrowanim ||
+                        (Person::players[0]->isFlip() &&
+                         normaldotproduct(Person::players[0]->facing, Person::players[0]->coords - coords) < 0)) &&
+                        !Person::players[0]->skeleton.free &&
+                        (aiupdatedelay < .1)) {
+                    attackkeydown = 0;
+                    if (isIdle())
+                        crouchkeydown = 1;
+                    if (Person::players[0]->animTarget != rabbitkickanim && Person::players[0]->weaponactive != -1) {
+                        if (weapons[Person::players[0]->weaponids[0]].getType() == knife) {
+                            if (isIdle() || isCrouch() || isRun() || isFlip()) {
+                                if (abs(Random() % 2) == 0)
+                                    setAnimation(backhandspringanim);
+                                else
+                                    setAnimation(rollanim);
+                                targetyaw += 90 * (abs(Random() % 2) * 2 - 1);
+                                wentforweapon = 0;
+                            }
+                            if (animTarget == jumpupanim || animTarget == jumpdownanim)
+                                setAnimation(flipanim);
+                        }
+                    }
+                    forwardkeydown = 0;
+                    aiupdatedelay = .02;
+                }
+            //get confused by flips
+            if (Person::players[0]->isFlip() &&
+                    !Person::players[0]->skeleton.free &&
+                    Person::players[0]->animTarget != walljumprightkickanim &&
+                    Person::players[0]->animTarget != walljumpleftkickanim) {
+                if (distsq(&Person::players[0]->coords, &coords) < 25)
+                    if ((1 - damage / damagetolerance) > .5)
+                        stunned = 1;
+            }
+            //go for weapon on the ground
+            if (wentforweapon < 3)
+                for (unsigned k = 0; k < weapons.size(); k++)
+                    if (creature != wolftype)
+                        if (num_weapons == 0 &&
+                            weapons[k].owner == -1 &&
+                            weapons[k].velocity.x == 0 &&
+                            weapons[k].velocity.z == 0 &&
+                            weapons[k].velocity.y == 0) {
+                            if (distsq(&coords, &weapons[k].position) < 16) {
+                                wentforweapon++;
+                                lastchecktime = 6;
+                                aitype = getweapontype;
+                                ally = -1;
+                            }
+                        }
+            //dodge/reverse walljump kicks
+            if (damage < damagetolerance / 2)
+                if (Animation::animations[animTarget].height != highheight)
+                    if (damage < damagetolerance * .5 &&
+                            ((Person::players[0]->animTarget == walljumprightkickanim ||
+                              Person::players[0]->animTarget == walljumpleftkickanim) &&
+                             ((aiupdatedelay < .15 &&
+                               difficulty == 2) ||
+                              (aiupdatedelay < .08 &&
+                               difficulty != 2)))) {
+                        crouchkeydown = 1;
+                    }
+            //walked off a ledge (?)
+            if (isRun() && !onground)
+                if (coords.y > terrain.getHeight(coords.x, coords.z) + 10) {
+                    XYZ test2 = coords + facing;
+                    test2.y += 5;
+                    XYZ test = coords + facing;
+                    test.y -= 10;
+                    j = Object::checkcollide(test2, test, laststanding);
+                    if (j == -1)
+                        j = Object::checkcollide(test2, test);
+                    if (j == -1) {
+                        velocity = 0;
+                        setAnimation(getStop());
+                        targetyaw += 180;
+                        stunned = .5;
+                        aitype = pathfindtype;
+                        finalfinaltarget = waypoints[waypoint];
+                        finalpathfindpoint = -1;
+                        targetpathfindpoint = -1;
+                        lastpathfindpoint = -1;
+                        lastpathfindpoint2 = -1;
+                        lastpathfindpoint3 = -1;
+                        lastpathfindpoint4 = -1;
+                    } else
+                        laststanding = j;
+                }
+            //lose sight of player in the air (?)
+            if (Person::players[0]->coords.y > coords.y + 5 &&
+                    Animation::animations[Person::players[0]->animTarget].height != highheight &&
+                    !Person::players[0]->onterrain) {
+                aitype = pathfindtype;
+                finalfinaltarget = waypoints[waypoint];
+                finalpathfindpoint = -1;
+                targetpathfindpoint = -1;
+                lastpathfindpoint = -1;
+                lastpathfindpoint2 = -1;
+                lastpathfindpoint3 = -1;
+                lastpathfindpoint4 = -1;
+            }
+            //it's time to think (?)
+            if (aiupdatedelay < 0 &&
+                    !Animation::animations[animTarget].attack &&
+                    animTarget != staggerbackhighanim &&
+                    animTarget != staggerbackhardanim &&
+                    animTarget != backhandspringanim &&
+                    animTarget != dodgebackanim) {
+                //draw weapon
+                if (weaponactive == -1 && num_weapons > 0)
+                    drawkeydown = Random() % 2;
+                else
+                    drawkeydown = 0;
+                rabbitkickenabled = Random() % 2;
+                //chase player
+                XYZ rotatetarget = Person::players[0]->coords + Person::players[0]->velocity;
+                XYZ targetpoint = Person::players[0]->coords;
+                if (distsq(&Person::players[0]->coords, &coords) <
+                        distsq(&rotatetarget, &coords))
+                    targetpoint += Person::players[0]->velocity *
+                                   findDistance(&Person::players[0]->coords, &coords) / findLength(&velocity);
+                targetyaw = roughDirectionTo(coords, targetpoint);
+                lookyaw = targetyaw;
+                aiupdatedelay = .2 + fabs((float)(Random() % 100) / 1000);
+
+                if (distsq(&coords, &Person::players[0]->coords) > 5 && (Person::players[0]->weaponactive == -1 || weaponactive != -1))
+                    forwardkeydown = 1;
+                else if ((distsq(&coords, &Person::players[0]->coords) > 16 ||
+                          distsq(&coords, &Person::players[0]->coords) < 9) &&
+                         Person::players[0]->weaponactive != -1)
+                    forwardkeydown = 1;
+                else if (Random() % 6 == 0 || (creature == wolftype && Random() % 3 == 0))
+                    forwardkeydown = 1;
+                else
+                    forwardkeydown = 0;
+                //chill out around the corpse
+                if (Person::players[0]->dead) {
+                    forwardkeydown = 0;
+                    if (Random() % 10 == 0)
+                        forwardkeydown = 1;
+                    if (Random() % 100 == 0) {
+                        aitype = pathfindtype;
+                        finalfinaltarget = waypoints[waypoint];
+                        finalpathfindpoint = -1;
+                        targetpathfindpoint = -1;
+                        lastpathfindpoint = -1;
+                        lastpathfindpoint2 = -1;
+                        lastpathfindpoint3 = -1;
+                        lastpathfindpoint4 = -1;
+                    }
+                }
+                leftkeydown = 0;
+                backkeydown = 0;
+                rightkeydown = 0;
+                crouchkeydown = 0;
+                throwkeydown = 0;
+
+                if (avoidcollided > .8 && !jumpkeydown && collided < .8)
+                    targetyaw += 90 * (whichdirection * 2 - 1);
+                //attack!!!
+                if (Random() % 2 == 0 || weaponactive != -1 || creature == wolftype)
+                    attackkeydown = 1;
+                else
+                    attackkeydown = 0;
+                if (isRun() && Random() % 6 && distsq(&coords, &Person::players[0]->coords) > 7)
+                    attackkeydown = 0;
+
+                //TODO: wat
+                if (aitype != playercontrolled &&
+                        (isIdle() ||
+                         isCrouch() ||
+                         isRun())) {
+                    int target = -2;
+                    for (unsigned j = 0; j < Person::players.size(); j++)
+                        if (j != id && !Person::players[j]->skeleton.free &&
+                                Person::players[j]->hasvictim &&
+                                (Tutorial::active && reversaltrain ||
+                                 Random() % 2 == 0 && difficulty == 2 ||
+                                 Random() % 4 == 0 && difficulty == 1 ||
+                                 Random() % 8 == 0 && difficulty == 0 ||
+                                 Person::players[j]->lastattack2 == Person::players[j]->animTarget &&
+                                 Person::players[j]->lastattack3 == Person::players[j]->animTarget &&
+                                 (Random() % 2 == 0 || difficulty == 2) ||
+                                 (isIdle() || isRun()) &&
+                                 Person::players[j]->weaponactive != -1 ||
+                                 Person::players[j]->animTarget == swordslashanim &&
+                                 weaponactive != -1 ||
+                                 Person::players[j]->animTarget == staffhitanim ||
+                                 Person::players[j]->animTarget == staffspinhitanim))
+                            if (distsq(&Person::players[j]->coords, &Person::players[j]->victim->coords) < 4 &&
+                                    Person::players[j]->victim == Person::players[id] &&
+                                    (Person::players[j]->animTarget == sweepanim ||
+                                     Person::players[j]->animTarget == spinkickanim ||
+                                     Person::players[j]->animTarget == staffhitanim ||
+                                     Person::players[j]->animTarget == staffspinhitanim ||
+                                     Person::players[j]->animTarget == winduppunchanim ||
+                                     Person::players[j]->animTarget == upunchanim ||
+                                     Person::players[j]->animTarget == wolfslapanim ||
+                                     Person::players[j]->animTarget == knifeslashstartanim ||
+                                     Person::players[j]->animTarget == swordslashanim &&
+                                     (distsq(&Person::players[j]->coords, &coords) < 2 ||
+                                      weaponactive != -1))) {
+                                if (target >= 0) {
+                                    target = -1;
+                                } else {
+                                    target = j;
+                                }
+                            }
+                    if (target >= 0)
+                        Person::players[target]->Reverse();
+                }
+
+                if (collided < 1)
+                    jumpkeydown = 0;
+                if (collided > .8 && jumppower >= 5 ||
+                        distsq(&coords, &Person::players[0]->coords) > 400 &&
+                        onterrain &&
+                        creature == rabbittype)
+                    jumpkeydown = 1;
+                //TODO: why are we controlling the human?
+                if (normaldotproduct(facing, Person::players[0]->coords - coords) > 0)
+                    Person::players[0]->jumpkeydown = 0;
+                if (Person::players[0]->animTarget == jumpdownanim &&
+                        distsq(&Person::players[0]->coords, &coords) < 40)
+                    crouchkeydown = 1;
+                if (jumpkeydown)
+                    attackkeydown = 0;
+
+                if (Tutorial::active)
+                    if (!canattack)
+                        attackkeydown = 0;
+
+
+                XYZ facing = coords;
+                XYZ flatfacing = Person::players[0]->coords;
+                facing.y += jointPos(head).y * scale;
+                flatfacing.y += Person::players[0]->jointPos(head).y * Person::players[0]->scale;
+                if (occluded >= 2)
+                    if (-1 != Object::checkcollide(facing, flatfacing)) {
+                        if (!pause)
+                            lastseentime -= .2;
+                        if (lastseentime <= 0 &&
+                                (creature != wolftype ||
+                                 weaponstuck == -1)) {
+                            aitype = searchtype;
+                            lastchecktime = 12;
+                            lastseen = Person::players[0]->coords;
+                            lastseentime = 12;
+                        }
+                    } else
+                        lastseentime = 1;
+            }
+        }
+        if (Animation::animations[Person::players[0]->animTarget].height == highheight &&
+                (aitype == attacktypecutoff ||
+                 aitype == searchtype))
+            if (Person::players[0]->coords.y > terrain.getHeight(Person::players[0]->coords.x, Person::players[0]->coords.z) + 10) {
+                XYZ test = Person::players[0]->coords;
+                test.y -= 40;
+                if (-1 == Object::checkcollide(Person::players[0]->coords, test))
+                    stunned = 1;
+            }
+        //stunned
+        if (aitype == passivetype && !(numwaypoints > 1) ||
+                stunned > 0 ||
+                pause && damage > superpermanentdamage) {
+            if (pause)
+                lastseentime = 1;
+            targetyaw = yaw;
+            forwardkeydown = 0;
+            leftkeydown = 0;
+            backkeydown = 0;
+            rightkeydown = 0;
+            jumpkeydown = 0;
+            attackkeydown = 0;
+            crouchkeydown = 0;
+            throwkeydown = 0;
+        }
+
+
+        XYZ facing;
+        facing = 0;
+        facing.z = -1;
+
+        XYZ flatfacing = DoRotation(facing, 0, yaw + 180, 0);
+        facing = flatfacing;
+
+        if (aitype == attacktypecutoff) {
+            targetheadyaw = 180 - roughDirectionTo(coords, Person::players[0]->coords);
+            targetheadpitch = pitchTo(coords, Person::players[0]->coords);
+        } else if (howactive >= typesleeping) {
+            targetheadyaw = targetyaw;
+            targetheadpitch = 0;
+        } else {
+            if (interestdelay <= 0) {
+                interestdelay = .7 + (float)(abs(Random() % 100)) / 100;
+                headtarget = coords;
+                headtarget.x += (float)(abs(Random() % 200) - 100) / 100;
+                headtarget.z += (float)(abs(Random() % 200) - 100) / 100;
+                headtarget.y += (float)(abs(Random() % 200) - 100) / 300;
+                headtarget += facing * 1.5;
+            }
+            targetheadyaw = 180 - roughDirectionTo(coords, headtarget);
+            targetheadpitch = pitchTo(coords, headtarget);
+        }
     }
 }
