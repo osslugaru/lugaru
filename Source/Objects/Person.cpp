@@ -5550,15 +5550,46 @@ void Person::DoStuff()
             }
         }
 
-        if (animTarget == spinkickanim || animTarget == staffspinhitreversalanim || animTarget == staffspinhitreversedanim || animTarget == staffhitreversalanim || animTarget == staffhitreversedanim || animTarget == hurtidleanim || animTarget == winduppunchanim || animTarget == swordslashreversalanim || animTarget == swordslashreversedanim || animTarget == knifeslashreversalanim || animTarget == knifeslashreversedanim || animTarget == knifethrowanim || animTarget == knifefollowanim || animTarget == knifefollowedanim || animTarget == killanim || animTarget == dropkickanim || animTarget == upunchanim || animTarget == knifeslashstartanim || animTarget == swordslashanim || animTarget == staffhitanim || animTarget == staffspinhitanim || animTarget == staffgroundsmashanim || animTarget == spinkickreversalanim || animTarget == sweepreversalanim || animTarget == lowkickanim || animTarget == sweepreversedanim || animTarget == rabbitkickreversalanim || animTarget == rabbitkickreversedanim || animTarget == jumpreversalanim || animTarget == jumpreversedanim) {
+        if (animTarget == spinkickanim ||
+	    animTarget == staffspinhitreversalanim ||
+	    animTarget == staffspinhitreversedanim ||
+	    animTarget == staffhitreversalanim ||
+	    animTarget == staffhitreversedanim ||
+	    animTarget == hurtidleanim ||
+	    animTarget == winduppunchanim ||
+	    animTarget == swordslashreversalanim ||
+	    animTarget == swordslashreversedanim ||
+	    animTarget == knifeslashreversalanim ||
+	    animTarget == knifeslashreversedanim ||
+	    animTarget == knifethrowanim ||
+	    animTarget == knifefollowanim ||
+	    animTarget == knifefollowedanim ||
+	    animTarget == killanim ||
+	    animTarget == dropkickanim ||
+	    animTarget == upunchanim ||
+	    animTarget == knifeslashstartanim ||
+	    animTarget == swordslashanim ||
+	    animTarget == staffhitanim ||
+	    animTarget == staffspinhitanim ||
+	    animTarget == staffgroundsmashanim ||
+	    animTarget == spinkickreversalanim ||
+	    animTarget == sweepreversalanim ||
+	    animTarget == lowkickanim ||
+	    animTarget == sweepreversedanim ||
+	    animTarget == rabbitkickreversalanim ||
+	    animTarget == rabbitkickreversedanim ||
+	    animTarget == jumpreversalanim ||
+	    animTarget == jumpreversedanim) {
             //close hands and yell
-            if (righthandmorphend != 1 && righthandmorphness == targetrighthandmorphness) {
+            if (righthandmorphend != 1 &&
+		righthandmorphness == targetrighthandmorphness) {
                 righthandmorphness = 0;
                 righthandmorphend = 1;
                 targetrighthandmorphness = 1;
             }
 
-            if (lefthandmorphend != 1 && lefthandmorphness == targetlefthandmorphness) {
+            if (lefthandmorphend != 1 &&
+		lefthandmorphness == targetlefthandmorphness) {
                 lefthandmorphness = 0;
                 lefthandmorphend = 1;
                 targetlefthandmorphness = 1;
@@ -5618,7 +5649,8 @@ void Person::DoStuff()
         ReflectVector(&facing, terrainnormal);
         Normalise(&facing);
 
-        if (isRun() || animTarget == sneakanim || animTarget == rollanim || animTarget == walkanim) {
+        if (isRun() ||
+	    animTarget == sneakanim || animTarget == rollanim || animTarget == walkanim) {
             if (onterrain)
                 targettilt2 = -facing.y * 20;
             else

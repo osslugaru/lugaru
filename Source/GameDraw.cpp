@@ -1074,7 +1074,7 @@ int Game::DrawGLScene(StereoSide side)
             glPopMatrix();
             glRotatef(Person::players[0]->lookyaw * -1 + 180, 0, 0, 1);
             glTranslatef(-(center.x / terrain.scale / 256 * -2 + 1), (center.z / terrain.scale / 256 * -2 + 1), 0);
-            for (int i = 0; i < Object::objects.size(); i++) {
+            for (unsigned int i = 0; i < Object::objects.size(); i++) {
                 if (Object::objects[i]->type == treetrunktype) {
                     distcheck = distsq(&Person::players[0]->coords, &Object::objects[i]->position);
                     if (distcheck < mapviewdist) {

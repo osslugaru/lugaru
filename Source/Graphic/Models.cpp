@@ -399,7 +399,7 @@ void Model::UpdateVertexArrayNoTexNoNorm()
     }
 }
 
-bool Model::loadnotex(const std::string& filename )
+bool Model::loadnotex(const std::string& filename)
 {
     FILE *tfile;
     long i;
@@ -463,7 +463,7 @@ bool Model::loadnotex(const std::string& filename )
 }
 
 
-bool Model::load(const std::string& filename, bool texture )
+bool Model::load(const std::string& filename, bool texture)
 {
     FILE *tfile;
     long i;
@@ -1429,20 +1429,17 @@ void Model::deallocate()
 }
 
 Model::Model()
+  : vertexNum(0), TriangleNum(0),
+    hastexture(0),
+    type(0), oldtype(0),
+    possible(0),
+    owner(0),
+    vertex(0),
+    normals(0),
+    facenormals(0),
+    Triangles(0),
+    vArray(0)
 {
-    vertexNum = 0, TriangleNum = 0;
-    hastexture = 0;
-
-    type = 0, oldtype = 0;
-
-    possible = 0;
-    owner = 0;
-    vertex = 0;
-    normals = 0;
-    facenormals = 0;
-    Triangles = 0;
-    vArray = 0;
-
     memset(&modelTexture, 0, sizeof(modelTexture));
     numpossible = 0;
     color = 0;
@@ -1464,4 +1461,3 @@ Model::Model()
 
     type = nothing;
 }
-

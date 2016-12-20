@@ -689,7 +689,7 @@ void Object::ComputeRadius()
 {
     float maxdistance = 0;
     float tempdist;
-    for (int i = 0; i < objects.size(); i++) {
+    for (unsigned int i = 0; i < objects.size(); i++) {
         tempdist = distsq(&center, &objects[i]->position);
         if (tempdist > maxdistance) {
             maxdistance = tempdist;
@@ -825,9 +825,9 @@ int Object::checkcollide(XYZ startpoint, XYZ endpoint)
     maxy = max(startpoint.y, endpoint.y) + 1;
     maxz = max(startpoint.z, endpoint.z) + 1;
 
-    for (int i = 0; i < objects.size(); i++) {
+    for (unsigned int i = 0; i < objects.size(); i++) {
         if (checkcollide(startpoint, endpoint, i, minx, miny, minz, maxx, maxy, maxz) != -1) {
-            return i;
+            return (int) i;
         }
     }
 

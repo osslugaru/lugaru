@@ -313,11 +313,12 @@ static int findClosestObject()
     int closest = -1;
     float closestdist = std::numeric_limits<float>::max();
 
-    for (int i = 0; i < Object::objects.size(); i++) {
-        float distance = distsq(&Object::objects[i]->position, &Person::players[0]->coords);
+    for (unsigned int i = 0; i < Object::objects.size(); i++) {
+        float distance = distsq(&Object::objects[i]->position,
+				&Person::players[0]->coords);
         if (distance < closestdist) {
             closestdist = distance;
-            closest = i;
+            closest = (int) i;
         }
     }
     return closest;
@@ -416,8 +417,6 @@ void Setenvironment(int which)
                         "Textures/Skybox(snow)/Down.jpg");
 
 
-
-
         texdetail = temptexdetail;
     } else if (environment == desertenvironment) {
         windvector = 0;
@@ -451,8 +450,6 @@ void Setenvironment(int which)
                         "Textures/Skybox(sand)/Down.jpg");
 
 
-
-
         texdetail = temptexdetail;
     } else if (environment == grassyenvironment) {
         windvector = 0;
@@ -483,7 +480,6 @@ void Setenvironment(int which)
                         "Textures/Skybox(grass)/Right.jpg",
                         "Textures/Skybox(grass)/Up.jpg",
                         "Textures/Skybox(grass)/Down.jpg");
-
 
 
         texdetail = temptexdetail;
@@ -579,7 +575,7 @@ void Game::Loadlevel(const std::string& name, bool tutorial)
     freeze = 0;
     winfreeze = 0;
 
-    for (int i = 0; i < 100; i++)
+    for (unsigned char i = 0; i < 100; i++)
         bonusnum[i] = 0;
 
     numfalls = 0;
@@ -981,9 +977,9 @@ void doDevKeys()
 
         /* Grow tree leaves?? */
         if (Input::isKeyPressed(SDL_SCANCODE_Y)) {
-            for (int i = 0; i < Object::objects.size(); i++) {
-                if (Object::objects[i]->type == treeleavestype) {
-                    Object::objects[i]->scale *= .9;
+	    for (auto& an_object : Object::objects) {
+                if (an_object->type == treeleavestype) {
+                    an_object->scale *= .9;
                 }
             }
         }
@@ -2469,7 +2465,7 @@ void doAttacks()
                                                             terrain.decalalivetime[j] < 2)
                                                         terrain.DeleteDecal(j);
                                                 }
-                                                for (int l = 0; l < Object::objects.size(); l++) {
+                                                for (unsigned int l = 0; l < Object::objects.size(); l++) {
                                                     if (Object::objects[l]->model.type == decalstype)
                                                         for (int j = 0; j < Object::objects[l]->model.numdecals; j++) {
                                                             if ((Object::objects[l]->model.decaltype[j] == blooddecal ||
@@ -2495,7 +2491,7 @@ void doAttacks()
                                                             terrain.DeleteDecal(j);
                                                         }
                                                     }
-                                                    for (int l = 0; l < Object::objects.size(); l++) {
+                                                    for (unsigned int l = 0; l < Object::objects.size(); l++) {
                                                         if (Object::objects[l]->model.type == decalstype)
                                                             for (int j = 0; j < Object::objects[l]->model.numdecals; j++) {
                                                                 if ((Object::objects[l]->model.decaltype[j] == blooddecal ||
@@ -3411,7 +3407,7 @@ void Game::Tick()
                     Person::players[i]->avoidsomething = 0;
 
                     //avoid flaming things
-                    for (int j = 0; j < Object::objects.size(); j++)
+                    for (unsigned int j = 0; j < Object::objects.size(); j++)
                         if (Object::objects[j]->onfire)
                             if (distsq(&Person::players[i]->coords, &Object::objects[j]->position) < sq(Object::objects[j]->scale) * 200)
                                 if (     distsq(&Person::players[i]->coords, &Object::objects[j]->position) <
