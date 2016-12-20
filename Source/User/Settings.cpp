@@ -241,7 +241,7 @@ bool LoadSettings()
             ipstream >> damageeffects;
         } else if ( !strncmp(setting, "Text", 4) ) {
             ipstream >> texttoggle;
-        } else if ( !strncmp(setting, "Devtools", 5) ) {
+        } else if ( !strncmp(setting, "Devtools", 6) ) {
             ipstream >> devtools;
         } else if ( !strncmp(setting, "Show Points", 11) ) {
             ipstream >> showpoints;
