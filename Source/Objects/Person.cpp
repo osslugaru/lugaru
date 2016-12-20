@@ -3817,7 +3817,6 @@ void Person::DoAnimations()
                     if (!isnormal(coords.x))
                         coords = oldcoords;
                     oldcoords = coords;
-                    collided = 0;
                     targetoffset = 0;
                     currentoffset = 0;
                     grabdelay = 1;
