@@ -216,7 +216,7 @@ bool LoadSettings()
             ipstream >> mousejump;
         } else if ( !strncmp(setting, "Ambient sound", 13) ) {
             ipstream >> ambientsound;
-        } else if ( !strncmp(setting, "Blood ", 6) ) {
+        } else if ( !strncmp(setting, "Blood", 5) ) {
             ipstream >> bloodtoggle;
         } else if ( !strncmp(setting, "Auto slomo", 10) ) {
             ipstream >> autoslomo;
@@ -241,7 +241,7 @@ bool LoadSettings()
             ipstream >> damageeffects;
         } else if ( !strncmp(setting, "Text", 4) ) {
             ipstream >> texttoggle;
-        } else if ( !strncmp(setting, "Devtools", 5) ) {
+        } else if ( !strncmp(setting, "Devtools", 8) ) {
             ipstream >> devtools;
         } else if ( !strncmp(setting, "Show Points", 11) ) {
             ipstream >> showpoints;
