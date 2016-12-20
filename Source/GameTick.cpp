@@ -1958,7 +1958,7 @@ void doAerialAcrobatics()
                                     whichhit = Object::objects[i]->model.LineCheckPossible(&lowpoint, &lowpointtarget, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw);
                                     if (Object::objects[i]->friction > .5)
                                         if (whichhit != -1) {
-                                            if (whichhit != -1 && Person::players[k]->animTarget != jumpupanim && Person::players[k]->animTarget != jumpdownanim)
+                                            if (Person::players[k]->animTarget != jumpupanim && Person::players[k]->animTarget != jumpdownanim)
                                                 Person::players[k]->collided = 1;
                                             if (Object::checkcollide(lowpoint7, lowpointtarget7) == -1)
                                                 if (Object::checkcollide(lowpoint6, lowpointtarget6) == -1)
@@ -4437,7 +4437,7 @@ void Game::TickOnceAfter()
         }
 
         if (changedelay <= 0 && !loading && !editorenabled && gameon && !Tutorial::active && changedelay != -999 && !won) {
-            if (Person::players[0]->dead && changedelay <= 0) {
+            if (Person::players[0]->dead) {
                 changedelay = 1;
                 targetlevel = whichlevel;
             }
