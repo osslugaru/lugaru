@@ -119,8 +119,6 @@ int Game::DrawGLScene(StereoSide side)
     static float tempmult;
     float tutorialopac;
     std::string string;
-    std::string string2;
-    std::string string3;
     static int drawmode = 0;
 
     if ( stereomode == stereoAnaglyph ) {
@@ -137,7 +135,8 @@ int Game::DrawGLScene(StereoSide side)
     } else {
         glColorMask( 1.0, 1.0, 1.0, 1.0 );
 
-        if ( stereomode == stereoHorizontalInterlaced || stereomode == stereoVerticalInterlaced ) {
+        if ( stereomode == stereoHorizontalInterlaced ||
+	     stereomode == stereoVerticalInterlaced ) {
             glStencilFunc(side == stereoLeft ? GL_NOTEQUAL : GL_EQUAL, 0x01, 0x01);
         }
     }
@@ -583,10 +582,9 @@ int Game::DrawGLScene(StereoSide side)
             //Hot spots
             if (Hotspot::hotspots.size() && (bonustime >= 1 || bonus <= 0 || bonustime < 0) && !Tutorial::active) {
                 float closestdist = -1;
-                float distance = 0;
                 int closest = Hotspot::current;
                 for (unsigned i = 0; i < Hotspot::hotspots.size(); i++) {
-                    distance = distsq(&Person::players[0]->coords, &Hotspot::hotspots[i].position);
+                    float distance = distsq(&Person::players[0]->coords, &Hotspot::hotspots[i].position);
                     if (closestdist == -1 || distance < closestdist) {
                         if (distsq(&Person::players[0]->coords, &Hotspot::hotspots[i].position) < Hotspot::hotspots[i].size && ((Hotspot::hotspots[i].type <= 10 && Hotspot::hotspots[i].type >= 0) || (Hotspot::hotspots[i].type <= 40 && Hotspot::hotspots[i].type >= 20))) {
                             closestdist = distance;

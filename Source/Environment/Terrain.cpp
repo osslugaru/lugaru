@@ -1127,14 +1127,12 @@ void Terrain::drawdecals()
 
 void Terrain::AddObject(XYZ where, float radius, int id)
 {
-    bool done;
-    int i, j;
     XYZ points[4];
     if (id >= 0 && id < 10000)
-        for (i = 0; i < subdivision; i++) {
-            for (j = 0; j < subdivision; j++) {
+        for (int i = 0; i < subdivision; i++) {
+            for (int j = 0; j < subdivision; j++) {
                 if (patchobjectnum[i][j] < 300 - 1) {
-                    done = 0;
+                    bool done = false;
                     points[0].x = (size / subdivision) * i;
                     points[0].z = (size / subdivision) * j;
                     points[0].y = heightmap[(int)points[0].x][(int)points[0].z];

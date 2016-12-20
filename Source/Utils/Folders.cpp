@@ -84,7 +84,7 @@ std::string Folders::getConfigFilePath()
 
 #if PLATFORM_LINUX
 /* Generic code for XDG ENVVAR test and fallback */
-std::string Folders::getGenericDirectory(const char* ENVVAR, const std::string fallback) {
+std::string Folders::getGenericDirectory(const char* ENVVAR, const std::string& fallback) {
     const char* path = getenv(ENVVAR);
     std::string ret;
     if ((path != NULL) && (strlen(path) != 0)) {
@@ -114,30 +114,18 @@ const char* Folders::getHomeDirectory()
 }
 #endif
 
-bool Folders::makeDirectory(std::string path) {
+bool Folders::makeDirectory(const std::string& path) {
 #ifdef _WIN32
     int status = CreateDirectory(path.c_str(), NULL);
-    if (status != 0) {
-        return true;
-    } else if(GetLastError() == ERROR_ALREADY_EXISTS) {
-        return true;
-    } else {
-        return false;
-    }
+    return status != 0 || GetLastError() == ERROR_ALREADY_EXISTS;
 #else
     errno = 0;
     int status = mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-    if (status == 0) {
-        return true;
-    } else if(errno == EEXIST) {
-        return true;
-    } else {
-        return false;
-    }
+    return status == 0 || errno == EEXIST;
 #endif
 }
 
-FILE* Folders::openMandatoryFile(std::string filename, const char* mode)
+FILE* Folders::openMandatoryFile(const std::string& filename, const char* mode)
 {
     FILE* tfile = fopen(filename.c_str(), mode);
     if (tfile == NULL) {

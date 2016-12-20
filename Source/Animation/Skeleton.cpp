@@ -107,7 +107,6 @@ void Skeleton::FindForwards()
  */
 float Skeleton::DoConstraints(XYZ *coords, float *scale)
 {
-    float friction = 1.5;
     const float elasticity = .3;
     XYZ bounceness;
     const int numrepeats = 3;
@@ -230,6 +229,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                 muscles[i].DoConstraint(spinny);
             }
 
+            float friction;
             for (i = 0; i < joints.size(); i++) {
                 //Length constraints
                 //Ground constraint

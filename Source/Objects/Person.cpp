@@ -6861,17 +6861,16 @@ int Person::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate,
 
 int findPathDist(int start, int end)
 {
-    int smallestcount, count, connected;
-    int last, last2, last3, last4;
+    int smallestcount, connected;
     int closest;
 
     smallestcount = 1000;
-    for (int i = 0; i < 50; i++) {
-        count = 0;
-        last = start;
-        last2 = -1;
-        last3 = -1;
-        last4 = -1;
+    for (char i = 0; i < 50; i++) {
+        unsigned count = 0;
+        int last = start;
+        int last2 = -1;
+        int last3 = -1;
+        int last4 = -1;
         while (last != end && count < 30) {
             closest = -1;
             for (int j = 0; j < Game::numpathpoints; j++) {

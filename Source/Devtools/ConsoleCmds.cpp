@@ -524,8 +524,8 @@ void ch_type(const char *args)
 
 void ch_path(const char *args)
 {
-    int n = sizeof(pathtypenames) / sizeof(pathtypenames[0]);
-    for (int i = 0; i < n; i++)
+    unsigned int n = sizeof(pathtypenames) / sizeof(pathtypenames[0]);
+    for (unsigned int i = 0; i < n; i++)
         if (stripfx(args, pathtypenames[i])) {
             editorpathtype = i;
             break;
