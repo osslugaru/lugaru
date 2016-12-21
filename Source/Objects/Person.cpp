@@ -1492,35 +1492,39 @@ void Person::Reverse()
  */
 void Person::DoDamage(float howmuch)
 {
-    // subtract health (temporary?)
-    if (!Tutorial::active)
-        damage += howmuch / power;
     // stats?
-    if (id != 0)
-        damagedealt += howmuch / power;
-    if (id == 0)
+    if (id == 0) {
         damagetaken += howmuch / power;
+    } else {
+        damagedealt += howmuch / power;
+    }
 
     // reset bonuses
-    if (id == 0 && (bonus == solidhit || bonus == twoxcombo || bonus == threexcombo || bonus == fourxcombo || bonus == megacombo))
+    if (id == 0 && (bonus == solidhit || bonus == twoxcombo || bonus == threexcombo || bonus == fourxcombo || bonus == megacombo)) {
         bonus = 0;
+    }
+
     // subtract health
-    if (!Tutorial::active)
+    if (!Tutorial::active) {
+        damage += howmuch / power;
         permanentdamage += howmuch / 2 / power;
-    if (!Tutorial::active)
         superpermanentdamage += howmuch / 4 / power;
+    }
     // visual effects
     if (permanentdamage > damagetolerance / 2 && permanentdamage - howmuch < damagetolerance / 2 && Random() % 2)
         DoBlood(1, 255);
     if ((permanentdamage > damagetolerance * .8 && Random() % 2 && !deathbleeding) || spurt)
         DoBlood(1, 255);
     spurt = 0;
-    if (id == 0)
+    if (id == 0) {
         camerashake += howmuch / 100;
-    if (id == 0 && ((howmuch > 50 && damage > damagetolerance / 2)))
-        blackout = damage / damagetolerance;
-    if (blackout > 1)
-        blackout = 1;
+        if ((howmuch > 50 && damage > damagetolerance / 2)) {
+            blackout = damage / damagetolerance;
+            if (blackout > 1) {
+                blackout = 1;
+            }
+        }
+    }
 
     // cancel attack?
     if (aitype == passivetype && damage < damagetolerance && ((!Tutorial::active || cananger) && hostile))
@@ -1566,7 +1570,7 @@ void Person::DoDamage(float howmuch)
     }
 
     // play sounds
-    if (!Tutorial::active || id == 0)
+    if (!Tutorial::active || id == 0) {
         if (speechdelay <= 0 && !dead && aitype != playercontrolled) {
             int whichsound = -1;
 
@@ -1590,6 +1594,7 @@ void Person::DoDamage(float howmuch)
                 addEnvSound(coords);
             }
         }
+    }
     speechdelay = .3;
 }
 
@@ -2926,8 +2931,9 @@ void Person::DoAnimations()
                     if (hasvictim)
                         if (distsq(&coords, &victim->coords) < (scale * 5) * (scale * 5) * 4.5 &&/*Animation::animations[victim->animTarget].height!=lowheight&&*/victim->animTarget != dodgebackanim && victim->animTarget != rollanim) {
                             escapednum = 0;
-                            if (!Tutorial::active)
+                            if (!Tutorial::active) {
                                 victim->DoBloodBig(1.5 / victim->armorhigh, 225);
+                            }
 
                             award_bonus(id, Slicebonus);
                             if (!Tutorial::active) {
@@ -2947,11 +2953,12 @@ void Person::DoAnimations()
                             if (aitype != playercontrolled)
                                 weaponmissdelay = .6;
 
-                            if (!Tutorial::active)
-                                if (bloodtoggle && !weapons[weaponids[weaponactive]].bloody)
+                            if (!Tutorial::active) {
+                                if (bloodtoggle && !weapons[weaponids[weaponactive]].bloody) {
                                     weapons[weaponids[weaponactive]].bloody = 1;
-                            if (!Tutorial::active)
+                                }
                                 weapons[weaponids[weaponactive]].blooddrip += 3;
+                            }
 
                             XYZ footvel, footpoint;
                             footvel = 0;
@@ -2960,18 +2967,17 @@ void Person::DoAnimations()
                             } else {
                                 footpoint = DoRotation((victim->jointPos(abdomen) + victim->jointPos(neck)) / 2, 0, victim->yaw, 0) * victim->scale + victim->coords;
                             }
-                            if (!Tutorial::active) {
-                                if (bloodtoggle)
+                            if (Tutorial::active) {
+                                Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 1, 1, .6, .3);
+                            } else {
+                                if (bloodtoggle) {
                                     Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 0, 0, .6, .3);
+                                }
                                 footvel = DoRotation(facing, 0, 90, 0) * .8;
-                                //footvel.y-=.3;
                                 Sprite::MakeSprite(bloodsprite, footpoint, DoRotation(footvel * 7, (float)(Random() % 20), (float)(Random() % 20), 0), 1, 1, 1, .05, .9);
                                 Sprite::MakeSprite(bloodsprite, footpoint, DoRotation(footvel * 3, (float)(Random() % 20), (float)(Random() % 20), 0), 1, 1, 1, .05, .9);
                                 Sprite::MakeSprite(bloodflamesprite, footpoint, footvel * 5, 1, 1, 1, .2, 1);
                                 Sprite::MakeSprite(bloodflamesprite, footpoint, footvel * 2, 1, 1, 1, .2, 1);
-                            }
-                            if (Tutorial::active) {
-                                Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 1, 1, .6, .3);
                             }
                             victim->DoDamage(damagemult * 0);
                         }
@@ -2988,24 +2994,18 @@ void Person::DoAnimations()
                                     victim->DoBloodBig(2 / victim->armorhigh, 185);
                                 victim->deathbleeding = 1;
                                 emit_sound_at(swordslicesound, victim->coords);
-                            }
-                            //victim->jointVel(abdomen)+=relative*damagemult*200;
-                            if (!Tutorial::active) {
                                 victim->frameTarget = 0;
                                 victim->animTarget = staggerbackhardanim;
                                 victim->targetyaw = targetyaw + 180;
                                 victim->target = 0;
-                            }
-
-                            if (!Tutorial::active) {
-                                if (bloodtoggle && !weapons[weaponids[weaponactive]].bloody)
+                                if (bloodtoggle && !weapons[weaponids[weaponactive]].bloody) {
                                     weapons[weaponids[weaponactive]].bloody = 1;
+                                }
                                 weapons[weaponids[weaponactive]].blooddrip += 3;
 
                                 float bloodlossamount;
                                 bloodlossamount = 200 + abs((float)(Random() % 40)) - 20;
                                 victim->bloodloss += bloodlossamount / victim->armorhigh;
-                                //victim->bloodloss+=100*(6.5-distsq(&coords,&victim->coords));
                                 victim->DoDamage(damagemult * 0);
 
                                 XYZ footvel, footpoint;
@@ -3015,8 +3015,9 @@ void Person::DoAnimations()
                                 } else {
                                     footpoint = DoRotation((victim->jointPos(abdomen) + victim->jointPos(neck)) / 2, 0, victim->yaw, 0) * victim->scale + victim->coords;
                                 }
-                                if (bloodtoggle)
+                                if (bloodtoggle) {
                                     Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 0, 0, .9, .3);
+                                }
                                 footvel = DoRotation(facing, 0, 90, 0) * .8;
                                 footvel.y -= .3;
                                 Sprite::MakeSprite(bloodsprite, footpoint, DoRotation(footvel * 7, (float)(Random() % 20), (float)(Random() % 20), 0), 1, 1, 1, .05, .9);
