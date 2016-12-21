@@ -858,11 +858,6 @@ void Game::LoadStuff()
     }
 
     LoadingScreen();
-    temptexdetail = texdetail;
-    texdetail = 1;
-    texdetail = temptexdetail;
-
-    LoadingScreen();
 
     if (!screentexture) {
         LoadScreenTexture();
