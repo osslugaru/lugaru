@@ -245,14 +245,14 @@ void Sprite::Draw()
                 if (distancemult >= 1)
                     glColor4f(sprites[i]->color[0]*lightcolor[0], sprites[i]->color[1]*lightcolor[1], sprites[i]->color[2]*lightcolor[2], 1);
                 else
-                    glColor4f(sprites[i]->color[0]*lightcolor[0], sprites[i]->color[1]*lightcolor[1], sprites[i]->color[2]*lightcolor[2], 1);
+                    glColor4f(sprites[i]->color[0]*lightcolor[0], sprites[i]->color[1]*lightcolor[1], sprites[i]->color[2]*lightcolor[2], distancemult);
             }
         }
         if (sprites[i]->type == splintersprite && (sprites[i]->special == 0 || sprites[i]->special == 3)) {
             if (distancemult >= 1)
                 glColor4f(sprites[i]->color[0]*lightcolor[0], sprites[i]->color[1]*lightcolor[1], sprites[i]->color[2]*lightcolor[2], 1);
             else
-                glColor4f(sprites[i]->color[0]*lightcolor[0], sprites[i]->color[1]*lightcolor[1], sprites[i]->color[2]*lightcolor[2], 1);
+                glColor4f(sprites[i]->color[0]*lightcolor[0], sprites[i]->color[1]*lightcolor[1], sprites[i]->color[2]*lightcolor[2], distancemult);
         }
 
         glBegin(GL_TRIANGLES);

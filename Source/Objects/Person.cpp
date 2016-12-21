@@ -2342,7 +2342,7 @@ void Person::DoAnimations()
             }
             if ((Animation::animations[animTarget].attack == normalattack || animTarget == walljumprightkickanim || animTarget == walljumpleftkickanim) && (!feint) && (victim->skeleton.free != 2 || animTarget == killanim || animTarget == dropkickanim || animTarget == crouchstabanim || animTarget == swordgroundstabanim || animTarget == staffgroundsmashanim)) {
                 if (animTarget == spinkickanim && Animation::animations[animTarget].frames[frameCurrent].label == 5) {
-                    if (distsq(&coords, &victim->coords) < (scale * 5) * (scale * 5) * 3 && 3 && Animation::animations[victim->animTarget].height != lowheight) {
+                    if (distsq(&coords, &victim->coords) < (scale * 5) * (scale * 5) * 3 && Animation::animations[victim->animTarget].height != lowheight) {
                         escapednum = 0;
                         if (id == 0)
                             camerashake += .4;
@@ -2378,7 +2378,7 @@ void Person::DoAnimations()
                 }
 
                 if (animTarget == wolfslapanim && Animation::animations[animTarget].frames[frameCurrent].label == 5) {
-                    if (distsq(&coords, &victim->coords) < (scale * 5) * (scale * 5) * 3 && 3 && Animation::animations[victim->animTarget].height != lowheight) {
+                    if (distsq(&coords, &victim->coords) < (scale * 5) * (scale * 5) * 3 && Animation::animations[victim->animTarget].height != lowheight) {
                         escapednum = 0;
                         if (id == 0)
                             camerashake += .4;
