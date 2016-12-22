@@ -29,16 +29,6 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 // stuff to make Mac code compatable with Windows
 
-// disable warnings about double to float conversions
-#pragma warning(disable:4305)
-#pragma warning(disable:4244)
-
-// disable warnings about boolean to int conversions
-#pragma warning(disable:4800)
-
-// disable warning about unreferenced local variables
-#pragma warning(disable:4101)
-
 struct Point {
     short v;
     short h;
