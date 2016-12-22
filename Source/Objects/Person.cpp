@@ -1912,7 +1912,7 @@ void Person::Puff(int whichlabel)
 /* EFFECT
  * I think I added this in an attempt to clean up code
  */
-void Person::setAnimation(int animation)
+void Person::setTargetAnimation(int animation)
 {
     animTarget = animation;
     frameTarget = 0;
@@ -7237,7 +7237,7 @@ void Person::doAI()
 
                 if (aitype != passivetype) {
                     if (howactive == typesleeping)
-                        setAnimation(getupfromfrontanim);
+                        setTargetAnimation(getupfromfrontanim);
                     howactive = typeactive;
                 }
             }
@@ -7343,7 +7343,7 @@ void Person::doAI()
                         j = Object::checkcollide(test2, test);
                     if (j == -1) {
                         velocity = 0;
-                        setAnimation(getStop());
+                        setTargetAnimation(getStop());
                         targetyaw += 180;
                         stunned = .5;
                         //aitype=passivetype;
@@ -7658,15 +7658,17 @@ void Person::doAI()
                     if (Person::players[0]->animTarget != rabbitkickanim && Person::players[0]->weaponactive != -1) {
                         if (weapons[Person::players[0]->weaponids[0]].getType() == knife) {
                             if (isIdle() || isCrouch() || isRun() || isFlip()) {
-                                if (abs(Random() % 2) == 0)
-                                    setAnimation(backhandspringanim);
-                                else
-                                    setAnimation(rollanim);
+                                if (abs(Random() % 2) == 0) {
+                                    setTargetAnimation(backhandspringanim);
+                                } else {
+                                    setTargetAnimation(rollanim);
+                                }
                                 targetyaw += 90 * (abs(Random() % 2) * 2 - 1);
                                 wentforweapon = 0;
                             }
-                            if (animTarget == jumpupanim || animTarget == jumpdownanim)
-                                setAnimation(flipanim);
+                            if (animTarget == jumpupanim || animTarget == jumpdownanim) {
+                                setTargetAnimation(flipanim);
+                            }
                         }
                     }
                     forwardkeydown = 0;
@@ -7721,7 +7723,7 @@ void Person::doAI()
                         j = Object::checkcollide(test2, test);
                     if (j == -1) {
                         velocity = 0;
-                        setAnimation(getStop());
+                        setTargetAnimation(getStop());
                         targetyaw += 180;
                         stunned = .5;
                         aitype = pathfindtype;

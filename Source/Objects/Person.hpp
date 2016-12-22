@@ -387,7 +387,7 @@ public:
     void Puff(int whichlabel);
     void FootLand(bodypart whichfoot, float opacity);
     void DoStuff();
-    void setAnimation(int);
+    void setTargetAnimation(int);
     void DoAnimations();
     void RagDoll(bool checkcollision);
 

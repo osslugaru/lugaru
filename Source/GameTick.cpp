@@ -1586,10 +1586,8 @@ void doDevKeys()
 
 void doJumpReversals()
 {
-    for (unsigned k = 0; k < Person::players.size(); k++)
-        for (unsigned i = k; i < Person::players.size(); i++) {
-            if (i == k)
-                continue;
+    for (unsigned k = 0; k < Person::players.size(); k++) {
+        for (unsigned i = k + 1; i < Person::players.size(); i++) {
             if (     Person::players[k]->skeleton.free == 0 &&
                      Person::players[i]->skeleton.oldfree == 0 &&
                      (Person::players[i]->animTarget == jumpupanim ||
@@ -1682,6 +1680,7 @@ void doJumpReversals()
                 }
             }
         }
+    }
 }
 
 void doAerialAcrobatics()
@@ -1777,7 +1776,7 @@ void doAerialAcrobatics()
                             XYZ tempcoords1 = lowpoint;
                             whichhit = Object::objects[i]->model.LineCheck(&lowpoint, &lowpointtarget, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw);
                             if (whichhit != -1 && fabs(Object::objects[i]->model.facenormals[whichhit].y) < .3) {
-                                Person::players[k]->setAnimation(walljumpleftanim);
+                                Person::players[k]->setTargetAnimation(walljumpleftanim);
                                 emit_sound_at(movewhooshsound, Person::players[k]->coords);
                                 if (k == 0)
                                     pause_sound(whooshsound);
@@ -1795,7 +1794,7 @@ void doAerialAcrobatics()
                                 lowpointtarget = lowpoint + DoRotation(Person::players[k]->facing, 0, 90, 0) * 1.5;
                                 whichhit = Object::objects[i]->model.LineCheck(&lowpoint, &lowpointtarget, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw);
                                 if (whichhit != -1 && fabs(Object::objects[i]->model.facenormals[whichhit].y) < .3) {
-                                    Person::players[k]->setAnimation(walljumprightanim);
+                                    Person::players[k]->setTargetAnimation(walljumprightanim);
                                     emit_sound_at(movewhooshsound, Person::players[k]->coords);
                                     if (k == 0)
                                         pause_sound(whooshsound);
@@ -1813,7 +1812,7 @@ void doAerialAcrobatics()
                                     lowpointtarget = lowpoint + Person::players[k]->facing * 2;
                                     whichhit = Object::objects[i]->model.LineCheck(&lowpoint, &lowpointtarget, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw);
                                     if (whichhit != -1 && fabs(Object::objects[i]->model.facenormals[whichhit].y) < .3) {
-                                        Person::players[k]->setAnimation(walljumpbackanim);
+                                        Person::players[k]->setTargetAnimation(walljumpbackanim);
                                         emit_sound_at(movewhooshsound, Person::players[k]->coords);
                                         if (k == 0)
                                             pause_sound(whooshsound);
@@ -1831,7 +1830,7 @@ void doAerialAcrobatics()
                                         lowpointtarget = lowpoint - Person::players[k]->facing * 2;
                                         whichhit = Object::objects[i]->model.LineCheck(&lowpoint, &lowpointtarget, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw);
                                         if (whichhit != -1 && fabs(Object::objects[i]->model.facenormals[whichhit].y) < .3) {
-                                            Person::players[k]->setAnimation(walljumpfrontanim);
+                                            Person::players[k]->setTargetAnimation(walljumpfrontanim);
                                             emit_sound_at(movewhooshsound, Person::players[k]->coords);
                                             if (k == 0)
                                                 pause_sound(whooshsound);
@@ -2011,7 +2010,7 @@ void doAerialAcrobatics()
                                                                         Person::players[k]->frameTarget = 1;
                                                                         //hang ledge (?)
                                                                         if (j > 25) {
-                                                                            Person::players[k]->setAnimation(hanganim);
+                                                                            Person::players[k]->setTargetAnimation(hanganim);
                                                                             Person::players[k]->jumppower = 0;
                                                                         }
                                                                     }
@@ -2042,7 +2041,7 @@ void doAerialAcrobatics()
                         //stagger off ledge (?)
                         if (Person::players[k]->animTarget == staggerbackhighanim || Person::players[k]->animTarget == staggerbackhardanim)
                             Person::players[k]->RagDoll(0);
-                        Person::players[k]->setAnimation(jumpdownanim);
+                        Person::players[k]->setTargetAnimation(jumpdownanim);
 
                         if (!k)
                             emit_sound_at(whooshsound, Person::players[k]->coords, 128.);
@@ -2120,7 +2119,7 @@ void doAttacks()
                                     Person::players[i]->animTarget == staffhitanim ||
                                     Person::players[i]->animTarget == staffspinhitanim)
                                 if (distsq(&Person::players[k]->coords, &Person::players[i]->coords) < 6.5 && !Person::players[i]->skeleton.free) {
-                                    Person::players[k]->setAnimation(dodgebackanim);
+                                    Person::players[k]->setTargetAnimation(dodgebackanim);
                                     Person::players[k]->targetyaw = roughDirectionTo(Person::players[k]->coords, Person::players[i]->coords);
                                     Person::players[k]->targettilt2 = pitchTo(Person::players[k]->coords, Person::players[i]->coords);
                                 }
@@ -2128,7 +2127,7 @@ void doAttacks()
                         if (Person::players[k]->animTarget != dodgebackanim) {
                             if (k == 0)
                                 numflipped++;
-                            Person::players[k]->setAnimation(backhandspringanim);
+                            Person::players[k]->setTargetAnimation(backhandspringanim);
                             Person::players[k]->targetyaw = -yaw + 180;
                             if (Person::players[k]->leftkeydown)
                                 Person::players[k]->targetyaw -= 45;
@@ -2577,7 +2576,7 @@ void doAttacks()
                                   Person::players[k]->rabbitkickenabled) ||
                                  Person::players[k]->jumpkeydown)) {
                             oldattackkey = 1;
-                            Person::players[k]->setAnimation(rabbitkickanim);
+                            Person::players[k]->setTargetAnimation(rabbitkickanim);
                         }
                     //update counts
                     if (Animation::animations[Person::players[k]->animTarget].attack && k == 0) {
@@ -2748,18 +2747,18 @@ void doPlayerCollisions()
                                                                                 if (Person::players[k]->howactive == typeactive || hostile)
                                                                                     if (Person::players[k]->isIdle()) {
                                                                                         if (Person::players[k]->howactive < typesleeping)
-                                                                                            Person::players[k]->setAnimation(Person::players[k]->getStop());
+                                                                                            Person::players[k]->setTargetAnimation(Person::players[k]->getStop());
                                                                                         else if (Person::players[k]->howactive == typesleeping)
-                                                                                            Person::players[k]->setAnimation(getupfromfrontanim);
+                                                                                            Person::players[k]->setTargetAnimation(getupfromfrontanim);
                                                                                         if (!editorenabled)
                                                                                             Person::players[k]->howactive = typeactive;
                                                                                     }
                                                                                 if (Person::players[i]->howactive == typeactive || hostile)
                                                                                     if (Person::players[i]->isIdle()) {
                                                                                         if (Person::players[i]->howactive < typesleeping)
-                                                                                            Person::players[i]->setAnimation(Person::players[k]->getStop());
+                                                                                            Person::players[i]->setTargetAnimation(Person::players[k]->getStop());
                                                                                         else
-                                                                                            Person::players[i]->setAnimation(getupfromfrontanim);
+                                                                                            Person::players[i]->setTargetAnimation(getupfromfrontanim);
                                                                                         if (!editorenabled)
                                                                                             Person::players[i]->howactive = typeactive;
                                                                                     }
@@ -3518,7 +3517,7 @@ void Game::Tick()
                                                     Person::players[i]->isIdle() ||
                                                     Person::players[i]->aitype != playercontrolled) {
                                                 Person::players[i]->throwtogglekeydown = 1;
-                                                Person::players[i]->setAnimation(crouchremoveknifeanim);
+                                                Person::players[i]->setTargetAnimation(crouchremoveknifeanim);
                                                 Person::players[i]->targetyaw = roughDirectionTo(Person::players[i]->coords, weapons[j].position);
                                                 Person::players[i]->hasvictim = 0;
                                             }
@@ -3546,7 +3545,7 @@ void Game::Tick()
                                                    Person::players[i]->coords.y < weapons[j].position.y) {
                                             if (!Person::players[i]->isFlip()) {
                                                 Person::players[i]->throwtogglekeydown = 1;
-                                                Person::players[i]->setAnimation(removeknifeanim);
+                                                Person::players[i]->setTargetAnimation(removeknifeanim);
                                                 Person::players[i]->targetyaw = roughDirectionTo(Person::players[i]->coords, weapons[j].position);
                                             }
                                             if (Person::players[i]->isFlip()) {
@@ -3594,7 +3593,7 @@ void Game::Tick()
                                                         Person::players[i]->throwtogglekeydown = 1;
                                                         Person::players[i]->victim = Person::players[j];
                                                         Person::players[i]->hasvictim = 1;
-                                                        Person::players[i]->setAnimation(crouchremoveknifeanim);
+                                                        Person::players[i]->setTargetAnimation(crouchremoveknifeanim);
                                                         Person::players[i]->targetyaw = roughDirectionTo(Person::players[i]->coords, Person::players[j]->coords);
                                                     }
                                                     if (Person::players[i]->animTarget == rollanim || Person::players[i]->animTarget == backhandspringanim) {
@@ -3691,7 +3690,7 @@ void Game::Tick()
                                                             if (!Person::players[i]->isFlip()) {
                                                                 Person::players[i]->throwtogglekeydown = 1;
                                                                 Person::players[i]->victim = Person::players[j];
-                                                                Person::players[i]->setAnimation(knifethrowanim);
+                                                                Person::players[i]->setTargetAnimation(knifethrowanim);
                                                                 Person::players[i]->targetyaw = roughDirectionTo(Person::players[i]->coords, Person::players[j]->coords);
                                                                 Person::players[i]->targettilt2 = pitchTo(Person::players[i]->coords, Person::players[j]->coords);
                                                             }
@@ -3755,7 +3754,7 @@ void Game::Tick()
                                     isgood = false;
                             if (isgood && Person::players[i]->creature != wolftype) {
                                 if (Person::players[i]->isIdle() && Person::players[i]->num_weapons && weapons[Person::players[i]->weaponids[0]].getType() == knife) {
-                                    Person::players[i]->setAnimation(drawrightanim);
+                                    Person::players[i]->setTargetAnimation(drawrightanim);
                                     Person::players[i]->drawtogglekeydown = 1;
                                 }
                                 if ((Person::players[i]->isIdle() ||
@@ -3764,11 +3763,11 @@ void Game::Tick()
                                          Person::players[i]->isRun())) &&
                                         Person::players[i]->num_weapons &&
                                         weapons[Person::players[i]->weaponids[0]].getType() == sword) {
-                                    Person::players[i]->setAnimation(drawleftanim);
+                                    Person::players[i]->setTargetAnimation(drawleftanim);
                                     Person::players[i]->drawtogglekeydown = 1;
                                 }
                                 if (Person::players[i]->isCrouch() && Person::players[i]->num_weapons && weapons[Person::players[i]->weaponids[0]].getType() == knife) {
-                                    Person::players[i]->setAnimation(crouchdrawrightanim);
+                                    Person::players[i]->setTargetAnimation(crouchdrawrightanim);
                                     Person::players[i]->drawtogglekeydown = 1;
                                 }
                             }
@@ -3785,9 +3784,9 @@ void Game::Tick()
                                 Person::players[i]->attackkeydown &&
                                 musictype != stream_fighttheme) {
                             if (weapons[Person::players[i]->weaponids[Person::players[i]->weaponactive]].getType() == knife)
-                                Person::players[i]->setAnimation(crouchstabanim);
+                                Person::players[i]->setTargetAnimation(crouchstabanim);
                             if (weapons[Person::players[i]->weaponids[Person::players[i]->weaponactive]].getType() == sword)
-                                Person::players[i]->setAnimation(swordgroundstabanim);
+                                Person::players[i]->setTargetAnimation(swordgroundstabanim);
                             Person::players[i]->hasvictim = 0;
                         }
                     }
@@ -3860,7 +3859,7 @@ void Game::Tick()
                             Person::players[i]->lowreversaldelay = .5;
 
                             if (Person::players[i]->isIdle()) {
-                                Person::players[i]->setAnimation(Person::players[i]->getCrouch());
+                                Person::players[i]->setTargetAnimation(Person::players[i]->getCrouch());
                                 Person::players[i]->transspeed = 10;
                             }
                             if (Person::players[i]->isRun() ||
@@ -3869,7 +3868,7 @@ void Game::Tick()
                                       Person::players[i]->rightkeydown ||
                                       Person::players[i]->forwardkeydown ||
                                       Person::players[i]->backkeydown))) {
-                                Person::players[i]->setAnimation(rollanim);
+                                Person::players[i]->setTargetAnimation(rollanim);
                                 Person::players[i]->transspeed = 20;
                             }
                         }
@@ -3905,12 +3904,12 @@ void Game::Tick()
                                         Person::players[i]->animCurrent = Person::players[i]->getCrouch();
                                         Person::players[i]->frameCurrent = 0;
                                     }
-                                    Person::players[i]->setAnimation(Person::players[i]->getIdle());
+                                    Person::players[i]->setTargetAnimation(Person::players[i]->getIdle());
                                     Person::players[i]->transspeed = 10;
                                 }
                             }
                             if (Person::players[i]->animTarget == sneakanim) {
-                                Person::players[i]->setAnimation(Person::players[i]->getIdle());
+                                Person::players[i]->setTargetAnimation(Person::players[i]->getIdle());
                                 Person::players[i]->transspeed = 10;
                             }
                         }
@@ -3926,9 +3925,9 @@ void Game::Tick()
                                      !Person::players[i]->jumpkeydown &&
                                      Person::players[i]->crouchkeydown)) {
                                 if (Person::players[i]->aitype == passivetype)
-                                    Person::players[i]->setAnimation(walkanim);
+                                    Person::players[i]->setTargetAnimation(walkanim);
                                 else
-                                    Person::players[i]->setAnimation(Person::players[i]->getRun());
+                                    Person::players[i]->setTargetAnimation(Person::players[i]->getRun());
                             }
                             if (Person::players[i]->isCrouch()) {
                                 Person::players[i]->animTarget = sneakanim;
@@ -3937,7 +3936,7 @@ void Game::Tick()
                                 Person::players[i]->frameTarget = 0;
                             }
                             if (Person::players[i]->animTarget == hanganim/*&&(!Person::players[i]->forwardstogglekeydown||Person::players[i]->aitype!=playercontrolled)*/) {
-                                Person::players[i]->setAnimation(climbanim);
+                                Person::players[i]->setTargetAnimation(climbanim);
                                 Person::players[i]->frameTarget = 1;
                                 Person::players[i]->jumpclimb = 1;
                             }
@@ -3958,7 +3957,7 @@ void Game::Tick()
                                      Person::players[i]->frameTarget > 0 &&
                                      !Person::players[i]->jumpkeydown &&
                                      Person::players[i]->crouchkeydown)) {
-                                Person::players[i]->setAnimation(Person::players[i]->getRun());
+                                Person::players[i]->setTargetAnimation(Person::players[i]->getRun());
                             }
                             if (Person::players[i]->isCrouch()) {
                                 Person::players[i]->animTarget = sneakanim;
@@ -3987,7 +3986,7 @@ void Game::Tick()
                                      Person::players[i]->frameTarget > 0 &&
                                      !Person::players[i]->jumpkeydown &&
                                      Person::players[i]->crouchkeydown)) {
-                                Person::players[i]->setAnimation(Person::players[i]->getRun());
+                                Person::players[i]->setTargetAnimation(Person::players[i]->getRun());
                             }
                             if (Person::players[i]->isCrouch()) {
                                 Person::players[i]->animTarget = sneakanim;
@@ -4016,7 +4015,7 @@ void Game::Tick()
                                      Person::players[i]->frameTarget > 0 &&
                                      !Person::players[i]->jumpkeydown &&
                                      Person::players[i]->crouchkeydown)) {
-                                Person::players[i]->setAnimation(Person::players[i]->getRun());
+                                Person::players[i]->setTargetAnimation(Person::players[i]->getRun());
                             }
                             if (Person::players[i]->isCrouch()) {
                                 Person::players[i]->animTarget = sneakanim;
@@ -4052,7 +4051,7 @@ void Game::Tick()
                                     ((Person::players[i]->animTarget != rabbitrunninganim &&
                                       Person::players[i]->animTarget != wolfrunninganim) || i != 0)) {
                                 Person::players[i]->jumpstart = 0;
-                                Person::players[i]->setAnimation(jumpupanim);
+                                Person::players[i]->setTargetAnimation(jumpupanim);
                                 Person::players[i]->yaw = Person::players[i]->targetyaw;
                                 Person::players[i]->transspeed = 20;
                                 Person::players[i]->FootLand(leftfoot, 1);
@@ -4106,7 +4105,7 @@ void Game::Tick()
                                 emit_sound_at(jumpsound, Person::players[i]->coords, 128.);
                             }
                             if ((Person::players[i]->isIdle()) && Person::players[i]->jumppower > 1) {
-                                Person::players[i]->setAnimation(Person::players[i]->getLanding());
+                                Person::players[i]->setTargetAnimation(Person::players[i]->getLanding());
                                 Person::players[i]->frameTarget = 2;
                                 Person::players[i]->landhard = 0;
                                 Person::players[i]->jumpstart = 1;
@@ -4131,12 +4130,14 @@ void Game::Tick()
                         }
 
                         if (!movekey) {
-                            if (Person::players[i]->isRun() || Person::players[i]->animTarget == walkanim)
-                                Person::players[i]->setAnimation(Person::players[i]->getStop());
+                            if (Person::players[i]->isRun() || Person::players[i]->animTarget == walkanim) {
+                                Person::players[i]->setTargetAnimation(Person::players[i]->getStop());
+                            }
                             if (Person::players[i]->animTarget == sneakanim) {
                                 Person::players[i]->animTarget = Person::players[i]->getCrouch();
-                                if (Person::players[i]->animCurrent == sneakanim)
+                                if (Person::players[i]->animCurrent == sneakanim) {
                                     Person::players[i]->target = 0;
+                                }
                                 Person::players[i]->frameTarget = 0;
                             }
                         }
@@ -4145,9 +4146,9 @@ void Game::Tick()
                                  Person::players[i]->aitype == searchtype ||
                                  (Person::players[i]->aitype == passivetype &&
                                   Person::players[i]->numwaypoints <= 1)))
-                            Person::players[i]->setAnimation(Person::players[i]->getStop());
+                            Person::players[i]->setTargetAnimation(Person::players[i]->getStop());
                         if (Person::players[i]->isRun() && (Person::players[i]->aitype == passivetype))
-                            Person::players[i]->setAnimation(Person::players[i]->getStop());
+                            Person::players[i]->setTargetAnimation(Person::players[i]->getStop());
                     }
                 }
                 if (Person::players[i]->animTarget == rollanim)
@@ -4165,7 +4166,7 @@ void Game::Tick()
 
                 //stop to turn in right direction
                 if (fabs(Person::players[k]->yaw - Person::players[k]->targetyaw) > 90 && (Person::players[k]->isRun() || Person::players[k]->animTarget == walkanim))
-                    Person::players[k]->setAnimation(Person::players[k]->getStop());
+                    Person::players[k]->setTargetAnimation(Person::players[k]->getStop());
 
                 if (Person::players[k]->animTarget == backhandspringanim || Person::players[k]->animTarget == dodgebackanim)
                     Person::players[k]->targettilt = 0;
