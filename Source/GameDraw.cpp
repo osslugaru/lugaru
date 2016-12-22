@@ -67,7 +67,7 @@ extern bool devtools;
 extern int mainmenu;
 extern int bloodtoggle;
 extern int difficulty;
-extern bool decals;
+extern bool decalstoggle;
 extern float texdetail;
 extern bool musictoggle;
 extern float smoketex;

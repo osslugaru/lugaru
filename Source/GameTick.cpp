@@ -102,7 +102,7 @@ extern float envsoundlife[30];
 extern float usermousesensitivity;
 extern bool ismotionblur;
 extern bool showdamagebar; // (des)activate the damage bar
-extern bool decals;
+extern bool decalstoggle;
 extern bool skyboxtexture;
 extern float skyboxr;
 extern float skyboxg;
@@ -606,7 +606,7 @@ void Game::Loadlevel(const std::string& name, bool tutorial)
     }
 
     if (!stealthloading) {
-        terrain.numdecals = 0;
+        terrain.decals.clear();
         Sprite::deleteSprites();
 
         for (int i = 0; i < subdivision; i++) {
@@ -2458,12 +2458,7 @@ void doAttacks()
                                                     Person::players[i]->skeleton.free &&
                                                     Person::players[i]->skeleton.longdead > 1000) {
                                                 Person::players[k]->animTarget = killanim;
-                                                //TODO: refactor this out, what does it do?
-                                                for (int j = 0; j < terrain.numdecals; j++) {
-                                                    if ((terrain.decaltype[j] == blooddecal || terrain.decaltype[j] == blooddecalslow) &&
-                                                            terrain.decalalivetime[j] < 2)
-                                                        terrain.DeleteDecal(j);
-                                                }
+                                                terrain.deleteDeadDecals();
                                                 for (unsigned int l = 0; l < Object::objects.size(); l++) {
                                                     if (Object::objects[l]->model.type == decalstype)
                                                         for (int j = 0; j < Object::objects[l]->model.numdecals; j++) {
@@ -2484,12 +2479,7 @@ void doAttacks()
                                                          Person::players[i]->skeleton.free) &&
                                                         (!Person::players[i]->dead || musictype != stream_fighttheme)) {
                                                     Person::players[k]->animTarget = dropkickanim;
-                                                    for (int j = 0; j < terrain.numdecals; j++) {
-                                                        if ((terrain.decaltype[j] == blooddecal || terrain.decaltype[j] == blooddecalslow) &&
-                                                                terrain.decalalivetime[j] < 2) {
-                                                            terrain.DeleteDecal(j);
-                                                        }
-                                                    }
+                                                    terrain.deleteDeadDecals();
                                                     for (unsigned int l = 0; l < Object::objects.size(); l++) {
                                                         if (Object::objects[l]->model.type == decalstype)
                                                             for (int j = 0; j < Object::objects[l]->model.numdecals; j++) {

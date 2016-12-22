@@ -33,7 +33,7 @@ extern bool autoslomo;
 extern bool foliage;
 extern bool musictoggle;
 extern bool trilinear;
-extern bool decals;
+extern bool decalstoggle;
 extern bool invertmouse;
 extern float gamespeed;
 extern float oldgamespeed;

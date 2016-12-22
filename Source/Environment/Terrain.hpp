@@ -22,6 +22,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #define _TERRAIN_HPP_
 
 #include "Environment/Lights.hpp"
+#include "Graphic/Decal.hpp"
 #include "Graphic/gamegl.hpp"
 #include "Graphic/Texture.hpp"
 #include "Math/Frustum.hpp"
@@ -93,15 +94,7 @@ public:
 
     int patch_elements;
 
-    float decaltexcoords[max_decals][3][2];
-    XYZ decalvertex[max_decals][3];
-    int decaltype[max_decals];
-    float decalopacity[max_decals];
-    float decalrotation[max_decals];
-    float decalalivetime[max_decals];
-    float decalbrightness[max_decals];
-    XYZ decalposition[max_decals];
-    int numdecals;
+    std::vector<Decal> decals;
 
     void AddObject(XYZ where, float radius, int id);
     void DeleteDecal(int which);
@@ -118,6 +111,7 @@ public:
     void drawdecals();
     void draw(int layer);
     void DoShadows();
+    void deleteDeadDecals();
 
     Terrain();
 

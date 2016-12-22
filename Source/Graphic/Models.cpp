@@ -28,7 +28,7 @@ extern float viewdistance;
 extern XYZ viewer;
 extern float fadestart;
 extern float texdetail;
-extern bool decals;
+extern bool decalstoggle;
 
 int Model::LineCheck(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate)
 {
@@ -962,7 +962,7 @@ void Model::drawdifftex(Texture texture)
 
 void Model::drawdecals(Texture shadowtexture, Texture bloodtexture, Texture bloodtexture2, Texture breaktexture)
 {
-    if (decals) {
+    if (decalstoggle) {
         if (type != decalstype)
             return;
         static int i;
@@ -1062,7 +1062,7 @@ void Model::drawdecals(Texture shadowtexture, Texture bloodtexture, Texture bloo
 
 void Model::DeleteDecal(int which)
 {
-    if (decals) {
+    if (decalstoggle) {
         if (type != decalstype)
             return;
         decaltype[which] = decaltype[numdecals - 1];
@@ -1081,7 +1081,7 @@ void Model::DeleteDecal(int which)
 
 void Model::MakeDecal(int atype, XYZ *where, float *size, float *opacity, float *rotation)
 {
-    if (decals) {
+    if (decalstoggle) {
         if (type != decalstype)
             return;
 
@@ -1159,7 +1159,7 @@ void Model::MakeDecal(int atype, XYZ *where, float *size, float *opacity, float 
 
 void Model::MakeDecal(int atype, XYZ where, float size, float opacity, float rotation)
 {
-    if (decals) {
+    if (decalstoggle) {
         if (type != decalstype)
             return;
 

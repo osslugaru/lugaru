@@ -300,7 +300,7 @@ void Menu::updateSettingsMenu()
     if (bloodtoggle == 1) setText(2, "Blood: On, low detail");
     if (bloodtoggle == 2) setText(2, "Blood: On, high detail (slower)");
     setText(4, ismotionblur ? "Blur Effects: Enabled (less compatible)" : "Blur Effects: Disabled (more compatible)");
-    setText(5, decals ? "Decals: Enabled (slower)" : "Decals: Disabled");
+    setText(5, decalstoggle ? "Decals: Enabled (slower)" : "Decals: Disabled");
     setText(6, musictoggle ? "Music: Enabled" : "Music: Disabled");
     setText(9, invertmouse ? "Invert mouse: Yes" : "Invert mouse: No");
     setText(10, std::string("Mouse Speed: ") + to_string(int(usermousesensitivity * 5)));
@@ -626,7 +626,7 @@ void Menu::Tick()
                 ismotionblur = !ismotionblur;
                 break;
             case 5:
-                decals = !decals;
+                decalstoggle = !decalstoggle;
                 break;
             case 6:
                 musictoggle = !musictoggle;

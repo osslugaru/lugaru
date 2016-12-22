@@ -36,7 +36,7 @@ void DefaultSettings()
     fullscreen = 0;
     floatjump = 0;
     autoslomo = 1;
-    decals = 1;
+    decalstoggle = true;
     invertmouse = 0;
     bloodtoggle = 0;
     foliage = 1;
@@ -117,7 +117,7 @@ void SaveSettings()
     opstream << "\nTrilinear:\n";
     opstream << trilinear;
     opstream << "\nDecals(shadows,blood puddles,etc):\n";
-    opstream << decals;
+    opstream << decalstoggle;
     opstream << "\nInvert mouse:\n";
     opstream << invertmouse;
     opstream << "\nGamespeed:\n";
@@ -227,7 +227,7 @@ bool LoadSettings()
         } else if ( !strncmp(setting, "Trilinear", 9) ) {
             ipstream >> trilinear;
         } else if ( !strncmp(setting, "Decals", 6) ) {
-            ipstream >> decals;
+            ipstream >> decalstoggle;
         } else if ( !strncmp(setting, "Invert mouse", 12) ) {
             ipstream >> invertmouse;
         } else if ( !strncmp(setting, "Gamespeed", 9) ) {

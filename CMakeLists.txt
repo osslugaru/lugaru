@@ -54,6 +54,7 @@ set(LUGARU_SRCS
     ${SRCDIR}/Environment/Lights.cpp
     ${SRCDIR}/Environment/Skybox.cpp
     ${SRCDIR}/Environment/Terrain.cpp
+    ${SRCDIR}/Graphic/Decal.cpp
     ${SRCDIR}/Graphic/Models.cpp
     ${SRCDIR}/Graphic/Sprite.cpp
     ${SRCDIR}/Graphic/Stereo.cpp
@@ -97,6 +98,7 @@ set(LUGARU_H
     ${SRCDIR}/Environment/Lights.hpp
     ${SRCDIR}/Environment/Skybox.hpp
     ${SRCDIR}/Environment/Terrain.hpp
+    ${SRCDIR}/Graphic/Decal.hpp
     ${SRCDIR}/Graphic/gamegl.hpp
     ${SRCDIR}/Graphic/Models.hpp
     ${SRCDIR}/Graphic/Sprite.hpp

@@ -51,7 +51,7 @@ extern float woozy;
 extern float viewdistance;
 extern float blackout;
 extern int difficulty;
-extern bool decals;
+extern bool decalstoggle;
 extern float fadestart;
 extern bool freeze;
 extern bool winfreeze;
@@ -728,7 +728,7 @@ void Person::DoBlood(float howmuch, int which)
                     }
                 }
         }
-        if (decals) {
+        if (decalstoggle) {
             // FIXME: manipulating attributes
             bleeding = howmuch + (float)abs(Random() % 100) / 200 - .25;
             bleedxint = 0;
@@ -796,7 +796,7 @@ void Person::DoBloodBig(float howmuch, int which)
         Game::flash(.5, 0);
     }
 
-    if (bloodtoggle && decals && !Tutorial::active) {
+    if (bloodtoggle && decalstoggle && !Tutorial::active) {
         if (bleeding <= 0 && spurt) {
             spurt = 0;
             for (int i = 0; i < 3; i++) {
@@ -979,7 +979,7 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
     float coordsx, coordsy;
     float total;
 
-    if (bloodtoggle && decals && !Tutorial::active) {
+    if (bloodtoggle && decalstoggle && !Tutorial::active) {
         where -= coords;
         if (!skeleton.free)
             where = DoRotation(where, 0, -yaw, 0);
