@@ -117,11 +117,11 @@ const char* Folders::getHomeDirectory()
 bool Folders::makeDirectory(const std::string& path) {
 #ifdef _WIN32
     int status = CreateDirectory(path.c_str(), NULL);
-    return status != 0 || GetLastError() == ERROR_ALREADY_EXISTS;
+    return ((status != 0) || (GetLastError() == ERROR_ALREADY_EXISTS));
 #else
     errno = 0;
     int status = mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-    return status == 0 || errno == EEXIST;
+    return ((status == 0) || (errno == EEXIST));
 #endif
 }
 
