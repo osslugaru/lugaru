@@ -68,7 +68,7 @@ extern float accountcampaigntime[10];
 extern int accountcampaignchoicesmade[10];
 extern int accountcampaignchoices[10][5000];
 
-void LOG(const std::string &fmt, ...)
+void LOG(const std::string &, ...)
 {
     // !!! FIXME: write me.
 }
@@ -123,7 +123,7 @@ void Game::deleteGame()
 
 
 
-void LoadSave(const std::string& fileName, GLuint *textureid, bool mipmap, GLubyte *array, int *skinsize)
+void LoadSave(const std::string& fileName, GLubyte *array)
 {
     LOGFUNC;
 
@@ -554,33 +554,7 @@ void Game::InitGame()
 
     LOG("Initializing sound system...");
 
-#if PLATFORM_LINUX
-    unsigned char rc = 0;
-    int output = OPENAL_OUTPUT_ALSA;  // Try alsa first...
-    if (commandLineOptions[SOUND]) {
-        output = commandLineOptions[SOUND].last()->type(); //  ...but let user override that.
-    }
-
-    OPENAL_SetOutput(output);
-    if ((rc = OPENAL_Init(44100, 32, 0)) == false) {
-        // if we tried ALSA and failed, fall back to OSS.
-        if ( (output == OPENAL_OUTPUT_ALSA) && (commandLineOptions[SOUND].last()->type() != OPENAL_OUTPUT_ALSA) ) {
-            OPENAL_Close();
-            output = OPENAL_OUTPUT_OSS;
-            OPENAL_SetOutput(output);
-            rc = OPENAL_Init(44100, 32, 0);
-        }
-    }
-
-    if (rc == false) {
-        OPENAL_Close();
-        output = OPENAL_OUTPUT_NOSOUND;  // we tried! just do silence.
-        OPENAL_SetOutput(output);
-        rc = OPENAL_Init(44100, 32, 0);
-    }
-#else
     OPENAL_Init(44100, 32, 0);
-#endif
 
     OPENAL_SetSFXMasterVolume((int)(volume * 255));
     loadAllSounds();
@@ -692,14 +666,14 @@ void Game::LoadStuff()
     Weapon::lightbloodswordtextureptr.load("Textures/SwordBloodLight.jpg", 1);
     Weapon::stafftextureptr.load("Textures/Staff.jpg", 1);
 
-    Weapon::throwingknifemodel.load("Models/ThrowingKnife.solid", 1);
+    Weapon::throwingknifemodel.load("Models/ThrowingKnife.solid");
     Weapon::throwingknifemodel.Scale(.001, .001, .001);
     Weapon::throwingknifemodel.Rotate(90, 0, 0);
     Weapon::throwingknifemodel.Rotate(0, 90, 0);
     Weapon::throwingknifemodel.flat = 0;
     Weapon::throwingknifemodel.CalculateNormals(1);
 
-    Weapon::swordmodel.load("Models/Sword.solid", 1);
+    Weapon::swordmodel.load("Models/Sword.solid");
     Weapon::swordmodel.Scale(.001, .001, .001);
     Weapon::swordmodel.Rotate(90, 0, 0);
     Weapon::swordmodel.Rotate(0, 90, 0);
@@ -707,7 +681,7 @@ void Game::LoadStuff()
     Weapon::swordmodel.flat = 1;
     Weapon::swordmodel.CalculateNormals(1);
 
-    Weapon::staffmodel.load("Models/Staff.solid", 1);
+    Weapon::staffmodel.load("Models/Staff.solid");
     Weapon::staffmodel.Scale(.005, .005, .005);
     Weapon::staffmodel.Rotate(90, 0, 0);
     Weapon::staffmodel.Rotate(0, 90, 0);
@@ -770,7 +744,7 @@ void Game::LoadStuff()
     viewer.x = terrain.size / 2 * terrain.scale;
     viewer.z = terrain.size / 2 * terrain.scale;
 
-    hawk.load("Models/Hawk.solid", 1);
+    hawk.load("Models/Hawk.solid");
     hawk.Scale(.03, .03, .03);
     hawk.Rotate(90, 1, 1);
     hawk.CalculateNormals(0);
@@ -779,20 +753,20 @@ void Game::LoadStuff()
     hawkcoords.z = terrain.size / 2 * terrain.scale - 5 - 7;
     hawkcoords.y = terrain.getHeight(hawkcoords.x, hawkcoords.z) + 25;
 
-    eye.load("Models/Eye.solid", 1);
+    eye.load("Models/Eye.solid");
     eye.Scale(.03, .03, .03);
     eye.CalculateNormals(0);
 
-    cornea.load("Models/Cornea.solid", 1);
+    cornea.load("Models/Cornea.solid");
     cornea.Scale(.03, .03, .03);
     cornea.CalculateNormals(0);
 
-    iris.load("Models/Iris.solid", 1);
+    iris.load("Models/Iris.solid");
     iris.Scale(.03, .03, .03);
     iris.CalculateNormals(0);
 
-    LoadSave("Textures/BloodFur.png", 0, 1, &bloodText[0], 0);
-    LoadSave("Textures/WolfBloodFur.png", 0, 1, &wolfbloodText[0], 0);
+    LoadSave("Textures/BloodFur.png", &bloodText[0]);
+    LoadSave("Textures/WolfBloodFur.png", &wolfbloodText[0]);
 
     oldenvironment = -4;
 

@@ -128,7 +128,7 @@ static void set_metal(int pnum, const char *args)
     Person::players[pnum]->metallow  = low;
 }
 
-static void set_noclothes(int pnum, const char *args)
+static void set_noclothes(int pnum, const char*)
 {
     Person::players[pnum]->numclothes = 0;
     Person::players[pnum]->skeleton.drawmodel.textureptr.load(
@@ -156,7 +156,7 @@ static void set_clothes(int pnum, const char *args)
 
 /* Console commands themselves */
 
-void ch_quit(const char *args)
+void ch_quit(const char *)
 {
     tryquit = 1;
 }
@@ -211,9 +211,10 @@ void ch_save(const char *args)
 
     fpackf(tfile, "Bi", Object::objects.size());
 
-    for (int k = 0; k < Object::objects.size(); k++)
+    for (unsigned int k = 0; k < Object::objects.size(); k++) {
         fpackf(tfile, "Bi Bf Bf Bf Bf Bf Bf", Object::objects[k]->type, Object::objects[k]->yaw, Object::objects[k]->pitch,
                Object::objects[k]->position.x, Object::objects[k]->position.y, Object::objects[k]->position.z, Object::objects[k]->scale);
+    }
 
     fpackf(tfile, "Bi", Hotspot::hotspots.size());
     for (unsigned i = 0; i < Hotspot::hotspots.size(); i++) {
@@ -295,7 +296,7 @@ void ch_save(const char *args)
     fclose(tfile);
 }
 
-void ch_cellar(const char *args)
+void ch_cellar(const char *)
 {
     Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/Furdarko.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 }
@@ -383,7 +384,7 @@ void ch_armornear(const char *args)
         set_armor(closest, args);
 }
 
-void ch_protectionreset(const char *args)
+void ch_protectionreset(const char *)
 {
     set_protection(0, "1 1 1");
     set_armor(0, "1 1 1");
@@ -418,13 +419,13 @@ void ch_clothesnear(const char *args)
         set_clothes(closest, args);
 }
 
-void ch_belt(const char *args)
+void ch_belt(const char *)
 {
     Person::players[0]->skeleton.clothes = !Person::players[0]->skeleton.clothes;
 }
 
 
-void ch_cellophane(const char *args)
+void ch_cellophane(const char *)
 {
     cellophane = !cellophane;
     float mul = (cellophane ? 0 : 1);
@@ -437,7 +438,7 @@ void ch_cellophane(const char *args)
     }
 }
 
-void ch_funnybunny(const char *args)
+void ch_funnybunny(const char *)
 {
     Person::players[0]->creature = rabbittype;
     Person::players[0]->skeletonLoad(true);
@@ -447,7 +448,7 @@ void ch_funnybunny(const char *args)
     set_proportion(0, "1 1 1 1");
 }
 
-void ch_wolfie(const char *args)
+void ch_wolfie(const char *)
 {
     Person::players[0]->creature = wolftype;
     Person::players[0]->skeletonLoad();
@@ -460,42 +461,42 @@ void ch_wolfieisgod(const char *args)
     ch_wolfie(args);
 }
 
-void ch_wolf(const char *args)
+void ch_wolf(const char *)
 {
     Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/Wolf.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 }
 
-void ch_snowwolf(const char *args)
+void ch_snowwolf(const char *)
 {
     Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/SnowWolf.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 }
 
-void ch_darkwolf(const char *args)
+void ch_darkwolf(const char *)
 {
     Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/DarkWolf.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 }
 
-void ch_lizardwolf(const char *args)
+void ch_lizardwolf(const char *)
 {
     Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/LizardWolf.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 }
 
-void ch_white(const char *args)
+void ch_white(const char *)
 {
     Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/Fur.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 }
 
-void ch_brown(const char *args)
+void ch_brown(const char *)
 {
     Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/Fur3.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 }
 
-void ch_black(const char *args)
+void ch_black(const char *)
 {
     Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/Fur2.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 }
 
-void ch_sizemin(const char *args)
+void ch_sizemin(const char *)
 {
     for (unsigned i = 1; i < Person::players.size(); i++)
         if (Person::players[i]->scale < 0.8 * 0.2)
@@ -577,43 +578,43 @@ void ch_fixtype(const char *args)
     Dialog::dialogs[0].type = dlg;
 }
 
-void ch_fixrotation(const char *args)
+void ch_fixrotation(const char *)
 {
     int playerId = Dialog::currentScene().participantfocus;
     Dialog::currentDialog().participantyaw[playerId] = Person::players[playerId]->yaw;
 }
 
-void ch_ddialogue(const char *args)
+void ch_ddialogue(const char *)
 {
     if (!Dialog::dialogs.empty()) {
         Dialog::dialogs.pop_back();
     }
 }
 
-void ch_dhs(const char *args)
+void ch_dhs(const char *)
 {
     if (!Hotspot::hotspots.empty()) {
         Hotspot::hotspots.pop_back();
     }
 }
 
-void ch_immobile(const char *args)
+void ch_immobile(const char *)
 {
     Person::players[0]->immobile = 1;
 }
 
-void ch_allimmobile(const char *args)
+void ch_allimmobile(const char *)
 {
     for (unsigned i = 1; i < Person::players.size(); i++)
         Person::players[i]->immobile = 1;
 }
 
-void ch_mobile(const char *args)
+void ch_mobile(const char *)
 {
     Person::players[0]->immobile = 0;
 }
 
-void ch_default(const char *args)
+void ch_default(const char *)
 {
     Person::players[0]->armorhead = 1;
     Person::players[0]->armorhigh = 1;
@@ -663,22 +664,22 @@ void ch_play(const char *args)
     Dialog::currentDialog().play();
 }
 
-void ch_mapkilleveryone(const char *args)
+void ch_mapkilleveryone(const char *)
 {
     maptype = mapkilleveryone;
 }
 
-void ch_mapkillmost(const char *args)
+void ch_mapkillmost(const char *)
 {
     maptype = mapkillmost;
 }
 
-void ch_mapkillsomeone(const char *args)
+void ch_mapkillsomeone(const char *)
 {
     maptype = mapkillsomeone;
 }
 
-void ch_mapgosomewhere(const char *args)
+void ch_mapgosomewhere(const char *)
 {
     maptype = mapgosomewhere;
 }
@@ -729,7 +730,7 @@ void ch_skylight(const char *args)
     Object::DoShadows();
 }
 
-void ch_skybox(const char *args)
+void ch_skybox(const char*)
 {
     skyboxtexture = !skyboxtexture;
 

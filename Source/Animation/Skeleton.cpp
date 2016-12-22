@@ -111,7 +111,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
     XYZ bounceness;
     const int numrepeats = 3;
     float groundlevel = .15;
-    int k, m;
+    int m;
     unsigned i;
     XYZ temp;
     XYZ terrainnormal;
@@ -323,8 +323,8 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                 }
                 if (terrain.patchobjectnum[whichpatchx][whichpatchz])
                     for (m = 0; m < terrain.patchobjectnum[whichpatchx][whichpatchz]; m++) {
-                        k = terrain.patchobjects[whichpatchx][whichpatchz][m];
-                        if (k < Object::objects.size() && k >= 0)
+                        unsigned int k = terrain.patchobjects[whichpatchx][whichpatchz][m];
+                        if (k < Object::objects.size()) {
                             if (Object::objects[k]->possible) {
                                 friction = Object::objects[k]->friction;
                                 XYZ start = joints[i].realoldposition;
@@ -400,6 +400,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                                         broken = 1;
                                 }
                             }
+                        }
                     }
                 joints[i].realoldposition = joints[i].position * (*scale) + *coords;
             }
@@ -409,13 +410,13 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
 
         if (terrain.patchobjectnum[whichpatchx][whichpatchz])
             for (m = 0; m < terrain.patchobjectnum[whichpatchx][whichpatchz]; m++) {
-                k = terrain.patchobjects[whichpatchx][whichpatchz][m];
+                unsigned int k = terrain.patchobjects[whichpatchx][whichpatchz][m];
                 if (Object::objects[k]->possible) {
                     for (i = 0; i < 26; i++) {
                         //Make this less stupid
                         XYZ start = joints[jointlabels[whichjointstartarray[i]]].position * (*scale) + *coords;
                         XYZ end = joints[jointlabels[whichjointendarray[i]]].position * (*scale) + *coords;
-                        whichhit = Object::objects[k]->model.LineCheckSlidePossible(&start, &end, &temp, &Object::objects[k]->position, &Object::objects[k]->yaw);
+                        whichhit = Object::objects[k]->model.LineCheckSlidePossible(&start, &end, &Object::objects[k]->position, &Object::objects[k]->yaw);
                         if (whichhit != -1) {
                             joints[jointlabels[whichjointendarray[i]]].position = (end - *coords) / (*scale);
                             for (unsigned j = 0; j < muscles.size(); j++) {
@@ -636,7 +637,7 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
         model[i].CalculateNormals(0);
     }
 
-    drawmodel.load(modelfilename, 0);
+    drawmodel.load(modelfilename);
     drawmodel.Rotate(180, 0, 0);
     drawmodel.Scale(.04, .04, .04);
     drawmodel.FlipTexCoords();
@@ -651,7 +652,7 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
     modellow.Scale(.04, .04, .04);
     modellow.CalculateNormals(0);
 
-    drawmodellow.load(modellowfilename, 0);
+    drawmodellow.load(modellowfilename);
     drawmodellow.Rotate(180, 0, 0);
     drawmodellow.Scale(.04, .04, .04);
     drawmodellow.FlipTexCoords();
@@ -667,7 +668,7 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
         modelclothes.Scale(.041, .04, .041);
         modelclothes.CalculateNormals(0);
 
-        drawmodelclothes.load(modelclothesfilename, 0);
+        drawmodelclothes.load(modelclothesfilename);
         drawmodelclothes.Rotate(180, 0, 0);
         drawmodelclothes.Scale(.04, .04, .04);
         drawmodelclothes.FlipTexCoords();

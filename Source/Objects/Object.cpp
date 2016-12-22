@@ -80,35 +80,35 @@ Object::Object(object_type _type, XYZ _position, float _yaw, float _pitch, float
 
     switch(type) {
         case boxtype:
-            model.loaddecal("Models/Box.solid", 0);
+            model.loaddecal("Models/Box.solid");
             friction = 1.5;
             break;
         case cooltype:
-            model.loaddecal("Models/Cool.solid", 0);
+            model.loaddecal("Models/Cool.solid");
             friction = 1.5;
             break;
         case walltype:
-            model.loaddecal("Models/Wall.solid", 0);
+            model.loaddecal("Models/Wall.solid");
             friction = 1.5;
             break;
         case tunneltype:
-            model.loaddecal("Models/Tunnel.solid", 0);
+            model.loaddecal("Models/Tunnel.solid");
             friction = 1.5;
             break;
         case chimneytype:
-            model.loaddecal("Models/Chimney.solid", 0);
+            model.loaddecal("Models/Chimney.solid");
             friction = 1.5;
             break;
         case spiketype:
-            model.load("Models/Spike.solid", 0);
+            model.load("Models/Spike.solid");
             friction = .4;
             break;
         case weirdtype:
-            model.loaddecal("Models/Weird.solid", 0);
+            model.loaddecal("Models/Weird.solid");
             friction = 1.5;
             break;
         case rocktype:
-            model.loaddecal("Models/Rock.solid", 0);
+            model.loaddecal("Models/Rock.solid");
             if (scale > .5) {
                 friction = 1.5;
             } else {
@@ -116,20 +116,20 @@ Object::Object(object_type _type, XYZ _position, float _yaw, float _pitch, float
             }
             break;
         case treetrunktype:
-            model.load("Models/TreeTrunk.solid", 0);
+            model.load("Models/TreeTrunk.solid");
             friction = .4;
             break;
         case treeleavestype:
             scale += fabs((float)(Random() % 100) / 900) * scale;
-            model.load("Models/Leaves.solid", 0);
+            model.load("Models/Leaves.solid");
             friction = 0;
             break;
         case bushtype:
             position.y = terrain.getHeight(position.x, position.z) - .3;
-            model.load("Models/Bush.solid", 0);
+            model.load("Models/Bush.solid");
             break;
         case platformtype:
-            model.loaddecal("Models/Platform.solid", 0);
+            model.loaddecal("Models/Platform.solid");
             model.Rotate(90, 0, 0);
             friction = 1.5;
             break;

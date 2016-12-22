@@ -1945,7 +1945,7 @@ void Person::DoAnimations()
             vel[2] = velocity.z;
 
             if (id == 0) {
-                OPENAL_3D_SetAttributes(channels[whooshsound], gLoc, vel);
+                OPENAL_3D_SetAttributes(channels[whooshsound], gLoc);
                 OPENAL_SetVolume(channels[whooshsound], 64 * findLength(&velocity) / 5);
             }
             if (((velocity.y < -15) || (crouchkeydown && velocity.y < -8)) && abs(velocity.y) * 4 > fast_sqrt(velocity.x * velocity.x * velocity.z * velocity.z))
@@ -4290,7 +4290,7 @@ void Person::DoStuff()
     static XYZ flatfacing;
     static XYZ flatvelocity;
     static float flatvelspeed;
-    static int i, l;
+    static int l;
     static int bloodsize;
     static int startx, starty, endx, endy;
     static GLubyte color;
@@ -4382,7 +4382,7 @@ void Person::DoStuff()
             vel[2] = velocity.z;
 
             if (id == 0) {
-                OPENAL_3D_SetAttributes(channels[whooshsound], gLoc, vel);
+                OPENAL_3D_SetAttributes(channels[whooshsound], gLoc);
                 OPENAL_SetVolume(channels[whooshsound], 64 * findLength(&velocity) / 5);
             }
         }
@@ -4540,7 +4540,7 @@ void Person::DoStuff()
         if (endy < starty)
             endy = starty;
 
-        for (i = startx; i < endx; i++) {
+        for (int i = startx; i < endx; i++) {
             for (int j = starty; j < endy; j++) {
                 if (Random() % 2 == 0) {
                     color = Random() % 85 + 170;
@@ -4806,8 +4806,9 @@ void Person::DoStuff()
         }
     }
 
-    if (dead != 1)
+    if (dead != 1) {
         unconscioustime = 0;
+    }
 
     if (dead == 1 || howactive == typesleeping) {
         unconscioustime += multiplier;
@@ -4908,13 +4909,12 @@ void Person::DoStuff()
         damage += 20;
     }
 
-    if (!dead)
+    if (!dead) {
         damage -= multiplier * 13;
-    if (!dead)
         permanentdamage -= multiplier * 4;
-    if (isIdle() || isCrouch()) {
-        if (!dead)
+        if (isIdle() || isCrouch()) {
             permanentdamage -= multiplier * 4;
+        }
     }
     if (damage < 0)
         damage = 0;
@@ -5088,7 +5088,7 @@ void Person::DoStuff()
                 canrecover = 0;
             if (velocity.y < -30)
                 canrecover = 0;
-            for (i = 0; i < Object::objects.size(); i++) {
+            for (unsigned int i = 0; i < Object::objects.size(); i++) {
                 if (Object::objects[i]->type != treeleavestype && Object::objects[i]->type != bushtype && Object::objects[i]->type != firetype) {
                     colviewer = startpoint;
                     coltarget = endpoint;
@@ -5280,7 +5280,7 @@ void Person::DoStuff()
 
     if (aitype != passivetype || skeleton.free == 1)
         if (findLengthfast(&velocity) > .1)
-            for (i = 0; i < Object::objects.size(); i++) {
+            for (unsigned int i = 0; i < Object::objects.size(); i++) {
                 if (Object::objects[i]->type == firetype)
                     if (distsqflat(&coords, &Object::objects[i]->position) < Object::objects[i]->scale*Object::objects[i]->scale * 12 && distsq(&coords, &Object::objects[i]->position) < Object::objects[i]->scale*Object::objects[i]->scale * 49) {
                         if (onfire) {
@@ -5433,8 +5433,8 @@ void Person::DoStuff()
             play = 0;
         if (play && aitype != playercontrolled) {
             int whichsound = -1;
-            i = abs(Random() % 4);
             if (speechdelay <= 0) {
+                unsigned int i = abs(Random() % 4);
                 if (creature == rabbittype) {
                     if (i == 0)
                         whichsound = rabbitchitter;
@@ -6861,12 +6861,12 @@ int Person::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate,
 
 int findPathDist(int start, int end)
 {
-    int smallestcount, connected;
+    int connected;
     int closest;
 
-    smallestcount = 1000;
+    unsigned int smallestcount = 1000;
     for (char i = 0; i < 50; i++) {
-        unsigned count = 0;
+        unsigned int count = 0;
         int last = start;
         int last2 = -1;
         int last3 = -1;
@@ -6897,8 +6897,9 @@ int findPathDist(int start, int end)
             last = closest;
             count++;
         }
-        if (count < smallestcount)
+        if (count < smallestcount) {
             smallestcount = count;
+        }
     }
     return smallestcount;
 }

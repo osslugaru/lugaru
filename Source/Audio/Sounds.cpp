@@ -85,7 +85,7 @@ void addEnvSound(XYZ coords, float vol, float life)
 void emit_sound_at(int soundid, const XYZ &pos, float vol)
 {
     PlaySoundEx (soundid, samp[soundid], NULL, true);
-    OPENAL_3D_SetAttributes_ (channels[soundid], pos, NULL);
+    OPENAL_3D_SetAttributes_ (channels[soundid], pos);
     OPENAL_SetVolume (channels[soundid], vol);
     OPENAL_SetPaused (channels[soundid], false);
 }
@@ -100,7 +100,7 @@ void emit_sound_np(int soundid, float vol)
 void emit_stream_at(int soundid, const XYZ &pos, float vol)
 {
     PlayStreamEx (soundid, samp[soundid], NULL, true);
-    OPENAL_3D_SetAttributes_ (channels[soundid], pos, NULL);
+    OPENAL_3D_SetAttributes_ (channels[soundid], pos);
     OPENAL_SetVolume (channels[soundid], vol);
     OPENAL_SetPaused (channels[soundid], false);
 }

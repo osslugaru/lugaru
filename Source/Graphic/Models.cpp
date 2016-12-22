@@ -103,7 +103,7 @@ int Model::LineCheckPossible(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate)
     return firstintersecting;
 }
 
-int Model::LineCheckSlidePossible(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate)
+int Model::LineCheckSlidePossible(XYZ *p1, XYZ *p2, XYZ *move, float *rotate)
 {
     static int j;
     static float distance;
@@ -463,7 +463,7 @@ bool Model::loadnotex(const std::string& filename)
 }
 
 
-bool Model::load(const std::string& filename, bool texture)
+bool Model::load(const std::string& filename)
 {
     FILE *tfile;
     long i;
@@ -536,7 +536,7 @@ bool Model::load(const std::string& filename, bool texture)
     return true;
 }
 
-bool Model::loaddecal(const std::string& filename, bool texture )
+bool Model::loaddecal(const std::string& filename)
 {
     FILE *tfile;
     long i, j;

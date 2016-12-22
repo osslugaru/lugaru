@@ -79,7 +79,7 @@ static void set_channel_position(const int channel, const float x,
 }
 
 
-AL_API void OPENAL_3D_Listener_SetAttributes(const float *pos, const float *vel, float fx, float fy, float fz, float tx, float ty, float tz)
+AL_API void OPENAL_3D_Listener_SetAttributes(const float *pos, const float *, float fx, float fy, float fz, float tx, float ty, float tz)
 {
     if (!initialized)
         return;
@@ -90,7 +90,7 @@ AL_API void OPENAL_3D_Listener_SetAttributes(const float *pos, const float *vel,
         listener_position[2] = -pos[2];
     }
 
-    ALfloat vec[6] = { fx, fy, -fz, tz, ty, -tz };
+    ALfloat vec[6] = { fx, fy, -fz, tx, ty, -tz };
     alListenerfv(AL_ORIENTATION, vec);
 
     // we ignore velocity, since doppler's broken in the Linux AL at the moment...
@@ -102,7 +102,7 @@ AL_API void OPENAL_3D_Listener_SetAttributes(const float *pos, const float *vel,
     }
 }
 
-AL_API signed char OPENAL_3D_SetAttributes(int channel, const float *pos, const float *vel)
+AL_API signed char OPENAL_3D_SetAttributes(int channel, const float *pos)
 {
     if (!initialized)
         return false;
@@ -117,7 +117,7 @@ AL_API signed char OPENAL_3D_SetAttributes(int channel, const float *pos, const 
     return true;
 }
 
-AL_API signed char OPENAL_3D_SetAttributes_(int channel, const XYZ &pos, const float *vel)
+AL_API signed char OPENAL_3D_SetAttributes_(int channel, const XYZ &pos)
 {
     if (!initialized)
         return false;
@@ -564,11 +564,6 @@ AL_API void OPENAL_Update()
     if (!initialized)
         return;
     alcProcessContext(alcGetCurrentContext());
-}
-
-AL_API signed char OPENAL_SetOutput(int outputtype)
-{
-    return true;
 }
 
 extern int channels[];

@@ -119,14 +119,14 @@ public:
     int SphereCheckPossible(XYZ *p1, float radius, XYZ *move, float *rotate);
     int LineCheck(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate);
     int LineCheckPossible(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate);
-    int LineCheckSlidePossible(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate);
+    int LineCheckSlidePossible(XYZ *p1, XYZ *p2, XYZ *move, float *rotate);
     void UpdateVertexArray();
     void UpdateVertexArrayNoTex();
     void UpdateVertexArrayNoTexNoNorm();
     bool loadnotex(const std::string& filename);
     bool loadraw(const std::string& filename);
-    bool load(const std::string& filename, bool texture);
-    bool loaddecal(const std::string& filename, bool texture);
+    bool load(const std::string& filename);
+    bool loaddecal(const std::string& filename);
     void Scale(float xscale, float yscale, float zscale);
     void FlipTexCoords();
     void UniformTexCoords();

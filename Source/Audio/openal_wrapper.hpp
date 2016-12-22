@@ -73,12 +73,6 @@ typedef struct OPENAL_SAMPLE    OPENAL_SAMPLE;
 typedef OPENAL_SAMPLE    OPENAL_STREAM;
 typedef struct OPENAL_DSPUNIT   OPENAL_DSPUNIT;
 
-enum OPENAL_OUTPUTTYPES {
-    OPENAL_OUTPUT_NOSOUND,    /* NoSound driver, all calls to this succeed but do nothing. */
-    OPENAL_OUTPUT_OSS,        /* Linux/Unix OSS (Open Sound System) driver, i.e. the kernel sound drivers. */
-    OPENAL_OUTPUT_ALSA,       /* Linux Alsa driver. */
-};
-
 #define OPENAL_LOOP_OFF      0x00000001  /* For non looping samples. */
 #define OPENAL_LOOP_NORMAL   0x00000002  /* For forward looping samples. */
 #define OPENAL_HW3D          0x00001000  /* Attempts to make samples use 3d hardware acceleration. (if the card supports it) */
@@ -94,8 +88,8 @@ extern "C" {
 #define AL_API
 
     AL_API void OPENAL_3D_Listener_SetAttributes(const float *pos, const float *vel, float fx, float fy, float fz, float tx, float ty, float tz);
-    AL_API signed char OPENAL_3D_SetAttributes(int channel, const float *pos, const float *vel);
-    AL_API signed char OPENAL_3D_SetAttributes_(int channel, const XYZ &pos, const float *vel);
+    AL_API signed char OPENAL_3D_SetAttributes(int channel, const float *pos);
+    AL_API signed char OPENAL_3D_SetAttributes_(int channel, const XYZ &pos);
     AL_API signed char OPENAL_Init(int mixrate, int maxsoftwarechannels, unsigned int flags);
     AL_API void OPENAL_Close();
     AL_API OPENAL_SAMPLE *OPENAL_Sample_Load(int index, const char *name_or_data, unsigned int mode, int offset, int length);
@@ -107,7 +101,6 @@ extern "C" {
     AL_API signed char OPENAL_StopSound(int channel);
     AL_API signed char OPENAL_Stream_SetMode(OPENAL_STREAM *stream, unsigned int mode);
     AL_API void OPENAL_Update();
-    AL_API signed char OPENAL_SetOutput(int outputtype);
     void PlaySoundEx(int chan, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
     void PlayStreamEx(int chan, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 

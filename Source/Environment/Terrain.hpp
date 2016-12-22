@@ -68,7 +68,7 @@ public:
     short size;
 
     int patchobjectnum[subdivision][subdivision];
-    int patchobjects[subdivision][subdivision][300];
+    unsigned int patchobjects[subdivision][subdivision][300];
 
     float scale;
     int type;
@@ -124,7 +124,7 @@ public:
 private:
     void drawpatch(int whichx, int whichy, float opacity);
     void drawpatchother(int whichx, int whichy, float opacity);
-    void drawpatchotherother(int whichx, int whichy, float opacity);
+    void drawpatchotherother(int whichx, int whichy);
     void UpdateTransparency(int whichx, int whichy);
     void UpdateTransparencyother(int whichx, int whichy);
     void UpdateTransparencyotherother(int whichx, int whichy);

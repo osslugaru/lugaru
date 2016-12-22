@@ -905,7 +905,7 @@ void Menu::Tick()
 
 }
 
-int setKeySelected_thread(void* data)
+int setKeySelected_thread(void*)
 {
     using namespace Game;
     int scancode = -1;

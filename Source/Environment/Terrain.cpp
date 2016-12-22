@@ -770,7 +770,7 @@ void Terrain::drawpatchother(int whichx, int whichy, float opacity)
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
-void Terrain::drawpatchotherother(int whichx, int whichy, float opacity)
+void Terrain::drawpatchotherother(int whichx, int whichy)
 {
     glEnable(GL_BLEND);
     UpdateTransparencyotherother(whichx, whichy);
@@ -983,7 +983,7 @@ void Terrain::draw(int layer)
                     if (layer == 1 && textureness[i][j] != allfirst)
                         drawpatchother(i, j, opacity);
                     if (layer == 2 && textureness[i][j] != allfirst)
-                        drawpatchotherother(i, j, opacity);
+                        drawpatchotherother(i, j);
                 }
                 glPopMatrix();
             }
