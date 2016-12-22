@@ -1,4 +1,4 @@
-Campaign Levels: 27
+Campaign Levels: 18
 
 Level 1:
 Name: task1
