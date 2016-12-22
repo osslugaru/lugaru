@@ -5915,8 +5915,9 @@ void Person::DoStuff()
             velocity.y = 0;
             if (velspeed < multiplier * 300 * scale) {
                 velocity = 0;
-            } else
+            } else {
                 velocity -= velocity / velspeed * multiplier * 300 * scale;
+            }
             if (velspeed > 5 && (isLanding() || isLandhard())) {
                 skiddingdelay += multiplier;
                 if (skiddelay <= 0) {
@@ -5924,17 +5925,13 @@ void Person::DoStuff()
                     FootLand(rightfoot, .5);
                     skiddelay = .02;
                 }
-            } else
+            } else {
                 skiddingdelay = 0;
+            }
         }
 
         if (isLandhard()) {
             velspeed = findLength(&velocity);
-            velocity.y = 0;
-            if (velspeed < multiplier * 600 * scale) {
-                velocity = 0;
-            } else
-                velocity -= velocity / velspeed * multiplier * 600 * scale;
             velocity = 0;
             if (velspeed > 5 && (isLanding() || isLandhard())) {
                 skiddingdelay += multiplier;
@@ -5943,8 +5940,9 @@ void Person::DoStuff()
                     FootLand(rightfoot, .5);
                     skiddelay = .02;
                 }
-            } else
+            } else {
                 skiddingdelay = 0;
+            }
         }
 
         if (skiddingdelay < 0)
