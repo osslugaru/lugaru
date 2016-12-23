@@ -6361,7 +6361,7 @@ int Person::DrawSkeleton()
             glBegin(GL_LINES);
 
             if (playerdetail)
-                for (i = 0; i < skeleton.drawmodel.TriangleNum; i++) {
+                for (i = 0; i < skeleton.drawmodel.Triangles.size(); i++) {
                     XYZ &v0 = skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[0]];
                     XYZ &v1 = skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[1]];
                     XYZ &v2 = skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[2]];
@@ -6740,13 +6740,13 @@ int Person::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate,
     if (*rotate)
         *p1 = DoRotation(*p1, 0, -*rotate, 0);
     for (i = 0; i < 4; i++) {
-        for (j = 0; j < model->TriangleNum; j++) {
-            if (model->facenormals[j].y <= slopethreshold) {
+        for (j = 0; j < model->Triangles.size(); j++) {
+            if (model->Triangles[j].facenormal.y <= slopethreshold) {
                 intersecting = 0;
-                distance = abs((model->facenormals[j].x * p1->x) + (model->facenormals[j].y * p1->y) + (model->facenormals[j].z * p1->z) - ((model->facenormals[j].x * model->vertex[model->Triangles[j].vertex[0]].x) + (model->facenormals[j].y * model->vertex[model->Triangles[j].vertex[0]].y) + (model->facenormals[j].z * model->vertex[model->Triangles[j].vertex[0]].z)));
+                distance = abs((model->Triangles[j].facenormal.x * p1->x) + (model->Triangles[j].facenormal.y * p1->y) + (model->Triangles[j].facenormal.z * p1->z) - ((model->Triangles[j].facenormal.x * model->vertex[model->Triangles[j].vertex[0]].x) + (model->Triangles[j].facenormal.y * model->vertex[model->Triangles[j].vertex[0]].y) + (model->Triangles[j].facenormal.z * model->vertex[model->Triangles[j].vertex[0]].z)));
                 if (distance < radius) {
-                    point = *p1 - model->facenormals[j] * distance;
-                    if (PointInTriangle( &point, model->facenormals[j], &model->vertex[model->Triangles[j].vertex[0]], &model->vertex[model->Triangles[j].vertex[1]], &model->vertex[model->Triangles[j].vertex[2]]))
+                    point = *p1 - model->Triangles[j].facenormal * distance;
+                    if (PointInTriangle( &point, model->Triangles[j].facenormal, &model->vertex[model->Triangles[j].vertex[0]], &model->vertex[model->Triangles[j].vertex[1]], &model->vertex[model->Triangles[j].vertex[2]]))
                         intersecting = 1;
                     if (!intersecting)
                         intersecting = sphere_line_intersection(&model->vertex[model->Triangles[j].vertex[0]],
@@ -6761,11 +6761,11 @@ int Person::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate,
                                                                 &model->vertex[model->Triangles[j].vertex[2]],
                                                                 p1, &radius);
                     end = *p1 - point;
-                    if (dotproduct(&model->facenormals[j], &end) > 0 && intersecting) {
+                    if (dotproduct(&model->Triangles[j].facenormal, &end) > 0 && intersecting) {
                         start = *p1;
                         end = *p1;
                         end.y -= radius;
-                        if (LineFacetd(&start, &end, &model->vertex[model->Triangles[j].vertex[0]], &model->vertex[model->Triangles[j].vertex[1]], &model->vertex[model->Triangles[j].vertex[2]], &model->facenormals[j], &point)) {
+                        if (LineFacetd(&start, &end, &model->vertex[model->Triangles[j].vertex[0]], &model->vertex[model->Triangles[j].vertex[1]], &model->vertex[model->Triangles[j].vertex[2]], &model->Triangles[j].facenormal, &point)) {
                             p1->y = point.y + radius;
                             if ((animTarget == jumpdownanim || isFlip())) {
                                 if (isFlip() && (frameTarget < 5 || targetFrame().label == 7 || targetFrame().label == 4))
@@ -6805,23 +6805,23 @@ int Person::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate,
                 }
             }
         }
-        for (j = 0; j < model->TriangleNum; j++) {
-            if (model->facenormals[j].y > slopethreshold) {
+        for (j = 0; j < model->Triangles.size(); j++) {
+            if (model->Triangles[j].facenormal.y > slopethreshold) {
                 intersecting = 0;
                 start = *p1;
                 start.y -= radius / 4;
                 XYZ &v0 = model->vertex[model->Triangles[j].vertex[0]];
                 XYZ &v1 = model->vertex[model->Triangles[j].vertex[1]];
                 XYZ &v2 = model->vertex[model->Triangles[j].vertex[2]];
-                distance = abs((model->facenormals[j].x * start.x)
-                               + (model->facenormals[j].y * start.y)
-                               + (model->facenormals[j].z * start.z)
-                               - ((model->facenormals[j].x * v0.x)
-                                  + (model->facenormals[j].y * v0.y)
-                                  + (model->facenormals[j].z * v0.z)));
+                distance = abs((model->Triangles[j].facenormal.x * start.x)
+                               + (model->Triangles[j].facenormal.y * start.y)
+                               + (model->Triangles[j].facenormal.z * start.z)
+                               - ((model->Triangles[j].facenormal.x * v0.x)
+                                  + (model->Triangles[j].facenormal.y * v0.y)
+                                  + (model->Triangles[j].facenormal.z * v0.z)));
                 if (distance < radius * .5) {
-                    point = start - model->facenormals[j] * distance;
-                    if (PointInTriangle( &point, model->facenormals[j], &v0, &v1, &v2))
+                    point = start - model->Triangles[j].facenormal * distance;
+                    if (PointInTriangle( &point, model->Triangles[j].facenormal, &v0, &v1, &v2))
                         intersecting = 1;
                     if (!intersecting)
                         intersecting = sphere_line_intersection(v0.x, v0.y, v0.z, v1.x, v1.y, v1.z, p1->x, p1->y, p1->z, radius / 2);
@@ -6830,14 +6830,14 @@ int Person::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate,
                     if (!intersecting)
                         intersecting = sphere_line_intersection(v0.x, v0.y, v0.z, v2.x, v2.y, v2.z, p1->x, p1->y, p1->z, radius / 2);
                     end = *p1 - point;
-                    if (dotproduct(&model->facenormals[j], &end) > 0 && intersecting) {
+                    if (dotproduct(&model->Triangles[j].facenormal, &end) > 0 && intersecting) {
                         if ((animTarget == jumpdownanim || animTarget == jumpupanim || isFlip())) {
                             start = velocity;
-                            velocity -= DoRotation(model->facenormals[j], 0, *rotate, 0) * findLength(&velocity) * abs(normaldotproduct(velocity, DoRotation(model->facenormals[j], 0, *rotate, 0))); //(distance-radius*.5)/multiplier;
+                            velocity -= DoRotation(model->Triangles[j].facenormal, 0, *rotate, 0) * findLength(&velocity) * abs(normaldotproduct(velocity, DoRotation(model->Triangles[j].facenormal, 0, *rotate, 0))); //(distance-radius*.5)/multiplier;
                             if (findLengthfast(&start) < findLengthfast(&velocity))
                                 velocity = start;
                         }
-                        *p1 += model->facenormals[j] * (distance - radius * .5);
+                        *p1 += model->Triangles[j].facenormal * (distance - radius * .5);
                     }
                 }
                 if ((distance < olddistance || firstintersecting == -1) && intersecting) {

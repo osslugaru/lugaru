@@ -49,6 +49,7 @@ class TexturedTriangle
 public:
     short vertex[3];
     float gx[3], gy[3];
+    XYZ facenormal;
 };
 
 #define max_model_decals 300
@@ -62,7 +63,7 @@ public:
 class Model
 {
 public:
-    short vertexNum, TriangleNum;
+    short vertexNum;
     bool hastexture;
 
     int type, oldtype;
@@ -71,16 +72,13 @@ public:
     int* owner;
     XYZ* vertex;
     XYZ* normals;
-    XYZ* facenormals;
-    TexturedTriangle* Triangles;
+    std::vector<TexturedTriangle> Triangles;
     GLfloat* vArray;
 
     /*int possible[max_model_vertex];
     int owner[max_textured_triangle];
     XYZ vertex[max_model_vertex];
     XYZ normals[max_model_vertex];
-    XYZ facenormals[max_textured_triangle];
-    TexturedTriangle Triangles[max_textured_triangle];
     GLfloat vArray[max_textured_triangle*24];*/
 
     Texture textureptr;
@@ -91,24 +89,7 @@ public:
     XYZ boundingspherecenter;
     float boundingsphereradius;
 
-    //~ float*** decaltexcoords;
-    //~ XYZ** decalvertex;
-    //~ int* decaltype;
-    //~ float* decalopacity;
-    //~ float* decalrotation;
-    //~ float* decalalivetime;
-    //~ XYZ* decalposition;
     std::vector<Decal> decals;
-
-    /*float decaltexcoords[max_model_decals][3][2];
-    XYZ decalvertex[max_model_decals][3];
-    int decaltype[max_model_decals];
-    float decalopacity[max_model_decals];
-    float decalrotation[max_model_decals];
-    float decalalivetime[max_model_decals];
-    XYZ decalposition[max_model_decals];*/
-
-    int numdecals;
 
     bool flat;
 

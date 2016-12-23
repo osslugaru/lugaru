@@ -348,7 +348,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                                         }
                                     }
 
-                                    terrainnormal = DoRotation(Object::objects[k]->model.facenormals[whichhit], 0, Object::objects[k]->yaw, 0) * -1;
+                                    terrainnormal = DoRotation(Object::objects[k]->model.Triangles[whichhit].facenormal, 0, Object::objects[k]->yaw, 0) * -1;
                                     if (terrainnormal.y > .8)
                                         freefall = 0;
                                     bounceness = terrainnormal * findLength(&joints[i].velocity) * (abs(normaldotproduct(joints[i].velocity, terrainnormal)));

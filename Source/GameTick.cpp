@@ -1775,13 +1775,13 @@ void doAerialAcrobatics()
                             lowpointtarget = lowpoint + DoRotation(Person::players[k]->facing, 0, -90, 0) * 1.5;
                             XYZ tempcoords1 = lowpoint;
                             whichhit = Object::objects[i]->model.LineCheck(&lowpoint, &lowpointtarget, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw);
-                            if (whichhit != -1 && fabs(Object::objects[i]->model.facenormals[whichhit].y) < .3) {
+                            if (whichhit != -1 && fabs(Object::objects[i]->model.Triangles[whichhit].facenormal.y) < .3) {
                                 Person::players[k]->setTargetAnimation(walljumpleftanim);
                                 emit_sound_at(movewhooshsound, Person::players[k]->coords);
                                 if (k == 0)
                                     pause_sound(whooshsound);
 
-                                lowpointtarget = DoRotation(Object::objects[i]->model.facenormals[whichhit], 0, Object::objects[i]->yaw, 0);
+                                lowpointtarget = DoRotation(Object::objects[i]->model.Triangles[whichhit].facenormal, 0, Object::objects[i]->yaw, 0);
                                 Person::players[k]->yaw = -asin(0 - lowpointtarget.x) * 180 / M_PI;
                                 if (lowpointtarget.z < 0)
                                     Person::players[k]->yaw = 180 - Person::players[k]->yaw;
@@ -1793,13 +1793,13 @@ void doAerialAcrobatics()
                                 lowpoint = tempcoords1;
                                 lowpointtarget = lowpoint + DoRotation(Person::players[k]->facing, 0, 90, 0) * 1.5;
                                 whichhit = Object::objects[i]->model.LineCheck(&lowpoint, &lowpointtarget, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw);
-                                if (whichhit != -1 && fabs(Object::objects[i]->model.facenormals[whichhit].y) < .3) {
+                                if (whichhit != -1 && fabs(Object::objects[i]->model.Triangles[whichhit].facenormal.y) < .3) {
                                     Person::players[k]->setTargetAnimation(walljumprightanim);
                                     emit_sound_at(movewhooshsound, Person::players[k]->coords);
                                     if (k == 0)
                                         pause_sound(whooshsound);
 
-                                    lowpointtarget = DoRotation(Object::objects[i]->model.facenormals[whichhit], 0, Object::objects[i]->yaw, 0);
+                                    lowpointtarget = DoRotation(Object::objects[i]->model.Triangles[whichhit].facenormal, 0, Object::objects[i]->yaw, 0);
                                     Person::players[k]->yaw = -asin(0 - lowpointtarget.x) * 180 / M_PI;
                                     if (lowpointtarget.z < 0)
                                         Person::players[k]->yaw = 180 - Person::players[k]->yaw;
@@ -1811,13 +1811,13 @@ void doAerialAcrobatics()
                                     lowpoint = tempcoords1;
                                     lowpointtarget = lowpoint + Person::players[k]->facing * 2;
                                     whichhit = Object::objects[i]->model.LineCheck(&lowpoint, &lowpointtarget, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw);
-                                    if (whichhit != -1 && fabs(Object::objects[i]->model.facenormals[whichhit].y) < .3) {
+                                    if (whichhit != -1 && fabs(Object::objects[i]->model.Triangles[whichhit].facenormal.y) < .3) {
                                         Person::players[k]->setTargetAnimation(walljumpbackanim);
                                         emit_sound_at(movewhooshsound, Person::players[k]->coords);
                                         if (k == 0)
                                             pause_sound(whooshsound);
 
-                                        lowpointtarget = DoRotation(Object::objects[i]->model.facenormals[whichhit], 0, Object::objects[i]->yaw, 0);
+                                        lowpointtarget = DoRotation(Object::objects[i]->model.Triangles[whichhit].facenormal, 0, Object::objects[i]->yaw, 0);
                                         Person::players[k]->yaw = -asin(0 - lowpointtarget.x) * 180 / M_PI;
                                         if (lowpointtarget.z < 0)
                                             Person::players[k]->yaw = 180 - Person::players[k]->yaw;
@@ -1829,13 +1829,13 @@ void doAerialAcrobatics()
                                         lowpoint = tempcoords1;
                                         lowpointtarget = lowpoint - Person::players[k]->facing * 2;
                                         whichhit = Object::objects[i]->model.LineCheck(&lowpoint, &lowpointtarget, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw);
-                                        if (whichhit != -1 && fabs(Object::objects[i]->model.facenormals[whichhit].y) < .3) {
+                                        if (whichhit != -1 && fabs(Object::objects[i]->model.Triangles[whichhit].facenormal.y) < .3) {
                                             Person::players[k]->setTargetAnimation(walljumpfrontanim);
                                             emit_sound_at(movewhooshsound, Person::players[k]->coords);
                                             if (k == 0)
                                                 pause_sound(whooshsound);
 
-                                            lowpointtarget = DoRotation(Object::objects[i]->model.facenormals[whichhit], 0, Object::objects[i]->yaw, 0);
+                                            lowpointtarget = DoRotation(Object::objects[i]->model.Triangles[whichhit].facenormal, 0, Object::objects[i]->yaw, 0);
                                             Person::players[k]->yaw = -asin(0 - lowpointtarget.x) * 180 / M_PI;
                                             if (lowpointtarget.z < 0)
                                                 Person::players[k]->yaw = 180 - Person::players[k]->yaw;
@@ -1978,7 +1978,7 @@ void doAerialAcrobatics()
                                                                     lowpoint.y += (float)j / 13;
                                                                     lowpointtarget = lowpoint + facing * 1.3;
                                                                     flatfacing = Person::players[k]->coords;
-                                                                    Person::players[k]->coords = colpoint - DoRotation(Object::objects[i]->model.facenormals[whichhit], 0, Object::objects[k]->yaw, 0) * .01;
+                                                                    Person::players[k]->coords = colpoint - DoRotation(Object::objects[i]->model.Triangles[whichhit].facenormal, 0, Object::objects[k]->yaw, 0) * .01;
                                                                     Person::players[k]->coords.y = lowpointtarget.y - .07;
                                                                     Person::players[k]->currentoffset = (flatfacing - Person::players[k]->coords) / Person::players[k]->scale;
 
@@ -1989,7 +1989,7 @@ void doAerialAcrobatics()
                                                                         }
                                                                         emit_sound_at(jumpsound, Person::players[k]->coords, 128.);
 
-                                                                        lowpointtarget = DoRotation(Object::objects[i]->model.facenormals[whichhit], 0, Object::objects[i]->yaw, 0);
+                                                                        lowpointtarget = DoRotation(Object::objects[i]->model.Triangles[whichhit].facenormal, 0, Object::objects[i]->yaw, 0);
                                                                         Person::players[k]->yaw = -asin(0 - lowpointtarget.x) * 180 / M_PI;
                                                                         if (lowpointtarget.z < 0)
                                                                             Person::players[k]->yaw = 180 - Person::players[k]->yaw;

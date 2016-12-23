@@ -166,7 +166,7 @@ void Weapon::DoStuff(int i)
                     if (whichhit != -1) {
                         if (Object::objects[k]->type == treetrunktype) {
                             Object::objects[k]->model.MakeDecal(breakdecal, DoRotation(colpoint - Object::objects[k]->position, 0, -Object::objects[k]->yaw, 0), .1, 1, Random() % 360);
-                            normalrot = DoRotation(Object::objects[k]->model.facenormals[whichhit], 0, Object::objects[k]->yaw, 0);
+                            normalrot = DoRotation(Object::objects[k]->model.Triangles[whichhit].facenormal, 0, Object::objects[k]->yaw, 0);
                             velocity = 0;
                             if (type == knife)
                                 position = colpoint - normalrot * .1;
@@ -451,7 +451,7 @@ void Weapon::DoStuff(int i)
                         if (whichhit != -1) {
                             hitsomething = 1;
                             position = colpoint;
-                            terrainnormal = DoRotation(Object::objects[k]->model.facenormals[whichhit], 0, Object::objects[k]->yaw, 0) * -1;
+                            terrainnormal = DoRotation(Object::objects[k]->model.Triangles[whichhit].facenormal, 0, Object::objects[k]->yaw, 0) * -1;
                             ReflectVector(&velocity, &terrainnormal);
                             position += terrainnormal * .002;
 
@@ -481,7 +481,7 @@ void Weapon::DoStuff(int i)
                         if (whichhit != -1) {
                             hitsomething = 1;
                             tippoint = colpoint;
-                            terrainnormal = DoRotation(Object::objects[k]->model.facenormals[whichhit], 0, Object::objects[k]->yaw, 0) * -1;
+                            terrainnormal = DoRotation(Object::objects[k]->model.Triangles[whichhit].facenormal, 0, Object::objects[k]->yaw, 0) * -1;
                             ReflectVector(&tipvelocity, &terrainnormal);
                             tippoint += terrainnormal * .002;
 
@@ -518,7 +518,7 @@ void Weapon::DoStuff(int i)
                                 if (whichhit != -1) {
                                     hitsomething = 1;
                                     mid = colpoint;
-                                    terrainnormal = DoRotation(Object::objects[k]->model.facenormals[whichhit], 0, Object::objects[k]->yaw, 0) * -1;
+                                    terrainnormal = DoRotation(Object::objects[k]->model.Triangles[whichhit].facenormal, 0, Object::objects[k]->yaw, 0) * -1;
                                     ReflectVector(&velocity, &terrainnormal);
 
                                     bounceness = terrainnormal * findLength(&velocity) * (abs(normaldotproduct(velocity, terrainnormal)));
@@ -553,7 +553,7 @@ void Weapon::DoStuff(int i)
                                 if (whichhit != -1) {
                                     hitsomething = 1;
                                     mid = colpoint;
-                                    terrainnormal = DoRotation(Object::objects[k]->model.facenormals[whichhit], 0, Object::objects[k]->yaw, 0) * -1;
+                                    terrainnormal = DoRotation(Object::objects[k]->model.Triangles[whichhit].facenormal, 0, Object::objects[k]->yaw, 0) * -1;
                                     ReflectVector(&tipvelocity, &terrainnormal);
 
                                     bounceness = terrainnormal * findLength(&tipvelocity) * (abs(normaldotproduct(tipvelocity, terrainnormal)));
