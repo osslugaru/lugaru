@@ -21,6 +21,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Graphic/Decal.hpp"
 
 #include "Environment/Terrain.hpp"
+#include "Graphic/Models.hpp"
 
 Decal::Decal() :
     position(),
@@ -91,5 +92,113 @@ Decal::Decal(XYZ _position, decal_type _type, float _opacity, float _rotation, f
             texcoords[i][0] = rot.x + .5;
             texcoords[i][1] = rot.z + .5;
         }
+    }
+}
+
+Decal::Decal(XYZ _position, decal_type _type, float _opacity, float _rotation, float size, const Model& model, int i, int which) :
+    position(_position),
+    type(_type),
+    opacity(_opacity),
+    rotation(_rotation),
+    alivetime(0),
+    brightness(0)
+{
+    float placex, placez;
+    if (which == 0) {
+        placex = vertex[model.Triangles[i].vertex[0]].x;
+        placez = vertex[model.Triangles[i].vertex[0]].z;
+
+        texcoords[0][0] = (placex - position.x) / (size) / 2 + .5;
+        texcoords[0][1] = (placez - position.z) / (size) / 2 + .5;
+
+        vertex[0].x = placex;
+        vertex[0].z = placez;
+        vertex[0].y = vertex[model.Triangles[i].vertex[0]].y;
+
+
+        placex = vertex[model.Triangles[i].vertex[1]].x;
+        placez = vertex[model.Triangles[i].vertex[1]].z;
+
+        texcoords[1][0] = (placex - position.x) / (size) / 2 + .5;
+        texcoords[1][1] = (placez - position.z) / (size) / 2 + .5;
+
+        vertex[1].x = placex;
+        vertex[1].z = placez;
+        vertex[1].y = vertex[model.Triangles[i].vertex[1]].y;
+
+
+        placex = vertex[model.Triangles[i].vertex[2]].x;
+        placez = vertex[model.Triangles[i].vertex[2]].z;
+
+        texcoords[2][0] = (placex - position.x) / (size) / 2 + .5;
+        texcoords[2][1] = (placez - position.z) / (size) / 2 + .5;
+
+        vertex[2].x = placex;
+        vertex[2].z = placez;
+        vertex[2].y = vertex[model.Triangles[i].vertex[2]].y;
+    } else if (which == 1) {
+        placex = vertex[model.Triangles[i].vertex[0]].y;
+        placez = vertex[model.Triangles[i].vertex[0]].z;
+
+        texcoords[0][0] = (placex - position.y) / (size) / 2 + .5;
+        texcoords[0][1] = (placez - position.z) / (size) / 2 + .5;
+
+        vertex[0].x = vertex[model.Triangles[i].vertex[0]].x;
+        vertex[0].z = placez;
+        vertex[0].y = placex;
+
+
+        placex = vertex[model.Triangles[i].vertex[1]].y;
+        placez = vertex[model.Triangles[i].vertex[1]].z;
+
+        texcoords[1][0] = (placex - position.y) / (size) / 2 + .5;
+        texcoords[1][1] = (placez - position.z) / (size) / 2 + .5;
+
+        vertex[1].x = vertex[model.Triangles[i].vertex[1]].x;
+        vertex[1].z = placez;
+        vertex[1].y = placex;
+
+
+        placex = vertex[model.Triangles[i].vertex[2]].y;
+        placez = vertex[model.Triangles[i].vertex[2]].z;
+
+        texcoords[2][0] = (placex - position.y) / (size) / 2 + .5;
+        texcoords[2][1] = (placez - position.z) / (size) / 2 + .5;
+
+        vertex[2].x = vertex[model.Triangles[i].vertex[2]].x;
+        vertex[2].z = placez;
+        vertex[2].y = placex;
+    } else {
+        placex = vertex[model.Triangles[i].vertex[0]].x;
+        placez = vertex[model.Triangles[i].vertex[0]].y;
+
+        texcoords[0][0] = (placex - position.x) / (size) / 2 + .5;
+        texcoords[0][1] = (placez - position.y) / (size) / 2 + .5;
+
+        vertex[0].x = placex;
+        vertex[0].z = vertex[model.Triangles[i].vertex[0]].z;
+        vertex[0].y = placez;
+
+
+        placex = vertex[model.Triangles[i].vertex[1]].x;
+        placez = vertex[model.Triangles[i].vertex[1]].y;
+
+        texcoords[1][0] = (placex - position.x) / (size) / 2 + .5;
+        texcoords[1][1] = (placez - position.y) / (size) / 2 + .5;
+
+        vertex[1].x = placex;
+        vertex[1].z = vertex[model.Triangles[i].vertex[1]].z;
+        vertex[1].y = placez;
+
+
+        placex = vertex[model.Triangles[i].vertex[2]].x;
+        placez = vertex[model.Triangles[i].vertex[2]].y;
+
+        texcoords[2][0] = (placex - position.x) / (size) / 2 + .5;
+        texcoords[2][1] = (placez - position.y) / (size) / 2 + .5;
+
+        vertex[2].x = placex;
+        vertex[2].z = vertex[model.Triangles[i].vertex[2]].z;
+        vertex[2].y = placez;
     }
 }

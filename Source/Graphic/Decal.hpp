@@ -22,6 +22,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #define _DECAL_HPP_
 
 class Terrain;
+class Model;
 
 #include "Math/Quaternions.hpp"
 
@@ -51,6 +52,7 @@ public:
 
     Decal();
     Decal(XYZ position, decal_type type, float opacity, float rotation, float brightness, int whichx, int whichy, float size, const Terrain& terrain, bool first);
+    Decal(XYZ position, decal_type type, float opacity, float rotation, float size, const Model& model, int i, int which);
 };
 
 #endif

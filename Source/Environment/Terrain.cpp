@@ -1393,6 +1393,4 @@ Terrain::Terrain()
     memset(heightypatch, 0, sizeof(heightypatch));
 
     patch_elements = 0;
-
-    decals.clear();
 }

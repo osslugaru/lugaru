@@ -2460,13 +2460,9 @@ void doAttacks()
                                                 Person::players[k]->animTarget = killanim;
                                                 terrain.deleteDeadDecals();
                                                 for (unsigned int l = 0; l < Object::objects.size(); l++) {
-                                                    if (Object::objects[l]->model.type == decalstype)
-                                                        for (int j = 0; j < Object::objects[l]->model.numdecals; j++) {
-                                                            if ((Object::objects[l]->model.decaltype[j] == blooddecal ||
-                                                                    Object::objects[l]->model.decaltype[j] == blooddecalslow) &&
-                                                                    Object::objects[l]->model.decalalivetime[j] < 2)
-                                                                Object::objects[l]->model.DeleteDecal(j);
-                                                        }
+                                                    if (Object::objects[l]->model.type == decalstype) {
+                                                        Object::objects[l]->model.deleteDeadDecals();
+                                                    }
                                                 }
                                             }
                                             if (!Person::players[i]->dead || musictype != 2)
@@ -2481,14 +2477,9 @@ void doAttacks()
                                                     Person::players[k]->animTarget = dropkickanim;
                                                     terrain.deleteDeadDecals();
                                                     for (unsigned int l = 0; l < Object::objects.size(); l++) {
-                                                        if (Object::objects[l]->model.type == decalstype)
-                                                            for (int j = 0; j < Object::objects[l]->model.numdecals; j++) {
-                                                                if ((Object::objects[l]->model.decaltype[j] == blooddecal ||
-                                                                        Object::objects[l]->model.decaltype[j] == blooddecalslow) &&
-                                                                        Object::objects[l]->model.decalalivetime[j] < 2) {
-                                                                    Object::objects[l]->model.DeleteDecal(j);
-                                                                }
-                                                            }
+                                                        if (Object::objects[l]->model.type == decalstype) {
+                                                            Object::objects[l]->model.deleteDeadDecals();
+                                                        }
                                                     }
                                                 }
                                         }

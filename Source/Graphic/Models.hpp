@@ -91,13 +91,14 @@ public:
     XYZ boundingspherecenter;
     float boundingsphereradius;
 
-    float*** decaltexcoords;
-    XYZ** decalvertex;
-    int* decaltype;
-    float* decalopacity;
-    float* decalrotation;
-    float* decalalivetime;
-    XYZ* decalposition;
+    //~ float*** decaltexcoords;
+    //~ XYZ** decalvertex;
+    //~ int* decaltype;
+    //~ float* decalopacity;
+    //~ float* decalrotation;
+    //~ float* decalalivetime;
+    //~ XYZ* decalposition;
+    std::vector<Decal> decals;
 
     /*float decaltexcoords[max_model_decals][3][2];
     XYZ decalvertex[max_model_decals][3];
@@ -112,8 +113,8 @@ public:
     bool flat;
 
     void DeleteDecal(int which);
-    void MakeDecal(int atype, XYZ *where, float *size, float *opacity, float *rotation);
-    void MakeDecal(int atype, XYZ where, float size, float opacity, float rotation);
+    void MakeDecal(decal_type atype, XYZ *where, float *size, float *opacity, float *rotation);
+    void MakeDecal(decal_type atype, XYZ where, float size, float opacity, float rotation);
     void drawdecals(Texture shadowtexture, Texture bloodtexture, Texture bloodtexture2, Texture breaktexture);
     int SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate);
     int SphereCheckPossible(XYZ *p1, float radius, XYZ *move, float *rotate);
@@ -139,6 +140,7 @@ public:
     void drawdifftex(Texture texture);
     void drawimmediate();
     void Rotate(float xang, float yang, float zang);
+    void deleteDeadDecals();
     ~Model();
     void deallocate();
     Model();

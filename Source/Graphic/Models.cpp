@@ -546,7 +546,7 @@ bool Model::loaddecal(const std::string& filename)
     LOG(std::string("Loading decal...") + Folders::getResourcePath(filename));
 
     type = decalstype;
-    numdecals = 0;
+    decals.clear();
     color = 0;
 
     tfile = Folders::openMandatoryFile( Folders::getResourcePath(filename), "rb" );
@@ -606,27 +606,6 @@ bool Model::loaddecal(const std::string& filename)
         }
     }
     boundingsphereradius = fast_sqrt(boundingsphereradius);
-
-    //allow decals
-    if (!decaltexcoords) {
-        decaltexcoords = (float***)malloc(sizeof(float**)*max_model_decals);
-        for (i = 0; i < max_model_decals; i++) {
-            decaltexcoords[i] = (float**)malloc(sizeof(float*) * 3);
-            for (j = 0; j < 3; j++) {
-                decaltexcoords[i][j] = (float*)malloc(sizeof(float) * 2);
-            }
-        }
-        decalvertex = (XYZ**)malloc(sizeof(XYZ*)*max_model_decals);
-        for (i = 0; i < max_model_decals; i++) {
-            decalvertex[i] = (XYZ*)malloc(sizeof(XYZ) * 3);
-        }
-
-        decaltype = (int*)malloc(sizeof(int) * max_model_decals);
-        decalopacity = (float*)malloc(sizeof(float) * max_model_decals);
-        decalrotation = (float*)malloc(sizeof(float) * max_model_decals);
-        decalalivetime = (float*)malloc(sizeof(float) * max_model_decals);
-        decalposition = (XYZ*)malloc(sizeof(XYZ) * max_model_decals);
-    }
 
     return true;
 }
@@ -965,7 +944,6 @@ void Model::drawdecals(Texture shadowtexture, Texture bloodtexture, Texture bloo
     if (decalstoggle) {
         if (type != decalstype)
             return;
-        static int i;
         static int lasttype;
         static bool blend;
 
@@ -977,60 +955,60 @@ void Model::drawdecals(Texture shadowtexture, Texture bloodtexture, Texture bloo
         glDisable(GL_CULL_FACE);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glDepthMask(0);
-        if (numdecals > max_model_decals)
-            numdecals = max_model_decals;
-        for (i = 0; i < numdecals; i++) {
-            if (decaltype[i] == blooddecalfast && decalalivetime[i] < 2)
-                decalalivetime[i] = 2;
+        for (unsigned int i = 0; i < decals.size(); i++) {
+            if (decals[i].type == blooddecalfast && decals[i].alivetime < 2)
+                decals[i].alivetime = 2;
 
-            if (decaltype[i] == shadowdecal && decaltype[i] != lasttype) {
-                shadowtexture.bind();
-                if (!blend) {
-                    blend = 1;
-                    glAlphaFunc(GL_GREATER, 0.0001);
-                    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            if (decals[i].type != lasttype) {
+                if (decals[i].type == shadowdecal) {
+                    shadowtexture.bind();
+                    if (!blend) {
+                        blend = 1;
+                        glAlphaFunc(GL_GREATER, 0.0001);
+                        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                    }
+                }
+                if (decals[i].type == breakdecal) {
+                    breaktexture.bind();
+                    if (!blend) {
+                        blend = 1;
+                        glAlphaFunc(GL_GREATER, 0.0001);
+                        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                    }
+                }
+                if (decals[i].type == blooddecal || decals[i].type == blooddecalslow) {
+                    bloodtexture.bind();
+                    if (blend) {
+                        blend = 0;
+                        glAlphaFunc(GL_GREATER, 0.15);
+                        glBlendFunc(GL_ONE, GL_ZERO);
+                    }
+                }
+                if (decals[i].type == blooddecalfast) {
+                    bloodtexture2.bind();
+                    if (blend) {
+                        blend = 0;
+                        glAlphaFunc(GL_GREATER, 0.15);
+                        glBlendFunc(GL_ONE, GL_ZERO);
+                    }
                 }
             }
-            if (decaltype[i] == breakdecal && decaltype[i] != lasttype) {
-                breaktexture.bind();
-                if (!blend) {
-                    blend = 1;
-                    glAlphaFunc(GL_GREATER, 0.0001);
-                    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                }
+            if (decals[i].type == shadowdecal) {
+                glColor4f(1, 1, 1, decals[i].opacity);
             }
-            if ((decaltype[i] == blooddecal || decaltype[i] == blooddecalslow) && decaltype[i] != lasttype) {
-                bloodtexture.bind();
-                if (blend) {
-                    blend = 0;
-                    glAlphaFunc(GL_GREATER, 0.15);
-                    glBlendFunc(GL_ONE, GL_ZERO);
-                }
+            if (decals[i].type == breakdecal) {
+                glColor4f(1, 1, 1, decals[i].opacity);
+                if (decals[i].alivetime > 58)
+                    glColor4f(1, 1, 1, decals[i].opacity * (60 - decals[i].alivetime) / 2);
             }
-            if ((decaltype[i] == blooddecalfast) && decaltype[i] != lasttype) {
-                bloodtexture2.bind();
-                if (blend) {
-                    blend = 0;
-                    glAlphaFunc(GL_GREATER, 0.15);
-                    glBlendFunc(GL_ONE, GL_ZERO);
-                }
+            if ((decals[i].type == blooddecal || decals[i].type == blooddecalfast || decals[i].type == blooddecalslow)) {
+                glColor4f(1, 1, 1, decals[i].opacity);
+                if (decals[i].alivetime < 4)
+                    glColor4f(1, 1, 1, decals[i].opacity*decals[i].alivetime*.25);
+                if (decals[i].alivetime > 58)
+                    glColor4f(1, 1, 1, decals[i].opacity * (60 - decals[i].alivetime) / 2);
             }
-            if (decaltype[i] == shadowdecal) {
-                glColor4f(1, 1, 1, decalopacity[i]);
-            }
-            if (decaltype[i] == breakdecal) {
-                glColor4f(1, 1, 1, decalopacity[i]);
-                if (decalalivetime[i] > 58)
-                    glColor4f(1, 1, 1, decalopacity[i] * (60 - decalalivetime[i]) / 2);
-            }
-            if ((decaltype[i] == blooddecal || decaltype[i] == blooddecalfast || decaltype[i] == blooddecalslow)) {
-                glColor4f(1, 1, 1, decalopacity[i]);
-                if (decalalivetime[i] < 4)
-                    glColor4f(1, 1, 1, decalopacity[i]*decalalivetime[i]*.25);
-                if (decalalivetime[i] > 58)
-                    glColor4f(1, 1, 1, decalopacity[i] * (60 - decalalivetime[i]) / 2);
-            }
-            lasttype = decaltype[i];
+            lasttype = decals[i].type;
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
@@ -1038,21 +1016,21 @@ void Model::drawdecals(Texture shadowtexture, Texture bloodtexture, Texture bloo
             glPushMatrix();
             glBegin(GL_TRIANGLES);
             for (int j = 0; j < 3; j++) {
-                glTexCoord2f(decaltexcoords[i][j][0], decaltexcoords[i][j][1]);
-                glVertex3f(decalvertex[i][j].x, decalvertex[i][j].y, decalvertex[i][j].z);
+                glTexCoord2f(decals[i].texcoords[j][0], decals[i].texcoords[j][1]);
+                glVertex3f(decals[i].vertex[j].x, decals[i].vertex[j].y, decals[i].vertex[j].z);
             }
             glEnd();
             glPopMatrix();
         }
-        for (i = numdecals - 1; i >= 0; i--) {
-            decalalivetime[i] += multiplier;
-            if (decaltype[i] == blooddecalslow)
-                decalalivetime[i] -= multiplier * 2 / 3;
-            if (decaltype[i] == blooddecalfast)
-                decalalivetime[i] += multiplier * 4;
-            if (decaltype[i] == shadowdecal)
+        for (int i = decals.size() - 1; i >= 0; i--) {
+            decals[i].alivetime += multiplier;
+            if (decals[i].type == blooddecalslow)
+                decals[i].alivetime -= multiplier * 2 / 3;
+            if (decals[i].type == blooddecalfast)
+                decals[i].alivetime += multiplier * 4;
+            if (decals[i].type == shadowdecal)
                 DeleteDecal(i);
-            if ((decaltype[i] == blooddecal || decaltype[i] == blooddecalfast || decaltype[i] == blooddecalslow) && decalalivetime[i] >= 60)
+            if ((decals[i].type == blooddecal || decals[i].type == blooddecalfast || decals[i].type == blooddecalslow) && decals[i].alivetime >= 60)
                 DeleteDecal(i);
         }
         glAlphaFunc(GL_GREATER, 0.0001);
@@ -1065,91 +1043,45 @@ void Model::DeleteDecal(int which)
     if (decalstoggle) {
         if (type != decalstype)
             return;
-        decaltype[which] = decaltype[numdecals - 1];
-        decalposition[which] = decalposition[numdecals - 1];
-        for (int i = 0; i < 3; i++) {
-            decalvertex[which][i] = decalvertex[numdecals - 1][i];
-            decaltexcoords[which][i][0] = decaltexcoords[numdecals - 1][i][0];
-            decaltexcoords[which][i][1] = decaltexcoords[numdecals - 1][i][1];
-        }
-        decalrotation[which] = decalrotation[numdecals - 1];
-        decalalivetime[which] = decalalivetime[numdecals - 1];
-        decalopacity[which] = decalopacity[numdecals - 1];
-        numdecals--;
+        decals.erase(decals.begin() + which);
     }
 }
 
-void Model::MakeDecal(int atype, XYZ *where, float *size, float *opacity, float *rotation)
+void Model::MakeDecal(decal_type atype, XYZ *where, float *size, float *opacity, float *rotation)
 {
     if (decalstoggle) {
         if (type != decalstype)
             return;
 
-        static float placex, placez;
         static XYZ rot;
         static float distance;
-        static int i, j;
 
         if (*opacity > 0)
             if (distsq(where, &boundingspherecenter) < (boundingsphereradius + *size) * (boundingsphereradius + *size))
-                for (i = 0; i < TriangleNum; i++) {
+                for (int i = 0; i < TriangleNum; i++) {
                     if (facenormals[i].y < -.1 && (vertex[Triangles[i].vertex[0]].y < where->y || vertex[Triangles[i].vertex[1]].y < where->y || vertex[Triangles[i].vertex[2]].y < where->y)) {
-                        decalposition[numdecals] = *where;
-                        decaltype[numdecals] = atype;
-                        decalrotation[numdecals] = *rotation;
-                        decalalivetime[numdecals] = 0;
                         distance = abs(((facenormals[i].x * where->x) + (facenormals[i].y * where->y) + (facenormals[i].z * where->z) - ((facenormals[i].x * vertex[Triangles[i].vertex[0]].x) + (facenormals[i].y * vertex[Triangles[i].vertex[0]].y) + (facenormals[i].z * vertex[Triangles[i].vertex[0]].z))) / facenormals[i].y);
-                        decalopacity[numdecals] = *opacity - distance / 10;
 
-                        if (decalopacity[numdecals > 0]) {
-                            placex = vertex[Triangles[i].vertex[0]].x;
-                            placez = vertex[Triangles[i].vertex[0]].z;
+                        if (*opacity - distance / 10 > 0) {
+                            Decal decal(*where, atype, *opacity - distance / 10, *rotation, *size, *this, i, 0);
 
-                            decaltexcoords[numdecals][0][0] = (placex - where->x) / (*size) / 2 + .5;
-                            decaltexcoords[numdecals][0][1] = (placez - where->z) / (*size) / 2 + .5;
-
-                            decalvertex[numdecals][0].x = placex;
-                            decalvertex[numdecals][0].z = placez;
-                            decalvertex[numdecals][0].y = vertex[Triangles[i].vertex[0]].y;
-
-
-                            placex = vertex[Triangles[i].vertex[1]].x;
-                            placez = vertex[Triangles[i].vertex[1]].z;
-
-                            decaltexcoords[numdecals][1][0] = (placex - where->x) / (*size) / 2 + .5;
-                            decaltexcoords[numdecals][1][1] = (placez - where->z) / (*size) / 2 + .5;
-
-                            decalvertex[numdecals][1].x = placex;
-                            decalvertex[numdecals][1].z = placez;
-                            decalvertex[numdecals][1].y = vertex[Triangles[i].vertex[1]].y;
-
-
-                            placex = vertex[Triangles[i].vertex[2]].x;
-                            placez = vertex[Triangles[i].vertex[2]].z;
-
-                            decaltexcoords[numdecals][2][0] = (placex - where->x) / (*size) / 2 + .5;
-                            decaltexcoords[numdecals][2][1] = (placez - where->z) / (*size) / 2 + .5;
-
-                            decalvertex[numdecals][2].x = placex;
-                            decalvertex[numdecals][2].z = placez;
-                            decalvertex[numdecals][2].y = vertex[Triangles[i].vertex[2]].y;
-
-                            if (!(decaltexcoords[numdecals][0][0] < 0 && decaltexcoords[numdecals][1][0] < 0 && decaltexcoords[numdecals][2][0] < 0))
-                                if (!(decaltexcoords[numdecals][0][1] < 0 && decaltexcoords[numdecals][1][1] < 0 && decaltexcoords[numdecals][2][1] < 0))
-                                    if (!(decaltexcoords[numdecals][0][0] > 1 && decaltexcoords[numdecals][1][0] > 1 && decaltexcoords[numdecals][2][0] > 1))
-                                        if (!(decaltexcoords[numdecals][0][1] > 1 && decaltexcoords[numdecals][1][1] > 1 && decaltexcoords[numdecals][2][1] > 1)) {
-                                            if (decalrotation[numdecals]) {
-                                                for (j = 0; j < 3; j++) {
+                            if (!(decal.texcoords[0][0] < 0 && decal.texcoords[1][0] < 0 && decal.texcoords[2][0] < 0))
+                                if (!(decal.texcoords[0][1] < 0 && decal.texcoords[1][1] < 0 && decal.texcoords[2][1] < 0))
+                                    if (!(decal.texcoords[0][0] > 1 && decal.texcoords[1][0] > 1 && decal.texcoords[2][0] > 1))
+                                        if (!(decal.texcoords[0][1] > 1 && decal.texcoords[1][1] > 1 && decal.texcoords[2][1] > 1)) {
+                                            if (decal.rotation) {
+                                                for (int j = 0; j < 3; j++) {
                                                     rot.y = 0;
-                                                    rot.x = decaltexcoords[numdecals][j][0] - .5;
-                                                    rot.z = decaltexcoords[numdecals][j][1] - .5;
-                                                    rot = DoRotation(rot, 0, -decalrotation[numdecals], 0);
-                                                    decaltexcoords[numdecals][j][0] = rot.x + .5;
-                                                    decaltexcoords[numdecals][j][1] = rot.z + .5;
+                                                    rot.x = decal.texcoords[j][0] - .5;
+                                                    rot.z = decal.texcoords[j][1] - .5;
+                                                    rot = DoRotation(rot, 0, -decal.rotation, 0);
+                                                    decal.texcoords[j][0] = rot.x + .5;
+                                                    decal.texcoords[j][1] = rot.z + .5;
                                                 }
                                             }
-                                            if (numdecals < max_model_decals - 1)
-                                                numdecals++;
+                                            if (decals.size() < max_model_decals - 1) {
+                                                decals.push_back(decal);
+                                            }
                                         }
                         }
                     }
@@ -1157,197 +1089,99 @@ void Model::MakeDecal(int atype, XYZ *where, float *size, float *opacity, float 
     }
 }
 
-void Model::MakeDecal(int atype, XYZ where, float size, float opacity, float rotation)
+void Model::MakeDecal(decal_type atype, XYZ where, float size, float opacity, float rotation)
 {
     if (decalstoggle) {
         if (type != decalstype)
             return;
 
-        static float placex, placez;
         static XYZ rot;
         static float distance;
-        static int i, j;
 
         if (opacity > 0)
             if (distsq(&where, &boundingspherecenter) < (boundingsphereradius + size) * (boundingsphereradius + size))
-                for (i = 0; i < TriangleNum; i++) {
+                for (int i = 0; i < TriangleNum; i++) {
                     distance = abs(((facenormals[i].x * where.x) + (facenormals[i].y * where.y) + (facenormals[i].z * where.z) - ((facenormals[i].x * vertex[Triangles[i].vertex[0]].x) + (facenormals[i].y * vertex[Triangles[i].vertex[0]].y) + (facenormals[i].z * vertex[Triangles[i].vertex[0]].z))));
                     if (distance < .02 && abs(facenormals[i].y) > abs(facenormals[i].x) && abs(facenormals[i].y) > abs(facenormals[i].z)) {
-                        decalposition[numdecals] = where;
-                        decaltype[numdecals] = atype;
-                        decalrotation[numdecals] = rotation;
-                        decalalivetime[numdecals] = 0;
-                        decalopacity[numdecals] = opacity - distance / 10;
+                        if (opacity - distance / 10 > 0) {
+                            Decal decal(where, atype, opacity - distance / 10, rotation, size, *this, i, 0);
 
-                        if (decalopacity[numdecals > 0]) {
-                            placex = vertex[Triangles[i].vertex[0]].x;
-                            placez = vertex[Triangles[i].vertex[0]].z;
-
-                            decaltexcoords[numdecals][0][0] = (placex - where.x) / (size) / 2 + .5;
-                            decaltexcoords[numdecals][0][1] = (placez - where.z) / (size) / 2 + .5;
-
-                            decalvertex[numdecals][0].x = placex;
-                            decalvertex[numdecals][0].z = placez;
-                            decalvertex[numdecals][0].y = vertex[Triangles[i].vertex[0]].y;
-
-
-                            placex = vertex[Triangles[i].vertex[1]].x;
-                            placez = vertex[Triangles[i].vertex[1]].z;
-
-                            decaltexcoords[numdecals][1][0] = (placex - where.x) / (size) / 2 + .5;
-                            decaltexcoords[numdecals][1][1] = (placez - where.z) / (size) / 2 + .5;
-
-                            decalvertex[numdecals][1].x = placex;
-                            decalvertex[numdecals][1].z = placez;
-                            decalvertex[numdecals][1].y = vertex[Triangles[i].vertex[1]].y;
-
-
-                            placex = vertex[Triangles[i].vertex[2]].x;
-                            placez = vertex[Triangles[i].vertex[2]].z;
-
-                            decaltexcoords[numdecals][2][0] = (placex - where.x) / (size) / 2 + .5;
-                            decaltexcoords[numdecals][2][1] = (placez - where.z) / (size) / 2 + .5;
-
-                            decalvertex[numdecals][2].x = placex;
-                            decalvertex[numdecals][2].z = placez;
-                            decalvertex[numdecals][2].y = vertex[Triangles[i].vertex[2]].y;
-
-                            if (!(decaltexcoords[numdecals][0][0] < 0 && decaltexcoords[numdecals][1][0] < 0 && decaltexcoords[numdecals][2][0] < 0))
-                                if (!(decaltexcoords[numdecals][0][1] < 0 && decaltexcoords[numdecals][1][1] < 0 && decaltexcoords[numdecals][2][1] < 0))
-                                    if (!(decaltexcoords[numdecals][0][0] > 1 && decaltexcoords[numdecals][1][0] > 1 && decaltexcoords[numdecals][2][0] > 1))
-                                        if (!(decaltexcoords[numdecals][0][1] > 1 && decaltexcoords[numdecals][1][1] > 1 && decaltexcoords[numdecals][2][1] > 1)) {
-                                            if (decalrotation[numdecals]) {
-                                                for (j = 0; j < 3; j++) {
+                            if (!(decal.texcoords[0][0] < 0 && decal.texcoords[1][0] < 0 && decal.texcoords[2][0] < 0))
+                                if (!(decal.texcoords[0][1] < 0 && decal.texcoords[1][1] < 0 && decal.texcoords[2][1] < 0))
+                                    if (!(decal.texcoords[0][0] > 1 && decal.texcoords[1][0] > 1 && decal.texcoords[2][0] > 1))
+                                        if (!(decal.texcoords[0][1] > 1 && decal.texcoords[1][1] > 1 && decal.texcoords[2][1] > 1)) {
+                                            if (decal.rotation) {
+                                                for (int j = 0; j < 3; j++) {
                                                     rot.y = 0;
-                                                    rot.x = decaltexcoords[numdecals][j][0] - .5;
-                                                    rot.z = decaltexcoords[numdecals][j][1] - .5;
-                                                    rot = DoRotation(rot, 0, -decalrotation[numdecals], 0);
-                                                    decaltexcoords[numdecals][j][0] = rot.x + .5;
-                                                    decaltexcoords[numdecals][j][1] = rot.z + .5;
+                                                    rot.x = decal.texcoords[j][0] - .5;
+                                                    rot.z = decal.texcoords[j][1] - .5;
+                                                    rot = DoRotation(rot, 0, -decal.rotation, 0);
+                                                    decal.texcoords[j][0] = rot.x + .5;
+                                                    decal.texcoords[j][1] = rot.z + .5;
                                                 }
                                             }
-                                            if (numdecals < max_model_decals - 1)
-                                                numdecals++;
+                                            if (decals.size() < max_model_decals - 1) {
+                                                decals.push_back(decal);
+                                            }
                                         }
                         }
                     } else if (distance < .02 && abs(facenormals[i].x) > abs(facenormals[i].y) && abs(facenormals[i].x) > abs(facenormals[i].z)) {
-                        decalposition[numdecals] = where;
-                        decaltype[numdecals] = atype;
-                        decalrotation[numdecals] = rotation;
-                        decalalivetime[numdecals] = 0;
-                        decalopacity[numdecals] = opacity - distance / 10;
+                        if (opacity - distance / 10 > 0) {
+                            Decal decal(where, atype, opacity - distance / 10, rotation, size, *this, i, 1);
 
-                        if (decalopacity[numdecals > 0]) {
-                            placex = vertex[Triangles[i].vertex[0]].y;
-                            placez = vertex[Triangles[i].vertex[0]].z;
-
-                            decaltexcoords[numdecals][0][0] = (placex - where.y) / (size) / 2 + .5;
-                            decaltexcoords[numdecals][0][1] = (placez - where.z) / (size) / 2 + .5;
-
-                            decalvertex[numdecals][0].x = vertex[Triangles[i].vertex[0]].x;
-                            decalvertex[numdecals][0].z = placez;
-                            decalvertex[numdecals][0].y = placex;
-
-
-                            placex = vertex[Triangles[i].vertex[1]].y;
-                            placez = vertex[Triangles[i].vertex[1]].z;
-
-                            decaltexcoords[numdecals][1][0] = (placex - where.y) / (size) / 2 + .5;
-                            decaltexcoords[numdecals][1][1] = (placez - where.z) / (size) / 2 + .5;
-
-                            decalvertex[numdecals][1].x = vertex[Triangles[i].vertex[1]].x;
-                            decalvertex[numdecals][1].z = placez;
-                            decalvertex[numdecals][1].y = placex;
-
-
-                            placex = vertex[Triangles[i].vertex[2]].y;
-                            placez = vertex[Triangles[i].vertex[2]].z;
-
-                            decaltexcoords[numdecals][2][0] = (placex - where.y) / (size) / 2 + .5;
-                            decaltexcoords[numdecals][2][1] = (placez - where.z) / (size) / 2 + .5;
-
-                            decalvertex[numdecals][2].x = vertex[Triangles[i].vertex[2]].x;
-                            decalvertex[numdecals][2].z = placez;
-                            decalvertex[numdecals][2].y = placex;
-
-                            if (!(decaltexcoords[numdecals][0][0] < 0 && decaltexcoords[numdecals][1][0] < 0 && decaltexcoords[numdecals][2][0] < 0))
-                                if (!(decaltexcoords[numdecals][0][1] < 0 && decaltexcoords[numdecals][1][1] < 0 && decaltexcoords[numdecals][2][1] < 0))
-                                    if (!(decaltexcoords[numdecals][0][0] > 1 && decaltexcoords[numdecals][1][0] > 1 && decaltexcoords[numdecals][2][0] > 1))
-                                        if (!(decaltexcoords[numdecals][0][1] > 1 && decaltexcoords[numdecals][1][1] > 1 && decaltexcoords[numdecals][2][1] > 1)) {
-                                            if (decalrotation[numdecals]) {
-                                                for (j = 0; j < 3; j++) {
+                            if (!(decal.texcoords[0][0] < 0 && decal.texcoords[1][0] < 0 && decal.texcoords[2][0] < 0))
+                                if (!(decal.texcoords[0][1] < 0 && decal.texcoords[1][1] < 0 && decal.texcoords[2][1] < 0))
+                                    if (!(decal.texcoords[0][0] > 1 && decal.texcoords[1][0] > 1 && decal.texcoords[2][0] > 1))
+                                        if (!(decal.texcoords[0][1] > 1 && decal.texcoords[1][1] > 1 && decal.texcoords[2][1] > 1)) {
+                                            if (decal.rotation) {
+                                                for (int j = 0; j < 3; j++) {
                                                     rot.y = 0;
-                                                    rot.x = decaltexcoords[numdecals][j][0] - .5;
-                                                    rot.z = decaltexcoords[numdecals][j][1] - .5;
-                                                    rot = DoRotation(rot, 0, -decalrotation[numdecals], 0);
-                                                    decaltexcoords[numdecals][j][0] = rot.x + .5;
-                                                    decaltexcoords[numdecals][j][1] = rot.z + .5;
+                                                    rot.x = decal.texcoords[j][0] - .5;
+                                                    rot.z = decal.texcoords[j][1] - .5;
+                                                    rot = DoRotation(rot, 0, -decal.rotation, 0);
+                                                    decal.texcoords[j][0] = rot.x + .5;
+                                                    decal.texcoords[j][1] = rot.z + .5;
                                                 }
                                             }
-                                            if (numdecals < max_model_decals - 1)
-                                                numdecals++;
+                                            if (decals.size() < max_model_decals - 1) {
+                                                decals.push_back(decal);
+                                            }
                                         }
                         }
                     } else if (distance < .02 && abs(facenormals[i].z) > abs(facenormals[i].y) && abs(facenormals[i].z) > abs(facenormals[i].x)) {
-                        decalposition[numdecals] = where;
-                        decaltype[numdecals] = atype;
-                        decalrotation[numdecals] = rotation;
-                        decalalivetime[numdecals] = 0;
-                        decalopacity[numdecals] = opacity - distance / 10;
+                        if (opacity - distance / 10 > 0) {
+                            Decal decal(where, atype, opacity - distance / 10, rotation, size, *this, i, 2);
 
-                        if (decalopacity[numdecals > 0]) {
-                            placex = vertex[Triangles[i].vertex[0]].x;
-                            placez = vertex[Triangles[i].vertex[0]].y;
-
-                            decaltexcoords[numdecals][0][0] = (placex - where.x) / (size) / 2 + .5;
-                            decaltexcoords[numdecals][0][1] = (placez - where.y) / (size) / 2 + .5;
-
-                            decalvertex[numdecals][0].x = placex;
-                            decalvertex[numdecals][0].z = vertex[Triangles[i].vertex[0]].z;
-                            decalvertex[numdecals][0].y = placez;
-
-
-                            placex = vertex[Triangles[i].vertex[1]].x;
-                            placez = vertex[Triangles[i].vertex[1]].y;
-
-                            decaltexcoords[numdecals][1][0] = (placex - where.x) / (size) / 2 + .5;
-                            decaltexcoords[numdecals][1][1] = (placez - where.y) / (size) / 2 + .5;
-
-                            decalvertex[numdecals][1].x = placex;
-                            decalvertex[numdecals][1].z = vertex[Triangles[i].vertex[1]].z;
-                            decalvertex[numdecals][1].y = placez;
-
-
-                            placex = vertex[Triangles[i].vertex[2]].x;
-                            placez = vertex[Triangles[i].vertex[2]].y;
-
-                            decaltexcoords[numdecals][2][0] = (placex - where.x) / (size) / 2 + .5;
-                            decaltexcoords[numdecals][2][1] = (placez - where.y) / (size) / 2 + .5;
-
-                            decalvertex[numdecals][2].x = placex;
-                            decalvertex[numdecals][2].z = vertex[Triangles[i].vertex[2]].z;
-                            decalvertex[numdecals][2].y = placez;
-
-                            if (!(decaltexcoords[numdecals][0][0] < 0 && decaltexcoords[numdecals][1][0] < 0 && decaltexcoords[numdecals][2][0] < 0))
-                                if (!(decaltexcoords[numdecals][0][1] < 0 && decaltexcoords[numdecals][1][1] < 0 && decaltexcoords[numdecals][2][1] < 0))
-                                    if (!(decaltexcoords[numdecals][0][0] > 1 && decaltexcoords[numdecals][1][0] > 1 && decaltexcoords[numdecals][2][0] > 1))
-                                        if (!(decaltexcoords[numdecals][0][1] > 1 && decaltexcoords[numdecals][1][1] > 1 && decaltexcoords[numdecals][2][1] > 1)) {
-                                            if (decalrotation[numdecals]) {
-                                                for (j = 0; j < 3; j++) {
+                            if (!(decal.texcoords[0][0] < 0 && decal.texcoords[1][0] < 0 && decal.texcoords[2][0] < 0))
+                                if (!(decal.texcoords[0][1] < 0 && decal.texcoords[1][1] < 0 && decal.texcoords[2][1] < 0))
+                                    if (!(decal.texcoords[0][0] > 1 && decal.texcoords[1][0] > 1 && decal.texcoords[2][0] > 1))
+                                        if (!(decal.texcoords[0][1] > 1 && decal.texcoords[1][1] > 1 && decal.texcoords[2][1] > 1)) {
+                                            if (decal.rotation) {
+                                                for (int j = 0; j < 3; j++) {
                                                     rot.y = 0;
-                                                    rot.x = decaltexcoords[numdecals][j][0] - .5;
-                                                    rot.z = decaltexcoords[numdecals][j][1] - .5;
-                                                    rot = DoRotation(rot, 0, -decalrotation[numdecals], 0);
-                                                    decaltexcoords[numdecals][j][0] = rot.x + .5;
-                                                    decaltexcoords[numdecals][j][1] = rot.z + .5;
+                                                    rot.x = decal.texcoords[j][0] - .5;
+                                                    rot.z = decal.texcoords[j][1] - .5;
+                                                    rot = DoRotation(rot, 0, -decal.rotation, 0);
+                                                    decal.texcoords[j][0] = rot.x + .5;
+                                                    decal.texcoords[j][1] = rot.z + .5;
                                                 }
                                             }
-                                            if (numdecals < max_model_decals - 1)
-                                                numdecals++;
+                                            if (decals.size() < max_model_decals - 1) {
+                                                decals.push_back(decal);
+                                            }
                                         }
                         }
                     }
                 }
+    }
+}
+
+void Model::deleteDeadDecals()
+{
+    for (int i = decals.size() - 1; i >= 0; i--) {
+        if ((decals[i].type == blooddecal || decals[i].type == blooddecalslow) && decals[i].alivetime < 2) {
+            DeleteDecal(i);
+        }
     }
 }
 
@@ -1358,8 +1192,6 @@ Model::~Model()
 
 void Model::deallocate()
 {
-    int i = 0, j = 0;
-
     if (owner)
         free(owner);
     owner = 0;
@@ -1387,45 +1219,6 @@ void Model::deallocate()
     if (vArray)
         free(vArray);
     vArray = 0;
-
-
-    //allow decals
-    if (decaltexcoords) {
-        for (i = 0; i < max_model_decals; i++) {
-            for (j = 0; j < 3; j++) {
-                free(decaltexcoords[i][j]);
-            }
-            free(decaltexcoords[i]);
-        }
-        free(decaltexcoords);
-    }
-    decaltexcoords = 0;
-
-
-    if (decalvertex) {
-        for (i = 0; i < max_model_decals; i++) {
-            free(decalvertex[i]);
-        }
-        free(decalvertex);
-    }
-    decalvertex = 0;
-
-
-    free(decaltype);
-    decaltype = 0;
-
-    free(decalopacity);
-    decalopacity = 0;
-
-    free(decalrotation);
-    decalrotation = 0;
-
-    free(decalalivetime);
-    decalalivetime = 0;
-
-    free(decalposition);
-    decalposition = 0;
-
 }
 
 Model::Model()
@@ -1446,16 +1239,6 @@ Model::Model()
 
     boundingspherecenter = 0;
     boundingsphereradius = 0;
-
-    decaltexcoords = 0;
-    decalvertex = 0;
-    decaltype = 0;
-    decalopacity = 0;
-    decalrotation = 0;
-    decalalivetime = 0;
-    decalposition = 0;
-
-    numdecals = 0;
 
     flat = 0;
 
