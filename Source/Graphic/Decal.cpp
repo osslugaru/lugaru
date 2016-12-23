@@ -24,7 +24,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 Decal::Decal() :
     position(),
-    type(0),
+    type(shadowdecal),
     opacity(0),
     rotation(0),
     alivetime(0),
@@ -32,7 +32,7 @@ Decal::Decal() :
 {
 }
 
-Decal::Decal(XYZ _position, int _type, float _opacity, float _rotation, float _brightness, int whichx, int whichy, float size, const Terrain& terrain, bool first) :
+Decal::Decal(XYZ _position, decal_type _type, float _opacity, float _rotation, float _brightness, int whichx, int whichy, float size, const Terrain& terrain, bool first) :
     position(_position),
     type(_type),
     opacity(_opacity),

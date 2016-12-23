@@ -1014,44 +1014,46 @@ void Terrain::drawdecals()
         for (unsigned int i = 0; i < decals.size(); i++) {
             if (decals[i].type == blooddecalfast && decals[i].alivetime < 2)
                 decals[i].alivetime = 2;
-            if ((decals[i].type == shadowdecal || decals[i].type == shadowdecalpermanent) && decals[i].type != lasttype) {
-                shadowtexture.bind();
-                if (!blend) {
-                    blend = 1;
-                    glAlphaFunc(GL_GREATER, 0.0001);
-                    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            if (decals[i].type != lasttype) {
+                if (decals[i].type == shadowdecal || decals[i].type == shadowdecalpermanent) {
+                    shadowtexture.bind();
+                    if (!blend) {
+                        blend = 1;
+                        glAlphaFunc(GL_GREATER, 0.0001);
+                        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                    }
                 }
-            }
-            if (decals[i].type == footprintdecal && decals[i].type != lasttype) {
-                footprinttexture.bind();
-                if (!blend) {
-                    blend = 1;
-                    glAlphaFunc(GL_GREATER, 0.0001);
-                    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                if (decals[i].type == footprintdecal) {
+                    footprinttexture.bind();
+                    if (!blend) {
+                        blend = 1;
+                        glAlphaFunc(GL_GREATER, 0.0001);
+                        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                    }
                 }
-            }
-            if (decals[i].type == bodyprintdecal && decals[i].type != lasttype) {
-                bodyprinttexture.bind();
-                if (!blend) {
-                    blend = 1;
-                    glAlphaFunc(GL_GREATER, 0.0001);
-                    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                if (decals[i].type == bodyprintdecal) {
+                    bodyprinttexture.bind();
+                    if (!blend) {
+                        blend = 1;
+                        glAlphaFunc(GL_GREATER, 0.0001);
+                        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                    }
                 }
-            }
-            if ((decals[i].type == blooddecal || decals[i].type == blooddecalslow) && decals[i].type != lasttype) {
-                bloodtexture.bind();
-                if (blend) {
-                    blend = 0;
-                    glAlphaFunc(GL_GREATER, 0.15);
-                    glBlendFunc(GL_ONE, GL_ZERO);
+                if (decals[i].type == blooddecal || decals[i].type == blooddecalslow) {
+                    bloodtexture.bind();
+                    if (blend) {
+                        blend = 0;
+                        glAlphaFunc(GL_GREATER, 0.15);
+                        glBlendFunc(GL_ONE, GL_ZERO);
+                    }
                 }
-            }
-            if ((decals[i].type == blooddecalfast) && decals[i].type != lasttype) {
-                bloodtexture2.bind();
-                if (blend) {
-                    blend = 0;
-                    glAlphaFunc(GL_GREATER, 0.15);
-                    glBlendFunc(GL_ONE, GL_ZERO);
+                if (decals[i].type == blooddecalfast) {
+                    bloodtexture2.bind();
+                    if (blend) {
+                        blend = 0;
+                        glAlphaFunc(GL_GREATER, 0.15);
+                        glBlendFunc(GL_ONE, GL_ZERO);
+                    }
                 }
             }
             if (decals[i].type == shadowdecal || decals[i].type == shadowdecalpermanent) {
@@ -1126,11 +1128,9 @@ void Terrain::drawdecals()
 
 void Terrain::deleteDeadDecals()
 {
-    for (unsigned int i = 0; i < decals.size(); ) {
+    for (int i = decals.size() - 1; i >= 0; i--) {
         if ((decals[i].type == blooddecal || decals[i].type == blooddecalslow) && decals[i].alivetime < 2) {
             DeleteDecal(i);
-        } else {
-            i++;
         }
     }
 }
@@ -1176,7 +1176,7 @@ void Terrain::DeleteDecal(int which)
     }
 }
 
-void Terrain::MakeDecal(int type, XYZ where, float size, float opacity, float rotation)
+void Terrain::MakeDecal(decal_type type, XYZ where, float size, float opacity, float rotation)
 {
     if (decalstoggle) {
         if (opacity > 0 && size > 0) {
@@ -1210,7 +1210,7 @@ void Terrain::MakeDecal(int type, XYZ where, float size, float opacity, float ro
     }
 }
 
-void Terrain::MakeDecalLock(int type, XYZ where, int whichx, int whichy, float size, float opacity, float rotation)
+void Terrain::MakeDecalLock(decal_type type, XYZ where, int whichx, int whichy, float size, float opacity, float rotation)
 {
     if (decalstoggle) {
         XYZ rot = getLighting(where.x, where.z);

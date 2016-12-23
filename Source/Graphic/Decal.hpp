@@ -25,11 +25,22 @@ class Terrain;
 
 #include "Math/Quaternions.hpp"
 
+enum decal_type {
+    shadowdecal = 0,
+    footprintdecal = 1,
+    blooddecal = 2,
+    blooddecalfast = 3,
+    shadowdecalpermanent = 4,
+    breakdecal = 5,
+    blooddecalslow = 6,
+    bodyprintdecal = 7
+};
+
 class Decal
 {
 public:
     XYZ position;
-    int type;
+    decal_type type;
     float opacity;
     float rotation;
     float alivetime;
@@ -39,7 +50,7 @@ public:
     XYZ vertex[3];
 
     Decal();
-    Decal(XYZ position, int type, float opacity, float rotation, float brightness, int whichx, int whichy, float size, const Terrain& terrain, bool first);
+    Decal(XYZ position, decal_type type, float opacity, float rotation, float brightness, int whichx, int whichy, float size, const Terrain& terrain, bool first);
 };
 
 #endif

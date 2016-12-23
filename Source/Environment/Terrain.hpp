@@ -40,15 +40,6 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #define max_decals 1000
 
-#define shadowdecal 0
-#define footprintdecal 1
-#define blooddecal 2
-#define blooddecalfast 3
-#define shadowdecalpermanent 4
-#define breakdecal 5
-#define blooddecalslow 6
-#define bodyprintdecal 7
-
 #define snowyenvironment 0
 #define grassyenvironment 1
 #define desertenvironment 2
@@ -98,8 +89,8 @@ public:
 
     void AddObject(XYZ where, float radius, int id);
     void DeleteDecal(int which);
-    void MakeDecal(int type, XYZ where, float size, float opacity, float rotation);
-    void MakeDecalLock(int type, XYZ where, int whichx, int whichy, float size, float opacity, float rotation);
+    void MakeDecal(decal_type type, XYZ where, float size, float opacity, float rotation);
+    void MakeDecalLock(decal_type type, XYZ where, int whichx, int whichy, float size, float opacity, float rotation);
     int lineTerrain(XYZ p1, XYZ p2, XYZ *p);
     float getHeight(float pointx, float pointz);
     float getOpacity(float pointx, float pointz);
