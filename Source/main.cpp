@@ -179,17 +179,22 @@ bool SetUp ()
     slomospeed = 0.25;
     slomofreq = 8012;
 
+    /* Settings */
+
     DefaultSettings();
+
+    if (!LoadSettings()) {
+        fprintf(stderr, "Failed to load config, creating default\n");
+        SaveSettings();
+    }
+
+    /* SDL2 init */
 
     if (!SDL_WasInit(SDL_INIT_VIDEO))
         if (SDL_Init(SDL_INIT_VIDEO) == -1) {
             fprintf(stderr, "SDL_Init() failed: %s\n", SDL_GetError());
             return false;
         }
-    if (!LoadSettings()) {
-        fprintf(stderr, "Failed to load config, creating default\n");
-        SaveSettings();
-    }
 
     if (SDL_GL_LoadLibrary(NULL) == -1) {
         fprintf(stderr, "SDL_GL_LoadLibrary() failed: %s\n", SDL_GetError());
@@ -237,6 +242,10 @@ bool SetUp ()
     if (!commandLineOptions[NOMOUSEGRAB].last()->type()) {
         sdlflags |= SDL_WINDOW_INPUT_GRABBED;
     }
+
+    // HighDPI mode on Windows 10 scales the SDL2 window up (GitLab#67)
+    SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "1");
+    sdlflags &= ~SDL_WINDOW_ALLOW_HIGHDPI;
 
     sdlwindow = SDL_CreateWindow("Lugaru", SDL_WINDOWPOS_CENTERED_DISPLAY(0), SDL_WINDOWPOS_CENTERED_DISPLAY(0),
                                  kContextWidth, kContextHeight, sdlflags);
