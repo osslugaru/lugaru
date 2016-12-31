@@ -17,7 +17,7 @@ build_gcc:
     - cmake .. -DCMAKE_INSTALL_PREFIX=/builds/osslugaru/lugaru/gcc-build
     - make -j4; make install
   artifacts:
-    expire_in: 7d
+    expire_in: 14d
     paths:
       - ./gcc-build
   tags:
@@ -32,7 +32,7 @@ build_clang:
     - cmake .. -DCMAKE_INSTALL_PREFIX=/builds/osslugaru/lugaru/clang-build
     - make -j4; make install
   artifacts:
-    expire_in: 7d
+    expire_in: 14d
     paths:
       - ./clang-build
   tags:
@@ -48,7 +48,7 @@ build_mingw32:
     - cmake .. -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-mingw32.cmake -DCMAKE_INSTALL_PREFIX=/builds/osslugaru/lugaru/mingw32-build
     - make -j4; make install
   artifacts:
-    expire_in: 7d
+    expire_in: 14d
     paths:
       - ./mingw32-build
   tags:
@@ -64,7 +64,7 @@ build_mingw64:
     - cmake .. -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-mingw64.cmake -DCMAKE_INSTALL_PREFIX=/builds/osslugaru/lugaru/mingw64-build
     - make -j4; make install
   artifacts:
-    expire_in: 7d
+    expire_in: 14d
     paths:
       - ./mingw64-build
   tags:
