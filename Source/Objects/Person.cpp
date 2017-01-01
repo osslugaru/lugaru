@@ -6089,7 +6089,7 @@ int Person::DrawSkeleton()
         }
         static XYZ mid;
         static float M[16];
-        static int i, k;
+        static int k;
         static int weaponattachmuscle;
         static int weaponrotatemuscle;
         static XYZ weaponpoint;
@@ -6129,19 +6129,19 @@ int Person::DrawSkeleton()
                 if (Animation::animations[animTarget].attack == 3)
                     targetheadyaw += 180;
             }
-            for (i = 0; i < skeleton.drawmodel.vertexNum; i++) {
+            for (int i = 0; i < skeleton.drawmodel.vertexNum; i++) {
                 skeleton.drawmodel.vertex[i] = 0;
                 skeleton.drawmodel.vertex[i].y = 999;
             }
-            for (i = 0; i < skeleton.drawmodellow.vertexNum; i++) {
+            for (int i = 0; i < skeleton.drawmodellow.vertexNum; i++) {
                 skeleton.drawmodellow.vertex[i] = 0;
                 skeleton.drawmodellow.vertex[i].y = 999;
             }
-            for (i = 0; i < skeleton.drawmodelclothes.vertexNum; i++) {
+            for (int i = 0; i < skeleton.drawmodelclothes.vertexNum; i++) {
                 skeleton.drawmodelclothes.vertex[i] = 0;
                 skeleton.drawmodelclothes.vertex[i].y = 999;
             }
-            for (unsigned i = 0; i < skeleton.muscles.size(); i++) {
+            for (unsigned int i = 0; i < skeleton.muscles.size(); i++) {
                 // convenience renames
                 const int p1 = skeleton.muscles[i].parent1->label;
                 const int p2 = skeleton.muscles[i].parent2->label;
@@ -6352,16 +6352,17 @@ int Person::DrawSkeleton()
             glDisable(GL_LIGHTING);
             glDisable(GL_TEXTURE_2D);
             glBegin(GL_POINTS);
-            if (playerdetail)
-                for (i = 0; i < skeleton.drawmodel.vertexNum; i++) {
+            if (playerdetail) {
+                for (int i = 0; i < skeleton.drawmodel.vertexNum; i++) {
                     XYZ &v0 = skeleton.drawmodel.vertex[i];
                     glVertex3f(v0.x, v0.y, v0.z);
                 }
+            }
             glEnd();
             glBegin(GL_LINES);
 
-            if (playerdetail)
-                for (i = 0; i < skeleton.drawmodel.Triangles.size(); i++) {
+            if (playerdetail) {
+                for (unsigned int i = 0; i < skeleton.drawmodel.Triangles.size(); i++) {
                     XYZ &v0 = skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[0]];
                     XYZ &v1 = skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[1]];
                     XYZ &v2 = skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[2]];
@@ -6372,6 +6373,7 @@ int Person::DrawSkeleton()
                     glVertex3f(v2.x, v2.y, v2.z);
                     glVertex3f(v0.x, v0.y, v0.z);
                 }
+            }
 
             glEnd();
         }
@@ -6483,7 +6485,7 @@ int Person::DrawSkeleton()
 
         if (num_weapons > 0) {
             for (k = 0; k < num_weapons; k++) {
-                i = weaponids[k];
+                int i = weaponids[k];
                 if (weaponactive == k) {
                     if (weapons[i].getType() != staff) {
                         for (unsigned j = 0; j < skeleton.muscles.size(); j++) {
@@ -6721,7 +6723,6 @@ int Person::DrawSkeleton()
  */
 int Person::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate, Model *model)
 {
-    static int i, j;
     static float distance;
     static float olddistance;
     static int intersecting;
@@ -6739,8 +6740,8 @@ int Person::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate,
         return -1;
     if (*rotate)
         *p1 = DoRotation(*p1, 0, -*rotate, 0);
-    for (i = 0; i < 4; i++) {
-        for (j = 0; j < model->Triangles.size(); j++) {
+    for (int i = 0; i < 4; i++) {
+        for (unsigned int j = 0; j < model->Triangles.size(); j++) {
             if (model->Triangles[j].facenormal.y <= slopethreshold) {
                 intersecting = 0;
                 distance = abs((model->Triangles[j].facenormal.x * p1->x) + (model->Triangles[j].facenormal.y * p1->y) + (model->Triangles[j].facenormal.z * p1->z) - ((model->Triangles[j].facenormal.x * model->vertex[model->Triangles[j].vertex[0]].x) + (model->Triangles[j].facenormal.y * model->vertex[model->Triangles[j].vertex[0]].y) + (model->Triangles[j].facenormal.z * model->vertex[model->Triangles[j].vertex[0]].z)));
@@ -6805,7 +6806,7 @@ int Person::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate,
                 }
             }
         }
-        for (j = 0; j < model->Triangles.size(); j++) {
+        for (unsigned int j = 0; j < model->Triangles.size(); j++) {
             if (model->Triangles[j].facenormal.y > slopethreshold) {
                 intersecting = 0;
                 start = *p1;

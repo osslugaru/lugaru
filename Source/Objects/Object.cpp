@@ -222,7 +222,7 @@ void Object::doShadows(XYZ lightloc)
             if (shadowed > 0) {
                 col = model.normals[j] - DoRotation(lightloc * shadowed, 0, -yaw, 0);
                 Normalise(&col);
-                for (int k = 0; k < model.Triangles.size(); k++) {
+                for (unsigned int k = 0; k < model.Triangles.size(); k++) {
                     if (model.Triangles[k].vertex[0] == j) {
                         int l = k * 24;
                         model.vArray[l + 2] = col.x;
