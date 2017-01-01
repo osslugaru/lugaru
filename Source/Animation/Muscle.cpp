@@ -25,22 +25,22 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 extern float multiplier;
 extern bool freeze;
 
-Muscle::Muscle()
-{
-    length = 0;
-    targetlength = 0;
-    parent1 = 0;
-    parent2 = 0;
-    maxlength = 0;
-    minlength = 0;
-    type = boneconnect;
-    visible = 0;
-    rotate1 = 0, rotate2 = 0, rotate3 = 0;
-    lastrotate1 = 0, lastrotate2 = 0, lastrotate3 = 0;
-    oldrotate1 = 0, oldrotate2 = 0, oldrotate3 = 0;
-    newrotate1 = 0, newrotate2 = 0, newrotate3 = 0;
+Muscle::Muscle() :
+    length(0),
+    targetlength(0),
+    parent1(0),
+    parent2(0),
+    maxlength(0),
+    minlength(0),
+    type(boneconnect),
+    visible(false),
+    rotate1(0), rotate2(0), rotate3(0),
+    lastrotate1(0), lastrotate2(0), lastrotate3(0),
+    oldrotate1(0), oldrotate2(0), oldrotate3(0),
+    newrotate1(0), newrotate2(0), newrotate3(0),
 
-    strength = 0;
+    strength(0)
+{
 }
 
 void Muscle::load(FILE* tfile, int vertexNum, std::vector<Joint>& joints)
