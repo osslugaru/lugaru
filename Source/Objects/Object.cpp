@@ -248,6 +248,53 @@ void Object::doShadows(XYZ lightloc)
     shadowed = 0;
 }
 
+void Object::handleRot(int divide)
+{
+    messedwith -= multiplier;
+    if (rotxvel || rotx) {
+        if (rotx > 0) rotxvel -= multiplier * 8 * fabs(rotx);
+        if (rotx < 0) rotxvel += multiplier * 8 * fabs(rotx);
+        if (rotx > 0) rotxvel -= multiplier * 4;
+        if (rotx < 0) rotxvel += multiplier * 4;
+        if (rotxvel > 0) rotxvel -= multiplier * 4;
+        if (rotxvel < 0) rotxvel += multiplier * 4;
+        if (fabs(rotx) < multiplier * 4)
+            rotx = 0;
+        if (fabs(rotxvel) < multiplier * 4)
+            rotxvel = 0;
+
+        rotx += rotxvel * multiplier * 4;
+    }
+    if (rotyvel || roty) {
+        if (roty > 0) rotyvel -= multiplier * 8 * fabs(roty);
+        if (roty < 0) rotyvel += multiplier * 8 * fabs(roty);
+        if (roty > 0) rotyvel -= multiplier * 4;
+        if (roty < 0) rotyvel += multiplier * 4;
+        if (rotyvel > 0) rotyvel -= multiplier * 4;
+        if (rotyvel < 0) rotyvel += multiplier * 4;
+        if (fabs(roty) < multiplier * 4)
+            roty = 0;
+        if (fabs(rotyvel) < multiplier * 4)
+            rotyvel = 0;
+
+        roty += rotyvel * multiplier * 4;
+    }
+    if (roty) {
+        glRotatef(roty / divide, 1, 0, 0);
+    }
+    if (rotx) {
+        glRotatef(-rotx / divide, 0, 0, 1);
+    }
+    if (rotx > 10)
+        rotx = 10;
+    if (rotx < -10)
+        rotx = -10;
+    if (roty > 10)
+        roty = 10;
+    if (roty < -10)
+        roty = -10;
+}
+
 void Object::draw()
 {
     static float distance;
@@ -282,178 +329,48 @@ void Object::draw()
                     glDepthMask(1);
                     glTranslatef(position.x, position.y, position.z);
                     if (type == bushtype) {
-                        messedwith -= multiplier;
-                        if (rotxvel || rotx) {
-                            if (rotx > 0) rotxvel -= multiplier * 8 * fabs(rotx);
-                            if (rotx < 0) rotxvel += multiplier * 8 * fabs(rotx);
-                            if (rotx > 0) rotxvel -= multiplier * 4;
-                            if (rotx < 0) rotxvel += multiplier * 4;
-                            if (rotxvel > 0) rotxvel -= multiplier * 4;
-                            if (rotxvel < 0) rotxvel += multiplier * 4;
-                            if (fabs(rotx) < multiplier * 4)
-                                rotx = 0;
-                            if (fabs(rotxvel) < multiplier * 4)
-                                rotxvel = 0;
-
-                            rotx += rotxvel * multiplier * 4;
-                        }
-                        if (rotyvel || roty) {
-                            if (roty > 0) rotyvel -= multiplier * 8 * fabs(roty);
-                            if (roty < 0) rotyvel += multiplier * 8 * fabs(roty);
-                            if (roty > 0) rotyvel -= multiplier * 4;
-                            if (roty < 0) rotyvel += multiplier * 4;
-                            if (rotyvel > 0) rotyvel -= multiplier * 4;
-                            if (rotyvel < 0) rotyvel += multiplier * 4;
-                            if (fabs(roty) < multiplier * 4)
-                                roty = 0;
-                            if (fabs(rotyvel) < multiplier * 4)
-                                rotyvel = 0;
-
-                            roty += rotyvel * multiplier * 4;
-                        }
-                        if (roty) {
-                            glRotatef(roty, 1, 0, 0);
-                        }
-                        if (rotx) {
-                            glRotatef(-rotx, 0, 0, 1);
-                        }
-                        if (rotx > 10)
-                            rotx = 10;
-                        if (rotx < -10)
-                            rotx = -10;
-                        if (roty > 10)
-                            roty = 10;
-                        if (roty < -10)
-                            roty = -10;
+                        handleRot(1);
                     }
                     if (type == treetrunktype || type == treeleavestype) {
                         if (type == treetrunktype || environment == desertenvironment) {
-                            messedwith -= multiplier;
-                            if (rotxvel || rotx) {
-                                if (rotx > 0) rotxvel -= multiplier * 8 * fabs(rotx);
-                                if (rotx < 0) rotxvel += multiplier * 8 * fabs(rotx);
-                                if (rotx > 0) rotxvel -= multiplier * 4;
-                                if (rotx < 0) rotxvel += multiplier * 4;
-                                if (rotxvel > 0) rotxvel -= multiplier * 4;
-                                if (rotxvel < 0) rotxvel += multiplier * 4;
-                                if (fabs(rotx) < multiplier * 4)
-                                    rotx = 0;
-                                if (fabs(rotxvel) < multiplier * 4)
-                                    rotxvel = 0;
-
-                                rotx += rotxvel * multiplier * 4;
-                            }
-                            if (rotyvel || roty) {
-                                if (roty > 0) rotyvel -= multiplier * 8 * fabs(roty);
-                                if (roty < 0) rotyvel += multiplier * 8 * fabs(roty);
-                                if (roty > 0) rotyvel -= multiplier * 4;
-                                if (roty < 0) rotyvel += multiplier * 4;
-                                if (rotyvel > 0) rotyvel -= multiplier * 4;
-                                if (rotyvel < 0) rotyvel += multiplier * 4;
-                                if (fabs(roty) < multiplier * 4)
-                                    roty = 0;
-                                if (fabs(rotyvel) < multiplier * 4)
-                                    rotyvel = 0;
-
-                                roty += rotyvel * multiplier * 4;
-                            }
-                            if (roty) {
-                                glRotatef(roty / 6, 1, 0, 0);
-                            }
-                            if (rotx) {
-                                glRotatef(-rotx / 6, 0, 0, 1);
-                            }
-                            if (rotx > 10)
-                                rotx = 10;
-                            if (rotx < -10)
-                                rotx = -10;
-                            if (roty > 10)
-                                roty = 10;
-                            if (roty < -10)
-                                roty = -10;
+                            handleRot(6);
                         } else {
-                            messedwith -= multiplier;
-                            if (rotxvel || rotx) {
-                                if (rotx > 0) rotxvel -= multiplier * 8 * fabs(rotx);
-                                if (rotx < 0) rotxvel += multiplier * 8 * fabs(rotx);
-                                if (rotx > 0) rotxvel -= multiplier * 4;
-                                if (rotx < 0) rotxvel += multiplier * 4;
-                                if (rotxvel > 0) rotxvel -= multiplier * 4;
-                                if (rotxvel < 0) rotxvel += multiplier * 4;
-                                if (fabs(rotx) < multiplier * 4)
-                                    rotx = 0;
-                                if (fabs(rotxvel) < multiplier * 4)
-                                    rotxvel = 0;
-
-                                rotx += rotxvel * multiplier * 4;
-                            }
-                            if (rotyvel || roty) {
-                                if (roty > 0) rotyvel -= multiplier * 8 * fabs(roty);
-                                if (roty < 0) rotyvel += multiplier * 8 * fabs(roty);
-                                if (roty > 0) rotyvel -= multiplier * 4;
-                                if (roty < 0) rotyvel += multiplier * 4;
-                                if (rotyvel > 0) rotyvel -= multiplier * 4;
-                                if (rotyvel < 0) rotyvel += multiplier * 4;
-                                if (fabs(roty) < multiplier * 4)
-                                    roty = 0;
-                                if (fabs(rotyvel) < multiplier * 4)
-                                    rotyvel = 0;
-
-                                roty += rotyvel * multiplier * 4;
-                            }
-                            if (roty) {
-                                glRotatef(roty / 4, 1, 0, 0);
-                            }
-                            if (rotx) {
-                                glRotatef(-rotx / 4, 0, 0, 1);
-                            }
-                            if (rotx > 10)
-                                rotx = 10;
-                            if (rotx < -10)
-                                rotx = -10;
-                            if (roty > 10)
-                                roty = 10;
-                            if (roty < -10)
-                                roty = -10;
+                            handleRot(4);
                         }
-
                     }
-                    if (/*detail==2&&*/environment == snowyenvironment) {
+                    if (environment == snowyenvironment) {
                         if (type == treeleavestype) {
                             glRotatef((sin(windvar + position.x * .3) + .5) * 1.5 * (sin(windvar * 2 + position.x * .3) + 1) / 2, 1, 0, 0);
                         }
                         if (type == treetrunktype) {
-                            glRotatef((sin(windvar + position.x * .3) + .5)*.5 * (sin(windvar * 2 + position.x * .3) + 1) / 2, 1, 0, 0);
+                            glRotatef((sin(windvar + position.x * .3) + .5) * .5 * (sin(windvar * 2 + position.x * .3) + 1) / 2, 1, 0, 0);
                         }
                         if (type == bushtype) {
                             glRotatef((sin(windvar + position.x * .3) + .5) * 4 * (sin(windvar * 2 + position.x * .3) + 1) / 2, 1, 0, 0);
                         }
                     }
-                    if (/*detail==2&&*/environment == grassyenvironment) {
+                    if (environment == grassyenvironment) {
                         if (type == treeleavestype) {
                             glRotatef((sin(windvar + position.x * .3) + .5) * 1.5 * .5 * (sin(windvar * 2 + position.x * .3) + 1) / 2, 1, 0, 0);
                         }
                         if (type == treetrunktype) {
-                            glRotatef((sin(windvar + position.x * .3) + .5)*.5 * .5 * (sin(windvar * 2 + position.x * .3) + 1) / 2, 1, 0, 0);
+                            glRotatef((sin(windvar + position.x * .3) + .5) * .5 * .5 * (sin(windvar * 2 + position.x * .3) + 1) / 2, 1, 0, 0);
                         }
                         if (type == bushtype) {
                             glRotatef((sin(windvar + position.x * .3) + .5) * 4 * .5 * (sin(windvar * 2 + position.x * .3) + 1) / 2, 1, 0, 0);
                         }
                     }
-                    if (/*detail==2&&*/environment == desertenvironment) {
+                    if (environment == desertenvironment) {
                         if (type == bushtype) {
                             glRotatef((sin(windvar + position.x * .3) + .5) * 4 * .5 * (sin(windvar * 2 + position.x * .3) + 1) / 2, 1, 0, 0);
                         }
                     }
                     glRotatef(yaw, 0, 1, 0);
-                    if (distance > 1)
-                        distance = 1;
                     glColor4f((1 - shadowed) / 2 + .5, (1 - shadowed) / 2 + .5, (1 - shadowed) / 2 + .5, distance);
                     if (distance >= 1) {
                         glDisable(GL_BLEND);
                         glAlphaFunc(GL_GREATER, 0.5);
-                    }
-                    if (distance < 1) {
+                    } else {
                         glEnable(GL_BLEND);
                         glAlphaFunc(GL_GREATER, 0.1);
                     }
@@ -474,16 +391,9 @@ void Object::draw()
                         glDisable(GL_CULL_FACE);
                         glDisable(GL_LIGHTING);
                         terrainlight = terrain.getLighting(position.x, position.z);
-                        if (!hidden) {
-                            glColor4f(terrainlight.x, terrainlight.y, terrainlight.z, distance);
-                            if (distance < 1)
-                                glAlphaFunc(GL_GREATER, 0.2);
-                        }
-                        if (hidden) {
-                            glDepthMask(0);
-                            glEnable(GL_BLEND);
-                            glColor4f(terrainlight.x, terrainlight.y, terrainlight.z, distance / 3);
-                            glAlphaFunc(GL_GREATER, 0);
+                        glColor4f(terrainlight.x, terrainlight.y, terrainlight.z, distance);
+                        if (distance < 1) {
+                            glAlphaFunc(GL_GREATER, 0.2);
                         }
                         model.drawdifftex(treetextureptr);
                     }
@@ -491,16 +401,9 @@ void Object::draw()
                         glDisable(GL_CULL_FACE);
                         glDisable(GL_LIGHTING);
                         terrainlight = terrain.getLighting(position.x, position.z);
-                        if (!hidden) {
-                            glColor4f(terrainlight.x, terrainlight.y, terrainlight.z, distance);
-                            if (distance < 1)
-                                glAlphaFunc(GL_GREATER, 0.2);
-                        }
-                        if (hidden) {
-                            glDepthMask(0);
-                            glEnable(GL_BLEND);
-                            glColor4f(terrainlight.x, terrainlight.y, terrainlight.z, distance / 3);
-                            glAlphaFunc(GL_GREATER, 0);
+                        glColor4f(terrainlight.x, terrainlight.y, terrainlight.z, distance);
+                        if (distance < 1) {
+                            glAlphaFunc(GL_GREATER, 0.2);
                         }
                         model.drawdifftex(bushtextureptr);
                     }
@@ -536,101 +439,17 @@ void Object::drawSecondPass()
             glDepthMask(1);
             glTranslatef(position.x, position.y, position.z);
             if (type == bushtype) {
-                messedwith -= multiplier;
-                if (rotxvel || rotx) {
-                    if (rotx > 0) rotxvel -= multiplier * 8 * fabs(rotx);
-                    if (rotx < 0) rotxvel += multiplier * 8 * fabs(rotx);
-                    if (rotx > 0) rotxvel -= multiplier * 4;
-                    if (rotx < 0) rotxvel += multiplier * 4;
-                    if (rotxvel > 0) rotxvel -= multiplier * 4;
-                    if (rotxvel < 0) rotxvel += multiplier * 4;
-                    if (fabs(rotx) < multiplier * 4)
-                        rotx = 0;
-                    if (fabs(rotxvel) < multiplier * 4)
-                        rotxvel = 0;
-
-                    rotx += rotxvel * multiplier * 4;
-                }
-                if (rotyvel || roty) {
-                    if (roty > 0) rotyvel -= multiplier * 8 * fabs(roty);
-                    if (roty < 0) rotyvel += multiplier * 8 * fabs(roty);
-                    if (roty > 0) rotyvel -= multiplier * 4;
-                    if (roty < 0) rotyvel += multiplier * 4;
-                    if (rotyvel > 0) rotyvel -= multiplier * 4;
-                    if (rotyvel < 0) rotyvel += multiplier * 4;
-                    if (fabs(roty) < multiplier * 4)
-                        roty = 0;
-                    if (fabs(rotyvel) < multiplier * 4)
-                        rotyvel = 0;
-
-                    roty += rotyvel * multiplier * 4;
-                }
-                if (roty) {
-                    glRotatef(roty, 1, 0, 0);
-                }
-                if (rotx) {
-                    glRotatef(-rotx, 0, 0, 1);
-                }
-                if (rotx > 10)
-                    rotx = 10;
-                if (rotx < -10)
-                    rotx = -10;
-                if (roty > 10)
-                    roty = 10;
-                if (roty < -10)
-                    roty = -10;
+                handleRot(1);
             }
             if (type == treetrunktype || type == treeleavestype) {
-                messedwith -= multiplier;
-                if (rotxvel || rotx) {
-                    if (rotx > 0) rotxvel -= multiplier * 8 * fabs(rotx);
-                    if (rotx < 0) rotxvel += multiplier * 8 * fabs(rotx);
-                    if (rotx > 0) rotxvel -= multiplier * 4;
-                    if (rotx < 0) rotxvel += multiplier * 4;
-                    if (rotxvel > 0) rotxvel -= multiplier * 4;
-                    if (rotxvel < 0) rotxvel += multiplier * 4;
-                    if (fabs(rotx) < multiplier * 4)
-                        rotx = 0;
-                    if (fabs(rotxvel) < multiplier * 4)
-                        rotxvel = 0;
-
-                    rotx += rotxvel * multiplier * 4;
-                }
-                if (rotyvel || roty) {
-                    if (roty > 0) rotyvel -= multiplier * 8 * fabs(roty);
-                    if (roty < 0) rotyvel += multiplier * 8 * fabs(roty);
-                    if (roty > 0) rotyvel -= multiplier * 4;
-                    if (roty < 0) rotyvel += multiplier * 4;
-                    if (rotyvel > 0) rotyvel -= multiplier * 4;
-                    if (rotyvel < 0) rotyvel += multiplier * 4;
-                    if (fabs(roty) < multiplier * 4)
-                        roty = 0;
-                    if (fabs(rotyvel) < multiplier * 4)
-                        rotyvel = 0;
-
-                    roty += rotyvel * multiplier * 4;
-                }
-                if (roty) {
-                    glRotatef(roty / 2, 1, 0, 0);
-                }
-                if (rotx) {
-                    glRotatef(-rotx / 2, 0, 0, 1);
-                }
-                if (rotx > 10)
-                    rotx = 10;
-                if (rotx < -10)
-                    rotx = -10;
-                if (roty > 10)
-                    roty = 10;
-                if (roty < -10)
-                    roty = -10;
+                handleRot(2);
             }
             if (environment == snowyenvironment) {
                 if (type == treeleavestype) {
                     glRotatef((sin(windvar + position.x * .3) + .5) * 1.5 * (sin(windvar * 2 + position.x * .3) + 1) / 2, 1, 0, 0);
                 }
                 if (type == treetrunktype) {
-                    glRotatef((sin(windvar + position.x * .3) + .5)*.5 * (sin(windvar * 2 + position.x * .3) + 1) / 2, 1, 0, 0);
+                    glRotatef((sin(windvar + position.x * .3) + .5) * .5 * (sin(windvar * 2 + position.x * .3) + 1) / 2, 1, 0, 0);
                 }
                 if (type == bushtype) {
                     glRotatef((sin(windvar + position.x * .3) + .5) * 4 * (sin(windvar * 2 + position.x * .3) + 1) / 2, 1, 0, 0);
@@ -641,7 +460,7 @@ void Object::drawSecondPass()
                     glRotatef((sin(windvar + position.x * .3) + .5) * 1.5 * .5 * (sin(windvar * 2 + position.x * .3) + 1) / 2, 1, 0, 0);
                 }
                 if (type == treetrunktype) {
-                    glRotatef((sin(windvar + position.x * .3) + .5)*.5 * .5 * (sin(windvar * 2 + position.x * .3) + 1) / 2, 1, 0, 0);
+                    glRotatef((sin(windvar + position.x * .3) + .5) * .5 * .5 * (sin(windvar * 2 + position.x * .3) + 1) / 2, 1, 0, 0);
                 }
                 if (type == bushtype) {
                     glRotatef((sin(windvar + position.x * .3) + .5) * 4 * .5 * (sin(windvar * 2 + position.x * .3) + 1) / 2, 1, 0, 0);

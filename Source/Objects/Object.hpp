@@ -105,6 +105,7 @@ public:
 
 private:
     void handleFire();
+    void handleRot(int divide);
     void doShadows(XYZ lightloc);
     void draw();
     void drawSecondPass();
