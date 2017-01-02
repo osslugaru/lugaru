@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Math/Quaternions.hpp"
+#include "Math/XYZ.hpp"
 
 #include <string>
 #include <vector>

@@ -65,7 +65,7 @@ set(LUGARU_SRCS
     ${SRCDIR}/Level/Dialog.cpp
     ${SRCDIR}/Level/Hotspot.cpp
     ${SRCDIR}/Math/Frustum.cpp
-    ${SRCDIR}/Math/Quaternions.cpp
+    ${SRCDIR}/Math/XYZ.cpp
     ${SRCDIR}/Menu/Menu.cpp
     ${SRCDIR}/Objects/Object.cpp
     ${SRCDIR}/Objects/Person.cpp
@@ -109,8 +109,7 @@ set(LUGARU_H
     ${SRCDIR}/Level/Dialog.hpp
     ${SRCDIR}/Level/Hotspot.hpp
     ${SRCDIR}/Math/Frustum.hpp
-    ${SRCDIR}/Math/PhysicsMath.hpp
-    ${SRCDIR}/Math/Quaternions.hpp
+    ${SRCDIR}/Math/XYZ.hpp
     ${SRCDIR}/Math/Random.hpp
     ${SRCDIR}/Menu/Menu.hpp
     ${SRCDIR}/Objects/Object.hpp

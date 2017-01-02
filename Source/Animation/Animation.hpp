@@ -20,7 +20,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef _ANIMATION_HPP_
 #define _ANIMATION_HPP_
 
-#include "Math/Quaternions.hpp"
+#include "Math/XYZ.hpp"
 
 #include <vector>
 

@@ -27,7 +27,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Graphic/gamegl.hpp"
 #include "Graphic/Models.hpp"
 #include "Graphic/Sprite.hpp"
-#include "Math/Quaternions.hpp"
+#include "Math/XYZ.hpp"
 #include "Objects/Object.hpp"
 #include "Utils/binio.h"
 

@@ -19,7 +19,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "Graphic/Stereo.hpp"
-#include "Math/Quaternions.hpp"
+#include "Math/XYZ.hpp"
 #include "Objects/Weapons.hpp"
 
 #include <SDL.h>

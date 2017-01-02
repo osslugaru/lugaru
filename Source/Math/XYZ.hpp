@@ -21,28 +21,9 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef _QUATERNIONS_HPP_
 #define _QUATERNIONS_HPP_
 
-#include "PhysicsMath.hpp"
 #include "Graphic/gamegl.hpp"
 
 #include <math.h>
-
-/**> Quaternion Structures <**/
-#define PI      3.14159265355555897932384626
-#define RADIANS 0
-#define DEGREES 1
-#define deg2rad .0174532925
-
-//using namespace std;
-typedef float Matrix_t [4][4];
-struct euler {
-    float x, y, z;
-};
-struct angle_axis {
-    float x, y, z, angle;
-};
-struct quaternion {
-    float x, y, z, w;
-};
 
 class XYZ
 {
@@ -62,20 +43,8 @@ public:
     inline void operator*=(XYZ add);
     inline void operator/=(float add);
     inline void operator=(float add);
-    inline void vec(Vector add);
     inline bool operator==(XYZ add);
 };
-
-/*********************> Quaternion Function definition <********/
-quaternion To_Quat(int Degree_Flag, euler Euler);
-quaternion To_Quat(angle_axis Ang_Ax);
-quaternion To_Quat(Matrix_t m);
-angle_axis Quat_2_AA(quaternion Quat);
-void Quat_2_Matrix(quaternion Quat, Matrix_t m);
-quaternion Normalize(quaternion Quat);
-quaternion Quat_Mult(quaternion q1, quaternion q2);
-quaternion QNormalize(quaternion Quat);
-XYZ Quat2Vector(quaternion Quat);
 
 inline void CrossProduct(XYZ *P, XYZ *Q, XYZ *V);
 inline void CrossProduct(XYZ P, XYZ Q, XYZ *V);
@@ -88,8 +57,6 @@ float LineFacetd(XYZ p1, XYZ p2, XYZ pa, XYZ pb, XYZ pc, XYZ *p);
 float LineFacetd(XYZ p1, XYZ p2, XYZ pa, XYZ pb, XYZ pc, XYZ n, XYZ *p);
 float LineFacetd(XYZ *p1, XYZ *p2, XYZ *pa, XYZ *pb, XYZ *pc, XYZ *n, XYZ *p);
 float LineFacetd(XYZ *p1, XYZ *p2, XYZ *pa, XYZ *pb, XYZ *pc, XYZ *p);
-bool PointInTriangle(Vector *p, Vector normal, float p11, float p12, float p13, float p21, float p22, float p23, float p31, float p32, float p33);
-bool LineFacet(Vector p1, Vector p2, Vector pa, Vector pb, Vector pc, Vector *p);
 inline void ReflectVector(XYZ *vel, const XYZ *n);
 inline void ReflectVector(XYZ *vel, const XYZ &n);
 inline XYZ DoRotation(XYZ thePoint, float xang, float yang, float zang);
@@ -209,13 +176,6 @@ inline void XYZ::operator=(float add)
     x = add;
     y = add;
     z = add;
-}
-
-inline void XYZ::vec(Vector add)
-{
-    x = add.x;
-    y = add.y;
-    z = add.z;
 }
 
 inline bool XYZ::operator==(XYZ add)

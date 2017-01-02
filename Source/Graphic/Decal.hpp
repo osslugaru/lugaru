@@ -24,7 +24,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 class Terrain;
 class Model;
 
-#include "Math/Quaternions.hpp"
+#include "Math/XYZ.hpp"
 
 enum decal_type {
     shadowdecal = 0,

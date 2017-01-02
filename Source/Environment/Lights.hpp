@@ -22,7 +22,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #define _LIGHTS_HPP_
 
 #include "Graphic/gamegl.hpp"
-#include "Math/Quaternions.hpp"
+#include "Math/XYZ.hpp"
 
 class Light
 {

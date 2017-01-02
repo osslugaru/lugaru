@@ -22,7 +22,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Audio/Sounds.hpp"
 #include "Game.hpp"
-#include "Math/Quaternions.hpp"
+#include "Math/XYZ.hpp"
 
 #include <cstdio>
 #include <cstdlib>

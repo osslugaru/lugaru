@@ -21,7 +21,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef _HOTSPOT_HPP_
 #define _HOTSPOT_HPP_
 
-#include "Math/Quaternions.hpp"
+#include "Math/XYZ.hpp"
 
 #include <vector>
 

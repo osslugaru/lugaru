@@ -23,8 +23,8 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Graphic/gamegl.hpp"
 #include "Graphic/Texture.hpp"
-#include "Math/Quaternions.hpp"
-#include "Math/Quaternions.hpp"
+#include "Math/XYZ.hpp"
+#include "Math/XYZ.hpp"
 #include "Utils/ImageIO.hpp"
 
 class SkyBox

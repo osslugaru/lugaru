@@ -22,7 +22,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #define _OPENAL_WRAPPER_HPP_
 
 #include "MacCompatibility.hpp"
-#include "Math/Quaternions.hpp"
+#include "Math/XYZ.hpp"
 
 #ifdef __APPLE__
   #include <OpenAL/al.h>
