@@ -82,16 +82,14 @@ int Model::LineCheckPossible(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate)
     if (*rotate)
         *p2 = DoRotation(*p2, 0, -*rotate, 0);
 
-    if (numpossible > 0 && numpossible < int(Triangles.size())) {
-        for (unsigned int j = 0; int(j) < numpossible; j++) {
-            if ((possible[j] >= 0) && possible[j] < int(Triangles.size())) {
-                intersecting = LineFacetd(p1, p2, &vertex[Triangles[possible[j]].vertex[0]], &vertex[Triangles[possible[j]].vertex[1]], &vertex[Triangles[possible[j]].vertex[2]], &Triangles[possible[j]].facenormal, &point);
-                distance = (point.x - p1->x) * (point.x - p1->x) + (point.y - p1->y) * (point.y - p1->y) + (point.z - p1->z) * (point.z - p1->z);
-                if ((distance < olddistance || firstintersecting == -1) && intersecting) {
-                    olddistance = distance;
-                    firstintersecting = possible[j];
-                    *p = point;
-                }
+    for (unsigned int j = 0; j < possible.size(); j++) {
+        if (possible[j] < Triangles.size()) {
+            intersecting = LineFacetd(p1, p2, &vertex[Triangles[possible[j]].vertex[0]], &vertex[Triangles[possible[j]].vertex[1]], &vertex[Triangles[possible[j]].vertex[2]], &Triangles[possible[j]].facenormal, &point);
+            distance = (point.x - p1->x) * (point.x - p1->x) + (point.y - p1->y) * (point.y - p1->y) + (point.z - p1->z) * (point.z - p1->z);
+            if ((distance < olddistance || firstintersecting == -1) && intersecting) {
+                olddistance = distance;
+                firstintersecting = possible[j];
+                *p = point;
             }
         }
     }
@@ -104,7 +102,6 @@ int Model::LineCheckPossible(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate)
 
 int Model::LineCheckSlidePossible(XYZ *p1, XYZ *p2, XYZ *move, float *rotate)
 {
-    static int j;
     static float distance;
     static float olddistance;
     static int intersecting;
@@ -121,17 +118,16 @@ int Model::LineCheckSlidePossible(XYZ *p1, XYZ *p2, XYZ *move, float *rotate)
     if (*rotate)
         *p2 = DoRotation(*p2, 0, -*rotate, 0);
 
-    if (numpossible)
-        for (j = 0; j < numpossible; j++) {
-            if (possible[j] >= 0 && possible[j] < int(Triangles.size())) {
-                intersecting = LineFacetd(p1, p2, &vertex[Triangles[possible[j]].vertex[0]], &vertex[Triangles[possible[j]].vertex[1]], &vertex[Triangles[possible[j]].vertex[2]], &Triangles[possible[j]].facenormal, &point);
-                distance = (point.x - p1->x) * (point.x - p1->x) + (point.y - p1->y) * (point.y - p1->y) + (point.z - p1->z) * (point.z - p1->z);
-                if ((distance < olddistance || firstintersecting == -1) && intersecting) {
-                    olddistance = distance;
-                    firstintersecting = possible[j];
-                }
+    for (unsigned int j = 0; j < possible.size(); j++) {
+        if (possible[j] < Triangles.size()) {
+            intersecting = LineFacetd(p1, p2, &vertex[Triangles[possible[j]].vertex[0]], &vertex[Triangles[possible[j]].vertex[1]], &vertex[Triangles[possible[j]].vertex[2]], &Triangles[possible[j]].facenormal, &point);
+            distance = (point.x - p1->x) * (point.x - p1->x) + (point.y - p1->y) * (point.y - p1->y) + (point.z - p1->z) * (point.z - p1->z);
+            if ((distance < olddistance || firstintersecting == -1) && intersecting) {
+                olddistance = distance;
+                firstintersecting = possible[j];
             }
         }
+    }
 
     if (firstintersecting > 0) {
         distance = abs((Triangles[firstintersecting].facenormal.x * p2->x) + (Triangles[firstintersecting].facenormal.y * p2->y) + (Triangles[firstintersecting].facenormal.z * p2->z) - ((Triangles[firstintersecting].facenormal.x * vertex[Triangles[firstintersecting].vertex[0]].x) + (Triangles[firstintersecting].facenormal.y * vertex[Triangles[firstintersecting].vertex[0]].y) + (Triangles[firstintersecting].facenormal.z * vertex[Triangles[firstintersecting].vertex[0]].z)));
@@ -211,7 +207,7 @@ int Model::SphereCheckPossible(XYZ *p1, float radius, XYZ *move, float *rotate)
     oldp1 = *p1;
     *p1 = *p1 - *move;
 
-    numpossible = 0;
+    possible.clear();
 
     if (*rotate)
         *p1 = DoRotation(*p1, 0, -*rotate, 0);
@@ -234,8 +230,7 @@ int Model::SphereCheckPossible(XYZ *p1, float radius, XYZ *move, float *rotate)
             if (!intersecting)
                 intersecting = sphere_line_intersection(&vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[2]], p1, &radius);
             if (intersecting) {
-                possible[numpossible] = j;
-                numpossible++;
+                possible.push_back(j);
             }
         }
         if ((distance < olddistance || firstintersecting == -1) && intersecting) {
@@ -246,6 +241,7 @@ int Model::SphereCheckPossible(XYZ *p1, float radius, XYZ *move, float *rotate)
     if (*rotate)
         *p1 = DoRotation(*p1, 0, *rotate, 0);
     *p1 += *move;
+
     return firstintersecting;
 }
 
@@ -414,10 +410,9 @@ bool Model::loadnotex(const std::string& filename)
     // read the model data
     deallocate();
 
-    numpossible = 0;
+    possible.clear();
 
     owner = (int*)malloc(sizeof(int) * vertexNum);
-    possible = (int*)malloc(sizeof(int) * TriangleNum);
     vertex = (XYZ*)malloc(sizeof(XYZ) * vertexNum);
     Triangles.resize(TriangleNum);
     vArray = (GLfloat*)malloc(sizeof(GLfloat) * TriangleNum * 24);
@@ -484,10 +479,9 @@ bool Model::load(const std::string& filename)
     // read the model data
     deallocate();
 
-    numpossible = 0;
+    possible.clear();
 
     owner = (int*)malloc(sizeof(int) * vertexNum);
-    possible = (int*)malloc(sizeof(int) * TriangleNum);
     vertex = (XYZ*)malloc(sizeof(XYZ) * vertexNum);
     normals = (XYZ*)malloc(sizeof(XYZ) * vertexNum);
     Triangles.resize(TriangleNum);
@@ -557,10 +551,9 @@ bool Model::loaddecal(const std::string& filename)
 
     deallocate();
 
-    numpossible = 0;
+    possible.clear();
 
     owner = (int*)malloc(sizeof(int) * vertexNum);
-    possible = (int*)malloc(sizeof(int) * TriangleNum);
     vertex = (XYZ*)malloc(sizeof(XYZ) * vertexNum);
     normals = (XYZ*)malloc(sizeof(XYZ) * vertexNum);
     Triangles.resize(TriangleNum);
@@ -628,10 +621,9 @@ bool Model::loadraw(const std::string& filename)
     // read the model data
     deallocate();
 
-    numpossible = 0;
+    possible.clear();
 
     owner = (int*)malloc(sizeof(int) * vertexNum);
-    possible = (int*)malloc(sizeof(int) * TriangleNum);
     vertex = (XYZ*)malloc(sizeof(XYZ) * vertexNum);
     Triangles.resize(TriangleNum);
     vArray = (GLfloat*)malloc(sizeof(GLfloat) * TriangleNum * 24);
@@ -1189,10 +1181,6 @@ void Model::deallocate()
         free(owner);
     owner = 0;
 
-    if (possible)
-        free(possible);
-    possible = 0;
-
     if (vertex)
         free(vertex);
     vertex = 0;
@@ -1210,14 +1198,12 @@ Model::Model()
   : vertexNum(0),
     hastexture(0),
     type(0), oldtype(0),
-    possible(0),
     owner(0),
     vertex(0),
     normals(0),
     vArray(0)
 {
     memset(&modelTexture, 0, sizeof(modelTexture));
-    numpossible = 0;
     color = 0;
 
     boundingspherecenter = 0;

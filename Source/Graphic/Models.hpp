@@ -68,14 +68,13 @@ public:
 
     int type, oldtype;
 
-    int* possible;
     int* owner;
     XYZ* vertex;
     XYZ* normals;
     std::vector<TexturedTriangle> Triangles;
     GLfloat* vArray;
 
-    /*int possible[max_model_vertex];
+    /*
     int owner[max_textured_triangle];
     XYZ vertex[max_model_vertex];
     XYZ normals[max_model_vertex];
@@ -83,7 +82,6 @@ public:
 
     Texture textureptr;
     ModelTexture modelTexture;
-    int numpossible;
     bool color;
 
     XYZ boundingspherecenter;
@@ -93,6 +91,8 @@ public:
 
     bool flat;
 
+    Model();
+    ~Model();
     void DeleteDecal(int which);
     void MakeDecal(decal_type atype, XYZ *where, float *size, float *opacity, float *rotation);
     void MakeDecal(decal_type atype, XYZ where, float size, float opacity, float rotation);
@@ -122,9 +122,11 @@ public:
     void drawimmediate();
     void Rotate(float xang, float yang, float zang);
     void deleteDeadDecals();
-    ~Model();
+
+private:
     void deallocate();
-    Model();
+    /* indices of triangles that might collide */
+    std::vector<unsigned int> possible;
 };
 
 #endif
