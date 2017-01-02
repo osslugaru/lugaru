@@ -502,8 +502,9 @@ void Game::Loadlevel(int which)
         char buf[32];
         snprintf(buf, 32, "map%d", which + 1); // challenges
         Loadlevel(buf);
-    } else
+    } else {
         Loadlevel("mapsave");
+    }
 }
 
 void Game::Loadlevel(const std::string& name, bool tutorial)
@@ -923,9 +924,6 @@ void Game::Loadlevel(const std::string& name, bool tutorial)
     oldmusicvolume[1] = 0;
     oldmusicvolume[2] = 0;
     oldmusicvolume[3] = 0;
-
-    if (!firstload)
-        firstload = 1;
 
     leveltime = 0;
     wonleveltime = 0;
@@ -4553,8 +4551,9 @@ void Game::TickOnceAfter()
                     loading = 2;
                     loadtime = 0;
                     targetlevel = 7;
-                    if (!firstload)
+                    if (!firstLoadDone) {
                         LoadStuff();
+                    }
                     whichchoice = 0;
                     actuallevel = campaignlevels[actuallevel].nextlevel.front();
                     visibleloading = true;

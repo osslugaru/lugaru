@@ -64,7 +64,7 @@ float yaw = 0;
 float pitch = 0;
 SkyBox *skybox = NULL;
 bool cameramode = 0;
-bool firstload = 0;
+bool firstLoadDone = false;
 
 Texture hawktexture;
 float hawkyaw = 0;

@@ -72,7 +72,7 @@ extern int oldmousecoordh, oldmousecoordv;
 extern float yaw, pitch;
 extern SkyBox *skybox;
 extern bool cameramode;
-extern bool firstload;
+extern bool firstLoadDone;
 
 extern float leveltime;
 extern float wonleveltime;

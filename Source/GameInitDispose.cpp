@@ -588,7 +588,7 @@ void Game::InitGame()
     mainmenu = 1;
 
     stillloading = 0;
-    firstload = 0;
+    firstLoadDone = false;
 
     newdetail = detail;
     newscreenwidth = screenwidth;
@@ -618,10 +618,11 @@ void Game::LoadScreenTexture()
 }
 
 //TODO: move LoadStuff() closer to GameTick.cpp to get rid of various vars shared in Game.hpp
+/* Loads models and textures which only needs to be loaded once */
 void Game::LoadStuff()
 {
-    static float temptexdetail;
-    static float viewdistdetail;
+    float temptexdetail;
+    float viewdistdetail;
     float megascale = 1;
 
     LOGFUNC;
@@ -773,8 +774,6 @@ void Game::LoadStuff()
     gameon = 1;
     mainmenu = 0;
 
-    firstload = 0;
-
     //Fix knife stab, too lazy to do it manually
     XYZ moveamount;
     moveamount = 0;
@@ -846,5 +845,6 @@ void Game::LoadStuff()
     changedelay = 1;
 
     visibleloading = false;
+    firstLoadDone = true;
 }
 

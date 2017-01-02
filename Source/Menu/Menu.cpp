@@ -706,10 +706,11 @@ void Menu::Tick()
                 loading = 2;
                 loadtime = 0;
                 targetlevel = 7;
-                if (firstload)
+                if (firstLoadDone) {
                     TickOnceAfter();
-                else
+                } else {
                     LoadStuff();
+                }
                 whichchoice = selected - NB_CAMPAIGN_MENU_ITEM - Account::active().getCampaignChoicesMade();
                 actuallevel = (Account::active().getCampaignChoicesMade() > 0 ? campaignlevels[Account::active().getCampaignChoicesMade() - 1].nextlevel[whichchoice] : 0);
                 visibleloading = true;
@@ -727,10 +728,11 @@ void Menu::Tick()
                 loading = 2;
                 loadtime = 0;
                 targetlevel = -1;
-                if (firstload) {
+                if (firstLoadDone) {
                     TickOnceAfter();
-                } else
+                } else {
                     LoadStuff();
+                }
                 Loadlevel(-1);
 
                 mainmenu = 0;
@@ -813,10 +815,11 @@ void Menu::Tick()
                 loading = 2;
                 loadtime = 0;
                 targetlevel = selected;
-                if (firstload)
+                if (firstLoadDone) {
                     TickOnceAfter();
-                else
+                } else {
                     LoadStuff();
+                }
                 Loadlevel(selected);
                 campaign = 0;
 
