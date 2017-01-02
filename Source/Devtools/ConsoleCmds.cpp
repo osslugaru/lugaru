@@ -142,7 +142,7 @@ static void set_clothes(int pnum, const char *args)
     snprintf(buf, 63, "Textures/%s.png", args);
 
     int id = Person::players[pnum]->numclothes;
-    strcpy(Person::players[pnum]->clothes[id], buf);
+    strncpy(Person::players[pnum]->clothes[id], buf, 64);
     Person::players[pnum]->clothestintr[id] = tintr;
     Person::players[pnum]->clothestintg[id] = tintg;
     Person::players[pnum]->clothestintb[id] = tintb;
