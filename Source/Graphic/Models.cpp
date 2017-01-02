@@ -821,30 +821,33 @@ void Model::drawimmediate()
     glBegin(GL_TRIANGLES);
     for (unsigned int i = 0; i < Triangles.size(); i++) {
         glTexCoord2f(Triangles[i].gx[0], Triangles[i].gy[0]);
-        if (color)
+        if (color) {
             glColor3f(normals[Triangles[i].vertex[0]].x, normals[Triangles[i].vertex[0]].y, normals[Triangles[i].vertex[0]].z);
-        if (!color && !flat)
-            glNormal3f(normals[Triangles[i].vertex[0]].x, normals[Triangles[i].vertex[0]].y, normals[Triangles[i].vertex[0]].z);
-        if (!color && flat)
+        } else if (flat) {
             glNormal3f(Triangles[i].facenormal.x, Triangles[i].facenormal.y, Triangles[i].facenormal.y);
+        } else {
+            glNormal3f(normals[Triangles[i].vertex[0]].x, normals[Triangles[i].vertex[0]].y, normals[Triangles[i].vertex[0]].z);
+        }
         glVertex3f(vertex[Triangles[i].vertex[0]].x, vertex[Triangles[i].vertex[0]].y, vertex[Triangles[i].vertex[0]].z);
 
         glTexCoord2f(Triangles[i].gx[1], Triangles[i].gy[1]);
-        if (color)
+        if (color) {
             glColor3f(normals[Triangles[i].vertex[1]].x, normals[Triangles[i].vertex[1]].y, normals[Triangles[i].vertex[1]].z);
-        if (!color && !flat)
-            glNormal3f(normals[Triangles[i].vertex[1]].x, normals[Triangles[i].vertex[1]].y, normals[Triangles[i].vertex[1]].z);
-        if (!color && flat)
+        } else if (flat) {
             glNormal3f(Triangles[i].facenormal.x, Triangles[i].facenormal.y, Triangles[i].facenormal.y);
+        } else {
+            glNormal3f(normals[Triangles[i].vertex[1]].x, normals[Triangles[i].vertex[1]].y, normals[Triangles[i].vertex[1]].z);
+        }
         glVertex3f(vertex[Triangles[i].vertex[1]].x, vertex[Triangles[i].vertex[1]].y, vertex[Triangles[i].vertex[1]].z);
 
         glTexCoord2f(Triangles[i].gx[2], Triangles[i].gy[2]);
-        if (color)
+        if (color) {
             glColor3f(normals[Triangles[i].vertex[2]].x, normals[Triangles[i].vertex[2]].y, normals[Triangles[i].vertex[2]].z);
-        if (!color && !flat)
-            glNormal3f(normals[Triangles[i].vertex[2]].x, normals[Triangles[i].vertex[2]].y, normals[Triangles[i].vertex[2]].z);
-        if (!color && flat)
+        } else if (flat) {
             glNormal3f(Triangles[i].facenormal.x, Triangles[i].facenormal.y, Triangles[i].facenormal.y);
+        } else {
+            glNormal3f(normals[Triangles[i].vertex[2]].x, normals[Triangles[i].vertex[2]].y, normals[Triangles[i].vertex[2]].z);
+        }
         glVertex3f(vertex[Triangles[i].vertex[2]].x, vertex[Triangles[i].vertex[2]].y, vertex[Triangles[i].vertex[2]].z);
     }
     glEnd();
@@ -859,18 +862,20 @@ void Model::draw()
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-    if (!color)
-        glInterleavedArrays( GL_T2F_N3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
-    if (color)
+    if (color) {
         glInterleavedArrays( GL_T2F_C3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
+    } else {
+        glInterleavedArrays( GL_T2F_N3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
+    }
     textureptr.bind();
 
     glDrawArrays(GL_TRIANGLES, 0, Triangles.size() * 3);
 
-    if (!color)
-        glDisableClientState(GL_NORMAL_ARRAY);
-    if (color)
+    if (color) {
         glDisableClientState(GL_COLOR_ARRAY);
+    } else {
+        glDisableClientState(GL_NORMAL_ARRAY);
+    }
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
@@ -881,10 +886,11 @@ void Model::drawdifftex(GLuint texture)
     glEnableClientState(GL_NORMAL_ARRAY);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    if (!color)
-        glInterleavedArrays( GL_T2F_N3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
-    if (color)
+    if (color) {
         glInterleavedArrays( GL_T2F_C3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
+    } else {
+        glInterleavedArrays( GL_T2F_N3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
+    }
 
     glBindTexture(GL_TEXTURE_2D, (unsigned long)texture);
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
@@ -892,10 +898,11 @@ void Model::drawdifftex(GLuint texture)
 
     glDrawArrays(GL_TRIANGLES, 0, Triangles.size() * 3);
 
-    if (!color)
-        glDisableClientState(GL_NORMAL_ARRAY);
-    if (color)
+    if (color) {
         glDisableClientState(GL_COLOR_ARRAY);
+    } else {
+        glDisableClientState(GL_NORMAL_ARRAY);
+    }
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
@@ -905,10 +912,11 @@ void Model::drawdifftex(Texture texture)
     glEnableClientState(GL_NORMAL_ARRAY);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    if (!color)
-        glInterleavedArrays( GL_T2F_N3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
-    if (color)
+    if (color) {
         glInterleavedArrays( GL_T2F_C3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
+    } else {
+        glInterleavedArrays( GL_T2F_N3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
+    }
 
     texture.bind();
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
@@ -916,10 +924,11 @@ void Model::drawdifftex(Texture texture)
 
     glDrawArrays(GL_TRIANGLES, 0, Triangles.size() * 3);
 
-    if (!color)
-        glDisableClientState(GL_NORMAL_ARRAY);
-    if (color)
+    if (color) {
         glDisableClientState(GL_COLOR_ARRAY);
+    } else {
+        glDisableClientState(GL_NORMAL_ARRAY);
+    }
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
