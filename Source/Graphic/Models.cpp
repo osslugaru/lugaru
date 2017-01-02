@@ -395,7 +395,7 @@ bool Model::loadnotex(const std::string& filename)
 {
     FILE *tfile;
     long i;
-    int TriangleNum;
+    short triangleNum;
 
     type = notextype;
     color = 0;
@@ -405,7 +405,7 @@ bool Model::loadnotex(const std::string& filename)
     // read model settings
 
     fseek(tfile, 0, SEEK_SET);
-    funpackf(tfile, "Bs Bs", &vertexNum, &TriangleNum);
+    funpackf(tfile, "Bs Bs", &vertexNum, &triangleNum);
 
     // read the model data
     deallocate();
@@ -414,14 +414,14 @@ bool Model::loadnotex(const std::string& filename)
 
     owner = (int*)malloc(sizeof(int) * vertexNum);
     vertex = (XYZ*)malloc(sizeof(XYZ) * vertexNum);
-    Triangles.resize(TriangleNum);
-    vArray = (GLfloat*)malloc(sizeof(GLfloat) * TriangleNum * 24);
+    Triangles.resize(triangleNum);
+    vArray = (GLfloat*)malloc(sizeof(GLfloat) * triangleNum * 24);
 
     for (i = 0; i < vertexNum; i++) {
         funpackf(tfile, "Bf Bf Bf", &vertex[i].x, &vertex[i].y, &vertex[i].z);
     }
 
-    for (i = 0; i < TriangleNum; i++) {
+    for (i = 0; i < triangleNum; i++) {
         short vertex[6];
         funpackf(tfile, "Bs Bs Bs Bs Bs Bs", &vertex[0], &vertex[1], &vertex[2], &vertex[3], &vertex[4], &vertex[5]);
         Triangles[i].vertex[0] = vertex[0];
@@ -458,7 +458,7 @@ bool Model::load(const std::string& filename)
 {
     FILE *tfile;
     long i;
-    int TriangleNum;
+    short triangleNum;
 
     LOGFUNC;
 
@@ -474,7 +474,7 @@ bool Model::load(const std::string& filename)
     // read model settings
 
     fseek(tfile, 0, SEEK_SET);
-    funpackf(tfile, "Bs Bs", &vertexNum, &TriangleNum);
+    funpackf(tfile, "Bs Bs", &vertexNum, &triangleNum);
 
     // read the model data
     deallocate();
@@ -484,14 +484,14 @@ bool Model::load(const std::string& filename)
     owner = (int*)malloc(sizeof(int) * vertexNum);
     vertex = (XYZ*)malloc(sizeof(XYZ) * vertexNum);
     normals = (XYZ*)malloc(sizeof(XYZ) * vertexNum);
-    Triangles.resize(TriangleNum);
-    vArray = (GLfloat*)malloc(sizeof(GLfloat) * TriangleNum * 24);
+    Triangles.resize(triangleNum);
+    vArray = (GLfloat*)malloc(sizeof(GLfloat) * triangleNum * 24);
 
     for (i = 0; i < vertexNum; i++) {
         funpackf(tfile, "Bf Bf Bf", &vertex[i].x, &vertex[i].y, &vertex[i].z);
     }
 
-    for (i = 0; i < TriangleNum; i++) {
+    for (i = 0; i < triangleNum; i++) {
         short vertex[6];
         funpackf(tfile, "Bs Bs Bs Bs Bs Bs", &vertex[0], &vertex[1], &vertex[2], &vertex[3], &vertex[4], &vertex[5]);
         Triangles[i].vertex[0] = vertex[0];
@@ -530,7 +530,7 @@ bool Model::loaddecal(const std::string& filename)
 {
     FILE *tfile;
     long i, j;
-    int TriangleNum;
+    short triangleNum;
 
     LOGFUNC;
 
@@ -545,7 +545,7 @@ bool Model::loaddecal(const std::string& filename)
     // read model settings
 
     fseek(tfile, 0, SEEK_SET);
-    funpackf(tfile, "Bs Bs", &vertexNum, &TriangleNum);
+    funpackf(tfile, "Bs Bs", &vertexNum, &triangleNum);
 
     // read the model data
 
@@ -556,14 +556,14 @@ bool Model::loaddecal(const std::string& filename)
     owner = (int*)malloc(sizeof(int) * vertexNum);
     vertex = (XYZ*)malloc(sizeof(XYZ) * vertexNum);
     normals = (XYZ*)malloc(sizeof(XYZ) * vertexNum);
-    Triangles.resize(TriangleNum);
-    vArray = (GLfloat*)malloc(sizeof(GLfloat) * TriangleNum * 24);
+    Triangles.resize(triangleNum);
+    vArray = (GLfloat*)malloc(sizeof(GLfloat) * triangleNum * 24);
 
     for (i = 0; i < vertexNum; i++) {
         funpackf(tfile, "Bf Bf Bf", &vertex[i].x, &vertex[i].y, &vertex[i].z);
     }
 
-    for (i = 0; i < TriangleNum; i++) {
+    for (i = 0; i < triangleNum; i++) {
         short vertex[6];
         funpackf(tfile, "Bs Bs Bs Bs Bs Bs", &vertex[0], &vertex[1], &vertex[2], &vertex[3], &vertex[4], &vertex[5]);
         Triangles[i].vertex[0] = vertex[0];
@@ -602,7 +602,7 @@ bool Model::loadraw(const std::string& filename)
 {
     FILE *tfile;
     long i;
-    int TriangleNum;
+    short triangleNum;
 
     LOGFUNC;
 
@@ -616,7 +616,7 @@ bool Model::loadraw(const std::string& filename)
     // read model settings
 
     fseek(tfile, 0, SEEK_SET);
-    funpackf(tfile, "Bs Bs", &vertexNum, &TriangleNum);
+    funpackf(tfile, "Bs Bs", &vertexNum, &triangleNum);
 
     // read the model data
     deallocate();
@@ -625,15 +625,15 @@ bool Model::loadraw(const std::string& filename)
 
     owner = (int*)malloc(sizeof(int) * vertexNum);
     vertex = (XYZ*)malloc(sizeof(XYZ) * vertexNum);
-    Triangles.resize(TriangleNum);
-    vArray = (GLfloat*)malloc(sizeof(GLfloat) * TriangleNum * 24);
+    Triangles.resize(triangleNum);
+    vArray = (GLfloat*)malloc(sizeof(GLfloat) * triangleNum * 24);
 
 
     for (i = 0; i < vertexNum; i++) {
         funpackf(tfile, "Bf Bf Bf", &vertex[i].x, &vertex[i].y, &vertex[i].z);
     }
 
-    for (i = 0; i < TriangleNum; i++) {
+    for (i = 0; i < triangleNum; i++) {
         short vertex[6];
         funpackf(tfile, "Bs Bs Bs Bs Bs Bs", &vertex[0], &vertex[1], &vertex[2], &vertex[3], &vertex[4], &vertex[5]);
         Triangles[i].vertex[0] = vertex[0];
