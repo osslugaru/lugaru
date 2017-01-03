@@ -90,6 +90,7 @@ XYZ mapcenter;
 float mapradius = 0;
 
 Text *text = NULL;
+Text *textmono = NULL;
 float fps = 0;
 
 bool editorenabled = 0;

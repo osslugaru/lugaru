@@ -1896,14 +1896,14 @@ int Game::DrawGLScene(StereoSide side)
             int offset = 0;
             if (consoleselected >= 60)
                 offset = consoleselected - 60;
-            text->glPrint(10, 30, " ]", 0, 1, 1024, 768);
+            textmono->glPrint(10, 30, " ]", 0, 1, 1024, 768);
             if (consoleblink) {
-                text->glPrint(30 + (float)(consoleselected) * 10 - offset * 10, 30, "_", 0, 1, 1024, 768);
+                textmono->glPrint(30 + (float)(consoleselected) * 10 - offset * 10, 30, "_", 0, 1, 1024, 768);
             }
             for (unsigned i = 0; i < 15; i++)
                 for (unsigned j = 0; j < consoletext[i].size(); j++) {
                     glColor4f(1, 1, 1, 1 - (float)(i) / 16);
-                    text->glPrint(30 + j * 10 - offset * 10, 30 + i * 20, std::string(1, consoletext[i][j]), 0, 1, 1024, 768);
+                    textmono->glPrint(30 + j * 10 - offset * 10, 30 + i * 20, std::string(1, consoletext[i][j]), 0, 1, 1024, 768);
                 }
         }
     }

@@ -106,15 +106,16 @@ void Dispose()
 void Game::newGame()
 {
     text = new Text();
+    textmono = new Text();
     skybox = new SkyBox();
 }
 
 void Game::deleteGame()
 {
-    if (skybox)
-        delete skybox;
-    if (text)
-        delete text;
+    delete skybox;
+    delete text;
+    delete textmono;
+
     terraintexture.destroy();
     terraintexture2.destroy();
     cursortexture.destroy();
@@ -546,6 +547,8 @@ void Game::InitGame()
     texdetail = 1;
     text->LoadFontTexture("Textures/Font.png");
     text->BuildFont();
+    textmono->LoadFontTexture("Textures/FontMono.png");
+    textmono->BuildFont();
     texdetail = temptexdetail;
 
     FadeLoadingScreen(10);
@@ -676,6 +679,8 @@ void Game::LoadStuff()
     texdetail = 1;
     text->LoadFontTexture("Textures/Font.png");
     text->BuildFont();
+    textmono->LoadFontTexture("Textures/FontMono.png");
+    textmono->BuildFont();
     texdetail = temptexdetail;
 
     viewdistdetail = 2;
