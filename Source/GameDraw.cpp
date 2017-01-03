@@ -1553,12 +1553,12 @@ int Game::DrawGLScene(StereoSide side)
             int offset = 0;
             if (consoleselected >= 60)
                 offset = consoleselected - 60;
-            text->glPrint(10, 30, " ]", 0, 1, 1024, 768);
+            textmono->glPrint(10, 30, " ]", 0, 1, 1024, 768);
             if (consoleblink) {
-                text->glPrint(30 + (float)(consoleselected) * 10 - offset * 10, 30, "_", 0, 1, 1024, 768);
+                textmono->glPrint(30 + (float)(consoleselected) * 10 - offset * 10, 30, "_", 0, 1, 1024, 768);
             }
             for (unsigned i = 0; i < 15; i++) {
-                text->glPrint(30 - offset * 10, 30 + i * 20, consoletext[i], 0, 1, 1024, 768);
+                textmono->glPrint(30 - offset * 10, 30 + i * 20, consoletext[i], 0, 1, 1024, 768);
             }
         }
     }
