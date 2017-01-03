@@ -707,6 +707,10 @@ void Game::Loadlevel(const std::string& name, bool tutorial)
 
     funpackf(tfile, "Bi", &environment);
 
+    if (environment != oldenvironment)
+        Setenvironment(environment);
+    oldenvironment = environment;
+
     Object::LoadObjectsFromFile(tfile, stealthloading);
 
     if (mapvers >= 7) {
@@ -770,9 +774,6 @@ void Game::Loadlevel(const std::string& name, bool tutorial)
     funpackf(tfile, "Bf Bf Bf Bf", &mapcenter.x, &mapcenter.y, &mapcenter.z, &mapradius);
 
     SetUpLighting();
-    if (environment != oldenvironment)
-        Setenvironment(environment);
-    oldenvironment = environment;
 
     if (!stealthloading) {
         Object::AddObjectsToTerrain();
@@ -4288,7 +4289,7 @@ void Game::TickOnceAfter()
                     Person::players[i]->aitype == getweapontype ||
                     Person::players[i]->aitype == gethelptype ||
                     Person::players[i]->aitype == searchtype) &&
-                    !Person::players[i]->dead/*&&Person::players[i]->surprised<=0*/ &&
+                    !Person::players[i]->dead &&
                     (Person::players[i]->animTarget != sneakattackedanim &&
                      Person::players[i]->animTarget != knifesneakattackedanim &&
                      Person::players[i]->animTarget != swordsneakattackedanim)) {
