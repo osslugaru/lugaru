@@ -134,7 +134,7 @@ void Weapon::Load()
     staffmodel.CalculateNormals(1);
 }
 
-void Weapon::DoStuff(int i)
+void Weapon::doStuff(int i)
 {
     static int whichpatchx, whichpatchz, whichhit;
     static XYZ start, end, colpoint, normalrot, footvel, footpoint;
@@ -957,11 +957,11 @@ void Weapons::DoStuff()
     //Move
     int i = 0;
     for (std::vector<Weapon>::iterator weapon = begin(); weapon != end(); ++weapon) {
-        weapon->DoStuff(i++);
+        weapon->doStuff(i++);
     }
 }
 
-void Weapon::Draw()
+void Weapon::draw()
 {
     static XYZ terrainlight;
     static GLfloat M[16];
@@ -1140,7 +1140,7 @@ int Weapons::Draw()
     glDepthMask(1);
 
     for (std::vector<Weapon>::iterator weapon = begin(); weapon != end(); ++weapon) {
-        weapon->Draw();
+        weapon->draw();
     }
     return 0;
 }

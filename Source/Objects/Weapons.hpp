@@ -32,9 +32,6 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <cmath>
 
-#define max_weapons 30
-#define max_weaponinstances 20
-
 #define knife 1
 #define sword 2
 #define staff 3
@@ -46,8 +43,8 @@ public:
 
     static void Load();
 
-    void Draw();
-    void DoStuff(int);
+    void draw();
+    void doStuff(int);
 
     int getType() {
         return type;
