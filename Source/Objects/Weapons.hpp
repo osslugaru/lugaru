@@ -44,19 +44,6 @@ class Weapon
 public:
     Weapon(int type, int owner);
 
-    static Model throwingknifemodel;
-    static Texture knifetextureptr;
-    static Texture lightbloodknifetextureptr;
-    static Texture bloodknifetextureptr;
-
-    static Model swordmodel;
-    static Texture swordtextureptr;
-    static Texture lightbloodswordtextureptr;
-    static Texture bloodswordtextureptr;
-
-    static Model staffmodel;
-    static Texture stafftextureptr;
-
     static void Load();
 
     void Draw();
@@ -94,7 +81,21 @@ public:
     float bigtilt2;
     float smallrotation;
     float smallrotation2;
+
 private:
+    static Model throwingknifemodel;
+    static Texture knifetextureptr;
+    static Texture lightbloodknifetextureptr;
+    static Texture bloodknifetextureptr;
+
+    static Model swordmodel;
+    static Texture swordtextureptr;
+    static Texture lightbloodswordtextureptr;
+    static Texture bloodswordtextureptr;
+
+    static Model staffmodel;
+    static Texture stafftextureptr;
+
     int type;
 
     XYZ oldtippoint;
