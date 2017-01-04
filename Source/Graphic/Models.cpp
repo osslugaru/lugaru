@@ -880,33 +880,6 @@ void Model::draw()
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
-//TODO: phase out in favor of Texture
-void Model::drawdifftex(GLuint texture)
-{
-    glEnableClientState(GL_NORMAL_ARRAY);
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    if (color) {
-        glInterleavedArrays( GL_T2F_C3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
-    } else {
-        glInterleavedArrays( GL_T2F_N3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
-    }
-
-    glBindTexture(GL_TEXTURE_2D, (unsigned long)texture);
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
-
-    glDrawArrays(GL_TRIANGLES, 0, Triangles.size() * 3);
-
-    if (color) {
-        glDisableClientState(GL_COLOR_ARRAY);
-    } else {
-        glDisableClientState(GL_NORMAL_ARRAY);
-    }
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-}
-
 void Model::drawdifftex(Texture texture)
 {
     glEnableClientState(GL_NORMAL_ARRAY);
