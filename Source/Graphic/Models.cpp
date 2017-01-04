@@ -1178,8 +1178,7 @@ void Model::deallocate()
 
 Model::Model()
   : vertexNum(0),
-    hastexture(0),
-    type(0), oldtype(0),
+    type(0),
     owner(0),
     vertex(0),
     normals(0),

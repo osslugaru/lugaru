@@ -64,9 +64,8 @@ class Model
 {
 public:
     short vertexNum;
-    bool hastexture;
 
-    int type, oldtype;
+    int type;
 
     int* owner;
     XYZ* vertex;
