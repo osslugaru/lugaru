@@ -491,24 +491,30 @@ void Setenvironment(int which)
     texdetail = temptexdetail;
 }
 
-void Game::Loadlevel(int which)
+bool Game::LoadLevel(int which)
 {
     stealthloading = 0;
     whichlevel = which;
 
     if (which == -1) {
-        Loadlevel("tutorial", true);
+        return LoadLevel("tutorial", true);
     } else if (which >= 0 && which <= 15) {
         char buf[32];
         snprintf(buf, 32, "map%d", which + 1); // challenges
-        Loadlevel(buf);
+        return LoadLevel(buf);
     } else {
-        Loadlevel("mapsave");
+        return LoadLevel("mapsave");
     }
 }
 
-void Game::Loadlevel(const std::string& name, bool tutorial)
+bool Game::LoadLevel(const std::string& name, bool tutorial)
 {
+    const std::string level_path = Folders::getResourcePath("Maps/" + name);
+    if (!Folders::file_exists(level_path)) {
+        perror(std::string("LoadLevel: Could not open file '" + level_path).c_str());
+        return false;
+    }
+
     int indemo; // FIXME this should be removed
     int templength;
     float lamefloat;
@@ -542,7 +548,7 @@ void Game::Loadlevel(const std::string& name, bool tutorial)
     int mapvers;
     FILE *tfile;
     errno = 0;
-    tfile = Folders::openMandatoryFile( Folders::getResourcePath("Maps/"+name), "rb" );
+    tfile = Folders::openMandatoryFile(level_path, "rb");
 
     pause_sound(stream_firesound);
     scoreadded = 0;
@@ -929,6 +935,8 @@ void Game::Loadlevel(const std::string& name, bool tutorial)
     leveltime = 0;
     wonleveltime = 0;
     visibleloading = false;
+
+    return true;
 }
 
 void doDevKeys()
@@ -4484,11 +4492,8 @@ void Game::TickOnceAfter()
 
                     if (!Person::players[0]->dead && targetlevel != whichlevel)
                         startbonustotal = bonustotal;
-                    if (Person::players[0]->dead)
-                        Loadlevel(whichlevel);
-                    else
-                        Loadlevel(targetlevel);
 
+                    LoadLevel(targetlevel);
                     fireSound();
 
                     loading = 3;
@@ -4499,7 +4504,7 @@ void Game::TickOnceAfter()
 
                     fireSound(firestartsound);
 
-                    Loadlevel(campaignlevels[Account::active().getCampaignChoicesMade()].mapname.c_str());
+                    LoadLevel(campaignlevels[Account::active().getCampaignChoicesMade()].mapname.c_str());
 
                     fireSound();
 
@@ -4559,7 +4564,7 @@ void Game::TickOnceAfter()
                     actuallevel = campaignlevels[actuallevel].nextlevel.front();
                     visibleloading = true;
                     stillloading = 1;
-                    Loadlevel(campaignlevels[actuallevel].mapname.c_str());
+                    LoadLevel(campaignlevels[actuallevel].mapname.c_str());
                     campaign = 1;
                     mainmenu = 0;
                     gameon = 1;

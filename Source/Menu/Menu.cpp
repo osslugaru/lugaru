@@ -715,7 +715,7 @@ void Menu::Tick()
                 actuallevel = (Account::active().getCampaignChoicesMade() > 0 ? campaignlevels[Account::active().getCampaignChoicesMade() - 1].nextlevel[whichchoice] : 0);
                 visibleloading = true;
                 stillloading = 1;
-                Loadlevel(campaignlevels[actuallevel].mapname.c_str());
+                LoadLevel(campaignlevels[actuallevel].mapname.c_str());
                 campaign = 1;
                 mainmenu = 0;
                 gameon = 1;
@@ -733,7 +733,7 @@ void Menu::Tick()
                 } else {
                     LoadStuff();
                 }
-                Loadlevel(-1);
+                LoadLevel(-1);
 
                 mainmenu = 0;
                 gameon = 1;
@@ -820,7 +820,7 @@ void Menu::Tick()
                 } else {
                     LoadStuff();
                 }
-                Loadlevel(selected);
+                LoadLevel(selected);
                 campaign = 0;
 
                 mainmenu = 0;

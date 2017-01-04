@@ -133,3 +133,15 @@ FILE* Folders::openMandatoryFile(const std::string& filename, const char* mode)
     }
     return tfile;
 }
+
+bool Folders::file_exists(const std::string& filepath)
+{
+    FILE* file;
+    file = fopen(filepath.c_str(), "rb");
+    if (file == NULL) {
+        return false;
+    } else {
+        fclose(file);
+        return true;
+    }
+}

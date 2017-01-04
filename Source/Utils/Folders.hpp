@@ -56,6 +56,8 @@ public:
 
     static FILE* openMandatoryFile(const std::string& filename, const char* mode);
 
+    static bool file_exists(const std::string& filepath);
+
     /* Returns full path for a game resource */
     static inline std::string getResourcePath(const std::string& filepath)
     { return dataDir + '/' + filepath; }

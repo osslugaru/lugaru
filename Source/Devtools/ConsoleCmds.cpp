@@ -163,7 +163,14 @@ void ch_quit(const char *)
 
 void ch_map(const char *args)
 {
-    Loadlevel(args);
+    if (!LoadLevel(args)) {
+        // FIXME: Reduce code duplication with GameTick (should come from a Console class)
+        for (int k = 14; k >= 1; k--) {
+            consoletext[k] = consoletext[k - 1];
+        }
+        consoletext[0] = std::string("Could not load the requested level '") + args + "', aborting.";
+        consoleselected = 0;
+    }
     whichlevel = -2;
     campaign = 0;
 }
