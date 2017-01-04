@@ -97,6 +97,43 @@ void Weapon::setType(int t)
     }
 }
 
+/* Load weapons models and textures */
+void Weapon::Load()
+{
+    LOG("Loading weapon data...");
+
+    knifetextureptr.load("Textures/Knife.png", 0);
+    bloodknifetextureptr.load("Textures/BloodKnife.png", 0);
+    lightbloodknifetextureptr.load("Textures/BloodKnifeLight.png", 0);
+    swordtextureptr.load("Textures/Sword.jpg", 1);
+    bloodswordtextureptr.load("Textures/SwordBlood.jpg", 1);
+    lightbloodswordtextureptr.load("Textures/SwordBloodLight.jpg", 1);
+    stafftextureptr.load("Textures/Staff.jpg", 1);
+
+    throwingknifemodel.load("Models/ThrowingKnife.solid");
+    throwingknifemodel.Scale(.001, .001, .001);
+    throwingknifemodel.Rotate(90, 0, 0);
+    throwingknifemodel.Rotate(0, 90, 0);
+    throwingknifemodel.flat = 0;
+    throwingknifemodel.CalculateNormals(1);
+
+    swordmodel.load("Models/Sword.solid");
+    swordmodel.Scale(.001, .001, .001);
+    swordmodel.Rotate(90, 0, 0);
+    swordmodel.Rotate(0, 90, 0);
+    swordmodel.Rotate(0, 0, 90);
+    swordmodel.flat = 1;
+    swordmodel.CalculateNormals(1);
+
+    staffmodel.load("Models/Staff.solid");
+    staffmodel.Scale(.005, .005, .005);
+    staffmodel.Rotate(90, 0, 0);
+    staffmodel.Rotate(0, 90, 0);
+    staffmodel.Rotate(0, 0, 90);
+    staffmodel.flat = 1;
+    staffmodel.CalculateNormals(1);
+}
+
 void Weapon::DoStuff(int i)
 {
     static int whichpatchx, whichpatchz, whichhit;

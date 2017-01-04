@@ -661,38 +661,7 @@ void Game::LoadStuff()
 
     realtexdetail = texdetail;
 
-    LOG("Loading weapon data...");
-
-    Weapon::knifetextureptr.load("Textures/Knife.png", 0);
-    Weapon::bloodknifetextureptr.load("Textures/BloodKnife.png", 0);
-    Weapon::lightbloodknifetextureptr.load("Textures/BloodKnifeLight.png", 0);
-    Weapon::swordtextureptr.load("Textures/Sword.jpg", 1);
-    Weapon::bloodswordtextureptr.load("Textures/SwordBlood.jpg", 1);
-    Weapon::lightbloodswordtextureptr.load("Textures/SwordBloodLight.jpg", 1);
-    Weapon::stafftextureptr.load("Textures/Staff.jpg", 1);
-
-    Weapon::throwingknifemodel.load("Models/ThrowingKnife.solid");
-    Weapon::throwingknifemodel.Scale(.001, .001, .001);
-    Weapon::throwingknifemodel.Rotate(90, 0, 0);
-    Weapon::throwingknifemodel.Rotate(0, 90, 0);
-    Weapon::throwingknifemodel.flat = 0;
-    Weapon::throwingknifemodel.CalculateNormals(1);
-
-    Weapon::swordmodel.load("Models/Sword.solid");
-    Weapon::swordmodel.Scale(.001, .001, .001);
-    Weapon::swordmodel.Rotate(90, 0, 0);
-    Weapon::swordmodel.Rotate(0, 90, 0);
-    Weapon::swordmodel.Rotate(0, 0, 90);
-    Weapon::swordmodel.flat = 1;
-    Weapon::swordmodel.CalculateNormals(1);
-
-    Weapon::staffmodel.load("Models/Staff.solid");
-    Weapon::staffmodel.Scale(.005, .005, .005);
-    Weapon::staffmodel.Rotate(90, 0, 0);
-    Weapon::staffmodel.Rotate(0, 90, 0);
-    Weapon::staffmodel.Rotate(0, 0, 90);
-    Weapon::staffmodel.flat = 1;
-    Weapon::staffmodel.CalculateNormals(1);
+    Weapon::Load();
 
     terrain.shadowtexture.load("Textures/Shadow.png", 0);
     terrain.bloodtexture.load("Textures/Blood.png", 0);

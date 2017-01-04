@@ -57,6 +57,8 @@ public:
     static Model staffmodel;
     static Texture stafftextureptr;
 
+    static void Load();
+
     void Draw();
     void DoStuff(int);
 
