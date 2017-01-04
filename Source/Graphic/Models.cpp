@@ -1178,19 +1178,15 @@ void Model::deallocate()
 
 Model::Model()
   : vertexNum(0),
-    type(0),
+    type(nothing),
     owner(0),
     vertex(0),
     normals(0),
-    vArray(0)
+    vArray(0),
+    color(0),
+    boundingspherecenter(),
+    boundingsphereradius(0),
+    flat(false)
 {
     memset(&modelTexture, 0, sizeof(modelTexture));
-    color = 0;
-
-    boundingspherecenter = 0;
-    boundingsphereradius = 0;
-
-    flat = 0;
-
-    type = nothing;
 }

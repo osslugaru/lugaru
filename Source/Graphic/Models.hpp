@@ -54,18 +54,21 @@ public:
 
 #define max_model_decals 300
 
-#define nothing 0
-#define normaltype 4
-#define notextype 1
-#define rawtype 2
-#define decalstype 3
+enum ModelType
+{
+    nothing = 0,
+    notextype = 1,
+    rawtype = 2,
+    decalstype = 3,
+    normaltype = 4
+};
 
 class Model
 {
 public:
     short vertexNum;
 
-    int type;
+    ModelType type;
 
     int* owner;
     XYZ* vertex;
