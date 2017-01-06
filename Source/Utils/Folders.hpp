@@ -30,7 +30,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 struct FileNotFoundException: public std::exception
 {
     std::string errorText;
-    
+
     FileNotFoundException (const std::string& filename)
     : errorText(filename + " could not be found")
     {}
@@ -66,10 +66,11 @@ public:
     static inline std::string getUserSavePath()
     { return getUserDataPath() + "/users"; }
 
+    static bool makeDirectory(const std::string& path);
+
 private:
     static const char* getHomeDirectory();
     static std::string getGenericDirectory(const char* ENVVAR, const std::string& fallback);
-    static bool makeDirectory(const std::string& path);
 };
 
 #endif /* _FOLDERS_H_ */
