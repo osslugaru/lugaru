@@ -61,10 +61,11 @@ public:
     /* Returns full path for user progress save */
     static inline std::string getUserSavePath() { return getUserDataPath() + "/users"; }
 
+    static bool makeDirectory(std::string path);
+
 private:
     static const char* getHomeDirectory();
     static std::string getGenericDirectory(const char* ENVVAR, const std::string fallback);
-    static bool makeDirectory(std::string path);
 };
 
 #endif /* _FOLDERS_H_ */

@@ -171,12 +171,18 @@ void ch_map(const char *args)
 
 void ch_save(const char *args)
 {
-    std::string map_path = Folders::getUserDataPath() + "/Maps/" + args;
+    std::string map_path = Folders::getUserDataPath() + "/Maps";
+    Folders::makeDirectory(map_path);
+    map_path = map_path + "/" + args;
 
     int mapvers = 12;
 
     FILE *tfile;
     tfile = fopen( map_path.c_str(), "wb" );
+    if (tfile == NULL) {
+        perror((std::string("Couldn't open file ") + map_path + " for saving").c_str());
+        return;
+    }
     fpackf(tfile, "Bi", mapvers);
     fpackf(tfile, "Bi", maptype);
     fpackf(tfile, "Bi", hostile);
