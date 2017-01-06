@@ -173,7 +173,7 @@ void Dialog::play()
 {
     for (unsigned i = 0; i < scenes.size(); i++) {
         int playerId = scenes[i].participantfocus;
-        Person::players[playerId]->coords = participantlocation[playerId];
+        Person::players.at(playerId)->coords = participantlocation[playerId];
         Person::players[playerId]->yaw = participantyaw[playerId];
         Person::players[playerId]->targetyaw = participantyaw[playerId];
         Person::players[playerId]->velocity = 0;

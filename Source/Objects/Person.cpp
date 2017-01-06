@@ -565,8 +565,8 @@ int Person::getIdle()
 {
     if (Dialog::inDialog() && (howactive == typeactive) && (creature == rabbittype))
         return talkidleanim;
-    if (hasvictim && (victim != this->shared_from_this())/*||(id==0&&attackkeydown)*/)
-        if (/*(id==0&&attackkeydown)||*/(!victim->dead && victim->aitype != passivetype &&
+    if (hasvictim && (victim != this->shared_from_this())) {
+        if ((!victim->dead && victim->aitype != passivetype &&
             victim->aitype != searchtype && aitype != passivetype && aitype != searchtype &&
             victim->id < Person::players.size())) {
             if ((aitype == playercontrolled && stunned <= 0 && weaponactive == -1) || pause) {
@@ -588,6 +588,7 @@ int Person::getIdle()
             if (aitype != playercontrolled && stunned <= 0 && creature != wolftype && !pause)
                 return fightsidestep;
         }
+    }
     if ((damage > permanentdamage || damage > damagetolerance * .8 || deathbleeding > 0) && creature != wolftype)
         return hurtidleanim;
     if (howactive == typesitting) return sitanim;

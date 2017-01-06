@@ -214,7 +214,7 @@ inline float stepTowardf(float from, float to, float by)
 void Game::playdialoguescenesound()
 {
     XYZ temppos;
-    temppos = Person::players[Dialog::currentScene().participantfocus]->coords;
+    temppos = Person::players.at(Dialog::currentScene().participantfocus)->coords;
     temppos = temppos - viewer;
     Normalise(&temppos);
     temppos += viewer;
@@ -3229,7 +3229,7 @@ void Game::Tick()
                                         hostile = 1;
                                     }
 
-                                    if (Person::players[Dialog::currentScene().participantfocus]->dead) {
+                                    if (Person::players.at(Dialog::currentScene().participantfocus)->dead) {
                                         Dialog::indialogue = -1;
                                         Dialog::directing = false;
                                         cameramode = 0;
