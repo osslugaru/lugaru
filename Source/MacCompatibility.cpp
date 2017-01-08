@@ -21,10 +21,10 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "MacCompatibility.hpp"
 
 #include <cerrno>
-#include <ctime>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <ctime>
 
 #ifdef WIN32
 #include <windows.h>
@@ -32,38 +32,39 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #if PLATFORM_UNIX
 #include <assert.h>
-#include <unistd.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+#include <unistd.h>
 
 typedef long long __int64;
 typedef __int64 LARGE_INTEGER;
-static int QueryPerformanceFrequency(LARGE_INTEGER *liptr)
+static int QueryPerformanceFrequency(LARGE_INTEGER* liptr)
 {
-    assert(sizeof (__int64) == 8);
-    assert(sizeof (LARGE_INTEGER) == 8);
+    assert(sizeof(__int64) == 8);
+    assert(sizeof(LARGE_INTEGER) == 8);
     *liptr = 1000;
-    return(1);
+    return (1);
 }
 
-static int QueryPerformanceCounter(LARGE_INTEGER *liptr)
+static int QueryPerformanceCounter(LARGE_INTEGER* liptr)
 {
     struct timeval tv;
     gettimeofday(&tv, NULL);
-    *liptr = ( (((LARGE_INTEGER) tv.tv_sec) * 1000) +
-               (((LARGE_INTEGER) tv.tv_usec) / 1000) );
-    return(1);
+    *liptr = ((((LARGE_INTEGER)tv.tv_sec) * 1000) +
+              (((LARGE_INTEGER)tv.tv_usec) / 1000));
+    return (1);
 }
 #endif
 
 class AppTime
 {
-public:
-    AppTime() {
+  public:
+    AppTime()
+    {
         counterRate = 1;
         baseCounter = 0;
-        QueryPerformanceFrequency( (LARGE_INTEGER*)&counterRate);
-        QueryPerformanceCounter( (LARGE_INTEGER*)&baseCounter);
+        QueryPerformanceFrequency((LARGE_INTEGER*)&counterRate);
+        QueryPerformanceCounter((LARGE_INTEGER*)&baseCounter);
     }
     __int64 counterRate; // LARGE_INTEGER type has no math functions so use int64
     __int64 baseCounter;
@@ -73,7 +74,7 @@ static AppTime g_appTime;
 AbsoluteTime UpTime()
 {
     __int64 counter;
-    QueryPerformanceCounter( (LARGE_INTEGER*)&counter);
+    QueryPerformanceCounter((LARGE_INTEGER*)&counter);
 
     counter -= g_appTime.baseCounter;
 
@@ -83,8 +84,7 @@ AbsoluteTime UpTime()
     return time;
 }
 
-
-Duration AbsoluteDeltaToDuration( AbsoluteTime& a, AbsoluteTime& b)
+Duration AbsoluteDeltaToDuration(AbsoluteTime& a, AbsoluteTime& b)
 {
     __int64 value = a.hi;
     value <<= 32;
@@ -96,7 +96,7 @@ Duration AbsoluteDeltaToDuration( AbsoluteTime& a, AbsoluteTime& b)
 
     if (value <= 0) {
         return durationImmediate;
-}
+    }
 
     __int64 frac = value % g_appTime.counterRate;
     value /= g_appTime.counterRate;

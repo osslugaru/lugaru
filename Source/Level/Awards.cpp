@@ -29,13 +29,13 @@ float startbonustotal;
 float bonustime;
 float bonusnum[100];
 
-const char *bonus_names[bonus_count] = {
+const char* bonus_names[bonus_count] = {
 #define DECLARE_BONUS(id, name, ...) name,
 #include "Bonuses.def"
 #undef DECLARE_BONUS
 };
 
-const char *award_names[award_count] = {
+const char* award_names[award_count] = {
 #define DECLARE_AWARD(id, name) name,
 #include "Awards.def"
 #undef DECLARE_AWARD
@@ -47,12 +47,11 @@ static const int bonus_values[bonus_count] = {
 #undef DECLARE_BONUS
 };
 
-void
-award_bonus(int playerid, int bonusid, int alt_value)
+void award_bonus(int playerid, int bonusid, int alt_value)
 {
     if (playerid != 0) {
         return;
-}
+    }
     bonus = bonusid;
     bonustime = 0;
     bonusvalue = alt_value ? alt_value : bonus_values[bonusid];
@@ -77,7 +76,7 @@ int numreversals;
 int numattacks;
 int maxalarmed;
 
-int award_awards(int *awards)
+int award_awards(int* awards)
 {
     int numawards = 0;
     if (damagetaken == 0 && Person::players[0]->bloodloss == 0) {
@@ -88,7 +87,7 @@ int award_awards(int *awards)
     for (unsigned i = 1; i < Person::players.size(); i++) {
         if (Person::players[i]->dead != 2) {
             alldead = 0;
-}
+        }
     }
     if (alldead) {
         awards[numawards] = awardalldead;
@@ -98,7 +97,7 @@ int award_awards(int *awards)
     for (unsigned i = 1; i < Person::players.size(); i++) {
         if (Person::players[i]->dead != 1) {
             alldead = 0;
-}
+        }
     }
     if (alldead) {
         awards[numawards] = awardnodead;
@@ -140,13 +139,13 @@ int award_awards(int *awards)
     for (unsigned i = 1; i < Person::players.size(); i++) {
         if (Person::players[i]->dead != 2) {
             alldead = 0;
-}
+        }
     }
     if (numafterkill > 0 && alldead) {
         awards[numawards] = awardbrutal;
         numawards++;
     }
-    if (numreversals > ((float)numattacks)*.8 && numreversals > 3) {
+    if (numreversals > ((float)numattacks) * .8 && numreversals > 3) {
         awards[numawards] = awardaikido;
         numawards++;
     }

@@ -57,7 +57,7 @@ float gravity = 0;
 Light light;
 Terrain terrain;
 
-SDL_Window *sdlwindow;
+SDL_Window* sdlwindow;
 
 int kTextureSize = 0;
 int detail = 0;
@@ -67,8 +67,8 @@ float realtexdetail = 0;
 float playerdist = 0;
 int slomo = 0;
 float slomodelay = 0;
-GLubyte bloodText[512 * 512 * 3] = {0};
-GLubyte wolfbloodText[512 * 512 * 3] = {0};
+GLubyte bloodText[512 * 512 * 3] = { 0 };
+GLubyte wolfbloodText[512 * 512 * 3] = { 0 };
 int bloodtoggle = 0;
 float camerashake = 0;
 float woozy = 0;
@@ -93,8 +93,8 @@ bool immediate = false;
 bool velocityblur = false;
 XYZ windvector;
 int mainmenu = 0;
-int whichjointstartarray[26] = {0};
-int whichjointendarray[26] = {0};
+int whichjointstartarray[26] = { 0 };
+int whichjointendarray[26] = { 0 };
 
 float smoketex = 0;
 
@@ -126,15 +126,15 @@ int hostile = 0;
 float hostiletime = 0;
 
 XYZ envsound[30];
-float envsoundvol[30] = {0};
-float envsoundlife[30] = {0};
+float envsoundvol[30] = { 0 };
+float envsoundlife[30] = { 0 };
 int numenvsounds;
 
 bool devtools = false;
 
 bool gamestarted = false;
 
-StereoMode stereomode =  stereoNone;
+StereoMode stereomode = stereoNone;
 StereoMode newstereomode = stereoNone;
 float stereoseparation = 0.05;
-bool  stereoreverse = false;
+bool stereoreverse = false;

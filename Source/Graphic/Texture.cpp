@@ -41,7 +41,7 @@ void TextureRes::load()
     GLuint type = GL_RGBA;
     if (texture.bpp == 24) {
         type = GL_RGB;
-}
+    }
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
@@ -66,8 +66,8 @@ void TextureRes::load()
         for (int i = 0; i < nb; i++) {
             if ((i + 1) % 4 || type == GL_RGB) {
                 data[datalen++] = texture.data[i];
-}
-}
+            }
+        }
         glTexImage2D(GL_TEXTURE_2D, 0, type, texture.sizeX, texture.sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     } else {
         glTexImage2D(GL_TEXTURE_2D, 0, type, texture.sizeX, texture.sizeY, 0, type, GL_UNSIGNED_BYTE, texture.data);
@@ -79,16 +79,26 @@ void TextureRes::bind()
     glBindTexture(GL_TEXTURE_2D, id);
 }
 
-TextureRes::TextureRes(const string& _filename, bool _hasMipmap):
-    id(0), filename(_filename), hasMipmap(_hasMipmap), isSkin(false),
-    skinsize(0), data(NULL), datalen(0)
+TextureRes::TextureRes(const string& _filename, bool _hasMipmap)
+    : id(0)
+    , filename(_filename)
+    , hasMipmap(_hasMipmap)
+    , isSkin(false)
+    , skinsize(0)
+    , data(NULL)
+    , datalen(0)
 {
     load();
 }
 
-TextureRes::TextureRes(const string& _filename, bool _hasMipmap, GLubyte* array, int* skinsizep):
-    id(0), filename(_filename), hasMipmap(_hasMipmap), isSkin(true),
-    skinsize(0), data(NULL), datalen(0)
+TextureRes::TextureRes(const string& _filename, bool _hasMipmap, GLubyte* array, int* skinsizep)
+    : id(0)
+    , filename(_filename)
+    , hasMipmap(_hasMipmap)
+    , isSkin(true)
+    , skinsize(0)
+    , data(NULL)
+    , datalen(0)
 {
     load();
     *skinsizep = skinsize;
@@ -119,5 +129,5 @@ void Texture::bind()
         tex->bind();
     } else {
         glBindTexture(GL_TEXTURE_2D, 0);
-}
+    }
 }

@@ -47,30 +47,31 @@ Texture Object::rocktextureptr;
 
 //Functions
 
-Object::Object() :
-    position(),
-    type(boxtype),
-    yaw(0),
-    pitch(0),
-    rotx(0),
-    rotxvel(0),
-    roty(0),
-    rotyvel(0),
-    possible(false),
-    model(),
-    displaymodel(),
-    friction(0),
-    scale(0),
-    messedwith(0),
-    checked(0),
-    shadowed(0),
-    occluded(0),
-    onfire(false),
-    flamedelay(0)
+Object::Object()
+    : position()
+    , type(boxtype)
+    , yaw(0)
+    , pitch(0)
+    , rotx(0)
+    , rotxvel(0)
+    , roty(0)
+    , rotyvel(0)
+    , possible(false)
+    , model()
+    , displaymodel()
+    , friction(0)
+    , scale(0)
+    , messedwith(0)
+    , checked(0)
+    , shadowed(0)
+    , occluded(0)
+    , onfire(false)
+    , flamedelay(0)
 {
 }
 
-Object::Object(object_type _type, XYZ _position, float _yaw, float _pitch, float _scale) : Object()
+Object::Object(object_type _type, XYZ _position, float _yaw, float _pitch, float _scale)
+    : Object()
 {
     scale = _scale;
     type = _type;
@@ -78,7 +79,7 @@ Object::Object(object_type _type, XYZ _position, float _yaw, float _pitch, float
     yaw = _yaw;
     pitch = _pitch;
 
-    switch(type) {
+    switch (type) {
         case boxtype:
             model.loaddecal("Models/Box.solid");
             friction = 1.5;
@@ -250,46 +251,58 @@ void Object::handleRot(int divide)
 {
     messedwith -= multiplier;
     if (rotxvel || rotx) {
-        if (rotx > 0) { rotxvel -= multiplier * 8 * fabs(rotx);
-}
-        if (rotx < 0) { rotxvel += multiplier * 8 * fabs(rotx);
-}
-        if (rotx > 0) { rotxvel -= multiplier * 4;
-}
-        if (rotx < 0) { rotxvel += multiplier * 4;
-}
-        if (rotxvel > 0) { rotxvel -= multiplier * 4;
-}
-        if (rotxvel < 0) { rotxvel += multiplier * 4;
-}
+        if (rotx > 0) {
+            rotxvel -= multiplier * 8 * fabs(rotx);
+        }
+        if (rotx < 0) {
+            rotxvel += multiplier * 8 * fabs(rotx);
+        }
+        if (rotx > 0) {
+            rotxvel -= multiplier * 4;
+        }
+        if (rotx < 0) {
+            rotxvel += multiplier * 4;
+        }
+        if (rotxvel > 0) {
+            rotxvel -= multiplier * 4;
+        }
+        if (rotxvel < 0) {
+            rotxvel += multiplier * 4;
+        }
         if (fabs(rotx) < multiplier * 4) {
             rotx = 0;
-}
+        }
         if (fabs(rotxvel) < multiplier * 4) {
             rotxvel = 0;
-}
+        }
 
         rotx += rotxvel * multiplier * 4;
     }
     if (rotyvel || roty) {
-        if (roty > 0) { rotyvel -= multiplier * 8 * fabs(roty);
-}
-        if (roty < 0) { rotyvel += multiplier * 8 * fabs(roty);
-}
-        if (roty > 0) { rotyvel -= multiplier * 4;
-}
-        if (roty < 0) { rotyvel += multiplier * 4;
-}
-        if (rotyvel > 0) { rotyvel -= multiplier * 4;
-}
-        if (rotyvel < 0) { rotyvel += multiplier * 4;
-}
+        if (roty > 0) {
+            rotyvel -= multiplier * 8 * fabs(roty);
+        }
+        if (roty < 0) {
+            rotyvel += multiplier * 8 * fabs(roty);
+        }
+        if (roty > 0) {
+            rotyvel -= multiplier * 4;
+        }
+        if (roty < 0) {
+            rotyvel += multiplier * 4;
+        }
+        if (rotyvel > 0) {
+            rotyvel -= multiplier * 4;
+        }
+        if (rotyvel < 0) {
+            rotyvel += multiplier * 4;
+        }
         if (fabs(roty) < multiplier * 4) {
             roty = 0;
-}
+        }
         if (fabs(rotyvel) < multiplier * 4) {
             rotyvel = 0;
-}
+        }
 
         roty += rotyvel * multiplier * 4;
     }
@@ -301,16 +314,16 @@ void Object::handleRot(int divide)
     }
     if (rotx > 10) {
         rotx = 10;
-}
+    }
     if (rotx < -10) {
         rotx = -10;
-}
+    }
     if (roty > 10) {
         roty = 10;
-}
+    }
     if (roty < -10) {
         roty = -10;
-}
+    }
 }
 
 void Object::draw()
@@ -329,14 +342,14 @@ void Object::draw()
         if (!hidden) {
 
             if (detail == 2 && distance > viewdistance * viewdistance / 4 && environment == desertenvironment) {
-                glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, blurness );
+                glTexEnvf(GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, blurness);
             } else {
-                glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, 0 );
-}
+                glTexEnvf(GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, 0);
+            }
             distance = (viewdistance * viewdistance - (distance - (viewdistance * viewdistance * fadestart)) * (1 / (1 - fadestart))) / viewdistance / viewdistance;
             if (distance > 1) {
                 distance = 1;
-}
+            }
             if (distance > 0) {
 
                 if (occluded < 6) {
@@ -346,7 +359,7 @@ void Object::draw()
                         glEnable(GL_LIGHTING);
                     } else {
                         glDisable(GL_LIGHTING);
-}
+                    }
                     glDepthMask(1);
                     glTranslatef(position.x, position.y, position.z);
                     if (type == bushtype) {
@@ -584,7 +597,7 @@ void Object::AddObjectsToTerrain()
     }
 }
 
-void Object::SphereCheckPossible(XYZ *p1, float radius)
+void Object::SphereCheckPossible(XYZ* p1, float radius)
 {
     int whichpatchx = p1->x / (terrain.size / subdivision * terrain.scale);
     int whichpatchz = p1->z / (terrain.size / subdivision * terrain.scale);
@@ -608,12 +621,12 @@ void Object::Draw()
         objects[i]->draw();
     }
 
-    glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, 0 );
+    glTexEnvf(GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, 0);
     for (unsigned i = 0; i < objects.size(); i++) {
         objects[i]->drawSecondPass();
     }
     if (environment == desertenvironment) {
-        glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, 0 );
+        glTexEnvf(GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, 0);
     }
     glEnable(GL_ALPHA_TEST);
     SetUpLight(&light, 0);
@@ -646,7 +659,7 @@ void Object::DoShadows()
     lightloc = light.location;
     if (!skyboxtexture) {
         lightloc = 0;
-}
+    }
     lightloc.y += 10;
     Normalise(&lightloc);
 
@@ -668,7 +681,7 @@ int Object::checkcollide(XYZ startpoint, XYZ endpoint)
 
     for (unsigned int i = 0; i < objects.size(); i++) {
         if (checkcollide(startpoint, endpoint, i, minx, miny, minz, maxx, maxy, maxz) != -1) {
-            return (int) i;
+            return (int)i;
         }
     }
 
@@ -698,15 +711,15 @@ int Object::checkcollide(XYZ startpoint, XYZ endpoint, int what, float minx, flo
             return what;
         }
     } else {
-        if (     objects[what]->position.x > minx - objects[what]->model.boundingsphereradius &&
-                 objects[what]->position.x < maxx + objects[what]->model.boundingsphereradius &&
-                 objects[what]->position.y > miny - objects[what]->model.boundingsphereradius &&
-                 objects[what]->position.y < maxy + objects[what]->model.boundingsphereradius &&
-                 objects[what]->position.z > minz - objects[what]->model.boundingsphereradius &&
-                 objects[what]->position.z < maxz + objects[what]->model.boundingsphereradius) {
-            if (     objects[what]->type != treeleavestype &&
-                     objects[what]->type != bushtype &&
-                     objects[what]->type != firetype) {
+        if (objects[what]->position.x > minx - objects[what]->model.boundingsphereradius &&
+            objects[what]->position.x < maxx + objects[what]->model.boundingsphereradius &&
+            objects[what]->position.y > miny - objects[what]->model.boundingsphereradius &&
+            objects[what]->position.y < maxy + objects[what]->model.boundingsphereradius &&
+            objects[what]->position.z > minz - objects[what]->model.boundingsphereradius &&
+            objects[what]->position.z < maxz + objects[what]->model.boundingsphereradius) {
+            if (objects[what]->type != treeleavestype &&
+                objects[what]->type != bushtype &&
+                objects[what]->type != firetype) {
                 colviewer = startpoint;
                 coltarget = endpoint;
                 if (objects[what]->model.LineCheck(&colviewer, &coltarget, &colpoint, &objects[what]->position, &objects[what]->yaw) != -1) {
@@ -721,8 +734,8 @@ int Object::checkcollide(XYZ startpoint, XYZ endpoint, int what, float minx, flo
 
 //~ Object::~Objects()
 //~ {
-    //~ boxtextureptr.destroy();
-    //~ treetextureptr.destroy();
-    //~ bushtextureptr.destroy();
-    //~ rocktextureptr.destroy();
+//~ boxtextureptr.destroy();
+//~ treetextureptr.destroy();
+//~ bushtextureptr.destroy();
+//~ rocktextureptr.destroy();
 //~ }

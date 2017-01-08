@@ -20,9 +20,9 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Folders.hpp"
 
-#include <cstring>
-#include <cstdlib>
 #include <cerrno>
+#include <cstdlib>
+#include <cstring>
 #include <unistd.h>
 
 #if PLATFORM_UNIX
@@ -51,7 +51,7 @@ std::string Folders::getUserDataPath()
 #ifdef _WIN32
     char path[MAX_PATH];
     // %APPDATA% (%USERPROFILE%\Application Data)
-    if(SUCCEEDED(SHGetFolderPathA(nullptr, CSIDL_APPDATA, nullptr, 0, path))) {
+    if (SUCCEEDED(SHGetFolderPathA(nullptr, CSIDL_APPDATA, nullptr, 0, path))) {
         userDataPath = std::string(path) + "/Lugaru/";
     } else {
         return dataDir;
@@ -84,7 +84,8 @@ std::string Folders::getConfigFilePath()
 
 #if PLATFORM_LINUX
 /* Generic code for XDG ENVVAR test and fallback */
-std::string Folders::getGenericDirectory(const char* ENVVAR, const std::string& fallback) {
+std::string Folders::getGenericDirectory(const char* ENVVAR, const std::string& fallback)
+{
     const char* path = getenv(ENVVAR);
     std::string ret;
     if ((path != NULL) && (strlen(path) != 0)) {
@@ -104,19 +105,20 @@ std::string Folders::getGenericDirectory(const char* ENVVAR, const std::string& 
 #if PLATFORM_UNIX
 const char* Folders::getHomeDirectory()
 {
-    const char *homedir = getenv("HOME");
+    const char* homedir = getenv("HOME");
     if (homedir != NULL) {
         return homedir;
-}
-    struct passwd *pw = getpwuid(getuid());
+    }
+    struct passwd* pw = getpwuid(getuid());
     if (pw != NULL) {
         return pw->pw_dir;
-}
+    }
     return NULL;
 }
 #endif
 
-bool Folders::makeDirectory(const std::string& path) {
+bool Folders::makeDirectory(const std::string& path)
+{
 #ifdef _WIN32
     int status = CreateDirectory(path.c_str(), NULL);
     return ((status != 0) || (GetLastError() == ERROR_ALREADY_EXISTS));

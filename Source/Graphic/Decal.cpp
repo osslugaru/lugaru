@@ -23,23 +23,23 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Environment/Terrain.hpp"
 #include "Graphic/Models.hpp"
 
-Decal::Decal() :
-    position(),
-    type(shadowdecal),
-    opacity(0),
-    rotation(0),
-    alivetime(0),
-    brightness(0)
+Decal::Decal()
+    : position()
+    , type(shadowdecal)
+    , opacity(0)
+    , rotation(0)
+    , alivetime(0)
+    , brightness(0)
 {
 }
 
-Decal::Decal(XYZ _position, decal_type _type, float _opacity, float _rotation, float _brightness, int whichx, int whichy, float size, const Terrain& terrain, bool first) :
-    position(_position),
-    type(_type),
-    opacity(_opacity),
-    rotation(_rotation),
-    alivetime(0),
-    brightness(_brightness)
+Decal::Decal(XYZ _position, decal_type _type, float _opacity, float _rotation, float _brightness, int whichx, int whichy, float size, const Terrain& terrain, bool first)
+    : position(_position)
+    , type(_type)
+    , opacity(_opacity)
+    , rotation(_rotation)
+    , alivetime(0)
+    , brightness(_brightness)
 {
     float placex, placez;
     placex = (float)whichx * terrain.scale + terrain.scale;
@@ -71,7 +71,6 @@ Decal::Decal(XYZ _position, decal_type _type, float _opacity, float _rotation, f
         vertex[1].y = terrain.heightmap[whichx][whichy] * terrain.scale + .01;
     }
 
-
     placex = (float)whichx * terrain.scale;
     placez = (float)whichy * terrain.scale + terrain.scale;
 
@@ -95,13 +94,13 @@ Decal::Decal(XYZ _position, decal_type _type, float _opacity, float _rotation, f
     }
 }
 
-Decal::Decal(XYZ _position, decal_type _type, float _opacity, float _rotation, float size, const Model& model, int i, int which) :
-    position(_position),
-    type(_type),
-    opacity(_opacity),
-    rotation(_rotation),
-    alivetime(0),
-    brightness(0)
+Decal::Decal(XYZ _position, decal_type _type, float _opacity, float _rotation, float size, const Model& model, int i, int which)
+    : position(_position)
+    , type(_type)
+    , opacity(_opacity)
+    , rotation(_rotation)
+    , alivetime(0)
+    , brightness(0)
 {
     float placex, placez;
     if (which == 0) {
@@ -115,7 +114,6 @@ Decal::Decal(XYZ _position, decal_type _type, float _opacity, float _rotation, f
         vertex[0].z = placez;
         vertex[0].y = model.getTriangleVertex(i, 0).y;
 
-
         placex = model.getTriangleVertex(i, 1).x;
         placez = model.getTriangleVertex(i, 1).z;
 
@@ -125,7 +123,6 @@ Decal::Decal(XYZ _position, decal_type _type, float _opacity, float _rotation, f
         vertex[1].x = placex;
         vertex[1].z = placez;
         vertex[1].y = model.getTriangleVertex(i, 1).y;
-
 
         placex = model.getTriangleVertex(i, 2).x;
         placez = model.getTriangleVertex(i, 2).z;
@@ -147,7 +144,6 @@ Decal::Decal(XYZ _position, decal_type _type, float _opacity, float _rotation, f
         vertex[0].z = placez;
         vertex[0].y = placex;
 
-
         placex = model.getTriangleVertex(i, 1).y;
         placez = model.getTriangleVertex(i, 1).z;
 
@@ -157,7 +153,6 @@ Decal::Decal(XYZ _position, decal_type _type, float _opacity, float _rotation, f
         vertex[1].x = model.getTriangleVertex(i, 1).x;
         vertex[1].z = placez;
         vertex[1].y = placex;
-
 
         placex = model.getTriangleVertex(i, 2).y;
         placez = model.getTriangleVertex(i, 2).z;
@@ -179,7 +174,6 @@ Decal::Decal(XYZ _position, decal_type _type, float _opacity, float _rotation, f
         vertex[0].z = model.getTriangleVertex(i, 0).z;
         vertex[0].y = placez;
 
-
         placex = model.getTriangleVertex(i, 1).x;
         placez = model.getTriangleVertex(i, 1).y;
 
@@ -189,7 +183,6 @@ Decal::Decal(XYZ _position, decal_type _type, float _opacity, float _rotation, f
         vertex[1].x = placex;
         vertex[1].z = model.getTriangleVertex(i, 1).z;
         vertex[1].y = placez;
-
 
         placex = model.getTriangleVertex(i, 2).x;
         placez = model.getTriangleVertex(i, 2).y;

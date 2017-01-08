@@ -31,10 +31,10 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Level/Dialog.hpp"
 #include "Level/Hotspot.hpp"
 #include "Menu/Menu.hpp"
+#include "Tutorial.hpp"
 #include "User/Settings.hpp"
 #include "Utils/Folders.hpp"
 #include "Utils/Input.hpp"
-#include "Tutorial.hpp"
 
 #if PLATFORM_UNIX
 #include <sys/stat.h>
@@ -59,7 +59,6 @@ using namespace Game;
 #define strncasecmp(s1, s2, n) _strnicmp(s1, s2, n)
 #define snprintf(buf, size, format, ...) _sprintf_p(buf, size, format)
 #endif
-
 
 extern float multiplier;
 extern XYZ viewer;
@@ -149,7 +148,7 @@ float musicvolume[4] = {};
 float oldmusicvolume[4] = {};
 int musicselected = 0;
 
-const char *rabbitskin[] = {
+const char* rabbitskin[] = {
     "Textures/Fur3.jpg",
     "Textures/Fur.jpg",
     "Textures/Fur2.jpg",
@@ -162,16 +161,16 @@ const char *rabbitskin[] = {
     "Textures/WB2.jpg"
 };
 
-const char *wolfskin[] = {
+const char* wolfskin[] = {
     "Textures/Wolf.jpg",
     "Textures/DarkWolf.jpg",
     "Textures/SnowWolf.jpg"
 };
 
-const char **creatureskin[] = {rabbitskin, wolfskin};
+const char** creatureskin[] = { rabbitskin, wolfskin };
 
 #define STATIC_ASSERT(x) extern int s_a_dummy[2 * (!!(x)) - 1];
-STATIC_ASSERT (rabbittype == 0 && wolftype == 1)
+STATIC_ASSERT(rabbittype == 0 && wolftype == 1)
 
 // utility functions
 
@@ -182,7 +181,7 @@ float roughDirection(XYZ vec)
     float angle = -asin(-vec.x) * 180 / M_PI;
     if (vec.z < 0) {
         angle = 180 - angle;
-}
+    }
     return angle;
 }
 float roughDirectionTo(XYZ start, XYZ end)
@@ -210,7 +209,7 @@ inline float stepTowardf(float from, float to, float by)
         return from - by;
     } else {
         return from + by;
-}
+    }
 }
 
 void Game::playdialoguescenesound()
@@ -223,75 +222,75 @@ void Game::playdialoguescenesound()
 
     int sound = -1;
     switch (Dialog::currentScene().sound) {
-    case -6:
-        sound = alarmsound;
-        break;
-    case -4:
-        sound = consolefailsound;
-        break;
-    case -3:
-        sound = consolesuccesssound;
-        break;
-    case -2:
-        sound = firestartsound;
-        break;
-    case -1:
-        sound = fireendsound;
-        break;
-    case 1:
-        sound = rabbitchitter;
-        break;
-    case 2:
-        sound = rabbitchitter2;
-        break;
-    case 3:
-        sound = rabbitpainsound;
-        break;
-    case 4:
-        sound = rabbitpain1sound;
-        break;
-    case 5:
-        sound = rabbitattacksound;
-        break;
-    case 6:
-        sound = rabbitattack2sound;
-        break;
-    case 7:
-        sound = rabbitattack3sound;
-        break;
-    case 8:
-        sound = rabbitattack4sound;
-        break;
-    case 9:
-        sound = growlsound;
-        break;
-    case 10:
-        sound = growl2sound;
-        break;
-    case 11:
-        sound = snarlsound;
-        break;
-    case 12:
-        sound = snarl2sound;
-        break;
-    case 13:
-        sound = barksound;
-        break;
-    case 14:
-        sound = bark2sound;
-        break;
-    case 15:
-        sound = bark3sound;
-        break;
-    case 16:
-        sound = barkgrowlsound;
-        break;
-    default:
-        break;
+        case -6:
+            sound = alarmsound;
+            break;
+        case -4:
+            sound = consolefailsound;
+            break;
+        case -3:
+            sound = consolesuccesssound;
+            break;
+        case -2:
+            sound = firestartsound;
+            break;
+        case -1:
+            sound = fireendsound;
+            break;
+        case 1:
+            sound = rabbitchitter;
+            break;
+        case 2:
+            sound = rabbitchitter2;
+            break;
+        case 3:
+            sound = rabbitpainsound;
+            break;
+        case 4:
+            sound = rabbitpain1sound;
+            break;
+        case 5:
+            sound = rabbitattacksound;
+            break;
+        case 6:
+            sound = rabbitattack2sound;
+            break;
+        case 7:
+            sound = rabbitattack3sound;
+            break;
+        case 8:
+            sound = rabbitattack4sound;
+            break;
+        case 9:
+            sound = growlsound;
+            break;
+        case 10:
+            sound = growl2sound;
+            break;
+        case 11:
+            sound = snarlsound;
+            break;
+        case 12:
+            sound = snarl2sound;
+            break;
+        case 13:
+            sound = barksound;
+            break;
+        case 14:
+            sound = bark2sound;
+            break;
+        case 15:
+            sound = bark3sound;
+            break;
+        case 16:
+            sound = barkgrowlsound;
+            break;
+        default:
+            break;
     }
     if (sound != -1) {
         emit_sound_at(sound, temppos);
-}
+    }
 }
 
 // ================================================================
@@ -318,10 +317,10 @@ static int findClosestObject()
 
     for (unsigned int i = 0; i < Object::objects.size(); i++) {
         float distance = distsq(&Object::objects[i]->position,
-				&Person::players[0]->coords);
+                                &Person::players[0]->coords);
         if (distance < closestdist) {
             closestdist = distance;
-            closest = (int) i;
+            closest = (int)i;
         }
     }
     return closest;
@@ -337,17 +336,17 @@ static void cmd_dispatch(const string cmd)
             cmd_handlers[i](cmd.substr(cmd.find(' ') + 1).c_str());
             break;
         }
-}
+    }
     emit_sound_np(i < n_cmds ? consolesuccesssound : consolefailsound);
 }
 
 /********************> Tick() <*****/
-extern bool save_screenshot(const char * fname);
-void Screenshot (void)
+extern bool save_screenshot(const char* fname);
+void Screenshot(void)
 {
     char filename[1024];
     time_t t = time(NULL);
-    struct tm *tme = localtime(&t);
+    struct tm* tme = localtime(&t);
     sprintf(filename, "Screenshot-%04d%02d%02d-%02d%02d%02d.png",
             tme->tm_year + 1900, tme->tm_mon + 1, tme->tm_mday, tme->tm_hour, tme->tm_min, tme->tm_sec);
 
@@ -358,16 +357,16 @@ void Game::SetUpLighting()
 {
     if (environment == snowyenvironment) {
         light.setColors(.65, .65, .7, .4, .4, .44);
-}
+    }
     if (environment == desertenvironment) {
         light.setColors(.95, .95, .95, .4, .35, .3);
-}
+    }
     if (environment == grassyenvironment) {
         light.setColors(.95, .95, 1, .4, .4, .44);
-}
+    }
     if (!skyboxtexture) {
         light.setColors(1, 1, 1, .4, .4, .4);
-}
+    }
     float average;
     average = (skyboxlightr + skyboxlightg + skyboxlightb) / 3;
     light.color[0] *= (skyboxlightr + average) / 2;
@@ -393,13 +392,12 @@ void Setenvironment(int which)
     pause_sound(stream_wind);
     pause_sound(stream_desertambient);
 
-
     if (environment == snowyenvironment) {
         windvector = 0;
         windvector.z = 3;
         if (ambientsound) {
             emit_stream_np(stream_wind);
-}
+        }
 
         Object::treetextureptr.load("Textures/SnowTree.png", 0);
         Object::bushtextureptr.load("Textures/BushSnow.png", 0);
@@ -414,18 +412,16 @@ void Setenvironment(int which)
         terraintexture.load("Textures/Snow.jpg", 1);
         terraintexture2.load("Textures/Rock.jpg", 1);
 
-
         temptexdetail = texdetail;
         if (texdetail > 1) {
             texdetail = 4;
-}
-        skybox->load(   "Textures/Skybox(snow)/Front.jpg",
-                        "Textures/Skybox(snow)/Left.jpg",
-                        "Textures/Skybox(snow)/Back.jpg",
-                        "Textures/Skybox(snow)/Right.jpg",
-                        "Textures/Skybox(snow)/Up.jpg",
-                        "Textures/Skybox(snow)/Down.jpg");
-
+        }
+        skybox->load("Textures/Skybox(snow)/Front.jpg",
+                     "Textures/Skybox(snow)/Left.jpg",
+                     "Textures/Skybox(snow)/Back.jpg",
+                     "Textures/Skybox(snow)/Right.jpg",
+                     "Textures/Skybox(snow)/Up.jpg",
+                     "Textures/Skybox(snow)/Down.jpg");
 
         texdetail = temptexdetail;
     } else if (environment == desertenvironment) {
@@ -436,10 +432,9 @@ void Setenvironment(int which)
         Object::rocktextureptr.load("Textures/BoulderDesert.jpg", 1);
         Object::boxtextureptr.load("Textures/DesertBox.jpg", 1);
 
-
         if (ambientsound) {
             emit_stream_np(stream_desertambient);
-}
+        }
 
         footstepsound = footstepsn1;
         footstepsound2 = footstepsn2;
@@ -449,18 +444,16 @@ void Setenvironment(int which)
         terraintexture.load("Textures/Sand.jpg", 1);
         terraintexture2.load("Textures/SandSlope.jpg", 1);
 
-
         temptexdetail = texdetail;
         if (texdetail > 1) {
             texdetail = 4;
-}
-        skybox->load(   "Textures/Skybox(sand)/Front.jpg",
-                        "Textures/Skybox(sand)/Left.jpg",
-                        "Textures/Skybox(sand)/Back.jpg",
-                        "Textures/Skybox(sand)/Right.jpg",
-                        "Textures/Skybox(sand)/Up.jpg",
-                        "Textures/Skybox(sand)/Down.jpg");
-
+        }
+        skybox->load("Textures/Skybox(sand)/Front.jpg",
+                     "Textures/Skybox(sand)/Left.jpg",
+                     "Textures/Skybox(sand)/Back.jpg",
+                     "Textures/Skybox(sand)/Right.jpg",
+                     "Textures/Skybox(sand)/Up.jpg",
+                     "Textures/Skybox(sand)/Down.jpg");
 
         texdetail = temptexdetail;
     } else if (environment == grassyenvironment) {
@@ -473,7 +466,7 @@ void Setenvironment(int which)
 
         if (ambientsound) {
             emit_stream_np(stream_wind, 100.);
-}
+        }
 
         footstepsound = footstepgr1;
         footstepsound2 = footstepgr2;
@@ -483,18 +476,16 @@ void Setenvironment(int which)
         terraintexture.load("Textures/GrassDirt.jpg", 1);
         terraintexture2.load("Textures/MossRock.jpg", 1);
 
-
         temptexdetail = texdetail;
         if (texdetail > 1) {
             texdetail = 4;
-}
-        skybox->load(   "Textures/Skybox(grass)/Front.jpg",
-                        "Textures/Skybox(grass)/Left.jpg",
-                        "Textures/Skybox(grass)/Back.jpg",
-                        "Textures/Skybox(grass)/Right.jpg",
-                        "Textures/Skybox(grass)/Up.jpg",
-                        "Textures/Skybox(grass)/Down.jpg");
-
+        }
+        skybox->load("Textures/Skybox(grass)/Front.jpg",
+                     "Textures/Skybox(grass)/Left.jpg",
+                     "Textures/Skybox(grass)/Back.jpg",
+                     "Textures/Skybox(grass)/Right.jpg",
+                     "Textures/Skybox(grass)/Up.jpg",
+                     "Textures/Skybox(grass)/Down.jpg");
 
         texdetail = temptexdetail;
     }
@@ -539,13 +530,13 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
 
     if (!gameon) {
         visibleloading = true;
-}
+    }
     if (stealthloading) {
         visibleloading = false;
-}
+    }
     if (!stillloading) {
         loadtime = 0;
-}
+    }
     gamestarted = 1;
 
     numenvsounds = 0;
@@ -563,7 +554,7 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
     pause_sound(stream_firesound);
 
     int mapvers;
-    FILE *tfile;
+    FILE* tfile;
     errno = 0;
     tfile = Folders::openMandatoryFile(level_path, "rb");
 
@@ -601,7 +592,7 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
 
     for (unsigned char i = 0; i < 100; i++) {
         bonusnum[i] = 0;
-}
+    }
 
     numfalls = 0;
     numflipfail = 0;
@@ -653,17 +644,17 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
         funpackf(tfile, "Bi", &indemo);
     } else {
         indemo = 0;
-}
+    }
     if (mapvers >= 5) {
         funpackf(tfile, "Bi", &maptype);
     } else {
         maptype = mapkilleveryone;
-}
+    }
     if (mapvers >= 6) {
         funpackf(tfile, "Bi", &hostile);
     } else {
         hostile = 1;
-}
+    }
     if (mapvers >= 4) {
         funpackf(tfile, "Bf Bf", &viewdistance, &fadestart);
     } else {
@@ -698,7 +689,7 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
             funpackf(tfile, "Bi", &type);
             weapons.push_back(Weapon(type, 0));
         }
-}
+    }
 
     Game::LoadingScreen();
 
@@ -729,7 +720,7 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
         funpackf(tfile, "Bi", &templength);
         for (int l = 0; l < templength; l++) {
             funpackf(tfile, "Bb", &Person::players[0]->clothes[k][l]);
-}
+        }
         Person::players[0]->clothes[k][templength] = '\0';
         funpackf(tfile, "Bf Bf Bf", &Person::players[0]->clothestintr[k], &Person::players[0]->clothestintg[k], &Person::players[0]->clothestintb[k]);
     }
@@ -738,7 +729,7 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
 
     if (environment != oldenvironment) {
         Setenvironment(environment);
-}
+    }
     oldenvironment = environment;
 
     Object::LoadObjectsFromFile(tfile, stealthloading);
@@ -757,12 +748,12 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
             if (templength) {
                 for (int l = 0; l < templength; l++) {
                     funpackf(tfile, "Bb", &Hotspot::hotspots[i].text[l]);
-}
-}
+                }
+            }
             Hotspot::hotspots[i].text[templength] = '\0';
             if (Hotspot::hotspots[i].type == -111) {
                 indemo = 1;
-}
+            }
         }
     } else {
         Hotspot::hotspots.clear();
@@ -796,7 +787,7 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
     funpackf(tfile, "Bi", &numpathpoints);
     if (numpathpoints > 30 || numpathpoints < 0) {
         numpathpoints = 0;
-}
+    }
     for (int j = 0; j < numpathpoints; j++) {
         funpackf(tfile, "Bf Bf Bf Bi", &pathpoint[j].x, &pathpoint[j].y, &pathpoint[j].z, &numpathpointconnect[j]);
         for (int k = 0; k < numpathpointconnect[j]; k++) {
@@ -846,10 +837,10 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
         Person::players[i]->speed = 1 + (float)(Random() % 100) / 1000;
         if (difficulty == 0) {
             Person::players[i]->speed -= .2;
-}
+        }
         if (difficulty == 1) {
             Person::players[i]->speed -= .1;
-}
+        }
 
         if (i == 0) {
             Person::players[i]->velocity = 0;
@@ -875,7 +866,6 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
                 Person::players[i]->damagetolerance = 200;
             }
         }
-
 
         Game::LoadingScreen();
 
@@ -991,7 +981,7 @@ void doDevKeys()
             environment++;
             if (environment > 2) {
                 environment = 0;
-}
+            }
             Setenvironment(environment);
         }
 
@@ -1015,7 +1005,7 @@ void doDevKeys()
 
         /* Grow tree leaves?? */
         if (Input::isKeyPressed(SDL_SCANCODE_Y)) {
-	    for (auto& an_object : Object::objects) {
+            for (auto& an_object : Object::objects) {
                 if (an_object->type == treeleavestype) {
                     an_object->scale *= .9;
                 }
@@ -1037,7 +1027,7 @@ void doDevKeys()
                         weapons[Person::players[closest]->weaponids[0]].setType(knife);
                     } else {
                         weapons[Person::players[closest]->weaponids[0]].setType(sword);
-}
+                    }
                 } else {
                     Person::players[closest]->weaponids[0] = weapons.size();
 
@@ -1084,13 +1074,13 @@ void doDevKeys()
                 Person::players[closest]->whichskin++;
                 if (Person::players[closest]->whichskin > 9) {
                     Person::players[closest]->whichskin = 0;
-}
+                }
                 if (Person::players[closest]->whichskin > 2 && Person::players[closest]->creature == wolftype) {
                     Person::players[closest]->whichskin = 0;
-}
+                }
 
                 Person::players[closest]->skeleton.drawmodel.textureptr.load(creatureskin[Person::players[closest]->creature][Person::players[closest]->whichskin], 1,
-                        &Person::players[closest]->skeleton.skinText[0], &Person::players[closest]->skeleton.skinsize);
+                                                                             &Person::players[closest]->skeleton.skinText[0], &Person::players[closest]->skeleton.skinsize);
             }
 
             Person::players[closest]->addClothes();
@@ -1116,7 +1106,6 @@ void doDevKeys()
                     armprop = Person::players[closest]->proportionarms.x / 1.00;
                     legprop = Person::players[closest]->proportionlegs.x / 1.1;
                 }
-
 
                 if (Person::players[closest]->creature == rabbittype) {
                     Person::players[closest]->creature = wolftype;
@@ -1160,7 +1149,6 @@ void doDevKeys()
                     Person::players[closest]->proportionlegs = 1.1 * legprop;
                     Person::players[closest]->proportionlegs.y = 1.05 * legprop;
                 }
-
             }
         }
 
@@ -1176,7 +1164,7 @@ void doDevKeys()
                         closestdist = distance;
                         closest = i;
                     }
-}
+                }
             }
 
             XYZ flatfacing2, flatvelocity2;
@@ -1189,16 +1177,16 @@ void doDevKeys()
                 for (unsigned k = 0; k < Person::players[closest]->skeleton.joints.size(); k++) {
                     if (!Person::players[closest]->skeleton.free) {
                         flatvelocity2 = Person::players[closest]->velocity;
-}
+                    }
                     if (Person::players[closest]->skeleton.free) {
                         flatvelocity2 = headjoint.velocity;
-}
+                    }
                     if (!Person::players[closest]->skeleton.free) {
                         flatfacing2 = DoRotation(DoRotation(DoRotation(headjoint.position, 0, 0, Person::players[closest]->tilt), Person::players[closest]->tilt2, 0, 0), 0, Person::players[closest]->yaw, 0) * Person::players[closest]->scale + Person::players[closest]->coords;
-}
+                    }
                     if (Person::players[closest]->skeleton.free) {
                         flatfacing2 = headjoint.position * Person::players[closest]->scale + Person::players[closest]->coords;
-}
+                    }
                     flatvelocity2.x += (float)(abs(Random() % 100) - 50) / 10;
                     flatvelocity2.y += (float)(abs(Random() % 100) - 50) / 10;
                     flatvelocity2.z += (float)(abs(Random() % 100) - 50) / 10;
@@ -1215,7 +1203,7 @@ void doDevKeys()
 
                 if (Person::players[closest]->skeleton.free == 2) {
                     Person::players[closest]->skeleton.free = 0;
-}
+                }
                 Person::players[closest]->RagDoll(0);
                 Person::players[closest]->dead = 2;
                 Person::players[closest]->headless = 1;
@@ -1238,16 +1226,16 @@ void doDevKeys()
                 for (unsigned i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
                     if (!Person::players[closest]->skeleton.free) {
                         flatvelocity2 = Person::players[closest]->velocity;
-}
+                    }
                     if (Person::players[closest]->skeleton.free) {
                         flatvelocity2 = Person::players[closest]->skeleton.joints[i].velocity;
-}
+                    }
                     if (!Person::players[closest]->skeleton.free) {
                         flatfacing2 = DoRotation(DoRotation(DoRotation(Person::players[closest]->skeleton.joints[i].position, 0, 0, Person::players[closest]->tilt), Person::players[closest]->tilt2, 0, 0), 0, Person::players[closest]->yaw, 0) * Person::players[closest]->scale + Person::players[closest]->coords;
-}
+                    }
                     if (Person::players[closest]->skeleton.free) {
                         flatfacing2 = Person::players[closest]->skeleton.joints[i].position * Person::players[closest]->scale + Person::players[closest]->coords;
-}
+                    }
                     flatvelocity2.x += (float)(abs(Random() % 100) - 50) / 10;
                     flatvelocity2.y += (float)(abs(Random() % 100) - 50) / 10;
                     flatvelocity2.z += (float)(abs(Random() % 100) - 50) / 10;
@@ -1259,16 +1247,16 @@ void doDevKeys()
                 for (unsigned i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
                     if (!Person::players[closest]->skeleton.free) {
                         flatvelocity2 = Person::players[closest]->velocity;
-}
+                    }
                     if (Person::players[closest]->skeleton.free) {
                         flatvelocity2 = Person::players[closest]->skeleton.joints[i].velocity;
-}
+                    }
                     if (!Person::players[closest]->skeleton.free) {
                         flatfacing2 = DoRotation(DoRotation(DoRotation(Person::players[closest]->skeleton.joints[i].position, 0, 0, Person::players[closest]->tilt), Person::players[closest]->tilt2, 0, 0), 0, Person::players[closest]->yaw, 0) * Person::players[closest]->scale + Person::players[closest]->coords;
-}
+                    }
                     if (Person::players[closest]->skeleton.free) {
                         flatfacing2 = Person::players[closest]->skeleton.joints[i].position * Person::players[closest]->scale + Person::players[closest]->coords;
-}
+                    }
                     flatvelocity2.x += (float)(abs(Random() % 100) - 50) / 10;
                     flatvelocity2.y += (float)(abs(Random() % 100) - 50) / 10;
                     flatvelocity2.z += (float)(abs(Random() % 100) - 50) / 10;
@@ -1279,16 +1267,16 @@ void doDevKeys()
                 for (unsigned i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
                     if (!Person::players[closest]->skeleton.free) {
                         flatvelocity2 = Person::players[closest]->velocity;
-}
+                    }
                     if (Person::players[closest]->skeleton.free) {
                         flatvelocity2 = Person::players[closest]->skeleton.joints[i].velocity;
-}
+                    }
                     if (!Person::players[closest]->skeleton.free) {
                         flatfacing2 = DoRotation(DoRotation(DoRotation(Person::players[closest]->skeleton.joints[i].position, 0, 0, Person::players[closest]->tilt), Person::players[closest]->tilt2, 0, 0), 0, Person::players[closest]->yaw, 0) * Person::players[closest]->scale + Person::players[closest]->coords;
-}
+                    }
                     if (Person::players[closest]->skeleton.free) {
                         flatfacing2 = Person::players[closest]->skeleton.joints[i].position * Person::players[closest]->scale + Person::players[closest]->coords;
-}
+                    }
                     flatvelocity2.x += (float)(abs(Random() % 100) - 50) / 10;
                     flatvelocity2.y += (float)(abs(Random() % 100) - 50) / 10;
                     flatvelocity2.z += (float)(abs(Random() % 100) - 50) / 10;
@@ -1299,16 +1287,16 @@ void doDevKeys()
                 for (unsigned i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
                     if (!Person::players[closest]->skeleton.free) {
                         flatvelocity2 = Person::players[closest]->velocity;
-}
+                    }
                     if (Person::players[closest]->skeleton.free) {
                         flatvelocity2 = Person::players[closest]->skeleton.joints[i].velocity;
-}
+                    }
                     if (!Person::players[closest]->skeleton.free) {
                         flatfacing2 = DoRotation(DoRotation(DoRotation(Person::players[closest]->skeleton.joints[i].position, 0, 0, Person::players[closest]->tilt), Person::players[closest]->tilt2, 0, 0), 0, Person::players[closest]->yaw, 0) * Person::players[closest]->scale + Person::players[closest]->coords;
-}
+                    }
                     if (Person::players[closest]->skeleton.free) {
                         flatfacing2 = Person::players[closest]->skeleton.joints[i].position * Person::players[closest]->scale + Person::players[closest]->coords;
-}
+                    }
                     flatvelocity2.x += (float)(abs(Random() % 100) - 50) / 10;
                     flatvelocity2.y += (float)(abs(Random() % 100) - 50) / 10;
                     flatvelocity2.z += (float)(abs(Random() % 100) - 50) / 10;
@@ -1323,7 +1311,7 @@ void doDevKeys()
                             Person::players[j]->DoDamage((25 - distsq(&Person::players[j]->coords, &Person::players[closest]->coords)) * 60);
                             if (Person::players[j]->skeleton.free == 2) {
                                 Person::players[j]->skeleton.free = 1;
-}
+                            }
                             Person::players[j]->skeleton.longdead = 0;
                             Person::players[j]->RagDoll(0);
                             for (unsigned i = 0; i < Person::players[j]->skeleton.joints.size(); i++) {
@@ -1345,7 +1333,6 @@ void doDevKeys()
                 Person::players[closest]->skeleton.free = 2;
 
                 camerashake += .6;
-
             }
         }
 
@@ -1370,7 +1357,7 @@ void doDevKeys()
         targetlevel++;
         if (targetlevel > numchallengelevels - 1) {
             targetlevel = 0;
-}
+        }
         loading = 1;
         leveltime = 5;
     }
@@ -1379,7 +1366,7 @@ void doDevKeys()
         if (Input::isKeyPressed(SDL_SCANCODE_DELETE) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
             int closest = findClosestPlayer();
             if (closest >= 0) {
-                Person::players.erase(Person::players.begin()+closest);
+                Person::players.erase(Person::players.begin() + closest);
             }
         }
 
@@ -1398,31 +1385,31 @@ void doDevKeys()
                 scenecoords.y = Person::players[0]->coords.y - 3;
                 if (editortype == bushtype) {
                     scenecoords.y = Person::players[0]->coords.y - .5;
-}
+                }
                 if (editortype == firetype) {
                     scenecoords.y = Person::players[0]->coords.y - .5;
-}
+                }
                 float temprotat, temprotat2;
                 temprotat = editoryaw;
                 temprotat2 = editorpitch;
                 if (temprotat < 0 || editortype == bushtype) {
                     temprotat = Random() % 360;
-}
+                }
                 if (temprotat2 < 0) {
                     temprotat2 = Random() % 360;
-}
+                }
 
                 Object::MakeObject(editortype, scenecoords, (int)temprotat - ((int)temprotat) % 30, (int)temprotat2, editorsize);
                 if (editortype == treetrunktype) {
                     Object::MakeObject(treeleavestype, scenecoords, Random() % 360 * (temprotat2 < 2) + (int)editoryaw - ((int)editoryaw) % 30, editorpitch, editorsize);
-}
+                }
             }
         }
 
         if (Input::isKeyPressed(SDL_SCANCODE_P) && Input::isKeyDown(SDL_SCANCODE_LSHIFT) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
             Person::players.push_back(shared_ptr<Person>(new Person()));
 
-            Person::players.back()->id = Person::players.size()-1;
+            Person::players.back()->id = Person::players.size() - 1;
 
             Person::players.back()->scale = Person::players[0]->scale;
             Person::players.back()->creature = rabbittype;
@@ -1534,7 +1521,7 @@ void doDevKeys()
                             for (int j = 0; j < numpathpointconnect[pathpointselected]; j++) {
                                 if (pathpointconnect[pathpointselected][j] == i) {
                                     alreadyconnected = 1;
-}
+                                }
                             }
                             if (!alreadyconnected) {
                                 numpathpointconnect[pathpointselected]++;
@@ -1543,7 +1530,7 @@ void doDevKeys()
                             }
                         }
                     }
-}
+                }
                 if (!connected) {
                     numpathpoints++;
                     pathpoint[numpathpoints - 1] = Person::players[0]->coords;
@@ -1561,14 +1548,14 @@ void doDevKeys()
             pathpointselected++;
             if (pathpointselected >= numpathpoints) {
                 pathpointselected = -1;
-}
+            }
         }
 
         if (Input::isKeyPressed(SDL_SCANCODE_COMMA) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
             pathpointselected--;
             if (pathpointselected <= -2) {
                 pathpointselected = numpathpoints - 1;
-}
+            }
         }
 
         if (Input::isKeyPressed(SDL_SCANCODE_COMMA) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
@@ -1598,27 +1585,27 @@ void doDevKeys()
             editortype--;
             if (editortype == treeleavestype || editortype == 10) {
                 editortype--;
-}
+            }
             if (editortype < 0) {
                 editortype = firetype;
-}
+            }
         }
 
         if (Input::isKeyPressed(SDL_SCANCODE_RIGHT) && Input::isKeyDown(SDL_SCANCODE_LSHIFT) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
             editortype++;
             if (editortype == treeleavestype || editortype == 10) {
                 editortype++;
-}
+            }
             if (editortype > firetype) {
                 editortype = 0;
-}
+            }
         }
 
         if (Input::isKeyDown(SDL_SCANCODE_LEFT) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
             editoryaw -= multiplier * 100;
             if (editoryaw < -.01) {
                 editoryaw = -.01;
-}
+            }
         }
 
         if (Input::isKeyDown(SDL_SCANCODE_RIGHT) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
@@ -1633,9 +1620,8 @@ void doDevKeys()
             editorsize -= multiplier;
             if (editorsize < .1) {
                 editorsize = .1;
-}
+            }
         }
-
 
         if (Input::isKeyPressed(SDL_SCANCODE_LEFT) && Input::isKeyDown(SDL_SCANCODE_LSHIFT) && Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
             mapradius -= multiplier * 10;
@@ -1653,7 +1639,7 @@ void doDevKeys()
             editorpitch -= multiplier * 100;
             if (editorpitch < -.01) {
                 editorpitch = -.01;
-}
+            }
         }
 
         if (Input::isKeyPressed(SDL_SCANCODE_DELETE) && Object::objects.size() && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
@@ -1669,24 +1655,24 @@ void doJumpReversals()
 {
     for (unsigned k = 0; k < Person::players.size(); k++) {
         for (unsigned i = k + 1; i < Person::players.size(); i++) {
-            if (     Person::players[k]->skeleton.free == 0 &&
-                     Person::players[i]->skeleton.oldfree == 0 &&
-                     (Person::players[i]->animTarget == jumpupanim ||
-                      Person::players[k]->animTarget == jumpupanim) &&
-                     (Person::players[i]->aitype == playercontrolled ||
-                      Person::players[k]->aitype == playercontrolled) &&
-                     ((Person::players[i]->aitype == attacktypecutoff && Person::players[i]->stunned <= 0) ||
-                      (Person::players[k]->aitype == attacktypecutoff && Person::players[k]->stunned <= 0))) {
-                if (     distsq(&Person::players[i]->coords, &Person::players[k]->coords) < 10 * sq((Person::players[i]->scale + Person::players[k]->scale) * 2.5) &&
-                         distsqflat(&Person::players[i]->coords, &Person::players[k]->coords) < 2 * sq((Person::players[i]->scale + Person::players[k]->scale) * 2.5)) {
+            if (Person::players[k]->skeleton.free == 0 &&
+                Person::players[i]->skeleton.oldfree == 0 &&
+                (Person::players[i]->animTarget == jumpupanim ||
+                 Person::players[k]->animTarget == jumpupanim) &&
+                (Person::players[i]->aitype == playercontrolled ||
+                 Person::players[k]->aitype == playercontrolled) &&
+                ((Person::players[i]->aitype == attacktypecutoff && Person::players[i]->stunned <= 0) ||
+                 (Person::players[k]->aitype == attacktypecutoff && Person::players[k]->stunned <= 0))) {
+                if (distsq(&Person::players[i]->coords, &Person::players[k]->coords) < 10 * sq((Person::players[i]->scale + Person::players[k]->scale) * 2.5) &&
+                    distsqflat(&Person::players[i]->coords, &Person::players[k]->coords) < 2 * sq((Person::players[i]->scale + Person::players[k]->scale) * 2.5)) {
                     //TODO: refactor two huge similar ifs
                     if (Person::players[i]->animTarget == jumpupanim &&
-                            Person::players[k]->animTarget != getupfrombackanim &&
-                            Person::players[k]->animTarget != getupfromfrontanim &&
-                            Animation::animations[Person::players[k]->animTarget].height == middleheight &&
-                            normaldotproduct(Person::players[i]->velocity, Person::players[k]->coords - Person::players[i]->coords) < 0 &&
-                            ((Person::players[k]->aitype == playercontrolled && Person::players[k]->attackkeydown) ||
-                             Person::players[k]->aitype != playercontrolled)) {
+                        Person::players[k]->animTarget != getupfrombackanim &&
+                        Person::players[k]->animTarget != getupfromfrontanim &&
+                        Animation::animations[Person::players[k]->animTarget].height == middleheight &&
+                        normaldotproduct(Person::players[i]->velocity, Person::players[k]->coords - Person::players[i]->coords) < 0 &&
+                        ((Person::players[k]->aitype == playercontrolled && Person::players[k]->attackkeydown) ||
+                         Person::players[k]->aitype != playercontrolled)) {
                         Person::players[i]->victim = Person::players[k];
                         Person::players[i]->velocity = 0;
                         Person::players[i]->animCurrent = jumpreversedanim;
@@ -1718,15 +1704,15 @@ void doJumpReversals()
                         Person::players[k]->yaw = Person::players[i]->targetyaw;
                         if (Person::players[k]->aitype == attacktypecutoff) {
                             Person::players[k]->stunned = .5;
-}
+                        }
                     }
                     if (Person::players[k]->animTarget == jumpupanim &&
-                            Person::players[i]->animTarget != getupfrombackanim &&
-                            Person::players[i]->animTarget != getupfromfrontanim &&
-                            Animation::animations[Person::players[i]->animTarget].height == middleheight &&
-                            normaldotproduct(Person::players[k]->velocity, Person::players[i]->coords - Person::players[k]->coords) < 0 &&
-                            ((Person::players[i]->aitype == playercontrolled && Person::players[i]->attackkeydown) ||
-                             Person::players[i]->aitype != playercontrolled)) {
+                        Person::players[i]->animTarget != getupfrombackanim &&
+                        Person::players[i]->animTarget != getupfromfrontanim &&
+                        Animation::animations[Person::players[i]->animTarget].height == middleheight &&
+                        normaldotproduct(Person::players[k]->velocity, Person::players[i]->coords - Person::players[k]->coords) < 0 &&
+                        ((Person::players[i]->aitype == playercontrolled && Person::players[i]->attackkeydown) ||
+                         Person::players[i]->aitype != playercontrolled)) {
                         Person::players[k]->victim = Person::players[i];
                         Person::players[k]->velocity = 0;
                         Person::players[k]->animCurrent = jumpreversedanim;
@@ -1758,7 +1744,7 @@ void doJumpReversals()
                         Person::players[i]->yaw = Person::players[k]->targetyaw;
                         if (Person::players[i]->aitype == attacktypecutoff) {
                             Person::players[i]->stunned = .5;
-}
+                        }
                     }
                 }
             }
@@ -1773,30 +1759,29 @@ void doAerialAcrobatics()
         Person::players[k]->turnspeed = 500;
 
         if ((Person::players[k]->isRun() &&
-                ((Person::players[k]->targetyaw != rabbitrunninganim &&
-                  Person::players[k]->targetyaw != wolfrunninganim) ||
-                 Person::players[k]->frameTarget == 4)) ||
-                Person::players[k]->animTarget == removeknifeanim ||
-                Person::players[k]->animTarget == crouchremoveknifeanim ||
-                Person::players[k]->animTarget == flipanim ||
-                Person::players[k]->animTarget == fightsidestep ||
-                Person::players[k]->animTarget == walkanim) {
+             ((Person::players[k]->targetyaw != rabbitrunninganim &&
+               Person::players[k]->targetyaw != wolfrunninganim) ||
+              Person::players[k]->frameTarget == 4)) ||
+            Person::players[k]->animTarget == removeknifeanim ||
+            Person::players[k]->animTarget == crouchremoveknifeanim ||
+            Person::players[k]->animTarget == flipanim ||
+            Person::players[k]->animTarget == fightsidestep ||
+            Person::players[k]->animTarget == walkanim) {
             Person::players[k]->yaw = stepTowardf(Person::players[k]->yaw, Person::players[k]->targetyaw, multiplier * Person::players[k]->turnspeed);
         }
 
-
         if (Person::players[k]->isStop() ||
-                Person::players[k]->isLanding() ||
-                Person::players[k]->animTarget == staggerbackhighanim ||
-                (Person::players[k]->animTarget == sneakanim && Person::players[k]->animCurrent == sneakanim) ||
-                Person::players[k]->animTarget == staggerbackhardanim ||
-                Person::players[k]->animTarget == backhandspringanim ||
-                Person::players[k]->animTarget == dodgebackanim ||
-                Person::players[k]->animTarget == rollanim ||
-                (Animation::animations[Person::players[k]->animTarget].attack &&
-                 Person::players[k]->animTarget != rabbitkickanim &&
-                 (Person::players[k]->animTarget != crouchstabanim || Person::players[k]->hasvictim) &&
-                 (Person::players[k]->animTarget != swordgroundstabanim || Person::players[k]->hasvictim))) {
+            Person::players[k]->isLanding() ||
+            Person::players[k]->animTarget == staggerbackhighanim ||
+            (Person::players[k]->animTarget == sneakanim && Person::players[k]->animCurrent == sneakanim) ||
+            Person::players[k]->animTarget == staggerbackhardanim ||
+            Person::players[k]->animTarget == backhandspringanim ||
+            Person::players[k]->animTarget == dodgebackanim ||
+            Person::players[k]->animTarget == rollanim ||
+            (Animation::animations[Person::players[k]->animTarget].attack &&
+             Person::players[k]->animTarget != rabbitkickanim &&
+             (Person::players[k]->animTarget != crouchstabanim || Person::players[k]->hasvictim) &&
+             (Person::players[k]->animTarget != swordgroundstabanim || Person::players[k]->hasvictim))) {
             Person::players[k]->yaw = stepTowardf(Person::players[k]->yaw, Person::players[k]->targetyaw, multiplier * Person::players[k]->turnspeed * 2);
         }
 
@@ -1807,23 +1792,23 @@ void doAerialAcrobatics()
         Person::players[k]->DoStuff();
         if (Person::players[k]->immobile && k != 0) {
             Person::players[k]->coords = Person::players[k]->realoldcoords;
-}
+        }
 
         //if player's position has changed (?)
         if (distsq(&Person::players[k]->coords, &Person::players[k]->realoldcoords) > 0 &&
-                !Person::players[k]->skeleton.free &&
-                Person::players[k]->animTarget != climbanim &&
-                Person::players[k]->animTarget != hanganim) {
+            !Person::players[k]->skeleton.free &&
+            Person::players[k]->animTarget != climbanim &&
+            Person::players[k]->animTarget != hanganim) {
             XYZ lowpoint, lowpointtarget, lowpoint2, lowpointtarget2, lowpoint3, lowpointtarget3, lowpoint4, lowpointtarget4, lowpoint5, lowpointtarget5, lowpoint6, lowpointtarget6, lowpoint7, lowpointtarget7, colpoint, colpoint2;
             int whichhit;
             bool tempcollide = 0;
 
             if (Person::players[k]->collide < -.3) {
                 Person::players[k]->collide = -.3;
-}
+            }
             if (Person::players[k]->collide > 1) {
                 Person::players[k]->collide = 1;
-}
+            }
             Person::players[k]->collide -= multiplier * 30;
 
             //clip to terrain
@@ -1832,20 +1817,20 @@ void doAerialAcrobatics()
             for (unsigned int l = 0; l < terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz].size(); l++) {
                 unsigned int i = terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz][l];
                 if (Object::objects[i]->type != rocktype ||
-                        Object::objects[i]->scale > .5 && Person::players[k]->aitype == playercontrolled ||
-                        Object::objects[i]->position.y > Person::players[k]->coords.y) {
+                    Object::objects[i]->scale > .5 && Person::players[k]->aitype == playercontrolled ||
+                    Object::objects[i]->position.y > Person::players[k]->coords.y) {
                     lowpoint = Person::players[k]->coords;
                     if (Person::players[k]->animTarget != jumpupanim &&
-                            Person::players[k]->animTarget != jumpdownanim &&
-                            !Person::players[k]->isFlip()) {
+                        Person::players[k]->animTarget != jumpdownanim &&
+                        !Person::players[k]->isFlip()) {
                         lowpoint.y += 1.25;
                     } else {
                         lowpoint.y += 1.3;
-}
-                    if (     Person::players[k]->coords.y < terrain.getHeight(Person::players[k]->coords.x, Person::players[k]->coords.z) &&
-                             Person::players[k]->coords.y > terrain.getHeight(Person::players[k]->coords.x, Person::players[k]->coords.z) - .1) {
+                    }
+                    if (Person::players[k]->coords.y < terrain.getHeight(Person::players[k]->coords.x, Person::players[k]->coords.z) &&
+                        Person::players[k]->coords.y > terrain.getHeight(Person::players[k]->coords.x, Person::players[k]->coords.z) - .1) {
                         Person::players[k]->coords.y = terrain.getHeight(Person::players[k]->coords.x, Person::players[k]->coords.z);
-}
+                    }
                     if (Person::players[k]->SphereCheck(&lowpoint, 1.3, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw, &Object::objects[i]->model) != -1) {
                         flatfacing = lowpoint - Person::players[k]->coords;
                         Person::players[k]->coords = lowpoint;
@@ -1855,11 +1840,11 @@ void doAerialAcrobatics()
                         //wall jumps
                         //TODO: refactor four similar blocks
                         if (Person::players[k]->aitype == playercontrolled &&
-                                (Person::players[k]->animTarget == jumpupanim ||
-                                 Person::players[k]->animTarget == jumpdownanim ||
-                                 Person::players[k]->isFlip()) &&
-                                !Person::players[k]->jumptogglekeydown &&
-                                Person::players[k]->jumpkeydown) {
+                            (Person::players[k]->animTarget == jumpupanim ||
+                             Person::players[k]->animTarget == jumpdownanim ||
+                             Person::players[k]->isFlip()) &&
+                            !Person::players[k]->jumptogglekeydown &&
+                            Person::players[k]->jumpkeydown) {
                             lowpointtarget = lowpoint + DoRotation(Person::players[k]->facing, 0, -90, 0) * 1.5;
                             XYZ tempcoords1 = lowpoint;
                             whichhit = Object::objects[i]->model.LineCheck(&lowpoint, &lowpointtarget, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw);
@@ -1868,18 +1853,18 @@ void doAerialAcrobatics()
                                 emit_sound_at(movewhooshsound, Person::players[k]->coords);
                                 if (k == 0) {
                                     pause_sound(whooshsound);
-}
+                                }
 
                                 lowpointtarget = DoRotation(Object::objects[i]->model.Triangles[whichhit].facenormal, 0, Object::objects[i]->yaw, 0);
                                 Person::players[k]->yaw = -asin(0 - lowpointtarget.x) * 180 / M_PI;
                                 if (lowpointtarget.z < 0) {
                                     Person::players[k]->yaw = 180 - Person::players[k]->yaw;
-}
+                                }
                                 Person::players[k]->targetyaw = Person::players[k]->yaw;
                                 Person::players[k]->lowyaw = Person::players[k]->yaw;
                                 if (k == 0) {
                                     numwallflipped++;
-}
+                                }
                             } else {
                                 lowpoint = tempcoords1;
                                 lowpointtarget = lowpoint + DoRotation(Person::players[k]->facing, 0, 90, 0) * 1.5;
@@ -1889,18 +1874,18 @@ void doAerialAcrobatics()
                                     emit_sound_at(movewhooshsound, Person::players[k]->coords);
                                     if (k == 0) {
                                         pause_sound(whooshsound);
-}
+                                    }
 
                                     lowpointtarget = DoRotation(Object::objects[i]->model.Triangles[whichhit].facenormal, 0, Object::objects[i]->yaw, 0);
                                     Person::players[k]->yaw = -asin(0 - lowpointtarget.x) * 180 / M_PI;
                                     if (lowpointtarget.z < 0) {
                                         Person::players[k]->yaw = 180 - Person::players[k]->yaw;
-}
+                                    }
                                     Person::players[k]->targetyaw = Person::players[k]->yaw;
                                     Person::players[k]->lowyaw = Person::players[k]->yaw;
                                     if (k == 0) {
                                         numwallflipped++;
-}
+                                    }
                                 } else {
                                     lowpoint = tempcoords1;
                                     lowpointtarget = lowpoint + Person::players[k]->facing * 2;
@@ -1910,18 +1895,18 @@ void doAerialAcrobatics()
                                         emit_sound_at(movewhooshsound, Person::players[k]->coords);
                                         if (k == 0) {
                                             pause_sound(whooshsound);
-}
+                                        }
 
                                         lowpointtarget = DoRotation(Object::objects[i]->model.Triangles[whichhit].facenormal, 0, Object::objects[i]->yaw, 0);
                                         Person::players[k]->yaw = -asin(0 - lowpointtarget.x) * 180 / M_PI;
                                         if (lowpointtarget.z < 0) {
                                             Person::players[k]->yaw = 180 - Person::players[k]->yaw;
-}
+                                        }
                                         Person::players[k]->targetyaw = Person::players[k]->yaw;
                                         Person::players[k]->lowyaw = Person::players[k]->yaw;
                                         if (k == 0) {
                                             numwallflipped++;
-}
+                                        }
                                     } else {
                                         lowpoint = tempcoords1;
                                         lowpointtarget = lowpoint - Person::players[k]->facing * 2;
@@ -1931,19 +1916,19 @@ void doAerialAcrobatics()
                                             emit_sound_at(movewhooshsound, Person::players[k]->coords);
                                             if (k == 0) {
                                                 pause_sound(whooshsound);
-}
+                                            }
 
                                             lowpointtarget = DoRotation(Object::objects[i]->model.Triangles[whichhit].facenormal, 0, Object::objects[i]->yaw, 0);
                                             Person::players[k]->yaw = -asin(0 - lowpointtarget.x) * 180 / M_PI;
                                             if (lowpointtarget.z < 0) {
                                                 Person::players[k]->yaw = 180 - Person::players[k]->yaw;
-}
+                                            }
                                             Person::players[k]->yaw += 180;
                                             Person::players[k]->targetyaw = Person::players[k]->yaw;
                                             Person::players[k]->lowyaw = Person::players[k]->yaw;
                                             if (k == 0) {
                                                 numwallflipped++;
-}
+                                            }
                                         }
                                     }
                                 }
@@ -1963,7 +1948,7 @@ void doAerialAcrobatics()
                             //flipped into a rock
                             if (Person::players[k]->isFlip() && Person::players[k]->targetFrame().label == 7) {
                                 Person::players[k]->RagDoll(0);
-}
+                            }
 
                             if (Person::players[k]->animTarget == jumpupanim) {
                                 Person::players[k]->jumppower = -4;
@@ -1982,7 +1967,7 @@ void doAerialAcrobatics()
                             if ((Person::players[k]->animTarget == jumpdownanim || Person::players[k]->isFlip()) && !Person::players[k]->wasLanding()) {
                                 if (Person::players[k]->isFlip()) {
                                     Person::players[k]->jumppower = -4;
-}
+                                }
                                 Person::players[k]->animTarget = Person::players[k]->getLanding();
                                 emit_sound_at(landsound, Person::players[k]->coords, 128.);
                                 if (k == 0) {
@@ -2002,20 +1987,20 @@ void doAerialAcrobatics()
                     if (Object::objects[i]->type != rocktype) {
                         if (Person::players[k]->SphereCheck(&lowpoint, 1.33, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw, &Object::objects[i]->model) != -1) {
                             if (Person::players[k]->animTarget != jumpupanim &&
-                                    Person::players[k]->animTarget != jumpdownanim &&
-                                    Person::players[k]->onterrain) {
+                                Person::players[k]->animTarget != jumpdownanim &&
+                                Person::players[k]->onterrain) {
                                 Person::players[k]->avoidcollided = 1;
-}
+                            }
                             Person::players[k]->coords = lowpoint;
                             Person::players[k]->coords.y -= 1.35;
                             Person::players[k]->collide = 1;
 
                             if ((Person::players[k]->grabdelay <= 0 || Person::players[k]->aitype != playercontrolled) &&
-                                    (Person::players[k]->animCurrent != climbanim &&
+                                (Person::players[k]->animCurrent != climbanim &&
                                      Person::players[k]->animCurrent != hanganim &&
                                      !Person::players[k]->isWallJump() ||
-                                     Person::players[k]->animTarget == jumpupanim ||
-                                     Person::players[k]->animTarget == jumpdownanim)) {
+                                 Person::players[k]->animTarget == jumpupanim ||
+                                 Person::players[k]->animTarget == jumpdownanim)) {
                                 lowpoint = Person::players[k]->coords;
                                 Object::objects[i]->model.SphereCheckPossible(&lowpoint, 1.5, &Object::objects[i]->position, &Object::objects[i]->yaw);
                                 lowpoint = Person::players[k]->coords;
@@ -2058,26 +2043,26 @@ void doAerialAcrobatics()
                                         if (whichhit != -1) {
                                             if (Person::players[k]->animTarget != jumpupanim && Person::players[k]->animTarget != jumpdownanim) {
                                                 Person::players[k]->collided = 1;
-}
+                                            }
                                             if (Object::checkcollide(lowpoint7, lowpointtarget7) == -1) {
                                                 if (Object::checkcollide(lowpoint6, lowpointtarget6) == -1) {
-                                                    if (     Object::objects[i]->model.LineCheckPossible(&lowpoint2, &lowpointtarget2,
-                                                             &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw) != -1 &&
-                                                             Object::objects[i]->model.LineCheckPossible(&lowpoint3, &lowpointtarget3,
-                                                                     &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw) != -1 &&
-                                                             Object::objects[i]->model.LineCheckPossible(&lowpoint4, &lowpointtarget4,
-                                                                     &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw) != -1 &&
-                                                             Object::objects[i]->model.LineCheckPossible(&lowpoint5, &lowpointtarget5,
-                                                                     &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw) != -1) {
+                                                    if (Object::objects[i]->model.LineCheckPossible(&lowpoint2, &lowpointtarget2,
+                                                                                                    &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw) != -1 &&
+                                                        Object::objects[i]->model.LineCheckPossible(&lowpoint3, &lowpointtarget3,
+                                                                                                    &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw) != -1 &&
+                                                        Object::objects[i]->model.LineCheckPossible(&lowpoint4, &lowpointtarget4,
+                                                                                                    &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw) != -1 &&
+                                                        Object::objects[i]->model.LineCheckPossible(&lowpoint5, &lowpointtarget5,
+                                                                                                    &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw) != -1) {
                                                         for (int j = 0; j < 45; j++) {
                                                             lowpoint = Person::players[k]->coords;
                                                             lowpoint.y += (float)j / 13;
                                                             lowpointtarget = lowpoint + facing * 1.4;
                                                             if (Object::objects[i]->model.LineCheckPossible(&lowpoint, &lowpointtarget,
-                                                                                                   &colpoint2, &Object::objects[i]->position, &Object::objects[i]->yaw) == -1) {
+                                                                                                            &colpoint2, &Object::objects[i]->position, &Object::objects[i]->yaw) == -1) {
                                                                 if (j <= 6 || j <= 25 && Person::players[k]->animTarget == jumpdownanim) {
                                                                     break;
-}
+                                                                }
                                                                 if (Person::players[k]->animTarget == jumpupanim || Person::players[k]->animTarget == jumpdownanim) {
                                                                     lowpoint = Person::players[k]->coords;
                                                                     lowpoint.y += (float)j / 13;
@@ -2091,7 +2076,7 @@ void doAerialAcrobatics()
                                                                         if (Person::players[k]->animTarget == jumpdownanim || Person::players[k]->animTarget == jumpupanim) {
                                                                             if (k == 0) {
                                                                                 pause_sound(whooshsound);
-}
+                                                                            }
                                                                         }
                                                                         emit_sound_at(jumpsound, Person::players[k]->coords, 128.);
 
@@ -2099,7 +2084,7 @@ void doAerialAcrobatics()
                                                                         Person::players[k]->yaw = -asin(0 - lowpointtarget.x) * 180 / M_PI;
                                                                         if (lowpointtarget.z < 0) {
                                                                             Person::players[k]->yaw = 180 - Person::players[k]->yaw;
-}
+                                                                        }
                                                                         Person::players[k]->targetyaw = Person::players[k]->yaw;
                                                                         Person::players[k]->lowyaw = Person::players[k]->yaw;
 
@@ -2125,41 +2110,41 @@ void doAerialAcrobatics()
                                                                 }
                                                             }
                                                         }
-}
-}
-}
+                                                    }
+                                                }
+                                            }
                                         }
-}
+                                    }
                                 }
                             }
                         }
-}
+                    }
                 }
-}
+            }
             if (Person::players[k]->collide <= 0) {
                 //in the air
                 if (!Person::players[k]->onterrain &&
-                        Person::players[k]->animTarget != jumpupanim &&
-                        Person::players[k]->animTarget != jumpdownanim &&
-                        Person::players[k]->animTarget != climbanim &&
-                        Person::players[k]->animTarget != hanganim &&
-                        !Person::players[k]->isWallJump() &&
-                        !Person::players[k]->isFlip()) {
+                    Person::players[k]->animTarget != jumpupanim &&
+                    Person::players[k]->animTarget != jumpdownanim &&
+                    Person::players[k]->animTarget != climbanim &&
+                    Person::players[k]->animTarget != hanganim &&
+                    !Person::players[k]->isWallJump() &&
+                    !Person::players[k]->isFlip()) {
                     if (Person::players[k]->animCurrent != climbanim &&
-                            Person::players[k]->animCurrent != tempanim &&
-                            Person::players[k]->animTarget != backhandspringanim &&
-                            (Person::players[k]->animTarget != rollanim ||
-                             Person::players[k]->frameTarget < 2 ||
-                             Person::players[k]->frameTarget > 6)) {
+                        Person::players[k]->animCurrent != tempanim &&
+                        Person::players[k]->animTarget != backhandspringanim &&
+                        (Person::players[k]->animTarget != rollanim ||
+                         Person::players[k]->frameTarget < 2 ||
+                         Person::players[k]->frameTarget > 6)) {
                         //stagger off ledge (?)
                         if (Person::players[k]->animTarget == staggerbackhighanim || Person::players[k]->animTarget == staggerbackhardanim) {
                             Person::players[k]->RagDoll(0);
-}
+                        }
                         Person::players[k]->setTargetAnimation(jumpdownanim);
 
                         if (!k) {
                             emit_sound_at(whooshsound, Person::players[k]->coords, 128.);
-}
+                        }
                     }
                     //gravity
                     Person::players[k]->velocity.y += gravity;
@@ -2177,91 +2162,91 @@ void doAttacks()
 
     if (!Input::isKeyDown(attackkey)) {
         oldattackkey = 0;
-}
+    }
     if (oldattackkey) {
         Person::players[0]->attackkeydown = 0;
-}
+    }
     if (oldattackkey) {
         playerrealattackkeydown = 0;
-}
+    }
     if (!oldattackkey) {
         playerrealattackkeydown = Input::isKeyDown(attackkey);
-}
+    }
     if ((Person::players[0]->parriedrecently <= 0 ||
-            Person::players[0]->weaponactive == -1) &&
-            (!oldattackkey ||
-             (realthreat &&
-              Person::players[0]->lastattack != swordslashanim &&
-              Person::players[0]->lastattack != knifeslashstartanim &&
-              Person::players[0]->lastattack != staffhitanim &&
-              Person::players[0]->lastattack != staffspinhitanim))) {
+         Person::players[0]->weaponactive == -1) &&
+        (!oldattackkey ||
+         (realthreat &&
+          Person::players[0]->lastattack != swordslashanim &&
+          Person::players[0]->lastattack != knifeslashstartanim &&
+          Person::players[0]->lastattack != staffhitanim &&
+          Person::players[0]->lastattack != staffspinhitanim))) {
         Person::players[0]->attackkeydown = Input::isKeyDown(attackkey);
-}
+    }
     if (Input::isKeyDown(attackkey) &&
-            !oldattackkey &&
-            !Person::players[0]->backkeydown) {
+        !oldattackkey &&
+        !Person::players[0]->backkeydown) {
         for (unsigned k = 0; k < Person::players.size(); k++) {
             if ((Person::players[k]->animTarget == swordslashanim ||
-                    Person::players[k]->animTarget == staffhitanim ||
-                    Person::players[k]->animTarget == staffspinhitanim) &&
-                    Person::players[0]->animCurrent != dodgebackanim &&
-                    !Person::players[k]->skeleton.free) {
+                 Person::players[k]->animTarget == staffhitanim ||
+                 Person::players[k]->animTarget == staffspinhitanim) &&
+                Person::players[0]->animCurrent != dodgebackanim &&
+                !Person::players[k]->skeleton.free) {
                 Person::players[k]->Reverse();
-}
+            }
         }
     }
 
     if (!hostile || Dialog::inDialog()) {
         Person::players[0]->attackkeydown = 0;
-}
+    }
 
     for (unsigned k = 0; k < Person::players.size(); k++) {
         if (Dialog::inDialog()) {
             Person::players[k]->attackkeydown = 0;
-}
+        }
         if (Person::players[k]->animTarget != rabbitrunninganim && Person::players[k]->animTarget != wolfrunninganim) {
             if (Person::players[k]->aitype != playercontrolled) {
                 Person::players[k]->victim = Person::players[0];
-}
+            }
             //attack key pressed
             if (Person::players[k]->attackkeydown) {
                 //dodge backward
                 if (Person::players[k]->backkeydown &&
-                        Person::players[k]->animTarget != backhandspringanim &&
-                        (Person::players[k]->isIdle() ||
-                         Person::players[k]->isStop() ||
-                         Person::players[k]->isRun() ||
-                         Person::players[k]->animTarget == walkanim)) {
+                    Person::players[k]->animTarget != backhandspringanim &&
+                    (Person::players[k]->isIdle() ||
+                     Person::players[k]->isStop() ||
+                     Person::players[k]->isRun() ||
+                     Person::players[k]->animTarget == walkanim)) {
                     if (Person::players[k]->jumppower <= 1) {
                         Person::players[k]->jumppower -= 2;
                     } else {
                         for (unsigned i = 0; i < Person::players.size(); i++) {
                             if (i == k) {
                                 continue;
-}
+                            }
                             if (Person::players[i]->animTarget == swordslashanim ||
-                                    Person::players[i]->animTarget == knifeslashstartanim ||
-                                    Person::players[i]->animTarget == staffhitanim ||
-                                    Person::players[i]->animTarget == staffspinhitanim) {
+                                Person::players[i]->animTarget == knifeslashstartanim ||
+                                Person::players[i]->animTarget == staffhitanim ||
+                                Person::players[i]->animTarget == staffspinhitanim) {
                                 if (distsq(&Person::players[k]->coords, &Person::players[i]->coords) < 6.5 && !Person::players[i]->skeleton.free) {
                                     Person::players[k]->setTargetAnimation(dodgebackanim);
                                     Person::players[k]->targetyaw = roughDirectionTo(Person::players[k]->coords, Person::players[i]->coords);
                                     Person::players[k]->targettilt2 = pitchTo(Person::players[k]->coords, Person::players[i]->coords);
                                 }
-}
+                            }
                         }
                         if (Person::players[k]->animTarget != dodgebackanim) {
                             if (k == 0) {
                                 numflipped++;
-}
+                            }
                             Person::players[k]->setTargetAnimation(backhandspringanim);
                             Person::players[k]->targetyaw = -yaw + 180;
                             if (Person::players[k]->leftkeydown) {
                                 Person::players[k]->targetyaw -= 45;
-}
+                            }
                             if (Person::players[k]->rightkeydown) {
                                 Person::players[k]->targetyaw += 45;
-}
+                            }
                             Person::players[k]->yaw = Person::players[k]->targetyaw;
                             Person::players[k]->jumppower -= 2;
                         }
@@ -2269,12 +2254,12 @@ void doAttacks()
                 }
                 //attack
                 if (!Animation::animations[Person::players[k]->animTarget].attack &&
-                        !Person::players[k]->backkeydown &&
-                        (Person::players[k]->isIdle() ||
-                         Person::players[k]->isRun() ||
-                         Person::players[k]->animTarget == walkanim ||
-                         Person::players[k]->animTarget == sneakanim ||
-                         Person::players[k]->isCrouch())) {
+                    !Person::players[k]->backkeydown &&
+                    (Person::players[k]->isIdle() ||
+                     Person::players[k]->isRun() ||
+                     Person::players[k]->animTarget == walkanim ||
+                     Person::players[k]->animTarget == sneakanim ||
+                     Person::players[k]->isCrouch())) {
                     const int attackweapon = Person::players[k]->weaponactive == -1 ? 0 : weapons[Person::players[k]->weaponids[Person::players[k]->weaponactive]].getType();
                     //normal attacks (?)
                     Person::players[k]->hasvictim = 0;
@@ -2282,101 +2267,101 @@ void doAttacks()
                         for (unsigned i = 0; i < Person::players.size(); i++) {
                             if (i == k || !(k == 0 || i == 0)) {
                                 continue;
-}
+                            }
                             if (!Person::players[k]->hasvictim) {
                                 if (Animation::animations[Person::players[k]->animTarget].attack != reversal) {
                                     //choose an attack
                                     const float distance = distsq(&Person::players[k]->coords, &Person::players[i]->coords);
                                     if (distance < 4.5 &&
-                                            !Person::players[i]->skeleton.free &&
-                                            Person::players[i]->howactive < typedead1 &&
-                                            Person::players[i]->animTarget != jumpreversedanim &&
-                                            Person::players[i]->animTarget != rabbitkickreversedanim &&
-                                            Person::players[i]->animTarget != rabbitkickanim &&
-                                            Person::players[k]->animTarget != rabbitkickanim &&
-                                            Person::players[i]->animTarget != getupfrombackanim &&
-                                            (Person::players[i]->animTarget != staggerbackhighanim &&
-                                             (Person::players[i]->animTarget != staggerbackhardanim || Person::players[i]->targetFrame().label == 6)) &&
-                                            Person::players[i]->animTarget != jumpdownanim &&
-                                            Person::players[i]->animTarget != jumpupanim &&
-                                            Person::players[i]->animTarget != getupfromfrontanim) {
+                                        !Person::players[i]->skeleton.free &&
+                                        Person::players[i]->howactive < typedead1 &&
+                                        Person::players[i]->animTarget != jumpreversedanim &&
+                                        Person::players[i]->animTarget != rabbitkickreversedanim &&
+                                        Person::players[i]->animTarget != rabbitkickanim &&
+                                        Person::players[k]->animTarget != rabbitkickanim &&
+                                        Person::players[i]->animTarget != getupfrombackanim &&
+                                        (Person::players[i]->animTarget != staggerbackhighanim &&
+                                         (Person::players[i]->animTarget != staggerbackhardanim || Person::players[i]->targetFrame().label == 6)) &&
+                                        Person::players[i]->animTarget != jumpdownanim &&
+                                        Person::players[i]->animTarget != jumpupanim &&
+                                        Person::players[i]->animTarget != getupfromfrontanim) {
                                         Person::players[k]->victim = Person::players[i];
                                         Person::players[k]->hasvictim = 1;
                                         if (Person::players[k]->aitype == playercontrolled) { //human player
                                             //sweep
                                             if (distance < 2.5 * sq(Person::players[k]->scale * 5) &&
-                                                    Person::players[k]->crouchkeydown &&
-                                                    Animation::animations[Person::players[i]->animTarget].height != lowheight) {
+                                                Person::players[k]->crouchkeydown &&
+                                                Animation::animations[Person::players[i]->animTarget].height != lowheight) {
                                                 Person::players[k]->animTarget = sweepanim;
-                                            //winduppunch
+                                                //winduppunch
                                             } else if (distance < 1.5 * sq(Person::players[k]->scale * 5) &&
-                                                     Animation::animations[Person::players[i]->animTarget].height != lowheight &&
-                                                     !Person::players[k]->forwardkeydown &&
-                                                     !Person::players[k]->leftkeydown &&
-                                                     !Person::players[k]->rightkeydown &&
-                                                     !Person::players[k]->crouchkeydown &&
-                                                     !attackweapon &&
-                                                     !reversaltrain) {
+                                                       Animation::animations[Person::players[i]->animTarget].height != lowheight &&
+                                                       !Person::players[k]->forwardkeydown &&
+                                                       !Person::players[k]->leftkeydown &&
+                                                       !Person::players[k]->rightkeydown &&
+                                                       !Person::players[k]->crouchkeydown &&
+                                                       !attackweapon &&
+                                                       !reversaltrain) {
                                                 Person::players[k]->animTarget = winduppunchanim;
-                                            //upunch
+                                                //upunch
                                             } else if (distance < 2.5 * sq(Person::players[k]->scale * 5) &&
-                                                     Animation::animations[Person::players[i]->animTarget].height != lowheight &&
-                                                     !Person::players[k]->forwardkeydown &&
-                                                     !Person::players[k]->leftkeydown &&
-                                                     !Person::players[k]->rightkeydown &&
-                                                     !Person::players[k]->crouchkeydown &&
-                                                     !attackweapon) {
+                                                       Animation::animations[Person::players[i]->animTarget].height != lowheight &&
+                                                       !Person::players[k]->forwardkeydown &&
+                                                       !Person::players[k]->leftkeydown &&
+                                                       !Person::players[k]->rightkeydown &&
+                                                       !Person::players[k]->crouchkeydown &&
+                                                       !attackweapon) {
                                                 Person::players[k]->animTarget = upunchanim;
-                                            //knifefollow
+                                                //knifefollow
                                             } else if (distance < 2.5 * sq(Person::players[k]->scale * 5) &&
-                                                     Person::players[i]->staggerdelay > 0 &&
-                                                     attackweapon == knife &&
-                                                     Person::players[i]->bloodloss > Person::players[i]->damagetolerance / 2) {
+                                                       Person::players[i]->staggerdelay > 0 &&
+                                                       attackweapon == knife &&
+                                                       Person::players[i]->bloodloss > Person::players[i]->damagetolerance / 2) {
                                                 Person::players[k]->animTarget = knifefollowanim;
-                                            //knifeslashstart
+                                                //knifeslashstart
                                             } else if (distance < 2.5 * sq(Person::players[k]->scale * 5) &&
-                                                     Animation::animations[Person::players[i]->animTarget].height != lowheight &&
-                                                     !Person::players[k]->forwardkeydown &&
-                                                     !Person::players[k]->leftkeydown &&
-                                                     !Person::players[k]->rightkeydown &&
-                                                     !Person::players[k]->crouchkeydown &&
-                                                     attackweapon == knife &&
-                                                     Person::players[k]->weaponmissdelay <= 0) {
+                                                       Animation::animations[Person::players[i]->animTarget].height != lowheight &&
+                                                       !Person::players[k]->forwardkeydown &&
+                                                       !Person::players[k]->leftkeydown &&
+                                                       !Person::players[k]->rightkeydown &&
+                                                       !Person::players[k]->crouchkeydown &&
+                                                       attackweapon == knife &&
+                                                       Person::players[k]->weaponmissdelay <= 0) {
                                                 Person::players[k]->animTarget = knifeslashstartanim;
-                                            //swordslash
+                                                //swordslash
                                             } else if (distance < 4.5 * sq(Person::players[k]->scale * 5) &&
-                                                     Animation::animations[Person::players[i]->animTarget].height != lowheight &&
-                                                     !Person::players[k]->crouchkeydown &&
-                                                     attackweapon == sword &&
-                                                     Person::players[k]->weaponmissdelay <= 0) {
+                                                       Animation::animations[Person::players[i]->animTarget].height != lowheight &&
+                                                       !Person::players[k]->crouchkeydown &&
+                                                       attackweapon == sword &&
+                                                       Person::players[k]->weaponmissdelay <= 0) {
                                                 Person::players[k]->animTarget = swordslashanim;
-                                            //staffhit
+                                                //staffhit
                                             } else if (distance < 4.5 * sq(Person::players[k]->scale * 5) &&
-                                                     Animation::animations[Person::players[i]->animTarget].height != lowheight &&
-                                                     !Person::players[k]->crouchkeydown &&
-                                                     attackweapon == staff &&
-                                                     Person::players[k]->weaponmissdelay <= 0 &&
-                                                     !Person::players[k]->leftkeydown &&
-                                                     !Person::players[k]->rightkeydown &&
-                                                     !Person::players[k]->forwardkeydown) {
+                                                       Animation::animations[Person::players[i]->animTarget].height != lowheight &&
+                                                       !Person::players[k]->crouchkeydown &&
+                                                       attackweapon == staff &&
+                                                       Person::players[k]->weaponmissdelay <= 0 &&
+                                                       !Person::players[k]->leftkeydown &&
+                                                       !Person::players[k]->rightkeydown &&
+                                                       !Person::players[k]->forwardkeydown) {
                                                 Person::players[k]->animTarget = staffhitanim;
-                                            //staffspinhit
+                                                //staffspinhit
                                             } else if (distance < 4.5 * sq(Person::players[k]->scale * 5) &&
-                                                     Animation::animations[Person::players[i]->animTarget].height != lowheight &&
-                                                     !Person::players[k]->crouchkeydown &&
-                                                     attackweapon == staff &&
-                                                     Person::players[k]->weaponmissdelay <= 0) {
+                                                       Animation::animations[Person::players[i]->animTarget].height != lowheight &&
+                                                       !Person::players[k]->crouchkeydown &&
+                                                       attackweapon == staff &&
+                                                       Person::players[k]->weaponmissdelay <= 0) {
                                                 Person::players[k]->animTarget = staffspinhitanim;
-                                            //spinkick
+                                                //spinkick
                                             } else if (distance < 2.5 * sq(Person::players[k]->scale * 5) &&
-                                                     Animation::animations[Person::players[i]->animTarget].height != lowheight) {
+                                                       Animation::animations[Person::players[i]->animTarget].height != lowheight) {
                                                 Person::players[k]->animTarget = spinkickanim;
-                                            //lowkick
+                                                //lowkick
                                             } else if (distance < 2.5 * sq(Person::players[k]->scale * 5) &&
-                                                     Animation::animations[Person::players[i]->animTarget].height == lowheight &&
-                                                     Animation::animations[Person::players[k]->animTarget].attack != normalattack) {
+                                                       Animation::animations[Person::players[i]->animTarget].height == lowheight &&
+                                                       Animation::animations[Person::players[k]->animTarget].attack != normalattack) {
                                                 Person::players[k]->animTarget = lowkickanim;
-}
+                                            }
                                         } else { //AI player
                                             if (distance < 4.5 * sq(Person::players[k]->scale * 5)) {
                                                 randattack = abs(Random() % 5);
@@ -2384,84 +2369,84 @@ void doAttacks()
                                                     //sweep
                                                     if (randattack == 0 && Animation::animations[Person::players[i]->animTarget].height != lowheight) {
                                                         Person::players[k]->animTarget = sweepanim;
-                                                    //upunch
+                                                        //upunch
                                                     } else if (randattack == 1 && Animation::animations[Person::players[i]->animTarget].height != lowheight &&
-                                                             !attackweapon) {
+                                                               !attackweapon) {
                                                         Person::players[k]->animTarget = upunchanim;
-                                                    //spinkick
+                                                        //spinkick
                                                     } else if (randattack == 2 && Animation::animations[Person::players[i]->animTarget].height != lowheight) {
                                                         Person::players[k]->animTarget = spinkickanim;
-                                                    //lowkick
+                                                        //lowkick
                                                     } else if (Animation::animations[Person::players[i]->animTarget].height == lowheight) {
                                                         Person::players[k]->animTarget = lowkickanim;
-}
+                                                    }
                                                 }
                                                 if (attackweapon) {
                                                     //sweep
                                                     if ((!Tutorial::active || !attackweapon) &&
-                                                            distance < 2.5 * sq(Person::players[k]->scale * 5) &&
-                                                            randattack == 0 &&
-                                                            Animation::animations[Person::players[i]->animTarget].height != lowheight) {
+                                                        distance < 2.5 * sq(Person::players[k]->scale * 5) &&
+                                                        randattack == 0 &&
+                                                        Animation::animations[Person::players[i]->animTarget].height != lowheight) {
                                                         Person::players[k]->animTarget = sweepanim;
-                                                    //knifeslashstart
+                                                        //knifeslashstart
                                                     } else if (distance < 2.5 * sq(Person::players[k]->scale * 5) &&
-                                                             attackweapon == knife &&
-                                                             Person::players[k]->weaponmissdelay <= 0) {
+                                                               attackweapon == knife &&
+                                                               Person::players[k]->weaponmissdelay <= 0) {
                                                         Person::players[k]->animTarget = knifeslashstartanim;
-                                                    //swordslash
+                                                        //swordslash
                                                     } else if (!(Person::players[0]->victim == Person::players[i] &&
-                                                               Person::players[0]->hasvictim &&
-                                                               Person::players[0]->animTarget == swordslashanim) &&
-                                                             attackweapon == sword &&
-                                                             Person::players[k]->weaponmissdelay <= 0) {
+                                                                 Person::players[0]->hasvictim &&
+                                                                 Person::players[0]->animTarget == swordslashanim) &&
+                                                               attackweapon == sword &&
+                                                               Person::players[k]->weaponmissdelay <= 0) {
                                                         Person::players[k]->animTarget = swordslashanim;
-                                                    //staffhit
+                                                        //staffhit
                                                     } else if (!(Person::players[0]->victim == Person::players[i] &&
-                                                               Person::players[0]->hasvictim &&
-                                                               Person::players[0]->animTarget == swordslashanim) &&
-                                                             attackweapon == staff &&
-                                                             Person::players[k]->weaponmissdelay <= 0 &&
-                                                             randattack < 3) {
+                                                                 Person::players[0]->hasvictim &&
+                                                                 Person::players[0]->animTarget == swordslashanim) &&
+                                                               attackweapon == staff &&
+                                                               Person::players[k]->weaponmissdelay <= 0 &&
+                                                               randattack < 3) {
                                                         Person::players[k]->animTarget = staffhitanim;
-                                                    //staffspinhit
+                                                        //staffspinhit
                                                     } else if (!(Person::players[0]->victim == Person::players[i] &&
-                                                               Person::players[0]->hasvictim &&
-                                                               Person::players[0]->animTarget == swordslashanim) &&
-                                                             attackweapon == staff &&
-                                                             Person::players[k]->weaponmissdelay <= 0 &&
-                                                             randattack >= 3) {
+                                                                 Person::players[0]->hasvictim &&
+                                                                 Person::players[0]->animTarget == swordslashanim) &&
+                                                               attackweapon == staff &&
+                                                               Person::players[k]->weaponmissdelay <= 0 &&
+                                                               randattack >= 3) {
                                                         Person::players[k]->animTarget = staffspinhitanim;
-                                                    //spinkick
+                                                        //spinkick
                                                     } else if ((!Tutorial::active || !attackweapon) &&
-                                                             distance < 2.5 * sq(Person::players[k]->scale * 5) &&
-                                                             randattack == 1 &&
-                                                             Animation::animations[Person::players[i]->animTarget].height != lowheight) {
+                                                               distance < 2.5 * sq(Person::players[k]->scale * 5) &&
+                                                               randattack == 1 &&
+                                                               Animation::animations[Person::players[i]->animTarget].height != lowheight) {
                                                         Person::players[k]->animTarget = spinkickanim;
-                                                    //lowkick
+                                                        //lowkick
                                                     } else if (distance < 2.5 * sq(Person::players[k]->scale * 5) &&
-                                                             Animation::animations[Person::players[i]->animTarget].height == lowheight &&
-                                                             Animation::animations[Person::players[k]->animTarget].attack != normalattack) {
+                                                               Animation::animations[Person::players[i]->animTarget].height == lowheight &&
+                                                               Animation::animations[Person::players[k]->animTarget].attack != normalattack) {
                                                         Person::players[k]->animTarget = lowkickanim;
-}
+                                                    }
                                                 }
                                             }
                                         }
                                         //upunch becomes wolfslap
                                         if (Person::players[k]->animTarget == upunchanim && Person::players[k]->creature == wolftype) {
                                             Person::players[k]->animTarget = wolfslapanim;
-}
+                                        }
                                     }
                                     //sneak attacks
                                     if ((k == 0) && (!Tutorial::active || Tutorial::stage == 22) &&
-                                            Person::players[i]->howactive < typedead1 &&
-                                            distance < 1.5 * sq(Person::players[k]->scale * 5) &&
-                                            !Person::players[i]->skeleton.free &&
-                                            Person::players[i]->animTarget != getupfrombackanim &&
-                                            Person::players[i]->animTarget != getupfromfrontanim &&
-                                            (Person::players[i]->surprised > 0 ||
-                                             Person::players[i]->aitype == passivetype ||
-                                             attackweapon && Person::players[i]->stunned > 0) &&
-                                            normaldotproduct(Person::players[i]->facing, Person::players[i]->coords - Person::players[k]->coords) > 0) {
+                                        Person::players[i]->howactive < typedead1 &&
+                                        distance < 1.5 * sq(Person::players[k]->scale * 5) &&
+                                        !Person::players[i]->skeleton.free &&
+                                        Person::players[i]->animTarget != getupfrombackanim &&
+                                        Person::players[i]->animTarget != getupfromfrontanim &&
+                                        (Person::players[i]->surprised > 0 ||
+                                         Person::players[i]->aitype == passivetype ||
+                                         attackweapon && Person::players[i]->stunned > 0) &&
+                                        normaldotproduct(Person::players[i]->facing, Person::players[i]->coords - Person::players[k]->coords) > 0) {
                                         //sneakattack
                                         if (!attackweapon) {
                                             Person::players[k]->animCurrent = sneakattackanim;
@@ -2508,8 +2493,8 @@ void doAttacks()
                                         }
                                     }
                                     if (Animation::animations[Person::players[k]->animTarget].attack == normalattack &&
-                                            Person::players[k]->victim == Person::players[i] &&
-                                            (!Person::players[i]->skeleton.free)) {
+                                        Person::players[k]->victim == Person::players[i] &&
+                                        (!Person::players[i]->skeleton.free)) {
                                         oldattackkey = 1;
                                         Person::players[k]->frameTarget = 0;
                                         Person::players[k]->target = 0;
@@ -2521,7 +2506,7 @@ void doAttacks()
                                         Person::players[k]->lastattack = Person::players[k]->animTarget;
                                     }
                                     if (Person::players[k]->animTarget == knifefollowanim &&
-                                            Person::players[k]->victim == Person::players[i]) {
+                                        Person::players[k]->victim == Person::players[i]) {
                                         oldattackkey = 1;
                                         Person::players[k]->targetyaw = roughDirectionTo(Person::players[k]->coords, Person::players[i]->coords);
                                         Person::players[k]->targettilt2 = pitchTo(Person::players[k]->coords, Person::players[i]->coords);
@@ -2550,53 +2535,53 @@ void doAttacks()
                                         Person::players[i]->yaw = Person::players[k]->targetyaw;
                                     }
                                 }
-}
+                            }
                         }
-}
+                    }
                     const bool hasstaff = attackweapon == staff;
                     if (k == 0 && Person::players.size() > 1) {
                         for (unsigned i = 0; i < Person::players.size(); i++) {
                             if (i == k) {
                                 continue;
-}
+                            }
                             if ((playerrealattackkeydown || Person::players[i]->dead || !hasstaff) &&
-                                    Animation::animations[Person::players[k]->animTarget].attack == neutral) {
+                                Animation::animations[Person::players[k]->animTarget].attack == neutral) {
                                 const float distance = distsq(&Person::players[k]->coords, &Person::players[i]->coords);
                                 if (!Person::players[i]->dead || !realthreat || (!attackweapon && Person::players[k]->crouchkeydown)) {
                                     if (Person::players[i]->skeleton.free) {
                                         if (distance < 3.5 * sq(Person::players[k]->scale * 5) &&
-                                                (Person::players[i]->dead ||
-                                                 Person::players[i]->skeleton.longdead > 1000 ||
-                                                 Person::players[k]->isRun() ||
-                                                 hasstaff ||
-                                                 (attackweapon &&
-                                                  (Person::players[i]->skeleton.longdead > 2000 ||
-                                                   Person::players[i]->damage > Person::players[i]->damagetolerance / 8 ||
-                                                   Person::players[i]->bloodloss > Person::players[i]->damagetolerance / 2) &&
-                                                  distance < 1.5 * sq(Person::players[k]->scale * 5)))) {
+                                            (Person::players[i]->dead ||
+                                             Person::players[i]->skeleton.longdead > 1000 ||
+                                             Person::players[k]->isRun() ||
+                                             hasstaff ||
+                                             (attackweapon &&
+                                              (Person::players[i]->skeleton.longdead > 2000 ||
+                                               Person::players[i]->damage > Person::players[i]->damagetolerance / 8 ||
+                                               Person::players[i]->bloodloss > Person::players[i]->damagetolerance / 2) &&
+                                              distance < 1.5 * sq(Person::players[k]->scale * 5)))) {
                                             Person::players[k]->victim = Person::players[i];
                                             Person::players[k]->hasvictim = 1;
                                             if (attackweapon && !Tutorial::active) {
                                                 //crouchstab
                                                 if (Person::players[k]->crouchkeydown && attackweapon == knife && distance < 1.5 * sq(Person::players[k]->scale * 5)) {
                                                     Person::players[k]->animTarget = crouchstabanim;
-}
+                                                }
                                                 //swordgroundstab
                                                 if (Person::players[k]->crouchkeydown && distance < 1.5 * sq(Person::players[k]->scale * 5) && attackweapon == sword) {
                                                     Person::players[k]->animTarget = swordgroundstabanim;
-}
+                                                }
                                                 //staffgroundsmash
                                                 if (distance < 3.5 * sq(Person::players[k]->scale * 5) && attackweapon == staff) {
                                                     Person::players[k]->animTarget = staffgroundsmashanim;
-}
+                                                }
                                             }
                                             if (distance < 2.5 &&
-                                                    Person::players[k]->crouchkeydown &&
-                                                    Person::players[k]->animTarget != crouchstabanim &&
-                                                    !attackweapon &&
-                                                    Person::players[i]->dead &&
-                                                    Person::players[i]->skeleton.free &&
-                                                    Person::players[i]->skeleton.longdead > 1000) {
+                                                Person::players[k]->crouchkeydown &&
+                                                Person::players[k]->animTarget != crouchstabanim &&
+                                                !attackweapon &&
+                                                Person::players[i]->dead &&
+                                                Person::players[i]->skeleton.free &&
+                                                Person::players[i]->skeleton.longdead > 1000) {
                                                 Person::players[k]->animTarget = killanim;
                                                 terrain.deleteDeadDecals();
                                                 for (unsigned int l = 0; l < Object::objects.size(); l++) {
@@ -2607,13 +2592,13 @@ void doAttacks()
                                             }
                                             if (!Person::players[i]->dead || musictype != 2) {
                                                 if (distance < 3.5 &&
-                                                        (Person::players[k]->isRun() || Person::players[k]->isIdle() && Person::players[k]->attackkeydown) &&
-                                                        Person::players[k]->staggerdelay <= 0 &&
-                                                        (Person::players[i]->dead ||
-                                                         Person::players[i]->skeleton.longdead < 300 &&
+                                                    (Person::players[k]->isRun() || Person::players[k]->isIdle() && Person::players[k]->attackkeydown) &&
+                                                    Person::players[k]->staggerdelay <= 0 &&
+                                                    (Person::players[i]->dead ||
+                                                     Person::players[i]->skeleton.longdead < 300 &&
                                                          Person::players[k]->lastattack != spinkickanim &&
                                                          Person::players[i]->skeleton.free) &&
-                                                        (!Person::players[i]->dead || musictype != stream_fighttheme)) {
+                                                    (!Person::players[i]->dead || musictype != stream_fighttheme)) {
                                                     Person::players[k]->animTarget = dropkickanim;
                                                     terrain.deleteDeadDecals();
                                                     for (unsigned int l = 0; l < Object::objects.size(); l++) {
@@ -2622,28 +2607,29 @@ void doAttacks()
                                                         }
                                                     }
                                                 }
-}
+                                            }
                                         }
-}
-}
+                                    }
+                                }
                                 if (Animation::animations[Person::players[k]->animTarget].attack == normalattack &&
-                                        Person::players[k]->victim == Person::players[i] &&
-                                        (!Person::players[i]->skeleton.free ||
-                                         Person::players[k]->animTarget == killanim ||
-                                         Person::players[k]->animTarget == crouchstabanim ||
-                                         Person::players[k]->animTarget == swordgroundstabanim ||
-                                         Person::players[k]->animTarget == staffgroundsmashanim ||
-                                         Person::players[k]->animTarget == dropkickanim)) {
+                                    Person::players[k]->victim == Person::players[i] &&
+                                    (!Person::players[i]->skeleton.free ||
+                                     Person::players[k]->animTarget == killanim ||
+                                     Person::players[k]->animTarget == crouchstabanim ||
+                                     Person::players[k]->animTarget == swordgroundstabanim ||
+                                     Person::players[k]->animTarget == staffgroundsmashanim ||
+                                     Person::players[k]->animTarget == dropkickanim)) {
                                     oldattackkey = 1;
                                     Person::players[k]->frameTarget = 0;
                                     Person::players[k]->target = 0;
 
                                     XYZ targetpoint = Person::players[i]->coords;
                                     if (Person::players[k]->animTarget == crouchstabanim ||
-                                            Person::players[k]->animTarget == swordgroundstabanim ||
-                                            Person::players[k]->animTarget == staffgroundsmashanim) {
+                                        Person::players[k]->animTarget == swordgroundstabanim ||
+                                        Person::players[k]->animTarget == staffgroundsmashanim) {
                                         targetpoint += (Person::players[i]->jointPos(abdomen) +
-                                                        Person::players[i]->jointPos(neck)) / 2 *
+                                                        Person::players[i]->jointPos(neck)) /
+                                                       2 *
                                                        Person::players[i]->scale;
                                     }
                                     Person::players[k]->targetyaw = roughDirectionTo(Person::players[k]->coords, targetpoint);
@@ -2655,7 +2641,7 @@ void doAttacks()
 
                                     if (Person::players[k]->animTarget == staffgroundsmashanim) {
                                         Person::players[k]->targettilt2 += 10;
-}
+                                    }
 
                                     Person::players[k]->lastattack3 = Person::players[k]->lastattack2;
                                     Person::players[k]->lastattack2 = Person::players[k]->lastattack;
@@ -2667,19 +2653,19 @@ void doAttacks()
                                 }
                             }
                         }
-}
+                    }
                     if (!Person::players[k]->hasvictim) {
                         //find victim
                         for (unsigned i = 0; i < Person::players.size(); i++) {
                             if (i == k || !(i == 0 || k == 0)) {
                                 continue;
-}
+                            }
                             if (!Person::players[i]->skeleton.free) {
                                 if (Person::players[k]->hasvictim) {
                                     if (distsq(&Person::players[k]->coords, &Person::players[i]->coords) <
-                                            distsq(&Person::players[k]->coords, &Person::players[k]->victim->coords)) {
+                                        distsq(&Person::players[k]->coords, &Person::players[k]->victim->coords)) {
                                         Person::players[k]->victim = Person::players[i];
-}
+                                    }
                                 } else {
                                     Person::players[k]->victim = Person::players[i];
                                     Person::players[k]->hasvictim = 1;
@@ -2690,39 +2676,39 @@ void doAttacks()
                     if (Person::players[k]->aitype == playercontrolled) {
                         //rabbit kick
                         if (Person::players[k]->attackkeydown &&
-                                Person::players[k]->isRun() &&
-                                Person::players[k]->wasRun() &&
-                                ((Person::players[k]->hasvictim &&
-                                  distsq(&Person::players[k]->coords, &Person::players[k]->victim->coords) < 12 * sq(Person::players[k]->scale * 5) &&
-                                  distsq(&Person::players[k]->coords, &Person::players[k]->victim->coords) > 7 * sq(Person::players[k]->scale * 5) &&
-                                  !Person::players[k]->victim->skeleton.free &&
-                                  Person::players[k]->victim->animTarget != getupfrombackanim &&
-                                  Person::players[k]->victim->animTarget != getupfromfrontanim &&
-                                  Animation::animations[Person::players[k]->victim->animTarget].height != lowheight &&
-                                  Person::players[k]->aitype != playercontrolled && //wat???
-                                  normaldotproduct(Person::players[k]->facing, Person::players[k]->victim->coords - Person::players[k]->coords) > 0 &&
-                                  Person::players[k]->rabbitkickenabled) ||
-                                 Person::players[k]->jumpkeydown)) {
+                            Person::players[k]->isRun() &&
+                            Person::players[k]->wasRun() &&
+                            ((Person::players[k]->hasvictim &&
+                              distsq(&Person::players[k]->coords, &Person::players[k]->victim->coords) < 12 * sq(Person::players[k]->scale * 5) &&
+                              distsq(&Person::players[k]->coords, &Person::players[k]->victim->coords) > 7 * sq(Person::players[k]->scale * 5) &&
+                              !Person::players[k]->victim->skeleton.free &&
+                              Person::players[k]->victim->animTarget != getupfrombackanim &&
+                              Person::players[k]->victim->animTarget != getupfromfrontanim &&
+                              Animation::animations[Person::players[k]->victim->animTarget].height != lowheight &&
+                              Person::players[k]->aitype != playercontrolled && //wat???
+                              normaldotproduct(Person::players[k]->facing, Person::players[k]->victim->coords - Person::players[k]->coords) > 0 &&
+                              Person::players[k]->rabbitkickenabled) ||
+                             Person::players[k]->jumpkeydown)) {
                             oldattackkey = 1;
                             Person::players[k]->setTargetAnimation(rabbitkickanim);
                         }
-}
+                    }
                     //update counts
                     if (Animation::animations[Person::players[k]->animTarget].attack && k == 0) {
                         numattacks++;
                         switch (attackweapon) {
-                        case 0:
-                            numunarmedattack++;
-                            break;
-                        case knife:
-                            numknifeattack++;
-                            break;
-                        case sword:
-                            numswordattack++;
-                            break;
-                        case staff:
-                            numstaffattack++;
-                            break;
+                            case 0:
+                                numunarmedattack++;
+                                break;
+                            case knife:
+                                numknifeattack++;
+                                break;
+                            case sword:
+                                numswordattack++;
+                                break;
+                            case staff:
+                                numstaffattack++;
+                                break;
                         }
                     }
                 }
@@ -2740,25 +2726,27 @@ void doPlayerCollisions()
             for (unsigned i = k + 1; i < Person::players.size(); i++) {
                 //neither player is part of a reversal
                 if ((Animation::animations[Person::players[i]->animTarget].attack != reversed &&
-                        Animation::animations[Person::players[i]->animTarget].attack != reversal &&
-                        Animation::animations[Person::players[k]->animTarget].attack != reversed &&
-                        Animation::animations[Person::players[k]->animTarget].attack != reversal) || (i != 0 && k != 0)) {
+                     Animation::animations[Person::players[i]->animTarget].attack != reversal &&
+                     Animation::animations[Person::players[k]->animTarget].attack != reversed &&
+                     Animation::animations[Person::players[k]->animTarget].attack != reversal) ||
+                    (i != 0 && k != 0)) {
                     if ((Animation::animations[Person::players[i]->animCurrent].attack != reversed &&
-                            Animation::animations[Person::players[i]->animCurrent].attack != reversal &&
-                            Animation::animations[Person::players[k]->animCurrent].attack != reversed &&
-                            Animation::animations[Person::players[k]->animCurrent].attack != reversal) || (i != 0 && k != 0)) {
+                         Animation::animations[Person::players[i]->animCurrent].attack != reversal &&
+                         Animation::animations[Person::players[k]->animCurrent].attack != reversed &&
+                         Animation::animations[Person::players[k]->animCurrent].attack != reversal) ||
+                        (i != 0 && k != 0)) {
                         //neither is sleeping
                         if (Person::players[i]->howactive <= typesleeping && Person::players[k]->howactive <= typesleeping) {
                             if (Person::players[i]->howactive != typesittingwall && Person::players[k]->howactive != typesittingwall) {
                                 //in same patch, neither is climbing
                                 if (Person::players[i]->whichpatchx == Person::players[k]->whichpatchx &&
-                                        Person::players[i]->whichpatchz == Person::players[k]->whichpatchz &&
-                                        Person::players[k]->skeleton.oldfree == Person::players[k]->skeleton.free &&
-                                        Person::players[i]->skeleton.oldfree == Person::players[i]->skeleton.free &&
-                                        Person::players[i]->animTarget != climbanim &&
-                                        Person::players[i]->animTarget != hanganim &&
-                                        Person::players[k]->animTarget != climbanim &&
-                                        Person::players[k]->animTarget != hanganim) {
+                                    Person::players[i]->whichpatchz == Person::players[k]->whichpatchz &&
+                                    Person::players[k]->skeleton.oldfree == Person::players[k]->skeleton.free &&
+                                    Person::players[i]->skeleton.oldfree == Person::players[i]->skeleton.free &&
+                                    Person::players[i]->animTarget != climbanim &&
+                                    Person::players[i]->animTarget != hanganim &&
+                                    Person::players[k]->animTarget != climbanim &&
+                                    Person::players[k]->animTarget != hanganim) {
                                     //players are close (bounding box test)
                                     if (Person::players[i]->coords.y > Person::players[k]->coords.y - 3) {
                                         if (Person::players[i]->coords.y < Person::players[k]->coords.y + 3) {
@@ -2767,15 +2755,14 @@ void doPlayerCollisions()
                                                     if (Person::players[i]->coords.z > Person::players[k]->coords.z - 3) {
                                                         if (Person::players[i]->coords.z < Person::players[k]->coords.z + 3) {
                                                             //spread fire from player to player
-                                                            if (distsq(&Person::players[i]->coords, &Person::players[k]->coords)
-                                                                    < 3 * sq((Person::players[i]->scale + Person::players[k]->scale) * 2.5)) {
+                                                            if (distsq(&Person::players[i]->coords, &Person::players[k]->coords) < 3 * sq((Person::players[i]->scale + Person::players[k]->scale) * 2.5)) {
                                                                 if (Person::players[i]->onfire || Person::players[k]->onfire) {
                                                                     if (!Person::players[i]->onfire) {
                                                                         Person::players[i]->CatchFire();
-}
+                                                                    }
                                                                     if (!Person::players[k]->onfire) {
                                                                         Person::players[k]->CatchFire();
-}
+                                                                    }
                                                                 }
                                                             }
 
@@ -2783,31 +2770,31 @@ void doPlayerCollisions()
                                                             XYZ tempcoords2 = Person::players[k]->coords;
                                                             if (!Person::players[i]->skeleton.oldfree) {
                                                                 tempcoords1.y += Person::players[i]->jointPos(abdomen).y * Person::players[i]->scale;
-}
+                                                            }
                                                             if (!Person::players[k]->skeleton.oldfree) {
                                                                 tempcoords2.y += Person::players[k]->jointPos(abdomen).y * Person::players[k]->scale;
-}
+                                                            }
                                                             collisionradius = 1.2 * sq((Person::players[i]->scale + Person::players[k]->scale) * 2.5);
                                                             if (Person::players[0]->hasvictim) {
                                                                 if (Person::players[0]->animTarget == rabbitkickanim && (k == 0 || i == 0) && !Person::players[0]->victim->skeleton.free) {
                                                                     collisionradius = 3;
-}
-}
+                                                                }
+                                                            }
                                                             if ((!Person::players[i]->skeleton.oldfree || !Person::players[k]->skeleton.oldfree) &&
-                                                                    (distsq(&tempcoords1, &tempcoords2) < collisionradius ||
-                                                                     distsq(&Person::players[i]->coords, &Person::players[k]->coords) < collisionradius)) {
+                                                                (distsq(&tempcoords1, &tempcoords2) < collisionradius ||
+                                                                 distsq(&Person::players[i]->coords, &Person::players[k]->coords) < collisionradius)) {
                                                                 //jump down on a dead body
                                                                 if (k == 0 || i == 0) {
                                                                     int l = i ? i : k;
                                                                     if (Person::players[0]->animTarget == jumpdownanim &&
-                                                                            !Person::players[0]->skeleton.oldfree &&
-                                                                            !Person::players[0]->skeleton.free &&
-                                                                            Person::players[l]->skeleton.oldfree &&
-                                                                            Person::players[l]->skeleton.free &&
-                                                                            Person::players[l]->dead &&
-                                                                            Person::players[0]->lastcollide <= 0 &&
-                                                                            fabs(Person::players[l]->coords.y - Person::players[0]->coords.y) < .2 &&
-                                                                            distsq(&Person::players[0]->coords, &Person::players[l]->coords) < .7 * sq((Person::players[l]->scale + Person::players[0]->scale) * 2.5)) {
+                                                                        !Person::players[0]->skeleton.oldfree &&
+                                                                        !Person::players[0]->skeleton.free &&
+                                                                        Person::players[l]->skeleton.oldfree &&
+                                                                        Person::players[l]->skeleton.free &&
+                                                                        Person::players[l]->dead &&
+                                                                        Person::players[0]->lastcollide <= 0 &&
+                                                                        fabs(Person::players[l]->coords.y - Person::players[0]->coords.y) < .2 &&
+                                                                        distsq(&Person::players[0]->coords, &Person::players[l]->coords) < .7 * sq((Person::players[l]->scale + Person::players[0]->scale) * 2.5)) {
                                                                         Person::players[0]->coords.y = Person::players[l]->coords.y;
                                                                         Person::players[l]->velocity = Person::players[0]->velocity;
                                                                         Person::players[l]->skeleton.free = 0;
@@ -2820,28 +2807,28 @@ void doPlayerCollisions()
                                                                     }
                                                                 }
 
-                                                                if (     (Person::players[i]->skeleton.oldfree == 1 && findLengthfast(&Person::players[i]->velocity) > 1) ||
-                                                                         (Person::players[k]->skeleton.oldfree == 1 && findLengthfast(&Person::players[k]->velocity) > 1) ||
-                                                                         (Person::players[i]->skeleton.oldfree == 0 && Person::players[k]->skeleton.oldfree == 0)) {
+                                                                if ((Person::players[i]->skeleton.oldfree == 1 && findLengthfast(&Person::players[i]->velocity) > 1) ||
+                                                                    (Person::players[k]->skeleton.oldfree == 1 && findLengthfast(&Person::players[k]->velocity) > 1) ||
+                                                                    (Person::players[i]->skeleton.oldfree == 0 && Person::players[k]->skeleton.oldfree == 0)) {
                                                                     rotatetarget = Person::players[k]->velocity - Person::players[i]->velocity;
                                                                     if ((Person::players[i]->animTarget != getupfrombackanim && Person::players[i]->animTarget != getupfromfrontanim ||
-                                                                            Person::players[i]->skeleton.free) &&
-                                                                            (Person::players[k]->animTarget != getupfrombackanim && Person::players[k]->animTarget != getupfromfrontanim ||
-                                                                             Person::players[k]->skeleton.free)) {
+                                                                         Person::players[i]->skeleton.free) &&
+                                                                        (Person::players[k]->animTarget != getupfrombackanim && Person::players[k]->animTarget != getupfromfrontanim ||
+                                                                         Person::players[k]->skeleton.free)) {
                                                                         if ((((k != 0 && findLengthfast(&rotatetarget) > 150 ||
-                                                                                k == 0 && findLengthfast(&rotatetarget) > 50 && Person::players[0]->rabbitkickragdoll) &&
-                                                                                normaldotproduct(rotatetarget, Person::players[k]->coords - Person::players[i]->coords) > 0) &&
-                                                                                (k == 0 ||
-                                                                                 k != 0 && Person::players[i]->skeleton.oldfree == 1 && Animation::animations[Person::players[k]->animCurrent].attack == neutral ||
-                                                                                 /*i!=0&&*/Person::players[k]->skeleton.oldfree == 1 && Animation::animations[Person::players[i]->animCurrent].attack == neutral)) ||
-                                                                                (Person::players[i]->animTarget == jumpupanim || Person::players[i]->animTarget == jumpdownanim || Person::players[i]->isFlip()) &&
+                                                                               k == 0 && findLengthfast(&rotatetarget) > 50 && Person::players[0]->rabbitkickragdoll) &&
+                                                                              normaldotproduct(rotatetarget, Person::players[k]->coords - Person::players[i]->coords) > 0) &&
+                                                                             (k == 0 ||
+                                                                              k != 0 && Person::players[i]->skeleton.oldfree == 1 && Animation::animations[Person::players[k]->animCurrent].attack == neutral ||
+                                                                              /*i!=0&&*/ Person::players[k]->skeleton.oldfree == 1 && Animation::animations[Person::players[i]->animCurrent].attack == neutral)) ||
+                                                                            (Person::players[i]->animTarget == jumpupanim || Person::players[i]->animTarget == jumpdownanim || Person::players[i]->isFlip()) &&
                                                                                 (Person::players[k]->animTarget == jumpupanim || Person::players[k]->animTarget == jumpdownanim || Person::players[k]->isFlip()) &&
                                                                                 k == 0 && !Person::players[i]->skeleton.oldfree && !Person::players[k]->skeleton.oldfree) {
                                                                             //If hit by body
-                                                                            if (     (i != 0 || Person::players[i]->skeleton.free) &&
-                                                                                     (k != 0 || Person::players[k]->skeleton.free) ||
-                                                                                     (Animation::animations[Person::players[i]->animTarget].height == highheight &&
-                                                                                      Animation::animations[Person::players[k]->animTarget].height == highheight)) {
+                                                                            if ((i != 0 || Person::players[i]->skeleton.free) &&
+                                                                                    (k != 0 || Person::players[k]->skeleton.free) ||
+                                                                                (Animation::animations[Person::players[i]->animTarget].height == highheight &&
+                                                                                 Animation::animations[Person::players[k]->animTarget].height == highheight)) {
                                                                                 if (!Tutorial::active) {
                                                                                     emit_sound_at(heavyimpactsound, Person::players[i]->coords);
                                                                                 }
@@ -2863,22 +2850,20 @@ void doPlayerCollisions()
                                                                                 for (unsigned j = 0; j < Person::players[k]->skeleton.joints.size(); j++) {
                                                                                     Person::players[k]->skeleton.joints[j].velocity = Person::players[k]->skeleton.joints[j].velocity / 5 + Person::players[i]->velocity;
                                                                                 }
-
                                                                             }
                                                                         }
-}
-                                                                    if (     (Animation::animations[Person::players[i]->animTarget].attack == neutral ||
-                                                                              Animation::animations[Person::players[i]->animTarget].attack == normalattack) &&
-                                                                             (Animation::animations[Person::players[k]->animTarget].attack == neutral ||
-                                                                              Animation::animations[Person::players[k]->animTarget].attack == normalattack)) {
+                                                                    }
+                                                                    if ((Animation::animations[Person::players[i]->animTarget].attack == neutral ||
+                                                                         Animation::animations[Person::players[i]->animTarget].attack == normalattack) &&
+                                                                        (Animation::animations[Person::players[k]->animTarget].attack == neutral ||
+                                                                         Animation::animations[Person::players[k]->animTarget].attack == normalattack)) {
                                                                         //If bumped
                                                                         if (Person::players[i]->skeleton.oldfree == 0 && Person::players[k]->skeleton.oldfree == 0) {
                                                                             if (distsq(&Person::players[k]->coords, &Person::players[i]->coords) < .5 * sq((Person::players[i]->scale + Person::players[k]->scale) * 2.5)) {
                                                                                 rotatetarget = Person::players[k]->coords - Person::players[i]->coords;
                                                                                 Normalise(&rotatetarget);
                                                                                 Person::players[k]->coords = (Person::players[k]->coords + Person::players[i]->coords) / 2;
-                                                                                Person::players[i]->coords = Person::players[k]->coords - rotatetarget * fast_sqrt(.6) / 2
-                                                                                                   * sq((Person::players[i]->scale + Person::players[k]->scale) * 2.5);
+                                                                                Person::players[i]->coords = Person::players[k]->coords - rotatetarget * fast_sqrt(.6) / 2 * sq((Person::players[i]->scale + Person::players[k]->scale) * 2.5);
                                                                                 Person::players[k]->coords += rotatetarget * fast_sqrt(.6) / 2 * sq((Person::players[i]->scale + Person::players[k]->scale) * 2.5);
                                                                                 if (Person::players[k]->howactive == typeactive || hostile) {
                                                                                     if (Person::players[k]->isIdle()) {
@@ -2886,34 +2871,33 @@ void doPlayerCollisions()
                                                                                             Person::players[k]->setTargetAnimation(Person::players[k]->getStop());
                                                                                         } else if (Person::players[k]->howactive == typesleeping) {
                                                                                             Person::players[k]->setTargetAnimation(getupfromfrontanim);
-}
+                                                                                        }
                                                                                         if (!editorenabled) {
                                                                                             Person::players[k]->howactive = typeactive;
-}
+                                                                                        }
                                                                                     }
-}
+                                                                                }
                                                                                 if (Person::players[i]->howactive == typeactive || hostile) {
                                                                                     if (Person::players[i]->isIdle()) {
                                                                                         if (Person::players[i]->howactive < typesleeping) {
                                                                                             Person::players[i]->setTargetAnimation(Person::players[k]->getStop());
                                                                                         } else {
                                                                                             Person::players[i]->setTargetAnimation(getupfromfrontanim);
-}
+                                                                                        }
                                                                                         if (!editorenabled) {
                                                                                             Person::players[i]->howactive = typeactive;
-}
+                                                                                        }
                                                                                     }
-}
+                                                                                }
                                                                             }
                                                                             //jump down on player
                                                                             if (hostile) {
                                                                                 if (k == 0 && i != 0 && Person::players[k]->animTarget == jumpdownanim &&
-                                                                                        !Person::players[i]->isCrouch() &&
-                                                                                        Person::players[i]->animTarget != rollanim &&
-                                                                                        !Person::players[k]->skeleton.oldfree && !
-                                                                                        Person::players[k]->skeleton.free &&
-                                                                                        Person::players[k]->lastcollide <= 0 &&
-                                                                                        Person::players[k]->velocity.y < -10) {
+                                                                                    !Person::players[i]->isCrouch() &&
+                                                                                    Person::players[i]->animTarget != rollanim &&
+                                                                                    !Person::players[k]->skeleton.oldfree && !Person::players[k]->skeleton.free &&
+                                                                                    Person::players[k]->lastcollide <= 0 &&
+                                                                                    Person::players[k]->velocity.y < -10) {
                                                                                     Person::players[i]->velocity = Person::players[k]->velocity;
                                                                                     Person::players[k]->velocity = Person::players[k]->velocity * -.5;
                                                                                     Person::players[k]->velocity.y = Person::players[i]->velocity.y;
@@ -2923,12 +2907,12 @@ void doPlayerCollisions()
                                                                                     award_bonus(k, AboveBonus);
                                                                                 }
                                                                                 if (i == 0 && k != 0 && Person::players[i]->animTarget == jumpdownanim &&
-                                                                                        !Person::players[k]->isCrouch() &&
-                                                                                        Person::players[k]->animTarget != rollanim &&
-                                                                                        !Person::players[i]->skeleton.oldfree &&
-                                                                                        !Person::players[i]->skeleton.free &&
-                                                                                        Person::players[i]->lastcollide <= 0 &&
-                                                                                        Person::players[i]->velocity.y < -10) {
+                                                                                    !Person::players[k]->isCrouch() &&
+                                                                                    Person::players[k]->animTarget != rollanim &&
+                                                                                    !Person::players[i]->skeleton.oldfree &&
+                                                                                    !Person::players[i]->skeleton.free &&
+                                                                                    Person::players[i]->lastcollide <= 0 &&
+                                                                                    Person::players[i]->velocity.y < -10) {
                                                                                     Person::players[k]->velocity = Person::players[i]->velocity;
                                                                                     Person::players[i]->velocity = Person::players[i]->velocity * -.3;
                                                                                     Person::players[i]->velocity.y = Person::players[k]->velocity.y;
@@ -2945,19 +2929,19 @@ void doPlayerCollisions()
                                                                 Person::players[k]->CheckKick();
                                                             }
                                                         }
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
-}
-}
+        }
+    }
 }
 
 void Game::Tick()
@@ -2972,13 +2956,13 @@ void Game::Tick()
             stereoreverse = true;
         } else {
             stereoreverse = false;
-}
+        }
 
         if (stereoreverse) {
             printf("Stereo reversed\n");
         } else {
             printf("Stereo unreversed\n");
-}
+        }
     }
 
     if (Input::isKeyDown(SDL_SCANCODE_F7)) {
@@ -2986,7 +2970,7 @@ void Game::Tick()
             stereoseparation -= 0.001;
         } else {
             stereoseparation -= 0.010;
-}
+        }
         printf("Stereo decreased increased to %f\n", stereoseparation);
     }
 
@@ -2995,10 +2979,9 @@ void Game::Tick()
             stereoseparation += 0.001;
         } else {
             stereoseparation += 0.010;
-}
+        }
         printf("Stereo separation increased to %f\n", stereoseparation);
     }
-
 
     if (Input::isKeyPressed(SDL_SCANCODE_TAB) && Tutorial::active) {
         if (Tutorial::stage != 51) {
@@ -3027,7 +3010,7 @@ void Game::Tick()
         //campaign over?
         if (mainmenu && endgame == 1) {
             mainmenu = 10;
-}
+        }
         //go to level select after completing a campaign level
         if (campaign && winfreeze && mainmenu == 0 && campaignlevels[actuallevel].choosenext == 1) {
             mainmenu = 5;
@@ -3044,7 +3027,7 @@ void Game::Tick()
         }
         //escape key pressed
         if (Input::isKeyPressed(SDL_SCANCODE_ESCAPE) &&
-                (gameon || mainmenu == 0)) {
+            (gameon || mainmenu == 0)) {
             selected = -1;
             if (mainmenu == 0 && !winfreeze) {
                 mainmenu = 2; //pause
@@ -3074,10 +3057,10 @@ void Game::Tick()
             hostiletime += multiplier;
         } else {
             hostiletime = 0;
-}
+        }
         if (!winfreeze) {
             leveltime += multiplier;
-}
+        }
 
         //keys
         if (Input::isKeyDown(SDL_SCANCODE_LALT) && Input::isKeyPressed(SDL_SCANCODE_V) && devtools) {
@@ -3099,7 +3082,7 @@ void Game::Tick()
 
         if (console) {
             freeze = 1;
-}
+        }
         if (console && !Input::isKeyDown(SDL_SCANCODE_LGUI)) {
             inputText(consoletext[0], &consoleselected);
             if (!waiting) {
@@ -3129,13 +3112,13 @@ void Game::Tick()
             oldwinfreeze = winfreeze;
         } else {
             oldwinfreeze++;
-}
+        }
 
         if ((Input::isKeyPressed(jumpkey) || Input::isKeyPressed(SDL_SCANCODE_SPACE)) && !campaign) {
             if (winfreeze) {
                 winfreeze = 0;
-}
-}
+            }
+        }
         if ((Input::isKeyDown(SDL_SCANCODE_ESCAPE)) && !campaign && gameon) {
             if (console) {
                 console = false;
@@ -3146,8 +3129,6 @@ void Game::Tick()
             }
         }
 
-
-
         if (!freeze && !winfreeze && !(mainmenu && gameon) && (gameon || !gamestarted)) {
 
             //dialogues
@@ -3155,7 +3136,7 @@ void Game::Tick()
 
             if (Dialog::inDialog()) {
                 talkdelay = 1;
-}
+            }
             talkdelay -= multiplier;
 
             if (talkdelay <= 0 && !Dialog::inDialog() && Animation::animations[Person::players[0]->animTarget].height != highheight) {
@@ -3205,11 +3186,11 @@ void Game::Tick()
             //bonuses
             if (!Tutorial::active) {
                 if (bonustime == 0 &&
-                        bonus != solidhit &&
-                        bonus != spinecrusher &&
-                        bonus != tracheotomy &&
-                        bonus != backstab &&
-                        bonusvalue > 10) {
+                    bonus != solidhit &&
+                    bonus != spinecrusher &&
+                    bonus != tracheotomy &&
+                    bonus != backstab &&
+                    bonusvalue > 10) {
                     emit_sound_np(consolesuccesssound);
                 }
             } else if (bonustime == 0) {
@@ -3217,17 +3198,17 @@ void Game::Tick()
             }
             if (bonustime == 0) {
                 if (bonus != solidhit &&
-                        bonus != twoxcombo &&
-                        bonus != threexcombo &&
-                        bonus != fourxcombo &&
-                        bonus != megacombo) {
+                    bonus != twoxcombo &&
+                    bonus != threexcombo &&
+                    bonus != fourxcombo &&
+                    bonus != megacombo) {
                     bonusnum[bonus]++;
                 } else {
                     bonusnum[bonus] += 0.15;
-}
+                }
                 if (Tutorial::active) {
                     bonusvalue = 0;
-}
+                }
                 bonusvalue /= bonusnum[bonus];
                 bonustotal += bonusvalue;
             }
@@ -3240,7 +3221,7 @@ void Game::Tick()
                     precipdelay += .04;
                     if (!detail) {
                         precipdelay += .04;
-}
+                    }
                     XYZ footvel, footpoint;
 
                     footvel = 0;
@@ -3252,9 +3233,7 @@ void Game::Tick()
                 }
             }
 
-
             doAerialAcrobatics();
-
 
             static XYZ oldviewer;
 
@@ -3281,8 +3260,7 @@ void Game::Tick()
 
             if (!Person::players[0]->jumpkeydown) {
                 Person::players[0]->jumpclimb = 0;
-}
-
+            }
 
             if (Dialog::inDialog()) {
                 cameramode = 1;
@@ -3300,57 +3278,67 @@ void Game::Tick()
 
                     if (Input::isKeyDown(forwardkey)) {
                         viewer += facing * multiplier * 4;
-}
+                    }
                     if (Input::isKeyDown(backkey)) {
                         viewer -= facing * multiplier * 4;
-}
+                    }
                     if (Input::isKeyDown(leftkey)) {
                         viewer += DoRotation(flatfacing * multiplier, 0, 90, 0) * 4;
-}
+                    }
                     if (Input::isKeyDown(rightkey)) {
                         viewer += DoRotation(flatfacing * multiplier, 0, -90, 0) * 4;
-}
+                    }
                     if (Input::isKeyDown(jumpkey)) {
                         viewer.y += multiplier * 4;
-}
+                    }
                     if (Input::isKeyDown(crouchkey)) {
                         viewer.y -= multiplier * 4;
-}
-                    if (     Input::isKeyPressed(SDL_SCANCODE_1) ||
-                             Input::isKeyPressed(SDL_SCANCODE_2) ||
-                             Input::isKeyPressed(SDL_SCANCODE_3) ||
-                             Input::isKeyPressed(SDL_SCANCODE_4) ||
-                             Input::isKeyPressed(SDL_SCANCODE_5) ||
-                             Input::isKeyPressed(SDL_SCANCODE_6) ||
-                             Input::isKeyPressed(SDL_SCANCODE_7) ||
-                             Input::isKeyPressed(SDL_SCANCODE_8) ||
-                             Input::isKeyPressed(SDL_SCANCODE_9) ||
-                             Input::isKeyPressed(SDL_SCANCODE_0) ||
-                             Input::isKeyPressed(SDL_SCANCODE_MINUS)) {
+                    }
+                    if (Input::isKeyPressed(SDL_SCANCODE_1) ||
+                        Input::isKeyPressed(SDL_SCANCODE_2) ||
+                        Input::isKeyPressed(SDL_SCANCODE_3) ||
+                        Input::isKeyPressed(SDL_SCANCODE_4) ||
+                        Input::isKeyPressed(SDL_SCANCODE_5) ||
+                        Input::isKeyPressed(SDL_SCANCODE_6) ||
+                        Input::isKeyPressed(SDL_SCANCODE_7) ||
+                        Input::isKeyPressed(SDL_SCANCODE_8) ||
+                        Input::isKeyPressed(SDL_SCANCODE_9) ||
+                        Input::isKeyPressed(SDL_SCANCODE_0) ||
+                        Input::isKeyPressed(SDL_SCANCODE_MINUS)) {
                         int whichend;
-                        if (Input::isKeyPressed(SDL_SCANCODE_1)) { whichend = 1;
-}
-                        if (Input::isKeyPressed(SDL_SCANCODE_2)) { whichend = 2;
-}
-                        if (Input::isKeyPressed(SDL_SCANCODE_3)) { whichend = 3;
-}
-                        if (Input::isKeyPressed(SDL_SCANCODE_4)) { whichend = 4;
-}
-                        if (Input::isKeyPressed(SDL_SCANCODE_5)) { whichend = 5;
-}
-                        if (Input::isKeyPressed(SDL_SCANCODE_6)) { whichend = 6;
-}
-                        if (Input::isKeyPressed(SDL_SCANCODE_7)) { whichend = 7;
-}
-                        if (Input::isKeyPressed(SDL_SCANCODE_8)) { whichend = 8;
-}
-                        if (Input::isKeyPressed(SDL_SCANCODE_9)) { whichend = 9;
-}
-                        if (Input::isKeyPressed(SDL_SCANCODE_0)) { whichend = 0;
-}
+                        if (Input::isKeyPressed(SDL_SCANCODE_1)) {
+                            whichend = 1;
+                        }
+                        if (Input::isKeyPressed(SDL_SCANCODE_2)) {
+                            whichend = 2;
+                        }
+                        if (Input::isKeyPressed(SDL_SCANCODE_3)) {
+                            whichend = 3;
+                        }
+                        if (Input::isKeyPressed(SDL_SCANCODE_4)) {
+                            whichend = 4;
+                        }
+                        if (Input::isKeyPressed(SDL_SCANCODE_5)) {
+                            whichend = 5;
+                        }
+                        if (Input::isKeyPressed(SDL_SCANCODE_6)) {
+                            whichend = 6;
+                        }
+                        if (Input::isKeyPressed(SDL_SCANCODE_7)) {
+                            whichend = 7;
+                        }
+                        if (Input::isKeyPressed(SDL_SCANCODE_8)) {
+                            whichend = 8;
+                        }
+                        if (Input::isKeyPressed(SDL_SCANCODE_9)) {
+                            whichend = 9;
+                        }
+                        if (Input::isKeyPressed(SDL_SCANCODE_0)) {
+                            whichend = 0;
+                        }
                         if (Input::isKeyPressed(SDL_SCANCODE_MINUS)) {
                             whichend = -1;
-}
+                        }
                         if (whichend != -1) {
                             Dialog::currentScene().participantfocus = whichend;
                             Dialog::currentDialog().participantlocation[whichend] = Person::players[whichend]->coords;
@@ -3380,37 +3368,47 @@ void Game::Tick()
                         }
                     }
                     //TODO: should these be KeyDown or KeyPressed?
-                    if (     Input::isKeyDown(SDL_SCANCODE_KP_1) ||
-                             Input::isKeyDown(SDL_SCANCODE_KP_2) ||
-                             Input::isKeyDown(SDL_SCANCODE_KP_3) ||
-                             Input::isKeyDown(SDL_SCANCODE_KP_4) ||
-                             Input::isKeyDown(SDL_SCANCODE_KP_5) ||
-                             Input::isKeyDown(SDL_SCANCODE_KP_6) ||
-                             Input::isKeyDown(SDL_SCANCODE_KP_7) ||
-                             Input::isKeyDown(SDL_SCANCODE_KP_8) ||
-                             Input::isKeyDown(SDL_SCANCODE_KP_9) ||
-                             Input::isKeyDown(SDL_SCANCODE_KP_0)) {
+                    if (Input::isKeyDown(SDL_SCANCODE_KP_1) ||
+                        Input::isKeyDown(SDL_SCANCODE_KP_2) ||
+                        Input::isKeyDown(SDL_SCANCODE_KP_3) ||
+                        Input::isKeyDown(SDL_SCANCODE_KP_4) ||
+                        Input::isKeyDown(SDL_SCANCODE_KP_5) ||
+                        Input::isKeyDown(SDL_SCANCODE_KP_6) ||
+                        Input::isKeyDown(SDL_SCANCODE_KP_7) ||
+                        Input::isKeyDown(SDL_SCANCODE_KP_8) ||
+                        Input::isKeyDown(SDL_SCANCODE_KP_9) ||
+                        Input::isKeyDown(SDL_SCANCODE_KP_0)) {
                         int whichend;
-                        if (Input::isKeyDown(SDL_SCANCODE_KP_1)) { whichend = 1;
-}
-                        if (Input::isKeyDown(SDL_SCANCODE_KP_2)) { whichend = 2;
-}
-                        if (Input::isKeyDown(SDL_SCANCODE_KP_3)) { whichend = 3;
-}
-                        if (Input::isKeyDown(SDL_SCANCODE_KP_4)) { whichend = 4;
-}
-                        if (Input::isKeyDown(SDL_SCANCODE_KP_5)) { whichend = 5;
-}
-                        if (Input::isKeyDown(SDL_SCANCODE_KP_6)) { whichend = 6;
-}
-                        if (Input::isKeyDown(SDL_SCANCODE_KP_7)) { whichend = 7;
-}
-                        if (Input::isKeyDown(SDL_SCANCODE_KP_8)) { whichend = 8;
-}
-                        if (Input::isKeyDown(SDL_SCANCODE_KP_9)) { whichend = 9;
-}
-                        if (Input::isKeyDown(SDL_SCANCODE_KP_0)) { whichend = 0;
-}
+                        if (Input::isKeyDown(SDL_SCANCODE_KP_1)) {
+                            whichend = 1;
+                        }
+                        if (Input::isKeyDown(SDL_SCANCODE_KP_2)) {
+                            whichend = 2;
+                        }
+                        if (Input::isKeyDown(SDL_SCANCODE_KP_3)) {
+                            whichend = 3;
+                        }
+                        if (Input::isKeyDown(SDL_SCANCODE_KP_4)) {
+                            whichend = 4;
+                        }
+                        if (Input::isKeyDown(SDL_SCANCODE_KP_5)) {
+                            whichend = 5;
+                        }
+                        if (Input::isKeyDown(SDL_SCANCODE_KP_6)) {
+                            whichend = 6;
+                        }
+                        if (Input::isKeyDown(SDL_SCANCODE_KP_7)) {
+                            whichend = 7;
+                        }
+                        if (Input::isKeyDown(SDL_SCANCODE_KP_8)) {
+                            whichend = 8;
+                        }
+                        if (Input::isKeyDown(SDL_SCANCODE_KP_9)) {
+                            whichend = 9;
+                        }
+                        if (Input::isKeyDown(SDL_SCANCODE_KP_0)) {
+                            whichend = 0;
+                        }
                         Dialog::currentScene().participantfacing[whichend] = facing;
                     }
                     if (Dialog::indialogue >= int(Dialog::currentDialog().scenes.size())) {
@@ -3471,12 +3469,11 @@ void Game::Tick()
                 Person::players[0]->jumptogglekeydown = 0;
             }
             if (Person::players[0]->jumpkeydown &&
-                    Person::players[0]->animTarget != jumpupanim &&
-                    Person::players[0]->animTarget != jumpdownanim &&
-                    !Person::players[0]->isFlip()) {
+                Person::players[0]->animTarget != jumpupanim &&
+                Person::players[0]->animTarget != jumpdownanim &&
+                !Person::players[0]->isFlip()) {
                 Person::players[0]->jumptogglekeydown = 1;
-}
-
+            }
 
             Dialog::dialoguetime += multiplier;
             hawkyaw += multiplier * 25;
@@ -3502,8 +3499,8 @@ void Game::Tick()
             for (unsigned k = 0; k < Person::players.size(); k++) {
                 if (k != 0 && Person::players[k]->immobile) {
                     Person::players[k]->coords = Person::players[k]->realoldcoords;
-}
-}
+                }
+            }
 
             for (unsigned k = 0; k < Person::players.size(); k++) {
                 if (!isnormal(Person::players[k]->coords.x) || !isnormal(Person::players[k]->coords.y) || !isnormal(Person::players[k]->coords.z)) {
@@ -3516,20 +3513,19 @@ void Game::Tick()
             //respawn
             static bool respawnkeydown;
             if (!editorenabled &&
-                    (whichlevel != -2 &&
+                (whichlevel != -2 &&
                      (Input::isKeyDown(SDL_SCANCODE_Z) &&
                       Input::isKeyDown(SDL_SCANCODE_LGUI) &&
                       devtools) ||
-                     (Input::isKeyDown(jumpkey) &&
-                      !respawnkeydown &&
-                      !oldattackkey &&
-                      Person::players[0]->dead))) {
+                 (Input::isKeyDown(jumpkey) &&
+                  !respawnkeydown &&
+                  !oldattackkey &&
+                  Person::players[0]->dead))) {
                 targetlevel = whichlevel;
                 loading = 1;
                 leveltime = 5;
             }
             respawnkeydown = Input::isKeyDown(jumpkey);
-
 
             static bool movekey;
 
@@ -3541,19 +3537,19 @@ void Game::Tick()
                     if (i == 0 && !Dialog::inDialog()) {
                         //TODO: refactor repetitive code
                         if (!Animation::animations[Person::players[0]->animTarget].attack &&
-                                Person::players[0]->animTarget != staggerbackhighanim &&
-                                Person::players[0]->animTarget != staggerbackhardanim &&
-                                Person::players[0]->animTarget != crouchremoveknifeanim &&
-                                Person::players[0]->animTarget != removeknifeanim &&
-                                Person::players[0]->animTarget != backhandspringanim &&
-                                Person::players[0]->animTarget != dodgebackanim &&
-                                Person::players[0]->animTarget != walljumprightkickanim &&
-                                Person::players[0]->animTarget != walljumpleftkickanim) {
+                            Person::players[0]->animTarget != staggerbackhighanim &&
+                            Person::players[0]->animTarget != staggerbackhardanim &&
+                            Person::players[0]->animTarget != crouchremoveknifeanim &&
+                            Person::players[0]->animTarget != removeknifeanim &&
+                            Person::players[0]->animTarget != backhandspringanim &&
+                            Person::players[0]->animTarget != dodgebackanim &&
+                            Person::players[0]->animTarget != walljumprightkickanim &&
+                            Person::players[0]->animTarget != walljumpleftkickanim) {
                             if (cameramode) {
                                 Person::players[0]->targetyaw = 0;
                             } else {
                                 Person::players[0]->targetyaw = -yaw + 180;
-}
+                            }
                         }
 
                         facing = 0;
@@ -3574,14 +3570,14 @@ void Game::Tick()
                     }
                     if (i != 0 && Person::players[i]->aitype == playercontrolled && !Dialog::inDialog()) {
                         if (!Animation::animations[Person::players[i]->animTarget].attack &&
-                                Person::players[i]->animTarget != staggerbackhighanim &&
-                                Person::players[i]->animTarget != staggerbackhardanim &&
-                                Person::players[i]->animTarget != crouchremoveknifeanim &&
-                                Person::players[i]->animTarget != removeknifeanim &&
-                                Person::players[i]->animTarget != backhandspringanim &&
-                                Person::players[i]->animTarget != dodgebackanim &&
-                                Person::players[i]->animTarget != walljumprightkickanim &&
-                                Person::players[i]->animTarget != walljumpleftkickanim) {
+                            Person::players[i]->animTarget != staggerbackhighanim &&
+                            Person::players[i]->animTarget != staggerbackhardanim &&
+                            Person::players[i]->animTarget != crouchremoveknifeanim &&
+                            Person::players[i]->animTarget != removeknifeanim &&
+                            Person::players[i]->animTarget != backhandspringanim &&
+                            Person::players[i]->animTarget != dodgebackanim &&
+                            Person::players[i]->animTarget != walljumprightkickanim &&
+                            Person::players[i]->animTarget != walljumpleftkickanim) {
                             Person::players[i]->targetyaw = -Person::players[i]->lookyaw + 180;
                         }
 
@@ -3603,7 +3599,7 @@ void Game::Tick()
 
                     if (leveltime < .5) {
                         numenvsounds = 0;
-}
+                    }
 
                     Person::players[i]->avoidsomething = 0;
 
@@ -3611,43 +3607,43 @@ void Game::Tick()
                     for (unsigned int j = 0; j < Object::objects.size(); j++) {
                         if (Object::objects[j]->onfire) {
                             if (distsq(&Person::players[i]->coords, &Object::objects[j]->position) < sq(Object::objects[j]->scale) * 200) {
-                                if (     distsq(&Person::players[i]->coords, &Object::objects[j]->position) <
-                                         distsq(&Person::players[i]->coords, &Person::players[0]->coords)) {
+                                if (distsq(&Person::players[i]->coords, &Object::objects[j]->position) <
+                                    distsq(&Person::players[i]->coords, &Person::players[0]->coords)) {
                                     Person::players[i]->collided = 0;
                                     Person::players[i]->avoidcollided = 1;
                                     if (Person::players[i]->avoidsomething == 0 ||
-                                            distsq(&Person::players[i]->coords, &Object::objects[j]->position) <
+                                        distsq(&Person::players[i]->coords, &Object::objects[j]->position) <
                                             distsq(&Person::players[i]->coords, &Person::players[i]->avoidwhere)) {
                                         Person::players[i]->avoidwhere = Object::objects[j]->position;
                                         Person::players[i]->avoidsomething = 1;
                                     }
                                 }
-}
-}
-}
+                            }
+                        }
+                    }
 
                     //avoid flaming players
                     for (unsigned j = 0; j < Person::players.size(); j++) {
                         if (Person::players[j]->onfire) {
                             if (distsq(&Person::players[j]->coords, &Person::players[i]->coords) < sq(0.3) * 200) {
-                                if (     distsq(&Person::players[i]->coords, &Person::players[j]->coords) <
-                                         distsq(&Person::players[i]->coords, &Person::players[0]->coords)) {
+                                if (distsq(&Person::players[i]->coords, &Person::players[j]->coords) <
+                                    distsq(&Person::players[i]->coords, &Person::players[0]->coords)) {
                                     Person::players[i]->collided = 0;
                                     Person::players[i]->avoidcollided = 1;
                                     if (Person::players[i]->avoidsomething == 0 ||
-                                            distsq(&Person::players[i]->coords, &Person::players[j]->coords) <
+                                        distsq(&Person::players[i]->coords, &Person::players[j]->coords) <
                                             distsq(&Person::players[i]->coords, &Person::players[i]->avoidwhere)) {
                                         Person::players[i]->avoidwhere = Person::players[j]->coords;
                                         Person::players[i]->avoidsomething = 1;
                                     }
                                 }
-}
-}
-}
+                            }
+                        }
+                    }
 
                     if (Person::players[i]->collided > .8) {
                         Person::players[i]->avoidcollided = 0;
-}
+                    }
 
                     Person::players[i]->doAI();
 
@@ -3676,10 +3672,10 @@ void Game::Tick()
 
                     if (Person::players[i]->collided < -.3) {
                         Person::players[i]->collided = -.3;
-}
+                    }
                     if (Person::players[i]->collided > 1) {
                         Person::players[i]->collided = 1;
-}
+                    }
                     Person::players[i]->collided -= multiplier * 4;
                     Person::players[i]->whichdirectiondelay -= multiplier;
                     if (Person::players[i]->avoidcollided < -.3 || Person::players[i]->whichdirectiondelay <= 0) {
@@ -3689,47 +3685,47 @@ void Game::Tick()
                     }
                     if (Person::players[i]->avoidcollided > 1) {
                         Person::players[i]->avoidcollided = 1;
-}
+                    }
                     Person::players[i]->avoidcollided -= multiplier / 4;
                     if (!Person::players[i]->skeleton.free) {
                         Person::players[i]->stunned -= multiplier;
                         Person::players[i]->surprised -= multiplier;
                     }
                     if (i != 0 && Person::players[i]->surprised <= 0 &&
-                            Person::players[i]->aitype == attacktypecutoff &&
-                            !Person::players[i]->dead &&
-                            !Person::players[i]->skeleton.free &&
-                            Animation::animations[Person::players[i]->animTarget].attack == neutral) {
+                        Person::players[i]->aitype == attacktypecutoff &&
+                        !Person::players[i]->dead &&
+                        !Person::players[i]->skeleton.free &&
+                        Animation::animations[Person::players[i]->animTarget].attack == neutral) {
                         numresponded = 1;
-}
+                    }
 
                     if (!Person::players[i]->throwkeydown) {
                         Person::players[i]->throwtogglekeydown = 0;
-}
+                    }
 
                     //pick up weapon
                     if (Person::players[i]->throwkeydown && !Person::players[i]->throwtogglekeydown) {
                         if (Person::players[i]->weaponactive == -1 &&
-                                Person::players[i]->num_weapons < 2 &&
-                                (Person::players[i]->isIdle() ||
-                                 Person::players[i]->isCrouch() ||
-                                 Person::players[i]->animTarget == sneakanim ||
-                                 Person::players[i]->animTarget == rollanim ||
-                                 Person::players[i]->animTarget == backhandspringanim ||
-                                 Person::players[i]->isFlip() ||
-                                 Person::players[i]->aitype != playercontrolled)) {
+                            Person::players[i]->num_weapons < 2 &&
+                            (Person::players[i]->isIdle() ||
+                             Person::players[i]->isCrouch() ||
+                             Person::players[i]->animTarget == sneakanim ||
+                             Person::players[i]->animTarget == rollanim ||
+                             Person::players[i]->animTarget == backhandspringanim ||
+                             Person::players[i]->isFlip() ||
+                             Person::players[i]->aitype != playercontrolled)) {
                             for (unsigned j = 0; j < weapons.size(); j++) {
                                 if ((weapons[j].velocity.x == 0 && weapons[j].velocity.y == 0 && weapons[j].velocity.z == 0 ||
-                                        Person::players[i]->aitype == playercontrolled) &&
-                                        weapons[j].owner == -1 &&
-                                        Person::players[i]->weaponactive == -1) {
+                                     Person::players[i]->aitype == playercontrolled) &&
+                                    weapons[j].owner == -1 &&
+                                    Person::players[i]->weaponactive == -1) {
                                     if (distsqflat(&Person::players[i]->coords, &weapons[j].position) < 2) {
                                         if (distsq(&Person::players[i]->coords, &weapons[j].position) < 2) {
                                             if (Person::players[i]->isCrouch() ||
-                                                    Person::players[i]->animTarget == sneakanim ||
-                                                    Person::players[i]->isRun() ||
-                                                    Person::players[i]->isIdle() ||
-                                                    Person::players[i]->aitype != playercontrolled) {
+                                                Person::players[i]->animTarget == sneakanim ||
+                                                Person::players[i]->isRun() ||
+                                                Person::players[i]->isIdle() ||
+                                                Person::players[i]->aitype != playercontrolled) {
                                                 Person::players[i]->throwtogglekeydown = 1;
                                                 Person::players[i]->setTargetAnimation(crouchremoveknifeanim);
                                                 Person::players[i]->targetyaw = roughDirectionTo(Person::players[i]->coords, weapons[j].position);
@@ -3740,20 +3736,20 @@ void Game::Tick()
                                                 Person::players[i]->hasvictim = 0;
 
                                                 if ((weapons[j].velocity.x == 0 && weapons[j].velocity.y == 0 && weapons[j].velocity.z == 0 ||
-                                                        Person::players[i]->aitype == playercontrolled) &&
+                                                     Person::players[i]->aitype == playercontrolled) &&
                                                         weapons[j].owner == -1 ||
-                                                        Person::players[i]->victim &&
+                                                    Person::players[i]->victim &&
                                                         weapons[j].owner == int(Person::players[i]->victim->id)) {
                                                     if (distsqflat(&Person::players[i]->coords, &weapons[j].position) < 2 && Person::players[i]->weaponactive == -1) {
                                                         if (distsq(&Person::players[i]->coords, &weapons[j].position) < 1 || Person::players[i]->victim) {
                                                             if (weapons[j].getType() != staff) {
                                                                 emit_sound_at(knifedrawsound, Person::players[i]->coords, 128.);
-}
+                                                            }
 
                                                             Person::players[i]->takeWeapon(j);
                                                         }
-}
-}
+                                                    }
+                                                }
                                             }
                                         } else if ((Person::players[i]->isIdle() ||
                                                     Person::players[i]->isFlip() ||
@@ -3772,44 +3768,44 @@ void Game::Tick()
                                                 for (unsigned k = 0; k < weapons.size(); k++) {
                                                     if (Person::players[i]->weaponactive == -1) {
                                                         if ((weapons[k].velocity.x == 0 && weapons[k].velocity.y == 0 && weapons[k].velocity.z == 0 ||
-                                                                Person::players[i]->aitype == playercontrolled) &&
+                                                             Person::players[i]->aitype == playercontrolled) &&
                                                                 weapons[k].owner == -1 ||
-                                                                Person::players[i]->victim &&
+                                                            Person::players[i]->victim &&
                                                                 weapons[k].owner == int(Person::players[i]->victim->id)) {
                                                             if (distsqflat(&Person::players[i]->coords, &weapons[k].position) < 3 &&
-                                                                    Person::players[i]->weaponactive == -1) {
+                                                                Person::players[i]->weaponactive == -1) {
                                                                 if (weapons[k].getType() != staff) {
                                                                     emit_sound_at(knifedrawsound, Person::players[i]->coords, 128.);
-}
+                                                                }
 
                                                                 Person::players[i]->takeWeapon(k);
                                                             }
-}
-}
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
                                     }
-}
+                                }
                             }
                             if (Person::players[i]->isCrouch() ||
-                                    Person::players[i]->animTarget == sneakanim ||
-                                    Person::players[i]->isRun() ||
-                                    Person::players[i]->isIdle() || Person::players[i]->animTarget == rollanim ||
-                                    Person::players[i]->animTarget == backhandspringanim) {
+                                Person::players[i]->animTarget == sneakanim ||
+                                Person::players[i]->isRun() ||
+                                Person::players[i]->isIdle() || Person::players[i]->animTarget == rollanim ||
+                                Person::players[i]->animTarget == backhandspringanim) {
                                 if (Person::players.size() > 1) {
                                     for (unsigned j = 0; j < Person::players.size(); j++) {
                                         if (Person::players[i]->weaponactive == -1) {
                                             if (j != i) {
                                                 if (Person::players[j]->num_weapons &&
-                                                        Person::players[j]->skeleton.free &&
-                                                        distsq(&Person::players[i]->coords, &Person::players[j]->coords) < 2/*&&Person::players[j]->dead*/ &&
-                                                        (((Person::players[j]->skeleton.forward.y < 0 &&
-                                                           Person::players[j]->weaponstuckwhere == 0) ||
-                                                          (Person::players[j]->skeleton.forward.y > 0 &&
-                                                           Person::players[j]->weaponstuckwhere == 1)) ||
-                                                         Person::players[j]->weaponstuck == -1 ||
-                                                         Person::players[j]->num_weapons > 1)) {
+                                                    Person::players[j]->skeleton.free &&
+                                                    distsq(&Person::players[i]->coords, &Person::players[j]->coords) < 2 /*&&Person::players[j]->dead*/ &&
+                                                    (((Person::players[j]->skeleton.forward.y < 0 &&
+                                                       Person::players[j]->weaponstuckwhere == 0) ||
+                                                      (Person::players[j]->skeleton.forward.y > 0 &&
+                                                       Person::players[j]->weaponstuckwhere == 1)) ||
+                                                     Person::players[j]->weaponstuck == -1 ||
+                                                     Person::players[j]->num_weapons > 1)) {
                                                     if (Person::players[i]->animTarget != rollanim && Person::players[i]->animTarget != backhandspringanim) {
                                                         Person::players[i]->throwtogglekeydown = 1;
                                                         Person::players[i]->victim = Person::players[j];
@@ -3833,18 +3829,18 @@ void Game::Tick()
                                                             if (!fleshstuck) {
                                                                 if (weapons[k].getType() != staff) {
                                                                     emit_sound_at(knifedrawsound, Person::players[i]->coords, 128.);
-}
+                                                                }
                                                             }
                                                             if (fleshstuck) {
                                                                 emit_sound_at(fleshstabremovesound, Person::players[i]->coords, 128.);
-}
+                                                            }
 
                                                             if (weapons[k].owner != -1) {
                                                                 if (Person::players[i]->victim->num_weapons == 1) {
                                                                     Person::players[i]->victim->num_weapons = 0;
                                                                 } else {
                                                                     Person::players[i]->victim->num_weapons = 1;
-}
+                                                                }
 
                                                                 Person::players[i]->victim->skeleton.longdead = 0;
                                                                 Person::players[i]->victim->skeleton.free = 1;
@@ -3866,7 +3862,7 @@ void Game::Tick()
                                                                     if (Person::players[i]->victim->weaponids[Person::players[i]->victim->weaponstuck] == k) {
                                                                         if (bloodtoggle) {
                                                                             Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 0, 0, .8, .3);
-}
+                                                                        }
                                                                         weapons[k].bloody = 2;
                                                                         weapons[k].blooddrip = 5;
                                                                         Person::players[i]->victim->weaponstuck = -1;
@@ -3877,10 +3873,10 @@ void Game::Tick()
                                                                 if (Person::players[i]->victim->num_weapons > 0) {
                                                                     if (Person::players[i]->victim->weaponstuck != 0 && Person::players[i]->victim->weaponstuck != -1) {
                                                                         Person::players[i]->victim->weaponstuck = 0;
-}
+                                                                    }
                                                                     if (Person::players[i]->victim->weaponids[0] == k) {
                                                                         Person::players[i]->victim->weaponids[0] = Person::players[i]->victim->weaponids[Person::players[i]->victim->num_weapons];
-}
+                                                                    }
                                                                 }
 
                                                                 Person::players[i]->victim->weaponactive = -1;
@@ -3894,29 +3890,29 @@ void Game::Tick()
                                                         }
                                                     }
                                                 }
-}
-}
+                                            }
+                                        }
                                     }
-}
+                                }
                             }
                         }
                         if (Person::players[i]->weaponactive != -1 && Person::players[i]->aitype == playercontrolled) {
                             if (weapons[Person::players[i]->weaponids[0]].getType() == knife) {
                                 if (Person::players[i]->isIdle() ||
-                                        Person::players[i]->isRun() ||
-                                        Person::players[i]->isCrouch() ||
-                                        Person::players[i]->animTarget == sneakanim ||
-                                        Person::players[i]->isFlip()) {
+                                    Person::players[i]->isRun() ||
+                                    Person::players[i]->isCrouch() ||
+                                    Person::players[i]->animTarget == sneakanim ||
+                                    Person::players[i]->isFlip()) {
                                     if (Person::players.size() > 1) {
                                         for (unsigned j = 0; j < Person::players.size(); j++) {
                                             if (i != j) {
                                                 if (!Tutorial::active || Tutorial::stage == 49) {
                                                     if (hostile) {
                                                         if (normaldotproduct(Person::players[i]->facing, Person::players[i]->coords - Person::players[j]->coords) < 0 &&
-                                                                distsq(&Person::players[i]->coords, &Person::players[j]->coords) < 100 &&
-                                                                distsq(&Person::players[i]->coords, &Person::players[j]->coords) > 1.5 &&
-                                                                !Person::players[j]->skeleton.free &&
-                                                                -1 == Object::checkcollide(DoRotation(Person::players[j]->jointPos(head), 0, Person::players[j]->yaw, 0)*Person::players[j]->scale + Person::players[j]->coords, DoRotation(Person::players[i]->jointPos(head), 0, Person::players[i]->yaw, 0)*Person::players[i]->scale + Person::players[i]->coords)) {
+                                                            distsq(&Person::players[i]->coords, &Person::players[j]->coords) < 100 &&
+                                                            distsq(&Person::players[i]->coords, &Person::players[j]->coords) > 1.5 &&
+                                                            !Person::players[j]->skeleton.free &&
+                                                            -1 == Object::checkcollide(DoRotation(Person::players[j]->jointPos(head), 0, Person::players[j]->yaw, 0) * Person::players[j]->scale + Person::players[j]->coords, DoRotation(Person::players[i]->jointPos(head), 0, Person::players[i]->yaw, 0) * Person::players[i]->scale + Person::players[i]->coords)) {
                                                             if (!Person::players[i]->isFlip()) {
                                                                 Person::players[i]->throwtogglekeydown = 1;
                                                                 Person::players[i]->victim = Person::players[j];
@@ -3943,12 +3939,12 @@ void Game::Tick()
                                                                 }
                                                             }
                                                         }
-}
-}
-}
+                                                    }
+                                                }
+                                            }
                                         }
-}
-}
+                                    }
+                                }
                             }
                         }
                         if (Person::players[i]->weaponactive != -1 && Person::players[i]->aitype == playercontrolled) {
@@ -3957,14 +3953,14 @@ void Game::Tick()
                                 XYZ tempVelocity = Person::players[i]->velocity * .2;
                                 if (tempVelocity.x == 0) {
                                     tempVelocity.x = .1;
-}
+                                }
                                 weapons[Person::players[i]->weaponids[0]].drop(tempVelocity, tempVelocity, false);
                                 Person::players[i]->num_weapons--;
                                 if (Person::players[i]->num_weapons) {
                                     Person::players[i]->weaponids[0] = Person::players[i]->weaponids[Person::players[i]->num_weapons];
                                     if (Person::players[i]->weaponstuck == Person::players[i]->num_weapons) {
                                         Person::players[i]->weaponstuck = 0;
-}
+                                    }
                                 }
 
                                 Person::players[i]->weaponactive = -1;
@@ -3973,35 +3969,34 @@ void Game::Tick()
                                 }
                             }
                         }
-
                     }
 
                     //draw weapon
                     if (i == 0 || !Person::players[0]->dead || (Person::players[i]->weaponactive != -1)) {
                         if (Person::players[i]->drawkeydown && !Person::players[i]->drawtogglekeydown ||
-                                (Person::players[i]->num_weapons == 2) &&
+                            (Person::players[i]->num_weapons == 2) &&
                                 (Person::players[i]->weaponactive == -1) &&
                                 Person::players[i]->isIdle() ||
-                                Person::players[0]->dead &&
+                            Person::players[0]->dead &&
                                 (Person::players[i]->weaponactive != -1) &&
                                 i != 0) {
                             bool isgood = true;
                             if (Person::players[i]->weaponactive != -1) {
                                 if (weapons[Person::players[i]->weaponids[Person::players[i]->weaponactive]].getType() == staff) {
                                     isgood = false;
-}
-}
+                                }
+                            }
                             if (isgood && Person::players[i]->creature != wolftype) {
                                 if (Person::players[i]->isIdle() && Person::players[i]->num_weapons && weapons[Person::players[i]->weaponids[0]].getType() == knife) {
                                     Person::players[i]->setTargetAnimation(drawrightanim);
                                     Person::players[i]->drawtogglekeydown = 1;
                                 }
                                 if ((Person::players[i]->isIdle() ||
-                                        (Person::players[i]->aitype != playercontrolled &&
-                                         Person::players[0]->weaponactive != -1 &&
-                                         Person::players[i]->isRun())) &&
-                                        Person::players[i]->num_weapons &&
-                                        weapons[Person::players[i]->weaponids[0]].getType() == sword) {
+                                     (Person::players[i]->aitype != playercontrolled &&
+                                      Person::players[0]->weaponactive != -1 &&
+                                      Person::players[i]->isRun())) &&
+                                    Person::players[i]->num_weapons &&
+                                    weapons[Person::players[i]->weaponids[0]].getType() == sword) {
                                     Person::players[i]->setTargetAnimation(drawleftanim);
                                     Person::players[i]->drawtogglekeydown = 1;
                                 }
@@ -4016,25 +4011,25 @@ void Game::Tick()
                     //clean weapon
                     if (Person::players[i]->weaponactive != -1) {
                         if (Person::players[i]->isCrouch() &&
-                                weapons[Person::players[i]->weaponids[Person::players[i]->weaponactive]].bloody &&
-                                bloodtoggle &&
-                                Person::players[i]->onterrain &&
-                                Person::players[i]->num_weapons &&
-                                Person::players[i]->attackkeydown &&
-                                musictype != stream_fighttheme) {
+                            weapons[Person::players[i]->weaponids[Person::players[i]->weaponactive]].bloody &&
+                            bloodtoggle &&
+                            Person::players[i]->onterrain &&
+                            Person::players[i]->num_weapons &&
+                            Person::players[i]->attackkeydown &&
+                            musictype != stream_fighttheme) {
                             if (weapons[Person::players[i]->weaponids[Person::players[i]->weaponactive]].getType() == knife) {
                                 Person::players[i]->setTargetAnimation(crouchstabanim);
-}
+                            }
                             if (weapons[Person::players[i]->weaponids[Person::players[i]->weaponactive]].getType() == sword) {
                                 Person::players[i]->setTargetAnimation(swordgroundstabanim);
-}
+                            }
                             Person::players[i]->hasvictim = 0;
                         }
                     }
 
                     if (!Person::players[i]->drawkeydown) {
                         Person::players[i]->drawtogglekeydown = 0;
-}
+                    }
 
                     XYZ absflatfacing;
                     if (i == 0) {
@@ -4044,7 +4039,7 @@ void Game::Tick()
                         absflatfacing = DoRotation(absflatfacing, 0, -yaw, 0);
                     } else {
                         absflatfacing = flatfacing;
-}
+                    }
 
                     if (Dialog::inDialog()) {
                         Person::players[i]->forwardkeydown = 0;
@@ -4059,13 +4054,13 @@ void Game::Tick()
                     movekey = 0;
                     //Do controls
                     if (!Animation::animations[Person::players[i]->animTarget].attack &&
-                            Person::players[i]->animTarget != staggerbackhighanim &&
-                            Person::players[i]->animTarget != staggerbackhardanim &&
-                            Person::players[i]->animTarget != backhandspringanim &&
-                            Person::players[i]->animTarget != dodgebackanim) {
+                        Person::players[i]->animTarget != staggerbackhighanim &&
+                        Person::players[i]->animTarget != staggerbackhardanim &&
+                        Person::players[i]->animTarget != backhandspringanim &&
+                        Person::players[i]->animTarget != dodgebackanim) {
                         if (!Person::players[i]->forwardkeydown) {
                             Person::players[i]->forwardstogglekeydown = 0;
-}
+                        }
                         if (Person::players[i]->crouchkeydown) {
                             //Crouch
                             target = -2;
@@ -4076,37 +4071,37 @@ void Game::Tick()
                                         if (j != i && !Person::players[j]->skeleton.free && Person::players[j]->aitype == passivetype) {
                                             if (distsq(&Person::players[j]->coords, &Person::players[i]->coords) < 16) {
                                                 Person::players[i]->superruntoggle = 0;
-}
-}
-}
-}
+                                            }
+                                        }
+                                    }
+                                }
                             }
 
                             if (Person::players.size() > 1) {
                                 for (unsigned j = 0; j < Person::players.size(); j++) {
                                     if (j != i && !Person::players[j]->skeleton.free && Person::players[j]->victim && Person::players[i]->lowreversaldelay <= 0) {
                                         if (distsq(&Person::players[j]->coords, &Person::players[j]->victim->coords) < 3 &&
-                                                Person::players[j]->victim == Person::players[i] &&
-                                                (Person::players[j]->animTarget == sweepanim ||
-                                                 Person::players[j]->animTarget == upunchanim ||
-                                                 Person::players[j]->animTarget == wolfslapanim ||
-                                                 ((Person::players[j]->animTarget == swordslashanim ||
-                                                   Person::players[j]->animTarget == knifeslashstartanim ||
-                                                   Person::players[j]->animTarget == staffhitanim ||
-                                                   Person::players[j]->animTarget == staffspinhitanim) &&
-                                                  distsq(&Person::players[j]->coords, &Person::players[i]->coords) < 2))) {
+                                            Person::players[j]->victim == Person::players[i] &&
+                                            (Person::players[j]->animTarget == sweepanim ||
+                                             Person::players[j]->animTarget == upunchanim ||
+                                             Person::players[j]->animTarget == wolfslapanim ||
+                                             ((Person::players[j]->animTarget == swordslashanim ||
+                                               Person::players[j]->animTarget == knifeslashstartanim ||
+                                               Person::players[j]->animTarget == staffhitanim ||
+                                               Person::players[j]->animTarget == staffspinhitanim) &&
+                                              distsq(&Person::players[j]->coords, &Person::players[i]->coords) < 2))) {
                                             if (target >= 0) {
                                                 target = -1;
                                             } else {
                                                 target = j;
-}
+                                            }
                                         }
                                     }
                                 }
-}
+                            }
                             if (target >= 0) {
                                 Person::players[target]->Reverse();
-}
+                            }
                             Person::players[i]->lowreversaldelay = .5;
 
                             if (Person::players[i]->isIdle()) {
@@ -4114,11 +4109,11 @@ void Game::Tick()
                                 Person::players[i]->transspeed = 10;
                             }
                             if (Person::players[i]->isRun() ||
-                                    (Person::players[i]->isStop() &&
-                                     (Person::players[i]->leftkeydown ||
-                                      Person::players[i]->rightkeydown ||
-                                      Person::players[i]->forwardkeydown ||
-                                      Person::players[i]->backkeydown))) {
+                                (Person::players[i]->isStop() &&
+                                 (Person::players[i]->leftkeydown ||
+                                  Person::players[i]->rightkeydown ||
+                                  Person::players[i]->forwardkeydown ||
+                                  Person::players[i]->backkeydown))) {
                                 Person::players[i]->setTargetAnimation(rollanim);
                                 Person::players[i]->transspeed = 20;
                             }
@@ -4127,31 +4122,31 @@ void Game::Tick()
                             //Uncrouch
                             if (!Person::players[i]->isRun() && Person::players[i]->animTarget != sneakanim && i == 0) {
                                 Person::players[i]->superruntoggle = 0;
-}
+                            }
                             target = -2;
                             if (Person::players[i]->isCrouch()) {
                                 if (Person::players.size() > 1) {
                                     for (unsigned j = 0; j < Person::players.size(); j++) {
                                         if (j != i &&
-                                                !Person::players[j]->skeleton.free &&
-                                                Person::players[j]->victim &&
-                                                Person::players[i]->highreversaldelay <= 0) {
+                                            !Person::players[j]->skeleton.free &&
+                                            Person::players[j]->victim &&
+                                            Person::players[i]->highreversaldelay <= 0) {
                                             if (distsq(&Person::players[j]->coords, &Person::players[j]->victim->coords) < 3 &&
-                                                    Person::players[j]->victim == Person::players[i] &&
-                                                    (Person::players[j]->animTarget == spinkickanim) &&
-                                                    Person::players[i]->isCrouch()) {
+                                                Person::players[j]->victim == Person::players[i] &&
+                                                (Person::players[j]->animTarget == spinkickanim) &&
+                                                Person::players[i]->isCrouch()) {
                                                 if (target >= 0) {
                                                     target = -1;
                                                 } else {
                                                     target = j;
-}
+                                                }
                                             }
                                         }
                                     }
-}
+                                }
                                 if (target >= 0) {
                                     Person::players[target]->Reverse();
-}
+                                }
                                 Person::players[i]->highreversaldelay = .5;
 
                                 if (Person::players[i]->isCrouch()) {
@@ -4170,29 +4165,29 @@ void Game::Tick()
                         }
                         if (Person::players[i]->forwardkeydown) {
                             if (Person::players[i]->isIdle() ||
-                                    (Person::players[i]->isStop() &&
-                                     Person::players[i]->targetyaw == Person::players[i]->yaw) ||
-                                    (Person::players[i]->isLanding() &&
-                                     Person::players[i]->frameTarget > 0 &&
-                                     !Person::players[i]->jumpkeydown) ||
-                                    (Person::players[i]->isLandhard() &&
-                                     Person::players[i]->frameTarget > 0 &&
-                                     !Person::players[i]->jumpkeydown &&
-                                     Person::players[i]->crouchkeydown)) {
+                                (Person::players[i]->isStop() &&
+                                 Person::players[i]->targetyaw == Person::players[i]->yaw) ||
+                                (Person::players[i]->isLanding() &&
+                                 Person::players[i]->frameTarget > 0 &&
+                                 !Person::players[i]->jumpkeydown) ||
+                                (Person::players[i]->isLandhard() &&
+                                 Person::players[i]->frameTarget > 0 &&
+                                 !Person::players[i]->jumpkeydown &&
+                                 Person::players[i]->crouchkeydown)) {
                                 if (Person::players[i]->aitype == passivetype) {
                                     Person::players[i]->setTargetAnimation(walkanim);
                                 } else {
                                     Person::players[i]->setTargetAnimation(Person::players[i]->getRun());
-}
+                                }
                             }
                             if (Person::players[i]->isCrouch()) {
                                 Person::players[i]->animTarget = sneakanim;
                                 if (Person::players[i]->wasCrouch()) {
                                     Person::players[i]->target = 0;
-}
+                                }
                                 Person::players[i]->frameTarget = 0;
                             }
-                            if (Person::players[i]->animTarget == hanganim/*&&(!Person::players[i]->forwardstogglekeydown||Person::players[i]->aitype!=playercontrolled)*/) {
+                            if (Person::players[i]->animTarget == hanganim /*&&(!Person::players[i]->forwardstogglekeydown||Person::players[i]->aitype!=playercontrolled)*/) {
                                 Person::players[i]->setTargetAnimation(climbanim);
                                 Person::players[i]->frameTarget = 1;
                                 Person::players[i]->jumpclimb = 1;
@@ -4205,22 +4200,22 @@ void Game::Tick()
                         }
                         if (Person::players[i]->rightkeydown) {
                             if (Person::players[i]->isIdle() ||
-                                    (Person::players[i]->isStop() &&
-                                     Person::players[i]->targetyaw == Person::players[i]->yaw) ||
-                                    (Person::players[i]->isLanding() &&
-                                     Person::players[i]->frameTarget > 0 &&
-                                     !Person::players[i]->jumpkeydown) ||
-                                    (Person::players[i]->isLandhard() &&
-                                     Person::players[i]->frameTarget > 0 &&
-                                     !Person::players[i]->jumpkeydown &&
-                                     Person::players[i]->crouchkeydown)) {
+                                (Person::players[i]->isStop() &&
+                                 Person::players[i]->targetyaw == Person::players[i]->yaw) ||
+                                (Person::players[i]->isLanding() &&
+                                 Person::players[i]->frameTarget > 0 &&
+                                 !Person::players[i]->jumpkeydown) ||
+                                (Person::players[i]->isLandhard() &&
+                                 Person::players[i]->frameTarget > 0 &&
+                                 !Person::players[i]->jumpkeydown &&
+                                 Person::players[i]->crouchkeydown)) {
                                 Person::players[i]->setTargetAnimation(Person::players[i]->getRun());
                             }
                             if (Person::players[i]->isCrouch()) {
                                 Person::players[i]->animTarget = sneakanim;
                                 if (Person::players[i]->wasCrouch()) {
                                     Person::players[i]->target = 0;
-}
+                                }
                                 Person::players[i]->frameTarget = 0;
                             }
                             if (Person::players[i]->animTarget == jumpupanim || Person::players[i]->animTarget == jumpdownanim || Person::players[i]->isFlip()) {
@@ -4229,30 +4224,30 @@ void Game::Tick()
                             Person::players[i]->targetyaw -= 90;
                             if (Person::players[i]->forwardkeydown) {
                                 Person::players[i]->targetyaw += 45;
-}
+                            }
                             if (Person::players[i]->backkeydown) {
                                 Person::players[i]->targetyaw -= 45;
-}
+                            }
                             movekey = 1;
                         }
-                        if ( Person::players[i]->leftkeydown) {
+                        if (Person::players[i]->leftkeydown) {
                             if (Person::players[i]->isIdle() ||
-                                    (Person::players[i]->isStop() &&
-                                     Person::players[i]->targetyaw == Person::players[i]->yaw) ||
-                                    (Person::players[i]->isLanding() &&
-                                     Person::players[i]->frameTarget > 0 &&
-                                     !Person::players[i]->jumpkeydown) ||
-                                    (Person::players[i]->isLandhard() &&
-                                     Person::players[i]->frameTarget > 0 &&
-                                     !Person::players[i]->jumpkeydown &&
-                                     Person::players[i]->crouchkeydown)) {
+                                (Person::players[i]->isStop() &&
+                                 Person::players[i]->targetyaw == Person::players[i]->yaw) ||
+                                (Person::players[i]->isLanding() &&
+                                 Person::players[i]->frameTarget > 0 &&
+                                 !Person::players[i]->jumpkeydown) ||
+                                (Person::players[i]->isLandhard() &&
+                                 Person::players[i]->frameTarget > 0 &&
+                                 !Person::players[i]->jumpkeydown &&
+                                 Person::players[i]->crouchkeydown)) {
                                 Person::players[i]->setTargetAnimation(Person::players[i]->getRun());
                             }
                             if (Person::players[i]->isCrouch()) {
                                 Person::players[i]->animTarget = sneakanim;
                                 if (Person::players[i]->wasCrouch()) {
                                     Person::players[i]->target = 0;
-}
+                                }
                                 Person::players[i]->frameTarget = 0;
                             }
                             if (Person::players[i]->animTarget == jumpupanim || Person::players[i]->animTarget == jumpdownanim || Person::players[i]->isFlip()) {
@@ -4261,30 +4256,30 @@ void Game::Tick()
                             Person::players[i]->targetyaw += 90;
                             if (Person::players[i]->forwardkeydown) {
                                 Person::players[i]->targetyaw -= 45;
-}
+                            }
                             if (Person::players[i]->backkeydown) {
                                 Person::players[i]->targetyaw += 45;
-}
+                            }
                             movekey = 1;
                         }
                         if (Person::players[i]->backkeydown) {
                             if (Person::players[i]->isIdle() ||
-                                    (Person::players[i]->isStop() &&
-                                     Person::players[i]->targetyaw == Person::players[i]->yaw) ||
-                                    (Person::players[i]->isLanding() &&
-                                     Person::players[i]->frameTarget > 0 &&
-                                     !Person::players[i]->jumpkeydown) ||
-                                    (Person::players[i]->isLandhard() &&
-                                     Person::players[i]->frameTarget > 0 &&
-                                     !Person::players[i]->jumpkeydown &&
-                                     Person::players[i]->crouchkeydown)) {
+                                (Person::players[i]->isStop() &&
+                                 Person::players[i]->targetyaw == Person::players[i]->yaw) ||
+                                (Person::players[i]->isLanding() &&
+                                 Person::players[i]->frameTarget > 0 &&
+                                 !Person::players[i]->jumpkeydown) ||
+                                (Person::players[i]->isLandhard() &&
+                                 Person::players[i]->frameTarget > 0 &&
+                                 !Person::players[i]->jumpkeydown &&
+                                 Person::players[i]->crouchkeydown)) {
                                 Person::players[i]->setTargetAnimation(Person::players[i]->getRun());
                             }
                             if (Person::players[i]->isCrouch()) {
                                 Person::players[i]->animTarget = sneakanim;
                                 if (Person::players[i]->wasCrouch()) {
                                     Person::players[i]->target = 0;
-}
+                                }
                                 Person::players[i]->frameTarget = 0;
                             }
                             if (Person::players[i]->animTarget == jumpupanim || Person::players[i]->animTarget == jumpdownanim || Person::players[i]->isFlip()) {
@@ -4301,20 +4296,21 @@ void Game::Tick()
                                 Person::players[i]->coords.y -= 1.4;
                                 Person::players[i]->grabdelay = 1;
                             }
-                            if ( !Person::players[i]->leftkeydown && !Person::players[i]->rightkeydown) {
+                            if (!Person::players[i]->leftkeydown && !Person::players[i]->rightkeydown) {
                                 Person::players[i]->targetyaw += 180;
-}
+                            }
                             movekey = 1;
                         }
                         if ((Person::players[i]->jumpkeydown && !Person::players[i]->jumpclimb) || Person::players[i]->jumpstart) {
                             if ((((Person::players[i]->isLanding() && Person::players[i]->frameTarget >= 3) ||
-                                    Person::players[i]->isRun() ||
-                                    Person::players[i]->animTarget == walkanim ||
-                                    Person::players[i]->isCrouch() ||
-                                    Person::players[i]->animTarget == sneakanim) &&
-                                    Person::players[i]->jumppower > 1) &&
-                                    ((Person::players[i]->animTarget != rabbitrunninganim &&
-                                      Person::players[i]->animTarget != wolfrunninganim) || i != 0)) {
+                                  Person::players[i]->isRun() ||
+                                  Person::players[i]->animTarget == walkanim ||
+                                  Person::players[i]->isCrouch() ||
+                                  Person::players[i]->animTarget == sneakanim) &&
+                                 Person::players[i]->jumppower > 1) &&
+                                ((Person::players[i]->animTarget != rabbitrunninganim &&
+                                  Person::players[i]->animTarget != wolfrunninganim) ||
+                                 i != 0)) {
                                 Person::players[i]->jumpstart = 0;
                                 Person::players[i]->setTargetAnimation(jumpupanim);
                                 Person::players[i]->yaw = Person::players[i]->targetyaw;
@@ -4328,10 +4324,10 @@ void Game::Tick()
 
                                 if (movekey) {
                                     Person::players[i]->velocity = flatfacing * Person::players[i]->speed * 45 * Person::players[i]->scale;
-}
+                                }
                                 if (!movekey) {
                                     Person::players[i]->velocity = 0;
-}
+                                }
 
                                 //Dodge sweep?
                                 target = -2;
@@ -4339,33 +4335,33 @@ void Game::Tick()
                                     for (unsigned j = 0; j < Person::players.size(); j++) {
                                         if (j != i && !Person::players[j]->skeleton.free && Person::players[j]->victim) {
                                             if (distsq(&Person::players[j]->coords, &Person::players[j]->victim->coords) < 3 &&
-                                                    (Person::players[j]->victim == Person::players[i]) &&
-                                                    (Person::players[j]->animTarget == sweepanim)) {
+                                                (Person::players[j]->victim == Person::players[i]) &&
+                                                (Person::players[j]->animTarget == sweepanim)) {
                                                 if (target >= 0) {
                                                     target = -1;
                                                 } else {
                                                     target = j;
-}
+                                                }
                                             }
                                         }
                                     }
-}
+                                }
                                 if (target >= 0) {
                                     Person::players[i]->velocity.y = 1;
-                                } else
-                                    if (Person::players[i]->crouchkeydown || Person::players[i]->aitype != playercontrolled) {
+                                } else if (Person::players[i]->crouchkeydown || Person::players[i]->aitype != playercontrolled) {
                                     Person::players[i]->velocity.y = 7;
                                     Person::players[i]->crouchtogglekeydown = 1;
-                                } else { Person::players[i]->velocity.y = 5;
-}
+                                } else {
+                                    Person::players[i]->velocity.y = 5;
+                                }
 
                                 if (mousejump && i == 0 && devtools) {
                                     if (!Person::players[i]->isLanding()) {
                                         Person::players[i]->tempdeltav = deltav;
-}
+                                    }
                                     if (Person::players[i]->tempdeltav < 0) {
                                         Person::players[i]->velocity.y -= (float)(Person::players[i]->tempdeltav) / multiplier / 1000;
-}
+                                    }
                                 }
 
                                 Person::players[i]->coords.y += .2;
@@ -4373,7 +4369,7 @@ void Game::Tick()
 
                                 if (!i) {
                                     emit_sound_at(whooshsound, Person::players[i]->coords, 128.);
-}
+                                }
 
                                 emit_sound_at(jumpsound, Person::players[i]->coords, 128.);
                             }
@@ -4385,10 +4381,10 @@ void Game::Tick()
                                 Person::players[i]->tempdeltav = deltav;
                             }
                             if (Person::players[i]->animTarget == jumpupanim &&
-                                    (((!floatjump &&
-                                       !editorenabled) ||
-                                      !devtools) ||
-                                     Person::players[i]->aitype != playercontrolled)) {
+                                (((!floatjump &&
+                                   !editorenabled) ||
+                                  !devtools) ||
+                                 Person::players[i]->aitype != playercontrolled)) {
                                 if (Person::players[i]->jumppower > multiplier * 6) {
                                     Person::players[i]->velocity.y += multiplier * 6;
                                     Person::players[i]->jumppower -= multiplier * 6;
@@ -4400,7 +4396,7 @@ void Game::Tick()
                             }
                             if (((floatjump || editorenabled) && devtools) && i == 0) {
                                 Person::players[i]->velocity.y += multiplier * 30;
-}
+                            }
                         }
 
                         if (!movekey) {
@@ -4416,20 +4412,20 @@ void Game::Tick()
                             }
                         }
                         if (Person::players[i]->animTarget == walkanim &&
-                                (Person::players[i]->aitype == attacktypecutoff ||
-                                 Person::players[i]->aitype == searchtype ||
-                                 (Person::players[i]->aitype == passivetype &&
-                                  Person::players[i]->numwaypoints <= 1))) {
+                            (Person::players[i]->aitype == attacktypecutoff ||
+                             Person::players[i]->aitype == searchtype ||
+                             (Person::players[i]->aitype == passivetype &&
+                              Person::players[i]->numwaypoints <= 1))) {
                             Person::players[i]->setTargetAnimation(Person::players[i]->getStop());
-}
+                        }
                         if (Person::players[i]->isRun() && (Person::players[i]->aitype == passivetype)) {
                             Person::players[i]->setTargetAnimation(Person::players[i]->getStop());
-}
+                        }
                     }
                 }
                 if (Person::players[i]->animTarget == rollanim) {
                     Person::players[i]->targetyaw = oldtargetyaw;
-}
+                }
             }
 
             //Rotation
@@ -4439,38 +4435,38 @@ void Game::Tick()
                         Person::players[k]->yaw -= 360;
                     } else {
                         Person::players[k]->yaw += 360;
-}
+                    }
                 }
 
                 //stop to turn in right direction
                 if (fabs(Person::players[k]->yaw - Person::players[k]->targetyaw) > 90 && (Person::players[k]->isRun() || Person::players[k]->animTarget == walkanim)) {
                     Person::players[k]->setTargetAnimation(Person::players[k]->getStop());
-}
+                }
 
                 if (Person::players[k]->animTarget == backhandspringanim || Person::players[k]->animTarget == dodgebackanim) {
                     Person::players[k]->targettilt = 0;
-}
+                }
 
                 if (Person::players[k]->animTarget != jumpupanim &&
-                        Person::players[k]->animTarget != backhandspringanim &&
-                        Person::players[k]->animTarget != jumpdownanim &&
-                        !Person::players[k]->isFlip()) {
+                    Person::players[k]->animTarget != backhandspringanim &&
+                    Person::players[k]->animTarget != jumpdownanim &&
+                    !Person::players[k]->isFlip()) {
                     Person::players[k]->targettilt = 0;
                     if (Person::players[k]->jumppower < 0 && !Person::players[k]->jumpkeydown) {
                         Person::players[k]->jumppower = 0;
-}
+                    }
                     Person::players[k]->jumppower += multiplier * 7;
                     if (Person::players[k]->isCrouch()) {
                         Person::players[k]->jumppower += multiplier * 7;
-}
+                    }
                     if (Person::players[k]->jumppower > 5) {
                         Person::players[k]->jumppower = 5;
-}
+                    }
                 }
 
                 if (Person::players[k]->isRun()) {
                     Person::players[k]->targettilt = (Person::players[k]->yaw - Person::players[k]->targetyaw) / 4;
-}
+                }
 
                 Person::players[k]->tilt = stepTowardf(Person::players[k]->tilt, Person::players[k]->targettilt, multiplier * 150);
                 Person::players[k]->grabdelay -= multiplier;
@@ -4500,7 +4496,6 @@ void Game::Tick()
                 Tutorial::DoStuff(multiplier);
             }
 
-
             //3d sound
             static float gLoc[3];
             gLoc[0] = viewer.x;
@@ -4525,7 +4520,6 @@ void Game::Tick()
             facing = DoRotation(facing, -pitch, 0, 0);
             facing = DoRotation(facing, 0, 0 - yaw, 0);
 
-
             static float ori[6];
             ori[0] = -facing.x;
             ori[1] = facing.y;
@@ -4543,7 +4537,7 @@ void Game::Tick()
 
     if (Input::isKeyPressed(SDL_SCANCODE_F1)) {
         Screenshot();
-}
+    }
 }
 
 void Game::TickOnce()
@@ -4559,10 +4553,10 @@ void Game::TickOnce()
         }
         if (pitch > 90) {
             pitch = 90;
-}
+        }
         if (pitch < -70) {
             pitch = -70;
-}
+        }
     }
 }
 
@@ -4583,46 +4577,44 @@ void Game::TickOnceAfter()
 
         if (environment == snowyenvironment) {
             leveltheme = stream_snowtheme;
-}
+        }
         if (environment == grassyenvironment) {
             leveltheme = stream_grasstheme;
-}
+        }
         if (environment == desertenvironment) {
             leveltheme = stream_deserttheme;
-}
+        }
 
         realthreat = 0;
 
         musictype = leveltheme;
         for (unsigned i = 0; i < Person::players.size(); i++) {
             if ((Person::players[i]->aitype == attacktypecutoff ||
-                    Person::players[i]->aitype == getweapontype ||
-                    Person::players[i]->aitype == gethelptype ||
-                    Person::players[i]->aitype == searchtype) &&
-                    !Person::players[i]->dead &&
-                    (Person::players[i]->animTarget != sneakattackedanim &&
-                     Person::players[i]->animTarget != knifesneakattackedanim &&
-                     Person::players[i]->animTarget != swordsneakattackedanim)) {
+                 Person::players[i]->aitype == getweapontype ||
+                 Person::players[i]->aitype == gethelptype ||
+                 Person::players[i]->aitype == searchtype) &&
+                !Person::players[i]->dead &&
+                (Person::players[i]->animTarget != sneakattackedanim &&
+                 Person::players[i]->animTarget != knifesneakattackedanim &&
+                 Person::players[i]->animTarget != swordsneakattackedanim)) {
                 musictype = stream_fighttheme;
                 realthreat = 1;
             }
         }
         if (Person::players[0]->dead) {
             musictype = stream_menutheme;
-}
-
+        }
 
         if (musictype == stream_fighttheme) {
             unseendelay = 1;
-}
+        }
 
         if (oldmusictype == stream_fighttheme && musictype != stream_fighttheme) {
             unseendelay -= multiplier;
             if (unseendelay > 0) {
                 musictype = stream_fighttheme;
-}
+            }
         }
-
 
         if (loading == 2) {
             musictype = stream_menutheme;
@@ -4635,72 +4627,72 @@ void Game::TickOnceAfter()
         if (musictoggle) {
             if (musictype != oldmusictype && musictype == stream_fighttheme) {
                 emit_sound_np(alarmsound);
-}
-}
+            }
+        }
         musicselected = musictype;
 
         if (musicselected == leveltheme) {
             musicvolume[0] += multiplier * 450;
         } else {
             musicvolume[0] -= multiplier * 450;
-}
+        }
         if (musicselected == stream_fighttheme) {
             musicvolume[1] += multiplier * 450;
         } else {
             musicvolume[1] -= multiplier * 450;
-}
+        }
         if (musicselected == stream_menutheme) {
             musicvolume[2] += multiplier * 450;
         } else {
             musicvolume[2] -= multiplier * 450;
-}
+        }
 
         for (int i = 0; i < 3; i++) {
             if (musicvolume[i] < 0) {
                 musicvolume[i] = 0;
-}
+            }
             if (musicvolume[i] > 512) {
                 musicvolume[i] = 512;
-}
+            }
         }
 
         if (musicvolume[2] > 128 && !loading && !mainmenu) {
             musicvolume[2] = 128;
-}
+        }
 
         if (musictoggle) {
             if (musicvolume[0] > 0 && oldmusicvolume[0] <= 0) {
                 emit_stream_np(leveltheme, musicvolume[0]);
-}
+            }
             if (musicvolume[1] > 0 && oldmusicvolume[1] <= 0) {
                 emit_stream_np(stream_fighttheme, musicvolume[1]);
-}
+            }
             if (musicvolume[2] > 0 && oldmusicvolume[2] <= 0) {
                 emit_stream_np(stream_menutheme, musicvolume[2]);
-}
+            }
             if (musicvolume[0] <= 0 && oldmusicvolume[0] > 0) {
                 pause_sound(leveltheme);
-}
+            }
             if (musicvolume[1] <= 0 && oldmusicvolume[1] > 0) {
                 pause_sound(stream_fighttheme);
-}
+            }
             if (musicvolume[2] <= 0 && oldmusicvolume[2] > 0) {
                 pause_sound(stream_menutheme);
-}
+            }
 
             if (musicvolume[0] != oldmusicvolume[0]) {
                 OPENAL_SetVolume(channels[leveltheme], musicvolume[0]);
-}
+            }
             if (musicvolume[1] != oldmusicvolume[1]) {
                 OPENAL_SetVolume(channels[stream_fighttheme], musicvolume[1]);
-}
+            }
             if (musicvolume[2] != oldmusicvolume[2]) {
                 OPENAL_SetVolume(channels[stream_menutheme], musicvolume[2]);
-}
+            }
 
             for (int i = 0; i < 3; i++) {
                 oldmusicvolume[i] = musicvolume[i];
-}
+            }
         } else {
             pause_sound(leveltheme);
             pause_sound(stream_fighttheme);
@@ -4719,13 +4711,12 @@ void Game::TickOnceAfter()
                     Hotspot::killhotspot = 0;
                 } else if (Hotspot::killhotspot == 2) {
                     Hotspot::killhotspot = 1;
-}
+                }
             }
         }
         if (Hotspot::killhotspot == 2) {
             Hotspot::killhotspot = 0;
-}
-
+        }
 
         winhotspot = false;
         for (unsigned i = 0; i < Hotspot::hotspots.size(); i++) {
@@ -4759,29 +4750,27 @@ void Game::TickOnceAfter()
                 }
             }
 
-
             if (alldead && !Person::players[0]->dead && maptype == mapkilleveryone) {
                 changedelay = 1;
                 targetlevel = whichlevel + 1;
                 if (targetlevel > numchallengelevels - 1) {
                     targetlevel = 0;
-}
+                }
             }
             if (winhotspot || windialogue) {
                 changedelay = 0.1;
                 targetlevel = whichlevel + 1;
                 if (targetlevel > numchallengelevels - 1) {
                     targetlevel = 0;
-}
+                }
             }
-
 
             if (Hotspot::killhotspot) {
                 changedelay = 1;
                 targetlevel = whichlevel + 1;
                 if (targetlevel > numchallengelevels - 1) {
                     targetlevel = 0;
-}
+                }
             }
 
             if (changedelay > 0 && !Person::players[0]->dead && !won) {
@@ -4811,10 +4800,10 @@ void Game::TickOnceAfter()
             if (!editorenabled && gameon && !mainmenu) {
                 if (changedelay != -999) {
                     changedelay -= multiplier / 7;
-}
+                }
                 if (Person::players[0]->dead) {
                     targetlevel = whichlevel;
-}
+                }
                 if (loading == 2 && !campaign) {
                     flash();
 
@@ -4822,7 +4811,7 @@ void Game::TickOnceAfter()
 
                     if (!Person::players[0]->dead && targetlevel != whichlevel) {
                         startbonustotal = bonustotal;
-}
+                    }
 
                     LoadLevel(targetlevel);
                     fireSound();
@@ -4842,27 +4831,27 @@ void Game::TickOnceAfter()
                     loading = 3;
                 }
                 if (changedelay <= -999 &&
-                        whichlevel != -2 &&
-                        !loading &&
-                        (Person::players[0]->dead ||
-                         (alldead && maptype == mapkilleveryone) ||
-                         (winhotspot) ||
-                         (Hotspot::killhotspot))) {
+                    whichlevel != -2 &&
+                    !loading &&
+                    (Person::players[0]->dead ||
+                     (alldead && maptype == mapkilleveryone) ||
+                     (winhotspot) ||
+                     (Hotspot::killhotspot))) {
                     loading = 1;
-}
+                }
                 if ((Person::players[0]->dead ||
-                        (alldead && maptype == mapkilleveryone) ||
-                        (winhotspot) ||
-                        (windialogue) ||
-                        (Hotspot::killhotspot)) &&
-                        changedelay <= 0) {
+                     (alldead && maptype == mapkilleveryone) ||
+                     (winhotspot) ||
+                     (windialogue) ||
+                     (Hotspot::killhotspot)) &&
+                    changedelay <= 0) {
                     if (whichlevel != -2 && !loading && !Person::players[0]->dead) {
                         winfreeze = true;
                         changedelay = -999;
                     }
                     if (Person::players[0]->dead) {
                         loading = 1;
-}
+                    }
                 }
             }
 
@@ -4874,7 +4863,7 @@ void Game::TickOnceAfter()
                 if (mainmenu == 0 && winfreeze && (campaignlevels[actuallevel].choosenext) == 1) {
                     if (campaignlevels[actuallevel].nextlevel.empty()) {
                         endgame = 1;
-}
+                    }
                 } else if (mainmenu == 0 && winfreeze) {
                     stealthloading = (campaignlevels[actuallevel].choosenext == 2);
 
@@ -4910,8 +4899,7 @@ void Game::TickOnceAfter()
 
             if (loading == 3) {
                 loading = 0;
-}
-
+            }
         }
 
         oldmusictype = musictype;
@@ -4929,13 +4917,13 @@ void Game::TickOnceAfter()
             target = Person::players[0]->coords + Person::players[0]->currentoffset * (1 - Person::players[0]->target) * Person::players[0]->scale + Person::players[0]->targetoffset * Person::players[0]->target * Person::players[0]->scale - Person::players[0]->facing * .05;
         } else {
             target = Person::players[0]->oldcoords + Person::players[0]->currentoffset * (1 - Person::players[0]->target) * Person::players[0]->scale + Person::players[0]->targetoffset * Person::players[0]->target * Person::players[0]->scale - Person::players[0]->facing * .05;
-}
+        }
         target.y += .1;
         if (Person::players[0]->skeleton.free) {
             for (unsigned i = 0; i < Person::players[0]->skeleton.joints.size(); i++) {
                 if (Person::players[0]->skeleton.joints[i].position.y * Person::players[0]->scale + Person::players[0]->coords.y > target.y) {
                     target.y = Person::players[0]->skeleton.joints[i].position.y * Person::players[0]->scale + Person::players[0]->coords.y;
-}
+                }
             }
             target.y += .1;
         }
@@ -4946,7 +4934,7 @@ void Game::TickOnceAfter()
             }
             if (Person::players[0]->skeleton.free == 0 && Person::players[0]->animTarget != hanganim && Person::players[0]->animTarget != climbanim) {
                 target.y += 1.4;
-}
+            }
             coltarget = target - cameraloc;
             if (findLengthfast(&coltarget) < multiplier * multiplier * 400) {
                 cameraloc = target;
@@ -4956,15 +4944,15 @@ void Game::TickOnceAfter()
                     cameraloc = cameraloc + coltarget * multiplier * cameraspeed;
                 } else {
                     cameraloc = cameraloc + coltarget * multiplier * 8;
-}
+                }
             }
             if (editorenabled) {
                 cameraloc = target;
-}
+            }
             cameradist += multiplier * 5;
             if (cameradist > 2.3) {
                 cameradist = 2.3;
-}
+            }
             viewer = cameraloc - facing * cameradist;
             colviewer = viewer;
             coltarget = cameraloc;
@@ -4992,22 +4980,22 @@ void Game::TickOnceAfter()
         }
         if (camerashake > .8) {
             camerashake = .8;
-}
+        }
         woozy += multiplier;
         if (Person::players[0]->dead) {
             camerashake = 0;
-}
+        }
         if (Person::players[0]->dead) {
             woozy = 0;
-}
+        }
         camerashake -= multiplier * 2;
         blackout -= multiplier * 2;
         if (camerashake < 0) {
             camerashake = 0;
-}
+        }
         if (blackout < 0) {
             blackout = 0;
-}
+        }
         if (camerashake) {
             viewer.x += (float)(Random() % 100) * .0005 * camerashake;
             viewer.y += (float)(Random() % 100) * .0005 * camerashake;
@@ -5015,4 +5003,3 @@ void Game::TickOnceAfter()
         }
     }
 }
-

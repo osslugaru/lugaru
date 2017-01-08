@@ -25,15 +25,15 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include <time.h>
 #include <windows.h>
 
-
 class AppTime
 {
-public:
-    AppTime() {
+  public:
+    AppTime()
+    {
         counterRate = 1;
         baseCounter = 0;
-        QueryPerformanceFrequency( (LARGE_INTEGER*)&counterRate);
-        QueryPerformanceCounter( (LARGE_INTEGER*)&baseCounter);
+        QueryPerformanceFrequency((LARGE_INTEGER*)&counterRate);
+        QueryPerformanceCounter((LARGE_INTEGER*)&baseCounter);
     }
     __int64 counterRate; // LARGE_INTEGER type has no math functions so use int64
     __int64 baseCounter;
@@ -43,7 +43,7 @@ static AppTime g_appTime;
 AbsoluteTime UpTime()
 {
     __int64 counter;
-    QueryPerformanceCounter( (LARGE_INTEGER*)&counter);
+    QueryPerformanceCounter((LARGE_INTEGER*)&counter);
 
     counter -= g_appTime.baseCounter;
 
@@ -53,8 +53,7 @@ AbsoluteTime UpTime()
     return time;
 }
 
-
-Duration AbsoluteDeltaToDuration( AbsoluteTime& a, AbsoluteTime& b)
+Duration AbsoluteDeltaToDuration(AbsoluteTime& a, AbsoluteTime& b)
 {
     __int64 value = a.hi;
     value <<= 32;

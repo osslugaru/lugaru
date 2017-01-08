@@ -30,7 +30,7 @@ extern float fadestart;
 extern float texdetail;
 extern bool decalstoggle;
 
-int Model::LineCheck(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate)
+int Model::LineCheck(XYZ* p1, XYZ* p2, XYZ* p, XYZ* move, float* rotate)
 {
     static float distance;
     static float olddistance;
@@ -42,13 +42,13 @@ int Model::LineCheck(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate)
     *p2 = *p2 - *move;
     if (*rotate) {
         *p1 = DoRotation(*p1, 0, -*rotate, 0);
-}
+    }
     if (*rotate) {
         *p2 = DoRotation(*p2, 0, -*rotate, 0);
-}
+    }
     if (!sphere_line_intersection(p1, p2, &boundingspherecenter, &boundingsphereradius)) {
         return -1;
-}
+    }
     firstintersecting = -1;
 
     for (unsigned int j = 0; j < Triangles.size(); j++) {
@@ -63,12 +63,12 @@ int Model::LineCheck(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate)
 
     if (*rotate) {
         *p = DoRotation(*p, 0, *rotate, 0);
-}
+    }
     *p = *p + *move;
     return firstintersecting;
 }
 
-int Model::LineCheckPossible(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate)
+int Model::LineCheckPossible(XYZ* p1, XYZ* p2, XYZ* p, XYZ* move, float* rotate)
 {
     static float distance;
     static float olddistance;
@@ -80,14 +80,14 @@ int Model::LineCheckPossible(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate)
     *p2 = *p2 - *move;
     if (!sphere_line_intersection(p1, p2, &boundingspherecenter, &boundingsphereradius)) {
         return -1;
-}
+    }
     firstintersecting = -1;
     if (*rotate) {
         *p1 = DoRotation(*p1, 0, -*rotate, 0);
-}
+    }
     if (*rotate) {
         *p2 = DoRotation(*p2, 0, -*rotate, 0);
-}
+    }
 
     for (unsigned int j = 0; j < possible.size(); j++) {
         if (possible[j] < Triangles.size()) {
@@ -103,12 +103,12 @@ int Model::LineCheckPossible(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate)
 
     if (*rotate) {
         *p = DoRotation(*p, 0, *rotate, 0);
-}
+    }
     *p = *p + *move;
     return firstintersecting;
 }
 
-int Model::LineCheckSlidePossible(XYZ *p1, XYZ *p2, XYZ *move, float *rotate)
+int Model::LineCheckSlidePossible(XYZ* p1, XYZ* p2, XYZ* move, float* rotate)
 {
     static float distance;
     static float olddistance;
@@ -120,14 +120,14 @@ int Model::LineCheckSlidePossible(XYZ *p1, XYZ *p2, XYZ *move, float *rotate)
     *p2 = *p2 - *move;
     if (!sphere_line_intersection(p1, p2, &boundingspherecenter, &boundingsphereradius)) {
         return -1;
-}
+    }
     firstintersecting = -1;
     if (*rotate) {
         *p1 = DoRotation(*p1, 0, -*rotate, 0);
-}
+    }
     if (*rotate) {
         *p2 = DoRotation(*p2, 0, -*rotate, 0);
-}
+    }
 
     for (unsigned int j = 0; j < possible.size(); j++) {
         if (possible[j] < Triangles.size()) {
@@ -147,12 +147,12 @@ int Model::LineCheckSlidePossible(XYZ *p1, XYZ *p2, XYZ *move, float *rotate)
 
     if (*rotate) {
         *p2 = DoRotation(*p2, 0, *rotate, 0);
-}
+    }
     *p2 = *p2 + *move;
     return firstintersecting;
 }
 
-int Model::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate)
+int Model::SphereCheck(XYZ* p1, float radius, XYZ* p, XYZ* move, float* rotate)
 {
     static int i;
     static float distance;
@@ -168,10 +168,10 @@ int Model::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate)
     *p1 = *p1 - *move;
     if (*rotate) {
         *p1 = DoRotation(*p1, 0, -*rotate, 0);
-}
+    }
     if (distsq(p1, &boundingspherecenter) > radius * radius + boundingsphereradius * boundingsphereradius) {
         return -1;
-}
+    }
 
     for (i = 0; i < 4; i++) {
         for (unsigned int j = 0; j < Triangles.size(); j++) {
@@ -179,18 +179,18 @@ int Model::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate)
             distance = abs((Triangles[j].facenormal.x * p1->x) + (Triangles[j].facenormal.y * p1->y) + (Triangles[j].facenormal.z * p1->z) - ((Triangles[j].facenormal.x * vertex[Triangles[j].vertex[0]].x) + (Triangles[j].facenormal.y * vertex[Triangles[j].vertex[0]].y) + (Triangles[j].facenormal.z * vertex[Triangles[j].vertex[0]].z)));
             if (distance < radius) {
                 point = *p1 - Triangles[j].facenormal * distance;
-                if (PointInTriangle( &point, Triangles[j].facenormal, &vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[1]], &vertex[Triangles[j].vertex[2]])) {
+                if (PointInTriangle(&point, Triangles[j].facenormal, &vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[1]], &vertex[Triangles[j].vertex[2]])) {
                     intersecting = 1;
-}
+                }
                 if (!intersecting) {
                     intersecting = sphere_line_intersection(&vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[1]], p1, &radius);
-}
+                }
                 if (!intersecting) {
                     intersecting = sphere_line_intersection(&vertex[Triangles[j].vertex[1]], &vertex[Triangles[j].vertex[2]], p1, &radius);
-}
+                }
                 if (!intersecting) {
                     intersecting = sphere_line_intersection(&vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[2]], p1, &radius);
-}
+                }
                 if (intersecting) {
                     *p1 += Triangles[j].facenormal * (distance - radius);
                 }
@@ -204,16 +204,16 @@ int Model::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate)
     }
     if (*rotate) {
         *p = DoRotation(*p, 0, *rotate, 0);
-}
+    }
     *p = *p + *move;
     if (*rotate) {
         *p1 = DoRotation(*p1, 0, *rotate, 0);
-}
+    }
     *p1 += *move;
     return firstintersecting;
 }
 
-int Model::SphereCheckPossible(XYZ *p1, float radius, XYZ *move, float *rotate)
+int Model::SphereCheckPossible(XYZ* p1, float radius, XYZ* move, float* rotate)
 {
     static float distance;
     static float olddistance;
@@ -231,7 +231,7 @@ int Model::SphereCheckPossible(XYZ *p1, float radius, XYZ *move, float *rotate)
 
     if (*rotate) {
         *p1 = DoRotation(*p1, 0, -*rotate, 0);
-}
+    }
     if (distsq(p1, &boundingspherecenter) > radius * radius + boundingsphereradius * boundingsphereradius) {
         *p1 = oldp1;
         return -1;
@@ -242,18 +242,18 @@ int Model::SphereCheckPossible(XYZ *p1, float radius, XYZ *move, float *rotate)
         distance = abs((Triangles[j].facenormal.x * p1->x) + (Triangles[j].facenormal.y * p1->y) + (Triangles[j].facenormal.z * p1->z) - ((Triangles[j].facenormal.x * vertex[Triangles[j].vertex[0]].x) + (Triangles[j].facenormal.y * vertex[Triangles[j].vertex[0]].y) + (Triangles[j].facenormal.z * vertex[Triangles[j].vertex[0]].z)));
         if (distance < radius) {
             point = *p1 - Triangles[j].facenormal * distance;
-            if (PointInTriangle( &point, Triangles[j].facenormal, &vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[1]], &vertex[Triangles[j].vertex[2]])) {
+            if (PointInTriangle(&point, Triangles[j].facenormal, &vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[1]], &vertex[Triangles[j].vertex[2]])) {
                 intersecting = 1;
-}
+            }
             if (!intersecting) {
                 intersecting = sphere_line_intersection(&vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[1]], p1, &radius);
-}
+            }
             if (!intersecting) {
                 intersecting = sphere_line_intersection(&vertex[Triangles[j].vertex[1]], &vertex[Triangles[j].vertex[2]], p1, &radius);
-}
+            }
             if (!intersecting) {
                 intersecting = sphere_line_intersection(&vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[2]], p1, &radius);
-}
+            }
             if (intersecting) {
                 possible.push_back(j);
             }
@@ -265,18 +265,17 @@ int Model::SphereCheckPossible(XYZ *p1, float radius, XYZ *move, float *rotate)
     }
     if (*rotate) {
         *p1 = DoRotation(*p1, 0, *rotate, 0);
-}
+    }
     *p1 += *move;
 
     return firstintersecting;
 }
 
-
 void Model::UpdateVertexArray()
 {
     if (type != normaltype && type != decalstype) {
         return;
-}
+    }
 
     if (flat) {
         for (unsigned int i = 0; i < Triangles.size(); i++) {
@@ -345,7 +344,7 @@ void Model::UpdateVertexArrayNoTex()
 {
     if (type != normaltype && type != decalstype) {
         return;
-}
+    }
 
     if (flat) {
         for (unsigned int i = 0; i < Triangles.size(); i++) {
@@ -402,7 +401,7 @@ void Model::UpdateVertexArrayNoTexNoNorm()
 {
     if (type != normaltype && type != decalstype) {
         return;
-}
+    }
 
     for (unsigned int i = 0; i < Triangles.size(); i++) {
         unsigned int j = i * 24;
@@ -422,14 +421,14 @@ void Model::UpdateVertexArrayNoTexNoNorm()
 
 bool Model::loadnotex(const std::string& filename)
 {
-    FILE *tfile;
+    FILE* tfile;
     long i;
     short triangleNum;
 
     type = notextype;
     color = 0;
 
-    tfile = Folders::openMandatoryFile( Folders::getResourcePath(filename), "rb" );
+    tfile = Folders::openMandatoryFile(Folders::getResourcePath(filename), "rb");
 
     // read model settings
 
@@ -482,10 +481,9 @@ bool Model::loadnotex(const std::string& filename)
     return true;
 }
 
-
 bool Model::load(const std::string& filename)
 {
-    FILE *tfile;
+    FILE* tfile;
     long i;
     short triangleNum;
 
@@ -498,7 +496,7 @@ bool Model::load(const std::string& filename)
     type = normaltype;
     color = 0;
 
-    tfile = Folders::openMandatoryFile( Folders::getResourcePath(filename), "rb" );
+    tfile = Folders::openMandatoryFile(Folders::getResourcePath(filename), "rb");
 
     // read model settings
 
@@ -557,7 +555,7 @@ bool Model::load(const std::string& filename)
 
 bool Model::loaddecal(const std::string& filename)
 {
-    FILE *tfile;
+    FILE* tfile;
     long i, j;
     short triangleNum;
 
@@ -568,7 +566,7 @@ bool Model::loaddecal(const std::string& filename)
     type = decalstype;
     color = 0;
 
-    tfile = Folders::openMandatoryFile( Folders::getResourcePath(filename), "rb" );
+    tfile = Folders::openMandatoryFile(Folders::getResourcePath(filename), "rb");
 
     // read model settings
 
@@ -601,7 +599,6 @@ bool Model::loaddecal(const std::string& filename)
         funpackf(tfile, "Bf Bf Bf", &Triangles[i].gy[0], &Triangles[i].gy[1], &Triangles[i].gy[2]);
     }
 
-
     modelTexture.xsz = 0;
 
     fclose(tfile);
@@ -628,7 +625,7 @@ bool Model::loaddecal(const std::string& filename)
 
 bool Model::loadraw(const std::string& filename)
 {
-    FILE *tfile;
+    FILE* tfile;
     long i;
     short triangleNum;
 
@@ -639,7 +636,7 @@ bool Model::loadraw(const std::string& filename)
     type = rawtype;
     color = 0;
 
-    tfile = Folders::openMandatoryFile( Folders::getResourcePath(filename), "rb" );
+    tfile = Folders::openMandatoryFile(Folders::getResourcePath(filename), "rb");
 
     // read model settings
 
@@ -656,7 +653,6 @@ bool Model::loadraw(const std::string& filename)
     Triangles.resize(triangleNum);
     vArray = (GLfloat*)malloc(sizeof(GLfloat) * triangleNum * 24);
 
-
     for (i = 0; i < vertexNum; i++) {
         funpackf(tfile, "Bf Bf Bf", &vertex[i].x, &vertex[i].y, &vertex[i].z);
     }
@@ -671,7 +667,6 @@ bool Model::loadraw(const std::string& filename)
         funpackf(tfile, "Bf Bf Bf", &Triangles[i].gy[0], &Triangles[i].gy[1], &Triangles[i].gy[2]);
     }
 
-
     fclose(tfile);
 
     for (i = 0; i < vertexNum; i++) {
@@ -680,7 +675,6 @@ bool Model::loadraw(const std::string& filename)
 
     return true;
 }
-
 
 void Model::UniformTexCoords()
 {
@@ -694,7 +688,6 @@ void Model::UniformTexCoords()
     }
     UpdateVertexArray();
 }
-
 
 void Model::FlipTexCoords()
 {
@@ -747,7 +740,7 @@ void Model::ScaleNormals(float xscale, float yscale, float zscale)
 {
     if (type != normaltype && type != decalstype) {
         return;
-}
+    }
 
     for (int i = 0; i < vertexNum; i++) {
         normals[i].x *= xscale;
@@ -806,14 +799,13 @@ void Model::Rotate(float xang, float yang, float zang)
     boundingsphereradius = fast_sqrt(boundingsphereradius);
 }
 
-
 void Model::CalculateNormals(bool facenormalise)
 {
     Game::LoadingScreen();
 
     if (type != normaltype && type != decalstype) {
         return;
-}
+    }
 
     for (int i = 0; i < vertexNum; i++) {
         normals[i].x = 0;
@@ -837,7 +829,7 @@ void Model::CalculateNormals(bool facenormalise)
         normals[Triangles[i].vertex[2]].z += Triangles[i].facenormal.z;
         if (facenormalise) {
             Normalise(&Triangles[i].facenormal);
-}
+        }
     }
     for (int i = 0; i < vertexNum; i++) {
         Normalise(&normals[i]);
@@ -888,16 +880,16 @@ void Model::draw()
 {
     if (type != normaltype && type != decalstype) {
         return;
-}
+    }
 
     glEnableClientState(GL_NORMAL_ARRAY);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
     if (color) {
-        glInterleavedArrays( GL_T2F_C3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
+        glInterleavedArrays(GL_T2F_C3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
     } else {
-        glInterleavedArrays( GL_T2F_N3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
+        glInterleavedArrays(GL_T2F_N3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
     }
     textureptr.bind();
 
@@ -918,14 +910,14 @@ void Model::drawdifftex(Texture texture)
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     if (color) {
-        glInterleavedArrays( GL_T2F_C3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
+        glInterleavedArrays(GL_T2F_C3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
     } else {
-        glInterleavedArrays( GL_T2F_N3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
+        glInterleavedArrays(GL_T2F_N3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
     }
 
     texture.bind();
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     glDrawArrays(GL_TRIANGLES, 0, Triangles.size() * 3);
 
@@ -956,7 +948,7 @@ void Model::drawdecals(Texture shadowtexture, Texture bloodtexture, Texture bloo
         for (unsigned int i = 0; i < decals.size(); i++) {
             if (decals[i].type == blooddecalfast && decals[i].alivetime < 2) {
                 decals[i].alivetime = 2;
-}
+            }
 
             if (decals[i].type != lasttype) {
                 if (decals[i].type == shadowdecal) {
@@ -999,16 +991,16 @@ void Model::drawdecals(Texture shadowtexture, Texture bloodtexture, Texture bloo
                 glColor4f(1, 1, 1, decals[i].opacity);
                 if (decals[i].alivetime > 58) {
                     glColor4f(1, 1, 1, decals[i].opacity * (60 - decals[i].alivetime) / 2);
-}
+                }
             }
             if ((decals[i].type == blooddecal || decals[i].type == blooddecalfast || decals[i].type == blooddecalslow)) {
                 glColor4f(1, 1, 1, decals[i].opacity);
                 if (decals[i].alivetime < 4) {
-                    glColor4f(1, 1, 1, decals[i].opacity*decals[i].alivetime*.25);
-}
+                    glColor4f(1, 1, 1, decals[i].opacity * decals[i].alivetime * .25);
+                }
                 if (decals[i].alivetime > 58) {
                     glColor4f(1, 1, 1, decals[i].opacity * (60 - decals[i].alivetime) / 2);
-}
+                }
             }
             lasttype = decals[i].type;
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -1028,16 +1020,16 @@ void Model::drawdecals(Texture shadowtexture, Texture bloodtexture, Texture bloo
             decals[i].alivetime += multiplier;
             if (decals[i].type == blooddecalslow) {
                 decals[i].alivetime -= multiplier * 2 / 3;
-}
+            }
             if (decals[i].type == blooddecalfast) {
                 decals[i].alivetime += multiplier * 4;
-}
+            }
             if (decals[i].type == shadowdecal) {
                 DeleteDecal(i);
-}
+            }
             if ((decals[i].type == blooddecal || decals[i].type == blooddecalfast || decals[i].type == blooddecalslow) && decals[i].alivetime >= 60) {
                 DeleteDecal(i);
-}
+            }
         }
         glAlphaFunc(GL_GREATER, 0.0001);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -1049,17 +1041,17 @@ void Model::DeleteDecal(int which)
     if (decalstoggle) {
         if (type != decalstype) {
             return;
-}
+        }
         decals.erase(decals.begin() + which);
     }
 }
 
-void Model::MakeDecal(decal_type atype, XYZ *where, float *size, float *opacity, float *rotation)
+void Model::MakeDecal(decal_type atype, XYZ* where, float* size, float* opacity, float* rotation)
 {
     if (decalstoggle) {
         if (type != decalstype) {
             return;
-}
+        }
 
         static XYZ rot;
         static float distance;
@@ -1091,14 +1083,14 @@ void Model::MakeDecal(decal_type atype, XYZ *where, float *size, float *opacity,
                                                 decals.push_back(decal);
                                             }
                                         }
-}
-}
-}
+                                    }
+                                }
+                            }
                         }
                     }
                 }
-}
-}
+            }
+        }
     }
 }
 
@@ -1107,7 +1099,7 @@ void Model::MakeDecal(decal_type atype, XYZ where, float size, float opacity, fl
     if (decalstoggle) {
         if (type != decalstype) {
             return;
-}
+        }
 
         static XYZ rot;
         static float distance;
@@ -1138,9 +1130,9 @@ void Model::MakeDecal(decal_type atype, XYZ where, float size, float opacity, fl
                                                 decals.push_back(decal);
                                             }
                                         }
-}
-}
-}
+                                    }
+                                }
+                            }
                         }
                     } else if (distance < .02 && abs(Triangles[i].facenormal.x) > abs(Triangles[i].facenormal.y) && abs(Triangles[i].facenormal.x) > abs(Triangles[i].facenormal.z)) {
                         if ((opacity - distance / 10) > 0) {
@@ -1164,9 +1156,9 @@ void Model::MakeDecal(decal_type atype, XYZ where, float size, float opacity, fl
                                                 decals.push_back(decal);
                                             }
                                         }
-}
-}
-}
+                                    }
+                                }
+                            }
                         }
                     } else if (distance < .02 && abs(Triangles[i].facenormal.z) > abs(Triangles[i].facenormal.y) && abs(Triangles[i].facenormal.z) > abs(Triangles[i].facenormal.x)) {
                         if ((opacity - distance / 10) > 0) {
@@ -1190,14 +1182,14 @@ void Model::MakeDecal(decal_type atype, XYZ where, float size, float opacity, fl
                                                 decals.push_back(decal);
                                             }
                                         }
-}
-}
-}
+                                    }
+                                }
+                            }
                         }
                     }
                 }
-}
-}
+            }
+        }
     }
 }
 
@@ -1224,38 +1216,38 @@ void Model::deallocate()
 {
     if (owner) {
         free(owner);
-}
+    }
     owner = 0;
 
     if (vertex) {
         free(vertex);
-}
+    }
     vertex = 0;
 
     if (normals) {
         free(normals);
-}
+    }
     normals = 0;
 
     if (vArray) {
         free(vArray);
-}
+    }
     vArray = 0;
 
     decals.clear();
 }
 
 Model::Model()
-  : vertexNum(0),
-    type(nothing),
-    owner(0),
-    vertex(0),
-    normals(0),
-    vArray(0),
-    color(0),
-    boundingspherecenter(),
-    boundingsphereradius(0),
-    flat(false)
+    : vertexNum(0)
+    , type(nothing)
+    , owner(0)
+    , vertex(0)
+    , normals(0)
+    , vArray(0)
+    , color(0)
+    , boundingspherecenter()
+    , boundingsphereradius(0)
+    , flat(false)
 {
     memset(&modelTexture, 0, sizeof(modelTexture));
 }

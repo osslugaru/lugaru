@@ -19,9 +19,9 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "Tutorial.hpp"
-#include "Game.hpp"
 #include "Audio/Sounds.hpp"
 #include "Audio/openal_wrapper.hpp"
+#include "Game.hpp"
 #include "Level/Awards.hpp"
 #include "Objects/Person.hpp"
 #include "Utils/Input.hpp"
@@ -94,21 +94,20 @@ void Tutorial::Do(float multiplier)
                     if (Random() % 2 == 0) {
                         if (!Person::players[1]->skeleton.free) {
                             temp2 = (Person::players[1]->coords - Person::players[1]->oldcoords) / multiplier / 2; //velocity/2;
-}
+                        }
                         if (Person::players[1]->skeleton.free) {
                             temp2 = Person::players[1]->skeleton.joints[i].velocity * Person::players[1]->scale / 2;
-}
+                        }
                         if (!Person::players[1]->skeleton.free) {
                             temp = DoRotation(DoRotation(DoRotation(Person::players[1]->skeleton.joints[i].position, 0, 0, Person::players[1]->tilt), Person::players[1]->tilt2, 0, 0), 0, Person::players[1]->yaw, 0) * Person::players[1]->scale + Person::players[1]->coords;
-}
+                        }
                         if (Person::players[1]->skeleton.free) {
                             temp = Person::players[1]->skeleton.joints[i].position * Person::players[1]->scale + Person::players[1]->coords;
-}
+                        }
                         Sprite::MakeSprite(breathsprite, temp, temp2, 1, 1, 1, .6 + (float)abs(Random() % 100) / 200 - .25, 1);
                     }
                 }
-            }
-            break;
+            } break;
             case 15:
             case 16:
             case 17:
@@ -130,7 +129,7 @@ void Tutorial::Do(float multiplier)
                     againbonus = 1;
                 } else {
                     againbonus = 0;
-}
+                }
                 break;
             case 27:
                 maxtime = 4;
@@ -209,8 +208,7 @@ void Tutorial::Do(float multiplier)
                 w.physics = 1;
 
                 weapons.push_back(w);
-            }
-            break;
+            } break;
             case 40:
             case 41:
             case 43:
@@ -287,8 +285,7 @@ void Tutorial::Do(float multiplier)
                 Person::players[1]->num_weapons = 1;
                 Person::players[1]->weaponids[0] = 0;
 
-            }
-            break;
+            } break;
             case 48:
                 canattack = 0;
                 cananger = 0;
@@ -309,7 +306,7 @@ void Tutorial::Do(float multiplier)
                     weapons[Person::players[0]->weaponids[Person::players[0]->weaponactive]].setType(staff);
                 } else {
                     weapons[0].setType(staff);
-}
+                }
                 break;
             case 49:
                 canattack = 0;
@@ -341,16 +338,16 @@ void Tutorial::Do(float multiplier)
                     if (Random() % 2 == 0) {
                         if (!Person::players[1]->skeleton.free) {
                             temp2 = (Person::players[1]->coords - Person::players[1]->oldcoords) / multiplier / 2; //velocity/2;
-}
+                        }
                         if (Person::players[1]->skeleton.free) {
                             temp2 = Person::players[1]->skeleton.joints[i].velocity * Person::players[1]->scale / 2;
-}
+                        }
                         if (!Person::players[1]->skeleton.free) {
                             temp = DoRotation(DoRotation(DoRotation(Person::players[1]->skeleton.joints[i].position, 0, 0, Person::players[1]->tilt), Person::players[1]->tilt2, 0, 0), 0, Person::players[1]->yaw, 0) * Person::players[1]->scale + Person::players[1]->coords;
-}
+                        }
                         if (Person::players[1]->skeleton.free) {
                             temp = Person::players[1]->skeleton.joints[i].position * Person::players[1]->scale + Person::players[1]->coords;
-}
+                        }
                         Sprite::MakeSprite(breathsprite, temp, temp2, 1, 1, 1, .6 + (float)abs(Random() % 100) / 200 - .25, 1);
                     }
                 }
@@ -360,8 +357,7 @@ void Tutorial::Do(float multiplier)
                 Person::players[1]->weaponactive = -1;
 
                 weapons.clear();
-            }
-            break;
+            } break;
             case 51:
                 maxtime = 80000;
                 break;
@@ -370,7 +366,7 @@ void Tutorial::Do(float multiplier)
         }
         if (stage <= 51) {
             stagetime = 0;
-}
+        }
     }
 
     //Tutorial success
@@ -379,107 +375,107 @@ void Tutorial::Do(float multiplier)
             case 3:
                 if (Game::deltah || Game::deltav) {
                     success += multiplier;
-}
+                }
                 break;
             case 4:
                 if (Person::players[0]->forwardkeydown || Person::players[0]->backkeydown || Person::players[0]->leftkeydown || Person::players[0]->rightkeydown) {
                     success += multiplier;
-}
+                }
                 break;
             case 5:
                 if (Person::players[0]->jumpkeydown) {
                     success = 1;
-}
+                }
                 break;
             case 6:
                 if (Person::players[0]->isCrouch()) {
                     success = 1;
-}
+                }
                 break;
             case 7:
                 if (Person::players[0]->animTarget == rollanim) {
                     success = 1;
-}
+                }
                 break;
             case 8:
                 if (Person::players[0]->animTarget == sneakanim) {
                     success += multiplier;
-}
+                }
                 break;
             case 9:
                 if (Person::players[0]->animTarget == rabbitrunninganim || Person::players[0]->animTarget == wolfrunninganim) {
                     success += multiplier;
-}
+                }
                 break;
             case 11:
                 if (Person::players[0]->isWallJump()) {
                     success = 1;
-}
+                }
                 break;
             case 12:
                 if (Person::players[0]->animTarget == flipanim) {
                     success = 1;
-}
+                }
                 break;
             case 15:
                 if (Person::players[0]->animTarget == upunchanim || Person::players[0]->animTarget == winduppunchanim) {
                     success = 1;
-}
+                }
                 break;
             case 16:
                 if (Person::players[0]->animTarget == winduppunchanim) {
                     success = 1;
-}
+                }
                 break;
             case 17:
                 if (Person::players[0]->animTarget == spinkickanim) {
                     success = 1;
-}
+                }
                 break;
             case 18:
                 if (Person::players[0]->animTarget == sweepanim) {
                     success = 1;
-}
+                }
                 break;
             case 19:
                 if (Person::players[0]->animTarget == dropkickanim) {
                     success = 1;
-}
+                }
                 break;
             case 20:
                 if (Person::players[0]->animTarget == rabbitkickanim) {
                     success = 1;
-}
+                }
                 break;
             case 21:
                 if (bonus == cannon) {
                     success = 1;
-}
+                }
                 break;
             case 22:
                 if (bonus == spinecrusher) {
                     success = 1;
-}
+                }
                 break;
             case 23:
                 if (Person::players[0]->animTarget == walljumprightkickanim || Person::players[0]->animTarget == walljumpleftkickanim) {
                     success = 1;
-}
+                }
                 break;
             case 24:
                 if (Person::players[0]->animTarget == rabbittacklinganim) {
                     success = 1;
-}
+                }
                 break;
             case 25:
                 if (Person::players[0]->animTarget == backhandspringanim) {
                     success = 1;
-}
+                }
                 break;
             case 28:
                 if (Animation::animations[Person::players[0]->animTarget].attack == reversed && Person::players[0]->feint) {
                     success = 1;
-}
+                }
                 break;
             case 29:
                 if (Person::players[0]->escapednum == 2) {
@@ -559,7 +555,7 @@ void Tutorial::DrawTextInfo()
     switch (stage) {
         case 0:
         default:
-        break;
+            break;
         case 1:
             string = "Welcome to the Lugaru training level!";
             break;
@@ -571,10 +567,10 @@ void Tutorial::DrawTextInfo()
             break;
         case 4:
             string = std::string("Try using the ") +
-                    Input::keyToChar(Game::forwardkey) + ", " +
-                    Input::keyToChar(Game::leftkey) + ", " +
-                    Input::keyToChar(Game::backkey) + " and " +
-                    Input::keyToChar(Game::rightkey) + " keys to move around.";
+                     Input::keyToChar(Game::forwardkey) + ", " +
+                     Input::keyToChar(Game::leftkey) + ", " +
+                     Input::keyToChar(Game::backkey) + " and " +
+                     Input::keyToChar(Game::rightkey) + " keys to move around.";
             string2 = "All movement is relative to the camera.";
             break;
         case 5:
@@ -785,17 +781,17 @@ void Tutorial::DrawTextInfo()
         opacity = 0;
     }
 
-    Game::text->glPrintOutlined(1, 1, 1, opacity, screenwidth / 2 - 7.6 * string.size()*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
-    Game::text->glPrintOutlined(1, 1, 1, opacity, screenwidth / 2 - 7.6 * string2.size()*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 20 * screenwidth / 1024, string2, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
-    Game::text->glPrintOutlined(1, 1, 1, opacity, screenwidth / 2 - 7.6 * string3.size()*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 40 * screenwidth / 1024, string3, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
+    Game::text->glPrintOutlined(1, 1, 1, opacity, screenwidth / 2 - 7.6 * string.size() * screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
+    Game::text->glPrintOutlined(1, 1, 1, opacity, screenwidth / 2 - 7.6 * string2.size() * screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 20 * screenwidth / 1024, string2, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
+    Game::text->glPrintOutlined(1, 1, 1, opacity, screenwidth / 2 - 7.6 * string3.size() * screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 40 * screenwidth / 1024, string3, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
 
     string = "Press 'tab' to skip to the next item.";
     string2 = "Press escape at any time to";
     string3 = "pause or exit the tutorial.";
 
-    Game::text->glPrintOutlined(0.5, 0.5, 0.5, 1, screenwidth / 2 - 7.6 * string.size()*screenwidth / 1024 * .8, 0 + screenheight * 1 / 10, string, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
-    Game::text->glPrintOutlined(0.5, 0.5, 0.5, 1, screenwidth / 2 - 7.6 * string2.size()*screenwidth / 1024 * .8, 0 + screenheight * 1 / 10 - 20 * .8 * screenwidth / 1024, string2, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
-    Game::text->glPrintOutlined(0.5, 0.5, 0.5, 1, screenwidth / 2 - 7.6 * string3.size()*screenwidth / 1024 * .8, 0 + screenheight * 1 / 10 - 40 * .8 * screenwidth / 1024, string3, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
+    Game::text->glPrintOutlined(0.5, 0.5, 0.5, 1, screenwidth / 2 - 7.6 * string.size() * screenwidth / 1024 * .8, 0 + screenheight * 1 / 10, string, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
+    Game::text->glPrintOutlined(0.5, 0.5, 0.5, 1, screenwidth / 2 - 7.6 * string2.size() * screenwidth / 1024 * .8, 0 + screenheight * 1 / 10 - 20 * .8 * screenwidth / 1024, string2, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
+    Game::text->glPrintOutlined(0.5, 0.5, 0.5, 1, screenwidth / 2 - 7.6 * string3.size() * screenwidth / 1024 * .8, 0 + screenheight * 1 / 10 - 40 * .8 * screenwidth / 1024, string3, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
 }
 
 void Tutorial::DoStuff(float multiplier)
@@ -818,7 +814,7 @@ void Tutorial::DoStuff(float multiplier)
     oldtemp2 = temp2;
     if (stage >= 51) {
         if (distsq(&temp, &Person::players[0]->coords) >= distsq(&temp, &temp2) - 1 || distsq(&temp3, &Person::players[0]->coords) < 4) {
-            OPENAL_StopSound(OPENAL_ALL);  // hack...OpenAL renderer isn't stopping music after tutorial goes to level menu...
+            OPENAL_StopSound(OPENAL_ALL); // hack...OpenAL renderer isn't stopping music after tutorial goes to level menu...
             OPENAL_SetFrequency(OPENAL_ALL);
 
             emit_stream_np(stream_menutheme);
@@ -847,16 +843,16 @@ void Tutorial::DoStuff(float multiplier)
                 if (Random() % 2 == 0) {
                     if (!Person::players[1]->skeleton.free) {
                         temp2 = (Person::players[1]->coords - Person::players[1]->oldcoords) / multiplier / 2; //velocity/2;
-}
+                    }
                     if (Person::players[1]->skeleton.free) {
                         temp2 = Person::players[1]->skeleton.joints[i].velocity * Person::players[1]->scale / 2;
-}
+                    }
                     if (!Person::players[1]->skeleton.free) {
                         temp = DoRotation(DoRotation(DoRotation(Person::players[1]->skeleton.joints[i].position, 0, 0, Person::players[1]->tilt), Person::players[1]->tilt2, 0, 0), 0, Person::players[1]->yaw, 0) * Person::players[1]->scale + Person::players[1]->coords;
-}
+                    }
                     if (Person::players[1]->skeleton.free) {
                         temp = Person::players[1]->skeleton.joints[i].position * Person::players[1]->scale + Person::players[1]->coords;
-}
+                    }
                     Sprite::MakeSprite(breathsprite, temp, temp2, 1, 1, 1, .6 + (float)abs(Random() % 100) / 200 - .25, 1);
                 }
             }
@@ -867,16 +863,16 @@ void Tutorial::DoStuff(float multiplier)
                 if (Random() % 2 == 0) {
                     if (!Person::players[1]->skeleton.free) {
                         temp2 = (Person::players[1]->coords - Person::players[1]->oldcoords) / multiplier / 2; //velocity/2;
-}
+                    }
                     if (Person::players[1]->skeleton.free) {
                         temp2 = Person::players[1]->skeleton.joints[i].velocity * Person::players[1]->scale / 2;
-}
+                    }
                     if (!Person::players[1]->skeleton.free) {
                         temp = DoRotation(DoRotation(DoRotation(Person::players[1]->skeleton.joints[i].position, 0, 0, Person::players[1]->tilt), Person::players[1]->tilt2, 0, 0), 0, Person::players[1]->yaw, 0) * Person::players[1]->scale + Person::players[1]->coords;
-}
+                    }
                     if (Person::players[1]->skeleton.free) {
                         temp = Person::players[1]->skeleton.joints[i].position * Person::players[1]->scale + Person::players[1]->coords;
-}
+                    }
                     Sprite::MakeSprite(breathsprite, temp, temp2, 1, 1, 1, .6 + (float)abs(Random() % 100) / 200 - .25, 1);
                 }
             }

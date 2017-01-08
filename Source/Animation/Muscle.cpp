@@ -25,19 +25,28 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 extern float multiplier;
 extern bool freeze;
 
-Muscle::Muscle() :
-    length(0),
-    targetlength(0),
-    parent1(0),
-    parent2(0),
-    maxlength(0),
-    minlength(0),
-    type(boneconnect),
-    visible(false),
-    rotate1(0), rotate2(0), rotate3(0),
-    lastrotate1(0), lastrotate2(0), lastrotate3(0),
-    oldrotate1(0), oldrotate2(0), oldrotate3(0),
-    newrotate1(0), newrotate2(0), newrotate3(0),
+Muscle::Muscle()
+    : length(0)
+    , targetlength(0)
+    , parent1(0)
+    , parent2(0)
+    , maxlength(0)
+    , minlength(0)
+    , type(boneconnect)
+    , visible(false)
+    , rotate1(0)
+    , rotate2(0)
+    , rotate3(0)
+    , lastrotate1(0)
+    , lastrotate2(0)
+    , lastrotate3(0)
+    , oldrotate1(0)
+    , oldrotate2(0)
+    , oldrotate3(0)
+    , newrotate1(0)
+    , newrotate2(0)
+    , newrotate3(0)
+    ,
 
     strength(0)
 {
@@ -97,7 +106,6 @@ void Muscle::loadVerticesClothes(FILE* tfile, int vertexNum)
     }
 }
 
-
 /* EFFECT
  * sets strength, length,
  *      parent1->position, parent2->position,
@@ -129,32 +137,32 @@ void Muscle::DoConstraint(bool spinny)
     // clamp strength
     if (strength < 0) {
         strength = 0;
-}
+    }
     if (strength > 1) {
         strength = 1;
-}
+    }
 
     length -= (length - relaxlength) * (1 - strength) * multiplier * 10000;
-    length -= (length - targetlength) * (strength) * multiplier * 10000;
+    length -= (length - targetlength) * (strength)*multiplier * 10000;
     if (strength == 0) {
         length = relaxlength;
-}
+    }
 
     if ((relaxlength - length > 0 && relaxlength - oldlength < 0) || (relaxlength - length < 0 && relaxlength - oldlength > 0)) {
         length = relaxlength;
-}
+    }
 
     // clamp length
     if (length < minlength) {
         length = minlength;
-}
+    }
     if (length > maxlength) {
         length = maxlength;
-}
+    }
 
     if (length == relaxlength) {
         return;
-}
+    }
 
     // relax muscle?
 

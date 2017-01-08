@@ -25,7 +25,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include <math.h>
 
 void FRUSTUM::
-GetFrustum()
+    GetFrustum()
 {
     static float projmatrix[16];
     static float mvmatrix[16];
@@ -93,7 +93,7 @@ GetFrustum()
 }
 
 int FRUSTUM::
-CubeInFrustum(float x, float y, float z, float size)
+    CubeInFrustum(float x, float y, float z, float size)
 {
     static int c, c2;
 
@@ -101,44 +101,44 @@ CubeInFrustum(float x, float y, float z, float size)
         c = 0;
         if (frustum[i][0] * (x - size) + frustum[i][1] * (y - size) + frustum[i][2] * (z - size) + frustum[i][3] > 0) {
             c++;
-}
+        }
         if (frustum[i][0] * (x + size) + frustum[i][1] * (y - size) + frustum[i][2] * (z - size) + frustum[i][3] > 0) {
             c++;
-}
+        }
         if (frustum[i][0] * (x - size) + frustum[i][1] * (y + size) + frustum[i][2] * (z - size) + frustum[i][3] > 0) {
             c++;
-}
+        }
         if (frustum[i][0] * (x + size) + frustum[i][1] * (y + size) + frustum[i][2] * (z - size) + frustum[i][3] > 0) {
             c++;
-}
+        }
         if (frustum[i][0] * (x - size) + frustum[i][1] * (y - size) + frustum[i][2] * (z + size) + frustum[i][3] > 0) {
             c++;
-}
+        }
         if (frustum[i][0] * (x + size) + frustum[i][1] * (y - size) + frustum[i][2] * (z + size) + frustum[i][3] > 0) {
             c++;
-}
+        }
         if (frustum[i][0] * (x - size) + frustum[i][1] * (y + size) + frustum[i][2] * (z + size) + frustum[i][3] > 0) {
             c++;
-}
+        }
         if (frustum[i][0] * (x + size) + frustum[i][1] * (y + size) + frustum[i][2] * (z + size) + frustum[i][3] > 0) {
             c++;
-}
+        }
         if (c == 0) {
             return 0;
-}
+        }
         if (c == 8) {
             c2++;
-}
+        }
     }
     if (c2 >= 6) {
         return 2;
     } else {
         return 1;
-}
+    }
 }
 
 int FRUSTUM::
-CubeInFrustum(float x, float y, float z, float size, float height)
+    CubeInFrustum(float x, float y, float z, float size, float height)
 {
     static int c, c2;
 
@@ -146,57 +146,57 @@ CubeInFrustum(float x, float y, float z, float size, float height)
         c = 0;
         if (frustum[i][0] * (x - size) + frustum[i][1] * (y - height) + frustum[i][2] * (z - size) + frustum[i][3] > 0) {
             c++;
-}
+        }
         if (frustum[i][0] * (x + size) + frustum[i][1] * (y - height) + frustum[i][2] * (z - size) + frustum[i][3] > 0) {
             c++;
-}
+        }
         if (frustum[i][0] * (x - size) + frustum[i][1] * (y + height) + frustum[i][2] * (z - size) + frustum[i][3] > 0) {
             c++;
-}
+        }
         if (frustum[i][0] * (x + size) + frustum[i][1] * (y + height) + frustum[i][2] * (z - size) + frustum[i][3] > 0) {
             c++;
-}
+        }
         if (frustum[i][0] * (x - size) + frustum[i][1] * (y - height) + frustum[i][2] * (z + size) + frustum[i][3] > 0) {
             c++;
-}
+        }
         if (frustum[i][0] * (x + size) + frustum[i][1] * (y - height) + frustum[i][2] * (z + size) + frustum[i][3] > 0) {
             c++;
-}
+        }
         if (frustum[i][0] * (x - size) + frustum[i][1] * (y + height) + frustum[i][2] * (z + size) + frustum[i][3] > 0) {
             c++;
-}
+        }
         if (frustum[i][0] * (x + size) + frustum[i][1] * (y + height) + frustum[i][2] * (z + size) + frustum[i][3] > 0) {
             c++;
-}
+        }
         if (c == 0) {
             return 0;
-}
+        }
         if (c == 8) {
             c2++;
-}
+        }
     }
     if (c2 >= 6) {
         return 2;
     } else {
         return 1;
-}
+    }
 }
 
 int FRUSTUM::
-SphereInFrustum(float x, float y, float z, float radius)
+    SphereInFrustum(float x, float y, float z, float radius)
 {
-    static int  c2;
+    static int c2;
 
     for (int i = 0; i < 6; i++) {
         if (frustum[i][0] * x + frustum[i][1] * y + frustum[i][2] * z + frustum[i][3] > -1 * radius) {
             c2++;
         } else {
             return 0;
-}
+        }
     }
     if (c2 >= 6) {
         return 2;
     } else {
         return 1;
-}
+    }
 }

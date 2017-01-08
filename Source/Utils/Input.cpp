@@ -27,7 +27,7 @@ void Input::Tick()
 {
     SDL_PumpEvents();
     int numkeys;
-    const Uint8 *keyState = SDL_GetKeyboardState(&numkeys);
+    const Uint8* keyState = SDL_GetKeyboardState(&numkeys);
     for (int i = 0; i < numkeys; i++) {
         keyPressed[i] = !keyDown[i] && keyState[i];
         keyDown[i] = keyState[i];

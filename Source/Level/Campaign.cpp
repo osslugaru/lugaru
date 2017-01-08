@@ -36,8 +36,8 @@ int actuallevel = 0;
 std::vector<std::string> ListCampaigns()
 {
     errno = 0;
-    DIR *campaigns = opendir(Folders::getResourcePath("Campaigns").c_str());
-    struct dirent *campaign = NULL;
+    DIR* campaigns = opendir(Folders::getResourcePath("Campaigns").c_str());
+    struct dirent* campaign = NULL;
     if (!campaigns) {
         perror(("Problem while loading campaigns from " + Folders::getResourcePath("Campaigns")).c_str());
         exit(EXIT_FAILURE);
@@ -47,7 +47,7 @@ std::vector<std::string> ListCampaigns()
         std::string name(campaign->d_name);
         if (name.length() < 5) {
             continue;
-}
+        }
         if (!name.compare(name.length() - 4, 4, ".txt")) {
             campaignNames.push_back(name.substr(0, name.length() - 4));
         }
@@ -95,42 +95,49 @@ void LoadCampaign()
     }
 }
 
-CampaignLevel::CampaignLevel() :
-    width(10),
-    choosenext(1)
+CampaignLevel::CampaignLevel()
+    : width(10)
+    , choosenext(1)
 {
     location.x = 0;
     location.y = 0;
 }
 
-int CampaignLevel::getStartX() {
+int CampaignLevel::getStartX()
+{
     return 30 + 120 + location.x * 400 / 512;
 }
 
-int CampaignLevel::getStartY() {
+int CampaignLevel::getStartY()
+{
     return 30 + 30 + (512 - location.y) * 400 / 512;
 }
 
-int CampaignLevel::getEndX() {
+int CampaignLevel::getEndX()
+{
     return getStartX() + width;
 }
 
-int CampaignLevel::getEndY() {
+int CampaignLevel::getEndY()
+{
     return getStartY() + width;
 }
 
-XYZ CampaignLevel::getCenter() {
+XYZ CampaignLevel::getCenter()
+{
     XYZ center;
     center.x = getStartX() + width / 2;
     center.y = getStartY() + width / 2;
     return center;
 }
 
-int CampaignLevel::getWidth() {
+int CampaignLevel::getWidth()
+{
     return width;
 }
 
-istream& CampaignLevel::operator<< (istream& is) {
+istream& CampaignLevel::operator<<(istream& is)
+{
     is.ignore(256, ':');
     is.ignore(256, ':');
     is.ignore(256, ' ');

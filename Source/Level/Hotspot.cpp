@@ -23,16 +23,16 @@ std::vector<Hotspot> Hotspot::hotspots;
 int Hotspot::current = 0;
 int Hotspot::killhotspot = 0;
 
-Hotspot::Hotspot() :
-    position(),
-    type(0),
-    size(0)
+Hotspot::Hotspot()
+    : position()
+    , type(0)
+    , size(0)
 {
 }
 
-Hotspot::Hotspot(XYZ p, int t, float s) :
-    position(p),
-    type(t),
-    size(s)
+Hotspot::Hotspot(XYZ p, int t, float s)
+    : position(p)
+    , type(t)
+    , size(s)
 {
 }

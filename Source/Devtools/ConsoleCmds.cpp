@@ -23,19 +23,19 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Game.hpp"
 #include "Level/Dialog.hpp"
 #include "Level/Hotspot.hpp"
-#include "Utils/Folders.hpp"
 #include "Tutorial.hpp"
+#include "Utils/Folders.hpp"
 
-const char *cmd_names[cmd_count] = {
+const char* cmd_names[cmd_count] = {
 #define DECLARE_COMMAND(cmd) #cmd,
 #include "ConsoleCmds.def"
-#undef  DECLARE_COMMAND
+#undef DECLARE_COMMAND
 };
 
 console_handler cmd_handlers[cmd_count] = {
 #define DECLARE_COMMAND(cmd) ch_##cmd,
 #include "ConsoleCmds.def"
-#undef  DECLARE_COMMAND
+#undef DECLARE_COMMAND
 };
 
 using namespace Game;
@@ -73,12 +73,12 @@ float tintr = 1, tintg = 1, tintb = 1;
 /* Helpers used in console commands */
 
 /* Return true if PFX is a prefix of STR (case-insensitive).  */
-static bool stripfx(const char *str, const char *pfx)
+static bool stripfx(const char* str, const char* pfx)
 {
     return !strncasecmp(str, pfx, strlen(pfx));
 }
 
-static void set_proportion(int pnum, const char *args)
+static void set_proportion(int pnum, const char* args)
 {
     float headprop, bodyprop, armprop, legprop;
 
@@ -98,34 +98,34 @@ static void set_proportion(int pnum, const char *args)
     }
 }
 
-static void set_protection(int pnum, const char *args)
+static void set_protection(int pnum, const char* args)
 {
     float head, high, low;
     sscanf(args, "%f%f%f", &head, &high, &low);
 
     Person::players[pnum]->protectionhead = head;
     Person::players[pnum]->protectionhigh = high;
-    Person::players[pnum]->protectionlow  = low;
+    Person::players[pnum]->protectionlow = low;
 }
 
-static void set_armor(int pnum, const char *args)
+static void set_armor(int pnum, const char* args)
 {
     float head, high, low;
     sscanf(args, "%f%f%f", &head, &high, &low);
 
     Person::players[pnum]->armorhead = head;
     Person::players[pnum]->armorhigh = high;
-    Person::players[pnum]->armorlow  = low;
+    Person::players[pnum]->armorlow = low;
 }
 
-static void set_metal(int pnum, const char *args)
+static void set_metal(int pnum, const char* args)
 {
     float head, high, low;
     sscanf(args, "%f%f%f", &head, &high, &low);
 
     Person::players[pnum]->metalhead = head;
     Person::players[pnum]->metalhigh = high;
-    Person::players[pnum]->metallow  = low;
+    Person::players[pnum]->metallow = low;
 }
 
 static void set_noclothes(int pnum, const char*)
@@ -136,7 +136,7 @@ static void set_noclothes(int pnum, const char*)
         &Person::players[pnum]->skeleton.skinText[0], &Person::players[pnum]->skeleton.skinsize);
 }
 
-static void set_clothes(int pnum, const char *args)
+static void set_clothes(int pnum, const char* args)
 {
     char buf[64];
     snprintf(buf, 63, "Textures/%s.png", args);
@@ -150,19 +150,19 @@ static void set_clothes(int pnum, const char *args)
 
     if (!Person::players[pnum]->addClothes(id)) {
         return;
-}
+    }
 
     Person::players[pnum]->DoMipmaps();
 }
 
 /* Console commands themselves */
 
-void ch_quit(const char *)
+void ch_quit(const char*)
 {
     tryquit = 1;
 }
 
-void ch_map(const char *args)
+void ch_map(const char* args)
 {
     if (!LoadLevel(args)) {
         // FIXME: Reduce code duplication with GameTick (should come from a Console class)
@@ -176,7 +176,7 @@ void ch_map(const char *args)
     campaign = 0;
 }
 
-void ch_save(const char *args)
+void ch_save(const char* args)
 {
     std::string map_path = Folders::getUserDataPath() + "/Maps";
     Folders::makeDirectory(map_path);
@@ -184,8 +184,8 @@ void ch_save(const char *args)
 
     int mapvers = 12;
 
-    FILE *tfile;
-    tfile = fopen( map_path.c_str(), "wb" );
+    FILE* tfile;
+    tfile = fopen(map_path.c_str(), "wb");
     if (tfile == NULL) {
         perror((std::string("Couldn't open file ") + map_path + " for saving").c_str());
         return;
@@ -201,8 +201,8 @@ void ch_save(const char *args)
     if (Person::players[0]->num_weapons > 0 && Person::players[0]->num_weapons < 5) {
         for (int j = 0; j < Person::players[0]->num_weapons; j++) {
             fpackf(tfile, "Bi", weapons[Person::players[0]->weaponids[j]].getType());
-}
-}
+        }
+    }
 
     fpackf(tfile, "Bf Bf Bf", Person::players[0]->armorhead, Person::players[0]->armorhigh, Person::players[0]->armorlow);
     fpackf(tfile, "Bf Bf Bf", Person::players[0]->protectionhead, Person::players[0]->protectionhigh, Person::players[0]->protectionlow);
@@ -220,7 +220,7 @@ void ch_save(const char *args)
         fpackf(tfile, "Bi", templength);
         for (int l = 0; l < templength; l++) {
             fpackf(tfile, "Bb", Person::players[0]->clothes[k][l]);
-}
+        }
         fpackf(tfile, "Bf Bf Bf", Person::players[0]->clothestintr[k], Person::players[0]->clothestintg[k], Person::players[0]->clothestintb[k]);
     }
 
@@ -240,7 +240,7 @@ void ch_save(const char *args)
         fpackf(tfile, "Bi", templength);
         for (int l = 0; l < templength; l++) {
             fpackf(tfile, "Bb", Hotspot::hotspots[i].text[l]);
-}
+        }
     }
 
     fpackf(tfile, "Bi", Person::players.size());
@@ -254,8 +254,8 @@ void ch_save(const char *args)
         if (Person::players[j]->num_weapons < 5) {
             for (int k = 0; k < Person::players[j]->num_weapons; k++) {
                 fpackf(tfile, "Bi", weapons[Person::players[j]->weaponids[k]].getType());
-}
-}
+            }
+        }
         if (Person::players[j]->numwaypoints < 30) {
             fpackf(tfile, "Bi", Person::players[j]->numwaypoints);
             for (int k = 0; k < Person::players[j]->numwaypoints; k++) {
@@ -300,10 +300,10 @@ void ch_save(const char *args)
                 fpackf(tfile, "Bi", templength);
                 for (int l = 0; l < templength; l++) {
                     fpackf(tfile, "Bb", Person::players[j]->clothes[k][l]);
-}
+                }
                 fpackf(tfile, "Bf Bf Bf", Person::players[j]->clothestintr[k], Person::players[j]->clothestintg[k], Person::players[j]->clothestintb[k]);
             }
-}
+        }
     }
 
     fpackf(tfile, "Bi", numpathpoints);
@@ -311,7 +311,7 @@ void ch_save(const char *args)
         fpackf(tfile, "Bf Bf Bf Bi", pathpoint[j].x, pathpoint[j].y, pathpoint[j].z, numpathpointconnect[j]);
         for (int k = 0; k < numpathpointconnect[j]; k++) {
             fpackf(tfile, "Bi", pathpointconnect[j][k]);
-}
+        }
     }
 
     fpackf(tfile, "Bf Bf Bf Bf", mapcenter.x, mapcenter.y, mapcenter.z, mapradius);
@@ -319,142 +319,141 @@ void ch_save(const char *args)
     fclose(tfile);
 }
 
-void ch_cellar(const char *)
+void ch_cellar(const char*)
 {
     Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/Furdarko.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 }
 
-void ch_tint(const char *args)
+void ch_tint(const char* args)
 {
     sscanf(args, "%f%f%f", &tintr, &tintg, &tintb);
 }
 
-void ch_tintr(const char *args)
+void ch_tintr(const char* args)
 {
     tintr = atof(args);
 }
 
-void ch_tintg(const char *args)
+void ch_tintg(const char* args)
 {
     tintg = atof(args);
 }
 
-void ch_tintb(const char *args)
+void ch_tintb(const char* args)
 {
     tintb = atof(args);
 }
 
-void ch_speed(const char *args)
+void ch_speed(const char* args)
 {
     Person::players[0]->speedmult = atof(args);
 }
 
-void ch_strength(const char *args)
+void ch_strength(const char* args)
 {
     Person::players[0]->power = atof(args);
 }
 
-void ch_power(const char *args)
+void ch_power(const char* args)
 {
     Person::players[0]->power = atof(args);
 }
 
-void ch_size(const char *args)
+void ch_size(const char* args)
 {
     Person::players[0]->scale = atof(args) * .2;
 }
 
-void ch_sizenear(const char *args)
+void ch_sizenear(const char* args)
 {
     int closest = findClosestPlayer();
     if (closest >= 0) {
         Person::players[closest]->scale = atof(args) * .2;
-}
+    }
 }
 
-void ch_proportion(const char *args)
+void ch_proportion(const char* args)
 {
     set_proportion(0, args);
 }
 
-void ch_proportionnear(const char *args)
+void ch_proportionnear(const char* args)
 {
     int closest = findClosestPlayer();
     if (closest >= 0) {
         set_proportion(closest, args);
-}
+    }
 }
 
-void ch_protection(const char *args)
+void ch_protection(const char* args)
 {
     set_protection(0, args);
 }
 
-void ch_protectionnear(const char *args)
+void ch_protectionnear(const char* args)
 {
     int closest = findClosestPlayer();
     if (closest >= 0) {
         set_protection(closest, args);
-}
+    }
 }
 
-void ch_armor(const char *args)
+void ch_armor(const char* args)
 {
     set_armor(0, args);
 }
 
-void ch_armornear(const char *args)
+void ch_armornear(const char* args)
 {
     int closest = findClosestPlayer();
     if (closest >= 0) {
         set_armor(closest, args);
-}
+    }
 }
 
-void ch_protectionreset(const char *)
+void ch_protectionreset(const char*)
 {
     set_protection(0, "1 1 1");
     set_armor(0, "1 1 1");
 }
 
-void ch_metal(const char *args)
+void ch_metal(const char* args)
 {
     set_metal(0, args);
 }
 
-void ch_noclothes(const char *args)
+void ch_noclothes(const char* args)
 {
     set_noclothes(0, args);
 }
 
-void ch_noclothesnear(const char *args)
+void ch_noclothesnear(const char* args)
 {
     int closest = findClosestPlayer();
     if (closest >= 0) {
         set_noclothes(closest, args);
-}
+    }
 }
 
-void ch_clothes(const char *args)
+void ch_clothes(const char* args)
 {
     set_clothes(0, args);
 }
 
-void ch_clothesnear(const char *args)
+void ch_clothesnear(const char* args)
 {
     int closest = findClosestPlayer();
     if (closest >= 0) {
         set_clothes(closest, args);
-}
+    }
 }
 
-void ch_belt(const char *)
+void ch_belt(const char*)
 {
     Person::players[0]->skeleton.clothes = !Person::players[0]->skeleton.clothes;
 }
 
-
-void ch_cellophane(const char *)
+void ch_cellophane(const char*)
 {
     cellophane = !cellophane;
     float mul = (cellophane ? 0 : 1);
@@ -467,7 +466,7 @@ void ch_cellophane(const char *)
     }
 }
 
-void ch_funnybunny(const char *)
+void ch_funnybunny(const char*)
 {
     Person::players[0]->creature = rabbittype;
     Person::players[0]->skeletonLoad(true);
@@ -477,7 +476,7 @@ void ch_funnybunny(const char *)
     set_proportion(0, "1 1 1 1");
 }
 
-void ch_wolfie(const char *)
+void ch_wolfie(const char*)
 {
     Person::players[0]->creature = wolftype;
     Person::players[0]->skeletonLoad();
@@ -485,66 +484,66 @@ void ch_wolfie(const char *)
     set_proportion(0, "1 1 1 1");
 }
 
-void ch_wolfieisgod(const char *args)
+void ch_wolfieisgod(const char* args)
 {
     ch_wolfie(args);
 }
 
-void ch_wolf(const char *)
+void ch_wolf(const char*)
 {
     Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/Wolf.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 }
 
-void ch_snowwolf(const char *)
+void ch_snowwolf(const char*)
 {
     Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/SnowWolf.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 }
 
-void ch_darkwolf(const char *)
+void ch_darkwolf(const char*)
 {
     Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/DarkWolf.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 }
 
-void ch_lizardwolf(const char *)
+void ch_lizardwolf(const char*)
 {
     Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/LizardWolf.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 }
 
-void ch_white(const char *)
+void ch_white(const char*)
 {
     Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/Fur.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 }
 
-void ch_brown(const char *)
+void ch_brown(const char*)
 {
     Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/Fur3.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 }
 
-void ch_black(const char *)
+void ch_black(const char*)
 {
     Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/Fur2.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 }
 
-void ch_sizemin(const char *)
+void ch_sizemin(const char*)
 {
     for (unsigned i = 1; i < Person::players.size(); i++) {
         if (Person::players[i]->scale < 0.8 * 0.2) {
             Person::players[i]->scale = 0.8 * 0.2;
-}
-}
+        }
+    }
 }
 
-void ch_tutorial(const char *args)
+void ch_tutorial(const char* args)
 {
     Tutorial::active = atoi(args);
 }
 
-void ch_hostile(const char *args)
+void ch_hostile(const char* args)
 {
     hostile = atoi(args);
 }
 
-void ch_type(const char *args)
+void ch_type(const char* args)
 {
     int n = sizeof(editortypenames) / sizeof(editortypenames[0]);
     for (int i = 0; i < n; i++) {
@@ -552,10 +551,10 @@ void ch_type(const char *args)
             editoractive = i;
             break;
         }
-}
+    }
 }
 
-void ch_path(const char *args)
+void ch_path(const char* args)
 {
     unsigned int n = sizeof(pathtypenames) / sizeof(pathtypenames[0]);
     for (unsigned int i = 0; i < n; i++) {
@@ -563,10 +562,10 @@ void ch_path(const char *args)
             editorpathtype = i;
             break;
         }
-}
+    }
 }
 
-void ch_hs(const char *args)
+void ch_hs(const char* args)
 {
     float size;
     int type, shift;
@@ -578,7 +577,7 @@ void ch_hs(const char *args)
     strcat(Hotspot::hotspots.back().text, "\n");
 }
 
-void ch_dialogue(const char *args)
+void ch_dialogue(const char* args)
 {
     int type;
     char buf1[32];
@@ -593,7 +592,7 @@ void ch_dialogue(const char *args)
     Dialog::whichdialogue = Dialog::dialogs.size();
 }
 
-void ch_fixdialogue(const char *args)
+void ch_fixdialogue(const char* args)
 {
     char buf1[32];
     int whichdi;
@@ -604,51 +603,51 @@ void ch_fixdialogue(const char *args)
     Dialog::dialogs[whichdi] = Dialog(Dialog::dialogs[whichdi].type, filename);
 }
 
-void ch_fixtype(const char *args)
+void ch_fixtype(const char* args)
 {
     int dlg;
     sscanf(args, "%d", &dlg);
     Dialog::dialogs[0].type = dlg;
 }
 
-void ch_fixrotation(const char *)
+void ch_fixrotation(const char*)
 {
     int playerId = Dialog::currentScene().participantfocus;
     Dialog::currentDialog().participantyaw[playerId] = Person::players[playerId]->yaw;
 }
 
-void ch_ddialogue(const char *)
+void ch_ddialogue(const char*)
 {
     if (!Dialog::dialogs.empty()) {
         Dialog::dialogs.pop_back();
     }
 }
 
-void ch_dhs(const char *)
+void ch_dhs(const char*)
 {
     if (!Hotspot::hotspots.empty()) {
         Hotspot::hotspots.pop_back();
     }
 }
 
-void ch_immobile(const char *)
+void ch_immobile(const char*)
 {
     Person::players[0]->immobile = 1;
 }
 
-void ch_allimmobile(const char *)
+void ch_allimmobile(const char*)
 {
     for (unsigned i = 1; i < Person::players.size(); i++) {
         Person::players[i]->immobile = 1;
-}
+    }
 }
 
-void ch_mobile(const char *)
+void ch_mobile(const char*)
 {
     Person::players[0]->immobile = 0;
 }
 
-void ch_default(const char *)
+void ch_default(const char*)
 {
     Person::players[0]->armorhead = 1;
     Person::players[0]->armorhigh = 1;
@@ -685,7 +684,7 @@ void ch_default(const char *)
     Person::players[0]->immobile = 0;
 }
 
-void ch_play(const char *args)
+void ch_play(const char* args)
 {
     int dlg;
     sscanf(args, "%d", &dlg);
@@ -698,49 +697,49 @@ void ch_play(const char *args)
     Dialog::currentDialog().play();
 }
 
-void ch_mapkilleveryone(const char *)
+void ch_mapkilleveryone(const char*)
 {
     maptype = mapkilleveryone;
 }
 
-void ch_mapkillmost(const char *)
+void ch_mapkillmost(const char*)
 {
     maptype = mapkillmost;
 }
 
-void ch_mapkillsomeone(const char *)
+void ch_mapkillsomeone(const char*)
 {
     maptype = mapkillsomeone;
 }
 
-void ch_mapgosomewhere(const char *)
+void ch_mapgosomewhere(const char*)
 {
     maptype = mapgosomewhere;
 }
 
-void ch_viewdistance(const char *args)
+void ch_viewdistance(const char* args)
 {
     viewdistance = atof(args) * 100;
 }
 
-void ch_fadestart(const char *args)
+void ch_fadestart(const char* args)
 {
     fadestart = atof(args);
 }
 
-void ch_slomo(const char *args)
+void ch_slomo(const char* args)
 {
     slomospeed = atof(args);
     slomo = !slomo;
     slomodelay = 1000;
 }
 
-void ch_slofreq(const char *args)
+void ch_slofreq(const char* args)
 {
     slomofreq = atof(args);
 }
 
-void ch_skytint(const char *args)
+void ch_skytint(const char* args)
 {
     sscanf(args, "%f%f%f", &skyboxr, &skyboxg, &skyboxb);
 
@@ -754,7 +753,7 @@ void ch_skytint(const char *args)
     Object::DoShadows();
 }
 
-void ch_skylight(const char *args)
+void ch_skylight(const char* args)
 {
     sscanf(args, "%f%f%f", &skyboxlightr, &skyboxlightg, &skyboxlightb);
 
