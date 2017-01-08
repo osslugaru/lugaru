@@ -33,7 +33,8 @@ const char* editortypenames[] = {
     "dead1", "dead2", "dead3", "dead4"
 };
 
-namespace Game {
+namespace Game
+{
 Texture terraintexture;
 Texture terraintexture2;
 Texture loadscreentexture;

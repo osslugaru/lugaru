@@ -10,12 +10,13 @@ ConstructorInitializerIndentWidth:      4
 ContinuationIndentWidth:                4
 IndentWidth:                            4
 SpacesInCStyleCastParentheses:          false
+BreakBeforeBraces:                      Custom
 BraceWrapping:
   AfterClass:      true
-  AfterControlStatement: true
+  AfterControlStatement: false
   AfterEnum:       true
   AfterFunction:   true
-  AfterNamespace:  false
+  AfterNamespace:  true
   AfterObjCDeclaration: false
   AfterStruct:     true
   AfterUnion:      true
