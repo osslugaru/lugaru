@@ -105,100 +105,100 @@ Decal::Decal(XYZ _position, decal_type _type, float _opacity, float _rotation, f
 {
     float placex, placez;
     if (which == 0) {
-        placex = model.vertex[model.Triangles[i].vertex[0]].x;
-        placez = model.vertex[model.Triangles[i].vertex[0]].z;
+        placex = model.getTriangleVertex(i, 0).x;
+        placez = model.getTriangleVertex(i, 0).z;
 
         texcoords[0][0] = (placex - position.x) / (size) / 2 + .5;
         texcoords[0][1] = (placez - position.z) / (size) / 2 + .5;
 
         vertex[0].x = placex;
         vertex[0].z = placez;
-        vertex[0].y = model.vertex[model.Triangles[i].vertex[0]].y;
+        vertex[0].y = model.getTriangleVertex(i, 0).y;
 
 
-        placex = model.vertex[model.Triangles[i].vertex[1]].x;
-        placez = model.vertex[model.Triangles[i].vertex[1]].z;
+        placex = model.getTriangleVertex(i, 1).x;
+        placez = model.getTriangleVertex(i, 1).z;
 
         texcoords[1][0] = (placex - position.x) / (size) / 2 + .5;
         texcoords[1][1] = (placez - position.z) / (size) / 2 + .5;
 
         vertex[1].x = placex;
         vertex[1].z = placez;
-        vertex[1].y = model.vertex[model.Triangles[i].vertex[1]].y;
+        vertex[1].y = model.getTriangleVertex(i, 1).y;
 
 
-        placex = model.vertex[model.Triangles[i].vertex[2]].x;
-        placez = model.vertex[model.Triangles[i].vertex[2]].z;
+        placex = model.getTriangleVertex(i, 2).x;
+        placez = model.getTriangleVertex(i, 2).z;
 
         texcoords[2][0] = (placex - position.x) / (size) / 2 + .5;
         texcoords[2][1] = (placez - position.z) / (size) / 2 + .5;
 
         vertex[2].x = placex;
         vertex[2].z = placez;
-        vertex[2].y = model.vertex[model.Triangles[i].vertex[2]].y;
+        vertex[2].y = model.getTriangleVertex(i, 2).y;
     } else if (which == 1) {
-        placex = model.vertex[model.Triangles[i].vertex[0]].y;
-        placez = model.vertex[model.Triangles[i].vertex[0]].z;
+        placex = model.getTriangleVertex(i, 0).y;
+        placez = model.getTriangleVertex(i, 0).z;
 
         texcoords[0][0] = (placex - position.y) / (size) / 2 + .5;
         texcoords[0][1] = (placez - position.z) / (size) / 2 + .5;
 
-        vertex[0].x = model.vertex[model.Triangles[i].vertex[0]].x;
+        vertex[0].x = model.getTriangleVertex(i, 0).x;
         vertex[0].z = placez;
         vertex[0].y = placex;
 
 
-        placex = model.vertex[model.Triangles[i].vertex[1]].y;
-        placez = model.vertex[model.Triangles[i].vertex[1]].z;
+        placex = model.getTriangleVertex(i, 1).y;
+        placez = model.getTriangleVertex(i, 1).z;
 
         texcoords[1][0] = (placex - position.y) / (size) / 2 + .5;
         texcoords[1][1] = (placez - position.z) / (size) / 2 + .5;
 
-        vertex[1].x = model.vertex[model.Triangles[i].vertex[1]].x;
+        vertex[1].x = model.getTriangleVertex(i, 1).x;
         vertex[1].z = placez;
         vertex[1].y = placex;
 
 
-        placex = model.vertex[model.Triangles[i].vertex[2]].y;
-        placez = model.vertex[model.Triangles[i].vertex[2]].z;
+        placex = model.getTriangleVertex(i, 2).y;
+        placez = model.getTriangleVertex(i, 2).z;
 
         texcoords[2][0] = (placex - position.y) / (size) / 2 + .5;
         texcoords[2][1] = (placez - position.z) / (size) / 2 + .5;
 
-        vertex[2].x = model.vertex[model.Triangles[i].vertex[2]].x;
+        vertex[2].x = model.getTriangleVertex(i, 2).x;
         vertex[2].z = placez;
         vertex[2].y = placex;
     } else {
-        placex = model.vertex[model.Triangles[i].vertex[0]].x;
-        placez = model.vertex[model.Triangles[i].vertex[0]].y;
+        placex = model.getTriangleVertex(i, 0).x;
+        placez = model.getTriangleVertex(i, 0).y;
 
         texcoords[0][0] = (placex - position.x) / (size) / 2 + .5;
         texcoords[0][1] = (placez - position.y) / (size) / 2 + .5;
 
         vertex[0].x = placex;
-        vertex[0].z = model.vertex[model.Triangles[i].vertex[0]].z;
+        vertex[0].z = model.getTriangleVertex(i, 0).z;
         vertex[0].y = placez;
 
 
-        placex = model.vertex[model.Triangles[i].vertex[1]].x;
-        placez = model.vertex[model.Triangles[i].vertex[1]].y;
+        placex = model.getTriangleVertex(i, 1).x;
+        placez = model.getTriangleVertex(i, 1).y;
 
         texcoords[1][0] = (placex - position.x) / (size) / 2 + .5;
         texcoords[1][1] = (placez - position.y) / (size) / 2 + .5;
 
         vertex[1].x = placex;
-        vertex[1].z = model.vertex[model.Triangles[i].vertex[1]].z;
+        vertex[1].z = model.getTriangleVertex(i, 1).z;
         vertex[1].y = placez;
 
 
-        placex = model.vertex[model.Triangles[i].vertex[2]].x;
-        placez = model.vertex[model.Triangles[i].vertex[2]].y;
+        placex = model.getTriangleVertex(i, 2).x;
+        placez = model.getTriangleVertex(i, 2).y;
 
         texcoords[2][0] = (placex - position.x) / (size) / 2 + .5;
         texcoords[2][1] = (placez - position.y) / (size) / 2 + .5;
 
         vertex[2].x = placex;
-        vertex[2].z = model.vertex[model.Triangles[i].vertex[2]].z;
+        vertex[2].z = model.getTriangleVertex(i, 2).z;
         vertex[2].y = placez;
     }
 }

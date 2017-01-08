@@ -1141,6 +1141,11 @@ void Model::MakeDecal(decal_type atype, XYZ where, float size, float opacity, fl
     }
 }
 
+const XYZ& Model::getTriangleVertex(unsigned triangleId, unsigned vertexId) const
+{
+    return vertex[Triangles[triangleId].vertex[vertexId]];
+}
+
 void Model::deleteDeadDecals()
 {
     for (int i = decals.size() - 1; i >= 0; i--) {

@@ -622,10 +622,10 @@ void Weapon::doStuff(int i)
                             if (whichhit != -1) {
                                 hitsomething = 1;
                                 closestdistance = -1;
-                                closestswordpoint = colpoint; //(position+tippoint)/2;
-                                point[0] = DoRotation(Object::objects[k]->model.vertex[Object::objects[k]->model.Triangles[whichhit].vertex[0]], 0, Object::objects[k]->yaw, 0) + Object::objects[k]->position;
-                                point[1] = DoRotation(Object::objects[k]->model.vertex[Object::objects[k]->model.Triangles[whichhit].vertex[1]], 0, Object::objects[k]->yaw, 0) + Object::objects[k]->position;
-                                point[2] = DoRotation(Object::objects[k]->model.vertex[Object::objects[k]->model.Triangles[whichhit].vertex[2]], 0, Object::objects[k]->yaw, 0) + Object::objects[k]->position;
+                                closestswordpoint = colpoint;
+                                point[0] = DoRotation(Object::objects[k]->model.getTriangleVertex(whichhit, 0), 0, Object::objects[k]->yaw, 0) + Object::objects[k]->position;
+                                point[1] = DoRotation(Object::objects[k]->model.getTriangleVertex(whichhit, 1), 0, Object::objects[k]->yaw, 0) + Object::objects[k]->position;
+                                point[2] = DoRotation(Object::objects[k]->model.getTriangleVertex(whichhit, 2), 0, Object::objects[k]->yaw, 0) + Object::objects[k]->position;
                                 if (DistancePointLine(&closestswordpoint, &point[0], &point[1], &distance, &colpoint )) {
                                     if (distance < closestdistance || closestdistance == -1) {
                                         closestpoint = colpoint;

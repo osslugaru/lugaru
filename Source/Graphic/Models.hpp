@@ -98,6 +98,7 @@ public:
     void DeleteDecal(int which);
     void MakeDecal(decal_type atype, XYZ *where, float *size, float *opacity, float *rotation);
     void MakeDecal(decal_type atype, XYZ where, float size, float opacity, float rotation);
+    const XYZ& getTriangleVertex(unsigned triangleId, unsigned vertexId) const;
     void drawdecals(Texture shadowtexture, Texture bloodtexture, Texture bloodtexture2, Texture breaktexture);
     int SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate);
     int SphereCheckPossible(XYZ *p1, float radius, XYZ *move, float *rotate);

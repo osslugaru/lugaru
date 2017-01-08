@@ -996,9 +996,9 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
         if (whichtri != -1) {
             // low level geometry math
             p0 = colpoint;
-            p1 = skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[whichtri].vertex[0]];
-            p2 = skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[whichtri].vertex[1]];
-            p3 = skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[whichtri].vertex[2]];
+            p1 = skeleton.drawmodel.getTriangleVertex(whichtri, 0);
+            p2 = skeleton.drawmodel.getTriangleVertex(whichtri, 1);
+            p3 = skeleton.drawmodel.getTriangleVertex(whichtri, 2);
 
             bary.x = distsq(&p0, &p1);
             bary.y = distsq(&p0, &p2);
@@ -6364,9 +6364,9 @@ int Person::DrawSkeleton()
 
             if (playerdetail) {
                 for (unsigned int i = 0; i < skeleton.drawmodel.Triangles.size(); i++) {
-                    XYZ &v0 = skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[0]];
-                    XYZ &v1 = skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[1]];
-                    XYZ &v2 = skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[i].vertex[2]];
+                    const XYZ &v0 = skeleton.drawmodel.getTriangleVertex(i, 0);
+                    const XYZ &v1 = skeleton.drawmodel.getTriangleVertex(i, 1);
+                    const XYZ &v2 = skeleton.drawmodel.getTriangleVertex(i, 2);
                     glVertex3f(v0.x, v0.y, v0.z);
                     glVertex3f(v1.x, v1.y, v1.z);
                     glVertex3f(v1.x, v1.y, v1.z);
