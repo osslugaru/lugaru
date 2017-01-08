@@ -1137,36 +1137,27 @@ void Terrain::deleteDeadDecals()
 
 void Terrain::AddObject(XYZ where, float radius, int id)
 {
-    XYZ points[4];
-    if (id >= 0 && id < 10000)
+    XYZ points[2];
+    if (id >= 0 && id < 10000) {
         for (int i = 0; i < subdivision; i++) {
             for (int j = 0; j < subdivision; j++) {
                 if (patchobjectnum[i][j] < 300 - 1) {
-                    bool done = false;
                     points[0].x = (size / subdivision) * i;
                     points[0].z = (size / subdivision) * j;
                     points[0].y = heightmap[(int)points[0].x][(int)points[0].z];
                     points[1].x = (size / subdivision) * (i + 1);
-                    points[1].z = (size / subdivision) * j;
+                    points[1].z = (size / subdivision) * (j + 1);
                     points[1].y = heightmap[(int)points[1].x][(int)points[1].z];
-                    points[2].x = (size / subdivision) * (i + 1);
-                    points[2].z = (size / subdivision) * (j + 1);
-                    points[2].y = heightmap[(int)points[2].x][(int)points[2].z];
-                    points[3].x = (size / subdivision) * i;
-                    points[3].z = (size / subdivision) * (j + 1);
-                    points[3].y = heightmap[(int)points[3].x][(int)points[3].z];
                     points[0] *= scale;
                     points[1] *= scale;
-                    points[2] *= scale;
-                    points[3] *= scale;
-                    if (!done && where.x + radius > points[0].x && where.x - radius < points[2].x && where.z + radius > points[0].z && where.z - radius < points[2].z) {
+                    if (where.x + radius > points[0].x && where.x - radius < points[1].x && where.z + radius > points[0].z && where.z - radius < points[1].z) {
                         patchobjects[i][j][patchobjectnum[i][j]] = id;
                         patchobjectnum[i][j]++;
-                        done = 1;
                     }
                 }
             }
         }
+    }
 }
 
 void Terrain::DeleteDecal(int which)
