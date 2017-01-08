@@ -45,8 +45,9 @@ std::vector<std::string> ListCampaigns()
     std::vector<std::string> campaignNames;
     while ((campaign = readdir(campaigns)) != NULL) {
         std::string name(campaign->d_name);
-        if (name.length() < 5)
+        if (name.length() < 5) {
             continue;
+}
         if (!name.compare(name.length() - 4, 4, ".txt")) {
             campaignNames.push_back(name.substr(0, name.length() - 4));
         }

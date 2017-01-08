@@ -69,10 +69,11 @@ void Text::BuildFont() // Build Our Font Display List
         glTexCoord2f(cx, 1 - cy - +.001); // Texture Coord (Top Left)
         glVertex2i(0, 16); // Vertex Coord (Top Left)
         glEnd(); // Done Building Our Quad (Character)
-        if (loop < 256)
+        if (loop < 256) {
             glTranslated(10, 0, 0); // Move To The Right Of The Character
-        else
+        } else {
             glTranslated(8, 0, 0); // Move To The Right Of The Character
+}
         glEndList(); // Done Building The Display List
     } // Loop Until All 256 Are Built
 }

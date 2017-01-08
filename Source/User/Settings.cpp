@@ -70,18 +70,24 @@ void DefaultSettings()
 
 void SaveSettings()
 {
-    if (newdetail < 0)
+    if (newdetail < 0) {
         newdetail = 0;
-    if (newdetail > 2)
+}
+    if (newdetail > 2) {
         newdetail = 2;
-    if (newscreenwidth > 3000)
+}
+    if (newscreenwidth > 3000) {
         newscreenwidth = screenwidth;
-    if (newscreenwidth < 0)
+}
+    if (newscreenwidth < 0) {
         newscreenwidth = screenwidth;
-    if (newscreenheight > 3000)
+}
+    if (newscreenheight > 3000) {
         newscreenheight = screenheight;
-    if (newscreenheight < 0)
+}
+    if (newscreenheight < 0) {
         newscreenheight = screenheight;
+}
     errno = 0;
     ofstream opstream(Folders::getConfigFilePath());
     if (opstream.fail()) {
@@ -121,8 +127,9 @@ void SaveSettings()
     opstream << "\nInvert mouse:\n";
     opstream << invertmouse;
     opstream << "\nGamespeed:\n";
-    if (oldgamespeed == 0)
+    if (oldgamespeed == 0) {
         oldgamespeed = 1;
+}
     opstream << oldgamespeed;
     opstream << "\nDamage effects(blackout, doublevision):\n";
     opstream << damageeffects;
@@ -187,8 +194,9 @@ bool LoadSettings()
 
         // skip blank lines
         // assume lines starting with spaces are all blank
-        if ( strlen(setting) == 0 || setting[0] == ' ' || setting[0] == '\t')
+        if ( strlen(setting) == 0 || setting[0] == ' ' || setting[0] == '\t') {
             continue;
+}
         //~ printf("setting : %s\n",setting);
 
         if ( ipstream.eof() || ipstream.fail() ) {
@@ -303,14 +311,18 @@ bool LoadSettings()
 
     ipstream.close();
 
-    if (detail > 2)
+    if (detail > 2) {
         detail = 2;
-    if (detail < 0)
+}
+    if (detail < 0) {
         detail = 0;
-    if (screenwidth < 0)
+}
+    if (screenwidth < 0) {
         screenwidth = 1024;
-    if (screenheight < 0)
+}
+    if (screenheight < 0) {
         screenheight = 768;
+}
 
     newdetail = detail;
     return true;

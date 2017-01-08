@@ -94,8 +94,9 @@ Duration AbsoluteDeltaToDuration( AbsoluteTime& a, AbsoluteTime& b)
     value2 |= b.lo;
     value -= value2;
 
-    if (value <= 0)
+    if (value <= 0) {
         return durationImmediate;
+}
 
     __int64 frac = value % g_appTime.counterRate;
     value /= g_appTime.counterRate;

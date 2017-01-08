@@ -39,8 +39,9 @@ void TextureRes::load()
 
     skinsize = texture.sizeX;
     GLuint type = GL_RGBA;
-    if (texture.bpp == 24)
+    if (texture.bpp == 24) {
         type = GL_RGB;
+}
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
@@ -62,9 +63,11 @@ void TextureRes::load()
         const int nb = texture.sizeY * texture.sizeX * (texture.bpp / 8);
         data = (GLubyte*)malloc(nb * sizeof(GLubyte));
         datalen = 0;
-        for (int i = 0; i < nb; i++)
-            if ((i + 1) % 4 || type == GL_RGB)
+        for (int i = 0; i < nb; i++) {
+            if ((i + 1) % 4 || type == GL_RGB) {
                 data[datalen++] = texture.data[i];
+}
+}
         glTexImage2D(GL_TEXTURE_2D, 0, type, texture.sizeX, texture.sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     } else {
         glTexImage2D(GL_TEXTURE_2D, 0, type, texture.sizeX, texture.sizeY, 0, type, GL_UNSIGNED_BYTE, texture.data);
@@ -112,8 +115,9 @@ void Texture::load(const string& filename, bool hasMipmap, GLubyte* array, int* 
 
 void Texture::bind()
 {
-    if (tex)
+    if (tex) {
         tex->bind();
-    else
+    } else {
         glBindTexture(GL_TEXTURE_2D, 0);
+}
 }

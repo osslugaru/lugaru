@@ -50,8 +50,9 @@ static const int bonus_values[bonus_count] = {
 void
 award_bonus(int playerid, int bonusid, int alt_value)
 {
-    if (playerid != 0)
+    if (playerid != 0) {
         return;
+}
     bonus = bonusid;
     bonustime = 0;
     bonusvalue = alt_value ? alt_value : bonus_values[bonusid];
@@ -85,8 +86,9 @@ int award_awards(int *awards)
     }
     bool alldead = true;
     for (unsigned i = 1; i < Person::players.size(); i++) {
-        if (Person::players[i]->dead != 2)
+        if (Person::players[i]->dead != 2) {
             alldead = 0;
+}
     }
     if (alldead) {
         awards[numawards] = awardalldead;
@@ -94,8 +96,9 @@ int award_awards(int *awards)
     }
     alldead = 1;
     for (unsigned i = 1; i < Person::players.size(); i++) {
-        if (Person::players[i]->dead != 1)
+        if (Person::players[i]->dead != 1) {
             alldead = 0;
+}
     }
     if (alldead) {
         awards[numawards] = awardnodead;
@@ -135,8 +138,9 @@ int award_awards(int *awards)
     }
     alldead = 1;
     for (unsigned i = 1; i < Person::players.size(); i++) {
-        if (Person::players[i]->dead != 2)
+        if (Person::players[i]->dead != 2) {
             alldead = 0;
+}
     }
     if (numafterkill > 0 && alldead) {
         awards[numawards] = awardbrutal;

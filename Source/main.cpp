@@ -154,8 +154,9 @@ SDL_bool sdlEventProc(const SDL_Event &e)
             if ((e.key.keysym.scancode == SDL_SCANCODE_G) &&
                 (e.key.keysym.mod & KMOD_CTRL)) {
                 SDL_bool mode = SDL_TRUE;
-                if ((SDL_GetWindowFlags(sdlwindow) & SDL_WINDOW_FULLSCREEN) == 0)
+                if ((SDL_GetWindowFlags(sdlwindow) & SDL_WINDOW_FULLSCREEN) == 0) {
                     mode = (SDL_GetWindowGrab(sdlwindow) ? SDL_FALSE : SDL_TRUE);
+}
                 SDL_SetWindowGrab(sdlwindow, mode);
                 SDL_SetRelativeMouseMode(mode);
             } else if ( (e.key.keysym.scancode == SDL_SCANCODE_RETURN) && (e.key.keysym.mod & KMOD_ALT) ) {
@@ -181,11 +182,12 @@ bool SetUp ()
 
     DefaultSettings();
 
-    if (!SDL_WasInit(SDL_INIT_VIDEO))
+    if (!SDL_WasInit(SDL_INIT_VIDEO)) {
         if (SDL_Init(SDL_INIT_VIDEO) == -1) {
             fprintf(stderr, "SDL_Init() failed: %s\n", SDL_GetError());
             return false;
         }
+}
     if (!LoadSettings()) {
         fprintf(stderr, "Failed to load config, creating default\n");
         SaveSettings();
@@ -200,10 +202,12 @@ bool SetUp ()
     for (int displayIdx = 0; displayIdx < SDL_GetNumVideoDisplays(); ++displayIdx) {
         for (int i = 0; i < SDL_GetNumDisplayModes(displayIdx); ++i) {
             SDL_DisplayMode mode;
-            if (SDL_GetDisplayMode(displayIdx, i, &mode) == -1)
+            if (SDL_GetDisplayMode(displayIdx, i, &mode) == -1) {
                 continue;
-            if ((mode.w < 640) || (mode.h < 480))
+}
+            if ((mode.w < 640) || (mode.h < 480)) {
                 continue;  // sane lower limit.
+}
             pair<int,int> resolution(mode.w, mode.h);
             resolutions.insert(resolution);
         }
@@ -279,8 +283,9 @@ bool SetUp ()
         return false;
     }
 
-    if (SDL_GL_SetSwapInterval(-1) == -1)  // try swap_tear first.
+    if (SDL_GL_SetSwapInterval(-1) == -1) {  // try swap_tear first.
         SDL_GL_SetSwapInterval(1);
+}
 
     SDL_ShowCursor(0);
     if (!commandLineOptions[NOMOUSEGRAB].last()->type()) {
@@ -320,14 +325,16 @@ static void DoMouse()
         deltav *= usermousesensitivity;
         mousecoordh += deltah;
         mousecoordv += deltav;
-        if (mousecoordh < 0)
+        if (mousecoordh < 0) {
             mousecoordh = 0;
-        else if (mousecoordh >= kContextWidth)
+        } else if (mousecoordh >= kContextWidth) {
             mousecoordh = kContextWidth - 1;
-        if (mousecoordv < 0)
+}
+        if (mousecoordv < 0) {
             mousecoordv = 0;
-        else if (mousecoordv >= kContextHeight)
+        } else if (mousecoordv >= kContextHeight) {
             mousecoordv = kContextHeight - 1;
+}
     }
 
 }
@@ -341,25 +348,30 @@ void DoFrameRate (int update)
     AbsoluteTime currTime = UpTime ();
     double deltaTime = (float) AbsoluteDeltaToDuration (currTime, frametime);
 
-    if (0 > deltaTime) // if negative microseconds
+    if (0 > deltaTime) { // if negative microseconds
         deltaTime /= -1000000.0;
-    else // else milliseconds
+    } else { // else milliseconds
         deltaTime /= 1000.0;
+}
 
     multiplier = deltaTime;
-    if (multiplier < .001)
+    if (multiplier < .001) {
         multiplier = .001;
-    if (multiplier > 10)
+}
+    if (multiplier > 10) {
         multiplier = 10;
-    if (update)
+}
+    if (update) {
         frametime = currTime; // reset for next time interval
+}
 
     deltaTime = (float) AbsoluteDeltaToDuration (currTime, time);
 
-    if (0 > deltaTime) // if negative microseconds
+    if (0 > deltaTime) { // if negative microseconds
         deltaTime /= -1000000.0;
-    else // else milliseconds
+    } else { // else milliseconds
         deltaTime /= 1000.0;
+}
     frames++;
     if (0.001 <= deltaTime) { // has update interval passed
         if (update) {
@@ -377,26 +389,32 @@ void DoUpdate ()
     static float oldmult;
 
     DoFrameRate(1);
-    if (multiplier > .6)
+    if (multiplier > .6) {
         multiplier = .6;
+}
 
     fps = 1 / multiplier;
 
     count = multiplier * sps;
-    if (count < 2)
+    if (count < 2) {
         count = 2;
+}
 
     realmultiplier = multiplier;
     multiplier *= gamespeed;
-    if (difficulty == 1)
+    if (difficulty == 1) {
         multiplier *= .9;
-    if (difficulty == 0)
+}
+    if (difficulty == 0) {
         multiplier *= .8;
+}
 
-    if (loading == 4)
+    if (loading == 4) {
         multiplier *= .00001;
-    if (slomo && !mainmenu)
+}
+    if (slomo && !mainmenu) {
         multiplier *= slomospeed;
+}
     oldmult = multiplier;
     multiplier /= (float)count;
 
@@ -485,15 +503,17 @@ static char *findBinaryInPath(const char *bin, char *envr)
     do {
         size_t size;
         ptr = strchr(start, ':');  /* find next $PATH separator. */
-        if (ptr)
+        if (ptr) {
             *ptr = '\0';
 
-        size = strlen(start) + strlen(bin) + 2;
+        
+}size = strlen(start) + strlen(bin) + 2;
         if (size > alloc_size) {
             char *x = (char *) realloc(exe, size);
             if (x == NULL) {
-                if (exe != NULL)
+                if (exe != NULL) {
                     free(exe);
+}
                 return(NULL);
             } /* if */
 
@@ -503,8 +523,9 @@ static char *findBinaryInPath(const char *bin, char *envr)
 
         /* build full binary path... */
         strcpy(exe, start);
-        if ((exe[0] == '\0') || (exe[strlen(exe) - 1] != '/'))
+        if ((exe[0] == '\0') || (exe[strlen(exe) - 1] != '/')) {
             strcat(exe, "/");
+}
         strcat(exe, bin);
 
         if (access(exe, X_OK) == 0) { /* Exists as executable? We're done. */
@@ -515,8 +536,9 @@ static char *findBinaryInPath(const char *bin, char *envr)
         start = ptr + 1;  /* start points to beginning of next element. */
     } while (ptr != NULL);
 
-    if (exe != NULL)
+    if (exe != NULL) {
         free(exe);
+}
 
     return(NULL);  /* doesn't exist in path. */
 } /* findBinaryInPath */
@@ -530,17 +552,20 @@ char *calcBaseDir(const char *argv0)
 
     if (strchr(argv0, '/')) {
         retval = strdup(argv0);
-        if (retval)
+        if (retval) {
             *((char *) strrchr(retval, '/')) = '\0';
-        return(retval);
+        
+}return(retval);
     }
 
     envr = getenv("PATH");
-    if (!envr)
+    if (!envr) {
         return NULL;
+}
     envr = strdup(envr);
-    if (!envr)
+    if (!envr) {
         return NULL;
+}
     retval = findBinaryInPath(argv0, envr);
     free(envr);
     return(retval);

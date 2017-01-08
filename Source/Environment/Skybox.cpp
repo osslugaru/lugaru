@@ -66,8 +66,9 @@ void SkyBox::draw()
     glDisable(GL_CULL_FACE);
     glEnable(GL_BLEND);
     glDisable(GL_LIGHTING);
-    if (skyboxtexture)
+    if (skyboxtexture) {
         glEnable(GL_TEXTURE_2D);
+}
     glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
     front.bind();
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );

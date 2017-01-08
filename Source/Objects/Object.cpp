@@ -250,30 +250,46 @@ void Object::handleRot(int divide)
 {
     messedwith -= multiplier;
     if (rotxvel || rotx) {
-        if (rotx > 0) rotxvel -= multiplier * 8 * fabs(rotx);
-        if (rotx < 0) rotxvel += multiplier * 8 * fabs(rotx);
-        if (rotx > 0) rotxvel -= multiplier * 4;
-        if (rotx < 0) rotxvel += multiplier * 4;
-        if (rotxvel > 0) rotxvel -= multiplier * 4;
-        if (rotxvel < 0) rotxvel += multiplier * 4;
-        if (fabs(rotx) < multiplier * 4)
+        if (rotx > 0) { rotxvel -= multiplier * 8 * fabs(rotx);
+}
+        if (rotx < 0) { rotxvel += multiplier * 8 * fabs(rotx);
+}
+        if (rotx > 0) { rotxvel -= multiplier * 4;
+}
+        if (rotx < 0) { rotxvel += multiplier * 4;
+}
+        if (rotxvel > 0) { rotxvel -= multiplier * 4;
+}
+        if (rotxvel < 0) { rotxvel += multiplier * 4;
+}
+        if (fabs(rotx) < multiplier * 4) {
             rotx = 0;
-        if (fabs(rotxvel) < multiplier * 4)
+}
+        if (fabs(rotxvel) < multiplier * 4) {
             rotxvel = 0;
+}
 
         rotx += rotxvel * multiplier * 4;
     }
     if (rotyvel || roty) {
-        if (roty > 0) rotyvel -= multiplier * 8 * fabs(roty);
-        if (roty < 0) rotyvel += multiplier * 8 * fabs(roty);
-        if (roty > 0) rotyvel -= multiplier * 4;
-        if (roty < 0) rotyvel += multiplier * 4;
-        if (rotyvel > 0) rotyvel -= multiplier * 4;
-        if (rotyvel < 0) rotyvel += multiplier * 4;
-        if (fabs(roty) < multiplier * 4)
+        if (roty > 0) { rotyvel -= multiplier * 8 * fabs(roty);
+}
+        if (roty < 0) { rotyvel += multiplier * 8 * fabs(roty);
+}
+        if (roty > 0) { rotyvel -= multiplier * 4;
+}
+        if (roty < 0) { rotyvel += multiplier * 4;
+}
+        if (rotyvel > 0) { rotyvel -= multiplier * 4;
+}
+        if (rotyvel < 0) { rotyvel += multiplier * 4;
+}
+        if (fabs(roty) < multiplier * 4) {
             roty = 0;
-        if (fabs(rotyvel) < multiplier * 4)
+}
+        if (fabs(rotyvel) < multiplier * 4) {
             rotyvel = 0;
+}
 
         roty += rotyvel * multiplier * 4;
     }
@@ -283,14 +299,18 @@ void Object::handleRot(int divide)
     if (rotx) {
         glRotatef(-rotx / divide, 0, 0, 1);
     }
-    if (rotx > 10)
+    if (rotx > 10) {
         rotx = 10;
-    if (rotx < -10)
+}
+    if (rotx < -10) {
         rotx = -10;
-    if (roty > 10)
+}
+    if (roty > 10) {
         roty = 10;
-    if (roty < -10)
+}
+    if (roty < -10) {
         roty = -10;
+}
 }
 
 void Object::draw()
@@ -308,22 +328,25 @@ void Object::draw()
         hidden = !(distsqflat(&viewer, &position) > playerdist + 3 || (type != bushtype && type != treeleavestype));
         if (!hidden) {
 
-            if (detail == 2 && distance > viewdistance * viewdistance / 4 && environment == desertenvironment)
+            if (detail == 2 && distance > viewdistance * viewdistance / 4 && environment == desertenvironment) {
                 glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, blurness );
-            else
+            } else {
                 glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, 0 );
+}
             distance = (viewdistance * viewdistance - (distance - (viewdistance * viewdistance * fadestart)) * (1 / (1 - fadestart))) / viewdistance / viewdistance;
-            if (distance > 1)
+            if (distance > 1) {
                 distance = 1;
+}
             if (distance > 0) {
 
                 if (occluded < 6) {
                     glMatrixMode(GL_MODELVIEW);
                     glPushMatrix();
-                    if (!model.color)
+                    if (!model.color) {
                         glEnable(GL_LIGHTING);
-                    else
+                    } else {
                         glDisable(GL_LIGHTING);
+}
                     glDepthMask(1);
                     glTranslatef(position.x, position.y, position.z);
                     if (type == bushtype) {
@@ -621,8 +644,9 @@ void Object::DoShadows()
 {
     XYZ lightloc;
     lightloc = light.location;
-    if (!skyboxtexture)
+    if (!skyboxtexture) {
         lightloc = 0;
+}
     lightloc.y += 10;
     Normalise(&lightloc);
 

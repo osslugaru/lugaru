@@ -174,8 +174,9 @@ void Weapon::doStuff(int i)
             Person::players[owner]->num_weapons--;
             if (Person::players[owner]->num_weapons) {
                 Person::players[owner]->weaponids[0] = Person::players[owner]->weaponids[Person::players[owner]->num_weapons];
-                if (Person::players[owner]->weaponstuck == Person::players[owner]->num_weapons)
+                if (Person::players[owner]->weaponstuck == Person::players[owner]->num_weapons) {
                     Person::players[owner]->weaponstuck = 0;
+}
             }
         }
         owner = -1;
@@ -204,12 +205,13 @@ void Weapon::doStuff(int i)
                         Object::objects[k]->model.MakeDecal(breakdecal, DoRotation(colpoint - Object::objects[k]->position, 0, -Object::objects[k]->yaw, 0), .1, 1, Random() % 360);
                         normalrot = DoRotation(Object::objects[k]->model.Triangles[whichhit].facenormal, 0, Object::objects[k]->yaw, 0);
                         velocity = 0;
-                        if (type == knife)
+                        if (type == knife) {
                             position = colpoint - normalrot * .1;
-                        else if (type == sword)
+                        } else if (type == sword) {
                             position = colpoint - normalrot * .2;
-                        else if (type == staff)
+                        } else if (type == staff) {
                             position = colpoint - normalrot * .2;
+}
                         XYZ temppoint1, temppoint2;
                         float distance;
 
@@ -222,8 +224,9 @@ void Weapon::doStuff(int i)
                         temppoint2.y = 0;
                         rotation1 = acos((temppoint1.z - temppoint2.z) / findDistance(&temppoint1, &temppoint2));
                         rotation1 *= 360 / 6.28;
-                        if (temppoint1.x > temppoint2.x)
+                        if (temppoint1.x > temppoint2.x) {
                             rotation1 = 360 - rotation1;
+}
 
                         rotation3 = 0;
                         smallrotation = 90;
@@ -267,14 +270,16 @@ void Weapon::doStuff(int i)
 
                             Person::players[j]->aitype = attacktypecutoff;
                         } else {
-                            if (j != 0)
+                            if (j != 0) {
                                 numthrowkill++;
+}
                             Person::players[j]->num_weapons++;
                             Person::players[j]->weaponstuck = Person::players[j]->num_weapons - 1;
-                            if (normaldotproduct(Person::players[j]->facing, velocity) > 0)
+                            if (normaldotproduct(Person::players[j]->facing, velocity) > 0) {
                                 Person::players[j]->weaponstuckwhere = 1;
-                            else
+                            } else {
                                 Person::players[j]->weaponstuckwhere = 0;
+}
 
                             Person::players[j]->weaponids[Person::players[j]->num_weapons - 1] = i;
 
@@ -283,20 +288,25 @@ void Weapon::doStuff(int i)
                             Person::players[j]->jointVel(neck) += velocity * 2;
                             Person::players[j]->jointVel(rightshoulder) += velocity * 2;
                             Person::players[j]->jointVel(leftshoulder) += velocity * 2;
-                            if (bloodtoggle && !Tutorial::active)
+                            if (bloodtoggle && !Tutorial::active) {
                                 Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 0, 0, .8, .3);
-                            if (Tutorial::active)
+}
+                            if (Tutorial::active) {
                                 Sprite::MakeSprite(cloudimpactsprite, footpoint, footvel, 1, 1, 1, .8, .3);
+}
                             footvel = tippoint - position;
                             Normalise(&footvel);
-                            if (bloodtoggle && !Tutorial::active)
+                            if (bloodtoggle && !Tutorial::active) {
                                 Sprite::MakeSprite(bloodflamesprite, footpoint, footvel * -1, 1, 0, 0, .6, 1);
+}
 
                             if (!Tutorial::active) {
-                                if (Person::players[j]->weaponstuckwhere == 0)
+                                if (Person::players[j]->weaponstuckwhere == 0) {
                                     Person::players[j]->DoBloodBig(2, 205);
-                                if (Person::players[j]->weaponstuckwhere == 1)
+}
+                                if (Person::players[j]->weaponstuckwhere == 1) {
                                     Person::players[j]->DoBloodBig(2, 200);
+}
                                 Person::players[j]->damage += 200 / Person::players[j]->armorhigh;
                                 Person::players[j]->deathbleeding = 1;
                                 Person::players[j]->bloodloss += (200 + abs((float)(Random() % 40)) - 20) / Person::players[j]->armorhigh;
@@ -307,10 +317,11 @@ void Weapon::doStuff(int i)
 
                             emit_sound_at(fleshstabsound, position, 128.);
 
-                            if (Animation::animations[Person::players[0]->animTarget].height == highheight)
+                            if (Animation::animations[Person::players[0]->animTarget].height == highheight) {
                                 award_bonus(0, ninja);
-                            else
+                            } else {
                                 award_bonus(0, Bullseyebonus);
+}
                         }
                     } else {
                         missed = 1;
@@ -363,14 +374,17 @@ void Weapon::doStuff(int i)
                 XYZ terrainlight;
                 terrainlight = terrain.getLighting(position.x, position.z);
                 if (environment == snowyenvironment) {
-                    if (distsq(&position, &viewer) < viewdistance * viewdistance / 4)
+                    if (distsq(&position, &viewer) < viewdistance * viewdistance / 4) {
                         Sprite::MakeSprite(cloudsprite, position, velocity, terrainlight.x, terrainlight.y, terrainlight.z, .5, .7);
+}
                 } else if (environment == grassyenvironment) {
-                    if (distsq(&position, &viewer) < viewdistance * viewdistance / 4)
+                    if (distsq(&position, &viewer) < viewdistance * viewdistance / 4) {
                         Sprite::MakeSprite(cloudsprite, position, velocity, terrainlight.x * 90 / 255, terrainlight.y * 70 / 255, terrainlight.z * 8 / 255, .5, .5);
+}
                 } else if (environment == desertenvironment) {
-                    if (distsq(&position, &viewer) < viewdistance * viewdistance / 4)
+                    if (distsq(&position, &viewer) < viewdistance * viewdistance / 4) {
                         Sprite::MakeSprite(cloudsprite, position, velocity, terrainlight.x * 190 / 255, terrainlight.y * 170 / 255, terrainlight.z * 108 / 255, .5, .7);
+}
                 }
 
                 bloody = 0;
@@ -403,8 +417,9 @@ void Weapon::doStuff(int i)
             bigtilt = 0;
             bigtilt2 = 0;
             bigrotation = 0;
-            if (temppoint1.x > temppoint2.x)
+            if (temppoint1.x > temppoint2.x) {
                 rotation1 = 360 - rotation1;
+}
         }
 
     }
@@ -490,22 +505,25 @@ void Weapon::doStuff(int i)
                         position += terrainnormal * .002;
 
                         bounceness = terrainnormal * findLength(&velocity) * (abs(normaldotproduct(velocity, terrainnormal)));
-                        if (findLengthfast(&velocity) < findLengthfast(&bounceness))
+                        if (findLengthfast(&velocity) < findLengthfast(&bounceness)) {
                             bounceness = 0;
+}
                         frictionness = abs(normaldotproduct(velocity, terrainnormal));
                         velocity -= bounceness;
-                        if (1 - friction * frictionness > 0)
+                        if (1 - friction * frictionness > 0) {
                             velocity *= 1 - friction * frictionness;
-                        else
+                        } else {
                             velocity = 0;
+}
                         velocity += bounceness * elasticity;
 
                         if (findLengthfast(&bounceness) > 1) {
                             int whichsound;
-                            if (type == staff)
+                            if (type == staff) {
                                 whichsound = footstepsound3 + abs(Random() % 2);
-                            else
+                            } else {
                                 whichsound = clank1sound + abs(Random() % 4);
+}
                             emit_sound_at(whichsound, position, 128 * findLengthfast(&bounceness));
                         }
                     }
@@ -520,27 +538,30 @@ void Weapon::doStuff(int i)
                         tippoint += terrainnormal * .002;
 
                         bounceness = terrainnormal * findLength(&tipvelocity) * (abs(normaldotproduct(tipvelocity, terrainnormal)));
-                        if (findLengthfast(&tipvelocity) < findLengthfast(&bounceness))
+                        if (findLengthfast(&tipvelocity) < findLengthfast(&bounceness)) {
                             bounceness = 0;
+}
                         frictionness = abs(normaldotproduct(tipvelocity, terrainnormal));
                         tipvelocity -= bounceness;
-                        if (1 - friction * frictionness > 0)
+                        if (1 - friction * frictionness > 0) {
                             tipvelocity *= 1 - friction * frictionness;
-                        else
+                        } else {
                             tipvelocity = 0;
+}
                         tipvelocity += bounceness * elasticity;
 
                         if (findLengthfast(&bounceness) > 1) {
                             int whichsound;
-                            if (type == staff)
+                            if (type == staff) {
                                 whichsound = footstepsound3 + abs(Random() % 2);
-                            else
+                            } else {
                                 whichsound = clank1sound + abs(Random() % 4);
+}
                             emit_sound_at(whichsound, position, 128 * findLengthfast(&bounceness));
                         }
                     }
 
-                    if ((Object::objects[k]->type != boxtype && Object::objects[k]->type != platformtype && Object::objects[k]->type != walltype && Object::objects[k]->type != weirdtype) || Object::objects[k]->pitch != 0)
+                    if ((Object::objects[k]->type != boxtype && Object::objects[k]->type != platformtype && Object::objects[k]->type != walltype && Object::objects[k]->type != weirdtype) || Object::objects[k]->pitch != 0) {
                         for (int m = 0; m < 2; m++) {
                             mid = (position * (21 + (float)m * 10) + tippoint * (19 - (float)m * 10)) / 40;
                             oldmid2 = mid;
@@ -556,22 +577,25 @@ void Weapon::doStuff(int i)
                                 ReflectVector(&velocity, &terrainnormal);
 
                                 bounceness = terrainnormal * findLength(&velocity) * (abs(normaldotproduct(velocity, terrainnormal)));
-                                if (findLengthfast(&velocity) < findLengthfast(&bounceness))
+                                if (findLengthfast(&velocity) < findLengthfast(&bounceness)) {
                                     bounceness = 0;
+}
                                 frictionness = abs(normaldotproduct(velocity, terrainnormal));
                                 velocity -= bounceness;
-                                if (1 - friction * frictionness > 0)
+                                if (1 - friction * frictionness > 0) {
                                     velocity *= 1 - friction * frictionness;
-                                else
+                                } else {
                                     velocity = 0;
+}
                                 velocity += bounceness * elasticity;
 
                                 if (findLengthfast(&bounceness) > 1) {
                                     int whichsound;
-                                    if (type == staff)
+                                    if (type == staff) {
                                         whichsound = footstepsound3 + abs(Random() % 2);
-                                    else
+                                    } else {
                                         whichsound = clank1sound + abs(Random() % 4);
+}
                                     emit_sound_at(whichsound, mid, 128 * findLengthfast(&bounceness));
                                 }
                                 position += (mid - oldmid2) * (20 / (1 + (float)m * 10));
@@ -591,28 +615,31 @@ void Weapon::doStuff(int i)
                                 ReflectVector(&tipvelocity, &terrainnormal);
 
                                 bounceness = terrainnormal * findLength(&tipvelocity) * (abs(normaldotproduct(tipvelocity, terrainnormal)));
-                                if (findLengthfast(&tipvelocity) < findLengthfast(&bounceness))
+                                if (findLengthfast(&tipvelocity) < findLengthfast(&bounceness)) {
                                     bounceness = 0;
+}
                                 frictionness = abs(normaldotproduct(tipvelocity, terrainnormal));
                                 tipvelocity -= bounceness;
-                                if (1 - friction * frictionness > 0)
+                                if (1 - friction * frictionness > 0) {
                                     tipvelocity *= 1 - friction * frictionness;
-                                else
+                                } else {
                                     tipvelocity = 0;
+}
                                 tipvelocity += bounceness * elasticity;
 
                                 if (findLengthfast(&bounceness) > 1) {
                                     int whichsound;
-                                    if (type == staff)
+                                    if (type == staff) {
                                         whichsound = footstepsound3 + abs(Random() % 2);
-                                    else
+                                    } else {
                                         whichsound = clank1sound + abs(Random() % 4);
+}
                                     emit_sound_at(whichsound, mid, 128 * findLengthfast(&bounceness));
                                 }
                                 tippoint += (mid - oldmid2) * (20 / (1 + (float)m * 10));
                             }
                         }
-                    else {
+                    } else {
                         start = position;
                         end = tippoint;
                         whichhit = Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw);
@@ -658,35 +685,40 @@ void Weapon::doStuff(int i)
             whichhit = terrain.lineTerrain(oldposition, position, &colpoint);
             if (whichhit != -1 || position.y < terrain.getHeight(position.x, position.z)) {
                 hitsomething = 1;
-                if (whichhit != -1)
+                if (whichhit != -1) {
                     position = colpoint * terrain.scale;
-                else
+                } else {
                     position.y = terrain.getHeight(position.x, position.z);
+}
 
                 terrainnormal = terrain.getNormal(position.x, position.z);
                 ReflectVector(&velocity, &terrainnormal);
                 position += terrainnormal * .002;
                 bounceness = terrainnormal * findLength(&velocity) * (abs(normaldotproduct(velocity, terrainnormal)));
-                if (findLengthfast(&velocity) < findLengthfast(&bounceness))
+                if (findLengthfast(&velocity) < findLengthfast(&bounceness)) {
                     bounceness = 0;
+}
                 frictionness = abs(normaldotproduct(velocity, terrainnormal));
                 velocity -= bounceness;
-                if (1 - friction * frictionness > 0)
+                if (1 - friction * frictionness > 0) {
                     velocity *= 1 - friction * frictionness;
-                else
+                } else {
                     velocity = 0;
-                if (terrain.getOpacity(position.x, position.z) < .2)
+}
+                if (terrain.getOpacity(position.x, position.z) < .2) {
                     velocity += bounceness * elasticity * .3;
-                else
+                } else {
                     velocity += bounceness * elasticity;
+}
 
                 if (findLengthfast(&bounceness) > 1) {
                     int whichsound;
                     if (terrain.getOpacity(position.x, position.z) > .2) {
-                        if (type == staff)
+                        if (type == staff) {
                             whichsound = footstepsound3 + abs(Random() % 2);
-                        else
+                        } else {
                             whichsound = clank1sound + abs(Random() % 4);
+}
                     } else {
                         whichsound = footstepsound + abs(Random() % 2);
                     }
@@ -698,49 +730,57 @@ void Weapon::doStuff(int i)
                         XYZ terrainlight;
                         terrainlight = terrain.getLighting(position.x, position.z);
                         if (environment == snowyenvironment) {
-                            if (distsq(&position, &viewer) < viewdistance * viewdistance / 4)
+                            if (distsq(&position, &viewer) < viewdistance * viewdistance / 4) {
                                 Sprite::MakeSprite(cloudsprite, position, velocity, terrainlight.x, terrainlight.y, terrainlight.z, .5, .7);
+}
                         } else if (environment == grassyenvironment) {
-                            if (distsq(&position, &viewer) < viewdistance * viewdistance / 4)
+                            if (distsq(&position, &viewer) < viewdistance * viewdistance / 4) {
                                 Sprite::MakeSprite(cloudsprite, position, velocity, terrainlight.x * 90 / 255, terrainlight.y * 70 / 255, terrainlight.z * 8 / 255, .5, .5);
+}
                         } else if (environment == desertenvironment) {
-                            if (distsq(&position, &viewer) < viewdistance * viewdistance / 4)
+                            if (distsq(&position, &viewer) < viewdistance * viewdistance / 4) {
                                 Sprite::MakeSprite(cloudsprite, position, velocity, terrainlight.x * 190 / 255, terrainlight.y * 170 / 255, terrainlight.z * 108 / 255, .5, .7);
+}
                         }
                     }
                 }
             }
             whichhit = terrain.lineTerrain(oldtippoint, tippoint, &colpoint);
             if (whichhit != -1 || tippoint.y < terrain.getHeight(tippoint.x, tippoint.z)) {
-                if (whichhit != -1)
+                if (whichhit != -1) {
                     tippoint = colpoint * terrain.scale;
-                else
+                } else {
                     tippoint.y = terrain.getHeight(tippoint.x, tippoint.z);
+}
 
                 terrainnormal = terrain.getNormal(tippoint.x, tippoint.z);
                 ReflectVector(&tipvelocity, &terrainnormal);
                 tippoint += terrainnormal * .002;
                 bounceness = terrainnormal * findLength(&tipvelocity) * (abs(normaldotproduct(tipvelocity, terrainnormal)));
-                if (findLengthfast(&tipvelocity) < findLengthfast(&bounceness))
+                if (findLengthfast(&tipvelocity) < findLengthfast(&bounceness)) {
                     bounceness = 0;
+}
                 frictionness = abs(normaldotproduct(tipvelocity, terrainnormal));
                 tipvelocity -= bounceness;
-                if (1 - friction * frictionness > 0)
+                if (1 - friction * frictionness > 0) {
                     tipvelocity *= 1 - friction * frictionness;
-                else
+                } else {
                     tipvelocity = 0;
-                if (terrain.getOpacity(tippoint.x, tippoint.z) < .2)
+}
+                if (terrain.getOpacity(tippoint.x, tippoint.z) < .2) {
                     tipvelocity += bounceness * elasticity * .3;
-                else
+                } else {
                     tipvelocity += bounceness * elasticity;
+}
 
                 if (findLengthfast(&bounceness) > 1) {
                     int whichsound;
                     if (terrain.getOpacity(tippoint.x, tippoint.z) > .2) {
-                        if (type == staff)
+                        if (type == staff) {
                             whichsound = footstepsound3 + abs(Random() % 2);
-                        else
+                        } else {
                             whichsound = clank1sound + abs(Random() % 4);
+}
                     } else {
                         whichsound = footstepsound + abs(Random() % 2);
                     }
@@ -752,14 +792,17 @@ void Weapon::doStuff(int i)
                         XYZ terrainlight;
                         terrainlight = terrain.getLighting(tippoint.x, tippoint.z);
                         if (environment == snowyenvironment) {
-                            if (distsq(&tippoint, &viewer) < viewdistance * viewdistance / 4)
+                            if (distsq(&tippoint, &viewer) < viewdistance * viewdistance / 4) {
                                 Sprite::MakeSprite(cloudsprite, tippoint, tipvelocity, terrainlight.x, terrainlight.y, terrainlight.z, .5, .7);
+}
                         } else if (environment == grassyenvironment) {
-                            if (distsq(&tippoint, &viewer) < viewdistance * viewdistance / 4)
+                            if (distsq(&tippoint, &viewer) < viewdistance * viewdistance / 4) {
                                 Sprite::MakeSprite(cloudsprite, tippoint, tipvelocity, terrainlight.x * 90 / 255, terrainlight.y * 70 / 255, terrainlight.z * 8 / 255, .5, .5);
+}
                         } else if (environment == desertenvironment) {
-                            if (distsq(&tippoint, &viewer) < viewdistance * viewdistance / 4)
+                            if (distsq(&tippoint, &viewer) < viewdistance * viewdistance / 4) {
                                 Sprite::MakeSprite(cloudsprite, tippoint, tipvelocity, terrainlight.x * 190 / 255, terrainlight.y * 170 / 255, terrainlight.z * 108 / 255, .5, .7);
+}
                         }
                     }
                 }
@@ -778,26 +821,31 @@ void Weapon::doStuff(int i)
                 ReflectVector(&velocity, &terrainnormal);
                 //mid+=terrainnormal*.002;
                 bounceness = terrainnormal * findLength(&velocity) * (abs(normaldotproduct(velocity, terrainnormal)));
-                if (findLengthfast(&velocity) < findLengthfast(&bounceness))
+                if (findLengthfast(&velocity) < findLengthfast(&bounceness)) {
                     bounceness = 0;
+}
                 frictionness = abs(normaldotproduct(velocity, terrainnormal));
                 velocity -= bounceness;
-                if (1 - friction * frictionness > 0)
+                if (1 - friction * frictionness > 0) {
                     velocity *= 1 - friction * frictionness;
-                else
+                } else {
                     velocity = 0;
-                if (terrain.getOpacity(mid.x, mid.z) < .2)
+}
+                if (terrain.getOpacity(mid.x, mid.z) < .2) {
                     velocity += bounceness * elasticity * .3;
-                else
+                } else {
                     velocity += bounceness * elasticity;
+}
 
                 if (findLengthfast(&bounceness) > 1) {
                     int whichsound;
                     if (terrain.getOpacity(mid.x, mid.z) > .2) {
-                        if (type == staff)
+                        if (type == staff) {
                             whichsound = footstepsound3 + abs(Random() % 2);
-                        if (type != staff)
+}
+                        if (type != staff) {
                             whichsound = clank1sound + abs(Random() % 4);
+}
                     } else {
                         whichsound = footstepsound + abs(Random() % 2);
                     }
@@ -822,26 +870,31 @@ void Weapon::doStuff(int i)
                 ReflectVector(&tipvelocity, &terrainnormal);
                 //mid+=terrainnormal*.002;
                 bounceness = terrainnormal * findLength(&tipvelocity) * (abs(normaldotproduct(tipvelocity, terrainnormal)));
-                if (findLengthfast(&tipvelocity) < findLengthfast(&bounceness))
+                if (findLengthfast(&tipvelocity) < findLengthfast(&bounceness)) {
                     bounceness = 0;
+}
                 frictionness = abs(normaldotproduct(tipvelocity, terrainnormal));
                 tipvelocity -= bounceness;
-                if (1 - friction * frictionness > 0)
+                if (1 - friction * frictionness > 0) {
                     tipvelocity *= 1 - friction * frictionness;
-                else
+                } else {
                     tipvelocity = 0;
-                if (terrain.getOpacity(mid.x, mid.z) < .2)
+}
+                if (terrain.getOpacity(mid.x, mid.z) < .2) {
                     tipvelocity += bounceness * elasticity * .3;
-                else
+                } else {
                     tipvelocity += bounceness * elasticity;
+}
 
                 if (findLengthfast(&bounceness) > 1) {
                     int whichsound;
                     if (terrain.getOpacity(mid.x, mid.z) > .2) {
-                        if (type == staff)
+                        if (type == staff) {
                             whichsound = footstepsound3 + abs(Random() % 2);
-                        if (type != staff)
+}
+                        if (type != staff) {
                             whichsound = clank1sound + abs(Random() % 4);
+}
                     } else {
                         whichsound = footstepsound + abs(Random() % 2);
                     }
@@ -876,8 +929,9 @@ void Weapon::doStuff(int i)
             bigtilt = 0;
             bigtilt2 = 0;
             bigrotation = 0;
-            if (temppoint1.x > temppoint2.x)
+            if (temppoint1.x > temppoint2.x) {
                 rotation1 = 360 - rotation1;
+}
 
             //Stop moving
             if (findLengthfast(&velocity) < .3 && findLengthfast(&tipvelocity) < .3 && hitsomething) {
@@ -895,10 +949,12 @@ void Weapon::doStuff(int i)
     if (blooddrip && bloody) {
         blooddripdelay -= blooddrip * multiplier / 2;
         blooddrip -= multiplier;
-        if (blooddrip < 0)
+        if (blooddrip < 0) {
             blooddrip = 0;
-        if (blooddrip > 5)
+}
+        if (blooddrip > 5) {
             blooddrip = 5;
+}
         if (blooddripdelay < 0 && bloodtoggle) {
             blooddripdelay = 1;
             XYZ bloodvel;
@@ -968,14 +1024,17 @@ void Weapon::draw()
         bool draw = false;
         if (owner == -1) {
             draw = true;
-            if (velocity.x && !physics)
+            if (velocity.x && !physics) {
                 drawhowmany = 10;
-            else
+            } else {
                 drawhowmany = 1;
+}
         } else {
-            if (Person::players[owner]->occluded < 25)
-                if ((frustum.SphereInFrustum(Person::players[owner]->coords.x, Person::players[owner]->coords.y + Person::players[owner]->scale * 3, Person::players[owner]->coords.z, Person::players[owner]->scale * 8) && distsq(&viewer, &Person::players[owner]->coords) < viewdistance * viewdistance) || Person::players[owner]->skeleton.free == 3)
+            if (Person::players[owner]->occluded < 25) {
+                if ((frustum.SphereInFrustum(Person::players[owner]->coords.x, Person::players[owner]->coords.y + Person::players[owner]->scale * 3, Person::players[owner]->coords.z, Person::players[owner]->scale * 8) && distsq(&viewer, &Person::players[owner]->coords) < viewdistance * viewdistance) || Person::players[owner]->skeleton.free == 3) {
                     draw = true;
+}
+}
             if (
                 (Person::players[owner]->animTarget == knifeslashstartanim ||
                  Person::players[owner]->animTarget == swordsneakattackanim ||
@@ -1018,10 +1077,11 @@ void Weapon::draw()
                 glMatrixMode(GL_MODELVIEW);
                 glPushMatrix();
                 glColor4f(terrainlight.x, terrainlight.y, terrainlight.z, j / drawhowmany);
-                if (owner == -1)
+                if (owner == -1) {
                     glTranslatef(position.x * (((float)(j)) / drawhowmany) + lastdrawnposition.x * (1 - ((float)(j)) / drawhowmany), position.y * (((float)(j)) / drawhowmany) + lastdrawnposition.y * (1 - ((float)(j)) / drawhowmany), position.z * (((float)(j)) / drawhowmany) + lastdrawnposition.z * (1 - ((float)(j)) / drawhowmany));
-                else
+                } else {
                     glTranslatef(position.x * (((float)(j)) / drawhowmany) + lastdrawnposition.x * (1 - ((float)(j)) / drawhowmany), position.y * (((float)(j)) / drawhowmany) - .02 + lastdrawnposition.y * (1 - ((float)(j)) / drawhowmany), position.z * (((float)(j)) / drawhowmany) + lastdrawnposition.z * (1 - ((float)(j)) / drawhowmany));
+}
                 glRotatef(bigrotation * (((float)(j)) / drawhowmany) + lastdrawnbigrotation * (1 - ((float)(j)) / drawhowmany), 0, 1, 0);
                 glRotatef(bigtilt2 * (((float)(j)) / drawhowmany) + lastdrawnbigtilt2 * (1 - ((float)(j)) / drawhowmany), 1, 0, 0);
                 glRotatef(bigtilt * (((float)(j)) / drawhowmany) + lastdrawnbigtilt * (1 - ((float)(j)) / drawhowmany), 0, 0, 1);
@@ -1043,23 +1103,29 @@ void Weapon::draw()
                 glEnable(GL_LIGHTING);
                 switch (type) {
                 case knife:
-                    if (!bloody || !bloodtoggle)
+                    if (!bloody || !bloodtoggle) {
                         throwingknifemodel.drawdifftex(knifetextureptr);
+}
                     if (bloodtoggle) {
-                        if (bloody == 1)
+                        if (bloody == 1) {
                             throwingknifemodel.drawdifftex(lightbloodknifetextureptr);
-                        if (bloody == 2)
+}
+                        if (bloody == 2) {
                             throwingknifemodel.drawdifftex(bloodknifetextureptr);
+}
                     }
                     break;
                 case sword:
-                    if (!bloody || !bloodtoggle)
+                    if (!bloody || !bloodtoggle) {
                         swordmodel.drawdifftex(swordtextureptr);
+}
                     if (bloodtoggle) {
-                        if (bloody == 1)
+                        if (bloody == 1) {
                             swordmodel.drawdifftex(lightbloodswordtextureptr);
-                        if (bloody == 2)
+}
+                        if (bloody == 2) {
                             swordmodel.drawdifftex(bloodswordtextureptr);
+}
                     }
                     break;
                 case staff:
@@ -1080,8 +1146,9 @@ void Weapon::draw()
             lastdrawnbigtilt2 = bigtilt2;
             lastdrawnsmallrotation = smallrotation;
             lastdrawnsmallrotation2 = smallrotation2;
-            if (owner != -1)
+            if (owner != -1) {
                 lastdrawnanim = Person::players[owner]->animCurrent;
+}
         }
         if (owner != -1) {
             glMatrixMode(GL_MODELVIEW);
