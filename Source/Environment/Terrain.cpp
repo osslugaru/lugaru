@@ -1141,7 +1141,7 @@ void Terrain::AddObject(XYZ where, float radius, int id)
     if (id >= 0 && id < 10000) {
         for (int i = 0; i < subdivision; i++) {
             for (int j = 0; j < subdivision; j++) {
-                if (patchobjectnum[i][j] < 300 - 1) {
+                if (patchobjects[i][j].size() < 300 - 1) {
                     points[0].x = (size / subdivision) * i;
                     points[0].z = (size / subdivision) * j;
                     points[0].y = heightmap[(int)points[0].x][(int)points[0].z];
@@ -1151,8 +1151,7 @@ void Terrain::AddObject(XYZ where, float radius, int id)
                     points[0] *= scale;
                     points[1] *= scale;
                     if (where.x + radius > points[0].x && where.x - radius < points[1].x && where.z + radius > points[0].z && where.z - radius < points[1].z) {
-                        patchobjects[i][j][patchobjectnum[i][j]] = id;
-                        patchobjectnum[i][j]++;
+                        patchobjects[i][j].push_back(id);
                     }
                 }
             }
@@ -1240,8 +1239,6 @@ void Terrain::MakeDecalLock(decal_type type, XYZ where, int whichx, int whichy, 
 
 void Terrain::DoShadows()
 {
-    static int i, j, k, l, todivide;
-    static float brightness, total;
     static XYZ testpoint, testpoint2, terrainpoint, lightloc, col;
     lightloc = light.location;
     if (!skyboxtexture) {
@@ -1256,8 +1253,8 @@ void Terrain::DoShadows()
     float shadowed;
     Normalise(&lightloc);
     //Calculate shadows
-    for (i = 0; i < size; i++) {
-        for (j = 0; j < size; j++) {
+    for (short int i = 0; i < size; i++) {
+        for (short int j = 0; j < size; j++) {
             terrainpoint.x = (float)(i) * scale;
             terrainpoint.z = (float)(j) * scale;
             terrainpoint.y = heightmap[i][j] * scale;
@@ -1265,9 +1262,9 @@ void Terrain::DoShadows()
             shadowed = 0;
             patchx = (float)(i) * subdivision / size;
             patchz = (float)(j) * subdivision / size;
-            if (patchobjectnum[patchx][patchz]) {
-                for (k = 0; k < patchobjectnum[patchx][patchz]; k++) {
-                    l = patchobjects[patchx][patchz][k];
+            if (patchobjects[patchx][patchz].size()) {
+                for (unsigned int k = 0; k < patchobjects[patchx][patchz].size(); k++) {
+                    unsigned int l = patchobjects[patchx][patchz][k];
                     if (Object::objects[l]->type != treetrunktype) {
                         testpoint = terrainpoint;
                         testpoint2 = terrainpoint + lightloc * 50 * (1 - shadowed);
@@ -1278,7 +1275,7 @@ void Terrain::DoShadows()
                 }
                 Game::LoadingScreen();
             }
-            brightness = dotproduct(&lightloc, &normals[i][j]);
+            float brightness = dotproduct(&lightloc, &normals[i][j]);
             if (shadowed)
                 brightness *= 1 - shadowed;
 
@@ -1303,11 +1300,11 @@ void Terrain::DoShadows()
     Game::LoadingScreen();
 
     //Smooth shadows
-    for (i = 0; i < size; i++) {
-        for (j = 0; j < size; j++) {
-            for (k = 0; k < 3; k++) {
-                total = 0;
-                todivide = 0;
+    for (short int i = 0; i < size; i++) {
+        for (short int j = 0; j < size; j++) {
+            for (short int k = 0; k < 3; k++) {
+                float total = 0;
+                unsigned int todivide = 0;
                 if (i != 0) {
                     total += colors[j][i - 1][k];
                     todivide++;
@@ -1348,8 +1345,8 @@ void Terrain::DoShadows()
         }
     }
 
-    for (i = 0; i < subdivision; i++) {
-        for (j = 0; j < subdivision; j++) {
+    for (unsigned int i = 0; i < subdivision; i++) {
+        for (unsigned int j = 0; j < subdivision; j++) {
             UpdateVertexArray(i, j);
         }
     }
@@ -1358,9 +1355,6 @@ void Terrain::DoShadows()
 Terrain::Terrain()
 {
     size = 0;
-
-    memset(patchobjectnum, 0, sizeof(patchobjectnum));
-    memset(patchobjects, 0, sizeof(patchobjects));
 
     scale = 1.0f;
     type = 0;

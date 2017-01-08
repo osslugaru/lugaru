@@ -349,27 +349,28 @@ void Sprite::Draw()
 
                 whichpatchx = sprites[i]->position.x / (terrain.size / subdivision * terrain.scale);
                 whichpatchz = sprites[i]->position.z / (terrain.size / subdivision * terrain.scale);
-                if (whichpatchx > 0 && whichpatchz > 0 && whichpatchx < subdivision && whichpatchz < subdivision)
-                    if (terrain.patchobjectnum[whichpatchx][whichpatchz]) {
-                        if (!spritehit)
-                            for (int j = 0; j < terrain.patchobjectnum[whichpatchx][whichpatchz]; j++) {
-                                k = terrain.patchobjects[whichpatchx][whichpatchz][j];
-                                start = sprites[i]->oldposition;
-                                end = sprites[i]->position;
-                                if (!spritehit)
-                                    if (Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw) != -1) {
-                                        if (detail == 2 || (detail == 1 && abs(Random() % 4) == 0) || (detail == 0 && abs(Random() % 8) == 0))
-                                            Object::objects[k]->model.MakeDecal(blooddecalfast, DoRotation(colpoint - Object::objects[k]->position, 0, -Object::objects[k]->yaw, 0), sprites[i]->size * 1.6, .5, Random() % 360);
-                                        DeleteSprite(i);
-                                        spritehit = 1;
-                                    }
-                            }
+                if (whichpatchx > 0 && whichpatchz > 0 && whichpatchx < subdivision && whichpatchz < subdivision) {
+                    if (!spritehit) {
+                        for (unsigned int j = 0; j < terrain.patchobjects[whichpatchx][whichpatchz].size(); j++) {
+                            k = terrain.patchobjects[whichpatchx][whichpatchz][j];
+                            start = sprites[i]->oldposition;
+                            end = sprites[i]->position;
+                            if (!spritehit)
+                                if (Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw) != -1) {
+                                    if (detail == 2 || (detail == 1 && abs(Random() % 4) == 0) || (detail == 0 && abs(Random() % 8) == 0))
+                                        Object::objects[k]->model.MakeDecal(blooddecalfast, DoRotation(colpoint - Object::objects[k]->position, 0, -Object::objects[k]->yaw, 0), sprites[i]->size * 1.6, .5, Random() % 360);
+                                    DeleteSprite(i);
+                                    spritehit = 1;
+                                }
+                        }
                     }
-                if (!spritehit)
+                }
+                if (!spritehit) {
                     if (sprites[i]->position.y < terrain.getHeight(sprites[i]->position.x, sprites[i]->position.z)) {
                         terrain.MakeDecal(blooddecalfast, sprites[i]->position, sprites[i]->size * 1.6, .6, Random() % 360);
                         DeleteSprite(i);
                     }
+                }
             }
         }
         if (sprites[i]->type == splintersprite) {

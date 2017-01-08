@@ -59,8 +59,7 @@ public:
     Texture terraintexture;
     short size;
 
-    int patchobjectnum[subdivision][subdivision];
-    unsigned int patchobjects[subdivision][subdivision][300];
+    std::vector<unsigned int> patchobjects[subdivision][subdivision];
 
     float scale;
     int type;

@@ -618,7 +618,7 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
 
         for (int i = 0; i < subdivision; i++) {
             for (int j = 0; j < subdivision; j++) {
-                terrain.patchobjectnum[i][j] = 0;
+                terrain.patchobjects[i][j].clear();
             }
         }
         Game::LoadingScreen();
@@ -1750,8 +1750,8 @@ void doAerialAcrobatics()
             //clip to terrain
             Person::players[k]->coords.y = max(Person::players[k]->coords.y, terrain.getHeight(Person::players[k]->coords.x, Person::players[k]->coords.z));
 
-            for (int l = 0; l < terrain.patchobjectnum[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz]; l++) {
-                int i = terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz][l];
+            for (unsigned int l = 0; l < terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz].size(); l++) {
+                unsigned int i = terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz][l];
                 if (Object::objects[i]->type != rocktype ||
                         Object::objects[i]->scale > .5 && Person::players[k]->aitype == playercontrolled ||
                         Object::objects[i]->position.y > Person::players[k]->coords.y) {
@@ -1900,7 +1900,7 @@ void doAerialAcrobatics()
             }
 
             if (tempcollide)
-                for (int l = 0; l < terrain.patchobjectnum[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz]; l++) {
+                for (unsigned int l = 0; l < terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz].size(); l++) {
                     int i = terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz][l];
                     lowpoint = Person::players[k]->coords;
                     lowpoint.y += 1.35;
@@ -4628,22 +4628,21 @@ void Game::TickOnceAfter()
             colviewer = viewer;
             coltarget = cameraloc;
             Object::SphereCheckPossible(&colviewer, findDistance(&colviewer, &coltarget));
-            if (terrain.patchobjectnum[Person::players[0]->whichpatchx][Person::players[0]->whichpatchz])
-                for (int j = 0; j < terrain.patchobjectnum[Person::players[0]->whichpatchx][Person::players[0]->whichpatchz]; j++) {
-                    int i = terrain.patchobjects[Person::players[0]->whichpatchx][Person::players[0]->whichpatchz][j];
-                    colviewer = viewer;
-                    coltarget = cameraloc;
-                    if (Object::objects[i]->model.LineCheckPossible(&colviewer, &coltarget, &col, &Object::objects[i]->position, &Object::objects[i]->yaw) != -1)
-                        viewer = col;
+            for (unsigned int j = 0; j < terrain.patchobjects[Person::players[0]->whichpatchx][Person::players[0]->whichpatchz].size(); j++) {
+                unsigned int i = terrain.patchobjects[Person::players[0]->whichpatchx][Person::players[0]->whichpatchz][j];
+                colviewer = viewer;
+                coltarget = cameraloc;
+                if (Object::objects[i]->model.LineCheckPossible(&colviewer, &coltarget, &col, &Object::objects[i]->position, &Object::objects[i]->yaw) != -1) {
+                    viewer = col;
                 }
-            if (terrain.patchobjectnum[Person::players[0]->whichpatchx][Person::players[0]->whichpatchz])
-                for (int j = 0; j < terrain.patchobjectnum[Person::players[0]->whichpatchx][Person::players[0]->whichpatchz]; j++) {
-                    int i = terrain.patchobjects[Person::players[0]->whichpatchx][Person::players[0]->whichpatchz][j];
-                    colviewer = viewer;
-                    if (Object::objects[i]->model.SphereCheck(&colviewer, .15, &col, &Object::objects[i]->position, &Object::objects[i]->yaw) != -1) {
-                        viewer = colviewer;
-                    }
+            }
+            for (unsigned int j = 0; j < terrain.patchobjects[Person::players[0]->whichpatchx][Person::players[0]->whichpatchz].size(); j++) {
+                unsigned int i = terrain.patchobjects[Person::players[0]->whichpatchx][Person::players[0]->whichpatchz][j];
+                colviewer = viewer;
+                if (Object::objects[i]->model.SphereCheck(&colviewer, .15, &col, &Object::objects[i]->position, &Object::objects[i]->yaw) != -1) {
+                    viewer = colviewer;
                 }
+            }
             cameradist = findDistance(&viewer, &target);
             viewer.y = max((double)viewer.y, terrain.getHeight(viewer.x, viewer.z) + .6);
             if (cameraloc.y < terrain.getHeight(cameraloc.x, cameraloc.z)) {

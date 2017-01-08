@@ -1700,7 +1700,7 @@ void Person::DoHead()
 void Person::RagDoll(bool checkcollision)
 {
     static XYZ change;
-    static int l, i;
+    static int i;
     static float speed;
     if (!skeleton.free) {
         if (id == 0)
@@ -1800,16 +1800,15 @@ void Person::RagDoll(bool checkcollision)
 
             whichpatchx = coords.x / (terrain.size / subdivision * terrain.scale);
             whichpatchz = coords.z / (terrain.size / subdivision * terrain.scale);
-            if (terrain.patchobjectnum[whichpatchx][whichpatchz])
-                for (l = 0; l < terrain.patchobjectnum[whichpatchx][whichpatchz]; l++) {
-                    i = terrain.patchobjects[whichpatchx][whichpatchz][l];
-                    lowpoint = coords;
-                    lowpoint.y += 1;
-                    if (SphereCheck(&lowpoint, 3, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw, &Object::objects[i]->model) != -1) {
-                        coords.x = lowpoint.x;
-                        coords.z = lowpoint.z;
-                    }
+            for (unsigned int l = 0; l < terrain.patchobjects[whichpatchx][whichpatchz].size(); l++) {
+                i = terrain.patchobjects[whichpatchx][whichpatchz][l];
+                lowpoint = coords;
+                lowpoint.y += 1;
+                if (SphereCheck(&lowpoint, 3, &colpoint, &Object::objects[i]->position, &Object::objects[i]->yaw, &Object::objects[i]->model) != -1) {
+                    coords.x = lowpoint.x;
+                    coords.z = lowpoint.z;
                 }
+            }
         }
 
         yaw = 0;
@@ -4291,7 +4290,6 @@ void Person::DoStuff()
     static XYZ flatfacing;
     static XYZ flatvelocity;
     static float flatvelspeed;
-    static int l;
     static int bloodsize;
     static int startx, starty, endx, endy;
     static GLubyte color;
@@ -4836,16 +4834,15 @@ void Person::DoStuff()
         headpoint = coords;
         if (bloodtoggle && !bled) {
             terrain.MakeDecal(blooddecalslow, headpoint, .8, .5, 0);
-        }
-        if (bloodtoggle && !bled)
-            for (l = 0; l < terrain.patchobjectnum[whichpatchx][whichpatchz]; l++) {
-                int j = terrain.patchobjects[whichpatchx][whichpatchz][l];
+            for (unsigned int l = 0; l < terrain.patchobjects[whichpatchx][whichpatchz].size(); l++) {
+                unsigned int j = terrain.patchobjects[whichpatchx][whichpatchz][l];
                 XYZ point = DoRotation(headpoint - Object::objects[j]->position, 0, -Object::objects[j]->yaw, 0);
                 float size = .8;
                 float opacity = .6;
                 float yaw = 0;
                 Object::objects[j]->model.MakeDecal(blooddecalslow, &point, &size, &opacity, &yaw);
             }
+        }
         bled = 1;
     }
 
@@ -5045,16 +5042,15 @@ void Person::DoStuff()
                     DoBlood(1, 255);
                     if (bloodtoggle && !bled) {
                         terrain.MakeDecal(blooddecal, headpoint, .2 * 1.2, .5, 0);
-                    }
-                    if (bloodtoggle && !bled)
-                        for (l = 0; l < terrain.patchobjectnum[whichpatchx][whichpatchz]; l++) {
-                            int j = terrain.patchobjects[whichpatchx][whichpatchz][l];
+                        for (unsigned int l = 0; l < terrain.patchobjects[whichpatchx][whichpatchz].size(); l++) {
+                            unsigned int j = terrain.patchobjects[whichpatchx][whichpatchz][l];
                             XYZ point = DoRotation(headpoint - Object::objects[j]->position, 0, -Object::objects[j]->yaw, 0);
                             float size = .2 * 1.2;
                             float opacity = .6;
                             float yaw = 0;
                             Object::objects[j]->model.MakeDecal(blooddecal, &point, &size, &opacity, &yaw);
                         }
+                    }
                     bled = 1;
                 }
                 if (dead == 2 && bloodloss >= damagetolerance) {
@@ -5064,16 +5060,15 @@ void Person::DoStuff()
                         DoBlood(1, 255);
                     if (bloodtoggle && !bled) {
                         terrain.MakeDecal(blooddecalslow, headpoint, .8, .5, 0);
-                    }
-                    if (bloodtoggle && !bled)
-                        for (l = 0; l < terrain.patchobjectnum[whichpatchx][whichpatchz]; l++) {
-                            int j = terrain.patchobjects[whichpatchx][whichpatchz][l];
+                        for (unsigned int l = 0; l < terrain.patchobjects[whichpatchx][whichpatchz].size(); l++) {
+                            unsigned int j = terrain.patchobjects[whichpatchx][whichpatchz][l];
                             XYZ point = DoRotation(headpoint - Object::objects[j]->position, 0, -Object::objects[j]->yaw, 0);
                             float size = .8;
                             float opacity = .6;
                             float yaw = 0;
                             Object::objects[j]->model.MakeDecal(blooddecalslow, &point, &size, &opacity, &yaw);
                         }
+                    }
                     bled = 1;
                 }
             }

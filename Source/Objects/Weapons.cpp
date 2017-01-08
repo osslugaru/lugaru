@@ -194,57 +194,55 @@ void Weapon::doStuff(int i)
         whichpatchx = position.x / (terrain.size / subdivision * terrain.scale);
         whichpatchz = position.z / (terrain.size / subdivision * terrain.scale);
         if (whichpatchx > 0 && whichpatchz > 0 && whichpatchx < subdivision && whichpatchz < subdivision) {
-            if (terrain.patchobjectnum[whichpatchx][whichpatchz]) { // if there are Object::objects where the weapon is
-                for (int j = 0; j < terrain.patchobjectnum[whichpatchx][whichpatchz]; j++) { // check for collision
-                    int k = terrain.patchobjects[whichpatchx][whichpatchz][j];
-                    start = oldtippoint;
-                    end = tippoint;
-                    whichhit = Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw);
-                    if (whichhit != -1) {
-                        if (Object::objects[k]->type == treetrunktype) {
-                            Object::objects[k]->model.MakeDecal(breakdecal, DoRotation(colpoint - Object::objects[k]->position, 0, -Object::objects[k]->yaw, 0), .1, 1, Random() % 360);
-                            normalrot = DoRotation(Object::objects[k]->model.Triangles[whichhit].facenormal, 0, Object::objects[k]->yaw, 0);
-                            velocity = 0;
-                            if (type == knife)
-                                position = colpoint - normalrot * .1;
-                            else if (type == sword)
-                                position = colpoint - normalrot * .2;
-                            else if (type == staff)
-                                position = colpoint - normalrot * .2;
-                            XYZ temppoint1, temppoint2;
-                            float distance;
+            for (unsigned int j = 0; j < terrain.patchobjects[whichpatchx][whichpatchz].size(); j++) { // check for collision
+                unsigned int k = terrain.patchobjects[whichpatchx][whichpatchz][j];
+                start = oldtippoint;
+                end = tippoint;
+                whichhit = Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw);
+                if (whichhit != -1) {
+                    if (Object::objects[k]->type == treetrunktype) {
+                        Object::objects[k]->model.MakeDecal(breakdecal, DoRotation(colpoint - Object::objects[k]->position, 0, -Object::objects[k]->yaw, 0), .1, 1, Random() % 360);
+                        normalrot = DoRotation(Object::objects[k]->model.Triangles[whichhit].facenormal, 0, Object::objects[k]->yaw, 0);
+                        velocity = 0;
+                        if (type == knife)
+                            position = colpoint - normalrot * .1;
+                        else if (type == sword)
+                            position = colpoint - normalrot * .2;
+                        else if (type == staff)
+                            position = colpoint - normalrot * .2;
+                        XYZ temppoint1, temppoint2;
+                        float distance;
 
-                            temppoint1 = 0;
-                            temppoint2 = normalrot;
-                            distance = findDistance(&temppoint1, &temppoint2);
-                            rotation2 = asin((temppoint1.y - temppoint2.y) / distance);
-                            rotation2 *= 360 / 6.28;
-                            temppoint1.y = 0;
-                            temppoint2.y = 0;
-                            rotation1 = acos((temppoint1.z - temppoint2.z) / findDistance(&temppoint1, &temppoint2));
-                            rotation1 *= 360 / 6.28;
-                            if (temppoint1.x > temppoint2.x)
-                                rotation1 = 360 - rotation1;
+                        temppoint1 = 0;
+                        temppoint2 = normalrot;
+                        distance = findDistance(&temppoint1, &temppoint2);
+                        rotation2 = asin((temppoint1.y - temppoint2.y) / distance);
+                        rotation2 *= 360 / 6.28;
+                        temppoint1.y = 0;
+                        temppoint2.y = 0;
+                        rotation1 = acos((temppoint1.z - temppoint2.z) / findDistance(&temppoint1, &temppoint2));
+                        rotation1 *= 360 / 6.28;
+                        if (temppoint1.x > temppoint2.x)
+                            rotation1 = 360 - rotation1;
 
-                            rotation3 = 0;
-                            smallrotation = 90;
-                            smallrotation2 = 0;
-                            bigtilt = 0;
-                            bigtilt2 = 0;
-                            bigrotation = 0;
+                        rotation3 = 0;
+                        smallrotation = 90;
+                        smallrotation2 = 0;
+                        bigtilt = 0;
+                        bigtilt2 = 0;
+                        bigrotation = 0;
 
-                            emit_sound_at(knifesheathesound, position, 128.);
+                        emit_sound_at(knifesheathesound, position, 128.);
 
-                            bloody = 0;
+                        bloody = 0;
 
-                            Sprite::MakeSprite(cloudimpactsprite, position, velocity, 1, 1, 1, .8, .3);
-                        } else {
-                            physics = 1;
-                            firstfree = 1;
-                            position -= velocity * multiplier;
-                            tippoint -= velocity * multiplier;
-                            tipvelocity = velocity;
-                        }
+                        Sprite::MakeSprite(cloudimpactsprite, position, velocity, 1, 1, 1, .8, .3);
+                    } else {
+                        physics = 1;
+                        firstfree = 1;
+                        position -= velocity * multiplier;
+                        tippoint -= velocity * multiplier;
+                        tipvelocity = velocity;
                     }
                 }
             }
@@ -443,220 +441,219 @@ void Weapon::doStuff(int i)
             //Object collisions
             whichpatchx = (position.x) / (terrain.size / subdivision * terrain.scale);
             whichpatchz = (position.z) / (terrain.size / subdivision * terrain.scale);
-            if (whichpatchx > 0 && whichpatchz > 0 && whichpatchx < subdivision && whichpatchz < subdivision)
-                if (terrain.patchobjectnum[whichpatchx][whichpatchz]) {
-                    for (int j = 0; j < terrain.patchobjectnum[whichpatchx][whichpatchz]; j++) {
-                        int k = terrain.patchobjects[whichpatchx][whichpatchz][j];
+            if (whichpatchx > 0 && whichpatchz > 0 && whichpatchx < subdivision && whichpatchz < subdivision) {
+                for (unsigned int j = 0; j < terrain.patchobjects[whichpatchx][whichpatchz].size(); j++) {
+                    unsigned int k = terrain.patchobjects[whichpatchx][whichpatchz][j];
 
-                        if (firstfree) {
-                            if (type == staff) {
-                                start = tippoint - (position - tippoint) / 5;
-                                end = position + (position - tippoint) / 30;
-                                whichhit = Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw);
-                                if (whichhit != -1) {
-                                    XYZ diff;
-                                    diff = (colpoint - position);
-                                    Normalise(&diff);
-                                    hitsomething = 1;
+                    if (firstfree) {
+                        if (type == staff) {
+                            start = tippoint - (position - tippoint) / 5;
+                            end = position + (position - tippoint) / 30;
+                            whichhit = Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw);
+                            if (whichhit != -1) {
+                                XYZ diff;
+                                diff = (colpoint - position);
+                                Normalise(&diff);
+                                hitsomething = 1;
 
-                                    tippoint += (colpoint - position) + diff * .05;
-                                    position = colpoint + diff * .05;
-                                    oldtippoint = tippoint;
-                                    oldposition = tippoint;
-                                }
-                            } else {
-                                start = position - (tippoint - position) / 5;
-                                end = tippoint + (tippoint - position) / 30;
-                                whichhit = Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw);
-                                if (whichhit != -1) {
-                                    XYZ diff;
-                                    diff = (colpoint - tippoint);
-                                    Normalise(&diff);
-                                    hitsomething = 1;
+                                tippoint += (colpoint - position) + diff * .05;
+                                position = colpoint + diff * .05;
+                                oldtippoint = tippoint;
+                                oldposition = tippoint;
+                            }
+                        } else {
+                            start = position - (tippoint - position) / 5;
+                            end = tippoint + (tippoint - position) / 30;
+                            whichhit = Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw);
+                            if (whichhit != -1) {
+                                XYZ diff;
+                                diff = (colpoint - tippoint);
+                                Normalise(&diff);
+                                hitsomething = 1;
 
-                                    position += (colpoint - tippoint) + diff * .05;
-                                    tippoint = colpoint + diff * .05;
-                                    oldposition = position;
-                                    oldtippoint = tippoint;
-                                }
+                                position += (colpoint - tippoint) + diff * .05;
+                                tippoint = colpoint + diff * .05;
+                                oldposition = position;
+                                oldtippoint = tippoint;
                             }
                         }
+                    }
 
-                        start = oldposition;
-                        end = position;
-                        whichhit = Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw);
-                        if (whichhit != -1) {
-                            hitsomething = 1;
-                            position = colpoint;
-                            terrainnormal = DoRotation(Object::objects[k]->model.Triangles[whichhit].facenormal, 0, Object::objects[k]->yaw, 0) * -1;
-                            ReflectVector(&velocity, &terrainnormal);
-                            position += terrainnormal * .002;
+                    start = oldposition;
+                    end = position;
+                    whichhit = Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw);
+                    if (whichhit != -1) {
+                        hitsomething = 1;
+                        position = colpoint;
+                        terrainnormal = DoRotation(Object::objects[k]->model.Triangles[whichhit].facenormal, 0, Object::objects[k]->yaw, 0) * -1;
+                        ReflectVector(&velocity, &terrainnormal);
+                        position += terrainnormal * .002;
 
-                            bounceness = terrainnormal * findLength(&velocity) * (abs(normaldotproduct(velocity, terrainnormal)));
-                            if (findLengthfast(&velocity) < findLengthfast(&bounceness))
-                                bounceness = 0;
-                            frictionness = abs(normaldotproduct(velocity, terrainnormal));
-                            velocity -= bounceness;
-                            if (1 - friction * frictionness > 0)
-                                velocity *= 1 - friction * frictionness;
+                        bounceness = terrainnormal * findLength(&velocity) * (abs(normaldotproduct(velocity, terrainnormal)));
+                        if (findLengthfast(&velocity) < findLengthfast(&bounceness))
+                            bounceness = 0;
+                        frictionness = abs(normaldotproduct(velocity, terrainnormal));
+                        velocity -= bounceness;
+                        if (1 - friction * frictionness > 0)
+                            velocity *= 1 - friction * frictionness;
+                        else
+                            velocity = 0;
+                        velocity += bounceness * elasticity;
+
+                        if (findLengthfast(&bounceness) > 1) {
+                            int whichsound;
+                            if (type == staff)
+                                whichsound = footstepsound3 + abs(Random() % 2);
                             else
-                                velocity = 0;
-                            velocity += bounceness * elasticity;
+                                whichsound = clank1sound + abs(Random() % 4);
+                            emit_sound_at(whichsound, position, 128 * findLengthfast(&bounceness));
+                        }
+                    }
+                    start = oldtippoint;
+                    end = tippoint;
+                    whichhit = Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw);
+                    if (whichhit != -1) {
+                        hitsomething = 1;
+                        tippoint = colpoint;
+                        terrainnormal = DoRotation(Object::objects[k]->model.Triangles[whichhit].facenormal, 0, Object::objects[k]->yaw, 0) * -1;
+                        ReflectVector(&tipvelocity, &terrainnormal);
+                        tippoint += terrainnormal * .002;
 
-                            if (findLengthfast(&bounceness) > 1) {
-                                int whichsound;
-                                if (type == staff)
-                                    whichsound = footstepsound3 + abs(Random() % 2);
+                        bounceness = terrainnormal * findLength(&tipvelocity) * (abs(normaldotproduct(tipvelocity, terrainnormal)));
+                        if (findLengthfast(&tipvelocity) < findLengthfast(&bounceness))
+                            bounceness = 0;
+                        frictionness = abs(normaldotproduct(tipvelocity, terrainnormal));
+                        tipvelocity -= bounceness;
+                        if (1 - friction * frictionness > 0)
+                            tipvelocity *= 1 - friction * frictionness;
+                        else
+                            tipvelocity = 0;
+                        tipvelocity += bounceness * elasticity;
+
+                        if (findLengthfast(&bounceness) > 1) {
+                            int whichsound;
+                            if (type == staff)
+                                whichsound = footstepsound3 + abs(Random() % 2);
+                            else
+                                whichsound = clank1sound + abs(Random() % 4);
+                            emit_sound_at(whichsound, position, 128 * findLengthfast(&bounceness));
+                        }
+                    }
+
+                    if ((Object::objects[k]->type != boxtype && Object::objects[k]->type != platformtype && Object::objects[k]->type != walltype && Object::objects[k]->type != weirdtype) || Object::objects[k]->pitch != 0)
+                        for (int m = 0; m < 2; m++) {
+                            mid = (position * (21 + (float)m * 10) + tippoint * (19 - (float)m * 10)) / 40;
+                            oldmid2 = mid;
+                            oldmid = (oldposition * (21 + (float)m * 10) + oldtippoint * (19 - (float)m * 10)) / 40;
+
+                            start = oldmid;
+                            end = mid;
+                            whichhit = Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw);
+                            if (whichhit != -1) {
+                                hitsomething = 1;
+                                mid = colpoint;
+                                terrainnormal = DoRotation(Object::objects[k]->model.Triangles[whichhit].facenormal, 0, Object::objects[k]->yaw, 0) * -1;
+                                ReflectVector(&velocity, &terrainnormal);
+
+                                bounceness = terrainnormal * findLength(&velocity) * (abs(normaldotproduct(velocity, terrainnormal)));
+                                if (findLengthfast(&velocity) < findLengthfast(&bounceness))
+                                    bounceness = 0;
+                                frictionness = abs(normaldotproduct(velocity, terrainnormal));
+                                velocity -= bounceness;
+                                if (1 - friction * frictionness > 0)
+                                    velocity *= 1 - friction * frictionness;
                                 else
-                                    whichsound = clank1sound + abs(Random() % 4);
-                                emit_sound_at(whichsound, position, 128 * findLengthfast(&bounceness));
+                                    velocity = 0;
+                                velocity += bounceness * elasticity;
+
+                                if (findLengthfast(&bounceness) > 1) {
+                                    int whichsound;
+                                    if (type == staff)
+                                        whichsound = footstepsound3 + abs(Random() % 2);
+                                    else
+                                        whichsound = clank1sound + abs(Random() % 4);
+                                    emit_sound_at(whichsound, mid, 128 * findLengthfast(&bounceness));
+                                }
+                                position += (mid - oldmid2) * (20 / (1 + (float)m * 10));
+                            }
+
+                            mid = (position * (19 - (float)m * 10) + tippoint * (21 + (float)m * 10)) / 40;
+                            oldmid2 = mid;
+                            oldmid = (oldposition * (19 - (float)m * 10) + oldtippoint * (21 + (float)m * 10)) / 40;
+
+                            start = oldmid;
+                            end = mid;
+                            whichhit = Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw);
+                            if (whichhit != -1) {
+                                hitsomething = 1;
+                                mid = colpoint;
+                                terrainnormal = DoRotation(Object::objects[k]->model.Triangles[whichhit].facenormal, 0, Object::objects[k]->yaw, 0) * -1;
+                                ReflectVector(&tipvelocity, &terrainnormal);
+
+                                bounceness = terrainnormal * findLength(&tipvelocity) * (abs(normaldotproduct(tipvelocity, terrainnormal)));
+                                if (findLengthfast(&tipvelocity) < findLengthfast(&bounceness))
+                                    bounceness = 0;
+                                frictionness = abs(normaldotproduct(tipvelocity, terrainnormal));
+                                tipvelocity -= bounceness;
+                                if (1 - friction * frictionness > 0)
+                                    tipvelocity *= 1 - friction * frictionness;
+                                else
+                                    tipvelocity = 0;
+                                tipvelocity += bounceness * elasticity;
+
+                                if (findLengthfast(&bounceness) > 1) {
+                                    int whichsound;
+                                    if (type == staff)
+                                        whichsound = footstepsound3 + abs(Random() % 2);
+                                    else
+                                        whichsound = clank1sound + abs(Random() % 4);
+                                    emit_sound_at(whichsound, mid, 128 * findLengthfast(&bounceness));
+                                }
+                                tippoint += (mid - oldmid2) * (20 / (1 + (float)m * 10));
                             }
                         }
-                        start = oldtippoint;
+                    else {
+                        start = position;
                         end = tippoint;
                         whichhit = Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw);
                         if (whichhit != -1) {
                             hitsomething = 1;
-                            tippoint = colpoint;
-                            terrainnormal = DoRotation(Object::objects[k]->model.Triangles[whichhit].facenormal, 0, Object::objects[k]->yaw, 0) * -1;
-                            ReflectVector(&tipvelocity, &terrainnormal);
-                            tippoint += terrainnormal * .002;
-
-                            bounceness = terrainnormal * findLength(&tipvelocity) * (abs(normaldotproduct(tipvelocity, terrainnormal)));
-                            if (findLengthfast(&tipvelocity) < findLengthfast(&bounceness))
-                                bounceness = 0;
-                            frictionness = abs(normaldotproduct(tipvelocity, terrainnormal));
-                            tipvelocity -= bounceness;
-                            if (1 - friction * frictionness > 0)
-                                tipvelocity *= 1 - friction * frictionness;
-                            else
-                                tipvelocity = 0;
-                            tipvelocity += bounceness * elasticity;
-
-                            if (findLengthfast(&bounceness) > 1) {
-                                int whichsound;
-                                if (type == staff)
-                                    whichsound = footstepsound3 + abs(Random() % 2);
-                                else
-                                    whichsound = clank1sound + abs(Random() % 4);
-                                emit_sound_at(whichsound, position, 128 * findLengthfast(&bounceness));
-                            }
-                        }
-
-                        if ((Object::objects[k]->type != boxtype && Object::objects[k]->type != platformtype && Object::objects[k]->type != walltype && Object::objects[k]->type != weirdtype) || Object::objects[k]->pitch != 0)
-                            for (int m = 0; m < 2; m++) {
-                                mid = (position * (21 + (float)m * 10) + tippoint * (19 - (float)m * 10)) / 40;
-                                oldmid2 = mid;
-                                oldmid = (oldposition * (21 + (float)m * 10) + oldtippoint * (19 - (float)m * 10)) / 40;
-
-                                start = oldmid;
-                                end = mid;
-                                whichhit = Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw);
-                                if (whichhit != -1) {
-                                    hitsomething = 1;
-                                    mid = colpoint;
-                                    terrainnormal = DoRotation(Object::objects[k]->model.Triangles[whichhit].facenormal, 0, Object::objects[k]->yaw, 0) * -1;
-                                    ReflectVector(&velocity, &terrainnormal);
-
-                                    bounceness = terrainnormal * findLength(&velocity) * (abs(normaldotproduct(velocity, terrainnormal)));
-                                    if (findLengthfast(&velocity) < findLengthfast(&bounceness))
-                                        bounceness = 0;
-                                    frictionness = abs(normaldotproduct(velocity, terrainnormal));
-                                    velocity -= bounceness;
-                                    if (1 - friction * frictionness > 0)
-                                        velocity *= 1 - friction * frictionness;
-                                    else
-                                        velocity = 0;
-                                    velocity += bounceness * elasticity;
-
-                                    if (findLengthfast(&bounceness) > 1) {
-                                        int whichsound;
-                                        if (type == staff)
-                                            whichsound = footstepsound3 + abs(Random() % 2);
-                                        else
-                                            whichsound = clank1sound + abs(Random() % 4);
-                                        emit_sound_at(whichsound, mid, 128 * findLengthfast(&bounceness));
-                                    }
-                                    position += (mid - oldmid2) * (20 / (1 + (float)m * 10));
-                                }
-
-                                mid = (position * (19 - (float)m * 10) + tippoint * (21 + (float)m * 10)) / 40;
-                                oldmid2 = mid;
-                                oldmid = (oldposition * (19 - (float)m * 10) + oldtippoint * (21 + (float)m * 10)) / 40;
-
-                                start = oldmid;
-                                end = mid;
-                                whichhit = Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw);
-                                if (whichhit != -1) {
-                                    hitsomething = 1;
-                                    mid = colpoint;
-                                    terrainnormal = DoRotation(Object::objects[k]->model.Triangles[whichhit].facenormal, 0, Object::objects[k]->yaw, 0) * -1;
-                                    ReflectVector(&tipvelocity, &terrainnormal);
-
-                                    bounceness = terrainnormal * findLength(&tipvelocity) * (abs(normaldotproduct(tipvelocity, terrainnormal)));
-                                    if (findLengthfast(&tipvelocity) < findLengthfast(&bounceness))
-                                        bounceness = 0;
-                                    frictionness = abs(normaldotproduct(tipvelocity, terrainnormal));
-                                    tipvelocity -= bounceness;
-                                    if (1 - friction * frictionness > 0)
-                                        tipvelocity *= 1 - friction * frictionness;
-                                    else
-                                        tipvelocity = 0;
-                                    tipvelocity += bounceness * elasticity;
-
-                                    if (findLengthfast(&bounceness) > 1) {
-                                        int whichsound;
-                                        if (type == staff)
-                                            whichsound = footstepsound3 + abs(Random() % 2);
-                                        else
-                                            whichsound = clank1sound + abs(Random() % 4);
-                                        emit_sound_at(whichsound, mid, 128 * findLengthfast(&bounceness));
-                                    }
-                                    tippoint += (mid - oldmid2) * (20 / (1 + (float)m * 10));
+                            closestdistance = -1;
+                            closestswordpoint = colpoint;
+                            point[0] = DoRotation(Object::objects[k]->model.getTriangleVertex(whichhit, 0), 0, Object::objects[k]->yaw, 0) + Object::objects[k]->position;
+                            point[1] = DoRotation(Object::objects[k]->model.getTriangleVertex(whichhit, 1), 0, Object::objects[k]->yaw, 0) + Object::objects[k]->position;
+                            point[2] = DoRotation(Object::objects[k]->model.getTriangleVertex(whichhit, 2), 0, Object::objects[k]->yaw, 0) + Object::objects[k]->position;
+                            if (DistancePointLine(&closestswordpoint, &point[0], &point[1], &distance, &colpoint )) {
+                                if (distance < closestdistance || closestdistance == -1) {
+                                    closestpoint = colpoint;
+                                    closestdistance = distance;
                                 }
                             }
-                        else {
-                            start = position;
-                            end = tippoint;
-                            whichhit = Object::objects[k]->model.LineCheck(&start, &end, &colpoint, &Object::objects[k]->position, &Object::objects[k]->yaw);
-                            if (whichhit != -1) {
-                                hitsomething = 1;
-                                closestdistance = -1;
-                                closestswordpoint = colpoint;
-                                point[0] = DoRotation(Object::objects[k]->model.getTriangleVertex(whichhit, 0), 0, Object::objects[k]->yaw, 0) + Object::objects[k]->position;
-                                point[1] = DoRotation(Object::objects[k]->model.getTriangleVertex(whichhit, 1), 0, Object::objects[k]->yaw, 0) + Object::objects[k]->position;
-                                point[2] = DoRotation(Object::objects[k]->model.getTriangleVertex(whichhit, 2), 0, Object::objects[k]->yaw, 0) + Object::objects[k]->position;
-                                if (DistancePointLine(&closestswordpoint, &point[0], &point[1], &distance, &colpoint )) {
-                                    if (distance < closestdistance || closestdistance == -1) {
-                                        closestpoint = colpoint;
-                                        closestdistance = distance;
-                                    }
+                            if (DistancePointLine(&closestswordpoint, &point[1], &point[2], &distance, &colpoint )) {
+                                if (distance < closestdistance || closestdistance == -1) {
+                                    closestpoint = colpoint;
+                                    closestdistance = distance;
                                 }
-                                if (DistancePointLine(&closestswordpoint, &point[1], &point[2], &distance, &colpoint )) {
-                                    if (distance < closestdistance || closestdistance == -1) {
-                                        closestpoint = colpoint;
-                                        closestdistance = distance;
-                                    }
+                            }
+                            if (DistancePointLine(&closestswordpoint, &point[2], &point[0], &distance, &colpoint )) {
+                                if (distance < closestdistance || closestdistance == -1) {
+                                    closestpoint = colpoint;
+                                    closestdistance = distance;
                                 }
-                                if (DistancePointLine(&closestswordpoint, &point[2], &point[0], &distance, &colpoint )) {
-                                    if (distance < closestdistance || closestdistance == -1) {
-                                        closestpoint = colpoint;
-                                        closestdistance = distance;
-                                    }
-                                }
-                                if (closestdistance != -1 && isnormal(closestdistance)) {
-                                    if (DistancePointLine(&closestpoint, &position, &tippoint, &distance, &colpoint )) {
-                                        closestswordpoint = colpoint;
-                                        velocity += (closestpoint - closestswordpoint);
-                                        tipvelocity += (closestpoint - closestswordpoint);
-                                        position += (closestpoint - closestswordpoint);
-                                        tippoint += (closestpoint - closestswordpoint);
-                                    }
+                            }
+                            if (closestdistance != -1 && isnormal(closestdistance)) {
+                                if (DistancePointLine(&closestpoint, &position, &tippoint, &distance, &colpoint )) {
+                                    closestswordpoint = colpoint;
+                                    velocity += (closestpoint - closestswordpoint);
+                                    tipvelocity += (closestpoint - closestswordpoint);
+                                    position += (closestpoint - closestswordpoint);
+                                    tippoint += (closestpoint - closestswordpoint);
                                 }
                             }
                         }
                     }
                 }
+            }
             //Terrain collisions
             whichhit = terrain.lineTerrain(oldposition, position, &colpoint);
             if (whichhit != -1 || position.y < terrain.getHeight(position.x, position.z)) {

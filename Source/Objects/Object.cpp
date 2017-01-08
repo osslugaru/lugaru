@@ -206,15 +206,13 @@ void Object::doShadows(XYZ lightloc)
             patchx = terrainpoint.x / (terrain.size / subdivision * terrain.scale);
             patchz = terrainpoint.z / (terrain.size / subdivision * terrain.scale);
             if (patchx >= 0 && patchz >= 0 && patchx < subdivision && patchz < subdivision) {
-                if (terrain.patchobjectnum[patchx][patchz]) {
-                    for (int k = 0; k < terrain.patchobjectnum[patchx][patchz]; k++) {
-                        int l = terrain.patchobjects[patchx][patchz][k];
-                        if (objects[l]->type != treetrunktype) {
-                            testpoint = terrainpoint;
-                            testpoint2 = terrainpoint + lightloc * 50 * (1 - shadowed);
-                            if (objects[l]->model.LineCheck(&testpoint, &testpoint2, &col, &objects[l]->position, &objects[l]->yaw) != -1) {
-                                shadowed = 1 - (findDistance(&terrainpoint, &col) / 50);
-                            }
+                for (unsigned int k = 0; k < terrain.patchobjects[patchx][patchz].size(); k++) {
+                    unsigned int l = terrain.patchobjects[patchx][patchz][k];
+                    if (objects[l]->type != treetrunktype) {
+                        testpoint = terrainpoint;
+                        testpoint2 = terrainpoint + lightloc * 50 * (1 - shadowed);
+                        if (objects[l]->model.LineCheck(&testpoint, &testpoint2, &col, &objects[l]->position, &objects[l]->yaw) != -1) {
+                            shadowed = 1 - (findDistance(&terrainpoint, &col) / 50);
                         }
                     }
                 }
@@ -569,9 +567,9 @@ void Object::SphereCheckPossible(XYZ *p1, float radius)
     int whichpatchz = p1->z / (terrain.size / subdivision * terrain.scale);
 
     if (whichpatchx >= 0 && whichpatchz >= 0 && whichpatchx < subdivision && whichpatchz < subdivision) {
-        if (terrain.patchobjectnum[whichpatchx][whichpatchz] > 0 && terrain.patchobjectnum[whichpatchx][whichpatchz] < 500) {
-            for (int j = 0; j < terrain.patchobjectnum[whichpatchx][whichpatchz]; j++) {
-                int i = terrain.patchobjects[whichpatchx][whichpatchz][j];
+        if (terrain.patchobjects[whichpatchx][whichpatchz].size() < 500) {
+            for (unsigned int j = 0; j < terrain.patchobjects[whichpatchx][whichpatchz].size(); j++) {
+                unsigned int i = terrain.patchobjects[whichpatchx][whichpatchz][j];
                 objects[i]->possible = false;
                 if (objects[i]->model.SphereCheckPossible(p1, radius, &objects[i]->position, &objects[i]->yaw) != -1) {
                     objects[i]->possible = true;

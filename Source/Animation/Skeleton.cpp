@@ -111,7 +111,6 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
     XYZ bounceness;
     const int numrepeats = 3;
     float groundlevel = .15;
-    int m;
     unsigned i;
     XYZ temp;
     XYZ terrainnormal;
@@ -321,112 +320,110 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                     if (longdead > 100)
                         broken = 1;
                 }
-                if (terrain.patchobjectnum[whichpatchx][whichpatchz])
-                    for (m = 0; m < terrain.patchobjectnum[whichpatchx][whichpatchz]; m++) {
-                        unsigned int k = terrain.patchobjects[whichpatchx][whichpatchz][m];
-                        if (k < Object::objects.size()) {
-                            if (Object::objects[k]->possible) {
-                                friction = Object::objects[k]->friction;
-                                XYZ start = joints[i].realoldposition;
-                                XYZ end = joints[i].position * (*scale) + *coords;
-                                whichhit = Object::objects[k]->model.LineCheckPossible(&start, &end, &temp, &Object::objects[k]->position, &Object::objects[k]->yaw);
-                                if (whichhit != -1) {
-                                    if (joints[i].label == groin && !joints[i].locked && joints[i].delay <= 0) {
-                                        joints[i].locked = 1;
-                                        joints[i].delay = 1;
-                                        if (!Tutorial::active || id == 0) {
-                                            emit_sound_at(landsound1, joints[i].position * (*scale) + *coords, 128.);
-                                        }
-                                        breaking = true;
+                for (unsigned int m = 0; m < terrain.patchobjects[whichpatchx][whichpatchz].size(); m++) {
+                    unsigned int k = terrain.patchobjects[whichpatchx][whichpatchz][m];
+                    if (k < Object::objects.size()) {
+                        if (Object::objects[k]->possible) {
+                            friction = Object::objects[k]->friction;
+                            XYZ start = joints[i].realoldposition;
+                            XYZ end = joints[i].position * (*scale) + *coords;
+                            whichhit = Object::objects[k]->model.LineCheckPossible(&start, &end, &temp, &Object::objects[k]->position, &Object::objects[k]->yaw);
+                            if (whichhit != -1) {
+                                if (joints[i].label == groin && !joints[i].locked && joints[i].delay <= 0) {
+                                    joints[i].locked = 1;
+                                    joints[i].delay = 1;
+                                    if (!Tutorial::active || id == 0) {
+                                        emit_sound_at(landsound1, joints[i].position * (*scale) + *coords, 128.);
                                     }
-
-                                    if (joints[i].label == head && !joints[i].locked && joints[i].delay <= 0) {
-                                        joints[i].locked = 1;
-                                        joints[i].delay = 1;
-                                        if (!Tutorial::active || id == 0) {
-                                            emit_sound_at(landsound2, joints[i].position * (*scale) + *coords, 128.);
-                                        }
-                                    }
-
-                                    terrainnormal = DoRotation(Object::objects[k]->model.Triangles[whichhit].facenormal, 0, Object::objects[k]->yaw, 0) * -1;
-                                    if (terrainnormal.y > .8)
-                                        freefall = 0;
-                                    bounceness = terrainnormal * findLength(&joints[i].velocity) * (abs(normaldotproduct(joints[i].velocity, terrainnormal)));
-                                    if (findLengthfast(&joints[i].velocity) > findLengthfast(&joints[i].oldvelocity)) {
-                                        bounceness = 0;
-                                        joints[i].velocity = joints[i].oldvelocity;
-                                    }
-                                    if (!Tutorial::active || id == 0)
-                                        if (findLengthfast(&bounceness) > 4000 && breaking) {
-                                            Object::objects[k]->model.MakeDecal(breakdecal, DoRotation(temp - Object::objects[k]->position, 0, -Object::objects[k]->yaw, 0), .4, .5, Random() % 360);
-                                            Sprite::MakeSprite(cloudsprite, joints[i].position * (*scale) + *coords, joints[i].velocity * .06, 1, 1, 1, 4, .2);
-                                            breaking = false;
-                                            camerashake += .6;
-
-                                            emit_sound_at(breaksound2, joints[i].position * (*scale) + *coords);
-
-                                            addEnvSound(*coords, 64);
-                                        }
-                                    if (Object::objects[k]->type == treetrunktype) {
-                                        Object::objects[k]->rotx += joints[i].velocity.x * multiplier * .4;
-                                        Object::objects[k]->roty += joints[i].velocity.z * multiplier * .4;
-                                        Object::objects[k + 1]->rotx += joints[i].velocity.x * multiplier * .4;
-                                        Object::objects[k + 1]->roty += joints[i].velocity.z * multiplier * .4;
-                                    }
-                                    if (!joints[i].locked)
-                                        damage += findLengthfast(&bounceness) / 2500;
-                                    ReflectVector(&joints[i].velocity, &terrainnormal);
-                                    frictionness = abs(normaldotproduct(joints[i].velocity, terrainnormal));
-                                    joints[i].velocity -= bounceness;
-                                    if (1 - friction * frictionness > 0)
-                                        joints[i].velocity *= 1 - friction * frictionness;
-                                    else
-                                        joints[i].velocity = 0;
-                                    if (findLengthfast(&bounceness) > 2500) {
-                                        Normalise(&bounceness);
-                                        bounceness = bounceness * 50;
-                                    }
-                                    joints[i].velocity += bounceness * elasticity;
-
-
-                                    if (!joints[i].locked)
-                                        if (findLengthfast(&joints[i].velocity) < 1) {
-                                            joints[i].locked = 1;
-                                        }
-                                    if (findLengthfast(&bounceness) > 500)
-                                        Sprite::MakeSprite(cloudsprite, joints[i].position * (*scale) + *coords, joints[i].velocity * .06, 1, 1, 1, .5, .2);
-                                    joints[i].position = (temp - *coords) / (*scale) + terrainnormal * .005;
-                                    if (longdead > 100)
-                                        broken = 1;
+                                    breaking = true;
                                 }
+
+                                if (joints[i].label == head && !joints[i].locked && joints[i].delay <= 0) {
+                                    joints[i].locked = 1;
+                                    joints[i].delay = 1;
+                                    if (!Tutorial::active || id == 0) {
+                                        emit_sound_at(landsound2, joints[i].position * (*scale) + *coords, 128.);
+                                    }
+                                }
+
+                                terrainnormal = DoRotation(Object::objects[k]->model.Triangles[whichhit].facenormal, 0, Object::objects[k]->yaw, 0) * -1;
+                                if (terrainnormal.y > .8)
+                                    freefall = 0;
+                                bounceness = terrainnormal * findLength(&joints[i].velocity) * (abs(normaldotproduct(joints[i].velocity, terrainnormal)));
+                                if (findLengthfast(&joints[i].velocity) > findLengthfast(&joints[i].oldvelocity)) {
+                                    bounceness = 0;
+                                    joints[i].velocity = joints[i].oldvelocity;
+                                }
+                                if (!Tutorial::active || id == 0)
+                                    if (findLengthfast(&bounceness) > 4000 && breaking) {
+                                        Object::objects[k]->model.MakeDecal(breakdecal, DoRotation(temp - Object::objects[k]->position, 0, -Object::objects[k]->yaw, 0), .4, .5, Random() % 360);
+                                        Sprite::MakeSprite(cloudsprite, joints[i].position * (*scale) + *coords, joints[i].velocity * .06, 1, 1, 1, 4, .2);
+                                        breaking = false;
+                                        camerashake += .6;
+
+                                        emit_sound_at(breaksound2, joints[i].position * (*scale) + *coords);
+
+                                        addEnvSound(*coords, 64);
+                                    }
+                                if (Object::objects[k]->type == treetrunktype) {
+                                    Object::objects[k]->rotx += joints[i].velocity.x * multiplier * .4;
+                                    Object::objects[k]->roty += joints[i].velocity.z * multiplier * .4;
+                                    Object::objects[k + 1]->rotx += joints[i].velocity.x * multiplier * .4;
+                                    Object::objects[k + 1]->roty += joints[i].velocity.z * multiplier * .4;
+                                }
+                                if (!joints[i].locked)
+                                    damage += findLengthfast(&bounceness) / 2500;
+                                ReflectVector(&joints[i].velocity, &terrainnormal);
+                                frictionness = abs(normaldotproduct(joints[i].velocity, terrainnormal));
+                                joints[i].velocity -= bounceness;
+                                if (1 - friction * frictionness > 0)
+                                    joints[i].velocity *= 1 - friction * frictionness;
+                                else
+                                    joints[i].velocity = 0;
+                                if (findLengthfast(&bounceness) > 2500) {
+                                    Normalise(&bounceness);
+                                    bounceness = bounceness * 50;
+                                }
+                                joints[i].velocity += bounceness * elasticity;
+
+
+                                if (!joints[i].locked)
+                                    if (findLengthfast(&joints[i].velocity) < 1) {
+                                        joints[i].locked = 1;
+                                    }
+                                if (findLengthfast(&bounceness) > 500)
+                                    Sprite::MakeSprite(cloudsprite, joints[i].position * (*scale) + *coords, joints[i].velocity * .06, 1, 1, 1, .5, .2);
+                                joints[i].position = (temp - *coords) / (*scale) + terrainnormal * .005;
+                                if (longdead > 100)
+                                    broken = 1;
                             }
                         }
                     }
+                }
                 joints[i].realoldposition = joints[i].position * (*scale) + *coords;
             }
         }
         multiplier = tempmult;
 
 
-        if (terrain.patchobjectnum[whichpatchx][whichpatchz])
-            for (m = 0; m < terrain.patchobjectnum[whichpatchx][whichpatchz]; m++) {
-                unsigned int k = terrain.patchobjects[whichpatchx][whichpatchz][m];
-                if (Object::objects[k]->possible) {
-                    for (i = 0; i < 26; i++) {
-                        //Make this less stupid
-                        XYZ start = joints[jointlabels[whichjointstartarray[i]]].position * (*scale) + *coords;
-                        XYZ end = joints[jointlabels[whichjointendarray[i]]].position * (*scale) + *coords;
-                        whichhit = Object::objects[k]->model.LineCheckSlidePossible(&start, &end, &Object::objects[k]->position, &Object::objects[k]->yaw);
-                        if (whichhit != -1) {
-                            joints[jointlabels[whichjointendarray[i]]].position = (end - *coords) / (*scale);
-                            for (unsigned j = 0; j < muscles.size(); j++) {
-                                if ((muscles[j].parent1->label == whichjointstartarray[i] && muscles[j].parent2->label == whichjointendarray[i]) || (muscles[j].parent2->label == whichjointstartarray[i] && muscles[j].parent1->label == whichjointendarray[i]))
-                                    muscles[j].DoConstraint(spinny);
-                            }
+        for (unsigned int m = 0; m < terrain.patchobjects[whichpatchx][whichpatchz].size(); m++) {
+            unsigned int k = terrain.patchobjects[whichpatchx][whichpatchz][m];
+            if (Object::objects[k]->possible) {
+                for (i = 0; i < 26; i++) {
+                    //Make this less stupid
+                    XYZ start = joints[jointlabels[whichjointstartarray[i]]].position * (*scale) + *coords;
+                    XYZ end = joints[jointlabels[whichjointendarray[i]]].position * (*scale) + *coords;
+                    whichhit = Object::objects[k]->model.LineCheckSlidePossible(&start, &end, &Object::objects[k]->position, &Object::objects[k]->yaw);
+                    if (whichhit != -1) {
+                        joints[jointlabels[whichjointendarray[i]]].position = (end - *coords) / (*scale);
+                        for (unsigned j = 0; j < muscles.size(); j++) {
+                            if ((muscles[j].parent1->label == whichjointstartarray[i] && muscles[j].parent2->label == whichjointendarray[i]) || (muscles[j].parent2->label == whichjointstartarray[i] && muscles[j].parent1->label == whichjointendarray[i]))
+                                muscles[j].DoConstraint(spinny);
                         }
                     }
                 }
             }
+        }
 
         for (i = 0; i < joints.size(); i++) {
             switch (joints[i].label) {
