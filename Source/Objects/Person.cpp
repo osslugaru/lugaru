@@ -4434,7 +4434,6 @@ void Person::DoAnimations()
                     oldcoords = coords;
                     coords += (DoRotation(jointPos(leftfoot), 0, yaw, 0) + DoRotation(jointPos(rightfoot), 0, yaw, 0)) / 2 * scale;
                     coords.y = oldcoords.y;
-                    //coords+=DoRotation(Animation::animations[animCurrent].offset,0,yaw,0)*scale;
                     targetoffset.y = coords.y;
                     if (onterrain) {
                         targetoffset.y = terrain.getHeight(coords.x, coords.z);
@@ -4671,7 +4670,7 @@ void Person::DoAnimations()
             oldframeCurrent = frameCurrent;
 
             for (unsigned i = 0; i < skeleton.joints.size(); i++) {
-                skeleton.joints[i].velocity = (currentFrame().joints[i].position * (1 - target) + targetFrame().joints[i].position * (target)-skeleton.joints[i].position) / multiplier;
+                skeleton.joints[i].velocity = (currentFrame().joints[i].position * (1 - target) + targetFrame().joints[i].position * target-skeleton.joints[i].position) / multiplier;
                 skeleton.joints[i].position = currentFrame().joints[i].position * (1 - target) + targetFrame().joints[i].position * (target);
             }
             offset = currentoffset * (1 - target) + targetoffset * target;
@@ -7071,9 +7070,7 @@ int Person::DrawSkeleton()
                                 weaponrotatemuscle = j;
                             }
                         }
-                        //weaponpoint=jointPos(rightwrist);
                         weaponpoint = (skeleton.muscles[weaponattachmuscle].parent1->position + skeleton.muscles[weaponattachmuscle].parent2->position) / 2;
-                        //weaponpoint+=skeleton.specialforward[1]*.1+(jointPos(rightwrist)-jointPos(rightelbow));
                         XYZ tempnormthing, vec1, vec2;
                         vec1 = (jointPos(rightwrist) - jointPos(rightelbow));
                         vec2 = (jointPos(rightwrist) - jointPos(rightshoulder));

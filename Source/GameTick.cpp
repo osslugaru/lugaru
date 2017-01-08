@@ -4187,7 +4187,7 @@ void Game::Tick()
                                 }
                                 Person::players[i]->frameTarget = 0;
                             }
-                            if (Person::players[i]->animTarget == hanganim /*&&(!Person::players[i]->forwardstogglekeydown||Person::players[i]->aitype!=playercontrolled)*/) {
+                            if (Person::players[i]->animTarget == hanganim) {
                                 Person::players[i]->setTargetAnimation(climbanim);
                                 Person::players[i]->frameTarget = 1;
                                 Person::players[i]->jumpclimb = 1;
