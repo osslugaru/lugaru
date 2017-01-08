@@ -537,7 +537,6 @@ bool Model::loaddecal(const std::string& filename)
     LOG(std::string("Loading decal...") + Folders::getResourcePath(filename));
 
     type = decalstype;
-    decals.clear();
     color = 0;
 
     tfile = Folders::openMandatoryFile( Folders::getResourcePath(filename), "rb" );
@@ -909,14 +908,13 @@ void Model::drawdifftex(Texture texture)
 void Model::drawdecals(Texture shadowtexture, Texture bloodtexture, Texture bloodtexture2, Texture breaktexture)
 {
     if (decalstoggle) {
-        if (type != decalstype)
+        if (type != decalstype) {
             return;
-        static int lasttype;
-        static bool blend;
+        }
 
-        blend = 1;
+        bool blend = true;
+        int lasttype = -1;
 
-        lasttype = -1;
         glEnable(GL_BLEND);
         glDisable(GL_LIGHTING);
         glDisable(GL_CULL_FACE);
@@ -1029,7 +1027,7 @@ void Model::MakeDecal(decal_type atype, XYZ *where, float *size, float *opacity,
                     if (Triangles[i].facenormal.y < -.1 && (vertex[Triangles[i].vertex[0]].y < where->y || vertex[Triangles[i].vertex[1]].y < where->y || vertex[Triangles[i].vertex[2]].y < where->y)) {
                         distance = abs(((Triangles[i].facenormal.x * where->x) + (Triangles[i].facenormal.y * where->y) + (Triangles[i].facenormal.z * where->z) - ((Triangles[i].facenormal.x * vertex[Triangles[i].vertex[0]].x) + (Triangles[i].facenormal.y * vertex[Triangles[i].vertex[0]].y) + (Triangles[i].facenormal.z * vertex[Triangles[i].vertex[0]].z))) / Triangles[i].facenormal.y);
 
-                        if (*opacity - distance / 10 > 0) {
+                        if ((*opacity - distance / 10) > 0) {
                             Decal decal(*where, atype, *opacity - distance / 10, *rotation, *size, *this, i, 0);
 
                             if (!(decal.texcoords[0][0] < 0 && decal.texcoords[1][0] < 0 && decal.texcoords[2][0] < 0))
@@ -1070,7 +1068,7 @@ void Model::MakeDecal(decal_type atype, XYZ where, float size, float opacity, fl
                 for (unsigned int i = 0; i < Triangles.size(); i++) {
                     distance = abs(((Triangles[i].facenormal.x * where.x) + (Triangles[i].facenormal.y * where.y) + (Triangles[i].facenormal.z * where.z) - ((Triangles[i].facenormal.x * vertex[Triangles[i].vertex[0]].x) + (Triangles[i].facenormal.y * vertex[Triangles[i].vertex[0]].y) + (Triangles[i].facenormal.z * vertex[Triangles[i].vertex[0]].z))));
                     if (distance < .02 && abs(Triangles[i].facenormal.y) > abs(Triangles[i].facenormal.x) && abs(Triangles[i].facenormal.y) > abs(Triangles[i].facenormal.z)) {
-                        if (opacity - distance / 10 > 0) {
+                        if ((opacity - distance / 10) > 0) {
                             Decal decal(where, atype, opacity - distance / 10, rotation, size, *this, i, 0);
 
                             if (!(decal.texcoords[0][0] < 0 && decal.texcoords[1][0] < 0 && decal.texcoords[2][0] < 0))
@@ -1093,7 +1091,7 @@ void Model::MakeDecal(decal_type atype, XYZ where, float size, float opacity, fl
                                         }
                         }
                     } else if (distance < .02 && abs(Triangles[i].facenormal.x) > abs(Triangles[i].facenormal.y) && abs(Triangles[i].facenormal.x) > abs(Triangles[i].facenormal.z)) {
-                        if (opacity - distance / 10 > 0) {
+                        if ((opacity - distance / 10) > 0) {
                             Decal decal(where, atype, opacity - distance / 10, rotation, size, *this, i, 1);
 
                             if (!(decal.texcoords[0][0] < 0 && decal.texcoords[1][0] < 0 && decal.texcoords[2][0] < 0))
@@ -1116,7 +1114,7 @@ void Model::MakeDecal(decal_type atype, XYZ where, float size, float opacity, fl
                                         }
                         }
                     } else if (distance < .02 && abs(Triangles[i].facenormal.z) > abs(Triangles[i].facenormal.y) && abs(Triangles[i].facenormal.z) > abs(Triangles[i].facenormal.x)) {
-                        if (opacity - distance / 10 > 0) {
+                        if ((opacity - distance / 10) > 0) {
                             Decal decal(where, atype, opacity - distance / 10, rotation, size, *this, i, 2);
 
                             if (!(decal.texcoords[0][0] < 0 && decal.texcoords[1][0] < 0 && decal.texcoords[2][0] < 0))
@@ -1174,6 +1172,8 @@ void Model::deallocate()
     if (vArray)
         free(vArray);
     vArray = 0;
+
+    decals.clear();
 }
 
 Model::Model()
