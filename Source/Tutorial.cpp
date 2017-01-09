@@ -92,14 +92,18 @@ void Tutorial::Do(float multiplier)
 
                 for (unsigned i = 0; i < Person::players[1]->skeleton.joints.size(); i++) {
                     if (Random() % 2 == 0) {
-                        if (!Person::players[1]->skeleton.free)
+                        if (!Person::players[1]->skeleton.free) {
                             temp2 = (Person::players[1]->coords - Person::players[1]->oldcoords) / multiplier / 2; //velocity/2;
-                        if (Person::players[1]->skeleton.free)
+                        }
+                        if (Person::players[1]->skeleton.free) {
                             temp2 = Person::players[1]->skeleton.joints[i].velocity * Person::players[1]->scale / 2;
-                        if (!Person::players[1]->skeleton.free)
+                        }
+                        if (!Person::players[1]->skeleton.free) {
                             temp = DoRotation(DoRotation(DoRotation(Person::players[1]->skeleton.joints[i].position, 0, 0, Person::players[1]->tilt), Person::players[1]->tilt2, 0, 0), 0, Person::players[1]->yaw, 0) * Person::players[1]->scale + Person::players[1]->coords;
-                        if (Person::players[1]->skeleton.free)
+                        }
+                        if (Person::players[1]->skeleton.free) {
                             temp = Person::players[1]->skeleton.joints[i].position * Person::players[1]->scale + Person::players[1]->coords;
+                        }
                         Sprite::MakeSprite(breathsprite, temp, temp2, 1, 1, 1, .6 + (float)abs(Random() % 100) / 200 - .25, 1);
                     }
                 }
@@ -123,8 +127,9 @@ void Tutorial::Do(float multiplier)
                 if (bonus == cannon) {
                     bonus = Slicebonus;
                     againbonus = 1;
-                } else
+                } else {
                     againbonus = 0;
+                }
                 break;
             case 27:
                 maxtime = 4;
@@ -297,10 +302,11 @@ void Tutorial::Do(float multiplier)
                 Person::players[1]->num_weapons = 1;
                 Person::players[1]->weaponids[0] = 0;
 
-                if (Person::players[0]->weaponactive != -1)
+                if (Person::players[0]->weaponactive != -1) {
                     weapons[Person::players[0]->weaponids[Person::players[0]->weaponactive]].setType(staff);
-                else
+                } else {
                     weapons[0].setType(staff);
+                }
                 break;
             case 49:
                 canattack = 0;
@@ -330,14 +336,18 @@ void Tutorial::Do(float multiplier)
 
                 for (unsigned i = 0; i < Person::players[1]->skeleton.joints.size(); i++) {
                     if (Random() % 2 == 0) {
-                        if (!Person::players[1]->skeleton.free)
+                        if (!Person::players[1]->skeleton.free) {
                             temp2 = (Person::players[1]->coords - Person::players[1]->oldcoords) / multiplier / 2; //velocity/2;
-                        if (Person::players[1]->skeleton.free)
+                        }
+                        if (Person::players[1]->skeleton.free) {
                             temp2 = Person::players[1]->skeleton.joints[i].velocity * Person::players[1]->scale / 2;
-                        if (!Person::players[1]->skeleton.free)
+                        }
+                        if (!Person::players[1]->skeleton.free) {
                             temp = DoRotation(DoRotation(DoRotation(Person::players[1]->skeleton.joints[i].position, 0, 0, Person::players[1]->tilt), Person::players[1]->tilt2, 0, 0), 0, Person::players[1]->yaw, 0) * Person::players[1]->scale + Person::players[1]->coords;
-                        if (Person::players[1]->skeleton.free)
+                        }
+                        if (Person::players[1]->skeleton.free) {
                             temp = Person::players[1]->skeleton.joints[i].position * Person::players[1]->scale + Person::players[1]->coords;
+                        }
                         Sprite::MakeSprite(breathsprite, temp, temp2, 1, 1, 1, .6 + (float)abs(Random() % 100) / 200 - .25, 1);
                     }
                 }
@@ -354,96 +364,118 @@ void Tutorial::Do(float multiplier)
             default:
                 break;
         }
-        if (stage <= 51)
+        if (stage <= 51) {
             stagetime = 0;
+        }
     }
 
     //Tutorial success
     if (stagetime < maxtime - 3) {
         switch (stage) {
             case 3:
-                if (Game::deltah || Game::deltav)
+                if (Game::deltah || Game::deltav) {
                     success += multiplier;
+                }
                 break;
             case 4:
-                if (Person::players[0]->forwardkeydown || Person::players[0]->backkeydown || Person::players[0]->leftkeydown || Person::players[0]->rightkeydown)
+                if (Person::players[0]->forwardkeydown || Person::players[0]->backkeydown || Person::players[0]->leftkeydown || Person::players[0]->rightkeydown) {
                     success += multiplier;
+                }
                 break;
             case 5:
-                if (Person::players[0]->jumpkeydown)
+                if (Person::players[0]->jumpkeydown) {
                     success = 1;
+                }
                 break;
             case 6:
-                if (Person::players[0]->isCrouch())
+                if (Person::players[0]->isCrouch()) {
                     success = 1;
+                }
                 break;
             case 7:
-                if (Person::players[0]->animTarget == rollanim)
+                if (Person::players[0]->animTarget == rollanim) {
                     success = 1;
+                }
                 break;
             case 8:
-                if (Person::players[0]->animTarget == sneakanim)
+                if (Person::players[0]->animTarget == sneakanim) {
                     success += multiplier;
+                }
                 break;
             case 9:
-                if (Person::players[0]->animTarget == rabbitrunninganim || Person::players[0]->animTarget == wolfrunninganim)
+                if (Person::players[0]->animTarget == rabbitrunninganim || Person::players[0]->animTarget == wolfrunninganim) {
                     success += multiplier;
+                }
                 break;
             case 11:
-                if (Person::players[0]->isWallJump())
+                if (Person::players[0]->isWallJump()) {
                     success = 1;
+                }
                 break;
             case 12:
-                if (Person::players[0]->animTarget == flipanim)
+                if (Person::players[0]->animTarget == flipanim) {
                     success = 1;
+                }
                 break;
             case 15:
-                if (Person::players[0]->animTarget == upunchanim || Person::players[0]->animTarget == winduppunchanim)
+                if (Person::players[0]->animTarget == upunchanim || Person::players[0]->animTarget == winduppunchanim) {
                     success = 1;
+                }
                 break;
             case 16:
-                if (Person::players[0]->animTarget == winduppunchanim)
+                if (Person::players[0]->animTarget == winduppunchanim) {
                     success = 1;
+                }
                 break;
             case 17:
-                if (Person::players[0]->animTarget == spinkickanim)
+                if (Person::players[0]->animTarget == spinkickanim) {
                     success = 1;
+                }
                 break;
             case 18:
-                if (Person::players[0]->animTarget == sweepanim)
+                if (Person::players[0]->animTarget == sweepanim) {
                     success = 1;
+                }
                 break;
             case 19:
-                if (Person::players[0]->animTarget == dropkickanim)
+                if (Person::players[0]->animTarget == dropkickanim) {
                     success = 1;
+                }
                 break;
             case 20:
-                if (Person::players[0]->animTarget == rabbitkickanim)
+                if (Person::players[0]->animTarget == rabbitkickanim) {
                     success = 1;
+                }
                 break;
             case 21:
-                if (bonus == cannon)
+                if (bonus == cannon) {
                     success = 1;
+                }
                 break;
             case 22:
-                if (bonus == spinecrusher)
+                if (bonus == spinecrusher) {
                     success = 1;
+                }
                 break;
             case 23:
-                if (Person::players[0]->animTarget == walljumprightkickanim || Person::players[0]->animTarget == walljumpleftkickanim)
+                if (Person::players[0]->animTarget == walljumprightkickanim || Person::players[0]->animTarget == walljumpleftkickanim) {
                     success = 1;
+                }
                 break;
             case 24:
-                if (Person::players[0]->animTarget == rabbittacklinganim)
+                if (Person::players[0]->animTarget == rabbittacklinganim) {
                     success = 1;
+                }
                 break;
             case 25:
-                if (Person::players[0]->animTarget == backhandspringanim)
+                if (Person::players[0]->animTarget == backhandspringanim) {
                     success = 1;
+                }
                 break;
             case 28:
-                if (Animation::animations[Person::players[0]->animTarget].attack == reversed && Person::players[0]->feint)
+                if (Animation::animations[Person::players[0]->animTarget].attack == reversed && Person::players[0]->feint) {
                     success = 1;
+                }
                 break;
             case 29:
                 if (Person::players[0]->escapednum == 2) {
@@ -809,14 +841,18 @@ void Tutorial::DoStuff(float multiplier)
 
             for (unsigned i = 0; i < Person::players[1]->skeleton.joints.size(); i++) {
                 if (Random() % 2 == 0) {
-                    if (!Person::players[1]->skeleton.free)
+                    if (!Person::players[1]->skeleton.free) {
                         temp2 = (Person::players[1]->coords - Person::players[1]->oldcoords) / multiplier / 2; //velocity/2;
-                    if (Person::players[1]->skeleton.free)
+                    }
+                    if (Person::players[1]->skeleton.free) {
                         temp2 = Person::players[1]->skeleton.joints[i].velocity * Person::players[1]->scale / 2;
-                    if (!Person::players[1]->skeleton.free)
+                    }
+                    if (!Person::players[1]->skeleton.free) {
                         temp = DoRotation(DoRotation(DoRotation(Person::players[1]->skeleton.joints[i].position, 0, 0, Person::players[1]->tilt), Person::players[1]->tilt2, 0, 0), 0, Person::players[1]->yaw, 0) * Person::players[1]->scale + Person::players[1]->coords;
-                    if (Person::players[1]->skeleton.free)
+                    }
+                    if (Person::players[1]->skeleton.free) {
                         temp = Person::players[1]->skeleton.joints[i].position * Person::players[1]->scale + Person::players[1]->coords;
+                    }
                     Sprite::MakeSprite(breathsprite, temp, temp2, 1, 1, 1, .6 + (float)abs(Random() % 100) / 200 - .25, 1);
                 }
             }
@@ -825,14 +861,18 @@ void Tutorial::DoStuff(float multiplier)
             for (unsigned i = 0; i < Person::players[1]->skeleton.joints.size(); i++) {
                 Person::players[1]->skeleton.joints[i].velocity = 0;
                 if (Random() % 2 == 0) {
-                    if (!Person::players[1]->skeleton.free)
+                    if (!Person::players[1]->skeleton.free) {
                         temp2 = (Person::players[1]->coords - Person::players[1]->oldcoords) / multiplier / 2; //velocity/2;
-                    if (Person::players[1]->skeleton.free)
+                    }
+                    if (Person::players[1]->skeleton.free) {
                         temp2 = Person::players[1]->skeleton.joints[i].velocity * Person::players[1]->scale / 2;
-                    if (!Person::players[1]->skeleton.free)
+                    }
+                    if (!Person::players[1]->skeleton.free) {
                         temp = DoRotation(DoRotation(DoRotation(Person::players[1]->skeleton.joints[i].position, 0, 0, Person::players[1]->tilt), Person::players[1]->tilt2, 0, 0), 0, Person::players[1]->yaw, 0) * Person::players[1]->scale + Person::players[1]->coords;
-                    if (Person::players[1]->skeleton.free)
+                    }
+                    if (Person::players[1]->skeleton.free) {
                         temp = Person::players[1]->skeleton.joints[i].position * Person::players[1]->scale + Person::players[1]->coords;
+                    }
                     Sprite::MakeSprite(breathsprite, temp, temp2, 1, 1, 1, .6 + (float)abs(Random() % 100) / 200 - .25, 1);
                 }
             }

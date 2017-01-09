@@ -120,32 +120,36 @@ void Menu::addMapLabel(int id, const string& text, int x, int y, float r, float 
 
 void Menu::setText(int id, const string& text)
 {
-    for (vector<MenuItem>::iterator it = items.begin(); it != items.end(); it++)
+    for (vector<MenuItem>::iterator it = items.begin(); it != items.end(); it++) {
         if (it->id == id) {
             it->text = text;
             it->w = it->text.length() * 10;
             break;
         }
+    }
 }
 
 void Menu::setText(int id, const string& text, int x, int y, int w, int h)
 {
-    for (vector<MenuItem>::iterator it = items.begin(); it != items.end(); it++)
+    for (vector<MenuItem>::iterator it = items.begin(); it != items.end(); it++) {
         if (it->id == id) {
             it->text = text;
             it->x = x;
             it->y = y;
-            if (w == -1)
+            if (w == -1) {
                 it->w = it->text.length() * 10;
-            if (h == -1)
+            }
+            if (h == -1) {
                 it->h = 20;
+            }
             break;
         }
+    }
 }
 
 int Menu::getSelected(int mousex, int mousey)
 {
-    for (vector<MenuItem>::reverse_iterator it = items.rbegin(); it != items.rend(); it++)
+    for (vector<MenuItem>::reverse_iterator it = items.rbegin(); it != items.rend(); it++) {
         if (it->type == MenuItem::BUTTON || it->type == MenuItem::IMAGEBUTTON || it->type == MenuItem::MAPMARKER) {
             int mx = mousex;
             int my = mousey;
@@ -153,9 +157,11 @@ int Menu::getSelected(int mousex, int mousey)
                 mx -= 1;
                 my += 2;
             }
-            if (mx >= it->x && mx < it->x + it->w && my >= it->y && my < it->y + it->h)
+            if (mx >= it->x && mx < it->x + it->w && my >= it->y && my < it->y + it->h) {
                 return it->id;
+            }
         }
+    }
     return -1;
 }
 
@@ -164,12 +170,14 @@ void Menu::handleFadeEffect()
     for (vector<MenuItem>::iterator it = items.begin(); it != items.end(); it++) {
         if (it->id == Game::selected) {
             it->effectfade += multiplier * 5;
-            if (it->effectfade > 1)
+            if (it->effectfade > 1) {
                 it->effectfade = 1;
+            }
         } else {
             it->effectfade -= multiplier * 5;
-            if (it->effectfade < 0)
+            if (it->effectfade < 0) {
                 it->effectfade = 0;
+            }
         }
     }
 }
@@ -292,18 +300,24 @@ void Menu::updateSettingsMenu()
     }
     setText(0, sbuf);
     setText(14, fullscreen ? "Fullscreen: On" : "Fullscreen: Off");
-    if (newdetail == 0)
+    if (newdetail == 0) {
         setText(1, "Detail: Low");
-    if (newdetail == 1)
+    }
+    if (newdetail == 1) {
         setText(1, "Detail: Medium");
-    if (newdetail == 2)
+    }
+    if (newdetail == 2) {
         setText(1, "Detail: High");
-    if (bloodtoggle == 0)
+    }
+    if (bloodtoggle == 0) {
         setText(2, "Blood: Off");
-    if (bloodtoggle == 1)
+    }
+    if (bloodtoggle == 1) {
         setText(2, "Blood: On, low detail");
-    if (bloodtoggle == 2)
+    }
+    if (bloodtoggle == 2) {
         setText(2, "Blood: On, high detail (slower)");
+    }
     setText(4, ismotionblur ? "Blur Effects: Enabled (less compatible)" : "Blur Effects: Disabled (more compatible)");
     setText(5, decalstoggle ? "Decals: Enabled (slower)" : "Decals: Disabled");
     setText(6, musictoggle ? "Music: Enabled" : "Music: Disabled");
@@ -445,10 +459,11 @@ void Menu::Load()
             addButton(2, "No", 10, 320);
             break;
         case 7:
-            if (Account::getNbAccounts() < 8)
+            if (Account::getNbAccounts() < 8) {
                 addButton(0, "New User", 10, 400);
-            else
+            } else {
                 addLabel(0, "No More Users", 10, 400);
+            }
             addLabel(-2, "", 20, 400);
             addButton(Account::getNbAccounts() + 1, "Back", 10, 10);
             for (int i = 0; i < Account::getNbAccounts(); i++) {
@@ -474,8 +489,9 @@ void Menu::Load()
                 int fasttime = (int)round(Account::active().getFastTime(i));
                 name += to_string(int((fasttime - fasttime % 60) / 60));
                 name += ":";
-                if (fasttime % 60 < 10)
+                if (fasttime % 60 < 10) {
                     name += "0";
+                }
                 name += to_string(fasttime % 60);
 
                 addButton(i, name, 10, 400 - i * 25, i > Account::active().getProgress() ? 0.5 : 1, 0, 0);
@@ -544,8 +560,9 @@ void Menu::Tick()
         Account::active().endGame();
         endgame = 0;
     }
-    if (mainmenu == 10)
+    if (mainmenu == 10) {
         endgame = 2;
+    }
     if (mainmenu == 18 && Input::isKeyPressed(MOUSEBUTTON_RIGHT) && selected == 1) {
         stereoseparation -= 0.001;
         updateStereoConfigMenu();
@@ -575,18 +592,24 @@ void Menu::Tick()
                         fireSound();
                         flash();
                         mainmenu = 3;
-                        if (newdetail > 2)
+                        if (newdetail > 2) {
                             newdetail = detail;
-                        if (newdetail < 0)
+                        }
+                        if (newdetail < 0) {
                             newdetail = detail;
-                        if (newscreenwidth > 3000)
+                        }
+                        if (newscreenwidth > 3000) {
                             newscreenwidth = screenwidth;
-                        if (newscreenwidth < 0)
+                        }
+                        if (newscreenwidth < 0) {
                             newscreenwidth = screenwidth;
-                        if (newscreenheight > 3000)
+                        }
+                        if (newscreenheight > 3000) {
                             newscreenheight = screenheight;
-                        if (newscreenheight < 0)
+                        }
+                        if (newscreenheight < 0) {
                             newscreenheight = screenheight;
+                        }
                         break;
                     case 3:
                         fireSound();
@@ -617,13 +640,15 @@ void Menu::Tick()
                         break;
                     case 1:
                         newdetail++;
-                        if (newdetail > 2)
+                        if (newdetail > 2) {
                             newdetail = 0;
+                        }
                         break;
                     case 2:
                         bloodtoggle++;
-                        if (bloodtoggle > 2)
+                        if (bloodtoggle > 2) {
                             bloodtoggle = 0;
+                        }
                         break;
                     case 4:
                         ismotionblur = !ismotionblur;
@@ -662,13 +687,15 @@ void Menu::Tick()
                         break;
                     case 10:
                         usermousesensitivity += .2;
-                        if (usermousesensitivity > 2)
+                        if (usermousesensitivity > 2) {
                             usermousesensitivity = .2;
+                        }
                         break;
                     case 11:
                         volume += .1f;
-                        if (volume > 1.0001f)
+                        if (volume > 1.0001f) {
                             volume = 0;
+                        }
                         OPENAL_SetSFXMasterVolume((int)(volume * 255));
                         break;
                     case 12:
@@ -689,10 +716,12 @@ void Menu::Tick()
             case 4:
                 if (!waiting) {
                     fireSound();
-                    if (selected < (devtools ? 10 : 9) && keyselect == -1)
+                    if (selected < (devtools ? 10 : 9) && keyselect == -1) {
                         keyselect = selected;
-                    if (keyselect != -1)
+                    }
+                    if (keyselect != -1) {
                         setKeySelected();
+                    }
                     if (selected == (devtools ? 10 : 9)) {
                         flash();
                         mainmenu = 3;
@@ -758,12 +787,14 @@ void Menu::Tick()
                         vector<string> campaigns = ListCampaigns();
                         vector<string>::iterator c;
                         if ((c = find(campaigns.begin(), campaigns.end(), Account::active().getCurrentCampaign())) == campaigns.end()) {
-                            if (!campaigns.empty())
+                            if (!campaigns.empty()) {
                                 Account::active().setCurrentCampaign(campaigns.front());
+                            }
                         } else {
                             c++;
-                            if (c == campaigns.end())
+                            if (c == campaigns.end()) {
                                 c = campaigns.begin();
+                            }
                             Account::active().setCurrentCampaign(*c);
                         }
                         Load();
@@ -804,8 +835,9 @@ void Menu::Tick()
             case 8:
                 fireSound();
                 flash();
-                if (selected <= 2)
+                if (selected <= 2) {
                     Account::active().setDifficulty(selected);
+                }
                 mainmenu = 5;
                 break;
             case 9:
@@ -844,17 +876,18 @@ void Menu::Tick()
                 }
                 break;
             case 18:
-                if (selected == 1)
+                if (selected == 1) {
                     stereoseparation += 0.001;
-                else {
+                } else {
                     fireSound();
                     if (selected == 0) {
                         newstereomode = (StereoMode)(newstereomode + 1);
                         while (!CanInitStereo(newstereomode)) {
                             printf("Failed to initialize mode %s (%i)\n", StereoModeName(newstereomode).c_str(), newstereomode);
                             newstereomode = (StereoMode)(newstereomode + 1);
-                            if (newstereomode >= stereoCount)
+                            if (newstereomode >= stereoCount) {
                                 newstereomode = stereoNone;
+                            }
                         }
                     } else if (selected == 2) {
                         stereoreverse = !stereoreverse;
@@ -905,8 +938,9 @@ void Menu::Tick()
         setText(-2, newuserblink ? "_" : "", 20 + newuserselected * 10, 400, -1, -1);
     }
 
-    if (oldmainmenu != mainmenu)
+    if (oldmainmenu != mainmenu) {
         Load();
+    }
     oldmainmenu = mainmenu;
 }
 

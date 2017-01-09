@@ -69,8 +69,9 @@ std::string funpackf_string(FILE* tfile, int maxlength)
     char* text = new char[maxlength];
     for (m = 0; m < templength; m++) {
         funpackf(tfile, "Bb", &text[m]);
-        if (text[m] == '\0')
+        if (text[m] == '\0') {
             break;
+        }
     }
     text[m] = 0;
     std::string result(text);
@@ -104,8 +105,9 @@ DialogScene::DialogScene(FILE* tfile)
     funpackf(tfile, "Bi", &participantfocus);
     funpackf(tfile, "Bi", &participantaction);
 
-    for (int m = 0; m < 10; m++)
+    for (int m = 0; m < 10; m++) {
         funpackf(tfile, "Bf Bf Bf", &participantfacing[m].x, &participantfacing[m].y, &participantfacing[m].z);
+    }
 
     funpackf(tfile, "Bf Bf", &camerayaw, &camerapitch);
 }
@@ -143,8 +145,9 @@ DialogScene::DialogScene(ifstream& ipstream)
     ipstream.ignore(256, ' ');
     getline(ipstream, text);
     for (int j = 0; j < 128; j++) {
-        if (text[j] == '\\')
+        if (text[j] == '\\') {
             text[j] = '\n';
+        }
     }
     ipstream.ignore(256, ':');
     ipstream >> sound;
@@ -228,8 +231,9 @@ void DialogScene::save(FILE* tfile)
     fpackf(tfile, "Bi", participantfocus);
     fpackf(tfile, "Bi", participantaction);
 
-    for (int m = 0; m < 10; m++)
+    for (int m = 0; m < 10; m++) {
         fpackf(tfile, "Bf Bf Bf", participantfacing[m].x, participantfacing[m].y, participantfacing[m].z);
+    }
 
     fpackf(tfile, "Bf Bf", camerayaw, camerapitch);
 }

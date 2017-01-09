@@ -149,8 +149,9 @@ int Game::DrawGLScene(StereoSide side)
     if (!mainmenu) {
         if (editorenabled) {
             numboundaries = mapradius * 2;
-            if (numboundaries > 360)
+            if (numboundaries > 360) {
                 numboundaries = 360;
+            }
             for (int i = 0; i < numboundaries; i++) {
                 boundary[i] = 0;
                 boundary[i].z = 1;
@@ -177,54 +178,66 @@ int Game::DrawGLScene(StereoSide side)
         }
 
         if (slomo && !loading) {
-            if (ismotionblur)
+            if (ismotionblur) {
                 drawmode = motionblurmode;
+            }
             motionbluramount = .2;
             slomodelay -= multiplier;
-            if (slomodelay < 0)
+            if (slomodelay < 0) {
                 slomo = 0;
+            }
             camerashake = 0;
             changed = 1;
         }
         if ((!changed && !slomo) || loading) {
             drawmode = normalmode;
             if (ismotionblur && (/*fps>100||*/ alwaysblur)) {
-                if (olddrawmode != realmotionblurmode)
+                if (olddrawmode != realmotionblurmode) {
                     change = 1;
-                else
+                } else {
                     change = 0;
+                }
                 drawmode = realmotionblurmode;
-            } else if (olddrawmode == realmotionblurmode)
+            } else if (olddrawmode == realmotionblurmode) {
                 change = 2;
-            else
+            } else {
                 change = 0;
+            }
         }
 
-        if (freeze || winfreeze || (mainmenu && gameon) || (!gameon && gamestarted))
+        if (freeze || winfreeze || (mainmenu && gameon) || (!gameon && gamestarted)) {
             drawmode = normalmode;
-        if ((freeze || winfreeze) && ismotionblur && !mainmenu)
+        }
+        if ((freeze || winfreeze) && ismotionblur && !mainmenu) {
             drawmode = radialzoommode;
+        }
 
-        if (winfreeze || mainmenu)
+        if (winfreeze || mainmenu) {
             drawmode = normalmode;
+        }
 
-        if (drawtoggle != 2)
+        if (drawtoggle != 2) {
             drawtoggle = 1 - drawtoggle;
+        }
 
         if (!texcoordwidth) {
             texviewwidth = kTextureSize;
-            if (texviewwidth > screenwidth)
+            if (texviewwidth > screenwidth) {
                 texviewwidth = screenwidth;
+            }
             texviewheight = kTextureSize;
-            if (texviewheight > screenheight)
+            if (texviewheight > screenheight) {
                 texviewheight = screenheight;
+            }
 
             texcoordwidth = screenwidth / kTextureSize;
             texcoordheight = screenheight / kTextureSize;
-            if (texcoordwidth > 1)
+            if (texcoordwidth > 1) {
                 texcoordwidth = 1;
-            if (texcoordheight > 1)
+            }
+            if (texcoordheight > 1) {
                 texcoordheight = 1;
+            }
         }
 
         glDrawBuffer(GL_BACK);
@@ -277,10 +290,11 @@ int Game::DrawGLScene(StereoSide side)
             blurness = targetblurness;
             targetblurness = (float)(abs(Random() % 100)) / 40;
         }
-        if (blurness < targetblurness)
+        if (blurness < targetblurness) {
             blurness += multiplier * 5;
-        else
+        } else {
             blurness -= multiplier * 5;
+        }
 
         if (environment == desertenvironment) {
             if (detail == 2) {
@@ -300,8 +314,8 @@ int Game::DrawGLScene(StereoSide side)
         static float size, opacity, rotation;
         rotation = 0;
         for (unsigned int k = 0; k < Person::players.size(); k++) {
-            if (!Person::players[k]->skeleton.free && Person::players[k]->playerdetail && Person::players[k]->howactive < typesleeping)
-                if (frustum.SphereInFrustum(Person::players[k]->coords.x, Person::players[k]->coords.y + Person::players[k]->scale * 3, Person::players[k]->coords.z, Person::players[k]->scale * 7) && Person::players[k]->occluded < 25)
+            if (!Person::players[k]->skeleton.free && Person::players[k]->playerdetail && Person::players[k]->howactive < typesleeping) {
+                if (frustum.SphereInFrustum(Person::players[k]->coords.x, Person::players[k]->coords.y + Person::players[k]->scale * 3, Person::players[k]->coords.z, Person::players[k]->scale * 7) && Person::players[k]->occluded < 25) {
                     for (unsigned int i = 0; i < Person::players[k]->skeleton.joints.size(); i++) {
                         if (Person::players[k]->skeleton.joints[i].label == leftknee || Person::players[k]->skeleton.joints[i].label == rightknee || Person::players[k]->skeleton.joints[i].label == groin) {
                             point = DoRotation(Person::players[k]->skeleton.joints[i].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords;
@@ -325,14 +339,17 @@ int Game::DrawGLScene(StereoSide side)
                             }
                         }
                     }
-            if ((Person::players[k]->skeleton.free || Person::players[k]->howactive >= typesleeping) && Person::players[k]->playerdetail)
-                if (frustum.SphereInFrustum(Person::players[k]->coords.x, Person::players[k]->coords.y, Person::players[k]->coords.z, Person::players[k]->scale * 5) && Person::players[k]->occluded < 25)
+                }
+            }
+            if ((Person::players[k]->skeleton.free || Person::players[k]->howactive >= typesleeping) && Person::players[k]->playerdetail) {
+                if (frustum.SphereInFrustum(Person::players[k]->coords.x, Person::players[k]->coords.y, Person::players[k]->coords.z, Person::players[k]->scale * 5) && Person::players[k]->occluded < 25) {
                     for (unsigned i = 0; i < Person::players[k]->skeleton.joints.size(); i++) {
                         if (Person::players[k]->skeleton.joints[i].label == leftknee || Person::players[k]->skeleton.joints[i].label == rightknee || Person::players[k]->skeleton.joints[i].label == groin || Person::players[k]->skeleton.joints[i].label == leftelbow || Person::players[k]->skeleton.joints[i].label == rightelbow || Person::players[k]->skeleton.joints[i].label == neck) {
-                            if (Person::players[k]->skeleton.free)
+                            if (Person::players[k]->skeleton.free) {
                                 point = Person::players[k]->skeleton.joints[i].position * Person::players[k]->scale + Person::players[k]->coords;
-                            else
+                            } else {
                                 point = DoRotation(Person::players[k]->skeleton.joints[i].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords;
+                            }
                             size = .4f;
                             opacity = .4 - Person::players[k]->skeleton.joints[i].position.y * Person::players[k]->scale / 5 - (Person::players[k]->coords.y - terrain.getHeight(Person::players[k]->coords.x, Person::players[k]->coords.z)) / 5;
                             if (k != 0 && Tutorial::active) {
@@ -342,10 +359,11 @@ int Game::DrawGLScene(StereoSide side)
                             for (unsigned int l = 0; l < terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz].size(); l++) {
                                 unsigned int j = terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz][l];
                                 if (Object::objects[j]->position.y < Person::players[k]->coords.y || Object::objects[j]->type == tunneltype || Object::objects[j]->type == weirdtype) {
-                                    if (Person::players[k]->skeleton.free)
+                                    if (Person::players[k]->skeleton.free) {
                                         point = DoRotation(Person::players[k]->skeleton.joints[i].position * Person::players[k]->scale + Person::players[k]->coords - Object::objects[j]->position, 0, -Object::objects[j]->yaw, 0);
-                                    else
+                                    } else {
                                         point = DoRotation(DoRotation(Person::players[k]->skeleton.joints[i].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords - Object::objects[j]->position, 0, -Object::objects[j]->yaw, 0);
+                                    }
                                     size = .4f;
                                     opacity = .4f;
                                     if (k != 0 && Tutorial::active) {
@@ -356,8 +374,10 @@ int Game::DrawGLScene(StereoSide side)
                             }
                         }
                     }
+                }
+            }
 
-            if (!Person::players[k]->playerdetail)
+            if (!Person::players[k]->playerdetail) {
                 if (frustum.SphereInFrustum(Person::players[k]->coords.x, Person::players[k]->coords.y, Person::players[k]->coords.z, Person::players[k]->scale * 5)) {
                     point = Person::players[k]->coords;
                     size = .7;
@@ -371,6 +391,7 @@ int Game::DrawGLScene(StereoSide side)
                         Object::objects[j]->model.MakeDecal(shadowdecal, &point, &size, &opacity, &rotation);
                     }
                 }
+            }
         }
 
         //Terrain
@@ -410,33 +431,38 @@ int Game::DrawGLScene(StereoSide side)
                     distance = distsq(&viewer, &Person::players[k]->coords);
                     distance = (viewdistance * viewdistance - (distance - (viewdistance * viewdistance * fadestart)) * (1 / (1 - fadestart))) / viewdistance / viewdistance;
                     glColor4f(terrainlight.x, terrainlight.y, terrainlight.z, distance);
-                    if (distance >= 1)
+                    if (distance >= 1) {
                         glDisable(GL_BLEND);
+                    }
                     if (distance >= .5) {
                         checkpoint = DoRotation(Person::players[k]->skeleton.joints[fabs(Random() % Person::players[k]->skeleton.joints.size())].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords;
                         checkpoint.y += 1;
                         int i = -1;
-                        if (Person::players[k]->occluded != 0)
+                        if (Person::players[k]->occluded != 0) {
                             i = Object::checkcollide(viewer, checkpoint, Person::players[k]->lastoccluded);
-                        if (i == -1)
+                        }
+                        if (i == -1) {
                             i = Object::checkcollide(viewer, checkpoint);
+                        }
                         if (i != -1) {
                             Person::players[k]->occluded += 1;
                             Person::players[k]->lastoccluded = i;
                         } else {
                             Person::players[k]->occluded = 0;
                         }
-                        if (Person::players[k]->occluded < 25)
+                        if (Person::players[k]->occluded < 25) {
                             Person::players[k]->DrawSkeleton();
+                        }
                     }
                 }
             }
         }
 
-        if (!cameramode && musictype == stream_fighttheme)
+        if (!cameramode && musictype == stream_fighttheme) {
             playerdist = distsqflat(&Person::players[0]->coords, &viewer);
-        else
+        } else {
             playerdist = -100;
+        }
         glPushMatrix();
         glCullFace(GL_BACK);
         glEnable(GL_TEXTURE_2D);
@@ -456,10 +482,12 @@ int Game::DrawGLScene(StereoSide side)
             glTranslatef(25, 0, 0);
             distance = distsq(&viewer, &realhawkcoords) * 1.2;
             glColor4f(light.color[0], light.color[1], light.color[2], (viewdistance * viewdistance - (distance - (viewdistance * viewdistance * fadestart)) * (1 / (1 - fadestart))) / viewdistance / viewdistance);
-            if ((viewdistance * viewdistance - (distance - (viewdistance * viewdistance * fadestart)) * (1 / (1 - fadestart))) / viewdistance / viewdistance > 1)
+            if ((viewdistance * viewdistance - (distance - (viewdistance * viewdistance * fadestart)) * (1 / (1 - fadestart))) / viewdistance / viewdistance > 1) {
                 glColor4f(light.color[0], light.color[1], light.color[2], 1);
-            if ((viewdistance * viewdistance - (distance - (viewdistance * viewdistance * fadestart)) * (1 / (1 - fadestart))) / viewdistance / viewdistance > 0)
+            }
+            if ((viewdistance * viewdistance - (distance - (viewdistance * viewdistance * fadestart)) * (1 / (1 - fadestart))) / viewdistance / viewdistance > 0) {
                 hawk.drawdifftex(hawktexture);
+            }
         }
         glPopMatrix();
 
@@ -475,8 +503,9 @@ int Game::DrawGLScene(StereoSide side)
                 distance = distsq(&viewer, &Person::players[k]->coords);
                 distance = (viewdistance * viewdistance - (distance - (viewdistance * viewdistance * fadestart)) * (1 / (1 - fadestart))) / viewdistance / viewdistance;
                 glColor4f(terrainlight.x, terrainlight.y, terrainlight.z, distance);
-                if (distance >= 1)
+                if (distance >= 1) {
                     glDisable(GL_BLEND);
+                }
                 if (distance >= .5) {
                     checkpoint = DoRotation(Person::players[k]->skeleton.joints[fabs(Random() % Person::players[k]->skeleton.joints.size())].position, 0, Person::players[k]->yaw, 0) * Person::players[k]->scale + Person::players[k]->coords;
                     checkpoint.y += 1;
@@ -558,14 +587,14 @@ int Game::DrawGLScene(StereoSide side)
         glEnable(GL_TEXTURE_2D);
         glColor4f(.5, .5, .5, 1);
         if (!console) {
-            if (!Tutorial::active)
+            if (!Tutorial::active) {
                 if (bonus > 0 && bonustime < 1 && !winfreeze && !Dialog::inDialog()) {
                     const char* bonus_name;
-                    if (bonus < bonus_count)
+                    if (bonus < bonus_count) {
                         bonus_name = bonus_names[bonus];
-                    else
+                    } else {
                         bonus_name = "Excellent!"; // When does this happen?
-
+                    }
                     text->glPrintOutlined(1, 0, 0, 1 - bonustime, 1024 / 2 - 10 * strlen(bonus_name), 768 / 16 + 768 * 4 / 5, bonus_name, 1, 2, 1024, 768);
 
                     string = to_string((int)bonusvalue);
@@ -573,6 +602,7 @@ int Game::DrawGLScene(StereoSide side)
 
                     glColor4f(.5, .5, .5, 1);
                 }
+            }
 
             if (Tutorial::active) {
                 Tutorial::DrawTextInfo();
@@ -594,14 +624,17 @@ int Game::DrawGLScene(StereoSide side)
                 if (closest != -1) {
                     Hotspot::current = closest;
                     if (Hotspot::hotspots[closest].type <= 10) {
-                        if (distsq(&Person::players[0]->coords, &Hotspot::hotspots[closest].position) < Hotspot::hotspots[closest].size)
+                        if (distsq(&Person::players[0]->coords, &Hotspot::hotspots[closest].position) < Hotspot::hotspots[closest].size) {
                             Tutorial::stagetime = 0;
+                        }
                         Tutorial::maxtime = 1;
                         tutorialopac = Tutorial::maxtime - Tutorial::stagetime;
-                        if (tutorialopac > 1)
+                        if (tutorialopac > 1) {
                             tutorialopac = 1;
-                        if (tutorialopac < 0)
+                        }
+                        if (tutorialopac < 0) {
                             tutorialopac = 0;
+                        }
 
                         string = Hotspot::hotspots[closest].text;
 
@@ -614,11 +647,13 @@ int Game::DrawGLScene(StereoSide side)
                                 text->glPrintOutlined(1, 1, 1, tutorialopac, screenwidth / 2 - 7.6 * (i - lastline) * screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 20 * screenwidth / 1024 * line, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight, lastline, i);
                                 lastline = i + 1;
                                 line++;
-                                if (string[i] == '\0')
+                                if (string[i] == '\0') {
                                     done = 1;
+                                }
                             }
-                            if (i >= 255)
+                            if (i >= 255) {
                                 done = 1;
+                            }
                             i++;
                         }
                     } else if ((Hotspot::hotspots[closest].type >= 20) && (Dialog::dialogs[Hotspot::hotspots[closest].type - 20].gonethrough == 0)) {
@@ -642,8 +677,9 @@ int Game::DrawGLScene(StereoSide side)
                 glMatrixMode(GL_MODELVIEW);
                 glPushMatrix();
                 glLoadIdentity();
-                if (Dialog::currentScene().location == 1)
+                if (Dialog::currentScene().location == 1) {
                     glTranslatef(0, screenheight * 3 / 4, 0);
+                }
                 glScalef(screenwidth, screenheight / 4, 1);
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 glEnable(GL_BLEND);
@@ -686,10 +722,11 @@ int Game::DrawGLScene(StereoSide side)
 
                 for (unsigned i = 0; i < Dialog::currentScene().name.size(); i++) {
                     tempname[tempnum] = Dialog::currentScene().name[i];
-                    if (tempname[tempnum] == '#' || tempname[tempnum] == '\0')
+                    if (tempname[tempnum] == '#' || tempname[tempnum] == '\0') {
                         tempname[tempnum] = '\0';
-                    else
+                    } else {
                         tempnum++;
+                    }
                 }
 
                 string = std::string(tempname) + ": ";
@@ -704,8 +741,9 @@ int Game::DrawGLScene(StereoSide side)
                 tempnum = 0;
                 for (unsigned i = 0; i < Dialog::currentScene().text.size() + 1; i++) {
                     tempname[tempnum] = Dialog::currentScene().text[i];
-                    if (Dialog::currentScene().text[i] != '#')
+                    if (Dialog::currentScene().text[i] != '#') {
                         tempnum++;
+                    }
                 }
 
                 string = tempname;
@@ -724,11 +762,13 @@ int Game::DrawGLScene(StereoSide side)
                         }
                         lastline = i + 1;
                         line++;
-                        if (string[i] == '\0')
+                        if (string[i] == '\0') {
                             done = 1;
+                        }
                     }
-                    if (i >= 255)
+                    if (i >= 255) {
                         done = 1;
+                    }
                     i++;
                 }
             }
@@ -955,12 +995,15 @@ int Game::DrawGLScene(StereoSide side)
             glScalef(screenwidth, screenheight, 1);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glEnable(GL_BLEND);
-            if (Person::players[0]->dead)
+            if (Person::players[0]->dead) {
                 blackout += multiplier * 3;
-            if (Person::players[0]->dead == 1)
+            }
+            if (Person::players[0]->dead == 1) {
                 blackout = .4f;
-            if (Person::players[0]->dead == 2 && blackout > .6)
+            }
+            if (Person::players[0]->dead == 2 && blackout > .6) {
                 blackout = .6;
+            }
             glColor4f(0, 0, 0, blackout);
             if (!Person::players[0]->dead) {
                 if ((Person::players[0]->bloodloss / Person::players[0]->damagetolerance * (sin(woozy) / 4 + .5)) * .3 < .3) {
@@ -971,8 +1014,9 @@ int Game::DrawGLScene(StereoSide side)
                     blackout = Person::players[0]->blooddimamount * .3;
                 }
             }
-            if (console)
+            if (console) {
                 glColor4f(.7, 0, 0, .2);
+            }
             glBegin(GL_QUADS);
             glVertex3f(0, 0, 0.0f);
             glVertex3f(256, 0, 0.0f);
@@ -990,13 +1034,16 @@ int Game::DrawGLScene(StereoSide side)
         }
 
         if (flashamount > 0 && damageeffects) {
-            if (flashamount > 1)
+            if (flashamount > 1) {
                 flashamount = 1;
-            if (flashdelay <= 0)
+            }
+            if (flashdelay <= 0) {
                 flashamount -= multiplier;
+            }
             flashdelay--;
-            if (flashamount < 0)
+            if (flashamount < 0) {
                 flashamount = 0;
+            }
             glDisable(GL_DEPTH_TEST);
             glDisable(GL_CULL_FACE);
             glDisable(GL_LIGHTING);
@@ -1140,18 +1187,19 @@ int Game::DrawGLScene(StereoSide side)
                 if (distcheck < mapviewdist) {
                     glPushMatrix();
                     Maparrowtexture.bind();
-                    if (i == 0)
+                    if (i == 0) {
                         glColor4f(1, 1, 1, opac);
-                    else if (Person::players[i]->dead == 2 || Person::players[i]->howactive > typesleeping)
+                    } else if (Person::players[i]->dead == 2 || Person::players[i]->howactive > typesleeping) {
                         glColor4f(0, 0, 0, opac * (1 - distcheck / mapviewdist));
-                    else if (Person::players[i]->dead)
+                    } else if (Person::players[i]->dead) {
                         glColor4f(.3, .3, .3, opac * (1 - distcheck / mapviewdist));
-                    else if (Person::players[i]->aitype == attacktypecutoff)
+                    } else if (Person::players[i]->aitype == attacktypecutoff) {
                         glColor4f(1, 0, 0, opac * (1 - distcheck / mapviewdist));
-                    else if (Person::players[i]->aitype == passivetype)
+                    } else if (Person::players[i]->aitype == passivetype) {
                         glColor4f(0, 1, 0, opac * (1 - distcheck / mapviewdist));
-                    else
+                    } else {
                         glColor4f(1, 1, 0, 1);
+                    }
                     glTranslatef(Person::players[i]->coords.x / terrain.scale / 256 * -2 + 1, Person::players[i]->coords.z / terrain.scale / 256 * 2 - 1, 0);
                     glRotatef(Person::players[i]->yaw + 180, 0, 0, 1);
                     glScalef(.005, .005, .005);
@@ -1293,8 +1341,9 @@ int Game::DrawGLScene(StereoSide side)
             int awards[award_count];
             int numawards = award_awards(awards);
 
-            for (int i = 0; i < numawards && i < 6; i++)
+            for (int i = 0; i < numawards && i < 6; i++) {
                 text->glPrintOutlined(1024 / 30, 768 * 6 / 8 - 90 - 40 * i, award_names[awards[i]], 1, 2, 1024, 768);
+            }
         }
 
         if (drawmode != normalmode) {
@@ -1367,8 +1416,9 @@ int Game::DrawGLScene(StereoSide side)
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glEnable(GL_BLEND);
             if (drawmode == motionblurmode) {
-                if (motionbluramount < .2)
+                if (motionbluramount < .2) {
                     motionbluramount = .2;
+                }
                 glColor4f(1, 1, 1, motionbluramount);
                 glPushMatrix();
                 glBegin(GL_QUADS);
@@ -1420,10 +1470,12 @@ int Game::DrawGLScene(StereoSide side)
             if (drawmode == doublevisionmode) {
                 static float crosseyedness;
                 crosseyedness = abs(Person::players[0]->damage - Person::players[0]->superpermanentdamage - (Person::players[0]->damagetolerance - Person::players[0]->superpermanentdamage) * 1 / 2) / 30;
-                if (crosseyedness > 1)
+                if (crosseyedness > 1) {
                     crosseyedness = 1;
-                if (crosseyedness < 0)
+                }
+                if (crosseyedness < 0) {
                     crosseyedness = 0;
+                }
                 glColor4f(1, 1, 1, 1);
                 glDisable(GL_BLEND);
                 glPushMatrix();
@@ -1548,8 +1600,9 @@ int Game::DrawGLScene(StereoSide side)
             glEnable(GL_TEXTURE_2D);
             glColor4f(1, 1, 1, 1);
             int offset = 0;
-            if (consoleselected >= 60)
+            if (consoleselected >= 60) {
                 offset = consoleselected - 60;
+            }
             textmono->glPrint(10, 30, " ]", 0, 1, 1024, 768);
             if (consoleblink) {
                 textmono->glPrint(30 + (float)consoleselected * 10 - offset * 10, 30, "_", 0, 1, 1024, 768);
@@ -1584,8 +1637,9 @@ int Game::DrawGLScene(StereoSide side)
 
     weapons.DoStuff();
 
-    if (drawtoggle == 2)
+    if (drawtoggle == 2) {
         drawtoggle = 0;
+    }
 
     if (freeze || winfreeze || (mainmenu && gameon) || (!gameon && gamestarted)) {
         multiplier = tempmult;
@@ -1719,13 +1773,16 @@ void DrawMenu()
 
     //draw screen flash
     if (flashamount > 0) {
-        if (flashamount > 1)
+        if (flashamount > 1) {
             flashamount = 1;
-        if (flashdelay <= 0)
+        }
+        if (flashdelay <= 0) {
             flashamount -= multiplier;
+        }
         flashdelay--;
-        if (flashamount < 0)
+        if (flashamount < 0) {
             flashamount = 0;
+        }
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
         glDisable(GL_LIGHTING);

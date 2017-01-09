@@ -99,31 +99,42 @@ int FRUSTUM::
 
     for (int i = 0; i < 6; i++) {
         c = 0;
-        if (frustum[i][0] * (x - size) + frustum[i][1] * (y - size) + frustum[i][2] * (z - size) + frustum[i][3] > 0)
+        if (frustum[i][0] * (x - size) + frustum[i][1] * (y - size) + frustum[i][2] * (z - size) + frustum[i][3] > 0) {
             c++;
-        if (frustum[i][0] * (x + size) + frustum[i][1] * (y - size) + frustum[i][2] * (z - size) + frustum[i][3] > 0)
+        }
+        if (frustum[i][0] * (x + size) + frustum[i][1] * (y - size) + frustum[i][2] * (z - size) + frustum[i][3] > 0) {
             c++;
-        if (frustum[i][0] * (x - size) + frustum[i][1] * (y + size) + frustum[i][2] * (z - size) + frustum[i][3] > 0)
+        }
+        if (frustum[i][0] * (x - size) + frustum[i][1] * (y + size) + frustum[i][2] * (z - size) + frustum[i][3] > 0) {
             c++;
-        if (frustum[i][0] * (x + size) + frustum[i][1] * (y + size) + frustum[i][2] * (z - size) + frustum[i][3] > 0)
+        }
+        if (frustum[i][0] * (x + size) + frustum[i][1] * (y + size) + frustum[i][2] * (z - size) + frustum[i][3] > 0) {
             c++;
-        if (frustum[i][0] * (x - size) + frustum[i][1] * (y - size) + frustum[i][2] * (z + size) + frustum[i][3] > 0)
+        }
+        if (frustum[i][0] * (x - size) + frustum[i][1] * (y - size) + frustum[i][2] * (z + size) + frustum[i][3] > 0) {
             c++;
-        if (frustum[i][0] * (x + size) + frustum[i][1] * (y - size) + frustum[i][2] * (z + size) + frustum[i][3] > 0)
+        }
+        if (frustum[i][0] * (x + size) + frustum[i][1] * (y - size) + frustum[i][2] * (z + size) + frustum[i][3] > 0) {
             c++;
-        if (frustum[i][0] * (x - size) + frustum[i][1] * (y + size) + frustum[i][2] * (z + size) + frustum[i][3] > 0)
+        }
+        if (frustum[i][0] * (x - size) + frustum[i][1] * (y + size) + frustum[i][2] * (z + size) + frustum[i][3] > 0) {
             c++;
-        if (frustum[i][0] * (x + size) + frustum[i][1] * (y + size) + frustum[i][2] * (z + size) + frustum[i][3] > 0)
+        }
+        if (frustum[i][0] * (x + size) + frustum[i][1] * (y + size) + frustum[i][2] * (z + size) + frustum[i][3] > 0) {
             c++;
-        if (c == 0)
+        }
+        if (c == 0) {
             return 0;
-        if (c == 8)
+        }
+        if (c == 8) {
             c2++;
+        }
     }
-    if (c2 >= 6)
+    if (c2 >= 6) {
         return 2;
-    else
+    } else {
         return 1;
+    }
 }
 
 int FRUSTUM::
@@ -133,31 +144,42 @@ int FRUSTUM::
 
     for (int i = 0; i < 6; i++) {
         c = 0;
-        if (frustum[i][0] * (x - size) + frustum[i][1] * (y - height) + frustum[i][2] * (z - size) + frustum[i][3] > 0)
+        if (frustum[i][0] * (x - size) + frustum[i][1] * (y - height) + frustum[i][2] * (z - size) + frustum[i][3] > 0) {
             c++;
-        if (frustum[i][0] * (x + size) + frustum[i][1] * (y - height) + frustum[i][2] * (z - size) + frustum[i][3] > 0)
+        }
+        if (frustum[i][0] * (x + size) + frustum[i][1] * (y - height) + frustum[i][2] * (z - size) + frustum[i][3] > 0) {
             c++;
-        if (frustum[i][0] * (x - size) + frustum[i][1] * (y + height) + frustum[i][2] * (z - size) + frustum[i][3] > 0)
+        }
+        if (frustum[i][0] * (x - size) + frustum[i][1] * (y + height) + frustum[i][2] * (z - size) + frustum[i][3] > 0) {
             c++;
-        if (frustum[i][0] * (x + size) + frustum[i][1] * (y + height) + frustum[i][2] * (z - size) + frustum[i][3] > 0)
+        }
+        if (frustum[i][0] * (x + size) + frustum[i][1] * (y + height) + frustum[i][2] * (z - size) + frustum[i][3] > 0) {
             c++;
-        if (frustum[i][0] * (x - size) + frustum[i][1] * (y - height) + frustum[i][2] * (z + size) + frustum[i][3] > 0)
+        }
+        if (frustum[i][0] * (x - size) + frustum[i][1] * (y - height) + frustum[i][2] * (z + size) + frustum[i][3] > 0) {
             c++;
-        if (frustum[i][0] * (x + size) + frustum[i][1] * (y - height) + frustum[i][2] * (z + size) + frustum[i][3] > 0)
+        }
+        if (frustum[i][0] * (x + size) + frustum[i][1] * (y - height) + frustum[i][2] * (z + size) + frustum[i][3] > 0) {
             c++;
-        if (frustum[i][0] * (x - size) + frustum[i][1] * (y + height) + frustum[i][2] * (z + size) + frustum[i][3] > 0)
+        }
+        if (frustum[i][0] * (x - size) + frustum[i][1] * (y + height) + frustum[i][2] * (z + size) + frustum[i][3] > 0) {
             c++;
-        if (frustum[i][0] * (x + size) + frustum[i][1] * (y + height) + frustum[i][2] * (z + size) + frustum[i][3] > 0)
+        }
+        if (frustum[i][0] * (x + size) + frustum[i][1] * (y + height) + frustum[i][2] * (z + size) + frustum[i][3] > 0) {
             c++;
-        if (c == 0)
+        }
+        if (c == 0) {
             return 0;
-        if (c == 8)
+        }
+        if (c == 8) {
             c2++;
+        }
     }
-    if (c2 >= 6)
+    if (c2 >= 6) {
         return 2;
-    else
+    } else {
         return 1;
+    }
 }
 
 int FRUSTUM::
@@ -166,13 +188,15 @@ int FRUSTUM::
     static int c2;
 
     for (int i = 0; i < 6; i++) {
-        if (frustum[i][0] * x + frustum[i][1] * y + frustum[i][2] * z + frustum[i][3] > -1 * radius)
+        if (frustum[i][0] * x + frustum[i][1] * y + frustum[i][2] * z + frustum[i][3] > -1 * radius) {
             c2++;
-        else
+        } else {
             return 0;
+        }
     }
-    if (c2 >= 6)
+    if (c2 >= 6) {
         return 2;
-    else
+    } else {
         return 1;
+    }
 }

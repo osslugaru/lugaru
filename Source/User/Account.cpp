@@ -224,13 +224,16 @@ void Account::winCampaignLevel(int choice, float score, float time)
 void Account::winLevel(int level, float score, float time)
 {
     if (!devtools) {
-        if (score > highscore[level])
+        if (score > highscore[level]) {
             highscore[level] = score;
-        if (time < fasttime[level] || fasttime[level] == 0)
+        }
+        if (time < fasttime[level] || fasttime[level] == 0) {
             fasttime[level] = time;
+        }
     }
-    if (progress < level + 1)
+    if (progress < level + 1) {
         progress = level + 1;
+    }
 }
 
 void Account::loadFile(string filename)

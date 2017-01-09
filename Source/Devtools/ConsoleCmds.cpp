@@ -148,8 +148,9 @@ static void set_clothes(int pnum, const char* args)
     Person::players[pnum]->clothestintb[id] = tintb;
     Person::players[pnum]->numclothes++;
 
-    if (!Person::players[pnum]->addClothes(id))
+    if (!Person::players[pnum]->addClothes(id)) {
         return;
+    }
 
     Person::players[pnum]->DoMipmaps();
 }
@@ -197,9 +198,11 @@ void ch_save(const char* args)
     fpackf(tfile, "Bf Bf Bf", skyboxlightr, skyboxlightg, skyboxlightb);
     fpackf(tfile, "Bf Bf Bf Bf Bf Bi", Person::players[0]->coords.x, Person::players[0]->coords.y, Person::players[0]->coords.z,
            Person::players[0]->yaw, Person::players[0]->targetyaw, Person::players[0]->num_weapons);
-    if (Person::players[0]->num_weapons > 0 && Person::players[0]->num_weapons < 5)
-        for (int j = 0; j < Person::players[0]->num_weapons; j++)
+    if (Person::players[0]->num_weapons > 0 && Person::players[0]->num_weapons < 5) {
+        for (int j = 0; j < Person::players[0]->num_weapons; j++) {
             fpackf(tfile, "Bi", weapons[Person::players[0]->weaponids[j]].getType());
+        }
+    }
 
     fpackf(tfile, "Bf Bf Bf", Person::players[0]->armorhead, Person::players[0]->armorhigh, Person::players[0]->armorlow);
     fpackf(tfile, "Bf Bf Bf", Person::players[0]->protectionhead, Person::players[0]->protectionhigh, Person::players[0]->protectionlow);
@@ -215,8 +218,9 @@ void ch_save(const char* args)
     for (int k = 0; k < Person::players[0]->numclothes; k++) {
         int templength = strlen(Person::players[0]->clothes[k]);
         fpackf(tfile, "Bi", templength);
-        for (int l = 0; l < templength; l++)
+        for (int l = 0; l < templength; l++) {
             fpackf(tfile, "Bb", Person::players[0]->clothes[k][l]);
+        }
         fpackf(tfile, "Bf Bf Bf", Person::players[0]->clothestintr[k], Person::players[0]->clothestintg[k], Person::players[0]->clothestintb[k]);
     }
 
@@ -234,8 +238,9 @@ void ch_save(const char* args)
         fpackf(tfile, "Bi Bf Bf Bf Bf", Hotspot::hotspots[i].type, Hotspot::hotspots[i].size, Hotspot::hotspots[i].position.x, Hotspot::hotspots[i].position.y, Hotspot::hotspots[i].position.z);
         int templength = strlen(Hotspot::hotspots[i].text);
         fpackf(tfile, "Bi", templength);
-        for (int l = 0; l < templength; l++)
+        for (int l = 0; l < templength; l++) {
             fpackf(tfile, "Bb", Hotspot::hotspots[i].text[l]);
+        }
     }
 
     fpackf(tfile, "Bi", Person::players.size());
@@ -246,9 +251,11 @@ void ch_save(const char* args)
         fpackf(tfile, "Bi Bi Bf Bf Bf Bi Bi Bf Bb Bf", Person::players[j]->whichskin, Person::players[j]->creature,
                Person::players[j]->coords.x, Person::players[j]->coords.y, Person::players[j]->coords.z,
                Person::players[j]->num_weapons, Person::players[j]->howactive, Person::players[j]->scale, Person::players[j]->immobile, Person::players[j]->yaw);
-        if (Person::players[j]->num_weapons < 5)
-            for (int k = 0; k < Person::players[j]->num_weapons; k++)
+        if (Person::players[j]->num_weapons < 5) {
+            for (int k = 0; k < Person::players[j]->num_weapons; k++) {
                 fpackf(tfile, "Bi", weapons[Person::players[j]->weaponids[k]].getType());
+            }
+        }
         if (Person::players[j]->numwaypoints < 30) {
             fpackf(tfile, "Bi", Person::players[j]->numwaypoints);
             for (int k = 0; k < Person::players[j]->numwaypoints; k++) {
@@ -286,22 +293,25 @@ void ch_save(const char* args)
         fpackf(tfile, "Bf Bf Bf Bf", headprop, bodyprop, armprop, legprop);
 
         fpackf(tfile, "Bi", Person::players[j]->numclothes);
-        if (Person::players[j]->numclothes)
+        if (Person::players[j]->numclothes) {
             for (int k = 0; k < Person::players[j]->numclothes; k++) {
                 int templength;
                 templength = strlen(Person::players[j]->clothes[k]);
                 fpackf(tfile, "Bi", templength);
-                for (int l = 0; l < templength; l++)
+                for (int l = 0; l < templength; l++) {
                     fpackf(tfile, "Bb", Person::players[j]->clothes[k][l]);
+                }
                 fpackf(tfile, "Bf Bf Bf", Person::players[j]->clothestintr[k], Person::players[j]->clothestintg[k], Person::players[j]->clothestintb[k]);
             }
+        }
     }
 
     fpackf(tfile, "Bi", numpathpoints);
     for (int j = 0; j < numpathpoints; j++) {
         fpackf(tfile, "Bf Bf Bf Bi", pathpoint[j].x, pathpoint[j].y, pathpoint[j].z, numpathpointconnect[j]);
-        for (int k = 0; k < numpathpointconnect[j]; k++)
+        for (int k = 0; k < numpathpointconnect[j]; k++) {
             fpackf(tfile, "Bi", pathpointconnect[j][k]);
+        }
     }
 
     fpackf(tfile, "Bf Bf Bf Bf", mapcenter.x, mapcenter.y, mapcenter.z, mapradius);
@@ -357,8 +367,9 @@ void ch_size(const char* args)
 void ch_sizenear(const char* args)
 {
     int closest = findClosestPlayer();
-    if (closest >= 0)
+    if (closest >= 0) {
         Person::players[closest]->scale = atof(args) * .2;
+    }
 }
 
 void ch_proportion(const char* args)
@@ -369,8 +380,9 @@ void ch_proportion(const char* args)
 void ch_proportionnear(const char* args)
 {
     int closest = findClosestPlayer();
-    if (closest >= 0)
+    if (closest >= 0) {
         set_proportion(closest, args);
+    }
 }
 
 void ch_protection(const char* args)
@@ -381,8 +393,9 @@ void ch_protection(const char* args)
 void ch_protectionnear(const char* args)
 {
     int closest = findClosestPlayer();
-    if (closest >= 0)
+    if (closest >= 0) {
         set_protection(closest, args);
+    }
 }
 
 void ch_armor(const char* args)
@@ -393,8 +406,9 @@ void ch_armor(const char* args)
 void ch_armornear(const char* args)
 {
     int closest = findClosestPlayer();
-    if (closest >= 0)
+    if (closest >= 0) {
         set_armor(closest, args);
+    }
 }
 
 void ch_protectionreset(const char*)
@@ -416,8 +430,9 @@ void ch_noclothes(const char* args)
 void ch_noclothesnear(const char* args)
 {
     int closest = findClosestPlayer();
-    if (closest >= 0)
+    if (closest >= 0) {
         set_noclothes(closest, args);
+    }
 }
 
 void ch_clothes(const char* args)
@@ -428,8 +443,9 @@ void ch_clothes(const char* args)
 void ch_clothesnear(const char* args)
 {
     int closest = findClosestPlayer();
-    if (closest >= 0)
+    if (closest >= 0) {
         set_clothes(closest, args);
+    }
 }
 
 void ch_belt(const char*)
@@ -510,9 +526,11 @@ void ch_black(const char*)
 
 void ch_sizemin(const char*)
 {
-    for (unsigned i = 1; i < Person::players.size(); i++)
-        if (Person::players[i]->scale < 0.8 * 0.2)
+    for (unsigned i = 1; i < Person::players.size(); i++) {
+        if (Person::players[i]->scale < 0.8 * 0.2) {
             Person::players[i]->scale = 0.8 * 0.2;
+        }
+    }
 }
 
 void ch_tutorial(const char* args)
@@ -528,21 +546,23 @@ void ch_hostile(const char* args)
 void ch_type(const char* args)
 {
     int n = sizeof(editortypenames) / sizeof(editortypenames[0]);
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < n; i++) {
         if (stripfx(args, editortypenames[i])) {
             editoractive = i;
             break;
         }
+    }
 }
 
 void ch_path(const char* args)
 {
     unsigned int n = sizeof(pathtypenames) / sizeof(pathtypenames[0]);
-    for (unsigned int i = 0; i < n; i++)
+    for (unsigned int i = 0; i < n; i++) {
         if (stripfx(args, pathtypenames[i])) {
             editorpathtype = i;
             break;
         }
+    }
 }
 
 void ch_hs(const char* args)
@@ -617,8 +637,9 @@ void ch_immobile(const char*)
 
 void ch_allimmobile(const char*)
 {
-    for (unsigned i = 1; i < Person::players.size(); i++)
+    for (unsigned i = 1; i < Person::players.size(); i++) {
         Person::players[i]->immobile = 1;
+    }
 }
 
 void ch_mobile(const char*)

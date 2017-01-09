@@ -175,11 +175,13 @@ void Game::inputText(string& str, unsigned* charselected)
                 } else if (evenement.key.keysym.sym == SDLK_END) {
                     (*charselected) = str.size();
                 } else if (evenement.key.keysym.sym == SDLK_LEFT) {
-                    if ((*charselected) != 0)
+                    if ((*charselected) != 0) {
                         (*charselected)--;
+                    }
                 } else if (evenement.key.keysym.sym == SDLK_RIGHT) {
-                    if ((*charselected) < str.size())
+                    if ((*charselected) < str.size()) {
                         (*charselected)++;
+                    }
                 } else if (evenement.key.keysym.sym == SDLK_RETURN) {
                     waiting = false;
                 }

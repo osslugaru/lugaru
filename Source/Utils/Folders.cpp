@@ -106,11 +106,13 @@ std::string Folders::getGenericDirectory(const char* ENVVAR, const std::string& 
 const char* Folders::getHomeDirectory()
 {
     const char* homedir = getenv("HOME");
-    if (homedir != NULL)
+    if (homedir != NULL) {
         return homedir;
+    }
     struct passwd* pw = getpwuid(getuid());
-    if (pw != NULL)
+    if (pw != NULL) {
         return pw->pw_dir;
+    }
     return NULL;
 }
 #endif

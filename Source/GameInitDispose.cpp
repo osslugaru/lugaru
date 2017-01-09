@@ -179,16 +179,19 @@ void Game::LoadingScreen()
     AbsoluteTime currTime = UpTime();
     double deltaTime = (float)AbsoluteDeltaToDuration(currTime, frametime);
 
-    if (0 > deltaTime) // if negative microseconds
+    if (0 > deltaTime) { // if negative microseconds
         deltaTime /= -1000000.0;
-    else // else milliseconds
+    } else { // else milliseconds
         deltaTime /= 1000.0;
+    }
 
     multiplier = deltaTime;
-    if (multiplier < .001)
+    if (multiplier < .001) {
         multiplier = .001;
-    if (multiplier > 10)
+    }
+    if (multiplier > 10) {
         multiplier = 10;
+    }
     if (multiplier > .05) {
         frametime = currTime; // reset for next time interval
 
@@ -200,8 +203,9 @@ void Game::LoadingScreen()
         loadtime += multiplier * 4;
 
         loadprogress = loadtime;
-        if (loadprogress > 100)
+        if (loadprogress > 100) {
             loadprogress = 100;
+        }
 
         //Background
 
@@ -341,13 +345,16 @@ void Game::LoadingScreen()
         //Text
 
         if (flashamount > 0) {
-            if (flashamount > 1)
+            if (flashamount > 1) {
                 flashamount = 1;
-            if (flashdelay <= 0)
+            }
+            if (flashdelay <= 0) {
                 flashamount -= multiplier;
+            }
             flashdelay--;
-            if (flashamount < 0)
+            if (flashamount < 0) {
                 flashamount = 0;
+            }
             glDisable(GL_DEPTH_TEST);
             glDisable(GL_CULL_FACE);
             glDisable(GL_LIGHTING);
@@ -556,8 +563,9 @@ void Game::InitGame()
     OPENAL_SetSFXMasterVolume((int)(volume * 255));
     loadAllSounds();
 
-    if (musictoggle)
+    if (musictoggle) {
         emit_stream_np(stream_menutheme);
+    }
 
     cursortexture.load("Textures/Cursor.png", 0);
 
@@ -566,8 +574,9 @@ void Game::InitGame()
     Maparrowtexture.load("Textures/MapArrow.png", 0);
 
     temptexdetail = texdetail;
-    if (texdetail > 2)
+    if (texdetail > 2) {
         texdetail = 2;
+    }
     Mainmenuitems[0].load("Textures/Lugaru.png", 0);
     Mainmenuitems[1].load("Textures/NewGame.png", 0);
     Mainmenuitems[2].load("Textures/Options.png", 0);
@@ -599,8 +608,9 @@ void Game::LoadScreenTexture()
 {
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    if (!Game::screentexture)
+    if (!Game::screentexture) {
         glGenTextures(1, &Game::screentexture);
+    }
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
     glEnable(GL_TEXTURE_2D);

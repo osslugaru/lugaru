@@ -166,20 +166,23 @@ float Skeleton::DoConstraints(XYZ* coords, float* scale)
                 temp = jointPos(rightknee) - (jointPos(righthip) + jointPos(rightankle)) / 2;
                 while (normaldotproduct(temp, lowforward) > -.1 && !sphere_line_intersection(&jointPos(righthip), &jointPos(rightankle), &jointPos(rightknee), &r)) {
                     jointPos(rightknee) -= lowforward * .05;
-                    if (spinny)
+                    if (spinny) {
                         jointVel(rightknee) -= lowforward * .05 / multiplier / 4;
-                    else
+                    } else {
                         jointVel(rightknee) -= lowforward * .05;
+                    }
                     jointPos(rightankle) += lowforward * .025;
-                    if (spinny)
+                    if (spinny) {
                         jointVel(rightankle) += lowforward * .025 / multiplier / 4;
-                    else
+                    } else {
                         jointVel(rightankle) += lowforward * .25;
+                    }
                     jointPos(righthip) += lowforward * .025;
-                    if (spinny)
+                    if (spinny) {
                         jointVel(righthip) += lowforward * .025 / multiplier / 4;
-                    else
+                    } else {
                         jointVel(righthip) += lowforward * .025;
+                    }
                     temp = jointPos(rightknee) - (jointPos(righthip) + jointPos(rightankle)) / 2;
                 }
             }
@@ -189,37 +192,44 @@ float Skeleton::DoConstraints(XYZ* coords, float* scale)
                 temp = jointPos(leftknee) - (jointPos(lefthip) + jointPos(leftankle)) / 2;
                 while (normaldotproduct(temp, lowforward) > -.1 && !sphere_line_intersection(&jointPos(lefthip), &jointPos(leftankle), &jointPos(leftknee), &r)) {
                     jointPos(leftknee) -= lowforward * .05;
-                    if (spinny)
+                    if (spinny) {
                         jointVel(leftknee) -= lowforward * .05 / multiplier / 4;
-                    else
+                    } else {
                         jointVel(leftknee) -= lowforward * .05;
+                    }
                     jointPos(leftankle) += lowforward * .025;
-                    if (spinny)
+                    if (spinny) {
                         jointVel(leftankle) += lowforward * .025 / multiplier / 4;
-                    else
+                    } else {
                         jointVel(leftankle) += lowforward * .25;
+                    }
                     jointPos(lefthip) += lowforward * .025;
-                    if (spinny)
+                    if (spinny) {
                         jointVel(lefthip) += lowforward * .025 / multiplier / 4;
-                    else
+                    } else {
                         jointVel(lefthip) += lowforward * .025;
+                    }
                     temp = jointPos(leftknee) - (jointPos(lefthip) + jointPos(leftankle)) / 2;
                 }
             }
 
             for (i = 0; i < joints.size(); i++) {
-                if (joints[i].locked && !spinny && findLengthfast(&joints[i].velocity) > 320)
+                if (joints[i].locked && !spinny && findLengthfast(&joints[i].velocity) > 320) {
                     joints[i].locked = 0;
-                if (spinny && findLengthfast(&joints[i].velocity) > 600)
+                }
+                if (spinny && findLengthfast(&joints[i].velocity) > 600) {
                     joints[i].locked = 0;
+                }
                 if (joints[i].delay > 0) {
                     bool freely = true;
                     for (unsigned j = 0; j < joints.size(); j++) {
-                        if (joints[j].locked)
+                        if (joints[j].locked) {
                             freely = false;
+                        }
                     }
-                    if (freely)
+                    if (freely) {
                         joints[i].delay -= multiplier * 3;
+                    }
                 }
             }
 
@@ -256,18 +266,21 @@ float Skeleton::DoConstraints(XYZ* coords, float* scale)
                     terrainnormal = terrain.getNormal(joints[i].position.x * (*scale) + coords->x, joints[i].position.z * (*scale) + coords->z);
                     ReflectVector(&joints[i].velocity, &terrainnormal);
                     bounceness = terrainnormal * findLength(&joints[i].velocity) * (abs(normaldotproduct(joints[i].velocity, terrainnormal)));
-                    if (!joints[i].locked)
+                    if (!joints[i].locked) {
                         damage += findLengthfast(&bounceness) / 4000;
-                    if (findLengthfast(&joints[i].velocity) < findLengthfast(&bounceness))
+                    }
+                    if (findLengthfast(&joints[i].velocity) < findLengthfast(&bounceness)) {
                         bounceness = 0;
+                    }
                     frictionness = abs(normaldotproduct(joints[i].velocity, terrainnormal));
                     joints[i].velocity -= bounceness;
-                    if (1 - friction * frictionness > 0)
+                    if (1 - friction * frictionness > 0) {
                         joints[i].velocity *= 1 - friction * frictionness;
-                    else
+                    } else {
                         joints[i].velocity = 0;
+                    }
 
-                    if (!Tutorial::active || id == 0)
+                    if (!Tutorial::active || id == 0) {
                         if (findLengthfast(&bounceness) > 8000 && breaking) {
                             // FIXME: this crashes because k is not initialized!
                             // to reproduce, type 'wolfie' in console and play a while
@@ -281,6 +294,7 @@ float Skeleton::DoConstraints(XYZ* coords, float* scale)
 
                             addEnvSound(*coords, 64);
                         }
+                    }
 
                     if (findLengthfast(&bounceness) > 2500) {
                         Normalise(&bounceness);
@@ -294,15 +308,18 @@ float Skeleton::DoConstraints(XYZ* coords, float* scale)
                         joints[i].velocity = joints[i].oldvelocity;
                     }
 
-                    if (joints[i].locked == 0)
-                        if (findLengthfast(&joints[i].velocity) < 1)
+                    if (joints[i].locked == 0) {
+                        if (findLengthfast(&joints[i].velocity) < 1) {
                             joints[i].locked = 1;
+                        }
+                    }
 
                     if (environment == snowyenvironment && findLengthfast(&bounceness) > 500 && terrain.getOpacity(joints[i].position.x * (*scale) + coords->x, joints[i].position.z * (*scale) + coords->z) < .2) {
                         terrainlight = terrain.getLighting(joints[i].position.x * (*scale) + coords->x, joints[i].position.z * (*scale) + coords->z);
                         Sprite::MakeSprite(cloudsprite, joints[i].position * (*scale) + *coords, joints[i].velocity * .06, terrainlight.x, terrainlight.y, terrainlight.z, .5, .7);
-                        if (detail == 2)
+                        if (detail == 2) {
                             terrain.MakeDecal(bodyprintdecal, joints[i].position * (*scale) + *coords, .4, .4, 0);
+                        }
                     } else if (environment == desertenvironment && findLengthfast(&bounceness) > 500 && terrain.getOpacity(joints[i].position.x * (*scale) + coords->x, joints[i].position.z * (*scale) + coords->z) < .2) {
                         terrainlight = terrain.getLighting(joints[i].position.x * (*scale) + coords->x, joints[i].position.z * (*scale) + coords->z);
                         Sprite::MakeSprite(cloudsprite, joints[i].position * (*scale) + *coords, joints[i].velocity * .06, terrainlight.x * 190 / 255, terrainlight.y * 170 / 255, terrainlight.z * 108 / 255, .5, .7);
@@ -311,12 +328,14 @@ float Skeleton::DoConstraints(XYZ* coords, float* scale)
                     else if (environment == grassyenvironment && findLengthfast(&bounceness) > 500 && terrain.getOpacity(joints[i].position.x * (*scale) + coords->x, joints[i].position.z * (*scale) + coords->z) < .2) {
                         terrainlight = terrain.getLighting(joints[i].position.x * (*scale) + coords->x, joints[i].position.z * (*scale) + coords->z);
                         Sprite::MakeSprite(cloudsprite, joints[i].position * (*scale) + *coords, joints[i].velocity * .06, terrainlight.x * 90 / 255, terrainlight.y * 70 / 255, terrainlight.z * 8 / 255, .5, .5);
-                    } else if (findLengthfast(&bounceness) > 500)
+                    } else if (findLengthfast(&bounceness) > 500) {
                         Sprite::MakeSprite(cloudsprite, joints[i].position * (*scale) + *coords, joints[i].velocity * .06, terrainlight.x, terrainlight.y, terrainlight.z, .5, .2);
+                    }
 
                     joints[i].position.y = (terrain.getHeight(joints[i].position.x * (*scale) + coords->x, joints[i].position.z * (*scale) + coords->z) + groundlevel - coords->y) / (*scale);
-                    if (longdead > 100)
+                    if (longdead > 100) {
                         broken = 1;
+                    }
                 }
                 for (unsigned int m = 0; m < terrain.patchobjects[whichpatchx][whichpatchz].size(); m++) {
                     unsigned int k = terrain.patchobjects[whichpatchx][whichpatchz][m];
@@ -345,14 +364,15 @@ float Skeleton::DoConstraints(XYZ* coords, float* scale)
                                 }
 
                                 terrainnormal = DoRotation(Object::objects[k]->model.Triangles[whichhit].facenormal, 0, Object::objects[k]->yaw, 0) * -1;
-                                if (terrainnormal.y > .8)
+                                if (terrainnormal.y > .8) {
                                     freefall = 0;
+                                }
                                 bounceness = terrainnormal * findLength(&joints[i].velocity) * (abs(normaldotproduct(joints[i].velocity, terrainnormal)));
                                 if (findLengthfast(&joints[i].velocity) > findLengthfast(&joints[i].oldvelocity)) {
                                     bounceness = 0;
                                     joints[i].velocity = joints[i].oldvelocity;
                                 }
-                                if (!Tutorial::active || id == 0)
+                                if (!Tutorial::active || id == 0) {
                                     if (findLengthfast(&bounceness) > 4000 && breaking) {
                                         Object::objects[k]->model.MakeDecal(breakdecal, DoRotation(temp - Object::objects[k]->position, 0, -Object::objects[k]->yaw, 0), .4, .5, Random() % 360);
                                         Sprite::MakeSprite(cloudsprite, joints[i].position * (*scale) + *coords, joints[i].velocity * .06, 1, 1, 1, 4, .2);
@@ -363,36 +383,42 @@ float Skeleton::DoConstraints(XYZ* coords, float* scale)
 
                                         addEnvSound(*coords, 64);
                                     }
+                                }
                                 if (Object::objects[k]->type == treetrunktype) {
                                     Object::objects[k]->rotx += joints[i].velocity.x * multiplier * .4;
                                     Object::objects[k]->roty += joints[i].velocity.z * multiplier * .4;
                                     Object::objects[k + 1]->rotx += joints[i].velocity.x * multiplier * .4;
                                     Object::objects[k + 1]->roty += joints[i].velocity.z * multiplier * .4;
                                 }
-                                if (!joints[i].locked)
+                                if (!joints[i].locked) {
                                     damage += findLengthfast(&bounceness) / 2500;
+                                }
                                 ReflectVector(&joints[i].velocity, &terrainnormal);
                                 frictionness = abs(normaldotproduct(joints[i].velocity, terrainnormal));
                                 joints[i].velocity -= bounceness;
-                                if (1 - friction * frictionness > 0)
+                                if (1 - friction * frictionness > 0) {
                                     joints[i].velocity *= 1 - friction * frictionness;
-                                else
+                                } else {
                                     joints[i].velocity = 0;
+                                }
                                 if (findLengthfast(&bounceness) > 2500) {
                                     Normalise(&bounceness);
                                     bounceness = bounceness * 50;
                                 }
                                 joints[i].velocity += bounceness * elasticity;
 
-                                if (!joints[i].locked)
+                                if (!joints[i].locked) {
                                     if (findLengthfast(&joints[i].velocity) < 1) {
                                         joints[i].locked = 1;
                                     }
-                                if (findLengthfast(&bounceness) > 500)
+                                }
+                                if (findLengthfast(&bounceness) > 500) {
                                     Sprite::MakeSprite(cloudsprite, joints[i].position * (*scale) + *coords, joints[i].velocity * .06, 1, 1, 1, .5, .2);
+                                }
                                 joints[i].position = (temp - *coords) / (*scale) + terrainnormal * .005;
-                                if (longdead > 100)
+                                if (longdead > 100) {
                                     broken = 1;
+                                }
                             }
                         }
                     }
@@ -413,8 +439,9 @@ float Skeleton::DoConstraints(XYZ* coords, float* scale)
                     if (whichhit != -1) {
                         joints[jointlabels[whichjointendarray[i]]].position = (end - *coords) / (*scale);
                         for (unsigned j = 0; j < muscles.size(); j++) {
-                            if ((muscles[j].parent1->label == whichjointstartarray[i] && muscles[j].parent2->label == whichjointendarray[i]) || (muscles[j].parent2->label == whichjointstartarray[i] && muscles[j].parent1->label == whichjointendarray[i]))
+                            if ((muscles[j].parent1->label == whichjointstartarray[i] && muscles[j].parent2->label == whichjointendarray[i]) || (muscles[j].parent2->label == whichjointstartarray[i] && muscles[j].parent1->label == whichjointendarray[i])) {
                                 muscles[j].DoConstraint(spinny);
+                            }
                         }
                     }
                 }
@@ -440,8 +467,9 @@ float Skeleton::DoConstraints(XYZ* coords, float* scale)
             }
             joints[i].position.y += groundlevel;
             joints[i].mass = 1;
-            if (joints[i].label == lefthip || joints[i].label == leftknee || joints[i].label == leftankle || joints[i].label == righthip || joints[i].label == rightknee || joints[i].label == rightankle)
+            if (joints[i].label == lefthip || joints[i].label == leftknee || joints[i].label == leftankle || joints[i].label == righthip || joints[i].label == rightknee || joints[i].label == rightankle) {
                 joints[i].mass = 2;
+            }
             if (joints[i].locked) {
                 joints[i].mass = 4;
             }
@@ -452,8 +480,9 @@ float Skeleton::DoConstraints(XYZ* coords, float* scale)
 
     if (!free) {
         for (i = 0; i < muscles.size(); i++) {
-            if (muscles[i].type == boneconnect)
+            if (muscles[i].type == boneconnect) {
                 muscles[i].DoConstraint(0);
+            }
         }
     }
 
@@ -496,26 +525,33 @@ void Skeleton::FindRotationMuscle(int which, int animation)
     p1 = muscles[which].parent1->position;
     p2 = muscles[which].parent2->position;
     dist = findDistance(&p1, &p2);
-    if (p1.y - p2.y <= dist)
+    if (p1.y - p2.y <= dist) {
         muscles[which].rotate2 = asin((p1.y - p2.y) / dist);
-    if (p1.y - p2.y > dist)
+    }
+    if (p1.y - p2.y > dist) {
         muscles[which].rotate2 = asin(1.f);
+    }
     muscles[which].rotate2 *= 360.0 / 6.2831853;
 
     p1.y = 0;
     p2.y = 0;
     dist = findDistance(&p1, &p2);
-    if (p1.z - p2.z <= dist)
+    if (p1.z - p2.z <= dist) {
         muscles[which].rotate1 = acos((p1.z - p2.z) / dist);
-    if (p1.z - p2.z > dist)
+    }
+    if (p1.z - p2.z > dist) {
         muscles[which].rotate1 = acos(1.f);
+    }
     muscles[which].rotate1 *= 360.0 / 6.2831853;
-    if (p1.x > p2.x)
+    if (p1.x > p2.x) {
         muscles[which].rotate1 = 360 - muscles[which].rotate1;
-    if (!isnormal(muscles[which].rotate1))
+    }
+    if (!isnormal(muscles[which].rotate1)) {
         muscles[which].rotate1 = 0;
-    if (!isnormal(muscles[which].rotate2))
+    }
+    if (!isnormal(muscles[which].rotate2)) {
         muscles[which].rotate2 = 0;
+    }
 
     const int label1 = muscles[which].parent1->label;
     const int label2 = muscles[which].parent2->label;
@@ -548,10 +584,11 @@ void Skeleton::FindRotationMuscle(int which, int animation)
             fwd = specialforward[4];
             break;
         default:
-            if (muscles[which].parent1->lower)
+            if (muscles[which].parent1->lower) {
                 fwd = lowforward;
-            else
+            } else {
                 fwd = forward;
+            }
             break;
     }
 
@@ -579,15 +616,18 @@ void Skeleton::FindRotationMuscle(int which, int animation)
     fwd = DoRotation(fwd, 0, 0, muscles[which].rotate2 - 90);
     fwd.y = 0;
     fwd /= findLength(&fwd);
-    if (fwd.z <= 1 && fwd.z >= -1)
+    if (fwd.z <= 1 && fwd.z >= -1) {
         muscles[which].rotate3 = acos(0 - fwd.z);
-    else
+    } else {
         muscles[which].rotate3 = acos(-1.f);
+    }
     muscles[which].rotate3 *= 360.0 / 6.2831853;
-    if (0 > fwd.x)
+    if (0 > fwd.x) {
         muscles[which].rotate3 = 360 - muscles[which].rotate3;
-    if (!isnormal(muscles[which].rotate3))
+    }
+    if (!isnormal(muscles[which].rotate3)) {
         muscles[which].rotate3 = 0;
+    }
 }
 
 /* EFFECT
@@ -646,10 +686,12 @@ void Skeleton::Load(const std::string& filename, const std::string& lowfilename,
     drawmodellow.Rotate(180, 0, 0);
     drawmodellow.Scale(.04, .04, .04);
     drawmodellow.FlipTexCoords();
-    if (Tutorial::active && id != 0)
+    if (Tutorial::active && id != 0) {
         drawmodellow.UniformTexCoords();
-    if (Tutorial::active && id != 0)
+    }
+    if (Tutorial::active && id != 0) {
         drawmodellow.ScaleTexCoords(0.1);
+    }
     drawmodellow.CalculateNormals(0);
 
     if (clothes) {
@@ -872,8 +914,9 @@ void Skeleton::Load(const std::string& filename, const std::string& lowfilename,
 
     for (int i = 0; i < num_joints; i++) {
         for (j = 0; j < num_joints; j++) {
-            if (joints[i].label == j)
+            if (joints[i].label == j) {
                 jointlabels[j] = i;
+            }
         }
     }
 

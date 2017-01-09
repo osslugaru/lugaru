@@ -135,27 +135,34 @@ void Muscle::DoConstraint(bool spinny)
     }
 
     // clamp strength
-    if (strength < 0)
+    if (strength < 0) {
         strength = 0;
-    if (strength > 1)
+    }
+    if (strength > 1) {
         strength = 1;
+    }
 
     length -= (length - relaxlength) * (1 - strength) * multiplier * 10000;
     length -= (length - targetlength) * strength * multiplier * 10000;
-    if (strength == 0)
+    if (strength == 0) {
         length = relaxlength;
+    }
 
-    if ((relaxlength - length > 0 && relaxlength - oldlength < 0) || (relaxlength - length < 0 && relaxlength - oldlength > 0))
+    if ((relaxlength - length > 0 && relaxlength - oldlength < 0) || (relaxlength - length < 0 && relaxlength - oldlength > 0)) {
         length = relaxlength;
+    }
 
     // clamp length
-    if (length < minlength)
+    if (length < minlength) {
         length = minlength;
-    if (length > maxlength)
+    }
+    if (length > maxlength) {
         length = maxlength;
+    }
 
-    if (length == relaxlength)
+    if (length == relaxlength) {
         return;
+    }
 
     // relax muscle?
 
