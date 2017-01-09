@@ -32,13 +32,13 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 extern int kContextWidth;
 extern int kContextHeight;
 
-static bool load_png(const char * fname, ImageRec & tex);
-static bool load_jpg(const char * fname, ImageRec & tex);
-static bool save_screenshot_png(const char * fname);
+static bool load_png(const char* fname, ImageRec& tex);
+static bool load_jpg(const char* fname, ImageRec& tex);
+static bool save_screenshot_png(const char* fname);
 
 ImageRec::ImageRec()
 {
-    data = ( GLubyte* )malloc( 1024 * 1024 * 4 );
+    data = (GLubyte*)malloc(1024 * 1024 * 4);
 }
 
 ImageRec::~ImageRec()
@@ -47,15 +47,15 @@ ImageRec::~ImageRec()
     data = NULL;
 }
 
-bool load_image(const char *file_name, ImageRec &tex)
+bool load_image(const char* file_name, ImageRec& tex)
 {
     Game::LoadingScreen();
 
-    if ( tex.data == NULL ) {
+    if (tex.data == NULL) {
         return false;
     }
 
-    const char *ptr = strrchr((char *)file_name, '.');
+    const char* ptr = strrchr((char*)file_name, '.');
     if (ptr) {
         if (strcasecmp(ptr + 1, "png") == 0) {
             return load_png(file_name, tex);
@@ -68,9 +68,9 @@ bool load_image(const char *file_name, ImageRec &tex)
     return false;
 }
 
-bool save_screenshot(const char *file_name)
+bool save_screenshot(const char* file_name)
 {
-    const char *ptr = strrchr((char *)file_name, '.');
+    const char* ptr = strrchr((char*)file_name, '.');
     if (ptr) {
         if (strcasecmp(ptr + 1, "png") == 0) {
             return save_screenshot_png((Folders::getScreenshotDir() + '/' + file_name).c_str());
@@ -81,27 +81,28 @@ bool save_screenshot(const char *file_name)
     return false;
 }
 
-struct my_error_mgr {
+struct my_error_mgr
+{
     struct jpeg_error_mgr pub; /* "public" fields */
-    jmp_buf setjmp_buffer; /* for return to caller */
+    jmp_buf setjmp_buffer;     /* for return to caller */
 };
-typedef struct my_error_mgr * my_error_ptr;
+typedef struct my_error_mgr* my_error_ptr;
 
 static void my_error_exit(j_common_ptr cinfo)
 {
-    struct my_error_mgr *err = (struct my_error_mgr *)cinfo->err;
+    struct my_error_mgr* err = (struct my_error_mgr*)cinfo->err;
     longjmp(err->setjmp_buffer, 1);
 }
 
 /* stolen from public domain example.c code in libjpg distribution. */
-static bool load_jpg(const char *file_name, ImageRec &tex)
+static bool load_jpg(const char* file_name, ImageRec& tex)
 {
     struct jpeg_decompress_struct cinfo;
     struct my_error_mgr jerr;
     JSAMPROW buffer[1]; /* Output row buffer */
-    int row_stride; /* physical row width in output buffer */
+    int row_stride;     /* physical row width in output buffer */
     errno = 0;
-    FILE *infile = fopen(file_name, "rb");
+    FILE* infile = fopen(file_name, "rb");
 
     if (infile == NULL) {
         perror((std::string("Couldn't open file ") + file_name).c_str());
@@ -118,12 +119,12 @@ static bool load_jpg(const char *file_name, ImageRec &tex)
 
     jpeg_create_decompress(&cinfo);
     jpeg_stdio_src(&cinfo, infile);
-    (void) jpeg_read_header(&cinfo, TRUE);
+    (void)jpeg_read_header(&cinfo, TRUE);
 
     cinfo.out_color_space = JCS_RGB;
     cinfo.quantize_colors = 0;
-    (void) jpeg_calc_output_dimensions(&cinfo);
-    (void) jpeg_start_decompress(&cinfo);
+    (void)jpeg_calc_output_dimensions(&cinfo);
+    (void)jpeg_start_decompress(&cinfo);
 
     row_stride = cinfo.output_width * cinfo.output_components;
     tex.sizeX = cinfo.output_width;
@@ -131,12 +132,12 @@ static bool load_jpg(const char *file_name, ImageRec &tex)
     tex.bpp = 24;
 
     while (cinfo.output_scanline < cinfo.output_height) {
-        buffer[0] = (JSAMPROW)(char *)tex.data +
+        buffer[0] = (JSAMPROW)(char*)tex.data +
                     ((cinfo.output_height - 1) - cinfo.output_scanline) * row_stride;
-        (void) jpeg_read_scanlines(&cinfo, buffer, 1);
+        (void)jpeg_read_scanlines(&cinfo, buffer, 1);
     }
 
-    (void) jpeg_finish_decompress(&cinfo);
+    (void)jpeg_finish_decompress(&cinfo);
     jpeg_destroy_decompress(&cinfo);
     fclose(infile);
 
@@ -144,7 +145,7 @@ static bool load_jpg(const char *file_name, ImageRec &tex)
 }
 
 /* stolen from public domain example.c code in libpng distribution. */
-static bool load_png(const char *file_name, ImageRec &tex)
+static bool load_png(const char* file_name, ImageRec& tex)
 {
     bool hasalpha = false;
     png_structp png_ptr = NULL;
@@ -152,9 +153,9 @@ static bool load_png(const char *file_name, ImageRec &tex)
     png_uint_32 width, height;
     int bit_depth, color_type, interlace_type;
     bool retval = false;
-    png_byte **row_pointers = NULL;
+    png_byte** row_pointers = NULL;
     errno = 0;
-    FILE *fp = fopen(file_name, "rb");
+    FILE* fp = fopen(file_name, "rb");
 
     if (fp == NULL) {
         perror((std::string("Couldn't open file ") + file_name).c_str());
@@ -179,13 +180,13 @@ static bool load_png(const char *file_name, ImageRec &tex)
     png_get_IHDR(png_ptr, info_ptr, &width, &height,
                  &bit_depth, &color_type, &interlace_type, NULL, NULL);
 
-    if (bit_depth != 8)  // transform SHOULD handle this...
+    if (bit_depth != 8) // transform SHOULD handle this...
         goto png_done;
 
-    if (color_type & PNG_COLOR_MASK_PALETTE)  // !!! FIXME?
+    if (color_type & PNG_COLOR_MASK_PALETTE) // !!! FIXME?
         goto png_done;
 
-    if ((color_type & PNG_COLOR_MASK_COLOR) == 0)  // !!! FIXME?
+    if ((color_type & PNG_COLOR_MASK_COLOR) == 0) // !!! FIXME?
         goto png_done;
 
     hasalpha = ((color_type & PNG_COLOR_MASK_ALPHA) != 0);
@@ -194,9 +195,9 @@ static bool load_png(const char *file_name, ImageRec &tex)
         goto png_done;
 
     if (!hasalpha) {
-        png_byte *dst = tex.data;
+        png_byte* dst = tex.data;
         for (int i = height - 1; i >= 0; i--) {
-            png_byte *src = row_pointers[i];
+            png_byte* src = row_pointers[i];
             for (unsigned j = 0; j < width; j++) {
                 dst[0] = src[0];
                 dst[1] = src[1];
@@ -209,7 +210,7 @@ static bool load_png(const char *file_name, ImageRec &tex)
     }
 
     else {
-        png_byte *dst = tex.data;
+        png_byte* dst = tex.data;
         int pitch = width * 4;
         for (int i = height - 1; i >= 0; i--, dst += pitch)
             memcpy(dst, row_pointers[i], pitch);
@@ -230,9 +231,9 @@ png_done:
     return (retval);
 }
 
-static bool save_screenshot_png(const char *file_name)
+static bool save_screenshot_png(const char* file_name)
 {
-    FILE *fp = NULL;
+    FILE* fp = NULL;
     png_structp png_ptr = NULL;
     png_infop info_ptr = NULL;
     bool retval = false;
@@ -244,7 +245,7 @@ static bool save_screenshot_png(const char *file_name)
         return false;
     }
 
-    png_bytep *row_pointers = new png_bytep[kContextHeight];
+    png_bytep* row_pointers = new png_bytep[kContextHeight];
     png_bytep screenshot = new png_byte[kContextWidth * kContextHeight * 3];
     if ((!screenshot) || (!row_pointers))
         goto save_png_done;

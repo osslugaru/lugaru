@@ -25,8 +25,8 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Level/Dialog.hpp"
 #include "Level/Hotspot.hpp"
 #include "Menu/Menu.hpp"
-#include "Utils/Input.hpp"
 #include "Tutorial.hpp"
+#include "Utils/Input.hpp"
 
 extern XYZ viewer;
 extern int environment;
@@ -84,21 +84,22 @@ extern bool gamestarted;
 
 extern bool showdamagebar;
 
-
-
 int drawtoggle = 0;
 int numboundaries = 0;
 XYZ boundary[360];
 int change = 0;
 
-
-
-enum drawmodes {
-    normalmode, motionblurmode, radialzoommode,
-    realmotionblurmode, doublevisionmode, glowmode,
+enum drawmodes
+{
+    normalmode,
+    motionblurmode,
+    radialzoommode,
+    realmotionblurmode,
+    doublevisionmode,
+    glowmode,
 };
 
-void Game::flash(float amount, int delay)   // shouldn't be that way, these should be attributes and Person class should not change rendering.
+void Game::flash(float amount, int delay) // shouldn't be that way, these should be attributes and Person class should not change rendering.
 {
     flashr = 1;
     flashg = 0;
@@ -120,22 +121,22 @@ int Game::DrawGLScene(StereoSide side)
     std::string string;
     static int drawmode = 0;
 
-    if ( stereomode == stereoAnaglyph ) {
+    if (stereomode == stereoAnaglyph) {
         switch (side) {
-        case stereoLeft:
-            glColorMask( 0.0, 1.0, 1.0, 1.0 );
-            break;
-        case stereoRight:
-            glColorMask( 1.0, 0.0, 0.0, 1.0 );
-            break;
-        default:
-            break;
+            case stereoLeft:
+                glColorMask(0.0, 1.0, 1.0, 1.0);
+                break;
+            case stereoRight:
+                glColorMask(1.0, 0.0, 0.0, 1.0);
+                break;
+            default:
+                break;
         }
     } else {
-        glColorMask( 1.0, 1.0, 1.0, 1.0 );
+        glColorMask(1.0, 1.0, 1.0, 1.0);
 
-        if ( stereomode == stereoHorizontalInterlaced ||
-	     stereomode == stereoVerticalInterlaced ) {
+        if (stereomode == stereoHorizontalInterlaced ||
+            stereomode == stereoVerticalInterlaced) {
             glStencilFunc(side == stereoLeft ? GL_NOTEQUAL : GL_EQUAL, 0x01, 0x01);
         }
     }
@@ -187,7 +188,7 @@ int Game::DrawGLScene(StereoSide side)
         }
         if ((!changed && !slomo) || loading) {
             drawmode = normalmode;
-            if (ismotionblur && (/*fps>100||*/alwaysblur)) {
+            if (ismotionblur && (/*fps>100||*/ alwaysblur)) {
                 if (olddrawmode != realmotionblurmode)
                     change = 1;
                 else
@@ -243,18 +244,18 @@ int Game::DrawGLScene(StereoSide side)
         glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
         glClear(GL_DEPTH_BUFFER_BIT);
 
-        glMatrixMode (GL_MODELVIEW);
+        glMatrixMode(GL_MODELVIEW);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glLoadIdentity ();
+        glLoadIdentity();
 
         // Move the camera for the current eye's point of view.
         // Reverse the movement if we're reversing stereo
-        glTranslatef((stereoseparation / 2) * side * (stereoreverse  ? -1 : 1), 0, 0);
+        glTranslatef((stereoseparation / 2) * side * (stereoreverse ? -1 : 1), 0, 0);
 
         //camera effects
         if (!cameramode && !freeze && !winfreeze) {
             //shake
-            glRotatef(float(Random() % 100) / 10 * camerashake/*+(woozy*woozy)/10*/, 0, 0, 1);
+            glRotatef(float(Random() % 100) / 10 * camerashake /*+(woozy*woozy)/10*/, 0, 0, 1);
             //sway
             glRotatef(pitch + sin(woozy / 2) * (Person::players[0]->damage / Person::players[0]->damagetolerance) * 5, 1, 0, 0);
             glRotatef(yaw + sin(woozy) * (Person::players[0]->damage / Person::players[0]->damagetolerance) * 5, 0, 1, 0);
@@ -283,13 +284,13 @@ int Game::DrawGLScene(StereoSide side)
 
         if (environment == desertenvironment) {
             if (detail == 2) {
-                glTexEnvf( GL_TEXTURE_FILTER_CONTROL, GL_TEXTURE_LOD_BIAS, blurness + .4 );
+                glTexEnvf(GL_TEXTURE_FILTER_CONTROL, GL_TEXTURE_LOD_BIAS, blurness + .4);
             }
             glRotatef((float)(abs(Random() % 100)) / 1000, 1, 0, 0);
             glRotatef((float)(abs(Random() % 100)) / 1000, 0, 1, 0);
         }
         skybox->draw();
-        glTexEnvf( GL_TEXTURE_FILTER_CONTROL, GL_TEXTURE_LOD_BIAS, 0);
+        glTexEnvf(GL_TEXTURE_FILTER_CONTROL, GL_TEXTURE_LOD_BIAS, 0);
         glPopMatrix();
         glTranslatef(-viewer.x, -viewer.y, -viewer.z);
         frustum.GetFrustum();
@@ -532,7 +533,6 @@ int Game::DrawGLScene(StereoSide side)
                 }
             }
 
-
             if (numpathpoints > 1) {
                 glColor4f(0, 1, 0, 1);
                 for (unsigned k = 0; int(k) < numpathpoints; k++) {
@@ -560,7 +560,7 @@ int Game::DrawGLScene(StereoSide side)
         if (!console) {
             if (!Tutorial::active)
                 if (bonus > 0 && bonustime < 1 && !winfreeze && !Dialog::inDialog()) {
-                    const char *bonus_name;
+                    const char* bonus_name;
                     if (bonus < bonus_count)
                         bonus_name = bonus_names[bonus];
                     else
@@ -611,7 +611,7 @@ int Game::DrawGLScene(StereoSide side)
                         int i = 0;
                         while (!done) {
                             if (string[i] == '\n' || string[i] > 'z' || string[i] < ' ' || string[i] == '\0') {
-                                text->glPrintOutlined(1, 1, 1, tutorialopac, screenwidth / 2 - 7.6 * (i - lastline)*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 20 * screenwidth / 1024 * line, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight, lastline, i);
+                                text->glPrintOutlined(1, 1, 1, tutorialopac, screenwidth / 2 - 7.6 * (i - lastline) * screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 20 * screenwidth / 1024 * line, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight, lastline, i);
                                 lastline = i + 1;
                                 line++;
                                 if (string[i] == '\0')
@@ -695,10 +695,10 @@ int Game::DrawGLScene(StereoSide side)
                 string = std::string(tempname) + ": ";
 
                 if (Dialog::currentScene().color[0] + Dialog::currentScene().color[1] + Dialog::currentScene().color[2] < 1.5) {
-                    text->glPrintOutlined(0.7, 0.7, 0.7, tutorialopac, startx - 2 * 7.6 * string.size()*screenwidth / 1024, starty, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
+                    text->glPrintOutlined(0.7, 0.7, 0.7, tutorialopac, startx - 2 * 7.6 * string.size() * screenwidth / 1024, starty, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
                 } else {
                     glColor4f(0, 0, 0, tutorialopac);
-                    text->glPrintOutline(startx - 2 * 7.6 * string.size()*screenwidth / 1024 - 4, starty - 4, string, 1, 1.5 * 1.25 * screenwidth / 1024, screenwidth, screenheight);
+                    text->glPrintOutline(startx - 2 * 7.6 * string.size() * screenwidth / 1024 - 4, starty - 4, string, 1, 1.5 * 1.25 * screenwidth / 1024, screenwidth, screenheight);
                 }
 
                 tempnum = 0;
@@ -829,7 +829,6 @@ int Game::DrawGLScene(StereoSide side)
 
             glColor4f(.5, .5, .5, 1);
 
-
             if ((texttoggle || editorenabled) && devtools && !mainmenu) {
                 string = "The framespersecond is " + to_string(int(fps));
                 text->glPrint(10, 30, string, 0, .8, 1024, 768);
@@ -858,42 +857,42 @@ int Game::DrawGLScene(StereoSide side)
                     string = "Object type: " + to_string(editortype);
                     text->glPrint(10, 120, string, 0, .8, 1024, 768);
                     switch (editortype) {
-                    case boxtype:
-                        string = "(box)";
-                        break;
-                    case treetrunktype:
-                        string = "(tree)";
-                        break;
-                    case walltype:
-                        string = "(wall)";
-                        break;
-                    case weirdtype:
-                        string = "(weird)";
-                        break;
-                    case spiketype:
-                        string = "(spike)";
-                        break;
-                    case rocktype:
-                        string = "(rock)";
-                        break;
-                    case bushtype:
-                        string = "(bush)";
-                        break;
-                    case tunneltype:
-                        string = "(tunnel)";
-                        break;
-                    case chimneytype:
-                        string = "(chimney)";
-                        break;
-                    case platformtype:
-                        string = "(platform)";
-                        break;
-                    case cooltype:
-                        string = "(cool)";
-                        break;
-                    case firetype:
-                        string = "(fire)";
-                        break;
+                        case boxtype:
+                            string = "(box)";
+                            break;
+                        case treetrunktype:
+                            string = "(tree)";
+                            break;
+                        case walltype:
+                            string = "(wall)";
+                            break;
+                        case weirdtype:
+                            string = "(weird)";
+                            break;
+                        case spiketype:
+                            string = "(spike)";
+                            break;
+                        case rocktype:
+                            string = "(rock)";
+                            break;
+                        case bushtype:
+                            string = "(bush)";
+                            break;
+                        case tunneltype:
+                            string = "(tunnel)";
+                            break;
+                        case chimneytype:
+                            string = "(chimney)";
+                            break;
+                        case platformtype:
+                            string = "(platform)";
+                            break;
+                        case cooltype:
+                            string = "(cool)";
+                            break;
+                        case firetype:
+                            string = "(fire)";
+                            break;
                     }
                     text->glPrint(130, 120, string, 0, .8, 1024, 768);
 
@@ -904,7 +903,6 @@ int Game::DrawGLScene(StereoSide side)
                 }
                 string = "Difficulty: " + to_string(difficulty);
                 text->glPrint(10, 240, string, 0, .8, 1024, 768);
-
             }
         }
 
@@ -926,7 +924,7 @@ int Game::DrawGLScene(StereoSide side)
             glEnable(GL_BLEND);
             glColor4f(0, 0, 0, .5);
             glBegin(GL_QUADS);
-            glVertex3f(0, 0,  0.0f);
+            glVertex3f(0, 0, 0.0f);
             glVertex3f(256, 0, 0.0f);
             glVertex3f(256, 256, 0.0f);
             glVertex3f(0, 256, 0.0f);
@@ -965,8 +963,8 @@ int Game::DrawGLScene(StereoSide side)
                 blackout = .6;
             glColor4f(0, 0, 0, blackout);
             if (!Person::players[0]->dead) {
-                if ((Person::players[0]->bloodloss / Person::players[0]->damagetolerance * (sin(woozy) / 4 + .5))*.3 < .3) {
-                    glColor4f(0, 0, 0, Person::players[0]->blooddimamount * Person::players[0]->bloodloss / Person::players[0]->damagetolerance * (sin(woozy) / 4 + .5)*.3);
+                if ((Person::players[0]->bloodloss / Person::players[0]->damagetolerance * (sin(woozy) / 4 + .5)) * .3 < .3) {
+                    glColor4f(0, 0, 0, Person::players[0]->blooddimamount * Person::players[0]->bloodloss / Person::players[0]->damagetolerance * (sin(woozy) / 4 + .5) * .3);
                     blackout = Person::players[0]->blooddimamount * Person::players[0]->bloodloss / Person::players[0]->damagetolerance * (sin(woozy) / 4 + .5) * .3;
                 } else {
                     glColor4f(0, 0, 0, Person::players[0]->blooddimamount * .3);
@@ -976,8 +974,8 @@ int Game::DrawGLScene(StereoSide side)
             if (console)
                 glColor4f(.7, 0, 0, .2);
             glBegin(GL_QUADS);
-            glVertex3f(0, 0,  0.0f);
-            glVertex3f(256, 0,  0.0f);
+            glVertex3f(0, 0, 0.0f);
+            glVertex3f(256, 0, 0.0f);
             glVertex3f(256, 256, 0.0f);
             glVertex3f(0, 256, 0.0f);
             glEnd();
@@ -1015,7 +1013,7 @@ int Game::DrawGLScene(StereoSide side)
             glEnable(GL_BLEND);
             glColor4f(flashr, flashg, flashb, flashamount);
             glBegin(GL_QUADS);
-            glVertex3f(0, 0,  0.0f);
+            glVertex3f(0, 0, 0.0f);
             glVertex3f(256, 0, 0.0f);
             glVertex3f(256, 256, 0.0f);
             glVertex3f(0, 256, 0.0f);
@@ -1034,11 +1032,11 @@ int Game::DrawGLScene(StereoSide side)
             float mapviewdist = 20000;
 
             glDisable(GL_DEPTH_TEST);
-            glColor3f (1.0, 1.0, 1.0); // no coloring
+            glColor3f(1.0, 1.0, 1.0); // no coloring
 
             glEnable(GL_TEXTURE_2D);
-            glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-            glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             glDisable(GL_DEPTH_TEST);
             glDisable(GL_CULL_FACE);
             glDisable(GL_LIGHTING);
@@ -1216,7 +1214,7 @@ int Game::DrawGLScene(StereoSide side)
 
             //logo
             glDisable(GL_DEPTH_TEST);
-            glColor3f (1.0, 1.0, 1.0); // no coloring
+            glColor3f(1.0, 1.0, 1.0); // no coloring
 
             glEnable(GL_TEXTURE_2D);
 
@@ -1266,7 +1264,7 @@ int Game::DrawGLScene(StereoSide side)
 
             //logo
             glDisable(GL_DEPTH_TEST);
-            glColor3f (1.0, 1.0, 1.0); // no coloring
+            glColor3f(1.0, 1.0, 1.0); // no coloring
 
             glEnable(GL_TEXTURE_2D);
 
@@ -1312,25 +1310,25 @@ int Game::DrawGLScene(StereoSide side)
                     glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_CONSTANT);
                     glTexEnvf(GL_TEXTURE_ENV, GL_RGB_SCALE, 2.0f);
 
-                    glBindTexture( GL_TEXTURE_2D, screentexture);
+                    glBindTexture(GL_TEXTURE_2D, screentexture);
                     glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, texviewwidth, texviewheight);
                 }
             }
             if ((drawtoggle || change == 1) && drawmode == realmotionblurmode) {
                 if (screentexture2) {
-                    glBindTexture( GL_TEXTURE_2D, screentexture2);
+                    glBindTexture(GL_TEXTURE_2D, screentexture2);
                     glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, texviewwidth, texviewheight);
                 }
                 if (!screentexture2) {
-                    glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+                    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-                    glGenTextures( 1, &screentexture2 );
-                    glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+                    glGenTextures(1, &screentexture2);
+                    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
                     glEnable(GL_TEXTURE_2D);
-                    glBindTexture( GL_TEXTURE_2D, screentexture2);
-                    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-                    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+                    glBindTexture(GL_TEXTURE_2D, screentexture2);
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
                     glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, kTextureSize, kTextureSize, 0);
                 }
@@ -1347,12 +1345,12 @@ int Game::DrawGLScene(StereoSide side)
                 glDrawBuffer(GL_FRONT);
                 glReadBuffer(GL_BACK);
             }
-            glColor3f (1.0, 1.0, 1.0); // no coloring
+            glColor3f(1.0, 1.0, 1.0); // no coloring
 
             glEnable(GL_TEXTURE_2D);
-            glBindTexture( GL_TEXTURE_2D, screentexture);
-            glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-            glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+            glBindTexture(GL_TEXTURE_2D, screentexture);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             glDisable(GL_DEPTH_TEST);
             glDisable(GL_CULL_FACE);
             glDisable(GL_LIGHTING);
@@ -1389,7 +1387,7 @@ int Game::DrawGLScene(StereoSide side)
                 glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
                 glClear(GL_COLOR_BUFFER_BIT);
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-                glBindTexture( GL_TEXTURE_2D, screentexture);
+                glBindTexture(GL_TEXTURE_2D, screentexture);
                 glColor4f(1, 1, 1, .5);
                 glPushMatrix();
                 glBegin(GL_QUADS);
@@ -1403,7 +1401,7 @@ int Game::DrawGLScene(StereoSide side)
                 glVertex3f(-1, 1, 0.0f);
                 glEnd();
                 glPopMatrix();
-                glBindTexture( GL_TEXTURE_2D, screentexture2);
+                glBindTexture(GL_TEXTURE_2D, screentexture2);
                 glColor4f(1, 1, 1, .5);
                 glPushMatrix();
                 glBegin(GL_QUADS);
@@ -1575,7 +1573,7 @@ int Game::DrawGLScene(StereoSide side)
         multiplier = 0;
     }
 
-    if ( side == stereoRight || side == stereoCenter ) {
+    if (side == stereoRight || side == stereoCenter) {
         if (drawmode != motionblurmode || mainmenu) {
             swap_gl_buffers();
         }
@@ -1603,7 +1601,7 @@ void DrawMenu()
 
     glDrawBuffer(GL_BACK);
     glReadBuffer(GL_BACK);
-    glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     Game::ReSizeGLScene(90, .1f);
 
     //draw menu background
@@ -1628,8 +1626,8 @@ void DrawMenu()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_BLEND);
     glColor4f(0, 0, 0, 1.0);
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
     glDisable(GL_TEXTURE_2D);
     glBegin(GL_QUADS);
     glVertex3f(-1, -1, 0);
@@ -1639,8 +1637,8 @@ void DrawMenu()
     glEnd();
     glEnable(GL_BLEND);
     glColor4f(0.4, 0.4, 0.4, 1.0);
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
     glEnable(GL_TEXTURE_2D);
     Game::Mainmenuitems[4].bind();
     glBegin(GL_QUADS);
@@ -1658,8 +1656,6 @@ void DrawMenu()
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
-
-
 
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
@@ -1692,8 +1688,8 @@ void DrawMenu()
     glEnable(GL_BLEND);
     glEnable(GL_TEXTURE_2D);
     glColor4f(1, 1, 1, 1);
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
     glPopMatrix();
     if (!Game::waiting) { // hide the cursor while waiting for a key
         glPushMatrix();
@@ -1720,7 +1716,6 @@ void DrawMenu()
     glPopMatrix();
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
-
 
     //draw screen flash
     if (flashamount > 0) {

@@ -22,7 +22,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Audio/openal_wrapper.hpp"
 #include "Utils/Folders.hpp"
 
-struct OPENAL_SAMPLE *samp[sounds_count];
+struct OPENAL_SAMPLE* samp[sounds_count];
 
 extern XYZ envsound[30];
 extern float envsoundvol[30];
@@ -33,7 +33,7 @@ int footstepsound, footstepsound2, footstepsound3, footstepsound4;
 
 int channels[100];
 
-static const char *sound_data[sounds_count] = {
+static const char* sound_data[sounds_count] = {
 #define DECLARE_SOUND(id, filename) filename,
 #include "Sounds.def"
 #undef DECLARE_SOUND
@@ -44,14 +44,14 @@ static const char *sound_data[sounds_count] = {
 static int snd_mode(int snd)
 {
     switch (snd) {
-    case alarmsound:
-    case consolefailsound:
-    case consolesuccesssound:
-    case firestartsound:
-    case fireendsound:
-        return OPENAL_2D;
-    default:
-        return OPENAL_HW3D;
+        case alarmsound:
+        case consolefailsound:
+        case consolesuccesssound:
+        case firestartsound:
+        case fireendsound:
+            return OPENAL_2D;
+        default:
+            return OPENAL_HW3D;
     }
 }
 
@@ -82,42 +82,42 @@ void addEnvSound(XYZ coords, float vol, float life)
     numenvsounds++;
 }
 
-void emit_sound_at(int soundid, const XYZ &pos, float vol)
+void emit_sound_at(int soundid, const XYZ& pos, float vol)
 {
-    PlaySoundEx (soundid, samp[soundid], NULL, true);
-    OPENAL_3D_SetAttributes_ (channels[soundid], pos);
-    OPENAL_SetVolume (channels[soundid], vol);
-    OPENAL_SetPaused (channels[soundid], false);
+    PlaySoundEx(soundid, samp[soundid], NULL, true);
+    OPENAL_3D_SetAttributes_(channels[soundid], pos);
+    OPENAL_SetVolume(channels[soundid], vol);
+    OPENAL_SetPaused(channels[soundid], false);
 }
 
 void emit_sound_np(int soundid, float vol)
 {
-    PlaySoundEx (soundid, samp[soundid], NULL, true);
-    OPENAL_SetVolume (channels[soundid], vol);
-    OPENAL_SetPaused (channels[soundid], false);
+    PlaySoundEx(soundid, samp[soundid], NULL, true);
+    OPENAL_SetVolume(channels[soundid], vol);
+    OPENAL_SetPaused(channels[soundid], false);
 }
 
-void emit_stream_at(int soundid, const XYZ &pos, float vol)
+void emit_stream_at(int soundid, const XYZ& pos, float vol)
 {
-    PlayStreamEx (soundid, samp[soundid], NULL, true);
-    OPENAL_3D_SetAttributes_ (channels[soundid], pos);
-    OPENAL_SetVolume (channels[soundid], vol);
-    OPENAL_SetPaused (channels[soundid], false);
+    PlayStreamEx(soundid, samp[soundid], NULL, true);
+    OPENAL_3D_SetAttributes_(channels[soundid], pos);
+    OPENAL_SetVolume(channels[soundid], vol);
+    OPENAL_SetPaused(channels[soundid], false);
 }
 
 void emit_stream_np(int soundid, float vol)
 {
-    PlayStreamEx (soundid, samp[soundid], NULL, true);
-    OPENAL_SetVolume (channels[soundid], vol);
-    OPENAL_SetPaused (channels[soundid], false);
+    PlayStreamEx(soundid, samp[soundid], NULL, true);
+    OPENAL_SetVolume(channels[soundid], vol);
+    OPENAL_SetPaused(channels[soundid], false);
 }
 
 void resume_stream(int soundid)
 {
-    OPENAL_SetPaused (channels[soundid], false);
+    OPENAL_SetPaused(channels[soundid], false);
 }
 
 void pause_sound(int soundid)
 {
-    OPENAL_SetPaused (channels[soundid], true);
+    OPENAL_SetPaused(channels[soundid], true);
 }

@@ -19,9 +19,9 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "Tutorial.hpp"
-#include "Game.hpp"
 #include "Audio/Sounds.hpp"
 #include "Audio/openal_wrapper.hpp"
+#include "Game.hpp"
 #include "Level/Awards.hpp"
 #include "Objects/Person.hpp"
 #include "Utils/Input.hpp"
@@ -103,8 +103,7 @@ void Tutorial::Do(float multiplier)
                         Sprite::MakeSprite(breathsprite, temp, temp2, 1, 1, 1, .6 + (float)abs(Random() % 100) / 200 - .25, 1);
                     }
                 }
-            }
-            break;
+            } break;
             case 15:
             case 16:
             case 17:
@@ -204,8 +203,7 @@ void Tutorial::Do(float multiplier)
                 w.physics = 1;
 
                 weapons.push_back(w);
-            }
-            break;
+            } break;
             case 40:
             case 41:
             case 43:
@@ -282,8 +280,7 @@ void Tutorial::Do(float multiplier)
                 Person::players[1]->num_weapons = 1;
                 Person::players[1]->weaponids[0] = 0;
 
-            }
-            break;
+            } break;
             case 48:
                 canattack = 0;
                 cananger = 0;
@@ -350,8 +347,7 @@ void Tutorial::Do(float multiplier)
                 Person::players[1]->weaponactive = -1;
 
                 weapons.clear();
-            }
-            break;
+            } break;
             case 51:
                 maxtime = 80000;
                 break;
@@ -527,7 +523,7 @@ void Tutorial::DrawTextInfo()
     switch (stage) {
         case 0:
         default:
-        break;
+            break;
         case 1:
             string = "Welcome to the Lugaru training level!";
             break;
@@ -539,10 +535,10 @@ void Tutorial::DrawTextInfo()
             break;
         case 4:
             string = std::string("Try using the ") +
-                    Input::keyToChar(Game::forwardkey) + ", " +
-                    Input::keyToChar(Game::leftkey) + ", " +
-                    Input::keyToChar(Game::backkey) + " and " +
-                    Input::keyToChar(Game::rightkey) + " keys to move around.";
+                     Input::keyToChar(Game::forwardkey) + ", " +
+                     Input::keyToChar(Game::leftkey) + ", " +
+                     Input::keyToChar(Game::backkey) + " and " +
+                     Input::keyToChar(Game::rightkey) + " keys to move around.";
             string2 = "All movement is relative to the camera.";
             break;
         case 5:
@@ -753,17 +749,17 @@ void Tutorial::DrawTextInfo()
         opacity = 0;
     }
 
-    Game::text->glPrintOutlined(1, 1, 1, opacity, screenwidth / 2 - 7.6 * string.size()*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
-    Game::text->glPrintOutlined(1, 1, 1, opacity, screenwidth / 2 - 7.6 * string2.size()*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 20 * screenwidth / 1024, string2, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
-    Game::text->glPrintOutlined(1, 1, 1, opacity, screenwidth / 2 - 7.6 * string3.size()*screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 40 * screenwidth / 1024, string3, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
+    Game::text->glPrintOutlined(1, 1, 1, opacity, screenwidth / 2 - 7.6 * string.size() * screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
+    Game::text->glPrintOutlined(1, 1, 1, opacity, screenwidth / 2 - 7.6 * string2.size() * screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 20 * screenwidth / 1024, string2, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
+    Game::text->glPrintOutlined(1, 1, 1, opacity, screenwidth / 2 - 7.6 * string3.size() * screenwidth / 1024, screenheight / 16 + screenheight * 4 / 5 - 40 * screenwidth / 1024, string3, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
 
     string = "Press 'tab' to skip to the next item.";
     string2 = "Press escape at any time to";
     string3 = "pause or exit the tutorial.";
 
-    Game::text->glPrintOutlined(0.5, 0.5, 0.5, 1, screenwidth / 2 - 7.6 * string.size()*screenwidth / 1024 * .8, 0 + screenheight * 1 / 10, string, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
-    Game::text->glPrintOutlined(0.5, 0.5, 0.5, 1, screenwidth / 2 - 7.6 * string2.size()*screenwidth / 1024 * .8, 0 + screenheight * 1 / 10 - 20 * .8 * screenwidth / 1024, string2, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
-    Game::text->glPrintOutlined(0.5, 0.5, 0.5, 1, screenwidth / 2 - 7.6 * string3.size()*screenwidth / 1024 * .8, 0 + screenheight * 1 / 10 - 40 * .8 * screenwidth / 1024, string3, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
+    Game::text->glPrintOutlined(0.5, 0.5, 0.5, 1, screenwidth / 2 - 7.6 * string.size() * screenwidth / 1024 * .8, 0 + screenheight * 1 / 10, string, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
+    Game::text->glPrintOutlined(0.5, 0.5, 0.5, 1, screenwidth / 2 - 7.6 * string2.size() * screenwidth / 1024 * .8, 0 + screenheight * 1 / 10 - 20 * .8 * screenwidth / 1024, string2, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
+    Game::text->glPrintOutlined(0.5, 0.5, 0.5, 1, screenwidth / 2 - 7.6 * string3.size() * screenwidth / 1024 * .8, 0 + screenheight * 1 / 10 - 40 * .8 * screenwidth / 1024, string3, 1, 1.5 * screenwidth / 1024 * .8, screenwidth, screenheight);
 }
 
 void Tutorial::DoStuff(float multiplier)
@@ -786,7 +782,7 @@ void Tutorial::DoStuff(float multiplier)
     oldtemp2 = temp2;
     if (stage >= 51) {
         if (distsq(&temp, &Person::players[0]->coords) >= distsq(&temp, &temp2) - 1 || distsq(&temp3, &Person::players[0]->coords) < 4) {
-            OPENAL_StopSound(OPENAL_ALL);  // hack...OpenAL renderer isn't stopping music after tutorial goes to level menu...
+            OPENAL_StopSound(OPENAL_ALL); // hack...OpenAL renderer isn't stopping music after tutorial goes to level menu...
             OPENAL_SetFrequency(OPENAL_ALL);
 
             emit_stream_np(stream_menutheme);

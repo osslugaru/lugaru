@@ -22,20 +22,20 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Utils/binio.h"
 
-Joint::Joint() :
-    blurred(0),
-    length(0),
-    mass(0),
-    lower(false),
-    hasparent(false),
-    locked(false),
-    modelnum(0),
-    visible(false),
-    parent(nullptr),
-    sametwist(false),
-    label(head),
-    hasgun(0),
-    delay(0)
+Joint::Joint()
+    : blurred(0)
+    , length(0)
+    , mass(0)
+    , lower(false)
+    , hasparent(false)
+    , locked(false)
+    , modelnum(0)
+    , visible(false)
+    , parent(nullptr)
+    , sametwist(false)
+    , label(head)
+    , hasgun(0)
+    , delay(0)
 {
 }
 

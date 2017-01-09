@@ -30,7 +30,7 @@ extern float fadestart;
 extern float texdetail;
 extern bool decalstoggle;
 
-int Model::LineCheck(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate)
+int Model::LineCheck(XYZ* p1, XYZ* p2, XYZ* p, XYZ* move, float* rotate)
 {
     static float distance;
     static float olddistance;
@@ -64,7 +64,7 @@ int Model::LineCheck(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate)
     return firstintersecting;
 }
 
-int Model::LineCheckPossible(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate)
+int Model::LineCheckPossible(XYZ* p1, XYZ* p2, XYZ* p, XYZ* move, float* rotate)
 {
     static float distance;
     static float olddistance;
@@ -100,7 +100,7 @@ int Model::LineCheckPossible(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate)
     return firstintersecting;
 }
 
-int Model::LineCheckSlidePossible(XYZ *p1, XYZ *p2, XYZ *move, float *rotate)
+int Model::LineCheckSlidePossible(XYZ* p1, XYZ* p2, XYZ* move, float* rotate)
 {
     static float distance;
     static float olddistance;
@@ -140,7 +140,7 @@ int Model::LineCheckSlidePossible(XYZ *p1, XYZ *p2, XYZ *move, float *rotate)
     return firstintersecting;
 }
 
-int Model::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate)
+int Model::SphereCheck(XYZ* p1, float radius, XYZ* p, XYZ* move, float* rotate)
 {
     static int i;
     static float distance;
@@ -165,7 +165,7 @@ int Model::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate)
             distance = abs((Triangles[j].facenormal.x * p1->x) + (Triangles[j].facenormal.y * p1->y) + (Triangles[j].facenormal.z * p1->z) - ((Triangles[j].facenormal.x * vertex[Triangles[j].vertex[0]].x) + (Triangles[j].facenormal.y * vertex[Triangles[j].vertex[0]].y) + (Triangles[j].facenormal.z * vertex[Triangles[j].vertex[0]].z)));
             if (distance < radius) {
                 point = *p1 - Triangles[j].facenormal * distance;
-                if (PointInTriangle( &point, Triangles[j].facenormal, &vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[1]], &vertex[Triangles[j].vertex[2]]))
+                if (PointInTriangle(&point, Triangles[j].facenormal, &vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[1]], &vertex[Triangles[j].vertex[2]]))
                     intersecting = 1;
                 if (!intersecting)
                     intersecting = sphere_line_intersection(&vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[1]], p1, &radius);
@@ -193,7 +193,7 @@ int Model::SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate)
     return firstintersecting;
 }
 
-int Model::SphereCheckPossible(XYZ *p1, float radius, XYZ *move, float *rotate)
+int Model::SphereCheckPossible(XYZ* p1, float radius, XYZ* move, float* rotate)
 {
     static float distance;
     static float olddistance;
@@ -221,7 +221,7 @@ int Model::SphereCheckPossible(XYZ *p1, float radius, XYZ *move, float *rotate)
         distance = abs((Triangles[j].facenormal.x * p1->x) + (Triangles[j].facenormal.y * p1->y) + (Triangles[j].facenormal.z * p1->z) - ((Triangles[j].facenormal.x * vertex[Triangles[j].vertex[0]].x) + (Triangles[j].facenormal.y * vertex[Triangles[j].vertex[0]].y) + (Triangles[j].facenormal.z * vertex[Triangles[j].vertex[0]].z)));
         if (distance < radius) {
             point = *p1 - Triangles[j].facenormal * distance;
-            if (PointInTriangle( &point, Triangles[j].facenormal, &vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[1]], &vertex[Triangles[j].vertex[2]]))
+            if (PointInTriangle(&point, Triangles[j].facenormal, &vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[1]], &vertex[Triangles[j].vertex[2]]))
                 intersecting = 1;
             if (!intersecting)
                 intersecting = sphere_line_intersection(&vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[1]], p1, &radius);
@@ -244,7 +244,6 @@ int Model::SphereCheckPossible(XYZ *p1, float radius, XYZ *move, float *rotate)
 
     return firstintersecting;
 }
-
 
 void Model::UpdateVertexArray()
 {
@@ -393,14 +392,14 @@ void Model::UpdateVertexArrayNoTexNoNorm()
 
 bool Model::loadnotex(const std::string& filename)
 {
-    FILE *tfile;
+    FILE* tfile;
     long i;
     short triangleNum;
 
     type = notextype;
     color = 0;
 
-    tfile = Folders::openMandatoryFile( Folders::getResourcePath(filename), "rb" );
+    tfile = Folders::openMandatoryFile(Folders::getResourcePath(filename), "rb");
 
     // read model settings
 
@@ -453,10 +452,9 @@ bool Model::loadnotex(const std::string& filename)
     return true;
 }
 
-
 bool Model::load(const std::string& filename)
 {
-    FILE *tfile;
+    FILE* tfile;
     long i;
     short triangleNum;
 
@@ -469,7 +467,7 @@ bool Model::load(const std::string& filename)
     type = normaltype;
     color = 0;
 
-    tfile = Folders::openMandatoryFile( Folders::getResourcePath(filename), "rb" );
+    tfile = Folders::openMandatoryFile(Folders::getResourcePath(filename), "rb");
 
     // read model settings
 
@@ -528,7 +526,7 @@ bool Model::load(const std::string& filename)
 
 bool Model::loaddecal(const std::string& filename)
 {
-    FILE *tfile;
+    FILE* tfile;
     long i, j;
     short triangleNum;
 
@@ -539,7 +537,7 @@ bool Model::loaddecal(const std::string& filename)
     type = decalstype;
     color = 0;
 
-    tfile = Folders::openMandatoryFile( Folders::getResourcePath(filename), "rb" );
+    tfile = Folders::openMandatoryFile(Folders::getResourcePath(filename), "rb");
 
     // read model settings
 
@@ -572,7 +570,6 @@ bool Model::loaddecal(const std::string& filename)
         funpackf(tfile, "Bf Bf Bf", &Triangles[i].gy[0], &Triangles[i].gy[1], &Triangles[i].gy[2]);
     }
 
-
     modelTexture.xsz = 0;
 
     fclose(tfile);
@@ -599,7 +596,7 @@ bool Model::loaddecal(const std::string& filename)
 
 bool Model::loadraw(const std::string& filename)
 {
-    FILE *tfile;
+    FILE* tfile;
     long i;
     short triangleNum;
 
@@ -610,7 +607,7 @@ bool Model::loadraw(const std::string& filename)
     type = rawtype;
     color = 0;
 
-    tfile = Folders::openMandatoryFile( Folders::getResourcePath(filename), "rb" );
+    tfile = Folders::openMandatoryFile(Folders::getResourcePath(filename), "rb");
 
     // read model settings
 
@@ -627,7 +624,6 @@ bool Model::loadraw(const std::string& filename)
     Triangles.resize(triangleNum);
     vArray = (GLfloat*)malloc(sizeof(GLfloat) * triangleNum * 24);
 
-
     for (i = 0; i < vertexNum; i++) {
         funpackf(tfile, "Bf Bf Bf", &vertex[i].x, &vertex[i].y, &vertex[i].z);
     }
@@ -642,7 +638,6 @@ bool Model::loadraw(const std::string& filename)
         funpackf(tfile, "Bf Bf Bf", &Triangles[i].gy[0], &Triangles[i].gy[1], &Triangles[i].gy[2]);
     }
 
-
     fclose(tfile);
 
     for (i = 0; i < vertexNum; i++) {
@@ -651,7 +646,6 @@ bool Model::loadraw(const std::string& filename)
 
     return true;
 }
-
 
 void Model::UniformTexCoords()
 {
@@ -665,7 +659,6 @@ void Model::UniformTexCoords()
     }
     UpdateVertexArray();
 }
-
 
 void Model::FlipTexCoords()
 {
@@ -776,7 +769,6 @@ void Model::Rotate(float xang, float yang, float zang)
     boundingsphereradius = fast_sqrt(boundingsphereradius);
 }
 
-
 void Model::CalculateNormals(bool facenormalise)
 {
     Game::LoadingScreen();
@@ -862,9 +854,9 @@ void Model::draw()
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
     if (color) {
-        glInterleavedArrays( GL_T2F_C3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
+        glInterleavedArrays(GL_T2F_C3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
     } else {
-        glInterleavedArrays( GL_T2F_N3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
+        glInterleavedArrays(GL_T2F_N3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
     }
     textureptr.bind();
 
@@ -885,14 +877,14 @@ void Model::drawdifftex(Texture texture)
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     if (color) {
-        glInterleavedArrays( GL_T2F_C3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
+        glInterleavedArrays(GL_T2F_C3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
     } else {
-        glInterleavedArrays( GL_T2F_N3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
+        glInterleavedArrays(GL_T2F_N3F_V3F, 8 * sizeof(GLfloat), &vArray[0]);
     }
 
     texture.bind();
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     glDrawArrays(GL_TRIANGLES, 0, Triangles.size() * 3);
 
@@ -969,7 +961,7 @@ void Model::drawdecals(Texture shadowtexture, Texture bloodtexture, Texture bloo
             if ((decals[i].type == blooddecal || decals[i].type == blooddecalfast || decals[i].type == blooddecalslow)) {
                 glColor4f(1, 1, 1, decals[i].opacity);
                 if (decals[i].alivetime < 4)
-                    glColor4f(1, 1, 1, decals[i].opacity*decals[i].alivetime*.25);
+                    glColor4f(1, 1, 1, decals[i].opacity * decals[i].alivetime * .25);
                 if (decals[i].alivetime > 58)
                     glColor4f(1, 1, 1, decals[i].opacity * (60 - decals[i].alivetime) / 2);
             }
@@ -1012,7 +1004,7 @@ void Model::DeleteDecal(int which)
     }
 }
 
-void Model::MakeDecal(decal_type atype, XYZ *where, float *size, float *opacity, float *rotation)
+void Model::MakeDecal(decal_type atype, XYZ* where, float* size, float* opacity, float* rotation)
 {
     if (decalstoggle) {
         if (type != decalstype)
@@ -1182,16 +1174,16 @@ void Model::deallocate()
 }
 
 Model::Model()
-  : vertexNum(0),
-    type(nothing),
-    owner(0),
-    vertex(0),
-    normals(0),
-    vArray(0),
-    color(0),
-    boundingspherecenter(),
-    boundingsphereradius(0),
-    flat(false)
+    : vertexNum(0)
+    , type(nothing)
+    , owner(0)
+    , vertex(0)
+    , normals(0)
+    , vArray(0)
+    , color(0)
+    , boundingspherecenter()
+    , boundingsphereradius(0)
+    , flat(false)
 {
     memset(&modelTexture, 0, sizeof(modelTexture));
 }

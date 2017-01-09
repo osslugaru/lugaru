@@ -20,7 +20,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Math/XYZ.hpp"
 
-bool PointInTriangle(XYZ *p, XYZ normal, XYZ *p1, XYZ *p2, XYZ *p3)
+bool PointInTriangle(XYZ* p, XYZ normal, XYZ* p1, XYZ* p2, XYZ* p3)
 {
     static float u0, u1, u2;
     static float v0, v1, v2;
@@ -40,7 +40,6 @@ bool PointInTriangle(XYZ *p, XYZ normal, XYZ *p1, XYZ *p2, XYZ *p3)
     pointv[1] = p->y;
     pointv[2] = p->z;
 
-
     p1v[0] = p1->x;
     p1v[1] = p1->y;
     p1v[2] = p1->z;
@@ -57,20 +56,20 @@ bool PointInTriangle(XYZ *p, XYZ normal, XYZ *p1, XYZ *p2, XYZ *p3)
     normalv[1] = normal.y;
     normalv[2] = normal.z;
 
-#define ABS(X) (((X)<0.f)?-(X):(X) )
-#define MAX(A, B) (((A)<(B))?(B):(A))
+#define ABS(X) (((X) < 0.f) ? -(X) : (X))
+#define MAX(A, B) (((A) < (B)) ? (B) : (A))
     max = MAX(MAX(ABS(normalv[0]), ABS(normalv[1])), ABS(normalv[2]));
 #undef MAX
     if (max == ABS(normalv[0])) {
-        i = 1;    // y, z
+        i = 1; // y, z
         j = 2;
     }
     if (max == ABS(normalv[1])) {
-        i = 0;    // x, z
+        i = 0; // x, z
         j = 2;
     }
     if (max == ABS(normalv[2])) {
-        i = 0;    // x, y
+        i = 0; // x, y
         j = 1;
     }
 #undef ABS
@@ -86,14 +85,14 @@ bool PointInTriangle(XYZ *p, XYZ normal, XYZ *p1, XYZ *p2, XYZ *p3)
         b = u0 / u2;
         if (0.0f <= b && b <= 1.0f) {
             a = (v0 - b * v2) / v1;
-            if ((a >= 0.0f) && (( a + b ) <= 1.0f))
+            if ((a >= 0.0f) && ((a + b) <= 1.0f))
                 bInter = 1;
         }
     } else {
         b = (v0 * u1 - u0 * v1) / (v2 * u1 - u2 * v1);
         if (0.0f <= b && b <= 1.0f) {
             a = (u0 - b * u2) / u1;
-            if ((a >= 0.0f) && (( a + b ) <= 1.0f ))
+            if ((a >= 0.0f) && ((a + b) <= 1.0f))
                 bInter = 1;
         }
     }
@@ -101,7 +100,7 @@ bool PointInTriangle(XYZ *p, XYZ normal, XYZ *p1, XYZ *p2, XYZ *p3)
     return bInter;
 }
 
-bool LineFacet(XYZ p1, XYZ p2, XYZ pa, XYZ pb, XYZ pc, XYZ *p)
+bool LineFacet(XYZ p1, XYZ p2, XYZ pa, XYZ pb, XYZ pc, XYZ* p)
 {
     static float d;
     static float denom, mu;
@@ -112,27 +111,27 @@ bool LineFacet(XYZ p1, XYZ p2, XYZ pa, XYZ pb, XYZ pc, XYZ *p)
     n.y = (pb.z - pa.z) * (pc.x - pa.x) - (pb.x - pa.x) * (pc.z - pa.z);
     n.z = (pb.x - pa.x) * (pc.y - pa.y) - (pb.y - pa.y) * (pc.x - pa.x);
     Normalise(&n);
-    d = - n.x * pa.x - n.y * pa.y - n.z * pa.z;
+    d = -n.x * pa.x - n.y * pa.y - n.z * pa.z;
 
     //Calculate the position on the line that intersects the plane
     denom = n.x * (p2.x - p1.x) + n.y * (p2.y - p1.y) + n.z * (p2.z - p1.z);
-    if (fabs(denom) < 0.0000001)        // Line and plane don't intersect
+    if (fabs(denom) < 0.0000001) // Line and plane don't intersect
         return 0;
-    mu = - (d + n.x * p1.x + n.y * p1.y + n.z * p1.z) / denom;
+    mu = -(d + n.x * p1.x + n.y * p1.y + n.z * p1.z) / denom;
     p->x = p1.x + mu * (p2.x - p1.x);
     p->y = p1.y + mu * (p2.y - p1.y);
     p->z = p1.z + mu * (p2.z - p1.z);
-    if (mu < 0 || mu > 1)   // Intersection not along line segment
+    if (mu < 0 || mu > 1) // Intersection not along line segment
         return 0;
 
-    if (!PointInTriangle( p, n, &pa, &pb, &pc)) {
+    if (!PointInTriangle(p, n, &pa, &pb, &pc)) {
         return 0;
     }
 
     return 1;
 }
 
-float LineFacetd(XYZ p1, XYZ p2, XYZ pa, XYZ pb, XYZ pc, XYZ *p)
+float LineFacetd(XYZ p1, XYZ p2, XYZ pa, XYZ pb, XYZ pc, XYZ* p)
 {
     static float d;
     static float denom, mu;
@@ -143,52 +142,52 @@ float LineFacetd(XYZ p1, XYZ p2, XYZ pa, XYZ pb, XYZ pc, XYZ *p)
     n.y = (pb.z - pa.z) * (pc.x - pa.x) - (pb.x - pa.x) * (pc.z - pa.z);
     n.z = (pb.x - pa.x) * (pc.y - pa.y) - (pb.y - pa.y) * (pc.x - pa.x);
     Normalise(&n);
-    d = - n.x * pa.x - n.y * pa.y - n.z * pa.z;
+    d = -n.x * pa.x - n.y * pa.y - n.z * pa.z;
 
     //Calculate the position on the line that intersects the plane
     denom = n.x * (p2.x - p1.x) + n.y * (p2.y - p1.y) + n.z * (p2.z - p1.z);
-    if (fabs(denom) < 0.0000001)        // Line and plane don't intersect
+    if (fabs(denom) < 0.0000001) // Line and plane don't intersect
         return 0;
-    mu = - (d + n.x * p1.x + n.y * p1.y + n.z * p1.z) / denom;
+    mu = -(d + n.x * p1.x + n.y * p1.y + n.z * p1.z) / denom;
     p->x = p1.x + mu * (p2.x - p1.x);
     p->y = p1.y + mu * (p2.y - p1.y);
     p->z = p1.z + mu * (p2.z - p1.z);
-    if (mu < 0 || mu > 1)   // Intersection not along line segment
+    if (mu < 0 || mu > 1) // Intersection not along line segment
         return 0;
 
-    if (!PointInTriangle( p, n, &pa, &pb, &pc)) {
+    if (!PointInTriangle(p, n, &pa, &pb, &pc)) {
         return 0;
     }
 
     return 1;
 }
 
-float LineFacetd(XYZ p1, XYZ p2, XYZ pa, XYZ pb, XYZ pc, XYZ n, XYZ *p)
+float LineFacetd(XYZ p1, XYZ p2, XYZ pa, XYZ pb, XYZ pc, XYZ n, XYZ* p)
 {
     static float d;
     static float denom, mu;
 
     //Calculate the parameters for the plane
-    d = - n.x * pa.x - n.y * pa.y - n.z * pa.z;
+    d = -n.x * pa.x - n.y * pa.y - n.z * pa.z;
 
     //Calculate the position on the line that intersects the plane
     denom = n.x * (p2.x - p1.x) + n.y * (p2.y - p1.y) + n.z * (p2.z - p1.z);
-    if (fabs(denom) < 0.0000001)        // Line and plane don't intersect
+    if (fabs(denom) < 0.0000001) // Line and plane don't intersect
         return 0;
-    mu = - (d + n.x * p1.x + n.y * p1.y + n.z * p1.z) / denom;
+    mu = -(d + n.x * p1.x + n.y * p1.y + n.z * p1.z) / denom;
     p->x = p1.x + mu * (p2.x - p1.x);
     p->y = p1.y + mu * (p2.y - p1.y);
     p->z = p1.z + mu * (p2.z - p1.z);
-    if (mu < 0 || mu > 1)   // Intersection not along line segment
+    if (mu < 0 || mu > 1) // Intersection not along line segment
         return 0;
 
-    if (!PointInTriangle( p, n, &pa, &pb, &pc)) {
+    if (!PointInTriangle(p, n, &pa, &pb, &pc)) {
         return 0;
     }
     return 1;
 }
 
-float LineFacetd(XYZ *p1, XYZ *p2, XYZ *pa, XYZ *pb, XYZ *pc, XYZ *p)
+float LineFacetd(XYZ* p1, XYZ* p2, XYZ* pa, XYZ* pb, XYZ* pc, XYZ* p)
 {
     static float d;
     static float denom, mu;
@@ -199,49 +198,46 @@ float LineFacetd(XYZ *p1, XYZ *p2, XYZ *pa, XYZ *pb, XYZ *pc, XYZ *p)
     n.y = (pb->z - pa->z) * (pc->x - pa->x) - (pb->x - pa->x) * (pc->z - pa->z);
     n.z = (pb->x - pa->x) * (pc->y - pa->y) - (pb->y - pa->y) * (pc->x - pa->x);
     Normalise(&n);
-    d = - n.x * pa->x - n.y * pa->y - n.z * pa->z;
-
+    d = -n.x * pa->x - n.y * pa->y - n.z * pa->z;
 
     //Calculate the position on the line that intersects the plane
     denom = n.x * (p2->x - p1->x) + n.y * (p2->y - p1->y) + n.z * (p2->z - p1->z);
-    if (fabs(denom) < 0.0000001)        // Line and plane don't intersect
+    if (fabs(denom) < 0.0000001) // Line and plane don't intersect
         return 0;
-    mu = - (d + n.x * p1->x + n.y * p1->y + n.z * p1->z) / denom;
+    mu = -(d + n.x * p1->x + n.y * p1->y + n.z * p1->z) / denom;
     p->x = p1->x + mu * (p2->x - p1->x);
     p->y = p1->y + mu * (p2->y - p1->y);
     p->z = p1->z + mu * (p2->z - p1->z);
-    if (mu < 0 || mu > 1)   // Intersection not along line segment
+    if (mu < 0 || mu > 1) // Intersection not along line segment
         return 0;
 
-    if (!PointInTriangle( p, n, pa, pb, pc)) {
+    if (!PointInTriangle(p, n, pa, pb, pc)) {
         return 0;
     }
     return 1;
 }
 
-float LineFacetd(XYZ *p1, XYZ *p2, XYZ *pa, XYZ *pb, XYZ *pc, XYZ *n, XYZ *p)
+float LineFacetd(XYZ* p1, XYZ* p2, XYZ* pa, XYZ* pb, XYZ* pc, XYZ* n, XYZ* p)
 {
     static float d;
     static float denom, mu;
 
     //Calculate the parameters for the plane
-    d = - n->x * pa->x - n->y * pa->y - n->z * pa->z;
+    d = -n->x * pa->x - n->y * pa->y - n->z * pa->z;
 
     //Calculate the position on the line that intersects the plane
     denom = n->x * (p2->x - p1->x) + n->y * (p2->y - p1->y) + n->z * (p2->z - p1->z);
-    if (fabs(denom) < 0.0000001)        // Line and plane don't intersect
+    if (fabs(denom) < 0.0000001) // Line and plane don't intersect
         return 0;
-    mu = - (d + n->x * p1->x + n->y * p1->y + n->z * p1->z) / denom;
+    mu = -(d + n->x * p1->x + n->y * p1->y + n->z * p1->z) / denom;
     p->x = p1->x + mu * (p2->x - p1->x);
     p->y = p1->y + mu * (p2->y - p1->y);
     p->z = p1->z + mu * (p2->z - p1->z);
-    if (mu < 0 || mu > 1)   // Intersection not along line segment
+    if (mu < 0 || mu > 1) // Intersection not along line segment
         return 0;
 
-    if (!PointInTriangle( p, *n, pa, pb, pc)) {
+    if (!PointInTriangle(p, *n, pa, pb, pc)) {
         return 0;
     }
     return 1;
 }
-
-

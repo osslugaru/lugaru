@@ -29,13 +29,13 @@ float startbonustotal;
 float bonustime;
 float bonusnum[100];
 
-const char *bonus_names[bonus_count] = {
+const char* bonus_names[bonus_count] = {
 #define DECLARE_BONUS(id, name, ...) name,
 #include "Bonuses.def"
 #undef DECLARE_BONUS
 };
 
-const char *award_names[award_count] = {
+const char* award_names[award_count] = {
 #define DECLARE_AWARD(id, name) name,
 #include "Awards.def"
 #undef DECLARE_AWARD
@@ -47,8 +47,7 @@ static const int bonus_values[bonus_count] = {
 #undef DECLARE_BONUS
 };
 
-void
-award_bonus(int playerid, int bonusid, int alt_value)
+void award_bonus(int playerid, int bonusid, int alt_value)
 {
     if (playerid != 0)
         return;
@@ -76,7 +75,7 @@ int numreversals;
 int numattacks;
 int maxalarmed;
 
-int award_awards(int *awards)
+int award_awards(int* awards)
 {
     int numawards = 0;
     if (damagetaken == 0 && Person::players[0]->bloodloss == 0) {
@@ -142,7 +141,7 @@ int award_awards(int *awards)
         awards[numawards] = awardbrutal;
         numawards++;
     }
-    if (numreversals > ((float)numattacks)*.8 && numreversals > 3) {
+    if (numreversals > ((float)numattacks) * .8 && numreversals > 3) {
         awards[numawards] = awardaikido;
         numawards++;
     }

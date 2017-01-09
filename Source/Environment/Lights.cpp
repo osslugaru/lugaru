@@ -22,11 +22,11 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 void SetUpLight(Light* whichsource, int whichlight)
 {
-    static float qattenuation[] = {0.0002f};
+    static float qattenuation[] = { 0.0002f };
 
     //Initialize lights
     if (whichlight == 0) {
-        GLfloat LightAmbient[] = { whichsource->ambient[0], whichsource->ambient[1], whichsource->ambient[2], 1.0f};
+        GLfloat LightAmbient[] = { whichsource->ambient[0], whichsource->ambient[1], whichsource->ambient[2], 1.0f };
         GLfloat LightDiffuse[] = { whichsource->color[0], whichsource->color[1], whichsource->color[2], 1.0f };
         GLfloat LightPosition[] = { whichsource->location.x, whichsource->location.y, whichsource->location.z, 0.0f };
 
@@ -37,27 +37,27 @@ void SetUpLight(Light* whichsource, int whichlight)
     } else {
         GLenum lightselect = GL_LIGHT1;
         switch (whichlight) {
-        case 2:
-            lightselect = GL_LIGHT2;
-            break;
-        case 3:
-            lightselect = GL_LIGHT3;
-            break;
-        case 4:
-            lightselect = GL_LIGHT4;
-            break;
-        case 5:
-            lightselect = GL_LIGHT5;
-            break;
-        case 6:
-            lightselect = GL_LIGHT6;
-            break;
-        case 7:
-            lightselect = GL_LIGHT7;
-            break;
+            case 2:
+                lightselect = GL_LIGHT2;
+                break;
+            case 3:
+                lightselect = GL_LIGHT3;
+                break;
+            case 4:
+                lightselect = GL_LIGHT4;
+                break;
+            case 5:
+                lightselect = GL_LIGHT5;
+                break;
+            case 6:
+                lightselect = GL_LIGHT6;
+                break;
+            case 7:
+                lightselect = GL_LIGHT7;
+                break;
         }
 
-        GLfloat LightAmbient[] = { 0, 0, 0, 1.0f};
+        GLfloat LightAmbient[] = { 0, 0, 0, 1.0f };
         GLfloat LightDiffuse[] = { whichsource->color[0], whichsource->color[1], whichsource->color[2], 1.0f };
         GLfloat LightPosition[] = { whichsource->location.x, whichsource->location.y, whichsource->location.z, 1.0f };
 
@@ -66,6 +66,5 @@ void SetUpLight(Light* whichsource, int whichlight)
         glLightfv(lightselect, GL_AMBIENT, LightAmbient);
         glLightfv(lightselect, GL_DIFFUSE, LightDiffuse);
         glEnable(lightselect);
-
     }
 }

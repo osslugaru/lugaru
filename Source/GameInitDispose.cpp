@@ -68,7 +68,7 @@ extern float accountcampaigntime[10];
 extern int accountcampaignchoicesmade[10];
 extern int accountcampaignchoices[10][5000];
 
-void LOG(const std::string &, ...)
+void LOG(const std::string&, ...)
 {
     // !!! FIXME: write me.
 }
@@ -121,9 +121,7 @@ void Game::deleteGame()
     Dispose();
 }
 
-
-
-void LoadSave(const std::string& fileName, GLubyte *array)
+void LoadSave(const std::string& fileName, GLubyte* array)
 {
     LOGFUNC;
 
@@ -152,8 +150,6 @@ void LoadSave(const std::string& fileName, GLubyte *array)
     }
 }
 
-
-
 //***************> ResizeGLScene() <******/
 GLvoid Game::ReSizeGLScene(float fov, float pnear)
 {
@@ -179,9 +175,9 @@ void Game::LoadingScreen()
     }
 
     static float loadprogress;
-    static AbsoluteTime frametime = {0, 0};
-    AbsoluteTime currTime = UpTime ();
-    double deltaTime = (float) AbsoluteDeltaToDuration (currTime, frametime);
+    static AbsoluteTime frametime = { 0, 0 };
+    AbsoluteTime currTime = UpTime();
+    double deltaTime = (float)AbsoluteDeltaToDuration(currTime, frametime);
 
     if (0 > deltaTime) // if negative microseconds
         deltaTime /= -1000000.0;
@@ -201,7 +197,6 @@ void Game::LoadingScreen()
         glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
         loadtime += multiplier * 4;
 
         loadprogress = loadtime;
@@ -212,8 +207,8 @@ void Game::LoadingScreen()
 
         glEnable(GL_TEXTURE_2D);
         loadscreentexture.bind();
-        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
         glDisable(GL_LIGHTING);
@@ -265,8 +260,8 @@ void Game::LoadingScreen()
 
         glEnable(GL_TEXTURE_2D);
         loadscreentexture.bind();
-        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
         glDisable(GL_LIGHTING);
@@ -305,8 +300,8 @@ void Game::LoadingScreen()
 
         glEnable(GL_TEXTURE_2D);
         loadscreentexture.bind();
-        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
         glDisable(GL_LIGHTING);
@@ -403,8 +398,8 @@ void FadeLoadingScreen(float howmuch)
     //Background
 
     glDisable(GL_TEXTURE_2D);
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
     glDisable(GL_LIGHTING);
@@ -585,7 +580,6 @@ void Game::InitGame()
 
     FadeLoadingScreen(95);
 
-
     gameon = 0;
     mainmenu = 1;
 
@@ -601,20 +595,18 @@ void Game::InitGame()
     Animation::loadAll();
 }
 
-
 void Game::LoadScreenTexture()
 {
-    glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
     if (!Game::screentexture)
-        glGenTextures( 1, &Game::screentexture );
-    glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-
+        glGenTextures(1, &Game::screentexture);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
     glEnable(GL_TEXTURE_2D);
-    glBindTexture( GL_TEXTURE_2D, Game::screentexture);
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+    glBindTexture(GL_TEXTURE_2D, Game::screentexture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
     glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, kTextureSize, kTextureSize, 0);
 }
@@ -668,11 +660,9 @@ void Game::LoadStuff()
     terrain.breaktexture.load("Textures/Break.png", 0);
     terrain.bloodtexture2.load("Textures/Blood.png", 0);
 
-
     terrain.footprinttexture.load("Textures/Footprint.png", 0);
     terrain.bodyprinttexture.load("Textures/Bodyprint.png", 0);
     hawktexture.load("Textures/Hawk.png", 0);
-
 
     Sprite::cloudtexture.load("Textures/Cloud.png", 1);
     Sprite::cloudimpacttexture.load("Textures/CloudImpact.png", 1);
@@ -707,7 +697,6 @@ void Game::LoadStuff()
     LoadingScreen();
 
     SetUpLighting();
-
 
     fadestart = .6;
     gravity = -10;
@@ -820,4 +809,3 @@ void Game::LoadStuff()
     visibleloading = false;
     firstLoadDone = true;
 }
-

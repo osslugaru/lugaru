@@ -23,8 +23,8 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Animation/Animation.hpp"
 #include "Audio/openal_wrapper.hpp"
 #include "Game.hpp"
-#include "Utils/Folders.hpp"
 #include "Tutorial.hpp"
+#include "Utils/Folders.hpp"
 
 extern float multiplier;
 extern float gravity;
@@ -37,20 +37,20 @@ extern int detail;
 extern int whichjointstartarray[26];
 extern int whichjointendarray[26];
 
-Skeleton::Skeleton() :
-    selected(0),
-    id(0),
-    num_models(0),
-    clothes(false),
-    spinny(false),
-    skinsize(0),
-    checkdelay(0),
-    longdead(0),
-    broken(false),
-    free(0),
-    oldfree(0),
-    freetime(0),
-    freefall(false)
+Skeleton::Skeleton()
+    : selected(0)
+    , id(0)
+    , num_models(0)
+    , clothes(false)
+    , spinny(false)
+    , skinsize(0)
+    , checkdelay(0)
+    , longdead(0)
+    , broken(false)
+    , free(0)
+    , oldfree(0)
+    , freetime(0)
+    , freefall(false)
 {
     memset(forwardjoints, 0, sizeof(forwardjoints));
     memset(lowforwardjoints, 0, sizeof(lowforwardjoints));
@@ -105,7 +105,7 @@ void Skeleton::FindForwards()
  * Person/Person::DoStuff
  * Person/IKHelper
  */
-float Skeleton::DoConstraints(XYZ *coords, float *scale)
+float Skeleton::DoConstraints(XYZ* coords, float* scale)
 {
     const float elasticity = .3;
     XYZ bounceness;
@@ -136,20 +136,20 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
             joints[i].position = joints[i].position + joints[i].velocity * multiplier;
 
             switch (joints[i].label) {
-            case head:
-                groundlevel = .8;
-                break;
-            case righthand:
-            case rightwrist:
-            case rightelbow:
-            case lefthand:
-            case leftwrist:
-            case leftelbow:
-                groundlevel = .2;
-                break;
-            default:
-                groundlevel = .15;
-                break;
+                case head:
+                    groundlevel = .8;
+                    break;
+                case righthand:
+                case rightwrist:
+                case rightelbow:
+                case lefthand:
+                case leftwrist:
+                case leftelbow:
+                    groundlevel = .2;
+                    break;
+                default:
+                    groundlevel = .15;
+                    break;
             }
 
             joints[i].position.y -= groundlevel;
@@ -294,7 +294,6 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                         joints[i].velocity = joints[i].oldvelocity;
                     }
 
-
                     if (joints[i].locked == 0)
                         if (findLengthfast(&joints[i].velocity) < 1)
                             joints[i].locked = 1;
@@ -314,7 +313,6 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                         Sprite::MakeSprite(cloudsprite, joints[i].position * (*scale) + *coords, joints[i].velocity * .06, terrainlight.x * 90 / 255, terrainlight.y * 70 / 255, terrainlight.z * 8 / 255, .5, .5);
                     } else if (findLengthfast(&bounceness) > 500)
                         Sprite::MakeSprite(cloudsprite, joints[i].position * (*scale) + *coords, joints[i].velocity * .06, terrainlight.x, terrainlight.y, terrainlight.z, .5, .2);
-
 
                     joints[i].position.y = (terrain.getHeight(joints[i].position.x * (*scale) + coords->x, joints[i].position.z * (*scale) + coords->z) + groundlevel - coords->y) / (*scale);
                     if (longdead > 100)
@@ -386,7 +384,6 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                                 }
                                 joints[i].velocity += bounceness * elasticity;
 
-
                                 if (!joints[i].locked)
                                     if (findLengthfast(&joints[i].velocity) < 1) {
                                         joints[i].locked = 1;
@@ -404,7 +401,6 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
             }
         }
         multiplier = tempmult;
-
 
         for (unsigned int m = 0; m < terrain.patchobjects[whichpatchx][whichpatchz].size(); m++) {
             unsigned int k = terrain.patchobjects[whichpatchx][whichpatchz][m];
@@ -427,20 +423,20 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
 
         for (i = 0; i < joints.size(); i++) {
             switch (joints[i].label) {
-            case head:
-                groundlevel = .8;
-                break;
-            case righthand:
-            case rightwrist:
-            case rightelbow:
-            case lefthand:
-            case leftwrist:
-            case leftelbow:
-                groundlevel = .2;
-                break;
-            default:
-                groundlevel = .15;
-                break;
+                case head:
+                    groundlevel = .8;
+                    break;
+                case righthand:
+                case rightwrist:
+                case rightelbow:
+                case lefthand:
+                case leftwrist:
+                case leftelbow:
+                    groundlevel = .2;
+                    break;
+                default:
+                    groundlevel = .15;
+                    break;
             }
             joints[i].position.y += groundlevel;
             joints[i].mass = 1;
@@ -470,19 +466,16 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
  * USES:
  * Person/Person::DoStuff
  */
-void Skeleton::DoGravity(float *scale)
+void Skeleton::DoGravity(float* scale)
 {
     for (unsigned i = 0; i < joints.size(); i++) {
         if (
-                (
-                    ((joints[i].label != leftknee) && (joints[i].label != rightknee)) ||
-                    (lowforward.y > -.1) ||
-                    (joints[i].mass < 5)
-                ) && (
-                    ((joints[i].label != leftelbow) && (joints[i].label != rightelbow)) ||
-                    (forward.y < .3)
-                )
-            ) {
+            (
+                ((joints[i].label != leftknee) && (joints[i].label != rightknee)) ||
+                (lowforward.y > -.1) ||
+                (joints[i].mass < 5)) &&
+            (((joints[i].label != leftelbow) && (joints[i].label != rightelbow)) ||
+             (forward.y < .3))) {
             joints[i].velocity.y += gravity * multiplier / (*scale);
         }
     }
@@ -527,39 +520,39 @@ void Skeleton::FindRotationMuscle(int which, int animation)
     const int label1 = muscles[which].parent1->label;
     const int label2 = muscles[which].parent2->label;
     switch (label1) {
-    case head:
-        fwd = specialforward[0];
-        break;
-    case rightshoulder:
-    case rightelbow:
-    case rightwrist:
-    case righthand:
-        fwd = specialforward[1];
-        break;
-    case leftshoulder:
-    case leftelbow:
-    case leftwrist:
-    case lefthand:
-        fwd = specialforward[2];
-        break;
-    case righthip:
-    case rightknee:
-    case rightankle:
-    case rightfoot:
-        fwd = specialforward[3];
-        break;
-    case lefthip:
-    case leftknee:
-    case leftankle:
-    case leftfoot:
-        fwd = specialforward[4];
-        break;
-    default:
-        if (muscles[which].parent1->lower)
-            fwd = lowforward;
-        else
-            fwd = forward;
-        break;
+        case head:
+            fwd = specialforward[0];
+            break;
+        case rightshoulder:
+        case rightelbow:
+        case rightwrist:
+        case righthand:
+            fwd = specialforward[1];
+            break;
+        case leftshoulder:
+        case leftelbow:
+        case leftwrist:
+        case lefthand:
+            fwd = specialforward[2];
+            break;
+        case righthip:
+        case rightknee:
+        case rightankle:
+        case rightfoot:
+            fwd = specialforward[3];
+            break;
+        case lefthip:
+        case leftknee:
+        case leftankle:
+        case leftfoot:
+            fwd = specialforward[4];
+            break;
+        default:
+            if (muscles[which].parent1->lower)
+                fwd = lowforward;
+            else
+                fwd = forward;
+            break;
     }
 
     if (animation == hanganim) {
@@ -601,15 +594,15 @@ void Skeleton::FindRotationMuscle(int which, int animation)
  * load skeleton
  * takes filenames for three skeleton files and various models
  */
-void Skeleton::Load(const std::string& filename,       const std::string& lowfilename, const std::string& clothesfilename,
-                    const std::string& modelfilename,  const std::string& model2filename,
+void Skeleton::Load(const std::string& filename, const std::string& lowfilename, const std::string& clothesfilename,
+                    const std::string& modelfilename, const std::string& model2filename,
                     const std::string& model3filename, const std::string& model4filename,
                     const std::string& model5filename, const std::string& model6filename,
                     const std::string& model7filename, const std::string& modellowfilename,
                     const std::string& modelclothesfilename, bool clothes)
 {
     GLfloat M[16];
-    FILE *tfile;
+    FILE* tfile;
     float lSize;
     int j, num_joints, num_muscles;
 
@@ -677,7 +670,7 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
 
     // load skeleton
 
-    tfile = Folders::openMandatoryFile( Folders::getResourcePath(filename), "rb" );
+    tfile = Folders::openMandatoryFile(Folders::getResourcePath(filename), "rb");
 
     // read num_joints
     funpackf(tfile, "Bi", &num_joints);
@@ -748,24 +741,18 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
 
     // load ???
 
-    tfile = Folders::openMandatoryFile( Folders::getResourcePath(lowfilename), "rb" );
+    tfile = Folders::openMandatoryFile(Folders::getResourcePath(lowfilename), "rb");
 
     // skip joints section
 
     fseek(tfile, sizeof(num_joints), SEEK_CUR);
     for (int i = 0; i < num_joints; i++) {
         // skip joint info
-        lSize = sizeof(XYZ)
-                + sizeof(float)
-                + sizeof(float)
-                + 1 //sizeof(bool)
-                + 1 //sizeof(bool)
-                + sizeof(int)
-                + 1 //sizeof(bool)
-                + 1 //sizeof(bool)
-                + sizeof(int)
-                + sizeof(int)
-                + 1 //sizeof(bool)
+        lSize = sizeof(XYZ) + sizeof(float) + sizeof(float) + 1 //sizeof(bool)
+                + 1                                             //sizeof(bool)
+                + sizeof(int) + 1                               //sizeof(bool)
+                + 1                                             //sizeof(bool)
+                + sizeof(int) + sizeof(int) + 1                 //sizeof(bool)
                 + sizeof(int);
         fseek(tfile, lSize, SEEK_CUR);
     }
@@ -775,22 +762,17 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
 
     for (int i = 0; i < num_muscles; i++) {
         // skip muscle info
-        lSize = sizeof(float)
-                + sizeof(float)
-                + sizeof(float)
-                + sizeof(float)
-                + sizeof(float)
-                + sizeof(int);
+        lSize = sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(int);
         fseek(tfile, lSize, SEEK_CUR);
 
         muscles[i].loadVerticesLow(tfile, modellow.vertexNum);
 
         // skip more stuff
         lSize = 1; //sizeof(bool);
-        fseek ( tfile, lSize, SEEK_CUR);
+        fseek(tfile, lSize, SEEK_CUR);
         lSize = sizeof(int);
-        fseek ( tfile, lSize, SEEK_CUR);
-        fseek ( tfile, lSize, SEEK_CUR);
+        fseek(tfile, lSize, SEEK_CUR);
+        fseek(tfile, lSize, SEEK_CUR);
     }
 
     for (j = 0; j < num_muscles; j++) {
@@ -823,24 +805,18 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
     // load clothes
 
     if (clothes) {
-        tfile = Folders::openMandatoryFile( Folders::getResourcePath(clothesfilename), "rb" );
+        tfile = Folders::openMandatoryFile(Folders::getResourcePath(clothesfilename), "rb");
 
         // skip num_joints
         fseek(tfile, sizeof(num_joints), SEEK_CUR);
 
         for (int i = 0; i < num_joints; i++) {
             // skip joint info
-            lSize = sizeof(XYZ)
-                    + sizeof(float)
-                    + sizeof(float)
-                    + 1 //sizeof(bool)
-                    + 1 //sizeof(bool)
-                    + sizeof(int)
-                    + 1 //sizeof(bool)
-                    + 1 //sizeof(bool)
-                    + sizeof(int)
-                    + sizeof(int)
-                    + 1 //sizeof(bool)
+            lSize = sizeof(XYZ) + sizeof(float) + sizeof(float) + 1 //sizeof(bool)
+                    + 1                                             //sizeof(bool)
+                    + sizeof(int) + 1                               //sizeof(bool)
+                    + 1                                             //sizeof(bool)
+                    + sizeof(int) + sizeof(int) + 1                 //sizeof(bool)
                     + sizeof(int);
             fseek(tfile, lSize, SEEK_CUR);
         }
@@ -850,22 +826,17 @@ void Skeleton::Load(const std::string& filename,       const std::string& lowfil
 
         for (int i = 0; i < num_muscles; i++) {
             // skip muscle info
-            lSize = sizeof(float)
-                    + sizeof(float)
-                    + sizeof(float)
-                    + sizeof(float)
-                    + sizeof(float)
-                    + sizeof(int);
+            lSize = sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(int);
             fseek(tfile, lSize, SEEK_CUR);
 
             muscles[i].loadVerticesClothes(tfile, modelclothes.vertexNum);
 
             // skip more stuff
             lSize = 1; //sizeof(bool);
-            fseek ( tfile, lSize, SEEK_CUR);
+            fseek(tfile, lSize, SEEK_CUR);
             lSize = sizeof(int);
-            fseek ( tfile, lSize, SEEK_CUR);
-            fseek ( tfile, lSize, SEEK_CUR);
+            fseek(tfile, lSize, SEEK_CUR);
+            fseek(tfile, lSize, SEEK_CUR);
         }
 
         // ???

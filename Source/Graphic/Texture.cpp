@@ -76,16 +76,26 @@ void TextureRes::bind()
     glBindTexture(GL_TEXTURE_2D, id);
 }
 
-TextureRes::TextureRes(const string& _filename, bool _hasMipmap):
-    id(0), filename(_filename), hasMipmap(_hasMipmap), isSkin(false),
-    skinsize(0), data(NULL), datalen(0)
+TextureRes::TextureRes(const string& _filename, bool _hasMipmap)
+    : id(0)
+    , filename(_filename)
+    , hasMipmap(_hasMipmap)
+    , isSkin(false)
+    , skinsize(0)
+    , data(NULL)
+    , datalen(0)
 {
     load();
 }
 
-TextureRes::TextureRes(const string& _filename, bool _hasMipmap, GLubyte* array, int* skinsizep):
-    id(0), filename(_filename), hasMipmap(_hasMipmap), isSkin(true),
-    skinsize(0), data(NULL), datalen(0)
+TextureRes::TextureRes(const string& _filename, bool _hasMipmap, GLubyte* array, int* skinsizep)
+    : id(0)
+    , filename(_filename)
+    , hasMipmap(_hasMipmap)
+    , isSkin(true)
+    , skinsize(0)
+    , data(NULL)
+    , datalen(0)
 {
     load();
     *skinsizep = skinsize;

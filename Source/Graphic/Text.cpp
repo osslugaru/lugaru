@@ -58,23 +58,23 @@ void Text::BuildFont() // Build Our Font Display List
             cx = float((loop - 256) % 16) / 16.0f; // X Position Of Current Character
             cy = float((loop - 256) / 16) / 16.0f; // Y Position Of Current Character
         }
-        glNewList(base + loop, GL_COMPILE); // Start Building A List
-        glBegin(GL_QUADS); // Use A Quad For Each Character
-        glTexCoord2f(cx, 1 - cy - 0.0625f + .001); // Texture Coord (Bottom Left)
-        glVertex2i(0, 0); // Vertex Coord (Bottom Left)
+        glNewList(base + loop, GL_COMPILE);                  // Start Building A List
+        glBegin(GL_QUADS);                                   // Use A Quad For Each Character
+        glTexCoord2f(cx, 1 - cy - 0.0625f + .001);           // Texture Coord (Bottom Left)
+        glVertex2i(0, 0);                                    // Vertex Coord (Bottom Left)
         glTexCoord2f(cx + 0.0625f, 1 - cy - 0.0625f + .001); // Texture Coord (Bottom Right)
-        glVertex2i(16, 0); // Vertex Coord (Bottom Right)
-        glTexCoord2f(cx + 0.0625f, 1 - cy - .001); // Texture Coord (Top Right)
-        glVertex2i(16, 16); // Vertex Coord (Top Right)
-        glTexCoord2f(cx, 1 - cy - +.001); // Texture Coord (Top Left)
-        glVertex2i(0, 16); // Vertex Coord (Top Left)
-        glEnd(); // Done Building Our Quad (Character)
+        glVertex2i(16, 0);                                   // Vertex Coord (Bottom Right)
+        glTexCoord2f(cx + 0.0625f, 1 - cy - .001);           // Texture Coord (Top Right)
+        glVertex2i(16, 16);                                  // Vertex Coord (Top Right)
+        glTexCoord2f(cx, 1 - cy - +.001);                    // Texture Coord (Top Left)
+        glVertex2i(0, 16);                                   // Vertex Coord (Top Left)
+        glEnd();                                             // Done Building Our Quad (Character)
         if (loop < 256)
             glTranslated(10, 0, 0); // Move To The Right Of The Character
         else
             glTranslated(8, 0, 0); // Move To The Right Of The Character
-        glEndList(); // Done Building The Display List
-    } // Loop Until All 256 Are Built
+        glEndList();               // Done Building The Display List
+    }                              // Loop Until All 256 Are Built
 }
 
 void Text::_glPrint(float x, float y, const std::string& string, int set, float size, float width, float height, int start, int end, int offset) // Where The Printing Happens
@@ -82,7 +82,7 @@ void Text::_glPrint(float x, float y, const std::string& string, int set, float 
     if (set > 1) {
         set = 1;
     }
-    glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     FontTexture.bind();
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_LIGHTING);
@@ -97,14 +97,14 @@ void Text::_glPrint(float x, float y, const std::string& string, int set, float 
     glLoadIdentity();
     glTranslated(x, y, 0);
     glScalef(size, size, 1);
-    glListBase(base - 32 + (128 * set) + offset); // Choose The Font Set (0 or 1)
+    glListBase(base - 32 + (128 * set) + offset);      // Choose The Font Set (0 or 1)
     glCallLists(end - start, GL_BYTE, &string[start]); // Write The Text To The Screen
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
     glEnable(GL_DEPTH_TEST);
-    glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
 
 void Text::glPrint(float x, float y, const std::string& string, int set, float size, float width, float height, int start, int end)
@@ -131,9 +131,9 @@ void Text::glPrintOutlined(float x, float y, const std::string& string, int set,
 void Text::glPrintOutlined(float r, float g, float b, float a, float x, float y, const std::string& string, int set, float size, float width, float height, int start, int end)
 {
     glColor4f(0, 0, 0, a);
-    glPrintOutline( x - 2 * size,  y - 2 * size, string,  set,  size * 2.5 / 2,  width,  height, start, end);
+    glPrintOutline(x - 2 * size, y - 2 * size, string, set, size * 2.5 / 2, width, height, start, end);
     glColor4f(r, g, b, a);
-    glPrint( x,  y, string,  set,  size,  width,  height, start, end);
+    glPrint(x, y, string, set, size, width, height, start, end);
 }
 
 Text::Text()
@@ -148,4 +148,3 @@ Text::~Text()
         base = 0;
     }
 }
-

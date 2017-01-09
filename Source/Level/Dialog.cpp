@@ -22,9 +22,9 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Game.hpp"
 #include "Objects/Person.hpp"
-#include "Utils/binio.h"
 #include "Utils/Folders.hpp"
 #include "Utils/Input.hpp"
+#include "Utils/binio.h"
 
 extern int hostile;
 
@@ -43,7 +43,8 @@ void Dialog::loadDialogs(FILE* tfile)
     }
 }
 
-Dialog::Dialog(FILE* tfile) : gonethrough(0)
+Dialog::Dialog(FILE* tfile)
+    : gonethrough(0)
 {
     int numdialogscenes;
     funpackf(tfile, "Bi", &numdialogscenes);
@@ -110,7 +111,8 @@ DialogScene::DialogScene(FILE* tfile)
 }
 
 /* Load dialog from txt file, used by console */
-Dialog::Dialog(int type, std::string filename) : type(type)
+Dialog::Dialog(int type, std::string filename)
+    : type(type)
 {
     ifstream ipstream(Folders::getResourcePath(filename));
     ipstream.ignore(256, ':');
@@ -125,7 +127,7 @@ Dialog::Dialog(int type, std::string filename) : type(type)
     ipstream.close();
 }
 
-DialogScene::DialogScene(ifstream &ipstream)
+DialogScene::DialogScene(ifstream& ipstream)
 {
     ipstream.ignore(256, ':');
     ipstream.ignore(256, ':');
@@ -154,13 +156,13 @@ void Dialog::tick(int id)
     bool special = (type > 9);
 
     if ((!hostile || (type > 40) && (type < 50)) &&
-            (playerId < Person::players.size()) &&
-            (playerId > 0) &&
-            ((gonethrough == 0) || !special) &&
-            (special || Input::isKeyPressed(Game::attackkey))) {
+        (playerId < Person::players.size()) &&
+        (playerId > 0) &&
+        ((gonethrough == 0) || !special) &&
+        (special || Input::isKeyPressed(Game::attackkey))) {
         if ((distsq(&Person::players[0]->coords, &Person::players[playerId]->coords) < 6) ||
-                (Person::players[playerId]->howactive >= typedead1) ||
-                (type > 40) && (type < 50)) {
+            (Person::players[playerId]->howactive >= typedead1) ||
+            (type > 40) && (type < 50)) {
             whichdialogue = id;
             play();
             dialoguetime = 0;

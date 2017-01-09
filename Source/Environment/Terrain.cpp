@@ -22,8 +22,8 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Game.hpp"
 #include "Objects/Object.hpp"
-#include "Utils/Folders.hpp"
 #include "Tutorial.hpp"
+#include "Utils/Folders.hpp"
 
 extern XYZ viewer;
 extern float viewdistance;
@@ -42,7 +42,7 @@ extern bool skyboxtexture;
 
 //Functions
 
-int Terrain::lineTerrain(XYZ p1, XYZ p2, XYZ *p)
+int Terrain::lineTerrain(XYZ p1, XYZ p2, XYZ* p)
 {
     static int i, j, k;
     static float distance;
@@ -277,7 +277,6 @@ void Terrain::UpdateVertexArray(int whichx, int whichy)
 {
     static int i, j, a, b, c, patch_size, stepsize;
 
-
     numtris[whichx][whichy] = 0;
 
     patch_size = size / subdivision;
@@ -355,9 +354,9 @@ void Terrain::UpdateVertexArray(int whichx, int whichy)
     minypatch[whichx][whichy] = 10000;
     for (a = 0; a < size / subdivision; a++) {
         for (b = 0; b < size / subdivision; b++) {
-            if (heightmap[(size / subdivision)*whichx + a][(size / subdivision)*whichy + b]*scale > maxypatch[whichx][whichy])
+            if (heightmap[(size / subdivision) * whichx + a][(size / subdivision) * whichy + b] * scale > maxypatch[whichx][whichy])
                 maxypatch[whichx][whichy] = heightmap[(size / subdivision) * whichx + a][(size / subdivision) * whichy + b] * scale;
-            if (heightmap[(size / subdivision)*whichx + a][(size / subdivision)*whichy + b]*scale < minypatch[whichx][whichy])
+            if (heightmap[(size / subdivision) * whichx + a][(size / subdivision) * whichy + b] * scale < minypatch[whichx][whichy])
                 minypatch[whichx][whichy] = heightmap[(size / subdivision) * whichx + a][(size / subdivision) * whichy + b] * scale;
         }
     }
@@ -366,8 +365,8 @@ void Terrain::UpdateVertexArray(int whichx, int whichy)
         heightypatch[whichx][whichy] = size / subdivision * scale;
     avgypatch[whichx][whichy] = (minypatch[whichx][whichy] + maxypatch[whichx][whichy]) / 2;
 
-    for (i = whichx * size / subdivision; i < (whichx + 1)*size / subdivision - 1; i++) {
-        for (j = whichy * size / subdivision; j < (whichy + 1)*size / subdivision - 1; j++) {
+    for (i = whichx * size / subdivision; i < (whichx + 1) * size / subdivision - 1; i++) {
+        for (j = whichy * size / subdivision; j < (whichy + 1) * size / subdivision - 1; j++) {
             triangles[(i * (size - 1) * 2) + (j * 2)][0].x = i * scale;
             triangles[(i * (size - 1) * 2) + (j * 2)][0].y = heightmap[i][j] * scale;
             triangles[(i * (size - 1) * 2) + (j * 2)][0].z = j * scale;
@@ -393,9 +392,7 @@ void Terrain::UpdateVertexArray(int whichx, int whichy)
             triangles[(i * (size - 1) * 2) + (j * 2) + 1][2].z = j * scale + 1 * scale;
         }
     }
-
 }
-
 
 bool Terrain::load(const std::string& fileName)
 {
@@ -447,7 +444,6 @@ bool Terrain::load(const std::string& fileName)
         }
     }
     Game::LoadingScreen();
-
 
     for (i = 0; i < size; i++) {
         for (j = 0; j < size; j++) {
@@ -628,7 +624,6 @@ bool Terrain::load(const std::string& fileName)
                 if (opacityother[i][j] != 1 && textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] == allsecond)
                     textureness[(int)(x * subdivision / size)][(int)(y * subdivision / size)] = mixed;
                 j--;
-
             }
         }
     }
@@ -681,7 +676,6 @@ void Terrain::CalculateNormals()
             normals[i][j] = normals[i][j] + facenormal;
             normals[i][j + 1] = normals[i][j + 1] + facenormal;
             normals[i + 1][j] = normals[i + 1][j] + facenormal;
-
 
             a.x = i + 1;
             a.y = heightmap[i + 1][j];
@@ -799,7 +793,6 @@ void Terrain::drawpatchotherother(int whichx, int whichy)
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
 }
-
 
 float Terrain::getHeight(float pointx, float pointz)
 {
@@ -975,9 +968,9 @@ void Terrain::draw(int layer)
                 glPushMatrix();
                 if (frustum.CubeInFrustum(i * patch_size + patch_size * .5, avgypatch[i][j], j * patch_size + patch_size * .5, heightypatch[i][j] / 2)) {
                     if (environment == desertenvironment && distance[i][j] > viewdistsquared / 4)
-                        glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, blurness);
+                        glTexEnvf(GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, blurness);
                     else if (environment == desertenvironment)
-                        glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, 0 );
+                        glTexEnvf(GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, 0);
                     if (!layer && textureness[i][j] != allsecond)
                         drawpatch(i, j, opacity);
                     if (layer == 1 && textureness[i][j] != allfirst)
@@ -990,7 +983,7 @@ void Terrain::draw(int layer)
         }
     }
     if (environment == desertenvironment)
-        glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, 0 );
+        glTexEnvf(GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, 0);
 }
 
 void Terrain::drawdecals()
@@ -1061,7 +1054,7 @@ void Terrain::drawdecals()
                 if (distancemult >= 1)
                     glColor4f(1, 1, 1, decals[i].opacity);
                 if (distancemult < 1)
-                    glColor4f(1, 1, 1, decals[i].opacity*distancemult);
+                    glColor4f(1, 1, 1, decals[i].opacity * distancemult);
             }
             if (decals[i].type == footprintdecal || decals[i].type == bodyprintdecal) {
                 distancemult = (viewdistsquared - (distsq(&viewer, &decals[i].position) - (viewdistsquared * fadestart)) * (1 / (1 - fadestart))) / viewdistsquared;
@@ -1071,7 +1064,7 @@ void Terrain::drawdecals()
                         glColor4f(1, 1, 1, decals[i].opacity * (5 - decals[i].alivetime) / 2);
                 }
                 if (distancemult < 1) {
-                    glColor4f(1, 1, 1, decals[i].opacity*distancemult);
+                    glColor4f(1, 1, 1, decals[i].opacity * distancemult);
                     if (decals[i].alivetime > 3)
                         glColor4f(1, 1, 1, decals[i].opacity * (5 - decals[i].alivetime) / 2 * distancemult);
                 }
@@ -1081,14 +1074,14 @@ void Terrain::drawdecals()
                 if (distancemult >= 1) {
                     glColor4f(decals[i].brightness, decals[i].brightness, decals[i].brightness, decals[i].opacity);
                     if (decals[i].alivetime < 4)
-                        glColor4f(decals[i].brightness, decals[i].brightness, decals[i].brightness, decals[i].opacity*decals[i].alivetime*.25);
+                        glColor4f(decals[i].brightness, decals[i].brightness, decals[i].brightness, decals[i].opacity * decals[i].alivetime * .25);
                     if (decals[i].alivetime > 58)
                         glColor4f(decals[i].brightness, decals[i].brightness, decals[i].brightness, decals[i].opacity * (60 - decals[i].alivetime) / 2);
                 }
                 if (distancemult < 1) {
-                    glColor4f(decals[i].brightness, decals[i].brightness, decals[i].brightness, decals[i].opacity*distancemult);
+                    glColor4f(decals[i].brightness, decals[i].brightness, decals[i].brightness, decals[i].opacity * distancemult);
                     if (decals[i].alivetime < 4)
-                        glColor4f(decals[i].brightness, decals[i].brightness, decals[i].brightness, decals[i].opacity*decals[i].alivetime*distancemult * .25);
+                        glColor4f(decals[i].brightness, decals[i].brightness, decals[i].brightness, decals[i].opacity * decals[i].alivetime * distancemult * .25);
                     if (decals[i].alivetime > 58)
                         glColor4f(decals[i].brightness, decals[i].brightness, decals[i].brightness, decals[i].opacity * (60 - decals[i].alivetime) / 2 * distancemult);
                 }
@@ -1288,12 +1281,18 @@ void Terrain::DoShadows()
             colors[i][j][1] = light.color[1] * brightness + light.ambient[1];
             colors[i][j][2] = light.color[2] * brightness + light.ambient[2];
 
-            if (colors[i][j][0] > 1) colors[i][j][0] = 1;
-            if (colors[i][j][1] > 1) colors[i][j][1] = 1;
-            if (colors[i][j][2] > 1) colors[i][j][2] = 1;
-            if (colors[i][j][0] < 0) colors[i][j][0] = 0;
-            if (colors[i][j][1] < 0) colors[i][j][1] = 0;
-            if (colors[i][j][2] < 0) colors[i][j][2] = 0;
+            if (colors[i][j][0] > 1)
+                colors[i][j][0] = 1;
+            if (colors[i][j][1] > 1)
+                colors[i][j][1] = 1;
+            if (colors[i][j][2] > 1)
+                colors[i][j][2] = 1;
+            if (colors[i][j][0] < 0)
+                colors[i][j][0] = 0;
+            if (colors[i][j][1] < 0)
+                colors[i][j][1] = 0;
+            if (colors[i][j][2] < 0)
+                colors[i][j][2] = 0;
         }
     }
 

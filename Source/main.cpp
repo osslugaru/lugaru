@@ -36,9 +36,9 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 using namespace Game;
 
 #ifdef WIN32
+#include "win-res/resource.hpp"
 #include <shellapi.h>
 #include <windows.h>
-#include "win-res/resource.hpp"
 #endif
 
 extern float multiplier;
@@ -56,11 +56,11 @@ extern float slomofreq;
 
 extern int difficulty;
 
-extern SDL_Window *sdlwindow;
+extern SDL_Window* sdlwindow;
 
 using namespace std;
 
-set<pair<int,int>> resolutions;
+set<pair<int, int>> resolutions;
 
 // statics/globals (internal only) ------------------------------------------
 
@@ -75,45 +75,45 @@ int kContextHeight;
 
 void initGL()
 {
-    glClear( GL_COLOR_BUFFER_BIT );
+    glClear(GL_COLOR_BUFFER_BIT);
     swap_gl_buffers();
 
     // clear all states
-    glDisable( GL_ALPHA_TEST);
-    glDisable( GL_BLEND);
-    glDisable( GL_DEPTH_TEST);
-    glDisable( GL_FOG);
-    glDisable( GL_LIGHTING);
-    glDisable( GL_LOGIC_OP);
-    glDisable( GL_TEXTURE_1D);
-    glDisable( GL_TEXTURE_2D);
-    glPixelTransferi( GL_MAP_COLOR, GL_FALSE);
-    glPixelTransferi( GL_RED_SCALE, 1);
-    glPixelTransferi( GL_RED_BIAS, 0);
-    glPixelTransferi( GL_GREEN_SCALE, 1);
-    glPixelTransferi( GL_GREEN_BIAS, 0);
-    glPixelTransferi( GL_BLUE_SCALE, 1);
-    glPixelTransferi( GL_BLUE_BIAS, 0);
-    glPixelTransferi( GL_ALPHA_SCALE, 1);
-    glPixelTransferi( GL_ALPHA_BIAS, 0);
+    glDisable(GL_ALPHA_TEST);
+    glDisable(GL_BLEND);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_FOG);
+    glDisable(GL_LIGHTING);
+    glDisable(GL_LOGIC_OP);
+    glDisable(GL_TEXTURE_1D);
+    glDisable(GL_TEXTURE_2D);
+    glPixelTransferi(GL_MAP_COLOR, GL_FALSE);
+    glPixelTransferi(GL_RED_SCALE, 1);
+    glPixelTransferi(GL_RED_BIAS, 0);
+    glPixelTransferi(GL_GREEN_SCALE, 1);
+    glPixelTransferi(GL_GREEN_BIAS, 0);
+    glPixelTransferi(GL_BLUE_SCALE, 1);
+    glPixelTransferi(GL_BLUE_BIAS, 0);
+    glPixelTransferi(GL_ALPHA_SCALE, 1);
+    glPixelTransferi(GL_ALPHA_BIAS, 0);
 
     // set initial rendering states
-    glShadeModel( GL_SMOOTH);
-    glClearDepth( 1.0f);
-    glDepthFunc( GL_LEQUAL);
-    glDepthMask( GL_TRUE);
-    glEnable( GL_DEPTH_TEST);
-    glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-    glCullFace( GL_FRONT);
-    glEnable( GL_CULL_FACE);
-    glEnable( GL_LIGHTING);
-    glEnable( GL_DITHER);
-    glEnable( GL_COLOR_MATERIAL);
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glAlphaFunc( GL_GREATER, 0.5f);
+    glShadeModel(GL_SMOOTH);
+    glClearDepth(1.0f);
+    glDepthFunc(GL_LEQUAL);
+    glDepthMask(GL_TRUE);
+    glEnable(GL_DEPTH_TEST);
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    glCullFace(GL_FRONT);
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_DITHER);
+    glEnable(GL_COLOR_MATERIAL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glAlphaFunc(GL_GREATER, 0.5f);
 
-    if ( CanInitStereo(stereomode) ) {
+    if (CanInitStereo(stereomode)) {
         InitStereo(stereomode);
     } else {
         fprintf(stderr, "Failed to initialize stereo, disabling.\n");
@@ -133,7 +133,7 @@ void toggleFullscreen()
     SDL_SetWindowFullscreen(sdlwindow, flags);
 }
 
-SDL_bool sdlEventProc(const SDL_Event &e)
+SDL_bool sdlEventProc(const SDL_Event& e)
 {
     switch (e.type) {
         case SDL_QUIT:
@@ -143,12 +143,12 @@ SDL_bool sdlEventProc(const SDL_Event &e)
             if (e.window.event == SDL_WINDOWEVENT_CLOSE) {
                 return SDL_FALSE;
             }
-        break;
+            break;
 
         case SDL_MOUSEMOTION:
             deltah += e.motion.xrel;
             deltav += e.motion.yrel;
-        break;
+            break;
 
         case SDL_KEYDOWN:
             if ((e.key.keysym.scancode == SDL_SCANCODE_G) &&
@@ -158,10 +158,10 @@ SDL_bool sdlEventProc(const SDL_Event &e)
                     mode = (SDL_GetWindowGrab(sdlwindow) ? SDL_FALSE : SDL_TRUE);
                 SDL_SetWindowGrab(sdlwindow, mode);
                 SDL_SetRelativeMouseMode(mode);
-            } else if ( (e.key.keysym.scancode == SDL_SCANCODE_RETURN) && (e.key.keysym.mod & KMOD_ALT) ) {
+            } else if ((e.key.keysym.scancode == SDL_SCANCODE_RETURN) && (e.key.keysym.mod & KMOD_ALT)) {
                 toggleFullscreen();
             }
-        break;
+            break;
     }
     return SDL_TRUE;
 }
@@ -170,7 +170,7 @@ SDL_bool sdlEventProc(const SDL_Event &e)
 
 static Point gMidPoint;
 
-bool SetUp ()
+bool SetUp()
 {
     LOGFUNC;
 
@@ -203,8 +203,8 @@ bool SetUp ()
             if (SDL_GetDisplayMode(displayIdx, i, &mode) == -1)
                 continue;
             if ((mode.w < 640) || (mode.h < 480))
-                continue;  // sane lower limit.
-            pair<int,int> resolution(mode.w, mode.h);
+                continue; // sane lower limit.
+            pair<int, int> resolution(mode.w, mode.h);
             resolutions.insert(resolution);
         }
     }
@@ -220,7 +220,7 @@ bool SetUp ()
     if (commandLineOptions[SHOWRESOLUTIONS]) {
         printf("Available resolutions:\n");
         for (auto resolution = resolutions.begin(); resolution != resolutions.end(); resolution++) {
-            printf("  %d x %d\n", (int) resolution->first, (int) resolution->second);
+            printf("  %d x %d\n", (int)resolution->first, (int)resolution->second);
         }
     }
 
@@ -272,14 +272,13 @@ bool SetUp ()
     SDL_GL_MakeCurrent(sdlwindow, glctx);
 
     int dblbuf = 0;
-    if ((SDL_GL_GetAttribute(SDL_GL_DOUBLEBUFFER, &dblbuf) == -1) || (!dblbuf))
-    {
+    if ((SDL_GL_GetAttribute(SDL_GL_DOUBLEBUFFER, &dblbuf) == -1) || (!dblbuf)) {
         fprintf(stderr, "Failed to get a double-buffered context.\n");
         SDL_Quit();
         return false;
     }
 
-    if (SDL_GL_SetSwapInterval(-1) == -1)  // try swap_tear first.
+    if (SDL_GL_SetSwapInterval(-1) == -1) // try swap_tear first.
         SDL_GL_SetSwapInterval(1);
 
     SDL_ShowCursor(0);
@@ -301,7 +300,7 @@ bool SetUp ()
     newscreenheight = screenheight;
 
     /* If saved resolution is not in the list, add it to the list (so that it’s selectable in the options) */
-    pair<int,int> startresolution(width,height);
+    pair<int, int> startresolution(width, height);
     if (resolutions.find(startresolution) == resolutions.end()) {
         resolutions.insert(startresolution);
     }
@@ -311,11 +310,10 @@ bool SetUp ()
     return true;
 }
 
-
 static void DoMouse()
 {
 
-    if (mainmenu || ( (abs(deltah) < 10 * realmultiplier * 1000) && (abs(deltav) < 10 * realmultiplier * 1000) )) {
+    if (mainmenu || ((abs(deltah) < 10 * realmultiplier * 1000) && (abs(deltav) < 10 * realmultiplier * 1000))) {
         deltah *= usermousesensitivity;
         deltav *= usermousesensitivity;
         mousecoordh += deltah;
@@ -329,17 +327,16 @@ static void DoMouse()
         else if (mousecoordv >= kContextHeight)
             mousecoordv = kContextHeight - 1;
     }
-
 }
 
-void DoFrameRate (int update)
+void DoFrameRate(int update)
 {
     static long frames = 0;
 
-    static AbsoluteTime time = {0, 0};
-    static AbsoluteTime frametime = {0, 0};
-    AbsoluteTime currTime = UpTime ();
-    double deltaTime = (float) AbsoluteDeltaToDuration (currTime, frametime);
+    static AbsoluteTime time = { 0, 0 };
+    static AbsoluteTime frametime = { 0, 0 };
+    AbsoluteTime currTime = UpTime();
+    double deltaTime = (float)AbsoluteDeltaToDuration(currTime, frametime);
 
     if (0 > deltaTime) // if negative microseconds
         deltaTime /= -1000000.0;
@@ -354,7 +351,7 @@ void DoFrameRate (int update)
     if (update)
         frametime = currTime; // reset for next time interval
 
-    deltaTime = (float) AbsoluteDeltaToDuration (currTime, time);
+    deltaTime = (float)AbsoluteDeltaToDuration(currTime, time);
 
     if (0 > deltaTime) // if negative microseconds
         deltaTime /= -1000000.0;
@@ -369,8 +366,7 @@ void DoFrameRate (int update)
     }
 }
 
-
-void DoUpdate ()
+void DoUpdate()
 {
     static float sps = 200;
     static int count;
@@ -444,7 +440,7 @@ void DoUpdate ()
             num_channels = 0;
         }
     */
-    if ( stereomode == stereoNone ) {
+    if (stereomode == stereoNone) {
         DrawGLScene(stereoCenter);
     } else {
         DrawGLScene(stereoLeft);
@@ -454,8 +450,7 @@ void DoUpdate ()
 
 // --------------------------------------------------------------------------
 
-
-void CleanUp (void)
+void CleanUp(void)
 {
     LOGFUNC;
 
@@ -471,30 +466,28 @@ static bool IsFocused()
     return ((SDL_GetWindowFlags(sdlwindow) & SDL_WINDOW_INPUT_FOCUS) != 0);
 }
 
-
-
 #ifndef WIN32
 // (code lifted from physfs: http://icculus.org/physfs/ ... zlib license.)
-static char *findBinaryInPath(const char *bin, char *envr)
+static char* findBinaryInPath(const char* bin, char* envr)
 {
     size_t alloc_size = 0;
-    char *exe = NULL;
-    char *start = envr;
-    char *ptr;
+    char* exe = NULL;
+    char* start = envr;
+    char* ptr;
 
     do {
         size_t size;
-        ptr = strchr(start, ':');  /* find next $PATH separator. */
+        ptr = strchr(start, ':'); /* find next $PATH separator. */
         if (ptr)
             *ptr = '\0';
 
         size = strlen(start) + strlen(bin) + 2;
         if (size > alloc_size) {
-            char *x = (char *) realloc(exe, size);
+            char* x = (char*)realloc(exe, size);
             if (x == NULL) {
                 if (exe != NULL)
                     free(exe);
-                return(NULL);
+                return (NULL);
             } /* if */
 
             alloc_size = size;
@@ -508,31 +501,30 @@ static char *findBinaryInPath(const char *bin, char *envr)
         strcat(exe, bin);
 
         if (access(exe, X_OK) == 0) { /* Exists as executable? We're done. */
-            strcpy(exe, start);  /* i'm lazy. piss off. */
-            return(exe);
+            strcpy(exe, start);       /* i'm lazy. piss off. */
+            return (exe);
         } /* if */
 
-        start = ptr + 1;  /* start points to beginning of next element. */
+        start = ptr + 1; /* start points to beginning of next element. */
     } while (ptr != NULL);
 
     if (exe != NULL)
         free(exe);
 
-    return(NULL);  /* doesn't exist in path. */
+    return (NULL); /* doesn't exist in path. */
 } /* findBinaryInPath */
 
-
-char *calcBaseDir(const char *argv0)
+char* calcBaseDir(const char* argv0)
 {
     /* If there isn't a path on argv0, then look through the $PATH for it. */
-    char *retval;
-    char *envr;
+    char* retval;
+    char* envr;
 
     if (strchr(argv0, '/')) {
         retval = strdup(argv0);
         if (retval)
-            *((char *) strrchr(retval, '/')) = '\0';
-        return(retval);
+            *((char*)strrchr(retval, '/')) = '\0';
+        return (retval);
     }
 
     envr = getenv("PATH");
@@ -543,21 +535,21 @@ char *calcBaseDir(const char *argv0)
         return NULL;
     retval = findBinaryInPath(argv0, envr);
     free(envr);
-    return(retval);
+    return (retval);
 }
 
-static inline void chdirToAppPath(const char *argv0)
+static inline void chdirToAppPath(const char* argv0)
 {
-    char *dir = calcBaseDir(argv0);
+    char* dir = calcBaseDir(argv0);
     if (dir) {
 #if (defined(__APPLE__) && defined(__MACH__))
         // Chop off /Contents/MacOS if it's at the end of the string, so we
         //  land in the base of the app bundle.
         const size_t len = strlen(dir);
-        const char *bundledirs = "/Contents/MacOS";
+        const char* bundledirs = "/Contents/MacOS";
         const size_t bundledirslen = strlen(bundledirs);
         if (len > bundledirslen) {
-            char *ptr = (dir + len) - bundledirslen;
+            char* ptr = (dir + len) - bundledirslen;
             if (strcasecmp(ptr, bundledirs) == 0)
                 *ptr = '\0';
         }
@@ -569,28 +561,29 @@ static inline void chdirToAppPath(const char *argv0)
 #endif
 
 const option::Descriptor usage[] =
-{
-    {UNKNOWN,           0,                      "",     "",                 option::Arg::None,  "USAGE: lugaru [options]\n\n"
-                                                                                                "Options:" },
-    {HELP,              0,                      "h",    "help",             option::Arg::None,  " -h, --help        Print usage and exit." },
-    {FULLSCREEN,        1,                      "f",    "fullscreen",       option::Arg::None,  " -f, --fullscreen  Start the game in fullscreen mode." },
-    {FULLSCREEN,        0,                      "w",    "windowed",         option::Arg::None,  " -w, --windowed    Start the game in windowed mode (default)." },
-    {NOMOUSEGRAB,       1,                      "",     "nomousegrab",      option::Arg::None,  " --nomousegrab     Disable mousegrab." },
-    {NOMOUSEGRAB,       0,                      "",     "mousegrab",        option::Arg::None,  " --mousegrab       Enable mousegrab (default)." },
-    {SOUND,             1,                      "",     "nosound",          option::Arg::None,  " --nosound         Disable sound." },
-    {OPENALINFO,        0,                      "",     "openal-info",      option::Arg::None,  " --openal-info     Print info about OpenAL at launch." },
-    {SHOWRESOLUTIONS,   0,                      "",     "showresolutions",  option::Arg::None,  " --showresolutions List the resolutions found by SDL at launch." },
-    {DEVTOOLS,          0,                      "d",    "devtools",         option::Arg::None,  " -d, --devtools    Enable dev tools: console, level editor and debug info." },
-    {0,0,0,0,0,0}
-};
+    {
+      { UNKNOWN, 0, "", "", option::Arg::None, "USAGE: lugaru [options]\n\n"
+                                               "Options:" },
+      { HELP, 0, "h", "help", option::Arg::None, " -h, --help        Print usage and exit." },
+      { FULLSCREEN, 1, "f", "fullscreen", option::Arg::None, " -f, --fullscreen  Start the game in fullscreen mode." },
+      { FULLSCREEN, 0, "w", "windowed", option::Arg::None, " -w, --windowed    Start the game in windowed mode (default)." },
+      { NOMOUSEGRAB, 1, "", "nomousegrab", option::Arg::None, " --nomousegrab     Disable mousegrab." },
+      { NOMOUSEGRAB, 0, "", "mousegrab", option::Arg::None, " --mousegrab       Enable mousegrab (default)." },
+      { SOUND, 1, "", "nosound", option::Arg::None, " --nosound         Disable sound." },
+      { OPENALINFO, 0, "", "openal-info", option::Arg::None, " --openal-info     Print info about OpenAL at launch." },
+      { SHOWRESOLUTIONS, 0, "", "showresolutions", option::Arg::None, " --showresolutions List the resolutions found by SDL at launch." },
+      { DEVTOOLS, 0, "d", "devtools", option::Arg::None, " -d, --devtools    Enable dev tools: console, level editor and debug info." },
+      { 0, 0, 0, 0, 0, 0 }
+    };
 
 option::Option commandLineOptions[commandLineOptionsNumber];
 option::Option* commandLineOptionsBuffer;
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
-    argc-=(argc>0); argv+=(argc>0); // skip program name argv[0] if present
-    option::Stats  stats(true, usage, argc, argv);
+    argc -= (argc > 0);
+    argv += (argc > 0); // skip program name argv[0] if present
+    option::Stats stats(true, usage, argc, argv);
     if (commandLineOptionsNumber != stats.options_max) {
         std::cerr << "Found incorrect command line option number" << std::endl;
         return 1;
@@ -616,7 +609,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    // !!! FIXME: we could use a Win32 API for this.  --ryan.
+// !!! FIXME: we could use a Win32 API for this.  --ryan.
 #ifndef WIN32
     chdirToAppPath(argv[0]);
 #endif
@@ -629,7 +622,7 @@ int main(int argc, char **argv)
         {
             newGame();
 
-            if (!SetUp ()) {
+            if (!SetUp()) {
                 delete[] commandLineOptionsBuffer;
                 return 42;
             }
@@ -652,7 +645,7 @@ int main(int argc, char **argv)
                     SDL_Event e;
                     if (!waiting) {
                         // message pump
-                        while ( SDL_PollEvent( &e ) ) {
+                        while (SDL_PollEvent(&e)) {
                             if (!sdlEventProc(e)) {
                                 gameDone = true;
                                 break;
@@ -677,7 +670,7 @@ int main(int argc, char **argv)
             deleteGame();
         }
 
-        CleanUp ();
+        CleanUp();
 
         return 0;
 #ifdef NDEBUG

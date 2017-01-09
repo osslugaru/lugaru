@@ -174,7 +174,7 @@ bool LoadSettings()
 {
     errno = 0;
     ifstream ipstream(Folders::getConfigFilePath(), std::ios::in);
-    if ( ipstream.fail() ) {
+    if (ipstream.fail()) {
         perror(("Couldn't read config file " + Folders::getConfigFilePath()).c_str());
         return false;
     }
@@ -183,118 +183,117 @@ bool LoadSettings()
 
     printf("Loading config\n");
     while (!ipstream.eof()) {
-        ipstream.getline( setting, sizeof(setting) );
+        ipstream.getline(setting, sizeof(setting));
 
         // skip blank lines
         // assume lines starting with spaces are all blank
-        if ( strlen(setting) == 0 || setting[0] == ' ' || setting[0] == '\t')
+        if (strlen(setting) == 0 || setting[0] == ' ' || setting[0] == '\t')
             continue;
         //~ printf("setting : %s\n",setting);
 
-        if ( ipstream.eof() || ipstream.fail() ) {
+        if (ipstream.eof() || ipstream.fail()) {
             fprintf(stderr, "Error reading config file: Got setting name '%s', but value can't be read\n", setting);
             ipstream.close();
             return false;
         }
 
-
-        if ( !strncmp(setting, "Screenwidth", 11) ) {
+        if (!strncmp(setting, "Screenwidth", 11)) {
             ipstream >> kContextWidth;
-        } else if ( !strncmp(setting, "Screenheight", 12) ) {
+        } else if (!strncmp(setting, "Screenheight", 12)) {
             ipstream >> kContextHeight;
-        } else if ( !strncmp(setting, "Fullscreen", 10) ) {
+        } else if (!strncmp(setting, "Fullscreen", 10)) {
             ipstream >> fullscreen;
-        } else if ( !strncmp(setting, "Mouse sensitivity", 17) ) {
+        } else if (!strncmp(setting, "Mouse sensitivity", 17)) {
             ipstream >> usermousesensitivity;
-        } else if ( !strncmp(setting, "Blur", 4) ) {
+        } else if (!strncmp(setting, "Blur", 4)) {
             ipstream >> ismotionblur;
-        } else if ( !strncmp(setting, "Overall Detail", 14) ) {
+        } else if (!strncmp(setting, "Overall Detail", 14)) {
             ipstream >> detail;
-        } else if ( !strncmp(setting, "Floating jump", 13) ) {
+        } else if (!strncmp(setting, "Floating jump", 13)) {
             ipstream >> floatjump;
-        } else if ( !strncmp(setting, "Mouse jump", 10) ) {
+        } else if (!strncmp(setting, "Mouse jump", 10)) {
             ipstream >> mousejump;
-        } else if ( !strncmp(setting, "Ambient sound", 13) ) {
+        } else if (!strncmp(setting, "Ambient sound", 13)) {
             ipstream >> ambientsound;
-        } else if ( !strncmp(setting, "Blood", 5) ) {
+        } else if (!strncmp(setting, "Blood", 5)) {
             ipstream >> bloodtoggle;
-        } else if ( !strncmp(setting, "Auto slomo", 10) ) {
+        } else if (!strncmp(setting, "Auto slomo", 10)) {
             ipstream >> autoslomo;
-        } else if ( !strncmp(setting, "Foliage", 7) ) {
+        } else if (!strncmp(setting, "Foliage", 7)) {
             ipstream >> foliage;
-        } else if ( !strncmp(setting, "Music", 5) ) {
+        } else if (!strncmp(setting, "Music", 5)) {
             ipstream >> musictoggle;
-        } else if ( !strncmp(setting, "Trilinear", 9) ) {
+        } else if (!strncmp(setting, "Trilinear", 9)) {
             ipstream >> trilinear;
-        } else if ( !strncmp(setting, "Decals", 6) ) {
+        } else if (!strncmp(setting, "Decals", 6)) {
             ipstream >> decalstoggle;
-        } else if ( !strncmp(setting, "Invert mouse", 12) ) {
+        } else if (!strncmp(setting, "Invert mouse", 12)) {
             ipstream >> invertmouse;
-        } else if ( !strncmp(setting, "Gamespeed", 9) ) {
+        } else if (!strncmp(setting, "Gamespeed", 9)) {
             ipstream >> gamespeed;
             oldgamespeed = gamespeed;
             if (oldgamespeed == 0) {
                 gamespeed = 1;
                 oldgamespeed = 1;
             }
-        } else if ( !strncmp(setting, "Damage effects", 14) ) {
+        } else if (!strncmp(setting, "Damage effects", 14)) {
             ipstream >> damageeffects;
-        } else if ( !strncmp(setting, "Text", 4) ) {
+        } else if (!strncmp(setting, "Text", 4)) {
             ipstream >> texttoggle;
-        } else if ( !strncmp(setting, "Devtools", 8) ) {
+        } else if (!strncmp(setting, "Devtools", 8)) {
             ipstream >> devtools;
-        } else if ( !strncmp(setting, "Show Points", 11) ) {
+        } else if (!strncmp(setting, "Show Points", 11)) {
             ipstream >> showpoints;
-        } else if ( !strncmp(setting, "Always Blur", 11) ) {
+        } else if (!strncmp(setting, "Always Blur", 11)) {
             ipstream >> alwaysblur;
-        } else if ( !strncmp(setting, "Immediate mode ", 15) ) {
+        } else if (!strncmp(setting, "Immediate mode ", 15)) {
             ipstream >> immediate;
-        } else if ( !strncmp(setting, "Velocity blur", 13) ) {
+        } else if (!strncmp(setting, "Velocity blur", 13)) {
             ipstream >> velocityblur;
-        } else if ( !strncmp(setting, "Volume", 6) ) {
+        } else if (!strncmp(setting, "Volume", 6)) {
             ipstream >> volume;
-        } else if ( !strncmp(setting, "Forward key", 11) ) {
+        } else if (!strncmp(setting, "Forward key", 11)) {
             ipstream >> forwardkey;
-        } else if ( !strncmp(setting, "Back key", 8) ) {
+        } else if (!strncmp(setting, "Back key", 8)) {
             ipstream >> backkey;
-        } else if ( !strncmp(setting, "Left key", 8) ) {
+        } else if (!strncmp(setting, "Left key", 8)) {
             ipstream >> leftkey;
-        } else if ( !strncmp(setting, "Right key", 9) ) {
+        } else if (!strncmp(setting, "Right key", 9)) {
             ipstream >> rightkey;
-        } else if ( !strncmp(setting, "Jump key", 8) ) {
+        } else if (!strncmp(setting, "Jump key", 8)) {
             ipstream >> jumpkey;
-        } else if ( !strncmp(setting, "Crouch key", 10) ) {
+        } else if (!strncmp(setting, "Crouch key", 10)) {
             ipstream >> crouchkey;
-        } else if ( !strncmp(setting, "Draw key", 8) ) {
+        } else if (!strncmp(setting, "Draw key", 8)) {
             ipstream >> drawkey;
-        } else if ( !strncmp(setting, "Throw key", 9) ) {
+        } else if (!strncmp(setting, "Throw key", 9)) {
             ipstream >> throwkey;
-        } else if ( !strncmp(setting, "Attack key", 10) ) {
+        } else if (!strncmp(setting, "Attack key", 10)) {
             ipstream >> attackkey;
-        } else if ( !strncmp(setting, "Console key", 11) ) {
+        } else if (!strncmp(setting, "Console key", 11)) {
             ipstream >> consolekey;
-        } else if ( !strncmp(setting, "Damage bar", 10) ) {
+        } else if (!strncmp(setting, "Damage bar", 10)) {
             ipstream >> showdamagebar;
-        } else if ( !strncmp(setting, "StereoMode", 10) ) {
+        } else if (!strncmp(setting, "StereoMode", 10)) {
             int i;
             ipstream >> i;
             stereomode = (StereoMode)i;
-        } else if ( !strncmp(setting, "StereoSeparation", 16) ) {
+        } else if (!strncmp(setting, "StereoSeparation", 16)) {
             ipstream >> stereoseparation;
-        } else if ( !strncmp(setting, "StereoReverse", 13) ) {
+        } else if (!strncmp(setting, "StereoReverse", 13)) {
             ipstream >> stereoreverse;
         } else {
             ipstream >> string;
             fprintf(stderr, "Unknown config option '%s' with value '%s'. Ignoring.\n", setting, string);
         }
 
-        if ( ipstream.fail() ) {
+        if (ipstream.fail()) {
             fprintf(stderr, "Error reading config file: EOF reached when trying to read value for setting '%s'.\n", setting);
             ipstream.close();
             return false;
         }
 
-        if ( ipstream.bad() ) {
+        if (ipstream.bad()) {
             fprintf(stderr, "Error reading config file: Failed to read value for setting '%s'.\n", setting);
             ipstream.close();
             return false;

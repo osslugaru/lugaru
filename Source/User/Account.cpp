@@ -34,7 +34,9 @@ extern bool devtools;
 vector<Account> Account::accounts;
 int Account::i_active = -1;
 
-Account::Account(const string& name) : name(name), campaignProgress()
+Account::Account(const string& name)
+    : name(name)
+    , campaignProgress()
 {
     difficulty = 0;
     progress = 0;
@@ -46,7 +48,8 @@ Account::Account(const string& name) : name(name), campaignProgress()
     setCurrentCampaign("main");
 }
 
-Account::Account(FILE* tfile) : Account("")
+Account::Account(FILE* tfile)
+    : Account("")
 {
     funpackf(tfile, "Bi", &difficulty);
     funpackf(tfile, "Bi", &progress);
@@ -57,9 +60,9 @@ Account::Account(FILE* tfile) : Account("")
         string campaignName = "";
         int t;
         char c;
-        funpackf(tfile, "Bi",  &t);
+        funpackf(tfile, "Bi", &t);
         for (int j = 0; j < t; j++) {
-            funpackf(tfile, "Bb",  &c);
+            funpackf(tfile, "Bb", &c);
             campaignName.append(1, c);
         }
         funpackf(tfile, "Bf", &(campaignProgress[campaignName].time));
@@ -80,9 +83,9 @@ Account::Account(FILE* tfile) : Account("")
     currentCampaign = "";
     int t;
     char c;
-    funpackf(tfile, "Bi",  &t);
+    funpackf(tfile, "Bi", &t);
     for (int i = 0; i < t; i++) {
-        funpackf(tfile, "Bb",  &c);
+        funpackf(tfile, "Bb", &c);
         currentCampaign.append(1, c);
     }
 
@@ -92,13 +95,13 @@ Account::Account(FILE* tfile) : Account("")
         funpackf(tfile, "Bf", &(fasttime[i]));
     }
     for (int i = 0; i < 60; i++) {
-        funpackf(tfile, "Bb",  &(unlocked[i]));
+        funpackf(tfile, "Bb", &(unlocked[i]));
     }
     int temp;
     char ctemp;
-    funpackf(tfile, "Bi",  &temp);
+    funpackf(tfile, "Bi", &temp);
     for (int i = 0; i < temp; i++) {
-        funpackf(tfile, "Bb",  &ctemp);
+        funpackf(tfile, "Bb", &ctemp);
         name.append(1, ctemp);
     }
     if (name.empty()) {
@@ -114,9 +117,9 @@ void Account::save(FILE* tfile)
 
     map<string, CampaignProgress>::const_iterator it;
     for (it = campaignProgress.begin(); it != campaignProgress.end(); ++it) {
-        fpackf(tfile, "Bi",  it->first.size());
+        fpackf(tfile, "Bi", it->first.size());
         for (unsigned j = 0; j < it->first.size(); j++) {
-            fpackf(tfile, "Bb",  it->first[j]);
+            fpackf(tfile, "Bb", it->first[j]);
         }
         fpackf(tfile, "Bf", it->second.time);
         fpackf(tfile, "Bf", it->second.score);
@@ -139,11 +142,11 @@ void Account::save(FILE* tfile)
         fpackf(tfile, "Bf", fasttime[j]);
     }
     for (unsigned j = 0; j < 60; j++) {
-        fpackf(tfile, "Bb",  unlocked[j]);
+        fpackf(tfile, "Bb", unlocked[j]);
     }
-    fpackf(tfile, "Bi",  name.size());
+    fpackf(tfile, "Bi", name.size());
     for (unsigned j = 0; j < name.size(); j++) {
-        fpackf(tfile, "Bb",  name[j]);
+        fpackf(tfile, "Bb", name[j]);
     }
 }
 
@@ -232,12 +235,12 @@ void Account::winLevel(int level, float score, float time)
 
 void Account::loadFile(string filename)
 {
-    FILE *tfile;
+    FILE* tfile;
     int numaccounts;
     int iactive;
     errno = 0;
 
-    tfile = fopen(filename.c_str(), "rb" );
+    tfile = fopen(filename.c_str(), "rb");
 
     if (tfile) {
         funpackf(tfile, "Bi", &numaccounts);
@@ -258,10 +261,10 @@ void Account::loadFile(string filename)
 
 void Account::saveFile(string filename)
 {
-    FILE *tfile;
+    FILE* tfile;
     errno = 0;
 
-    tfile = fopen(filename.c_str(), "wb" );
+    tfile = fopen(filename.c_str(), "wb");
     if (tfile) {
         fpackf(tfile, "Bi", getNbAccounts());
         fpackf(tfile, "Bi", i_active);

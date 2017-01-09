@@ -27,7 +27,9 @@ std::vector<Animation> Animation::animations;
 
 void Animation::loadAll()
 {
-#define DECLARE_ANIM(id, file, height, attack, ...) if (id < loadable_anim_end) animations.emplace_back(file, height, attack);
+#define DECLARE_ANIM(id, file, height, attack, ...) \
+    if (id < loadable_anim_end)                     \
+        animations.emplace_back(file, height, attack);
 #include "Animation.def"
 #undef DECLARE_ANIM
 }
@@ -70,27 +72,27 @@ void AnimationFrame::loadWeaponTarget(FILE* tfile)
     funpackf(tfile, "Bf Bf Bf", &weapontarget.x, &weapontarget.y, &weapontarget.z);
 }
 
-Animation::Animation():
-    height(lowheight),
-    attack(neutral),
-    numjoints(0)
+Animation::Animation()
+    : height(lowheight)
+    , attack(neutral)
+    , numjoints(0)
 {
 }
 
 /* EFFECT
  * load an animation from file
  */
-Animation::Animation(const std::string& filename, anim_height_type aheight, anim_attack_type aattack):
-    Animation()
+Animation::Animation(const std::string& filename, anim_height_type aheight, anim_attack_type aattack)
+    : Animation()
 {
-    FILE *tfile;
+    FILE* tfile;
     int numframes;
     unsigned i;
 
     LOGFUNC;
 
     // Changing the filename into something the OS can understand
-    std::string filepath = Folders::getResourcePath("Animations/"+filename);
+    std::string filepath = Folders::getResourcePath("Animations/" + filename);
 
     LOG(std::string("Loading animation...") + filepath);
 
@@ -100,7 +102,7 @@ Animation::Animation(const std::string& filename, anim_height_type aheight, anim
     Game::LoadingScreen();
 
     // read file in binary mode
-    tfile = Folders::openMandatoryFile( filepath, "rb" );
+    tfile = Folders::openMandatoryFile(filepath, "rb");
 
     // read numframes, joints to know how much memory to allocate
     funpackf(tfile, "Bi Bi", &numframes, &numjoints);

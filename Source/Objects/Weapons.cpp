@@ -23,8 +23,8 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Objects/Weapons.hpp"
 
 #include "Animation/Animation.hpp"
-#include "Audio/openal_wrapper.hpp"
 #include "Audio/Sounds.hpp"
+#include "Audio/openal_wrapper.hpp"
 #include "Game.hpp"
 #include "Level/Awards.hpp"
 #include "Tutorial.hpp"
@@ -64,7 +64,8 @@ Texture Weapon::bloodswordtextureptr;
 Model Weapon::staffmodel;
 Texture Weapon::stafftextureptr;
 
-Weapon::Weapon(int t, int o) : owner(o)
+Weapon::Weapon(int t, int o)
+    : owner(o)
 {
     setType(t);
     bloody = 0;
@@ -253,11 +254,11 @@ void Weapon::doStuff(int i)
                 footvel = 0;
                 footpoint = DoRotation((Person::players[j]->jointPos(abdomen) + Person::players[j]->jointPos(neck)) / 2, 0, Person::players[j]->yaw, 0) * Person::players[j]->scale + Person::players[j]->coords;
                 if (owner == -1 && distsqflat(&position, &Person::players[j]->coords) < 1.5 &&
-                        distsq(&position, &Person::players[j]->coords) < 4 && Person::players[j]->weaponstuck == -1 &&
-                        !Person::players[j]->skeleton.free && (int(j) != oldowner)) {
+                    distsq(&position, &Person::players[j]->coords) < 4 && Person::players[j]->weaponstuck == -1 &&
+                    !Person::players[j]->skeleton.free && (int(j) != oldowner)) {
                     if ((Person::players[j]->aitype != attacktypecutoff || abs(Random() % 6) == 0 || (Person::players[j]->animTarget != backhandspringanim && Person::players[j]->animTarget != rollanim && Person::players[j]->animTarget != flipanim && Random() % 2 == 0)) && !missed) {
-                        if ( (Person::players[j]->creature == wolftype && Random() % 3 != 0 && Person::players[j]->weaponactive == -1 && (Person::players[j]->isIdle() || Person::players[j]->isRun() || Person::players[j]->animTarget == walkanim)) ||
-                                (Person::players[j]->creature == rabbittype && Random() % 2 == 0 && Person::players[j]->aitype == attacktypecutoff && Person::players[j]->weaponactive == -1)) {
+                        if ((Person::players[j]->creature == wolftype && Random() % 3 != 0 && Person::players[j]->weaponactive == -1 && (Person::players[j]->isIdle() || Person::players[j]->isRun() || Person::players[j]->animTarget == walkanim)) ||
+                            (Person::players[j]->creature == rabbittype && Random() % 2 == 0 && Person::players[j]->aitype == attacktypecutoff && Person::players[j]->weaponactive == -1)) {
                             emit_sound_at(knifedrawsound, Person::players[j]->coords, 128.);
 
                             Person::players[j]->animTarget = removeknifeanim;
@@ -406,7 +407,6 @@ void Weapon::doStuff(int i)
             if (temppoint1.x > temppoint2.x)
                 rotation1 = 360 - rotation1;
         }
-
     }
 
     //Sword physics
@@ -436,7 +436,6 @@ void Weapon::doStuff(int i)
             }
             position = newpoint1;
             tippoint = newpoint2;
-
 
             //Object collisions
             whichpatchx = (position.x) / (terrain.size / subdivision * terrain.scale);
@@ -623,26 +622,26 @@ void Weapon::doStuff(int i)
                             point[0] = DoRotation(Object::objects[k]->model.getTriangleVertex(whichhit, 0), 0, Object::objects[k]->yaw, 0) + Object::objects[k]->position;
                             point[1] = DoRotation(Object::objects[k]->model.getTriangleVertex(whichhit, 1), 0, Object::objects[k]->yaw, 0) + Object::objects[k]->position;
                             point[2] = DoRotation(Object::objects[k]->model.getTriangleVertex(whichhit, 2), 0, Object::objects[k]->yaw, 0) + Object::objects[k]->position;
-                            if (DistancePointLine(&closestswordpoint, &point[0], &point[1], &distance, &colpoint )) {
+                            if (DistancePointLine(&closestswordpoint, &point[0], &point[1], &distance, &colpoint)) {
                                 if (distance < closestdistance || closestdistance == -1) {
                                     closestpoint = colpoint;
                                     closestdistance = distance;
                                 }
                             }
-                            if (DistancePointLine(&closestswordpoint, &point[1], &point[2], &distance, &colpoint )) {
+                            if (DistancePointLine(&closestswordpoint, &point[1], &point[2], &distance, &colpoint)) {
                                 if (distance < closestdistance || closestdistance == -1) {
                                     closestpoint = colpoint;
                                     closestdistance = distance;
                                 }
                             }
-                            if (DistancePointLine(&closestswordpoint, &point[2], &point[0], &distance, &colpoint )) {
+                            if (DistancePointLine(&closestswordpoint, &point[2], &point[0], &distance, &colpoint)) {
                                 if (distance < closestdistance || closestdistance == -1) {
                                     closestpoint = colpoint;
                                     closestdistance = distance;
                                 }
                             }
                             if (closestdistance != -1 && isnormal(closestdistance)) {
-                                if (DistancePointLine(&closestpoint, &position, &tippoint, &distance, &colpoint )) {
+                                if (DistancePointLine(&closestpoint, &position, &tippoint, &distance, &colpoint)) {
                                     closestswordpoint = colpoint;
                                     velocity += (closestpoint - closestswordpoint);
                                     tipvelocity += (closestpoint - closestswordpoint);
@@ -691,8 +690,7 @@ void Weapon::doStuff(int i)
                         whichsound = footstepsound + abs(Random() % 2);
                     }
                     emit_sound_at(whichsound, position,
-                                  findLengthfast(&bounceness)
-                                  * (terrain.getOpacity(position.x, position.z) > .2 ? 128. : 32.));
+                                  findLengthfast(&bounceness) * (terrain.getOpacity(position.x, position.z) > .2 ? 128. : 32.));
 
                     if (terrain.getOpacity(position.x, position.z) < .2) {
                         XYZ terrainlight;
@@ -745,8 +743,7 @@ void Weapon::doStuff(int i)
                         whichsound = footstepsound + abs(Random() % 2);
                     }
                     emit_sound_at(whichsound, tippoint,
-                                  findLengthfast(&bounceness)
-                                  * (terrain.getOpacity(tippoint.x, tippoint.z) > .2  ? 128. : 32.));
+                                  findLengthfast(&bounceness) * (terrain.getOpacity(tippoint.x, tippoint.z) > .2 ? 128. : 32.));
 
                     if (terrain.getOpacity(tippoint.x, tippoint.z) < .2) {
                         XYZ terrainlight;
@@ -802,10 +799,9 @@ void Weapon::doStuff(int i)
                         whichsound = footstepsound + abs(Random() % 2);
                     }
                     emit_sound_at(whichsound, mid,
-                                  findLengthfast(&bounceness)
-                                  * (terrain.getOpacity(position.x, position.z) > .2
-                                     ? 128.
-                                     : 32.));
+                                  findLengthfast(&bounceness) * (terrain.getOpacity(position.x, position.z) > .2
+                                                                     ? 128.
+                                                                     : 32.));
                 }
                 position += (mid - oldmid) * 20;
             }
@@ -846,10 +842,9 @@ void Weapon::doStuff(int i)
                         whichsound = footstepsound + abs(Random() % 2);
                     }
                     emit_sound_at(whichsound, mid,
-                                  findLengthfast(&bounceness)
-                                  * (terrain.getOpacity(position.x, position.z) > .2
-                                     ? 128.
-                                     : 32.));
+                                  findLengthfast(&bounceness) * (terrain.getOpacity(position.x, position.z) > .2
+                                                                     ? 128.
+                                                                     : 32.));
                 }
                 tippoint += (mid - oldmid) * 20;
             }
@@ -964,7 +959,7 @@ void Weapon::draw()
     static GLfloat M[16];
 
     if ((frustum.SphereInFrustum(position.x, position.y, position.z, 1) &&
-            distsq(&viewer, &position) < viewdistance * viewdistance)) {
+         distsq(&viewer, &position) < viewdistance * viewdistance)) {
         bool draw = false;
         if (owner == -1) {
             draw = true;
@@ -992,8 +987,7 @@ void Weapon::draw()
                  Person::players[owner]->animTarget == swordgroundstabanim ||
                  Person::players[owner]->animTarget == knifethrowanim) &&
                 Person::players[owner]->animTarget == lastdrawnanim &&
-                !Person::players[owner]->skeleton.free
-            ) {
+                !Person::players[owner]->skeleton.free) {
                 drawhowmany = 10;
             } else {
                 drawhowmany = 1;
@@ -1042,29 +1036,29 @@ void Weapon::draw()
 
                 glEnable(GL_LIGHTING);
                 switch (type) {
-                case knife:
-                    if (!bloody || !bloodtoggle)
-                        throwingknifemodel.drawdifftex(knifetextureptr);
-                    if (bloodtoggle) {
-                        if (bloody == 1)
-                            throwingknifemodel.drawdifftex(lightbloodknifetextureptr);
-                        if (bloody == 2)
-                            throwingknifemodel.drawdifftex(bloodknifetextureptr);
-                    }
-                    break;
-                case sword:
-                    if (!bloody || !bloodtoggle)
-                        swordmodel.drawdifftex(swordtextureptr);
-                    if (bloodtoggle) {
-                        if (bloody == 1)
-                            swordmodel.drawdifftex(lightbloodswordtextureptr);
-                        if (bloody == 2)
-                            swordmodel.drawdifftex(bloodswordtextureptr);
-                    }
-                    break;
-                case staff:
-                    staffmodel.drawdifftex(stafftextureptr);
-                    break;
+                    case knife:
+                        if (!bloody || !bloodtoggle)
+                            throwingknifemodel.drawdifftex(knifetextureptr);
+                        if (bloodtoggle) {
+                            if (bloody == 1)
+                                throwingknifemodel.drawdifftex(lightbloodknifetextureptr);
+                            if (bloody == 2)
+                                throwingknifemodel.drawdifftex(bloodknifetextureptr);
+                        }
+                        break;
+                    case sword:
+                        if (!bloody || !bloodtoggle)
+                            swordmodel.drawdifftex(swordtextureptr);
+                        if (bloodtoggle) {
+                            if (bloody == 1)
+                                swordmodel.drawdifftex(lightbloodswordtextureptr);
+                            if (bloody == 2)
+                                swordmodel.drawdifftex(bloodswordtextureptr);
+                        }
+                        break;
+                    case staff:
+                        staffmodel.drawdifftex(stafftextureptr);
+                        break;
                 }
 
                 glPopMatrix();
