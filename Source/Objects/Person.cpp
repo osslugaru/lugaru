@@ -4255,15 +4255,15 @@ void Person::DoAnimations()
             oldframeCurrent = frameCurrent;
 
             for (unsigned i = 0; i < skeleton.joints.size(); i++) {
-                skeleton.joints[i].velocity = (currentFrame().joints[i].position * (1 - target) + targetFrame().joints[i].position * (target) - skeleton.joints[i].position) / multiplier;
-                skeleton.joints[i].position = currentFrame().joints[i].position * (1 - target) + targetFrame().joints[i].position * (target);
+                skeleton.joints[i].velocity = (currentFrame().joints[i].position * (1 - target) + targetFrame().joints[i].position * target - skeleton.joints[i].position) / multiplier;
+                skeleton.joints[i].position = currentFrame().joints[i].position * (1 - target) + targetFrame().joints[i].position * target;
             }
             offset = currentoffset * (1 - target) + targetoffset * target;
             for (unsigned i = 0; i < skeleton.muscles.size(); i++) {
                 if (skeleton.muscles[i].visible) {
-                    skeleton.muscles[i].rotate1 = skeleton.muscles[i].oldrotate1 * (1 - target) + skeleton.muscles[i].newrotate1 * (target);
-                    skeleton.muscles[i].rotate2 = skeleton.muscles[i].oldrotate2 * (1 - target) + skeleton.muscles[i].newrotate2 * (target);
-                    skeleton.muscles[i].rotate3 = skeleton.muscles[i].oldrotate3 * (1 - target) + skeleton.muscles[i].newrotate3 * (target);
+                    skeleton.muscles[i].rotate1 = skeleton.muscles[i].oldrotate1 * (1 - target) + skeleton.muscles[i].newrotate1 * target;
+                    skeleton.muscles[i].rotate2 = skeleton.muscles[i].oldrotate2 * (1 - target) + skeleton.muscles[i].newrotate2 * target;
+                    skeleton.muscles[i].rotate3 = skeleton.muscles[i].oldrotate3 * (1 - target) + skeleton.muscles[i].newrotate3 * target;
                 }
             }
         }

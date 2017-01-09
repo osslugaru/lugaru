@@ -133,7 +133,7 @@ void Muscle::DoConstraint(bool spinny)
         strength = 1;
 
     length -= (length - relaxlength) * (1 - strength) * multiplier * 10000;
-    length -= (length - targetlength) * (strength) * multiplier * 10000;
+    length -= (length - targetlength) * strength * multiplier * 10000;
     if (strength == 0)
         length = relaxlength;
 

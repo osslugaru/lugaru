@@ -635,7 +635,7 @@ bool Terrain::load(const std::string& fileName)
     Game::LoadingScreen();
 
     patch_size = size / subdivision;
-    patch_elements = (patch_size) * (patch_size) * 54;
+    patch_elements = patch_size * patch_size * 54;
     CalculateNormals();
 
     return true;
@@ -932,17 +932,17 @@ void Terrain::draw(int layer)
     viewdistsquared = viewdistance * viewdistance;
 
     //Only nearby blocks
-    beginx = (viewer.x - viewdistance) / (patch_size) - 1;
+    beginx = ((viewer.x - viewdistance) / patch_size) - 1;
     if (beginx < 0)
         beginx = 0;
-    beginz = (viewer.z - viewdistance) / (patch_size) - 1;
+    beginz = ((viewer.z - viewdistance) / patch_size) - 1;
     if (beginz < 0)
         beginz = 0;
 
-    endx = (viewer.x + viewdistance) / (patch_size) + 1;
+    endx = ((viewer.x + viewdistance) / patch_size) + 1;
     if (endx > subdivision)
         endx = subdivision;
-    endz = (viewer.z + viewdistance) / (patch_size) + 1;
+    endz = ((viewer.z + viewdistance) / patch_size) + 1;
     if (endz > subdivision)
         endz = subdivision;
 
@@ -1255,13 +1255,13 @@ void Terrain::DoShadows()
     //Calculate shadows
     for (short int i = 0; i < size; i++) {
         for (short int j = 0; j < size; j++) {
-            terrainpoint.x = (float)(i) * scale;
-            terrainpoint.z = (float)(j) * scale;
+            terrainpoint.x = (float)i * scale;
+            terrainpoint.z = (float)j * scale;
             terrainpoint.y = heightmap[i][j] * scale;
 
             shadowed = 0;
-            patchx = (float)(i) * subdivision / size;
-            patchz = (float)(j) * subdivision / size;
+            patchx = (float)i * subdivision / size;
+            patchz = (float)j * subdivision / size;
             if (patchobjects[patchx][patchz].size()) {
                 for (unsigned int k = 0; k < patchobjects[patchx][patchz].size(); k++) {
                     unsigned int l = patchobjects[patchx][patchz][k];
