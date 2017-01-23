@@ -566,11 +566,10 @@ void Tutorial::DrawTextInfo()
             string = "You can move the mouse to rotate the camera.";
             break;
         case 4:
-            string = std::string("Try using the ") +
-                     Input::keyToChar(Game::forwardkey) + ", " +
-                     Input::keyToChar(Game::leftkey) + ", " +
-                     Input::keyToChar(Game::backkey) + " and " +
-                     Input::keyToChar(Game::rightkey) + " keys to move around.";
+            string = std::string("Try using the ") + Input::keyToChar(Game::forwardkey);
+            string += std::string(", ") + Input::keyToChar(Game::leftkey);
+            string += std::string(", ") + Input::keyToChar(Game::backkey);
+            string += std::string(" and ") + Input::keyToChar(Game::rightkey) + " keys to move around.";
             string2 = "All movement is relative to the camera.";
             break;
         case 5:
