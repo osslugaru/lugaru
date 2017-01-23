@@ -141,6 +141,22 @@ static void set_clothes(int pnum, const char* args)
     char buf[64];
     snprintf(buf, 63, "Textures/%s.png", args);
 
+    const std::string file_path = Folders::getResourcePath(buf);
+    FILE* tfile;
+    tfile = fopen(file_path.c_str(), "rb");
+    if (tfile == NULL) {
+        perror((std::string("Couldn't find file ") + file_path + " to assign as clothes").c_str());
+
+        // FIXME: Reduce code duplication with GameTick (should come from a Console class)
+        for (int k = 14; k >= 1; k--) {
+            consoletext[k] = consoletext[k - 1];
+        }
+        consoletext[0] = std::string("Could not load the requested texture '") + args + "', aborting.";
+        consoleselected = 0;
+
+        return;
+    }
+
     int id = Person::players[pnum]->numclothes;
     strncpy(Person::players[pnum]->clothes[id], buf, 64);
     Person::players[pnum]->clothestintr[id] = tintr;
