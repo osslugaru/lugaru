@@ -27,9 +27,9 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include <vector>
 
 struct CampaignProgress {
-    float highscore;
+    int highscore;
     float fasttime;
-    float score;
+    int score;
     float time;
     std::vector<int> choices;
     CampaignProgress() {
@@ -58,8 +58,8 @@ public:
     Account(FILE* tfile);
 
     void endGame();
-    void winCampaignLevel(int choice, float score, float time);
-    void winLevel(int level, float score, float time);
+    void winCampaignLevel(int choice, int score, float time);
+    void winLevel(int level, int score, float time);
 
     // getter and setters
     int getDifficulty();
@@ -69,7 +69,7 @@ public:
     const std::string& getName() {
         return name;
     };
-    float getCampaignScore() {
+    int getCampaignScore() {
         return campaignProgress[currentCampaign].score;
     };
     int getCampaignChoicesMade() {
@@ -80,13 +80,15 @@ public:
     };
     void setCampaignScore(int s) {
         campaignProgress[currentCampaign].score = s;
-        if (s > campaignProgress[currentCampaign].highscore)
+        if (s > campaignProgress[currentCampaign].highscore) {
             campaignProgress[currentCampaign].highscore = s;
+        }
     };
     void setCampaignFinalTime(float t) {
         campaignProgress[currentCampaign].time = t;
-        if ((t < campaignProgress[currentCampaign].fasttime) || ((campaignProgress[currentCampaign].fasttime == 0) && (t != 0)))
+        if ((t < campaignProgress[currentCampaign].fasttime) || ((campaignProgress[currentCampaign].fasttime == 0) && (t != 0))) {
             campaignProgress[currentCampaign].fasttime = t;
+        }
     };
     float getCampaignFasttime() {
         return campaignProgress[currentCampaign].fasttime;
@@ -94,10 +96,10 @@ public:
     void resetFasttime() {
         campaignProgress[currentCampaign].fasttime = 0;
     };
-    float getCampaignHighScore() {
+    int getCampaignHighScore() {
         return campaignProgress[currentCampaign].highscore;
     };
-    float getHighScore(int i) {
+    int getHighScore(int i) {
         return highscore[i];
     };
     float getFastTime(int i) {
@@ -121,7 +123,7 @@ private:
     int difficulty;
     int progress; // progress in challenge levels
     float points;
-    float highscore[50];
+    int highscore[50];
     float fasttime[50];
     bool unlocked[60];
     std::string name;

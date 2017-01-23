@@ -597,7 +597,7 @@ int Game::DrawGLScene(StereoSide side)
                     }
                     text->glPrintOutlined(1, 0, 0, 1 - bonustime, 1024 / 2 - 10 * strlen(bonus_name), 768 / 16 + 768 * 4 / 5, bonus_name, 1, 2, 1024, 768);
 
-                    string = to_string((int)bonusvalue);
+                    string = to_string(bonusvalue);
                     text->glPrintOutlined(1, 0, 0, 1 - bonustime, 1024 / 2 - 10 * string.size(), 768 / 16 - 20 + 768 * 4 / 5, string, 1, 2 * .8, 1024, 768);
 
                     glColor4f(.5, .5, .5, 1);

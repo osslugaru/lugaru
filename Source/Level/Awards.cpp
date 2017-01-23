@@ -23,9 +23,9 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Objects/Person.hpp"
 
 int bonus;
-float bonusvalue;
-float bonustotal;
-float startbonustotal;
+int bonusvalue;
+int bonustotal;
+int startbonustotal;
 float bonustime;
 float bonusnum[100];
 

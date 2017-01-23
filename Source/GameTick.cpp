@@ -3209,7 +3209,12 @@ void Game::Tick()
                 if (Tutorial::active) {
                     bonusvalue = 0;
                 }
-                bonusvalue /= bonusnum[bonus];
+                if (bonusvalue > 0) {
+                    bonusvalue /= bonusnum[bonus];
+                    if (bonusvalue <= 0) {
+                        bonusvalue = 0;
+                    }
+                }
                 bonustotal += bonusvalue;
             }
             bonustime += multiplier;

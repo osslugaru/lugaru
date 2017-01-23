@@ -65,10 +65,13 @@ Account::Account(FILE* tfile)
             funpackf(tfile, "Bb", &c);
             campaignName.append(1, c);
         }
+        float fscore, fhighscore;
         funpackf(tfile, "Bf", &(campaignProgress[campaignName].time));
-        funpackf(tfile, "Bf", &(campaignProgress[campaignName].score));
+        funpackf(tfile, "Bf", &(fscore));
         funpackf(tfile, "Bf", &(campaignProgress[campaignName].fasttime));
-        funpackf(tfile, "Bf", &(campaignProgress[campaignName].highscore));
+        funpackf(tfile, "Bf", &(fhighscore));
+        campaignProgress[campaignName].score = fscore;
+        campaignProgress[campaignName].highscore = fhighscore;
         int campaignchoicesmade, campaignchoice;
         funpackf(tfile, "Bi", &campaignchoicesmade);
         for (int j = 0; j < campaignchoicesmade; j++) {
@@ -91,8 +94,10 @@ Account::Account(FILE* tfile)
 
     funpackf(tfile, "Bf", &points);
     for (int i = 0; i < 50; i++) {
-        funpackf(tfile, "Bf", &(highscore[i]));
+        float fscore;
+        funpackf(tfile, "Bf", &(fscore));
         funpackf(tfile, "Bf", &(fasttime[i]));
+        highscore[i] = fscore;
     }
     for (int i = 0; i < 60; i++) {
         funpackf(tfile, "Bb", &(unlocked[i]));
@@ -122,9 +127,9 @@ void Account::save(FILE* tfile)
             fpackf(tfile, "Bb", it->first[j]);
         }
         fpackf(tfile, "Bf", it->second.time);
-        fpackf(tfile, "Bf", it->second.score);
+        fpackf(tfile, "Bf", float(it->second.score));
         fpackf(tfile, "Bf", it->second.fasttime);
-        fpackf(tfile, "Bf", it->second.highscore);
+        fpackf(tfile, "Bf", float(it->second.highscore));
         fpackf(tfile, "Bi", it->second.choices.size());
         for (unsigned j = 0; j < it->second.choices.size(); j++) {
             fpackf(tfile, "Bi", it->second.choices[j]);
@@ -138,7 +143,7 @@ void Account::save(FILE* tfile)
 
     fpackf(tfile, "Bf", points);
     for (unsigned j = 0; j < 50; j++) {
-        fpackf(tfile, "Bf", highscore[j]);
+        fpackf(tfile, "Bf", float(highscore[j]));
         fpackf(tfile, "Bf", fasttime[j]);
     }
     for (unsigned j = 0; j < 60; j++) {
@@ -214,14 +219,14 @@ void Account::endGame()
     campaignProgress[currentCampaign].time = 0;
 }
 
-void Account::winCampaignLevel(int choice, float score, float time)
+void Account::winCampaignLevel(int choice, int score, float time)
 {
     campaignProgress[currentCampaign].choices.push_back(choice);
     setCampaignScore(campaignProgress[currentCampaign].score + score);
     campaignProgress[currentCampaign].time = time;
 }
 
-void Account::winLevel(int level, float score, float time)
+void Account::winLevel(int level, int score, float time)
 {
     if (!devtools) {
         if (score > highscore[level]) {

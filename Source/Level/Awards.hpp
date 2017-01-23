@@ -30,10 +30,10 @@ enum bonus_types {
 extern const char *bonus_names[bonus_count];
 
 extern int bonus;
-extern float bonusvalue;
-extern float bonustotal;
+extern int bonusvalue;
+extern int bonustotal;
 extern float bonustime;
-extern float startbonustotal;
+extern int startbonustotal;
 extern float bonusnum[100];
 
 extern void award_bonus(int playerid, int bonusid, int alt_value = 0);
