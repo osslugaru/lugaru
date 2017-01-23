@@ -8144,7 +8144,6 @@ void Person::doAI()
                                 closestdist = distance;
                                 closest = k;
                             }
-                            closest = k;
                         }
                     }
                     if (closest != -1) {
@@ -8245,7 +8244,6 @@ void Person::doAI()
                                 closestdist = distance;
                                 closest = k;
                             }
-                            closest = k;
                         }
                     }
                     if (closest != -1) {
