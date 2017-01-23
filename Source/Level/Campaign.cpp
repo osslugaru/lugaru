@@ -32,6 +32,7 @@ std::vector<CampaignLevel> campaignlevels;
 bool campaign = false;
 
 int actuallevel = 0;
+std::string campaignEndText[3];
 
 std::vector<std::string> ListCampaigns()
 {
@@ -64,10 +65,10 @@ void LoadCampaign()
     std::ifstream ipstream(Folders::getResourcePath("Campaigns/" + Account::active().getCurrentCampaign() + ".txt"));
     if (!ipstream.good()) {
         if (Account::active().getCurrentCampaign() == "main") {
-            cerr << "Could not found main campaign!" << endl;
+            cerr << "Could not find main campaign!" << endl;
             return;
         }
-        cerr << "Could not found campaign \"" << Account::active().getCurrentCampaign() << "\", falling back to main." << endl;
+        cerr << "Could not find campaign \"" << Account::active().getCurrentCampaign() << "\", falling back to main." << endl;
         Account::active().setCurrentCampaign("main");
         return LoadCampaign();
     }
@@ -79,6 +80,15 @@ void LoadCampaign()
         CampaignLevel cl;
         ipstream >> cl;
         campaignlevels.push_back(cl);
+    }
+    campaignEndText[0] = "Congratulations!";
+    campaignEndText[1] = string("You have completed ") + Account::active().getCurrentCampaign() + " campaign";
+    campaignEndText[2] = "and restored peace to the island of Lugaru.";
+    if (ipstream.good()) {
+        ipstream.ignore(256, ':');
+        getline(ipstream, campaignEndText[0]);
+        getline(ipstream, campaignEndText[1]);
+        getline(ipstream, campaignEndText[2]);
     }
     ipstream.close();
 

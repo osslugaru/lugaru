@@ -501,9 +501,9 @@ void Menu::Load()
             addButton(numchallengelevels, "Back", 10, 10);
             break;
         case 10: {
-            addLabel(0, "Congratulations!", 220, 330);
-            addLabel(1, "You have avenged your family and", 140, 300);
-            addLabel(2, "restored peace to the island of Lugaru.", 110, 270);
+            addLabel(0, campaignEndText[0], 220, 330);
+            addLabel(1, campaignEndText[1], 140, 300);
+            addLabel(2, campaignEndText[2], 110, 270);
             addButton(3, "Back", 10, 10);
             addLabel(4, string("Your score:         ") + to_string((int)Account::active().getCampaignScore()), 190, 200);
             addLabel(5, string("Highest score:      ") + to_string((int)Account::active().getCampaignHighScore()), 190, 180);

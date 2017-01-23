@@ -241,3 +241,7 @@ ChooseNext: 1
 NumNext: 0
 LocationX: 284
 LocationY: 312
+
+EndText:Congratulations!
+You have avenged your family and
+restored peace to the island of Lugaru.

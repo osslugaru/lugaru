@@ -72,7 +72,6 @@ NextLevel: 9
 LocationX: 153
 LocationY: 210
 
-
 Level 9:
 Name: task9
 Description: Desert_-_camp
@@ -159,6 +158,5 @@ Name: task18
 Description: Bonus_Level_-_ZOMBIES!
 ChooseNext: 1
 NumNext: 0
-NextLevel: 19
 LocationX: 400
 LocationY: 400
