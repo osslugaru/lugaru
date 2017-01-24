@@ -16,12 +16,61 @@ if(UNIX AND NOT APPLE)
 endif()
 
 
+### Version
+
+# Version for the current (stable) or next (development) release
+set(LUGARU_VERSION_MAJOR 1)
+set(LUGARU_VERSION_MINOR 2)
+set(LUGARU_VERSION_PATCH 0)
+
+# MAJOR.MINOR, or MAJOR.MINOR.PATCH if PATCH != 0
+set(LUGARU_VERSION_NUMBER "${LUGARU_VERSION_MAJOR}.${LUGARU_VERSION_MINOR}")
+if(LUGARU_VERSION_PATCH)
+    set(LUGARU_VERSION_NUMBER "${LUGARU_VERSION_NUMBER}.${LUGARU_VERSION_PATCH}")
+endif()
+
+# Set to "" for stable (tagged) builds, "-dev" for dev builds
+set(LUGARU_VERSION_SUFFIX "-dev")  # development
+#set(LUGARU_VERSION_SUFFIX "")  # stable
+
+# Set to 7-char git commit hash if available, otherwise "".
+# On stable (tagged) builds, this is ignored.
+set(LUGARU_VERSION_HASH "")
+if(LUGARU_VERSION_SUFFIX STREQUAL "-dev" AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/.git)
+    find_package(Git)
+    if(GIT_FOUND)
+        execute_process(
+            COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD
+            WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+            OUTPUT_VARIABLE "LUGARU_VERSION_HASH"
+            ERROR_QUIET
+            OUTPUT_STRIP_TRAILING_WHITESPACE)
+        message(STATUS "Git commit hash: ${LUGARU_VERSION_HASH}")
+    endif()
+endif()
+
+set(LUGARU_VERSION_RELEASE "" CACHE STRING "Optional release string, e.g. for distro packages release number")
+
+# Final string built from the above constants, following the scheme:
+# MAJOR.MINOR[.PATCH][-dev] [(git HASH)] [[RELEASE]]
+set(LUGARU_VERSION_STRING "${LUGARU_VERSION_NUMBER}${LUGARU_VERSION_SUFFIX}")
+if(NOT LUGARU_VERSION_HASH STREQUAL "")
+    set(LUGARU_VERSION_STRING "${LUGARU_VERSION_STRING} (git ${LUGARU_VERSION_HASH})")
+endif()
+if(NOT LUGARU_VERSION_RELEASE STREQUAL "")
+    set(LUGARU_VERSION_STRING "${LUGARU_VERSION_STRING} [${LUGARU_VERSION_RELEASE}]")
+endif()
+
+message(STATUS "Version string: ${LUGARU_VERSION_STRING}")
+configure_file(${SRCDIR}/Version.hpp.in ${SRCDIR}/Version.hpp ESCAPE_QUOTES @ONLY)
+
+
 ### CMake config
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE RelWithDebInfo)
 endif(NOT CMAKE_BUILD_TYPE)
-message("CMake build type: ${CMAKE_BUILD_TYPE}")
+message(STATUS "CMake build type: ${CMAKE_BUILD_TYPE}")
 
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-parentheses -pedantic --std=gnu++11 ${CMAKE_CXX_FLAGS}")
 
