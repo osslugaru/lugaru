@@ -24,6 +24,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Graphic/gamegl.hpp"
 #include "MacCompatibility.hpp"
 #include "User/Settings.hpp"
+#include "Version.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -588,6 +589,7 @@ const option::Descriptor usage[] =
     {
       { UNKNOWN, 0, "", "", option::Arg::None, "USAGE: lugaru [options]\n\n"
                                                "Options:" },
+      { VERSION, 0, "v", "version", option::Arg::None, " -v, --version     Print version and exit." },
       { HELP, 0, "h", "help", option::Arg::None, " -h, --help        Print usage and exit." },
       { FULLSCREEN, 1, "f", "fullscreen", option::Arg::None, " -f, --fullscreen  Start the game in fullscreen mode." },
       { FULLSCREEN, 0, "w", "windowed", option::Arg::None, " -w, --windowed    Start the game in windowed mode (default)." },
@@ -618,6 +620,23 @@ int main(int argc, char** argv)
     if (parse.error()) {
         delete[] commandLineOptionsBuffer;
         return 1;
+    }
+
+    // Always start by printing the version and info to the stdout
+    std::cout << "--------------------------------------------------------------------------\n"
+              << "Lugaru HD: The Rabbit's Foot, by Wolfire Games and the OSS Lugaru project.\n\n"
+              << "Licensed under the GPL 2.0+ and CC-BY-SA 3.0 and 4.0 licenses.\n"
+              << "More information, updates and bug reports at http://osslugaru.gitlab.io\n"
+              << std::endl;
+
+    std::cout << "Version " + VERSION_STRING + " -- " + VERSION_BUILD_TYPE + " build\n"
+              << "--------------------------------------------------------------------------\n"
+              << std::endl;
+
+    if (commandLineOptions[VERSION]) {
+        // That was enough, quit.
+        delete[] commandLineOptionsBuffer;
+        return 0;
     }
 
     if (commandLineOptions[HELP]) {
