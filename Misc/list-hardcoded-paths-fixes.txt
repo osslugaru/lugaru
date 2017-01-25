@@ -1,6 +1,6 @@
 :Data:Textures:all.png	Textures/All.png
 :Data:Textures:armor.png	Textures/LeatherArmor.png
-:Data:Textures:blackfur.png	Textures/Fur2.jpg
+:Data:Textures:blackfur.png	Textures/Fur2.png
 :Data:Textures:bloodapril.png	Textures/BloodApril.png
 :Data:Textures:bloodclover.png	Textures/BloodClover.png
 :Data:Textures:bloodjack.png	Textures/BloodJack.png
