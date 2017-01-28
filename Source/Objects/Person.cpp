@@ -2177,13 +2177,9 @@ void Person::DoAnimations()
         }
         if (animTarget == jumpupanim || animTarget == jumpdownanim || isFlip()) {
             float gLoc[3];
-            float vel[3];
             gLoc[0] = coords.x;
             gLoc[1] = coords.y;
             gLoc[2] = coords.z;
-            vel[0] = velocity.x;
-            vel[1] = velocity.y;
-            vel[2] = velocity.z;
 
             if (id == 0) {
                 OPENAL_3D_SetAttributes(channels[whooshsound], gLoc);
@@ -4800,13 +4796,9 @@ void Person::DoStuff()
 
         if (animTarget == jumpupanim || animTarget == jumpdownanim || isFlip()) {
             float gLoc[3];
-            float vel[3];
             gLoc[0] = coords.x;
             gLoc[1] = coords.y;
             gLoc[2] = coords.z;
-            vel[0] = velocity.x;
-            vel[1] = velocity.y;
-            vel[2] = velocity.z;
 
             if (id == 0) {
                 OPENAL_3D_SetAttributes(channels[whooshsound], gLoc);
@@ -7601,7 +7593,7 @@ void Person::doAI()
         if (aitype == pathfindtype) {
             if (finalpathfindpoint == -1) {
                 float closestdistance;
-                float tempdist;
+                float tempdist = 0.0f;
                 int closest;
                 XYZ colpoint;
                 closest = -1;
@@ -7631,7 +7623,7 @@ void Person::doAI()
             }
             if (targetpathfindpoint == -1) {
                 float closestdistance;
-                float tempdist;
+                float tempdist = 0.0f;
                 int closest;
                 XYZ colpoint;
                 closest = -1;

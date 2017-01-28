@@ -556,7 +556,8 @@ void Object::LoadObjectsFromFile(FILE* tfile, bool skip)
     int numobjects;
     int type;
     XYZ position;
-    float yaw, pitch, scale, lastscale;
+    float yaw, pitch, scale;
+    float lastscale = 1.0f;
     funpackf(tfile, "Bi", &numobjects);
     if (!skip) {
         objects.clear();
