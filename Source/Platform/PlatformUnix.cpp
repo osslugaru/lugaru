@@ -18,20 +18,16 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "MacCompatibility.hpp"
+#ifdef PLATFORM_UNIX
 
+#include "Platform/Platform.hpp"
+
+#include <assert.h>
 #include <cerrno>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
-
-#ifdef WIN32
-#include <windows.h>
-#endif
-
-#if PLATFORM_UNIX
-#include <assert.h>
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <unistd.h>
@@ -54,7 +50,6 @@ static int QueryPerformanceCounter(LARGE_INTEGER* liptr)
               (((LARGE_INTEGER)tv.tv_usec) / 1000));
     return (1);
 }
-#endif
 
 class AppTime
 {
@@ -117,3 +112,5 @@ Duration AbsoluteDeltaToDuration(AbsoluteTime& a, AbsoluteTime& b)
 
     return time;
 }
+
+#endif // PLATFORM_UNIX

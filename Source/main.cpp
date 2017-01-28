@@ -22,7 +22,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Audio/openal_wrapper.hpp"
 #include "Graphic/gamegl.hpp"
-#include "MacCompatibility.hpp"
+#include "Platform/Platform.hpp"
 #include "User/Settings.hpp"
 #include "Version.hpp"
 
@@ -37,7 +37,6 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 using namespace Game;
 
 #ifdef WIN32
-#include "win-res/resource.hpp"
 #include <shellapi.h>
 #include <windows.h>
 #endif

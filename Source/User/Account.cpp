@@ -20,7 +20,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "User/Account.hpp"
 
-#include "MacCompatibility.hpp"
+#include "Platform/Platform.hpp"
 #include "Utils/binio.h"
 
 #include <fstream>

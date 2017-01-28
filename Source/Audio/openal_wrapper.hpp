@@ -21,8 +21,8 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef _OPENAL_WRAPPER_HPP_
 #define _OPENAL_WRAPPER_HPP_
 
-#include "MacCompatibility.hpp"
 #include "Math/XYZ.hpp"
+#include "Platform/Platform.hpp"
 
 #ifdef __APPLE__
   #include <OpenAL/al.h>

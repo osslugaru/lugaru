@@ -119,6 +119,8 @@ set(LUGARU_SRCS
     ${SRCDIR}/Objects/Object.cpp
     ${SRCDIR}/Objects/Person.cpp
     ${SRCDIR}/Objects/Weapons.cpp
+    ${SRCDIR}/Platform/PlatformUnix.cpp
+    ${SRCDIR}/Platform/PlatformWindows.cpp
     ${SRCDIR}/User/Account.cpp
     ${SRCDIR}/User/Settings.cpp
     ${SRCDIR}/Utils/Folders.cpp
@@ -164,6 +166,7 @@ set(LUGARU_H
     ${SRCDIR}/Objects/Object.hpp
     ${SRCDIR}/Objects/Person.hpp
     ${SRCDIR}/Objects/Weapons.hpp
+    ${SRCDIR}/Platform/Platform.hpp
     ${SRCDIR}/Thirdparty/optionparser.h
     ${SRCDIR}/User/Account.hpp
     ${SRCDIR}/User/Settings.hpp
@@ -177,35 +180,13 @@ set(LUGARU_H
 
 )
 
-if(UNIX)
-    set(LUGARU_SRCS
-        ${LUGARU_SRCS}
-        ${SRCDIR}/MacCompatibility.cpp
-    )
-    set(LUGARU_H
-        ${LUGARU_H}
-        ${SRCDIR}/MacCompatibility.hpp
-    )
-endif(UNIX)
-
 if(WIN32)
     add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
                        COMMAND ${CMAKE_RC_COMPILER}
-                       -I${SRCDIR}/win-res
                        -o ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
-                       -i${SRCDIR}/win-res/Lugaru.rc
-                       DEPENDS ${SRCDIR}/win-res/Lugaru.rc
+                       -i${SRCDIR}/Lugaru.rc
+                       DEPENDS ${SRCDIR}/Lugaru.rc
     )
-
-    # FIXME: get rid of this.
-    set(LUGARU_SRCS
-        ${LUGARU_SRCS}
-        ${SRCDIR}/WinDefs.cpp)
-
-    set(LUGARU_H
-        ${LUGARU_H}
-        ${SRCDIR}/WinDefs.hpp
-        ${SRCDIR}/win-res/resource.hpp)
 endif(WIN32)
 
 if(APPLE)

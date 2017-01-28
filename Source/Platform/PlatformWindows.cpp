@@ -18,7 +18,9 @@ You should have received a copy of the GNU General Public License
 along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "WinDefs.hpp"
+#ifdef _WIN32
+
+#include "Platform/Platform.hpp"
 
 #include <errno.h>
 #include <stdio.h>
@@ -85,3 +87,5 @@ Duration AbsoluteDeltaToDuration(AbsoluteTime& a, AbsoluteTime& b)
 
     return time;
 }
+
+#endif // _WIN32

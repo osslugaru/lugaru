@@ -21,7 +21,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef _GAMEGL_HPP_
 #define _GAMEGL_HPP_
 
-#include "MacCompatibility.hpp"
+#include "Platform/Platform.hpp"
 
 #include <algorithm>
 #include <cstring>
