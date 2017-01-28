@@ -664,6 +664,7 @@ int Game::DrawGLScene(StereoSide side)
                 }
             }
 
+            /* Drowing dialogs */
             if (Dialog::inDialog() && !mainmenu) {
                 glDisable(GL_DEPTH_TEST);
                 glDisable(GL_CULL_FACE);
@@ -713,41 +714,23 @@ int Game::DrawGLScene(StereoSide side)
                     starty = screenheight * 1 / 5 - screenheight / 16;
                 }
 
-                // FIXME - What is that char[] building for?
-                char tempname[264];
-                int tempnum = 0;
-                for (int i = 0; i < 264; i++) {
-                    tempname[i] = '\0';
-                }
+                /* Get speaker name, and remove potential '#' chars hardcoded in it. */
+                string = Dialog::currentScene().name + ": ";
+                string.erase(std::remove(string.begin(), string.end(), '#'), string.end());
 
-                for (unsigned i = 0; i < Dialog::currentScene().name.size(); i++) {
-                    tempname[tempnum] = Dialog::currentScene().name[i];
-                    if (tempname[tempnum] == '#' || tempname[tempnum] == '\0') {
-                        tempname[tempnum] = '\0';
-                    } else {
-                        tempnum++;
-                    }
-                }
-
-                string = std::string(tempname) + ": ";
-
+                /* Print speaker name in dialog box. */
                 if (Dialog::currentScene().color[0] + Dialog::currentScene().color[1] + Dialog::currentScene().color[2] < 1.5) {
-                    text->glPrintOutlined(0.7, 0.7, 0.7, tutorialopac, startx - 2 * 7.6 * string.size() * screenwidth / 1024, starty, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight);
+                    text->glPrintOutlined(0.7, 0.7, 0.7, tutorialopac, startx - 2 * 7.6 * string.size() * screenwidth / 1024, starty, string, 1, 1.4 * screenwidth / 1024, screenwidth, screenheight);
                 } else {
                     glColor4f(0, 0, 0, tutorialopac);
-                    text->glPrintOutline(startx - 2 * 7.6 * string.size() * screenwidth / 1024 - 4, starty - 4, string, 1, 1.5 * 1.25 * screenwidth / 1024, screenwidth, screenheight);
+                    text->glPrintOutline(startx - 2 * 7.6 * string.size() * screenwidth / 1024 - 4, starty - 4, string, 1, 1.4 * 1.25 * screenwidth / 1024, screenwidth, screenheight);
                 }
 
-                tempnum = 0;
-                for (unsigned i = 0; i < Dialog::currentScene().text.size() + 1; i++) {
-                    tempname[tempnum] = Dialog::currentScene().text[i];
-                    if (Dialog::currentScene().text[i] != '#') {
-                        tempnum++;
-                    }
-                }
+                /* Get dialog text, and remove potential '#' chars hardcoded in it.' */
+                string = Dialog::currentScene().text;
+                string.erase(std::remove(string.begin(), string.end(), '#'), string.end());
 
-                string = tempname;
-
+                /* Print dialog text in dialog box. */
                 int lastline = 0;
                 int line = 0;
                 bool done = false;
@@ -755,10 +738,10 @@ int Game::DrawGLScene(StereoSide side)
                 while (!done) {
                     if (string[i] == '\n' || string[i] > 'z' || string[i] < ' ' || string[i] == '\0') {
                         if (Dialog::currentScene().color[0] + Dialog::currentScene().color[1] + Dialog::currentScene().color[2] < 1.5) {
-                            text->glPrintOutlined(1, 1, 1, tutorialopac, startx, starty - 20 * screenwidth / 1024 * line, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight, lastline, i);
+                            text->glPrintOutlined(1, 1, 1, tutorialopac, startx, starty - 20 * screenwidth / 1024 * line, string, 1, 1.4 * screenwidth / 1024, screenwidth, screenheight, lastline, i);
                         } else {
                             glColor4f(0, 0, 0, tutorialopac);
-                            text->glPrint(startx, starty - 20 * screenwidth / 1024 * line, string, 1, 1.5 * screenwidth / 1024, screenwidth, screenheight, lastline, i);
+                            text->glPrint(startx, starty - 20 * screenwidth / 1024 * line, string, 1, 1.4 * screenwidth / 1024, screenwidth, screenheight, lastline, i);
                         }
                         lastline = i + 1;
                         line++;
