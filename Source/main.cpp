@@ -231,7 +231,7 @@ bool SetUp()
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 1);
 
-    Uint32 sdlflags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
+    Uint32 sdlflags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI;
     if (commandLineOptions[FULLSCREEN]) {
         fullscreen = commandLineOptions[FULLSCREEN].last()->type();
     }
