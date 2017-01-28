@@ -8451,8 +8451,8 @@ void Person::doAI()
                 //chase player
                 XYZ rotatetarget = Person::players[0]->coords + Person::players[0]->velocity;
                 XYZ targetpoint = Person::players[0]->coords;
-                if (distsq(&Person::players[0]->coords, &coords) <
-                    distsq(&rotatetarget, &coords)) {
+                if (findLength(&velocity) != 0 &&
+                    distsq(&Person::players[0]->coords, &coords) < distsq(&rotatetarget, &coords)) {
                     targetpoint += Person::players[0]->velocity *
                                    findDistance(&Person::players[0]->coords, &coords) / findLength(&velocity);
                 }
