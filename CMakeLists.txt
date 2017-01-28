@@ -180,13 +180,15 @@ set(LUGARU_H
 
 )
 
+set(LUGARU_OBJS "")
 if(WIN32)
-    add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
+    add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/Lugaru.res
                        COMMAND ${CMAKE_RC_COMPILER}
-                       -o ${CMAKE_CURRENT_BINARY_DIR}/lugaru_resource.obj
+                       -o ${CMAKE_CURRENT_BINARY_DIR}/Lugaru.res
                        -i${SRCDIR}/Lugaru.rc
                        DEPENDS ${SRCDIR}/Lugaru.rc
     )
+    set(LUGARU_OBJS "Lugaru.res")
 endif(WIN32)
 
 if(APPLE)
@@ -235,12 +237,7 @@ set(LUGARU_LIBS ${OPENAL_LIBRARY} ${PNG_LIBRARY} ${JPEG_LIBRARY} ${ZLIB_LIBRARIE
 
 ### Definitions
 
-if(WIN32)
-    add_executable(lugaru ${LUGARU_SRCS} ${LUGARU_H} lugaru_resource.obj)
-else(WIN32)
-    add_executable(lugaru ${LUGARU_SRCS} ${LUGARU_H})
-endif(WIN32)
-
+add_executable(lugaru ${LUGARU_SRCS} ${LUGARU_H} ${LUGARU_OBJS})
 target_link_libraries(lugaru ${LUGARU_LIBS})
 
 if(WIN32)
@@ -307,10 +304,10 @@ if(LINUX)
         install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru DESTINATION ${CMAKE_INSTALL_BINDIR})
         # Trailing '/' is significant, it installs and _renames_ Data/ as the destination folder
         install(DIRECTORY ${CMAKE_SOURCE_DIR}/Data/ DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME})
-        install(FILES ${CMAKE_SOURCE_DIR}/Dist/lugaru.appdata.xml DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/appdata)
-        install(FILES ${CMAKE_SOURCE_DIR}/Dist/lugaru.desktop DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications)
-        install(FILES ${CMAKE_SOURCE_DIR}/Dist/lugaru.png DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/128x128/apps)
-        install(FILES ${CMAKE_SOURCE_DIR}/Dist/lugaru.6 DESTINATION ${CMAKE_INSTALL_MANDIR}/man6)
+        install(FILES ${CMAKE_SOURCE_DIR}/Dist/Linux/lugaru.appdata.xml DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/appdata)
+        install(FILES ${CMAKE_SOURCE_DIR}/Dist/Linux/lugaru.desktop DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications)
+        install(FILES ${CMAKE_SOURCE_DIR}/Dist/Linux/lugaru.png DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/128x128/apps)
+        install(FILES ${CMAKE_SOURCE_DIR}/Dist/Linux/lugaru.6 DESTINATION ${CMAKE_INSTALL_MANDIR}/man6)
     else(SYSTEM_INSTALL)
         message("You are building Lugaru without having enabled the SYSTEM_INSTALL option. It will default to looking for the data in the 'Data' directory next to the binary.")
         install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru DESTINATION ${CMAKE_INSTALL_PREFIX})
