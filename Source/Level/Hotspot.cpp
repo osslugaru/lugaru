@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2010-2016 - Lugaru contributors (see AUTHORS file)
+Copyright (C) 2010-2017 - Lugaru contributors (see AUTHORS file)
 
 This file is part of Lugaru.
 
