@@ -959,11 +959,142 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
     return true;
 }
 
-void doDevKeys()
+/* Process input events that impact settings, console, devtools, etc.
+ * Gameplay-related input processing is still done in Game::Tick() for now
+ * as it is tightly coupled to the game logic.
+ */
+void Game::ProcessInput()
 {
-    float headprop, bodyprop, armprop, legprop;
-    if (!devtools) {
+    /* Pump SDL input events */
+    Input::Tick();
+
+    /* Menu handling (main menu, leave game) */
+    if (Input::isKeyPressed(SDL_SCANCODE_ESCAPE) &&
+        (gameon || mainmenu == 0)) {
+        selected = -1;
+        if (mainmenu == 0 && !winfreeze) {
+            mainmenu = 2; // Pause
+        } else if (mainmenu == 1 || mainmenu == 2) {
+            mainmenu = 0; // Unpause
+        }
+        // Play menu theme
+        if (musictoggle && (mainmenu == 1 || mainmenu == 2)) {
+            OPENAL_SetFrequency(OPENAL_ALL);
+            emit_stream_np(stream_menutheme);
+            pause_sound(leveltheme);
+        }
+        // On resume, play level music
+        if (!mainmenu) {
+            pause_sound(stream_menutheme);
+            resume_stream(leveltheme);
+        }
+    }
+
+    /* Challenge mode */
+    if (!campaign && !mainmenu) {
+        if ((Input::isKeyPressed(jumpkey) || Input::isKeyPressed(SDL_SCANCODE_SPACE))) {
+            if (winfreeze) {
+                winfreeze = 0;
+            }
+        }
+
+        if ((Input::isKeyDown(SDL_SCANCODE_ESCAPE)) && gameon) {
+            if (console) {
+                console = false;
+                freeze = 0;
+            } else if (winfreeze) {
+                mainmenu = 9;
+                gameon = 0;
+            }
+        }
+    }
+
+
+    /* Tutorial mode hotkeys */
+    if (Tutorial::active) {
+        // Skip current tutorial stage
+        if (Input::isKeyPressed(SDL_SCANCODE_TAB)) {
+            if (Tutorial::stage != 51) {
+                Tutorial::stagetime = Tutorial::maxtime;
+            }
+            emit_sound_np(consolefailsound, 128.);
+        }
+    }
+
+
+    /* Screenshot */
+    if (Input::isKeyPressed(SDL_SCANCODE_F1)) {
+        Screenshot();
+    }
+
+
+    /* Stereo video mode hotkeys */
+    if (Input::isKeyPressed(SDL_SCANCODE_F6)) {
+        if (Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
+            stereoreverse = true;
+        } else {
+            stereoreverse = false;
+        }
+
+        if (stereoreverse) {
+            printf("Stereo reversed\n");
+        } else {
+            printf("Stereo unreversed\n");
+        }
+    }
+
+    if (Input::isKeyDown(SDL_SCANCODE_F7)) {
+        if (Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
+            stereoseparation -= 0.001;
+        } else {
+            stereoseparation -= 0.010;
+        }
+        printf("Stereo decreased increased to %f\n", stereoseparation);
+    }
+
+    if (Input::isKeyDown(SDL_SCANCODE_F8)) {
+        if (Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
+            stereoseparation += 0.001;
+        } else {
+            stereoseparation += 0.010;
+        }
+        printf("Stereo separation increased to %f\n", stereoseparation);
+    }
+
+
+    /* Devtools */
+    if (devtools && !mainmenu) {
+        ProcessDevInput();
+    }
+}
+
+void Game::ProcessDevInput()
+{
+    if (!devtools || mainmenu) {
         return;
+    }
+
+    float headprop, bodyprop, armprop, legprop;
+
+    if (!mainmenu) {
+        // Console
+        if (Input::isKeyPressed(consolekey)) {
+            console = !console;
+            if (console) {
+                OPENAL_SetFrequency(OPENAL_ALL);
+            } else {
+                freeze = 0;
+                waiting = false;
+            }
+        }
+
+        // Freeze
+        if (Input::isKeyDown(SDL_SCANCODE_LALT) && Input::isKeyPressed(SDL_SCANCODE_V)) {
+            freeze = !freeze;
+            if (freeze) {
+                OPENAL_SetFrequency(OPENAL_ALL);
+            }
+        }
     }
 
     if (Input::isKeyDown(SDL_SCANCODE_LALT)) {
@@ -2948,46 +3079,8 @@ void Game::Tick()
     static XYZ facing, flatfacing;
     static int target;
 
-    Input::Tick();
-
-    if (Input::isKeyPressed(SDL_SCANCODE_F6)) {
-        if (Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
-            stereoreverse = true;
-        } else {
-            stereoreverse = false;
-        }
-
-        if (stereoreverse) {
-            printf("Stereo reversed\n");
-        } else {
-            printf("Stereo unreversed\n");
-        }
-    }
-
-    if (Input::isKeyDown(SDL_SCANCODE_F7)) {
-        if (Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
-            stereoseparation -= 0.001;
-        } else {
-            stereoseparation -= 0.010;
-        }
-        printf("Stereo decreased increased to %f\n", stereoseparation);
-    }
-
-    if (Input::isKeyDown(SDL_SCANCODE_F8)) {
-        if (Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
-            stereoseparation += 0.001;
-        } else {
-            stereoseparation += 0.010;
-        }
-        printf("Stereo separation increased to %f\n", stereoseparation);
-    }
-
-    if (Input::isKeyPressed(SDL_SCANCODE_TAB) && Tutorial::active) {
-        if (Tutorial::stage != 51) {
-            Tutorial::stagetime = Tutorial::maxtime;
-        }
-        emit_sound_np(consolefailsound, 128.);
-    }
+    /* Pump SDL input events and process non-gameplay related ones */
+    ProcessInput();
 
     /*
     Values of mainmenu :
@@ -3024,27 +3117,6 @@ void Game::Tick()
             }
             Menu::Load();
         }
-        //escape key pressed
-        if (Input::isKeyPressed(SDL_SCANCODE_ESCAPE) &&
-            (gameon || mainmenu == 0)) {
-            selected = -1;
-            if (mainmenu == 0 && !winfreeze) {
-                mainmenu = 2; //pause
-            } else if (mainmenu == 1 || mainmenu == 2) {
-                mainmenu = 0; //unpause
-            }
-            //play menu theme
-            if (musictoggle && (mainmenu == 1 || mainmenu == 2)) {
-                OPENAL_SetFrequency(OPENAL_ALL);
-                emit_stream_np(stream_menutheme);
-                pause_sound(leveltheme);
-            }
-            //on resume, play level music
-            if (!mainmenu) {
-                pause_sound(stream_menutheme);
-                resume_stream(leveltheme);
-            }
-        }
     }
 
     if (mainmenu) {
@@ -3061,28 +3133,9 @@ void Game::Tick()
             leveltime += multiplier;
         }
 
-        //keys
-        if (Input::isKeyDown(SDL_SCANCODE_LALT) && Input::isKeyPressed(SDL_SCANCODE_V) && devtools) {
-            freeze = !freeze;
-            if (freeze) {
-                OPENAL_SetFrequency(OPENAL_ALL);
-            }
-        }
-
-        if (Input::isKeyPressed(consolekey) && devtools) {
-            console = !console;
-            if (console) {
-                OPENAL_SetFrequency(OPENAL_ALL);
-            } else {
-                freeze = 0;
-                waiting = false;
-            }
-        }
-
         if (console) {
             freeze = 1;
-        }
-        if (console && !Input::isKeyDown(SDL_SCANCODE_LGUI)) {
+
             inputText(consoletext[0], &consoleselected);
             if (!waiting) {
                 if (!consoletext[0].empty()) {
@@ -3111,21 +3164,6 @@ void Game::Tick()
             oldwinfreeze = winfreeze;
         } else {
             oldwinfreeze++;
-        }
-
-        if ((Input::isKeyPressed(jumpkey) || Input::isKeyPressed(SDL_SCANCODE_SPACE)) && !campaign) {
-            if (winfreeze) {
-                winfreeze = 0;
-            }
-        }
-        if ((Input::isKeyDown(SDL_SCANCODE_ESCAPE)) && !campaign && gameon) {
-            if (console) {
-                console = false;
-                freeze = 0;
-            } else if (winfreeze) {
-                mainmenu = 9;
-                gameon = 0;
-            }
         }
 
         if (!freeze && !winfreeze && !(mainmenu && gameon) && (gameon || !gamestarted)) {
@@ -3491,8 +3529,6 @@ void Game::Tick()
 
                 hawkcalldelay = 16 + abs(Random() % 8);
             }
-
-            doDevKeys();
 
             doAttacks();
 
@@ -4537,10 +4573,6 @@ void Game::Tick()
 
             oldviewer = viewer;
         }
-    }
-
-    if (Input::isKeyPressed(SDL_SCANCODE_F1)) {
-        Screenshot();
     }
 }
 

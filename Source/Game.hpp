@@ -146,9 +146,14 @@ void playdialoguescenesound();
 int findClosestPlayer();
 bool LoadLevel(int which);
 bool LoadLevel(const std::string& name, bool tutorial = false);
+
+void ProcessInput();
+void ProcessDevInput();
+
 void Tick();
 void TickOnce();
 void TickOnceAfter();
+
 void SetUpLighting();
 GLvoid ReSizeGLScene(float fov, float near);
 

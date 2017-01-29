@@ -578,8 +578,8 @@ void Person::CheckKick()
 /* EFFECT
  *
  * USES:
- * GameTick/doPlayerCollisions - spread fire between players
- * GameTick/doDevKeys - press f to ignite
+ * GameTick::doPlayerCollisions - spread fire between players
+ * GameTick::ProcessDevKeys - press f to ignite
  * Person::DoStuff - spread fire from lit campfires and bushes
  */
 void Person::CatchFire()
