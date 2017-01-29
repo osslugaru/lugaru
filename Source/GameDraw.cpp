@@ -664,7 +664,7 @@ int Game::DrawGLScene(StereoSide side)
                 }
             }
 
-            /* Drowing dialogs */
+            /* Drawing dialogs */
             if (Dialog::inDialog() && !mainmenu) {
                 glDisable(GL_DEPTH_TEST);
                 glDisable(GL_CULL_FACE);

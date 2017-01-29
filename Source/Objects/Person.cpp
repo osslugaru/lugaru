@@ -8443,10 +8443,11 @@ void Person::doAI()
                 //chase player
                 XYZ rotatetarget = Person::players[0]->coords + Person::players[0]->velocity;
                 XYZ targetpoint = Person::players[0]->coords;
-                if (findLength(&velocity) != 0 &&
+                float vellength = findLength(&velocity);
+                if (vellength != 0 &&
                     distsq(&Person::players[0]->coords, &coords) < distsq(&rotatetarget, &coords)) {
                     targetpoint += Person::players[0]->velocity *
-                                   findDistance(&Person::players[0]->coords, &coords) / findLength(&velocity);
+                                   findDistance(&Person::players[0]->coords, &coords) / vellength;
                 }
                 targetyaw = roughDirectionTo(coords, targetpoint);
                 lookyaw = targetyaw;
