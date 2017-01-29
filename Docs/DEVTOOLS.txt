@@ -33,9 +33,10 @@ tab = minimap
 super+z = restart level
 shift+k = win level
 
-alt+h = give 2000 health
+alt+h = give 20000 health
 alt+j = toggle snow/grass/desert
 alt+c = toggle cameramode
+alt+v = freeze
 alt+b = slow motion (with motion blur that might work)
 alt+n = ragdoll
 alt+x = change weapon of nearby player (main player if ctrl is pressed)
@@ -159,10 +160,10 @@ Skybox
 ~~~~~~
 
 skybox - toggles skybox on and off.
-sky tint (float) (float) (float) - sets the color tint of the sky.
+skytint (float) (float) (float) - sets the color tint of the sky.
     Each floating point value corresponds to a red, green, or blue value,
     respectively, between 0 and 1.
-sky light (float) (float) (float) - sets the color of the lighting of the sky.
+skylight (float) (float) (float) - sets the color of the lighting of the sky.
     Each floating point value corresponds to a red, green, or blue value,
     respectively, between 0 and 1.
 
