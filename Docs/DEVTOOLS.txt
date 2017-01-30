@@ -49,11 +49,11 @@ alt+shift+i = explode nearby enemy
 Map editor:
 
 alt+m = toggle editor mode
-m = place object
+o = place object
 p = place enemy
 shift+p = place waypoint
-delete = delete most recently made object
-shift+delete = delete most recently made player
+delete = delete closest object
+shift+delete = delete closest player
 up/down = change size of next object
 control+up/down = change tilt of next object
 left/right = change rotation of next object

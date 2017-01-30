@@ -300,11 +300,11 @@ int Game::findClosestPlayer()
     int closest = -1;
     float closestdist = std::numeric_limits<float>::max();
 
-    for (unsigned i = 1; i < Person::players.size(); i++) {
+    for (unsigned int i = 1; i < Person::players.size(); i++) {
         float distance = distsq(&Person::players[i]->coords, &Person::players[0]->coords);
         if (distance < closestdist) {
             closestdist = distance;
-            closest = i;
+            closest = (int)i;
         }
     }
     return closest;
@@ -1363,21 +1363,24 @@ void doDevKeys()
     }
 
     if (editorenabled) {
+        /* Closest player deletion */
         if (Input::isKeyPressed(SDL_SCANCODE_DELETE) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
             int closest = findClosestPlayer();
-            if (closest >= 0) {
+            if (closest > 0) {
                 Person::players.erase(Person::players.begin() + closest);
             }
         }
 
-        if (Input::isKeyPressed(SDL_SCANCODE_DELETE) && Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
+        /* Closest object deletion */
+        if (Input::isKeyPressed(SDL_SCANCODE_DELETE) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
             int closest = findClosestObject();
             if (closest >= 0) {
-                Object::objects[closest]->position.y -= 500;
+                Object::DeleteObject(closest);
             }
         }
 
-        if (Input::isKeyPressed(SDL_SCANCODE_M) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
+        /* Add object */
+        if (Input::isKeyPressed(SDL_SCANCODE_O) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
             if (Object::objects.size() < max_objects - 1) {
                 XYZ scenecoords;
                 scenecoords.x = Person::players[0]->coords.x;
@@ -1406,7 +1409,8 @@ void doDevKeys()
             }
         }
 
-        if (Input::isKeyPressed(SDL_SCANCODE_P) && Input::isKeyDown(SDL_SCANCODE_LSHIFT) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
+        /* Add player */
+        if (Input::isKeyPressed(SDL_SCANCODE_P) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
             Person::players.push_back(shared_ptr<Person>(new Person()));
 
             Person::players.back()->id = Person::players.size() - 1;
@@ -1502,6 +1506,7 @@ void doDevKeys()
             Person::players.back()->loaded = true;
         }
 
+        /* Add waypoint */
         if (Input::isKeyPressed(SDL_SCANCODE_P) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
             if (Person::players.back()->numwaypoints < 90) {
                 Person::players.back()->waypoints[Person::players.back()->numwaypoints] = Person::players[0]->coords;
@@ -1510,6 +1515,7 @@ void doDevKeys()
             }
         }
 
+        /* Connect waypoint */
         if (Input::isKeyPressed(SDL_SCANCODE_P) && Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
             if (numpathpoints < 30) {
                 bool connected, alreadyconnected;
@@ -1639,13 +1645,6 @@ void doDevKeys()
             editorpitch -= multiplier * 100;
             if (editorpitch < -.01) {
                 editorpitch = -.01;
-            }
-        }
-
-        if (Input::isKeyPressed(SDL_SCANCODE_DELETE) && Object::objects.size() && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
-            int closest = findClosestObject();
-            if (closest >= 0) {
-                Object::DeleteObject(closest);
             }
         }
     }
