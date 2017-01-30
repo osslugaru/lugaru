@@ -1009,7 +1009,6 @@ void Game::ProcessInput()
         }
     }
 
-
     /* Tutorial mode hotkeys */
     if (Tutorial::active) {
         // Skip current tutorial stage
@@ -1021,24 +1020,18 @@ void Game::ProcessInput()
         }
     }
 
-
     /* Screenshot */
     if (Input::isKeyPressed(SDL_SCANCODE_F1)) {
         Screenshot();
     }
 
-
     /* Stereo video mode hotkeys */
     if (Input::isKeyPressed(SDL_SCANCODE_F6)) {
         if (Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
             stereoreverse = true;
-        } else {
-            stereoreverse = false;
-        }
-
-        if (stereoreverse) {
             printf("Stereo reversed\n");
         } else {
+            stereoreverse = false;
             printf("Stereo unreversed\n");
         }
     }
@@ -1049,7 +1042,7 @@ void Game::ProcessInput()
         } else {
             stereoseparation -= 0.010;
         }
-        printf("Stereo decreased increased to %f\n", stereoseparation);
+        printf("Stereo separation decreased to %f\n", stereoseparation);
     }
 
     if (Input::isKeyDown(SDL_SCANCODE_F8)) {
@@ -1060,7 +1053,6 @@ void Game::ProcessInput()
         }
         printf("Stereo separation increased to %f\n", stereoseparation);
     }
-
 
     /* Devtools */
     if (devtools && !mainmenu) {
@@ -1076,29 +1068,34 @@ void Game::ProcessDevInput()
 
     float headprop, bodyprop, armprop, legprop;
 
-    if (!mainmenu) {
-        // Console
-        if (Input::isKeyPressed(consolekey)) {
-            console = !console;
-            if (console) {
-                OPENAL_SetFrequency(OPENAL_ALL);
-            } else {
-                freeze = 0;
-                waiting = false;
-            }
-        }
-
-        // Freeze
-        if (Input::isKeyDown(SDL_SCANCODE_LALT) && Input::isKeyPressed(SDL_SCANCODE_V)) {
-            freeze = !freeze;
-            if (freeze) {
-                OPENAL_SetFrequency(OPENAL_ALL);
-            }
+    /* Console */
+    if (Input::isKeyPressed(consolekey)) {
+        console = !console;
+        if (console) {
+            OPENAL_SetFrequency(OPENAL_ALL);
+        } else {
+            freeze = 0;
+            waiting = false;
         }
     }
 
     if (Input::isKeyDown(SDL_SCANCODE_LALT)) {
-        /* Invicible */
+        /* Enable editor */
+        if (Input::isKeyPressed(SDL_SCANCODE_M) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
+            editorenabled = !editorenabled;
+            if (editorenabled) {
+                Person::players[0]->damagetolerance = 100000;
+            } else {
+                Person::players[0]->damagetolerance = 200;
+            }
+            Person::players[0]->damage = 0; // these lines were in both if and else, but I think they would better fit in the if
+            Person::players[0]->permanentdamage = 0;
+            Person::players[0]->superpermanentdamage = 0;
+            Person::players[0]->bloodloss = 0;
+            Person::players[0]->deathbleeding = 0;
+        }
+
+        /* Nullify damage and give 200000 health */
         if (Input::isKeyPressed(SDL_SCANCODE_H)) {
             Person::players[0]->damagetolerance = 200000;
             Person::players[0]->damage = 0;
@@ -1121,7 +1118,15 @@ void Game::ProcessDevInput()
             cameramode = !cameramode;
         }
 
-        /* Toggle Slow motion */
+        /* Freeze */
+        if (Input::isKeyPressed(SDL_SCANCODE_V)) {
+            freeze = !freeze;
+            if (freeze) {
+                OPENAL_SetFrequency(OPENAL_ALL);
+            }
+        }
+
+        /* Toggle slow motion */
         if (Input::isKeyPressed(SDL_SCANCODE_B)) {
             slomo = 1 - slomo;
             slomodelay = 1000;
@@ -1130,11 +1135,11 @@ void Game::ProcessDevInput()
         /* Ragdoll */
         if (Input::isKeyPressed(SDL_SCANCODE_N)) {
             Person::players[0]->RagDoll(0);
-
             emit_sound_at(whooshsound, Person::players[0]->coords, 128.);
         }
 
-        /* Grow tree leaves?? */
+        /* Shrink tree leaves?? */
+        // FIXME: Can't see what this does in game.
         if (Input::isKeyPressed(SDL_SCANCODE_Y)) {
             for (auto& an_object : Object::objects) {
                 if (an_object->type == treeleavestype) {
@@ -1152,24 +1157,28 @@ void Game::ProcessDevInput()
 
             if (closest >= 0) {
                 if (Person::players[closest]->num_weapons > 0) {
-                    if (weapons[Person::players[closest]->weaponids[0]].getType() == sword) {
-                        weapons[Person::players[closest]->weaponids[0]].setType(staff);
-                    } else if (weapons[Person::players[closest]->weaponids[0]].getType() == staff) {
-                        weapons[Person::players[closest]->weaponids[0]].setType(knife);
-                    } else {
-                        weapons[Person::players[closest]->weaponids[0]].setType(sword);
+                    int weapontype = 0;
+                    switch (weapons[Person::players[closest]->weaponids[0]].getType()) {
+                        case knife:
+                            weapontype = sword;
+                            break;
+                        case sword:
+                            weapontype = staff;
+                            break;
+                        case staff:
+                            weapontype = knife;
+                            break;
                     }
+                    weapons[Person::players[closest]->weaponids[0]].setType(weapontype);
                 } else {
                     Person::players[closest]->weaponids[0] = weapons.size();
-
                     weapons.push_back(Weapon(knife, closest));
-
                     Person::players[closest]->num_weapons = 1;
                 }
             }
         }
 
-        /* Change yaw? */
+        /* Change yaw (rotate around Z axis) */
         if (Input::isKeyDown(SDL_SCANCODE_U)) {
             int closest = 0;
             if (!Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
@@ -1184,18 +1193,24 @@ void Game::ProcessDevInput()
 
         /* Toggle fire */
         if (Input::isKeyPressed(SDL_SCANCODE_F)) {
-            Person::players[0]->onfire = 1 - Person::players[0]->onfire;
-            if (Person::players[0]->onfire) {
-                Person::players[0]->CatchFire();
+            int closest = 0;
+            if (!Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
+                closest = findClosestPlayer();
             }
-            if (!Person::players[0]->onfire) {
-                emit_sound_at(fireendsound, Person::players[0]->coords);
-                pause_sound(stream_firesound);
+
+            if (closest >= 0) {
+                Person::players[closest]->onfire = !Person::players[closest]->onfire;
+                if (Person::players[closest]->onfire) {
+                    Person::players[closest]->CatchFire();
+                } else {
+                    emit_sound_at(fireendsound, Person::players[closest]->coords);
+                    pause_sound(stream_firesound);
+                }
             }
         }
 
         /* Change skin */
-        if (Input::isKeyPressed(SDL_SCANCODE_O) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
+        if (Input::isKeyPressed(SDL_SCANCODE_T) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
             int closest = 0;
             if (!Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
                 closest = findClosestPlayer();
@@ -1210,28 +1225,29 @@ void Game::ProcessDevInput()
                     Person::players[closest]->whichskin = 0;
                 }
 
-                Person::players[closest]->skeleton.drawmodel.textureptr.load(creatureskin[Person::players[closest]->creature][Person::players[closest]->whichskin], 1,
-                                                                             &Person::players[closest]->skeleton.skinText[0], &Person::players[closest]->skeleton.skinsize);
+                Person::players[closest]->skeleton.drawmodel.textureptr.load(
+                    creatureskin[Person::players[closest]->creature][Person::players[closest]->whichskin], 1,
+                    &Person::players[closest]->skeleton.skinText[0], &Person::players[closest]->skeleton.skinsize);
             }
 
             Person::players[closest]->addClothes();
         }
 
         /* Change creature type */
-        if (Input::isKeyPressed(SDL_SCANCODE_O) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
+        if (Input::isKeyPressed(SDL_SCANCODE_T) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
             int closest = 0;
             if (!Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
                 closest = findClosestPlayer();
             }
 
+            // FIXME: Those proportions are buggy
             if (closest >= 0) {
                 if (Person::players[closest]->creature == wolftype) {
                     headprop = Person::players[closest]->proportionhead.x / 1.1;
                     bodyprop = Person::players[closest]->proportionbody.x / 1.1;
                     armprop = Person::players[closest]->proportionarms.x / 1.1;
                     legprop = Person::players[closest]->proportionlegs.x / 1.1;
-                } else {
-                    // rabbittype
+                } else { // rabbittype
                     headprop = Person::players[closest]->proportionhead.x / 1.2;
                     bodyprop = Person::players[closest]->proportionbody.x / 1.05;
                     armprop = Person::players[closest]->proportionarms.x / 1.00;
@@ -1283,54 +1299,46 @@ void Game::ProcessDevInput()
             }
         }
 
-        /* Decapitate */
-        if (((Input::isKeyPressed(SDL_SCANCODE_I) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT)))) {
-            int closest = -1;
-            float closestdist = std::numeric_limits<float>::max();
-
-            for (unsigned i = 1; i < Person::players.size(); i++) {
-                float distance = distsq(&Person::players[i]->coords, &Person::players[0]->coords);
-                if (!Person::players[i]->headless) {
-                    if (distance < closestdist) {
-                        closestdist = distance;
-                        closest = i;
-                    }
-                }
-            }
-
-            XYZ flatfacing2, flatvelocity2;
-            XYZ blah;
-            if (closest != -1 && distsq(&Person::players[closest]->coords, &Person::players[0]->coords) < 144) {
-                blah = Person::players[closest]->coords;
+        /* Explose nearby player's head */
+        if (Input::isKeyPressed(SDL_SCANCODE_I) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
+            int closest = findClosestPlayer();
+            if (closest > 0 && distsq(&Person::players[closest]->coords, &Person::players[0]->coords) < 144) {
+                XYZ flatfacing2, flatvelocity2, flatvelocity2_orig;
                 XYZ headspurtdirection;
-                //int i = Person::players[closest]->skeleton.jointlabels[head];
                 Joint& headjoint = Person::players[closest]->joint(head);
-                for (unsigned k = 0; k < Person::players[closest]->skeleton.joints.size(); k++) {
-                    if (!Person::players[closest]->skeleton.free) {
-                        flatvelocity2 = Person::players[closest]->velocity;
-                    }
-                    if (Person::players[closest]->skeleton.free) {
-                        flatvelocity2 = headjoint.velocity;
-                    }
-                    if (!Person::players[closest]->skeleton.free) {
-                        flatfacing2 = DoRotation(DoRotation(DoRotation(headjoint.position, 0, 0, Person::players[closest]->tilt), Person::players[closest]->tilt2, 0, 0), 0, Person::players[closest]->yaw, 0) * Person::players[closest]->scale + Person::players[closest]->coords;
-                    }
-                    if (Person::players[closest]->skeleton.free) {
-                        flatfacing2 = headjoint.position * Person::players[closest]->scale + Person::players[closest]->coords;
-                    }
+
+                if (!Person::players[closest]->skeleton.free) {
+                    flatvelocity2_orig = Person::players[closest]->velocity;
+                    flatfacing2 = DoRotation(
+                                      DoRotation(
+                                          DoRotation(headjoint.position, 0, 0, Person::players[closest]->tilt),
+                                          Person::players[closest]->tilt2, 0, 0),
+                                      0, Person::players[closest]->yaw, 0) *
+                                      Person::players[closest]->scale +
+                                  Person::players[closest]->coords;
+                } else {
+                    flatvelocity2_orig = headjoint.velocity;
+                    flatfacing2 = headjoint.position * Person::players[closest]->scale + Person::players[closest]->coords;
+                }
+
+                headspurtdirection = headjoint.position - Person::players[closest]->jointPos(neck);
+                Normalise(&headspurtdirection);
+
+                for (unsigned i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
+                    flatvelocity2 = flatvelocity2_orig;
                     flatvelocity2.x += (float)(abs(Random() % 100) - 50) / 10;
                     flatvelocity2.y += (float)(abs(Random() % 100) - 50) / 10;
                     flatvelocity2.z += (float)(abs(Random() % 100) - 50) / 10;
-                    headspurtdirection = headjoint.position - Person::players[closest]->jointPos(neck);
-                    Normalise(&headspurtdirection);
+                    printf("Test: %f\n", flatvelocity2.x);
+                    printf("Test orig: %f\n", flatvelocity2_orig.x);
                     Sprite::MakeSprite(bloodflamesprite, flatfacing2, flatvelocity2, 1, 1, 1, .6, 1);
                     flatvelocity2 += headspurtdirection * 8;
                     Sprite::MakeSprite(bloodsprite, flatfacing2, flatvelocity2 / 2, 1, 1, 1, .16, 1);
                 }
                 Sprite::MakeSprite(cloudsprite, flatfacing2, flatvelocity2 * 0, .6, 0, 0, 1, .5);
 
-                emit_sound_at(splattersound, blah);
-                emit_sound_at(breaksound2, blah, 100.);
+                emit_sound_at(splattersound, Person::players[closest]->coords);
+                emit_sound_at(breaksound2, Person::players[closest]->coords, 100.);
 
                 if (Person::players[closest]->skeleton.free == 2) {
                     Person::players[closest]->skeleton.free = 0;
@@ -1344,90 +1352,59 @@ void Game::ProcessDevInput()
             }
         }
 
-        /* Explode */
-        if (((Input::isKeyPressed(SDL_SCANCODE_I) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)))) {
+        /* Explode nearby player */
+        if (Input::isKeyPressed(SDL_SCANCODE_I) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
             int closest = findClosestPlayer();
-            XYZ flatfacing2, flatvelocity2;
-            XYZ blah;
             if (closest >= 0 && distsq(&Person::players[closest]->coords, &Person::players[0]->coords) < 144) {
-                blah = Person::players[closest]->coords;
-                emit_sound_at(splattersound, blah);
-                emit_sound_at(breaksound2, blah);
+                XYZ flatfacing2, flatvelocity2, flatvelocity2_orig;
+
+                emit_sound_at(splattersound, Person::players[closest]->coords);
+                emit_sound_at(breaksound2, Person::players[closest]->coords);
 
                 for (unsigned i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
                     if (!Person::players[closest]->skeleton.free) {
-                        flatvelocity2 = Person::players[closest]->velocity;
+                        flatvelocity2_orig = Person::players[closest]->velocity;
+                        flatfacing2 = DoRotation(
+                                          DoRotation(
+                                              DoRotation(Person::players[closest]->skeleton.joints[i].position, 0, 0, Person::players[closest]->tilt),
+                                              Person::players[closest]->tilt2, 0, 0),
+                                          0, Person::players[closest]->yaw, 0) *
+                                          Person::players[closest]->scale +
+                                      Person::players[closest]->coords;
+                    } else {
+                        flatvelocity2_orig = Person::players[closest]->skeleton.joints[i].velocity;
+                        flatfacing2 = Person::players[closest]->skeleton.joints[i].position *
+                                          Person::players[closest]->scale +
+                                      Person::players[closest]->coords;
                     }
-                    if (Person::players[closest]->skeleton.free) {
-                        flatvelocity2 = Person::players[closest]->skeleton.joints[i].velocity;
-                    }
-                    if (!Person::players[closest]->skeleton.free) {
-                        flatfacing2 = DoRotation(DoRotation(DoRotation(Person::players[closest]->skeleton.joints[i].position, 0, 0, Person::players[closest]->tilt), Person::players[closest]->tilt2, 0, 0), 0, Person::players[closest]->yaw, 0) * Person::players[closest]->scale + Person::players[closest]->coords;
-                    }
-                    if (Person::players[closest]->skeleton.free) {
-                        flatfacing2 = Person::players[closest]->skeleton.joints[i].position * Person::players[closest]->scale + Person::players[closest]->coords;
-                    }
+
+                    // Animation part 1
+                    flatvelocity2 = flatvelocity2_orig;
                     flatvelocity2.x += (float)(abs(Random() % 100) - 50) / 10;
                     flatvelocity2.y += (float)(abs(Random() % 100) - 50) / 10;
                     flatvelocity2.z += (float)(abs(Random() % 100) - 50) / 10;
                     Sprite::MakeSprite(bloodflamesprite, flatfacing2, flatvelocity2, 1, 1, 1, 3, 1);
                     Sprite::MakeSprite(bloodsprite, flatfacing2, flatvelocity2, 1, 1, 1, .3, 1);
                     Sprite::MakeSprite(cloudsprite, flatfacing2, flatvelocity2 * 0, .6, 0, 0, 1, .5);
-                }
 
-                for (unsigned i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
-                    if (!Person::players[closest]->skeleton.free) {
-                        flatvelocity2 = Person::players[closest]->velocity;
-                    }
-                    if (Person::players[closest]->skeleton.free) {
-                        flatvelocity2 = Person::players[closest]->skeleton.joints[i].velocity;
-                    }
-                    if (!Person::players[closest]->skeleton.free) {
-                        flatfacing2 = DoRotation(DoRotation(DoRotation(Person::players[closest]->skeleton.joints[i].position, 0, 0, Person::players[closest]->tilt), Person::players[closest]->tilt2, 0, 0), 0, Person::players[closest]->yaw, 0) * Person::players[closest]->scale + Person::players[closest]->coords;
-                    }
-                    if (Person::players[closest]->skeleton.free) {
-                        flatfacing2 = Person::players[closest]->skeleton.joints[i].position * Person::players[closest]->scale + Person::players[closest]->coords;
-                    }
+                    // Animation part 2
+                    flatvelocity2 = flatvelocity2_orig;
                     flatvelocity2.x += (float)(abs(Random() % 100) - 50) / 10;
                     flatvelocity2.y += (float)(abs(Random() % 100) - 50) / 10;
                     flatvelocity2.z += (float)(abs(Random() % 100) - 50) / 10;
                     Sprite::MakeSprite(bloodflamesprite, flatfacing2, flatvelocity2, 1, 1, 1, 3, 1);
                     Sprite::MakeSprite(bloodsprite, flatfacing2, flatvelocity2, 1, 1, 1, .4, 1);
-                }
 
-                for (unsigned i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
-                    if (!Person::players[closest]->skeleton.free) {
-                        flatvelocity2 = Person::players[closest]->velocity;
-                    }
-                    if (Person::players[closest]->skeleton.free) {
-                        flatvelocity2 = Person::players[closest]->skeleton.joints[i].velocity;
-                    }
-                    if (!Person::players[closest]->skeleton.free) {
-                        flatfacing2 = DoRotation(DoRotation(DoRotation(Person::players[closest]->skeleton.joints[i].position, 0, 0, Person::players[closest]->tilt), Person::players[closest]->tilt2, 0, 0), 0, Person::players[closest]->yaw, 0) * Person::players[closest]->scale + Person::players[closest]->coords;
-                    }
-                    if (Person::players[closest]->skeleton.free) {
-                        flatfacing2 = Person::players[closest]->skeleton.joints[i].position * Person::players[closest]->scale + Person::players[closest]->coords;
-                    }
+                    // Animation part 3
+                    flatvelocity2 = flatvelocity2_orig;
                     flatvelocity2.x += (float)(abs(Random() % 100) - 50) / 10;
                     flatvelocity2.y += (float)(abs(Random() % 100) - 50) / 10;
                     flatvelocity2.z += (float)(abs(Random() % 100) - 50) / 10;
                     Sprite::MakeSprite(bloodflamesprite, flatfacing2, flatvelocity2 * 2, 1, 1, 1, 3, 1);
                     Sprite::MakeSprite(bloodsprite, flatfacing2, flatvelocity2 * 2, 1, 1, 1, .4, 1);
-                }
 
-                for (unsigned i = 0; i < Person::players[closest]->skeleton.joints.size(); i++) {
-                    if (!Person::players[closest]->skeleton.free) {
-                        flatvelocity2 = Person::players[closest]->velocity;
-                    }
-                    if (Person::players[closest]->skeleton.free) {
-                        flatvelocity2 = Person::players[closest]->skeleton.joints[i].velocity;
-                    }
-                    if (!Person::players[closest]->skeleton.free) {
-                        flatfacing2 = DoRotation(DoRotation(DoRotation(Person::players[closest]->skeleton.joints[i].position, 0, 0, Person::players[closest]->tilt), Person::players[closest]->tilt2, 0, 0), 0, Person::players[closest]->yaw, 0) * Person::players[closest]->scale + Person::players[closest]->coords;
-                    }
-                    if (Person::players[closest]->skeleton.free) {
-                        flatfacing2 = Person::players[closest]->skeleton.joints[i].position * Person::players[closest]->scale + Person::players[closest]->coords;
-                    }
+                    // Animation part 4
+                    flatvelocity2 = flatvelocity2_orig;
                     flatvelocity2.x += (float)(abs(Random() % 100) - 50) / 10;
                     flatvelocity2.y += (float)(abs(Random() % 100) - 50) / 10;
                     flatvelocity2.z += (float)(abs(Random() % 100) - 50) / 10;
@@ -1437,21 +1414,23 @@ void Game::ProcessDevInput()
 
                 XYZ temppos;
                 for (unsigned j = 0; j < Person::players.size(); j++) {
-                    if (int(j) != closest) {
-                        if (distsq(&Person::players[j]->coords, &Person::players[closest]->coords) < 25) {
-                            Person::players[j]->DoDamage((25 - distsq(&Person::players[j]->coords, &Person::players[closest]->coords)) * 60);
-                            if (Person::players[j]->skeleton.free == 2) {
-                                Person::players[j]->skeleton.free = 1;
-                            }
-                            Person::players[j]->skeleton.longdead = 0;
-                            Person::players[j]->RagDoll(0);
-                            for (unsigned i = 0; i < Person::players[j]->skeleton.joints.size(); i++) {
-                                temppos = Person::players[j]->skeleton.joints[i].position + Person::players[j]->coords;
-                                if (distsq(&temppos, &Person::players[closest]->coords) < 25) {
-                                    flatvelocity2 = temppos - Person::players[closest]->coords;
-                                    Normalise(&flatvelocity2);
-                                    Person::players[j]->skeleton.joints[i].velocity += flatvelocity2 * ((20 - distsq(&temppos, &Person::players[closest]->coords)) * 20);
-                                }
+                    if (int(j) == closest) {
+                        continue;
+                    }
+                    if (distsq(&Person::players[j]->coords, &Person::players[closest]->coords) < 25) {
+                        Person::players[j]->DoDamage((25 - distsq(&Person::players[j]->coords, &Person::players[closest]->coords)) * 60);
+                        if (Person::players[j]->skeleton.free == 2) {
+                            Person::players[j]->skeleton.free = 1;
+                        }
+                        Person::players[j]->skeleton.longdead = 0;
+                        Person::players[j]->RagDoll(0);
+                        for (unsigned i = 0; i < Person::players[j]->skeleton.joints.size(); i++) {
+                            temppos = Person::players[j]->skeleton.joints[i].position + Person::players[j]->coords;
+                            if (distsq(&temppos, &Person::players[closest]->coords) < 25) {
+                                flatvelocity2 = temppos - Person::players[closest]->coords;
+                                Normalise(&flatvelocity2);
+                                Person::players[j]->skeleton.joints[i].velocity +=
+                                    flatvelocity2 * ((20 - distsq(&temppos, &Person::players[closest]->coords)) * 20);
                             }
                         }
                     }
@@ -1466,24 +1445,10 @@ void Game::ProcessDevInput()
                 camerashake += .6;
             }
         }
-
-        /* Enable editor */
-        if (Input::isKeyPressed(SDL_SCANCODE_M) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
-            editorenabled = !editorenabled;
-            if (editorenabled) {
-                Person::players[0]->damagetolerance = 100000;
-            } else {
-                Person::players[0]->damagetolerance = 200;
-            }
-            Person::players[0]->damage = 0; // these lines were in both if and else, but I think they would better fit in the if
-            Person::players[0]->permanentdamage = 0;
-            Person::players[0]->superpermanentdamage = 0;
-            Person::players[0]->bloodloss = 0;
-            Person::players[0]->deathbleeding = 0;
-        }
     }
 
-    //skip level
+    /* Skip level (only for challenges) */
+    // FIXME: Allow skipping levels in campaigns too
     if (whichlevel != -2 && Input::isKeyPressed(SDL_SCANCODE_K) && Input::isKeyDown(SDL_SCANCODE_LSHIFT) && !editorenabled) {
         targetlevel++;
         if (targetlevel > numchallengelevels - 1) {
@@ -1493,6 +1458,7 @@ void Game::ProcessDevInput()
         leveltime = 5;
     }
 
+    /* Editor mode keys */
     if (editorenabled) {
         /* Closest player deletion */
         if (Input::isKeyPressed(SDL_SCANCODE_DELETE) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
@@ -1511,31 +1477,29 @@ void Game::ProcessDevInput()
         }
 
         /* Add object */
-        if (Input::isKeyPressed(SDL_SCANCODE_O) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
+        if (Input::isKeyPressed(SDL_SCANCODE_O)) {
             if (Object::objects.size() < max_objects - 1) {
-                XYZ scenecoords;
-                scenecoords.x = Person::players[0]->coords.x;
-                scenecoords.z = Person::players[0]->coords.z;
-                scenecoords.y = Person::players[0]->coords.y - 3;
-                if (editortype == bushtype) {
-                    scenecoords.y = Person::players[0]->coords.y - .5;
-                }
-                if (editortype == firetype) {
-                    scenecoords.y = Person::players[0]->coords.y - .5;
-                }
-                float temprotat, temprotat2;
-                temprotat = editoryaw;
-                temprotat2 = editorpitch;
-                if (temprotat < 0 || editortype == bushtype) {
-                    temprotat = Random() % 360;
-                }
-                if (temprotat2 < 0) {
-                    temprotat2 = Random() % 360;
+                XYZ scenecoords = Person::players[0]->coords;
+                scenecoords.y -= 3;
+                if (editortype == bushtype || editortype == firetype) {
+                    scenecoords.y -= 3.5;
+                } else {
+                    scenecoords.y -= 3;
                 }
 
-                Object::MakeObject(editortype, scenecoords, (int)temprotat - ((int)temprotat) % 30, (int)temprotat2, editorsize);
+                float tmpyaw, tmppitch;
+                tmpyaw = editoryaw;
+                tmppitch = editorpitch;
+                if (tmpyaw < 0 || editortype == bushtype) {
+                    tmpyaw = Random() % 360;
+                }
+                if (tmppitch < 0) {
+                    tmppitch = Random() % 360;
+                }
+
+                Object::MakeObject(editortype, scenecoords, (int)tmpyaw - ((int)tmpyaw) % 30, (int)tmppitch, editorsize);
                 if (editortype == treetrunktype) {
-                    Object::MakeObject(treeleavestype, scenecoords, Random() % 360 * (temprotat2 < 2) + (int)editoryaw - ((int)editoryaw) % 30, editorpitch, editorsize);
+                    Object::MakeObject(treeleavestype, scenecoords, Random() % 360 * (tmppitch < 2) + (int)editoryaw - ((int)editoryaw) % 30, editorpitch, editorsize);
                 }
             }
         }
@@ -1549,15 +1513,7 @@ void Game::ProcessDevInput()
             Person::players.back()->scale = Person::players[0]->scale;
             Person::players.back()->creature = rabbittype;
             Person::players.back()->howactive = editoractive;
-
-            int k = abs(Random() % 2) + 1;
-            if (k == 0) {
-                Person::players.back()->whichskin = 0;
-            } else if (k == 1) {
-                Person::players.back()->whichskin = 1;
-            } else {
-                Person::players.back()->whichskin = 2;
-            }
+            Person::players.back()->whichskin = (int)(abs(Random() % 3));
 
             Person::players.back()->skeletonLoad(true);
 
@@ -1638,31 +1594,32 @@ void Game::ProcessDevInput()
         }
 
         /* Add waypoint */
-        if (Input::isKeyPressed(SDL_SCANCODE_P) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
+        if (Input::isKeyPressed(SDL_SCANCODE_P) && Input::isKeyDown(SDL_SCANCODE_LSHIFT) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
             if (Person::players.back()->numwaypoints < 90) {
                 Person::players.back()->waypoints[Person::players.back()->numwaypoints] = Person::players[0]->coords;
                 Person::players.back()->waypointtype[Person::players.back()->numwaypoints] = editorpathtype;
                 Person::players.back()->numwaypoints++;
+            } else {
+                printf("Add waypoint: Reached max number of waypoints (90), aborting.");
             }
         }
 
         /* Connect waypoint */
-        if (Input::isKeyPressed(SDL_SCANCODE_P) && Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
+        if (Input::isKeyPressed(SDL_SCANCODE_P) && Input::isKeyDown(SDL_SCANCODE_LCTRL) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
             if (numpathpoints < 30) {
-                bool connected, alreadyconnected;
-                connected = 0;
+                bool connected = false;
                 if (numpathpoints > 1) {
                     for (int i = 0; i < numpathpoints; i++) {
                         if (distsq(&pathpoint[i], &Person::players[0]->coords) < .5 && i != pathpointselected && !connected) {
-                            alreadyconnected = 0;
+                            bool alreadyconnected = false;
                             for (int j = 0; j < numpathpointconnect[pathpointselected]; j++) {
                                 if (pathpointconnect[pathpointselected][j] == i) {
-                                    alreadyconnected = 1;
+                                    alreadyconnected = true;
                                 }
                             }
                             if (!alreadyconnected) {
                                 numpathpointconnect[pathpointselected]++;
-                                connected = 1;
+                                connected = true;
                                 pathpointconnect[pathpointselected][numpathpointconnect[pathpointselected] - 1] = i;
                             }
                         }
@@ -1678,9 +1635,12 @@ void Game::ProcessDevInput()
                     }
                     pathpointselected = numpathpoints - 1;
                 }
+            } else {
+                printf("Connect waypoint: Reached max number of path points (30), aborting.");
             }
         }
 
+        /* Select next path waypoint */
         if (Input::isKeyPressed(SDL_SCANCODE_PERIOD)) {
             pathpointselected++;
             if (pathpointselected >= numpathpoints) {
@@ -1688,6 +1648,7 @@ void Game::ProcessDevInput()
             }
         }
 
+        /* Select previous path waypoint */
         if (Input::isKeyPressed(SDL_SCANCODE_COMMA) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
             pathpointselected--;
             if (pathpointselected <= -2) {
@@ -1695,6 +1656,7 @@ void Game::ProcessDevInput()
             }
         }
 
+        /* Delete path waypoint */
         if (Input::isKeyPressed(SDL_SCANCODE_COMMA) && Input::isKeyDown(SDL_SCANCODE_LSHIFT)) {
             if (pathpointselected != -1) {
                 numpathpoints--;
@@ -1718,6 +1680,7 @@ void Game::ProcessDevInput()
             }
         }
 
+        /* Select previous object type */
         if (Input::isKeyPressed(SDL_SCANCODE_LEFT) && Input::isKeyDown(SDL_SCANCODE_LSHIFT) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
             editortype--;
             if (editortype == treeleavestype || editortype == 10) {
@@ -1728,6 +1691,7 @@ void Game::ProcessDevInput()
             }
         }
 
+        /* Select next object type */
         if (Input::isKeyPressed(SDL_SCANCODE_RIGHT) && Input::isKeyDown(SDL_SCANCODE_LSHIFT) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
             editortype++;
             if (editortype == treeleavestype || editortype == 10) {
@@ -1738,21 +1702,7 @@ void Game::ProcessDevInput()
             }
         }
 
-        if (Input::isKeyDown(SDL_SCANCODE_LEFT) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
-            editoryaw -= multiplier * 100;
-            if (editoryaw < -.01) {
-                editoryaw = -.01;
-            }
-        }
-
-        if (Input::isKeyDown(SDL_SCANCODE_RIGHT) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
-            editoryaw += multiplier * 100;
-        }
-
-        if (Input::isKeyDown(SDL_SCANCODE_UP) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
-            editorsize += multiplier;
-        }
-
+        /* Decrease size for next object */
         if (Input::isKeyDown(SDL_SCANCODE_DOWN) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
             editorsize -= multiplier;
             if (editorsize < .1) {
@@ -1760,23 +1710,45 @@ void Game::ProcessDevInput()
             }
         }
 
-        if (Input::isKeyPressed(SDL_SCANCODE_LEFT) && Input::isKeyDown(SDL_SCANCODE_LSHIFT) && Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
-            mapradius -= multiplier * 10;
+        /* Increase size for next object */
+        if (Input::isKeyDown(SDL_SCANCODE_UP) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
+            editorsize += multiplier;
         }
 
-        if (Input::isKeyPressed(SDL_SCANCODE_RIGHT) && Input::isKeyDown(SDL_SCANCODE_LSHIFT) && Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
-            mapradius += multiplier * 10;
+        /* Decrease yaw for next object */
+        if (Input::isKeyDown(SDL_SCANCODE_LEFT) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
+            editoryaw -= multiplier * 100;
+            if (editoryaw < -.01) {
+                editoryaw = -.01;
+            }
         }
 
-        if (Input::isKeyDown(SDL_SCANCODE_UP) && Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
-            editorpitch += multiplier * 100;
+        /* Increase yaw for next object */
+        if (Input::isKeyDown(SDL_SCANCODE_RIGHT) && !Input::isKeyDown(SDL_SCANCODE_LSHIFT) && !Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
+            editoryaw += multiplier * 100;
         }
 
+        /* Decrease pitch for next object */
         if (Input::isKeyDown(SDL_SCANCODE_DOWN) && Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
             editorpitch -= multiplier * 100;
             if (editorpitch < -.01) {
                 editorpitch = -.01;
             }
+        }
+
+        /* Increase pitch for next object */
+        if (Input::isKeyDown(SDL_SCANCODE_UP) && Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
+            editorpitch += multiplier * 100;
+        }
+
+        /* Decrease map radius */
+        if (Input::isKeyPressed(SDL_SCANCODE_LEFT) && Input::isKeyDown(SDL_SCANCODE_LSHIFT) && Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
+            mapradius -= multiplier * 10;
+        }
+
+        /* Increase map radius */
+        if (Input::isKeyPressed(SDL_SCANCODE_RIGHT) && Input::isKeyDown(SDL_SCANCODE_LSHIFT) && Input::isKeyDown(SDL_SCANCODE_LCTRL)) {
+            mapradius += multiplier * 10;
         }
     }
 }
@@ -3554,8 +3526,8 @@ void Game::Tick()
             static bool respawnkeydown;
             if (!editorenabled &&
                 (whichlevel != -2 &&
-                     (Input::isKeyDown(SDL_SCANCODE_Z) &&
-                      Input::isKeyDown(SDL_SCANCODE_LGUI) &&
+                     (Input::isKeyDown(SDL_SCANCODE_K) &&
+                      Input::isKeyDown(SDL_SCANCODE_LALT) &&
                       devtools) ||
                  (Input::isKeyDown(jumpkey) &&
                   !respawnkeydown &&

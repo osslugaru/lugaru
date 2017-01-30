@@ -27,40 +27,46 @@ Note: dev keys must be pressed as if on a QWERTY keyboard.
 General
 ~~~~~~~
 
-~ = console (map mapname, save mapname, quit)
-tab = minimap
+~ = console (see "Console commands" section)
+alt+m = toggle editor mode (see "Map editor" section)
 
-super+z = restart level
-shift+k = win level
+alt+k = restart challenge
+shift+k = skip challenge
 
-alt+h = give 2000 health
-alt+j = toggle snow/grass/desert
-alt+c = toggle cameramode
-alt+b = slow motion (with motion blur that might work)
+alt+h = give 200000 health and reset damage
+alt+j = toggle snow/grass/desert environment
+alt+c = toggle camera mode
+alt+v = toggle freeze
+alt+b = toggle slow motion
 alt+n = ragdoll
-alt+x = change weapon of nearby player (main player if ctrl is pressed)
-alt+f = spontaneously combust
-alt+o = change enemy's skin (main player if ctrl is pressed)
-alt+shift+o = change enemy's type (rabbit/wolf) (main player if ctrl is pressed)
+alt+x = change weapon of nearby player [mod: ctrl]
+alt+u = change yaw (rotation around Z axis) [mod: ctrl]
+alt+f = put nearby player on fire [mod: ctrl]
+alt+t = change player skin [mod: ctrl]
+alt+shift+t = change player type (rabbit/wolf) [mod: ctrl]
 alt+i = explode nearby head
-alt+shift+i = explode nearby enemy
+alt+shift+i = explode nearby player
 
+* Where noted, the ctrl modifier applies the change to the main player,
+  otherwise to the nearest player.
 
-Map editor:
+Map editor (alt+m)
+~~~~~~~~~~~~~~~~~~
 
-alt+m = toggle editor mode
 o = place object
-p = place enemy
-shift+p = place waypoint
+p = place player
 delete = delete closest object
 shift+delete = delete closest player
-up/down = change size of next object
-control+up/down = change tilt of next object
-left/right = change rotation of next object
-shift+left/right = change type of next object
 
-control+p = make/connect pathfind waypoint
-period/comma = select pathfind waypoints
+shift+left/right = change type of next object
+up/down = change size of next object
+left/right = change yaw (rotation around Z axis) of next object
+ctrl+up/down = change pitch (tilt) of next object
+shift+ctrl+up/down = change map radius
+
+shift+p = place waypoint
+ctrl+p = make/connect pathfind waypoint
+comma/period = select prev/next pathfind waypoints
 shift+comma = delete pathfind waypoint
 
 
@@ -159,10 +165,10 @@ Skybox
 ~~~~~~
 
 skybox - toggles skybox on and off.
-sky tint (float) (float) (float) - sets the color tint of the sky.
+skytint (float) (float) (float) - sets the color tint of the sky.
     Each floating point value corresponds to a red, green, or blue value,
     respectively, between 0 and 1.
-sky light (float) (float) (float) - sets the color of the lighting of the sky.
+skylight (float) (float) (float) - sets the color of the lighting of the sky.
     Each floating point value corresponds to a red, green, or blue value,
     respectively, between 0 and 1.
 
