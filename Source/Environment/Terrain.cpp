@@ -1241,6 +1241,26 @@ void Terrain::AddObject(XYZ where, float radius, int id)
     }
 }
 
+void Terrain::DeleteObject(unsigned int id)
+{
+    for (int i = 0; i < subdivision; i++) {
+        for (int j = 0; j < subdivision; j++) {
+            for (unsigned int k = 0; k < patchobjects[i][j].size();) {
+                if (patchobjects[i][j][k] == id) {
+                    /* Remove all occurences of id (there should never be more than 1 though) */
+                    patchobjects[i][j].erase(patchobjects[i][j].begin() + k);
+                } else {
+                    /* Update id of other objects if needed */
+                    if (patchobjects[i][j][k] > id) {
+                        patchobjects[i][j][k]--;
+                    }
+                    k++;
+                }
+            }
+        }
+    }
+}
+
 void Terrain::DeleteDecal(int which)
 {
     if (decalstoggle) {

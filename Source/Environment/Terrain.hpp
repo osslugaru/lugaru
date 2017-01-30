@@ -87,6 +87,7 @@ public:
     std::vector<Decal> decals;
 
     void AddObject(XYZ where, float radius, int id);
+    void DeleteObject(unsigned int id);
     void DeleteDecal(int which);
     void MakeDecal(decal_type type, XYZ where, float size, float opacity, float rotation);
     void MakeDecalLock(decal_type type, XYZ where, int whichx, int whichy, float size, float opacity, float rotation);

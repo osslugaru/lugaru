@@ -636,6 +636,7 @@ void Object::Draw()
 void Object::DeleteObject(int which)
 {
     objects.erase(objects.begin() + which);
+    terrain.DeleteObject(which);
 }
 
 void Object::MakeObject(int atype, XYZ where, float ayaw, float apitch, float ascale)
