@@ -1240,20 +1240,7 @@ void Game::ProcessDevInput()
                 closest = findClosestPlayer();
             }
 
-            // FIXME: Those proportions are buggy
             if (closest >= 0) {
-                if (Person::players[closest]->creature == wolftype) {
-                    headprop = Person::players[closest]->proportionhead.x / 1.1;
-                    bodyprop = Person::players[closest]->proportionbody.x / 1.1;
-                    armprop = Person::players[closest]->proportionarms.x / 1.1;
-                    legprop = Person::players[closest]->proportionlegs.x / 1.1;
-                } else { // rabbittype
-                    headprop = Person::players[closest]->proportionhead.x / 1.2;
-                    bodyprop = Person::players[closest]->proportionbody.x / 1.05;
-                    armprop = Person::players[closest]->proportionarms.x / 1.00;
-                    legprop = Person::players[closest]->proportionlegs.x / 1.1;
-                }
-
                 if (Person::players[closest]->creature == rabbittype) {
                     Person::players[closest]->creature = wolftype;
                     Person::players[closest]->whichskin = 0;
@@ -1263,11 +1250,10 @@ void Game::ProcessDevInput()
                     Person::players[closest]->proportionbody = 1.1;
                     Person::players[closest]->proportionarms = 1.1;
                     Person::players[closest]->proportionlegs = 1.1;
-                    Person::players[closest]->proportionlegs.y = 1.1;
-                    Person::players[closest]->scale = .23 * 5 * Person::players[0]->scale;
+                    Person::players[closest]->scale *= 1.15;
 
                     Person::players[closest]->damagetolerance = 300;
-                } else {
+                } else { // wolftype
                     Person::players[closest]->creature = rabbittype;
                     Person::players[closest]->whichskin = 0;
                     Person::players[closest]->skeletonLoad(true);
@@ -1275,26 +1261,11 @@ void Game::ProcessDevInput()
                     Person::players[closest]->proportionhead = 1.2;
                     Person::players[closest]->proportionbody = 1.05;
                     Person::players[closest]->proportionarms = 1.00;
-                    Person::players[closest]->proportionlegs = 1.1;
+                    Person::players[closest]->proportionlegs.x = 1.1;
                     Person::players[closest]->proportionlegs.y = 1.05;
-                    Person::players[closest]->scale = .2 * 5 * Person::players[0]->scale;
+                    Person::players[closest]->scale /= 1.15;
 
                     Person::players[closest]->damagetolerance = 200;
-                }
-
-                if (Person::players[closest]->creature == wolftype) {
-                    Person::players[closest]->proportionhead = 1.1 * headprop;
-                    Person::players[closest]->proportionbody = 1.1 * bodyprop;
-                    Person::players[closest]->proportionarms = 1.1 * armprop;
-                    Person::players[closest]->proportionlegs = 1.1 * legprop;
-                }
-
-                if (Person::players[closest]->creature == rabbittype) {
-                    Person::players[closest]->proportionhead = 1.2 * headprop;
-                    Person::players[closest]->proportionbody = 1.05 * bodyprop;
-                    Person::players[closest]->proportionarms = 1.00 * armprop;
-                    Person::players[closest]->proportionlegs = 1.1 * legprop;
-                    Person::players[closest]->proportionlegs.y = 1.05 * legprop;
                 }
             }
         }
