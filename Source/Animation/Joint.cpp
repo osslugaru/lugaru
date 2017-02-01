@@ -52,6 +52,8 @@ void Joint::load(FILE* tfile, std::vector<Joint>& joints)
     funpackf(tfile, "Bi", &parentID);
     if (hasparent) {
         parent = &joints[parentID];
+    } else {
+        parent = nullptr;
     }
     velocity = 0;
     oldposition = position;

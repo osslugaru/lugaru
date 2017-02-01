@@ -717,6 +717,7 @@ void Skeleton::Load(const std::string& filename, const std::string& lowfilename,
     // read num_joints
     funpackf(tfile, "Bi", &num_joints);
 
+    joints.clear();
     joints.resize(num_joints);
 
     // read info for each joint
@@ -728,6 +729,7 @@ void Skeleton::Load(const std::string& filename, const std::string& lowfilename,
     funpackf(tfile, "Bi", &num_muscles);
 
     // allocate memory
+    muscles.clear();
     muscles.resize(num_muscles);
 
     // for each muscle...
