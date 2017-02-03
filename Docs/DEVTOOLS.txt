@@ -87,7 +87,7 @@ save (string) - saves the state of the current map.
 Character attributes
 ~~~~~~~~~~~~~~~~~~~~
 
-wolfieisgod - sets the player to a wolf. You gain all of the speed, strength,
+wolfie - sets the player to a wolf. You gain all of the speed, strength,
     durability, and attacks of a wolf.
 funnybunny - sets the player to a rabbit.
 size (float) - changes the overall size of your character.

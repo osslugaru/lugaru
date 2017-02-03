@@ -462,13 +462,9 @@ void ch_wolfie(const char*)
 {
     Person::players[0]->creature = wolftype;
     Person::players[0]->skeletonLoad();
+    Person::players[0]->scale = .23;
     Person::players[0]->damagetolerance = 300;
     set_proportion(0, "1 1 1 1");
-}
-
-void ch_wolfieisgod(const char* args)
-{
-    ch_wolfie(args);
 }
 
 void ch_wolf(const char*)

@@ -1227,21 +1227,20 @@ void Game::ProcessDevInput()
                 closest = findClosestPlayer();
             }
 
-            // FIXME: Those proportions are buggy
             if (closest >= 0) {
                 if (Person::players[closest]->creature == rabbittype) {
                     Person::players[closest]->creature = wolftype;
                     Person::players[closest]->whichskin = 0;
                     Person::players[closest]->skeletonLoad();
-                    Person::players[closest]->scale = .23 * 5 * Person::players[0]->scale;
+                    Person::players[closest]->scale *= 1.15;
 
                     Person::players[closest]->damagetolerance = 300;
-                } else {
+                } else { // wolftype
                     Person::players[closest]->creature = rabbittype;
                     Person::players[closest]->whichskin = 0;
                     Person::players[closest]->skeletonLoad(true);
 
-                    Person::players[closest]->scale = .2 * 5 * Person::players[0]->scale;
+                    Person::players[closest]->scale /= 1.15;
 
                     Person::players[closest]->damagetolerance = 200;
                 }
