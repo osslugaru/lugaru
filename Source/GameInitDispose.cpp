@@ -602,6 +602,8 @@ void Game::InitGame()
     Menu::Load();
 
     Animation::loadAll();
+
+    PersonType::Load();
 }
 
 void Game::LoadScreenTexture()

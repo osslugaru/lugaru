@@ -851,11 +851,7 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
             Person::players[i]->updatedelay = 0;
             Person::players[i]->normalsupdatedelay = 0;
 
-            Person::players[i]->proportionhead = 1.2;
-            Person::players[i]->proportionbody = 1.05;
-            Person::players[i]->proportionarms = 1.00;
-            Person::players[i]->proportionlegs = 1.1;
-            Person::players[i]->proportionlegs.y = 1.05;
+            Person::players[i]->setProportions(1, 1, 1, 1);
             Person::players[i]->headless = 0;
             Person::players[i]->currentoffset = 0;
             Person::players[i]->targetoffset = 0;
@@ -868,13 +864,6 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
         }
 
         Game::LoadingScreen();
-
-        if (cellophane) {
-            Person::players[i]->proportionhead.z = 0;
-            Person::players[i]->proportionbody.z = 0;
-            Person::players[i]->proportionarms.z = 0;
-            Person::players[i]->proportionlegs.z = 0;
-        }
 
         Person::players[i]->tempanimation = Animation("Tempanim", lowheight, neutral);
 
@@ -1066,8 +1055,6 @@ void Game::ProcessDevInput()
         return;
     }
 
-    float headprop, bodyprop, armprop, legprop;
-
     /* Console */
     if (Input::isKeyPressed(consolekey)) {
         console = !console;
@@ -1242,28 +1229,10 @@ void Game::ProcessDevInput()
 
             // FIXME: Those proportions are buggy
             if (closest >= 0) {
-                if (Person::players[closest]->creature == wolftype) {
-                    headprop = Person::players[closest]->proportionhead.x / 1.1;
-                    bodyprop = Person::players[closest]->proportionbody.x / 1.1;
-                    armprop = Person::players[closest]->proportionarms.x / 1.1;
-                    legprop = Person::players[closest]->proportionlegs.x / 1.1;
-                } else { // rabbittype
-                    headprop = Person::players[closest]->proportionhead.x / 1.2;
-                    bodyprop = Person::players[closest]->proportionbody.x / 1.05;
-                    armprop = Person::players[closest]->proportionarms.x / 1.00;
-                    legprop = Person::players[closest]->proportionlegs.x / 1.1;
-                }
-
                 if (Person::players[closest]->creature == rabbittype) {
                     Person::players[closest]->creature = wolftype;
                     Person::players[closest]->whichskin = 0;
                     Person::players[closest]->skeletonLoad();
-
-                    Person::players[closest]->proportionhead = 1.1;
-                    Person::players[closest]->proportionbody = 1.1;
-                    Person::players[closest]->proportionarms = 1.1;
-                    Person::players[closest]->proportionlegs = 1.1;
-                    Person::players[closest]->proportionlegs.y = 1.1;
                     Person::players[closest]->scale = .23 * 5 * Person::players[0]->scale;
 
                     Person::players[closest]->damagetolerance = 300;
@@ -1272,29 +1241,9 @@ void Game::ProcessDevInput()
                     Person::players[closest]->whichskin = 0;
                     Person::players[closest]->skeletonLoad(true);
 
-                    Person::players[closest]->proportionhead = 1.2;
-                    Person::players[closest]->proportionbody = 1.05;
-                    Person::players[closest]->proportionarms = 1.00;
-                    Person::players[closest]->proportionlegs = 1.1;
-                    Person::players[closest]->proportionlegs.y = 1.05;
                     Person::players[closest]->scale = .2 * 5 * Person::players[0]->scale;
 
                     Person::players[closest]->damagetolerance = 200;
-                }
-
-                if (Person::players[closest]->creature == wolftype) {
-                    Person::players[closest]->proportionhead = 1.1 * headprop;
-                    Person::players[closest]->proportionbody = 1.1 * bodyprop;
-                    Person::players[closest]->proportionarms = 1.1 * armprop;
-                    Person::players[closest]->proportionlegs = 1.1 * legprop;
-                }
-
-                if (Person::players[closest]->creature == rabbittype) {
-                    Person::players[closest]->proportionhead = 1.2 * headprop;
-                    Person::players[closest]->proportionbody = 1.05 * bodyprop;
-                    Person::players[closest]->proportionarms = 1.00 * armprop;
-                    Person::players[closest]->proportionlegs = 1.1 * legprop;
-                    Person::players[closest]->proportionlegs.y = 1.05 * legprop;
                 }
             }
         }
@@ -1527,40 +1476,7 @@ void Game::ProcessDevInput()
             Person::players.back()->oldcoords = Person::players.back()->coords;
             Person::players.back()->realoldcoords = Person::players.back()->coords;
 
-            if (Person::players[0]->creature == wolftype) {
-                headprop = Person::players[0]->proportionhead.x / 1.1;
-                bodyprop = Person::players[0]->proportionbody.x / 1.1;
-                armprop = Person::players[0]->proportionarms.x / 1.1;
-                legprop = Person::players[0]->proportionlegs.x / 1.1;
-            } else {
-                // rabbittype
-                headprop = Person::players[0]->proportionhead.x / 1.2;
-                bodyprop = Person::players[0]->proportionbody.x / 1.05;
-                armprop = Person::players[0]->proportionarms.x / 1.00;
-                legprop = Person::players[0]->proportionlegs.x / 1.1;
-            }
-
-            if (Person::players.back()->creature == wolftype) {
-                Person::players.back()->proportionhead = 1.1 * headprop;
-                Person::players.back()->proportionbody = 1.1 * bodyprop;
-                Person::players.back()->proportionarms = 1.1 * armprop;
-                Person::players.back()->proportionlegs = 1.1 * legprop;
-            }
-
-            if (Person::players.back()->creature == rabbittype) {
-                Person::players.back()->proportionhead = 1.2 * headprop;
-                Person::players.back()->proportionbody = 1.05 * bodyprop;
-                Person::players.back()->proportionarms = 1.00 * armprop;
-                Person::players.back()->proportionlegs = 1.1 * legprop;
-                Person::players.back()->proportionlegs.y = 1.05 * legprop;
-            }
-
-            if (cellophane) {
-                Person::players.back()->proportionhead.z = 0;
-                Person::players.back()->proportionbody.z = 0;
-                Person::players.back()->proportionarms.z = 0;
-                Person::players.back()->proportionlegs.z = 0;
-            }
+            Person::players.back()->setProportions(1, 1, 1, 1);
 
             Person::players.back()->tempanimation = Animation("Tempanim", lowheight, neutral);
 

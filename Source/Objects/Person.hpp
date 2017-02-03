@@ -43,8 +43,11 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #define getweapontype 7
 #define pathfindtype 8
 
-#define rabbittype 0
-#define wolftype 1
+enum person_type
+{
+    rabbittype = 0,
+    wolftype = 1
+};
 
 struct InvalidPersonException : public exception {
    const char * what () const throw () {
@@ -52,8 +55,20 @@ struct InvalidPersonException : public exception {
    }
 };
 
+class PersonType
+{
+public:
+    // head, body, arms, legs
+    XYZ proportions[4];
+    static std::vector<PersonType> types;
+    static void Load();
+};
+
 class Person : public enable_shared_from_this<Person>
 {
+private:
+    float proportions[4];
+
 public:
     static std::vector<std::shared_ptr<Person>> players;
 
@@ -95,10 +110,10 @@ public:
     XYZ coords;
     XYZ velocity;
 
-    XYZ proportionhead;
-    XYZ proportionlegs;
-    XYZ proportionarms;
-    XYZ proportionbody;
+    //~ XYZ proportionhead;
+    //~ XYZ proportionlegs;
+    //~ XYZ proportionarms;
+    //~ XYZ proportionbody;
 
     float unconscioustime;
 
@@ -330,6 +345,8 @@ public:
     inline AnimationFrame& currentFrame() { return Animation::animations.at(animCurrent).frames.at(frameCurrent); }
     inline AnimationFrame& targetFrame() { return Animation::animations.at(animTarget).frames.at(frameTarget); }
 
+    void setProportions(float, float, float, float);
+    XYZ getProportion(int part) const;
 
     void CheckKick();
     void CatchFire();

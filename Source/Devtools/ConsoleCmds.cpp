@@ -84,18 +84,7 @@ static void set_proportion(int pnum, const char* args)
 
     sscanf(args, "%f%f%f%f", &headprop, &bodyprop, &armprop, &legprop);
 
-    if (Person::players[pnum]->creature == wolftype) {
-        Person::players[pnum]->proportionhead = 1.1 * headprop;
-        Person::players[pnum]->proportionbody = 1.1 * bodyprop;
-        Person::players[pnum]->proportionarms = 1.1 * armprop;
-        Person::players[pnum]->proportionlegs = 1.1 * legprop;
-    } else if (Person::players[pnum]->creature == rabbittype) {
-        Person::players[pnum]->proportionhead = 1.2 * headprop;
-        Person::players[pnum]->proportionbody = 1.05 * bodyprop;
-        Person::players[pnum]->proportionarms = 1.00 * armprop;
-        Person::players[pnum]->proportionlegs = 1.1 * legprop;
-        Person::players[pnum]->proportionlegs.y = 1.05 * legprop;
-    }
+    Person::players[pnum]->setProportions(headprop, bodyprop, armprop, legprop);
 }
 
 static void set_protection(int pnum, const char* args)
@@ -291,22 +280,7 @@ void ch_save(const char* args)
         fpackf(tfile, "Bf Bf Bf", Person::players[j]->protectionhead, Person::players[j]->protectionhigh, Person::players[j]->protectionlow);
         fpackf(tfile, "Bf Bf Bf", Person::players[j]->metalhead, Person::players[j]->metalhigh, Person::players[j]->metallow);
         fpackf(tfile, "Bf Bf", Person::players[j]->power, Person::players[j]->speedmult);
-
-        float headprop, bodyprop, armprop, legprop;
-        if (Person::players[j]->creature == wolftype) {
-            headprop = Person::players[j]->proportionhead.x / 1.1;
-            bodyprop = Person::players[j]->proportionbody.x / 1.1;
-            armprop = Person::players[j]->proportionarms.x / 1.1;
-            legprop = Person::players[j]->proportionlegs.x / 1.1;
-        } else {
-            // rabbittype
-            headprop = Person::players[j]->proportionhead.x / 1.2;
-            bodyprop = Person::players[j]->proportionbody.x / 1.05;
-            armprop = Person::players[j]->proportionarms.x / 1.00;
-            legprop = Person::players[j]->proportionlegs.x / 1.1;
-        }
-
-        fpackf(tfile, "Bf Bf Bf Bf", headprop, bodyprop, armprop, legprop);
+        fpackf(tfile, "Bf Bf Bf Bf", Person::players[j]->getProportion(0), Person::players[j]->getProportion(1), Person::players[j]->getProportion(2), Person::players[j]->getProportion(3));
 
         fpackf(tfile, "Bi", Person::players[j]->numclothes);
         if (Person::players[j]->numclothes) {
@@ -472,14 +446,6 @@ void ch_belt(const char*)
 void ch_cellophane(const char*)
 {
     cellophane = !cellophane;
-    float mul = (cellophane ? 0 : 1);
-
-    for (auto player : Person::players) {
-        player->proportionhead.z = player->proportionhead.x * mul;
-        player->proportionbody.z = player->proportionbody.x * mul;
-        player->proportionarms.z = player->proportionarms.x * mul;
-        player->proportionlegs.z = player->proportionlegs.x * mul;
-    }
 }
 
 void ch_funnybunny(const char*)
@@ -678,18 +644,7 @@ void ch_default(const char*)
     Person::players[0]->speedmult = 1;
     Person::players[0]->scale = 1;
 
-    if (Person::players[0]->creature == wolftype) {
-        Person::players[0]->proportionhead = 1.1;
-        Person::players[0]->proportionbody = 1.1;
-        Person::players[0]->proportionarms = 1.1;
-        Person::players[0]->proportionlegs = 1.1;
-    } else if (Person::players[0]->creature == rabbittype) {
-        Person::players[0]->proportionhead = 1.2;
-        Person::players[0]->proportionbody = 1.05;
-        Person::players[0]->proportionarms = 1.00;
-        Person::players[0]->proportionlegs = 1.1;
-        Person::players[0]->proportionlegs.y = 1.05;
-    }
+    Person::players[0]->setProportions(1, 1, 1, 1);
 
     Person::players[0]->numclothes = 0;
     Person::players[0]->skeleton.drawmodel.textureptr.load(

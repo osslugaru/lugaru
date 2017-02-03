@@ -75,6 +75,23 @@ extern float envsoundlife[30];
 extern XYZ windvector;
 
 std::vector<std::shared_ptr<Person>> Person::players(1, std::shared_ptr<Person>(new Person()));
+std::vector<PersonType> PersonType::types;
+
+void PersonType::Load()
+{
+    types.resize(2);
+
+    types[wolftype].proportions[0] = 1.1;
+    types[wolftype].proportions[1] = 1.1;
+    types[wolftype].proportions[2] = 1.1;
+    types[wolftype].proportions[3] = 1.1;
+
+    types[rabbittype].proportions[0] = 1.2;
+    types[rabbittype].proportions[1] = 1.05;
+    types[rabbittype].proportions[2] = 1;
+    types[rabbittype].proportions[3] = 1.1;
+    types[rabbittype].proportions[3].y = 1.05;
+}
 
 Person::Person()
     : whichpatchx(0)
@@ -104,21 +121,12 @@ Person::Person()
     , oldcoords()
     , coords()
     , velocity()
-    ,
 
-    proportionhead()
-    , proportionlegs()
-    , proportionarms()
-    , proportionbody()
-    ,
+    , unconscioustime(0)
 
-    unconscioustime(0)
-    ,
+    , immobile(false)
 
-    immobile(false)
-    ,
-
-    velspeed(0)
+    , velspeed(0)
     , targetyaw(0)
     , targetrot(0)
     , rot(0)
@@ -364,6 +372,7 @@ Person::Person()
 
     jumpclimb(false)
 {
+    setProportions(1, 1, 1, 1);
 }
 
 /* Read a person in tfile. Throws an error if it’s not valid */
@@ -426,28 +435,10 @@ Person::Person(FILE* tfile, int mapvers, unsigned i)
     funpackf(tfile, "Bf Bf Bf", &metalhead, &metalhigh, &metallow);
     funpackf(tfile, "Bf Bf", &power, &speedmult);
 
-    float headprop, legprop, armprop, bodyprop;
-
     if (mapvers >= 4) {
-        funpackf(tfile, "Bf Bf Bf Bf", &headprop, &bodyprop, &armprop, &legprop);
+        funpackf(tfile, "Bf Bf Bf Bf", &proportions[0], &proportions[1], &proportions[2], &proportions[3]);
     } else {
-        headprop = 1;
-        bodyprop = 1;
-        armprop = 1;
-        legprop = 1;
-    }
-
-    if (creature == wolftype) {
-        proportionhead = 1.1 * headprop;
-        proportionbody = 1.1 * bodyprop;
-        proportionarms = 1.1 * armprop;
-        proportionlegs = 1.1 * legprop;
-    } else if (creature == rabbittype) {
-        proportionhead = 1.2 * headprop;
-        proportionbody = 1.05 * bodyprop;
-        proportionarms = 1.00 * armprop;
-        proportionlegs = 1.1 * legprop;
-        proportionlegs.y = 1.05 * legprop;
+        setProportions(1, 1, 1, 1);
     }
 
     funpackf(tfile, "Bi", &numclothes);
@@ -512,6 +503,23 @@ void Person::skeletonLoad(bool clothes)
     }
 
     skeleton.drawmodel.textureptr.load(creatureskin[creature][whichskin], 1, &skeleton.skinText[0], &skeleton.skinsize);
+}
+
+void Person::setProportions(float head, float body, float arms, float legs)
+{
+    proportions[0] = head;
+    proportions[1] = body;
+    proportions[2] = arms;
+    proportions[3] = legs;
+}
+
+XYZ Person::getProportion(int part) const
+{
+    XYZ prop = PersonType::types[creature].proportions[part] * proportions[part];
+    if (cellophane) {
+        prop.z = 0;
+    }
+    return prop;
 }
 
 /* EFFECT
@@ -6721,24 +6729,24 @@ int Person::DrawSkeleton()
                             glMatrixMode(GL_MODELVIEW);
                             glPushMatrix();
                             if (p1 == abdomen || p2 == abdomen) {
-                                glTranslatef((v0.x * (1 - morphness) + v1.x * morphness) * proportionbody.x,
-                                             (v0.y * (1 - morphness) + v1.y * morphness) * proportionbody.y,
-                                             (v0.z * (1 - morphness) + v1.z * morphness) * proportionbody.z);
+                                glTranslatef((v0.x * (1 - morphness) + v1.x * morphness) * getProportion(1).x,
+                                             (v0.y * (1 - morphness) + v1.y * morphness) * getProportion(1).y,
+                                             (v0.z * (1 - morphness) + v1.z * morphness) * getProportion(1).z);
                             }
                             if (p1 == lefthand || p1 == righthand || p1 == leftwrist || p1 == rightwrist || p1 == leftelbow || p1 == rightelbow || p2 == leftelbow || p2 == rightelbow) {
-                                glTranslatef((v0.x * (1 - morphness) + v1.x * morphness) * proportionarms.x,
-                                             (v0.y * (1 - morphness) + v1.y * morphness) * proportionarms.y,
-                                             (v0.z * (1 - morphness) + v1.z * morphness) * proportionarms.z);
+                                glTranslatef((v0.x * (1 - morphness) + v1.x * morphness) * getProportion(2).x,
+                                             (v0.y * (1 - morphness) + v1.y * morphness) * getProportion(2).y,
+                                             (v0.z * (1 - morphness) + v1.z * morphness) * getProportion(2).z);
                             }
                             if (p1 == leftfoot || p1 == rightfoot || p1 == leftankle || p1 == rightankle || p1 == leftknee || p1 == rightknee || p2 == leftknee || p2 == rightknee) {
-                                glTranslatef((v0.x * (1 - morphness) + v1.x * morphness) * proportionlegs.x,
-                                             (v0.y * (1 - morphness) + v1.y * morphness) * proportionlegs.y,
-                                             (v0.z * (1 - morphness) + v1.z * morphness) * proportionlegs.z);
+                                glTranslatef((v0.x * (1 - morphness) + v1.x * morphness) * getProportion(3).x,
+                                             (v0.y * (1 - morphness) + v1.y * morphness) * getProportion(3).y,
+                                             (v0.z * (1 - morphness) + v1.z * morphness) * getProportion(3).z);
                             }
                             if (p1 == head || p2 == head) {
-                                glTranslatef((v0.x * (1 - morphness) + v1.x * morphness) * proportionhead.x,
-                                             (v0.y * (1 - morphness) + v1.y * morphness) * proportionhead.y,
-                                             (v0.z * (1 - morphness) + v1.z * morphness) * proportionhead.z);
+                                glTranslatef((v0.x * (1 - morphness) + v1.x * morphness) * getProportion(0).x,
+                                             (v0.y * (1 - morphness) + v1.y * morphness) * getProportion(0).y,
+                                             (v0.z * (1 - morphness) + v1.z * morphness) * getProportion(0).z);
                             }
                             glGetFloatv(GL_MODELVIEW_MATRIX, M);
                             skeleton.drawmodel.vertex[skeleton.muscles[i].vertices[j]].x = M[12] * scale;
@@ -6753,24 +6761,24 @@ int Person::DrawSkeleton()
                             glMatrixMode(GL_MODELVIEW);
                             glPushMatrix();
                             if (p1 == abdomen || p2 == abdomen) {
-                                glTranslatef(v0.x * proportionbody.x,
-                                             v0.y * proportionbody.y,
-                                             v0.z * proportionbody.z);
+                                glTranslatef(v0.x * getProportion(1).x,
+                                             v0.y * getProportion(1).y,
+                                             v0.z * getProportion(1).z);
                             }
                             if (p1 == lefthand || p1 == righthand || p1 == leftwrist || p1 == rightwrist || p1 == leftelbow || p1 == rightelbow || p2 == leftelbow || p2 == rightelbow) {
-                                glTranslatef(v0.x * proportionarms.x,
-                                             v0.y * proportionarms.y,
-                                             v0.z * proportionarms.z);
+                                glTranslatef(v0.x * getProportion(2).x,
+                                             v0.y * getProportion(2).y,
+                                             v0.z * getProportion(2).z);
                             }
                             if (p1 == leftfoot || p1 == rightfoot || p1 == leftankle || p1 == rightankle || p1 == leftknee || p1 == rightknee || p2 == leftknee || p2 == rightknee) {
-                                glTranslatef(v0.x * proportionlegs.x,
-                                             v0.y * proportionlegs.y,
-                                             v0.z * proportionlegs.z);
+                                glTranslatef(v0.x * getProportion(3).x,
+                                             v0.y * getProportion(3).y,
+                                             v0.z * getProportion(3).z);
                             }
                             if (p1 == head || p2 == head) {
-                                glTranslatef(v0.x * proportionhead.x,
-                                             v0.y * proportionhead.y,
-                                             v0.z * proportionhead.z);
+                                glTranslatef(v0.x * getProportion(0).x,
+                                             v0.y * getProportion(0).y,
+                                             v0.z * getProportion(0).z);
                             }
 
                             glGetFloatv(GL_MODELVIEW_MATRIX, M);
@@ -6809,24 +6817,24 @@ int Person::DrawSkeleton()
                         glMatrixMode(GL_MODELVIEW);
                         glPushMatrix();
                         if (p1 == abdomen || p2 == abdomen) {
-                            glTranslatef(v0.x * proportionbody.x,
-                                         v0.y * proportionbody.y,
-                                         v0.z * proportionbody.z);
+                            glTranslatef(v0.x * getProportion(1).x,
+                                         v0.y * getProportion(1).y,
+                                         v0.z * getProportion(1).z);
                         }
                         if (p1 == lefthand || p1 == righthand || p1 == leftwrist || p1 == rightwrist || p1 == leftelbow || p1 == rightelbow || p2 == leftelbow || p2 == rightelbow) {
-                            glTranslatef(v0.x * proportionarms.x,
-                                         v0.y * proportionarms.y,
-                                         v0.z * proportionarms.z);
+                            glTranslatef(v0.x * getProportion(2).x,
+                                         v0.y * getProportion(2).y,
+                                         v0.z * getProportion(2).z);
                         }
                         if (p1 == leftfoot || p1 == rightfoot || p1 == leftankle || p1 == rightankle || p1 == leftknee || p1 == rightknee || p2 == leftknee || p2 == rightknee) {
-                            glTranslatef(v0.x * proportionlegs.x,
-                                         v0.y * proportionlegs.y,
-                                         v0.z * proportionlegs.z);
+                            glTranslatef(v0.x * getProportion(3).x,
+                                         v0.y * getProportion(3).y,
+                                         v0.z * getProportion(3).z);
                         }
                         if (p1 == head || p2 == head) {
-                            glTranslatef(v0.x * proportionhead.x,
-                                         v0.y * proportionhead.y,
-                                         v0.z * proportionhead.z);
+                            glTranslatef(v0.x * getProportion(0).x,
+                                         v0.y * getProportion(0).y,
+                                         v0.z * getProportion(0).z);
                         }
                         glGetFloatv(GL_MODELVIEW_MATRIX, M);
                         skeleton.drawmodelclothes.vertex[skeleton.muscles[i].verticesclothes[j]].x = M[12] * scale;
