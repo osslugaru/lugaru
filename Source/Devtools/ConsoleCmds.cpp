@@ -638,7 +638,11 @@ void ch_default(const char*)
     Person::players[0]->metallow = 1;
     Person::players[0]->power = 1;
     Person::players[0]->speedmult = 1;
-    Person::players[0]->scale = 1;
+    if (Person::players[0]->creature == wolftype) {
+        Person::players[0]->scale = .23;
+    } else if (Person::players[0]->creature == rabbittype) {
+        Person::players[0]->scale = .2;
+    }
 
     Person::players[0]->setProportions(1, 1, 1, 1);
 
