@@ -70,6 +70,13 @@ public:
     sound_type soundsAttack[4];
     sound_type soundsTalk[2];
 
+    std::string figureFileName;
+    std::string lowFigureFileName;
+    std::string clothesFileName;
+    std::string modelFileNames[7];
+    std::string lowModelFileName;
+    std::string modelClothesFileName;
+
     static std::vector<PersonType> types;
     static void Load();
 };

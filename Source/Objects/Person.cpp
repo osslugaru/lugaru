@@ -101,6 +101,19 @@ void PersonType::Load()
     types[wolftype].soundsTalk[0] = growlsound;
     types[wolftype].soundsTalk[1] = growl2sound;
 
+    types[wolftype].figureFileName = "Skeleton/BasicFigureWolf";
+    types[wolftype].lowFigureFileName = "Skeleton/BasicFigureWolfLow";
+    types[wolftype].clothesFileName = "Skeleton/RabbitBelt";
+    types[wolftype].modelFileNames[0] = "Models/Wolf.solid";
+    types[wolftype].modelFileNames[1] = "Models/Wolf2.solid";
+    types[wolftype].modelFileNames[2] = "Models/Wolf3.solid";
+    types[wolftype].modelFileNames[3] = "Models/Wolf4.solid";
+    types[wolftype].modelFileNames[4] = "Models/Wolf5.solid";
+    types[wolftype].modelFileNames[5] = "Models/Wolf6.solid";
+    types[wolftype].modelFileNames[6] = "Models/Wolf7.solid";
+    types[wolftype].lowModelFileName = "Models/WolfLow.solid";
+    types[wolftype].modelClothesFileName = "Models/Belt.solid";
+
     /* Rabbit */
     types[rabbittype].proportions[0] = 1.2;
     types[rabbittype].proportions[1] = 1.05;
@@ -121,6 +134,19 @@ void PersonType::Load()
     types[rabbittype].soundsAttack[3] = rabbitattack4sound;
     types[rabbittype].soundsTalk[0] = rabbitchitter;
     types[rabbittype].soundsTalk[1] = rabbitchitter2;
+
+    types[rabbittype].figureFileName = "Skeleton/BasicFigure";
+    types[rabbittype].lowFigureFileName = "Skeleton/BasicFigureLow";
+    types[rabbittype].clothesFileName = "Skeleton/RabbitBelt";
+    types[rabbittype].modelFileNames[0] = "Models/Body.solid";
+    types[rabbittype].modelFileNames[1] = "Models/Body2.solid";
+    types[rabbittype].modelFileNames[2] = "Models/Body3.solid";
+    types[rabbittype].modelFileNames[3] = "Models/Body4.solid";
+    types[rabbittype].modelFileNames[4] = "Models/Body5.solid";
+    types[rabbittype].modelFileNames[5] = "Models/Body6.solid";
+    types[rabbittype].modelFileNames[6] = "Models/Body7.solid";
+    types[rabbittype].lowModelFileName = "Models/BodyLow.solid";
+    types[rabbittype].modelClothesFileName = "Models/Belt.solid";
 }
 
 Person::Person()
@@ -500,37 +526,20 @@ Person::Person(FILE* tfile, int mapvers, unsigned i)
 void Person::skeletonLoad(bool clothes)
 {
     skeleton.id = id;
-    if (creature != wolftype) {
-        skeleton.Load(
-            "Skeleton/BasicFigure",
-            "Skeleton/BasicFigureLow",
-            "Skeleton/RabbitBelt",
-            "Models/Body.solid",
-            "Models/Body2.solid",
-            "Models/Body3.solid",
-            "Models/Body4.solid",
-            "Models/Body5.solid",
-            "Models/Body6.solid",
-            "Models/Body7.solid",
-            "Models/BodyLow.solid",
-            "Models/Belt.solid",
-            clothes);
-    } else {
-        skeleton.Load(
-            "Skeleton/BasicFigureWolf",
-            "Skeleton/BasicFigureWolfLow",
-            "Skeleton/RabbitBelt",
-            "Models/Wolf.solid",
-            "Models/Wolf2.solid",
-            "Models/Wolf3.solid",
-            "Models/Wolf4.solid",
-            "Models/Wolf5.solid",
-            "Models/Wolf6.solid",
-            "Models/Wolf7.solid",
-            "Models/WolfLow.solid",
-            "Models/Belt.solid",
-            clothes);
-    }
+    skeleton.Load(
+        PersonType::types[creature].figureFileName,
+        PersonType::types[creature].lowFigureFileName,
+        PersonType::types[creature].clothesFileName,
+        PersonType::types[creature].modelFileNames[0],
+        PersonType::types[creature].modelFileNames[1],
+        PersonType::types[creature].modelFileNames[2],
+        PersonType::types[creature].modelFileNames[3],
+        PersonType::types[creature].modelFileNames[4],
+        PersonType::types[creature].modelFileNames[5],
+        PersonType::types[creature].modelFileNames[6],
+        PersonType::types[creature].lowModelFileName,
+        PersonType::types[creature].modelClothesFileName,
+        clothes);
 
     skeleton.drawmodel.textureptr.load(creatureskin[creature][whichskin], 1, &skeleton.skinText[0], &skeleton.skinsize);
 }
