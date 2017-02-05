@@ -75,6 +75,16 @@ extern XYZ windvector;
 std::vector<std::shared_ptr<Person>> Person::players(1, std::shared_ptr<Person>(new Person()));
 std::vector<PersonType> PersonType::types;
 
+PersonType::PersonType()
+{
+    animTalkIdle = tempanim;
+}
+
+bool PersonType::hasAnimTalkIdle()
+{
+    return (animTalkIdle != tempanim);
+}
+
 void PersonType::Load()
 {
     types.resize(2);
@@ -91,6 +101,8 @@ void PersonType::Load()
     types[wolftype].animStop = wolfstopanim;
     types[wolftype].animLanding = wolflandanim;
     types[wolftype].animLandingHard = wolflandhardanim;
+    types[wolftype].animFightIdle = wolfidle;
+    types[wolftype].animBounceIdle = wolfidle;
 
     types[wolftype].soundsAttack[0] = barksound;
     types[wolftype].soundsAttack[1] = bark2sound;
@@ -130,6 +142,8 @@ void PersonType::Load()
     types[rabbittype].animStop = stopanim;
     types[rabbittype].animLanding = landanim;
     types[rabbittype].animLandingHard = landhardanim;
+    types[rabbittype].animFightIdle = fightidleanim;
+    types[rabbittype].animBounceIdle = bounceidleanim;
 
     types[rabbittype].soundsAttack[0] = rabbitattacksound;
     types[rabbittype].soundsAttack[1] = rabbitattack2sound;
@@ -676,20 +690,15 @@ void Person::CatchFire()
  */
 int Person::getIdle()
 {
-    if (Dialog::inDialog() && (howactive == typeactive) && (creature == rabbittype)) {
-        return talkidleanim;
+    if (Dialog::inDialog() && (howactive == typeactive) && PersonType::types[creature].hasAnimTalkIdle()) {
+        return PersonType::types[creature].animTalkIdle;
     }
     if (hasvictim && (victim != this->shared_from_this())) {
         if ((!victim->dead && victim->aitype != passivetype &&
              victim->aitype != searchtype && aitype != passivetype && aitype != searchtype &&
              victim->id < Person::players.size())) {
             if ((aitype == playercontrolled && stunned <= 0 && weaponactive == -1) || pause) {
-                if (creature == rabbittype) {
-                    return fightidleanim;
-                }
-                if (creature == wolftype) {
-                    return wolfidle;
-                }
+                return PersonType::types[creature].animFightIdle;
             }
             if (aitype == playercontrolled && stunned <= 0 && weaponactive != -1) {
                 if (weapons[weaponids[weaponactive]].getType() == knife) {
@@ -734,13 +743,7 @@ int Person::getIdle()
     if (howactive == typedead4) {
         return dead4anim;
     }
-    if (creature == rabbittype) {
-        return bounceidleanim;
-    }
-    if (creature == wolftype) {
-        return wolfidle;
-    }
-    return 0;
+    return PersonType::types[creature].animBounceIdle;
 }
 
 /* FUNCTION

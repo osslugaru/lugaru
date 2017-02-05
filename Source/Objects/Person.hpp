@@ -67,6 +67,10 @@ public:
     animation_type animStop;
     animation_type animLanding;
     animation_type animLandingHard;
+    animation_type animFightIdle;
+    animation_type animBounceIdle;
+    animation_type animTalkIdle;
+
     sound_type soundsAttack[4];
     sound_type soundsTalk[2];
 
@@ -80,6 +84,9 @@ public:
     std::vector<std::string> skins;
 
     GLubyte bloodText[512 * 512 * 3] = { 0 };
+
+    PersonType();
+    bool hasAnimTalkIdle();
 
     static std::vector<PersonType> types;
     static void Load();
