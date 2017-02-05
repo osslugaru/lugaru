@@ -121,7 +121,7 @@ static void set_noclothes(int pnum, const char*)
 {
     Person::players[pnum]->numclothes = 0;
     Person::players[pnum]->skeleton.drawmodel.textureptr.load(
-        creatureskin[Person::players[pnum]->creature][Person::players[pnum]->whichskin], 1,
+        PersonType::types[Person::players[pnum]->creature].skins[Person::players[pnum]->whichskin], 1,
         &Person::players[pnum]->skeleton.skinText[0], &Person::players[pnum]->skeleton.skinsize);
 }
 
@@ -648,7 +648,7 @@ void ch_default(const char*)
 
     Person::players[0]->numclothes = 0;
     Person::players[0]->skeleton.drawmodel.textureptr.load(
-        creatureskin[Person::players[0]->creature][Person::players[0]->whichskin], 1,
+        PersonType::types[Person::players[0]->creature].skins[Person::players[0]->whichskin], 1,
         &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 
     editoractive = typeactive;

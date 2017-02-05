@@ -148,27 +148,6 @@ float musicvolume[4] = {};
 float oldmusicvolume[4] = {};
 int musicselected = 0;
 
-const char* rabbitskin[] = {
-    "Textures/Fur3.jpg",
-    "Textures/Fur.jpg",
-    "Textures/Fur2.jpg",
-    "Textures/Lynx.jpg",
-    "Textures/Otter.jpg",
-    "Textures/Opal.jpg",
-    "Textures/Sable.jpg",
-    "Textures/Chocolate.jpg",
-    "Textures/BW2.jpg",
-    "Textures/WB2.jpg"
-};
-
-const char* wolfskin[] = {
-    "Textures/Wolf.jpg",
-    "Textures/DarkWolf.jpg",
-    "Textures/SnowWolf.jpg"
-};
-
-const char** creatureskin[] = { rabbitskin, wolfskin };
-
 #define STATIC_ASSERT(x) extern int s_a_dummy[2 * (!!(x)) - 1];
 STATIC_ASSERT(rabbittype == 0 && wolftype == 1)
 
@@ -1213,7 +1192,7 @@ void Game::ProcessDevInput()
                 }
 
                 Person::players[closest]->skeleton.drawmodel.textureptr.load(
-                    creatureskin[Person::players[closest]->creature][Person::players[closest]->whichskin], 1,
+                    PersonType::types[Person::players[closest]->creature].skins[Person::players[closest]->whichskin], 1,
                     &Person::players[closest]->skeleton.skinText[0], &Person::players[closest]->skeleton.skinsize);
             }
 

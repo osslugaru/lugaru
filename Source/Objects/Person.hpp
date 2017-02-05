@@ -77,6 +77,8 @@ public:
     std::string lowModelFileName;
     std::string modelClothesFileName;
 
+    std::vector<std::string> skins;
+
     static std::vector<PersonType> types;
     static void Load();
 };

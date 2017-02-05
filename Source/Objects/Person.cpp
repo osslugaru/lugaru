@@ -114,6 +114,11 @@ void PersonType::Load()
     types[wolftype].lowModelFileName = "Models/WolfLow.solid";
     types[wolftype].modelClothesFileName = "Models/Belt.solid";
 
+    types[wolftype].skins.resize(3);
+    types[wolftype].skins[0] = "Textures/Wolf.jpg";
+    types[wolftype].skins[1] = "Textures/DarkWolf.jpg";
+    types[wolftype].skins[2] = "Textures/SnowWolf.jpg";
+
     /* Rabbit */
     types[rabbittype].proportions[0] = 1.2;
     types[rabbittype].proportions[1] = 1.05;
@@ -147,6 +152,18 @@ void PersonType::Load()
     types[rabbittype].modelFileNames[6] = "Models/Body7.solid";
     types[rabbittype].lowModelFileName = "Models/BodyLow.solid";
     types[rabbittype].modelClothesFileName = "Models/Belt.solid";
+
+    types[rabbittype].skins.resize(10);
+    types[rabbittype].skins[0] = "Textures/Fur3.jpg";
+    types[rabbittype].skins[1] = "Textures/Fur.jpg";
+    types[rabbittype].skins[2] = "Textures/Fur2.jpg";
+    types[rabbittype].skins[3] = "Textures/Lynx.jpg";
+    types[rabbittype].skins[4] = "Textures/Otter.jpg";
+    types[rabbittype].skins[5] = "Textures/Opal.jpg";
+    types[rabbittype].skins[6] = "Textures/Sable.jpg";
+    types[rabbittype].skins[7] = "Textures/Chocolate.jpg";
+    types[rabbittype].skins[8] = "Textures/BW2.jpg";
+    types[rabbittype].skins[9] = "Textures/WB2.jpg";
 }
 
 Person::Person()
@@ -541,7 +558,7 @@ void Person::skeletonLoad(bool clothes)
         PersonType::types[creature].modelClothesFileName,
         clothes);
 
-    skeleton.drawmodel.textureptr.load(creatureskin[creature][whichskin], 1, &skeleton.skinText[0], &skeleton.skinsize);
+    skeleton.drawmodel.textureptr.load(PersonType::types[creature].skins[whichskin], 1, &skeleton.skinText[0], &skeleton.skinsize);
 }
 
 void Person::setProportions(float head, float body, float arms, float legs)

@@ -201,14 +201,7 @@ enum editortypes {typeactive, typesitting, typesittingwall, typesleeping,
 
 extern const char *editortypenames[8];
 
-extern const char *rabbitskin[10];
-
-extern const char *wolfskin[3];
-
-extern const char **creatureskin[2];
-
 SDL_bool sdlEventProc(const SDL_Event &e);
-
 
 
 enum  optionIndex { UNKNOWN, VERSION, HELP, FULLSCREEN, NOMOUSEGRAB, SOUND, OPENALINFO, SHOWRESOLUTIONS, DEVTOOLS };
