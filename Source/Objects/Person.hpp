@@ -23,6 +23,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Animation/Animation.hpp"
 #include "Animation/Skeleton.hpp"
+#include "Audio/Sounds.hpp"
 #include "Environment/Terrain.hpp"
 #include "Graphic/gamegl.hpp"
 #include "Graphic/Models.hpp"
@@ -60,6 +61,15 @@ class PersonType
 public:
     // head, body, arms, legs
     XYZ proportions[4];
+    animation_type animRun;
+    animation_type animRunning;
+    animation_type animCrouch;
+    animation_type animStop;
+    animation_type animLanding;
+    animation_type animLandingHard;
+    sound_type soundsAttack[4];
+    sound_type soundsTalk[2];
+
     static std::vector<PersonType> types;
     static void Load();
 };

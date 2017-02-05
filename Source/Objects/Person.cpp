@@ -81,16 +81,46 @@ void PersonType::Load()
 {
     types.resize(2);
 
+    /* Wolf */
     types[wolftype].proportions[0] = 1.1;
     types[wolftype].proportions[1] = 1.1;
     types[wolftype].proportions[2] = 1.1;
     types[wolftype].proportions[3] = 1.1;
 
+    types[wolftype].animRun = wolfrunanim;
+    types[wolftype].animRunning = wolfrunninganim;
+    types[wolftype].animCrouch = wolfcrouchanim;
+    types[wolftype].animStop = wolfstopanim;
+    types[wolftype].animLanding = wolflandanim;
+    types[wolftype].animLandingHard = wolflandhardanim;
+
+    types[wolftype].soundsAttack[0] = barksound;
+    types[wolftype].soundsAttack[1] = bark2sound;
+    types[wolftype].soundsAttack[2] = bark3sound;
+    types[wolftype].soundsAttack[3] = barkgrowlsound;
+    types[wolftype].soundsTalk[0] = growlsound;
+    types[wolftype].soundsTalk[1] = growl2sound;
+
+    /* Rabbit */
     types[rabbittype].proportions[0] = 1.2;
     types[rabbittype].proportions[1] = 1.05;
     types[rabbittype].proportions[2] = 1;
     types[rabbittype].proportions[3] = 1.1;
     types[rabbittype].proportions[3].y = 1.05;
+
+    types[rabbittype].animRun = runanim;
+    types[rabbittype].animRunning = rabbitrunninganim;
+    types[rabbittype].animCrouch = crouchanim;
+    types[rabbittype].animStop = stopanim;
+    types[rabbittype].animLanding = landanim;
+    types[rabbittype].animLandingHard = landhardanim;
+
+    types[rabbittype].soundsAttack[0] = rabbitattacksound;
+    types[rabbittype].soundsAttack[1] = rabbitattack2sound;
+    types[rabbittype].soundsAttack[2] = rabbitattack3sound;
+    types[rabbittype].soundsAttack[3] = rabbitattack4sound;
+    types[rabbittype].soundsTalk[0] = rabbitchitter;
+    types[rabbittype].soundsTalk[1] = rabbitchitter2;
 }
 
 Person::Person()
@@ -694,13 +724,7 @@ int Person::getIdle()
  */
 int Person::getCrouch()
 {
-    if (creature == rabbittype) {
-        return crouchanim;
-    }
-    if (creature == wolftype) {
-        return wolfcrouchanim;
-    }
-    return 0;
+    return PersonType::types[creature].animCrouch;
 }
 
 /* FUNCTION
@@ -708,59 +732,32 @@ int Person::getCrouch()
  */
 int Person::getRun()
 {
-    if (creature == rabbittype && (!superruntoggle || weaponactive != -1)) {
-        return runanim;
+    if (superruntoggle && (weaponactive == -1)) {
+        return PersonType::types[creature].animRunning;
+    } else {
+        return PersonType::types[creature].animRun;
     }
-    if (creature == wolftype && (!superruntoggle)) {
-        return wolfrunanim;
-    }
-
-    if (creature == rabbittype && (superruntoggle && weaponactive == -1)) {
-        return rabbitrunninganim;
-    }
-    if (creature == wolftype && (superruntoggle)) {
-        return wolfrunninganim;
-    }
-    return 0;
 }
 
 /* FUNCTION
  */
 int Person::getStop()
 {
-    if (creature == rabbittype) {
-        return stopanim;
-    }
-    if (creature == wolftype) {
-        return wolfstopanim;
-    }
-    return 0;
+    return PersonType::types[creature].animStop;
 }
 
 /* FUNCTION
  */
 int Person::getLanding()
 {
-    if (creature == rabbittype) {
-        return landanim;
-    }
-    if (creature == wolftype) {
-        return wolflandanim;
-    }
-    return 0;
+    return PersonType::types[creature].animLanding;
 }
 
 /* FUNCTION
  */
 int Person::getLandhard()
 {
-    if (creature == rabbittype) {
-        return landhardanim;
-    }
-    if (creature == wolftype) {
-        return wolflandhardanim;
-    }
-    return 0;
+    return PersonType::types[creature].animLandingHard;
 }
 
 /* EFFECT
@@ -2388,34 +2385,7 @@ void Person::DoAnimations()
                             if (targetFrame().label == 4 && aitype != playercontrolled) {
                                 if (Animation::animations[animTarget].attack != neutral) {
                                     unsigned r = abs(Random() % 4);
-                                    if (creature == rabbittype) {
-                                        if (r == 0) {
-                                            whichsound = rabbitattacksound;
-                                        }
-                                        if (r == 1) {
-                                            whichsound = rabbitattack2sound;
-                                        }
-                                        if (r == 2) {
-                                            whichsound = rabbitattack3sound;
-                                        }
-                                        if (r == 3) {
-                                            whichsound = rabbitattack4sound;
-                                        }
-                                    }
-                                    if (creature == wolftype) {
-                                        if (r == 0) {
-                                            whichsound = barksound;
-                                        }
-                                        if (r == 1) {
-                                            whichsound = bark2sound;
-                                        }
-                                        if (r == 2) {
-                                            whichsound = bark3sound;
-                                        }
-                                        if (r == 3) {
-                                            whichsound = barkgrowlsound;
-                                        }
-                                    }
+                                    whichsound = PersonType::types[creature].soundsAttack[r];
                                     speechdelay = .3;
                                 }
                             }
@@ -5926,21 +5896,8 @@ void Person::DoStuff()
             int whichsound = -1;
             if (speechdelay <= 0) {
                 unsigned int i = abs(Random() % 4);
-                if (creature == rabbittype) {
-                    if (i == 0) {
-                        whichsound = rabbitchitter;
-                    }
-                    if (i == 1) {
-                        whichsound = rabbitchitter2;
-                    }
-                }
-                if (creature == wolftype) {
-                    if (i == 0) {
-                        whichsound = growlsound;
-                    }
-                    if (i == 1) {
-                        whichsound = growl2sound;
-                    }
+                if (i < 2) {
+                    whichsound = PersonType::types[creature].soundsTalk[i];
                 }
             }
             speechdelay = .3;

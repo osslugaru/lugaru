@@ -22,7 +22,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Math/XYZ.hpp"
 
-enum sound_types {
+enum sound_type {
 #define DECLARE_SOUND(id, filename) id,
 #include "Sounds.def"
 #undef DECLARE_SOUND

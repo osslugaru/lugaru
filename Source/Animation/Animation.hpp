@@ -32,7 +32,7 @@ enum anim_height_type {
     lowheight, middleheight, highheight
 };
 
-enum animation_types {
+enum animation_type {
 #define DECLARE_ANIM(id, ...) id,
 #include "Animation.def"
 #undef DECLARE_ANIM
