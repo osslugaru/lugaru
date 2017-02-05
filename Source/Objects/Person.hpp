@@ -23,12 +23,12 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Animation/Animation.hpp"
 #include "Animation/Skeleton.hpp"
-#include "Audio/Sounds.hpp"
 #include "Environment/Terrain.hpp"
 #include "Graphic/gamegl.hpp"
 #include "Graphic/Models.hpp"
 #include "Graphic/Sprite.hpp"
 #include "Math/XYZ.hpp"
+#include "Objects/PersonType.hpp"
 #include "Objects/Weapons.hpp"
 
 #include <cmath>
@@ -44,52 +44,10 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #define getweapontype 7
 #define pathfindtype 8
 
-enum person_type
-{
-    rabbittype = 0,
-    wolftype = 1
-};
-
 struct InvalidPersonException : public exception {
    const char * what () const throw () {
       return "Invalid weapon number";
    }
-};
-
-class PersonType
-{
-public:
-    // head, body, arms, legs
-    XYZ proportions[4];
-    animation_type animRun;
-    animation_type animRunning;
-    animation_type animCrouch;
-    animation_type animStop;
-    animation_type animLanding;
-    animation_type animLandingHard;
-    animation_type animFightIdle;
-    animation_type animBounceIdle;
-    animation_type animTalkIdle;
-
-    sound_type soundsAttack[4];
-    sound_type soundsTalk[2];
-
-    std::string figureFileName;
-    std::string lowFigureFileName;
-    std::string clothesFileName;
-    std::string modelFileNames[7];
-    std::string lowModelFileName;
-    std::string modelClothesFileName;
-
-    std::vector<std::string> skins;
-
-    GLubyte bloodText[512 * 512 * 3] = { 0 };
-
-    PersonType();
-    bool hasAnimTalkIdle();
-
-    static std::vector<PersonType> types;
-    static void Load();
 };
 
 class Person : public enable_shared_from_this<Person>

@@ -118,6 +118,7 @@ set(LUGARU_SRCS
     ${SRCDIR}/Menu/Menu.cpp
     ${SRCDIR}/Objects/Object.cpp
     ${SRCDIR}/Objects/Person.cpp
+    ${SRCDIR}/Objects/PersonType.cpp
     ${SRCDIR}/Objects/Weapons.cpp
     ${SRCDIR}/Platform/PlatformUnix.cpp
     ${SRCDIR}/Platform/PlatformWindows.cpp
@@ -165,6 +166,7 @@ set(LUGARU_H
     ${SRCDIR}/Menu/Menu.hpp
     ${SRCDIR}/Objects/Object.hpp
     ${SRCDIR}/Objects/Person.hpp
+    ${SRCDIR}/Objects/PersonType.hpp
     ${SRCDIR}/Objects/Weapons.hpp
     ${SRCDIR}/Platform/Platform.hpp
     ${SRCDIR}/Thirdparty/optionparser.h
