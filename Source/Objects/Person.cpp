@@ -435,10 +435,13 @@ Person::Person(FILE* tfile, int mapvers, unsigned i)
 
     loaded = true;
 
+    if (creature == wolftype) {
+        damagetolerance = 300;
+    }
+
     if (scale < 0) {
         if (creature == wolftype) {
             scale = .23;
-            damagetolerance = 300;
         } else {
             scale = .2;
         }
