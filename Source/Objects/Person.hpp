@@ -79,6 +79,8 @@ public:
 
     std::vector<std::string> skins;
 
+    GLubyte bloodText[512 * 512 * 3] = { 0 };
+
     static std::vector<PersonType> types;
     static void Load();
 };

@@ -40,8 +40,6 @@ extern float realtexdetail;
 extern float volume;
 extern int detail;
 extern bool cellophane;
-extern GLubyte bloodText[512 * 512 * 3];
-extern GLubyte wolfbloodText[512 * 512 * 3];
 extern bool ismotionblur;
 extern bool trilinear;
 extern bool musictoggle;
@@ -740,8 +738,8 @@ void Game::LoadStuff()
     iris.Scale(.03, .03, .03);
     iris.CalculateNormals(0);
 
-    LoadSave("Textures/BloodFur.png", &bloodText[0]);
-    LoadSave("Textures/WolfBloodFur.png", &wolfbloodText[0]);
+    LoadSave("Textures/WolfBloodFur.png", &PersonType::types[wolftype].bloodText[0]);
+    LoadSave("Textures/BloodFur.png", &PersonType::types[rabbittype].bloodText[0]);
 
     oldenvironment = -4;
 

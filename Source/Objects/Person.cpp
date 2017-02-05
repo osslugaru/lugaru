@@ -42,8 +42,6 @@ extern float slomodelay;
 extern bool cellophane;
 extern float texdetail;
 extern float realtexdetail;
-extern GLubyte bloodText[512 * 512 * 3];
-extern GLubyte wolfbloodText[512 * 512 * 3];
 extern int bloodtoggle;
 extern bool autoslomo;
 extern float camerashake;
@@ -857,17 +855,9 @@ void Person::DoBlood(float howmuch, int which)
             bleeding = howmuch + (float)abs(Random() % 100) / 200 - .25;
             bleedxint = 0;
             bleedyint = 0;
-            if (creature == rabbittype) {
-                while (bloodText[bleedxint * 512 * 3 + bleedyint * 3 + 0] > which + 4 || bloodText[bleedxint * 512 * 3 + bleedyint * 3 + 0] < which - 4 || bleedxint < 10 || bleedyint < 10 || bleedxint > 500 || bleedyint > 500) {
-                    bleedxint = abs(Random() % 512);
-                    bleedyint = abs(Random() % 512);
-                }
-            }
-            if (creature == wolftype) {
-                while (wolfbloodText[bleedxint * 512 * 3 + bleedyint * 3 + 0] > which + 4 || wolfbloodText[bleedxint * 512 * 3 + bleedyint * 3 + 0] < which - 4 || bleedxint < 10 || bleedyint < 10 || bleedxint > 500 || bleedyint > 500) {
-                    bleedxint = abs(Random() % 512);
-                    bleedyint = abs(Random() % 512);
-                }
+            while (PersonType::types[creature].bloodText[bleedxint * 512 * 3 + bleedyint * 3 + 0] > which + 4 || PersonType::types[creature].bloodText[bleedxint * 512 * 3 + bleedyint * 3 + 0] < which - 4 || bleedxint < 10 || bleedyint < 10 || bleedxint > 500 || bleedyint > 500) {
+                bleedxint = abs(Random() % 512);
+                bleedyint = abs(Random() % 512);
             }
             bleedy = bleedxint;
             bleedx = bleedyint;
@@ -980,42 +970,20 @@ void Person::DoBloodBig(float howmuch, int which)
         int endx = 0;
         int endy = 0;
         GLubyte color;
-        if (creature == rabbittype) {
-            for (i = 0; i < 512; i++) {
-                for (j = 0; j < 512; j++) {
-                    if (bloodText[i * 512 * 3 + j * 3 + 0] <= which + 4 && bloodText[i * 512 * 3 + j * 3 + 0] >= which - 4) {
-                        if (i < startx) {
-                            startx = i;
-                        }
-                        if (j < starty) {
-                            starty = j;
-                        }
-                        if (i > endx) {
-                            endx = i;
-                        }
-                        if (j > endy) {
-                            endy = j;
-                        }
+        for (i = 0; i < 512; i++) {
+            for (j = 0; j < 512; j++) {
+                if (PersonType::types[creature].bloodText[i * 512 * 3 + j * 3 + 0] <= which + 4 && PersonType::types[creature].bloodText[i * 512 * 3 + j * 3 + 0] >= which - 4) {
+                    if (i < startx) {
+                        startx = i;
                     }
-                }
-            }
-        }
-        if (creature == wolftype) {
-            for (i = 0; i < 512; i++) {
-                for (j = 0; j < 512; j++) {
-                    if (wolfbloodText[i * 512 * 3 + j * 3 + 0] <= which + 4 && wolfbloodText[i * 512 * 3 + j * 3 + 0] >= which - 4) {
-                        if (i < startx) {
-                            startx = i;
-                        }
-                        if (j < starty) {
-                            starty = j;
-                        }
-                        if (i > endx) {
-                            endx = i;
-                        }
-                        if (j > endy) {
-                            endy = j;
-                        }
+                    if (j < starty) {
+                        starty = j;
+                    }
+                    if (i > endx) {
+                        endx = i;
+                    }
+                    if (j > endy) {
+                        endy = j;
                     }
                 }
             }
@@ -1052,33 +1020,16 @@ void Person::DoBloodBig(float howmuch, int which)
 
         int texdetailint = realtexdetail;
         int where;
-        if (creature == rabbittype) {
-            for (i = startx; i < endx; i++) {
-                for (j = starty; j < endy; j++) {
-                    if (bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] <= which + 4 && bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] >= which - 4) {
-                        color = Random() % 85 + 170;
-                        where = i * skeleton.skinsize * 3 + j * 3;
-                        if (skeleton.skinText[where + 0] > color / 2) {
-                            skeleton.skinText[where + 0] = color / 2;
-                        }
-                        skeleton.skinText[where + 1] = 0;
-                        skeleton.skinText[where + 2] = 0;
+        for (i = startx; i < endx; i++) {
+            for (j = starty; j < endy; j++) {
+                if (PersonType::types[creature].bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] <= which + 4 && PersonType::types[creature].bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] >= which - 4) {
+                    color = Random() % 85 + 170;
+                    where = i * skeleton.skinsize * 3 + j * 3;
+                    if (skeleton.skinText[where + 0] > color / 2) {
+                        skeleton.skinText[where + 0] = color / 2;
                     }
-                }
-            }
-        }
-        if (creature == wolftype) {
-            for (i = startx; i < endx; i++) {
-                for (j = starty; j < endy; j++) {
-                    if (wolfbloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] <= which + 4 && wolfbloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] >= which - 4) {
-                        color = Random() % 85 + 170;
-                        where = i * skeleton.skinsize * 3 + j * 3;
-                        if (skeleton.skinText[where + 0] > color / 2) {
-                            skeleton.skinText[where + 0] = color / 2;
-                        }
-                        skeleton.skinText[where + 1] = 0;
-                        skeleton.skinText[where + 2] = 0;
-                    }
+                    skeleton.skinText[where + 1] = 0;
+                    skeleton.skinText[where + 2] = 0;
                 }
             }
         }
@@ -1087,17 +1038,9 @@ void Person::DoBloodBig(float howmuch, int which)
 
         bleedxint = 0;
         bleedyint = 0;
-        if (creature == rabbittype) {
-            while (bloodText[bleedxint * 512 * 3 + bleedyint * 3 + 0] > which + 4 || bloodText[bleedxint * 512 * 3 + bleedyint * 3 + 0] < which - 4 || bleedxint < 10 || bleedyint < 10 || bleedxint > 500 || bleedyint > 500) {
-                bleedxint = abs(Random() % 512);
-                bleedyint = abs(Random() % 512);
-            }
-        }
-        if (creature == wolftype) {
-            while (wolfbloodText[bleedxint * 512 * 3 + bleedyint * 3 + 0] > which + 4 || wolfbloodText[bleedxint * 512 * 3 + bleedyint * 3 + 0] < which - 4 || bleedxint < 10 || bleedyint < 10 || bleedxint > 500 || bleedyint > 500) {
-                bleedxint = abs(Random() % 512);
-                bleedyint = abs(Random() % 512);
-            }
+        while (PersonType::types[creature].bloodText[bleedxint * 512 * 3 + bleedyint * 3 + 0] > which + 4 || PersonType::types[creature].bloodText[bleedxint * 512 * 3 + bleedyint * 3 + 0] < which - 4 || bleedxint < 10 || bleedyint < 10 || bleedxint > 500 || bleedyint > 500) {
+            bleedxint = abs(Random() % 512);
+            bleedyint = abs(Random() % 512);
         }
         bleedy = bleedxint + offsetx;
         bleedx = bleedyint + offsety;
@@ -1231,42 +1174,20 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
             int endx = 0;
             int endy = 0;
             GLubyte color;
-            if (creature == rabbittype) {
-                for (i = 0; i < 512; i++) {
-                    for (j = 0; j < 512; j++) {
-                        if (bloodText[i * 512 * 3 + j * 3 + 0] <= which + 4 && bloodText[i * 512 * 3 + j * 3 + 0] >= which - 4) {
-                            if (i < startx) {
-                                startx = i;
-                            }
-                            if (j < starty) {
-                                starty = j;
-                            }
-                            if (i > endx) {
-                                endx = i;
-                            }
-                            if (j > endy) {
-                                endy = j;
-                            }
+            for (i = 0; i < 512; i++) {
+                for (j = 0; j < 512; j++) {
+                    if (PersonType::types[creature].bloodText[i * 512 * 3 + j * 3 + 0] <= which + 4 && PersonType::types[creature].bloodText[i * 512 * 3 + j * 3 + 0] >= which - 4) {
+                        if (i < startx) {
+                            startx = i;
                         }
-                    }
-                }
-            }
-            if (creature == wolftype) {
-                for (i = 0; i < 512; i++) {
-                    for (j = 0; j < 512; j++) {
-                        if (wolfbloodText[i * 512 * 3 + j * 3 + 0] <= which + 4 && wolfbloodText[i * 512 * 3 + j * 3 + 0] >= which - 4) {
-                            if (i < startx) {
-                                startx = i;
-                            }
-                            if (j < starty) {
-                                starty = j;
-                            }
-                            if (i > endx) {
-                                endx = i;
-                            }
-                            if (j > endy) {
-                                endy = j;
-                            }
+                        if (j < starty) {
+                            starty = j;
+                        }
+                        if (i > endx) {
+                            endx = i;
+                        }
+                        if (j > endy) {
+                            endy = j;
                         }
                     }
                 }
@@ -1302,49 +1223,24 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
 
             int texdetailint = realtexdetail;
             int where;
-            if (creature == rabbittype) {
-                for (i = startx; i < endx; i++) {
-                    for (j = starty; j < endy; j++) {
-                        if (bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] <= which + 4 && bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] >= which - 4) {
-                            color = Random() % 85 + 170;
-                            where = i * skeleton.skinsize * 3 + j * 3;
-                            if (skeleton.skinText[where + 0] > color / 2) {
-                                skeleton.skinText[where + 0] = color / 2;
-                            }
-                            skeleton.skinText[where + 1] = 0;
-                            skeleton.skinText[where + 2] = 0;
-                        } else if (bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] <= 160 + 4 && bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] >= 160 - 4) {
-                            color = Random() % 85 + 170;
-                            where = i * skeleton.skinsize * 3 + j * 3;
-                            if (skeleton.skinText[where + 0] > color / 2) {
-                                skeleton.skinText[where + 0] = color / 2;
-                            }
-                            skeleton.skinText[where + 1] = 0;
-                            skeleton.skinText[where + 2] = 0;
+            for (i = startx; i < endx; i++) {
+                for (j = starty; j < endy; j++) {
+                    if (PersonType::types[creature].bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] <= which + 4 && PersonType::types[creature].bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] >= which - 4) {
+                        color = Random() % 85 + 170;
+                        where = i * skeleton.skinsize * 3 + j * 3;
+                        if (skeleton.skinText[where + 0] > color / 2) {
+                            skeleton.skinText[where + 0] = color / 2;
                         }
-                    }
-                }
-            }
-            if (creature == wolftype) {
-                for (i = startx; i < endx; i++) {
-                    for (j = starty; j < endy; j++) {
-                        if (wolfbloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] <= which + 4 && wolfbloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] >= which - 4) {
-                            color = Random() % 85 + 170;
-                            where = i * skeleton.skinsize * 3 + j * 3;
-                            if (skeleton.skinText[where + 0] > color / 2) {
-                                skeleton.skinText[where + 0] = color / 2;
-                            }
-                            skeleton.skinText[where + 1] = 0;
-                            skeleton.skinText[where + 2] = 0;
-                        } else if (wolfbloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] <= 160 + 4 && wolfbloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] >= 160 - 4) {
-                            color = Random() % 85 + 170;
-                            where = i * skeleton.skinsize * 3 + j * 3;
-                            if (skeleton.skinText[where + 0] > color / 2) {
-                                skeleton.skinText[where + 0] = color / 2;
-                            }
-                            skeleton.skinText[where + 1] = 0;
-                            skeleton.skinText[where + 2] = 0;
+                        skeleton.skinText[where + 1] = 0;
+                        skeleton.skinText[where + 2] = 0;
+                    } else if (PersonType::types[creature].bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] <= 160 + 4 && PersonType::types[creature].bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] >= 160 - 4) {
+                        color = Random() % 85 + 170;
+                        where = i * skeleton.skinsize * 3 + j * 3;
+                        if (skeleton.skinText[where + 0] > color / 2) {
+                            skeleton.skinText[where + 0] = color / 2;
                         }
+                        skeleton.skinText[where + 1] = 0;
+                        skeleton.skinText[where + 2] = 0;
                     }
                 }
             }

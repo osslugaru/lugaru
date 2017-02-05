@@ -41,7 +41,6 @@ extern int slomo;
 extern float slomodelay;
 extern bool cellophane;
 extern float texdetail;
-extern GLubyte bloodText[512 * 512 * 3];
 extern int bloodtoggle;
 extern bool autoslomo;
 extern float camerashake;
