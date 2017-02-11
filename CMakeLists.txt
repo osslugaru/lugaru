@@ -16,6 +16,30 @@ if(UNIX AND NOT APPLE)
 endif()
 
 
+### CMake config
+
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE RelWithDebInfo)
+endif(NOT CMAKE_BUILD_TYPE)
+message(STATUS "CMake build type: ${CMAKE_BUILD_TYPE}")
+
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-parentheses -pedantic --std=gnu++11 ${CMAKE_CXX_FLAGS}")
+
+if(APPLE)
+    set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "Build architectures for OSX")
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "10.11" CACHE STRING
+        "Minimum OS X version to target for deployment (at runtime); newer APIs weak linked. Set to empty string for default value")
+    set(CMAKE_OSX_SYSROOT "/Developer/SDKs/MacOSX10.11.sdk" CACHE PATH
+        "The product will be built against the headers and libraries located inside the indicated SDK.")
+endif(APPLE)
+
+if(LINUX)
+    option(SYSTEM_INSTALL "Enable system-wide installation, with hardcoded data directory defined with CMAKE_INSTALL_DATADIR" OFF)
+endif(LINUX)
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake/Modules/")
+
+
 ### Version
 
 # Version for the current (stable) or next (development) release
@@ -63,30 +87,6 @@ endif()
 
 message(STATUS "Version string: ${LUGARU_VERSION_STRING}")
 configure_file(${SRCDIR}/Version.hpp.in ${SRCDIR}/Version.hpp ESCAPE_QUOTES @ONLY)
-
-
-### CMake config
-
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE RelWithDebInfo)
-endif(NOT CMAKE_BUILD_TYPE)
-message(STATUS "CMake build type: ${CMAKE_BUILD_TYPE}")
-
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-parentheses -pedantic --std=gnu++11 ${CMAKE_CXX_FLAGS}")
-
-if(APPLE)
-    set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "Build architectures for OSX")
-    set(CMAKE_OSX_DEPLOYMENT_TARGET "10.11" CACHE STRING
-        "Minimum OS X version to target for deployment (at runtime); newer APIs weak linked. Set to empty string for default value")
-    set(CMAKE_OSX_SYSROOT "/Developer/SDKs/MacOSX10.11.sdk" CACHE PATH
-        "The product will be built against the headers and libraries located inside the indicated SDK.")
-endif(APPLE)
-
-if(LINUX)
-    option(SYSTEM_INSTALL "Enable system-wide installation, with hardcoded data directory defined with CMAKE_INSTALL_DATADIR" OFF)
-endif(LINUX)
-
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake/Modules/")
 
 
 ### Sources
