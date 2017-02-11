@@ -71,9 +71,9 @@ void PersonType::Load()
     types[wolftype].modelClothesFileName = "Models/Belt.solid";
 
     types[wolftype].skins.resize(3);
-    types[wolftype].skins[0] = "Textures/Wolf.jpg";
-    types[wolftype].skins[1] = "Textures/DarkWolf.jpg";
-    types[wolftype].skins[2] = "Textures/SnowWolf.jpg";
+    types[wolftype].skins[0] = "Textures/FurWolfGrey.jpg";
+    types[wolftype].skins[1] = "Textures/FurWolfDark.jpg";
+    types[wolftype].skins[2] = "Textures/FurWolfSnow.jpg";
 
     /* Rabbit */
     types[rabbittype].proportions[0] = 1.2;
@@ -112,14 +112,14 @@ void PersonType::Load()
     types[rabbittype].modelClothesFileName = "Models/Belt.solid";
 
     types[rabbittype].skins.resize(10);
-    types[rabbittype].skins[0] = "Textures/Fur3.jpg";
-    types[rabbittype].skins[1] = "Textures/Fur.jpg";
-    types[rabbittype].skins[2] = "Textures/Fur2.jpg";
-    types[rabbittype].skins[3] = "Textures/Lynx.jpg";
-    types[rabbittype].skins[4] = "Textures/Otter.jpg";
-    types[rabbittype].skins[5] = "Textures/Opal.jpg";
-    types[rabbittype].skins[6] = "Textures/Sable.jpg";
-    types[rabbittype].skins[7] = "Textures/Chocolate.jpg";
-    types[rabbittype].skins[8] = "Textures/BW2.jpg";
-    types[rabbittype].skins[9] = "Textures/WB2.jpg";
+    types[rabbittype].skins[0] = "Textures/FurBrown.jpg";
+    types[rabbittype].skins[1] = "Textures/FurWhite.jpg";
+    types[rabbittype].skins[2] = "Textures/FurBlack.jpg";
+    types[rabbittype].skins[3] = "Textures/FurLynx.jpg";
+    types[rabbittype].skins[4] = "Textures/FurOtter.jpg";
+    types[rabbittype].skins[5] = "Textures/FurOpal.jpg";
+    types[rabbittype].skins[6] = "Textures/FurSable.jpg";
+    types[rabbittype].skins[7] = "Textures/FurChocolate.jpg";
+    types[rabbittype].skins[8] = "Textures/FurBlackWhite.jpg";
+    types[rabbittype].skins[9] = "Textures/FurBrownWhite.jpg";
 }

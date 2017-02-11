@@ -1,6 +1,4 @@
-:Data:Textures:all.png	Textures/All.png
 :Data:Textures:armor.png	Textures/LeatherArmor.png
-:Data:Textures:blackfur.png	Textures/Fur2.png
 :Data:Textures:bloodapril.png	Textures/BloodApril.png
 :Data:Textures:bloodclover.png	Textures/BloodClover.png
 :Data:Textures:bloodjack.png	Textures/BloodJack.png
@@ -19,10 +17,7 @@
 :Data:Textures:fancypants.png	Textures/FancyPants.png
 :Data:Textures:femaleshirt.png	Textures/ShirtFemale.png
 :Data:Textures:fire.png	Textures/Fire.jpg
-:Data:Textures:footwrap.png	Textures:FootWrap.png
-:Data:Textures:furbw2.png	Textures/FurBW.jpg
-:Data:Textures:furWB2.png	Textures/FurBW.jpg
-:Data:Textures:furwhite.png	Textures/Fur.jpg
+:Data:Textures:footwrap.png	Textures/FootWrap.png
 :Data:Textures:gibottom.png	Textures/GiBottom.png
 :Data:Textures:gi.png	Textures/Gi.png
 :Data:Textures:giteared.png	Textures/GiTeared.png
@@ -46,5 +41,4 @@
 :Data:Textures:shirt.png	Textures/Shirt.png
 :Data:Textures:shirts.png	Textures/Shirt.png
 :Data:Textures:shrit.png	Textures/Shirt.png
-:Data:Textures:whitefur.png	Textures/Fur.jpg
 :Data:Textures:world.png	Textures/World.png
