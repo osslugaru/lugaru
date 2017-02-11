@@ -331,8 +331,9 @@ public:
     inline AnimationFrame& currentFrame() { return Animation::animations.at(animCurrent).frames.at(frameCurrent); }
     inline AnimationFrame& targetFrame() { return Animation::animations.at(animTarget).frames.at(frameTarget); }
 
-    void setProportions(float, float, float, float);
-    XYZ getProportion(int part) const;
+    void setProportions(float head, float body, float arms, float legs);
+    float getProportion(int part) const;
+    XYZ getProportionXYZ(int part) const;
 
     void CheckKick();
     void CatchFire();
