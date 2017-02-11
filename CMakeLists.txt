@@ -30,8 +30,8 @@ if(LUGARU_VERSION_PATCH)
 endif()
 
 # Set to "" for stable (tagged) builds, "-dev" for dev builds
-set(LUGARU_VERSION_SUFFIX "-dev")  # development
-#set(LUGARU_VERSION_SUFFIX "")  # stable
+#set(LUGARU_VERSION_SUFFIX "-dev")  # development
+set(LUGARU_VERSION_SUFFIX "")  # stable
 
 # Set to 7-char git commit hash if available, otherwise "".
 # On stable (tagged) builds, this is ignored.
