@@ -160,6 +160,18 @@ static void set_clothes(int pnum, const char* args)
     Person::players[pnum]->DoMipmaps();
 }
 
+static void list_clothes(int pnum)
+{
+    printf("Clothes from player %d:\n", pnum);
+    for (int i = 0; i < Person::players[pnum]->numclothes; i++) {
+        printf("%s (%f %f %f)\n",
+               Person::players[pnum]->clothes[i],
+               Person::players[pnum]->clothestintr[i],
+               Person::players[pnum]->clothestintg[i],
+               Person::players[pnum]->clothestintb[i]);
+    }
+}
+
 /* Console commands themselves */
 
 void ch_quit(const char*)
@@ -435,6 +447,19 @@ void ch_clothesnear(const char* args)
     int closest = findClosestPlayer();
     if (closest >= 0) {
         set_clothes(closest, args);
+    }
+}
+
+void ch_clotheslist(const char*)
+{
+    list_clothes(0);
+}
+
+void ch_clotheslistnear(const char*)
+{
+    int closest = findClosestPlayer();
+    if (closest >= 0) {
+        list_clothes(closest);
     }
 }
 

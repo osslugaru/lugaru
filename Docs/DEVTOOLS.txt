@@ -160,6 +160,8 @@ clothes (string) - adds clothes to your character.
     folder of type ".png". You may add any png file in that folder and use it
     with the clothes command. See Decal Editing to create such files.
 clothesnear - does the same for the character nearest to you.
+clotheslist - lists the clothes of the main player (and their tint).
+clotheslistnear - does the same for the character nearest to you.
 
 Skybox
 ~~~~~~

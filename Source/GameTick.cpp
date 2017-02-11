@@ -1022,18 +1022,6 @@ void Game::ProcessInput()
         printf("Stereo separation increased to %f\n", stereoseparation);
     }
 
-    /* Devtools */
-    if (devtools && !mainmenu) {
-        ProcessDevInput();
-    }
-}
-
-void Game::ProcessDevInput()
-{
-    if (!devtools || mainmenu) {
-        return;
-    }
-
     /* Console */
     if (Input::isKeyPressed(consolekey)) {
         console = !console;
@@ -1043,6 +1031,18 @@ void Game::ProcessDevInput()
             freeze = 0;
             waiting = false;
         }
+    }
+
+    /* Devtools */
+    if (devtools && !mainmenu && !console) {
+        ProcessDevInput();
+    }
+}
+
+void Game::ProcessDevInput()
+{
+    if (!devtools || mainmenu || console) {
+        return;
     }
 
     if (Input::isKeyDown(SDL_SCANCODE_LALT)) {
