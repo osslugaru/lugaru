@@ -96,11 +96,6 @@ public:
     XYZ coords;
     XYZ velocity;
 
-    //~ XYZ proportionhead;
-    //~ XYZ proportionlegs;
-    //~ XYZ proportionarms;
-    //~ XYZ proportionbody;
-
     float unconscioustime;
 
     bool immobile;

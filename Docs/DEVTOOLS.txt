@@ -234,7 +234,10 @@ fixdialog (int) (string) - replaces the dialog of given index by the one
     described in the "string.txt" file.
 ddialog (int) - deletes given dialog (if no argument or -1, deletes the last
     dialog). Does not work when actually playing a dialog.
+fixtype (int) (int) - fixes the type (2nd arg) of the given dialog (1st arg).
 play (int) - plays given dialog.
+fixrotation - when playing a dialog, sets the in-dialog yaw of the current
+    participant to its out-of-dialog yaw value.
 
 Graphics
 ~~~~~~~~

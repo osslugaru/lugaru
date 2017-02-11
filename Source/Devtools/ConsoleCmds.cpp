@@ -598,19 +598,20 @@ void ch_dialog(const char* args)
 void ch_fixdialog(const char* args)
 {
     char buf1[32];
-    int whichdi;
+    int whichdlg = 0;
 
-    sscanf(args, "%d %31s", &whichdi, buf1);
+    sscanf(args, "%d %31s", &whichdlg, buf1);
     std::string filename = std::string("Dialogues/") + buf1 + ".txt";
 
-    Dialog::dialogs[whichdi] = Dialog(Dialog::dialogs[whichdi].type, filename);
+    Dialog::dialogs[whichdlg] = Dialog(Dialog::dialogs[whichdlg].type, filename);
 }
 
 void ch_fixtype(const char* args)
 {
-    int dlg;
-    sscanf(args, "%d", &dlg);
-    Dialog::dialogs[0].type = dlg;
+    int whichdlg = 0;
+    int type = 0;
+    sscanf(args, "%d %d", &whichdlg, &type);
+    Dialog::dialogs[whichdlg].type = type;
 }
 
 void ch_fixrotation(const char*)
