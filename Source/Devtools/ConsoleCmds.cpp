@@ -580,7 +580,7 @@ void ch_hs(const char* args)
     strcat(Hotspot::hotspots.back().text, "\n");
 }
 
-void ch_dialogue(const char* args)
+void ch_dialog(const char* args)
 {
     int type;
     char buf1[32];
@@ -595,7 +595,7 @@ void ch_dialogue(const char* args)
     Dialog::whichdialogue = Dialog::dialogs.size();
 }
 
-void ch_fixdialogue(const char* args)
+void ch_fixdialog(const char* args)
 {
     char buf1[32];
     int whichdi;
@@ -619,11 +619,27 @@ void ch_fixrotation(const char*)
     Dialog::currentDialog().participantyaw[playerId] = Person::players[playerId]->yaw;
 }
 
-void ch_ddialogue(const char*)
+void ch_ddialog(const char* args)
 {
-    if (!Dialog::dialogs.empty()) {
-        Dialog::dialogs.pop_back();
+    if (Dialog::dialogs.empty() || Dialog::inDialog()) {
+        return;
     }
+
+    int dlg = -1;
+    sscanf(args, "%d", &dlg);
+    if (dlg == -1) {
+        // Remove last entry
+        Dialog::dialogs.pop_back();
+        return;
+    }
+
+    if (dlg >= int(Dialog::dialogs.size())) {
+        // Invalid index, abort
+        return;
+    }
+
+    // Erase given index, higher indexes will be decreased by 1
+    Dialog::dialogs.erase(Dialog::dialogs.begin() + dlg);
 }
 
 void ch_dhs(const char*)

@@ -219,6 +219,23 @@ dhs - deletes the last hotspot.
     the map file (make sure to change the byte before the string to the number
     of its characters).
 
+Dialogs
+~~~~~~~
+
+dialog (int) (string) - loads the "string.txt" dialog with type "int" and enter
+    directing mode: Fly around, press numpad 1-10 to change the players' head
+    target, press 1-10 to define who is saying the current line and move on to
+    the next line. The type argument can be one of:
+        0-9 = player index, activates when "attacking" them
+        10+ = "special", activates automatically when in range; player ID is
+              the module of the type (e.g. type 18 would be special, player 8)
+        40-49 = some other thing, someone really needs to cleanup this logic :)
+fixdialog (int) (string) - replaces the dialog of given index by the one
+    described in the "string.txt" file.
+ddialog (int) - deletes given dialog (if no argument or -1, deletes the last
+    dialog). Does not work when actually playing a dialog.
+play (int) - plays given dialog.
+
 Graphics
 ~~~~~~~~
 
