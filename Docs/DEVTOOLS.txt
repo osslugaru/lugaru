@@ -124,9 +124,8 @@ cellophane - makes everyone invisible, except for the shadows.
 Character appearance
 ~~~~~~~~~~~~~~~~~~~~
 
-cellar door, rambo, kungfu, white, brown, black - changes your skin to the
-    respective outfit. Note: this command is a little glitchy sometimes. You
-    may have to enter it multiple times before it changes.
+lizardwolf, darko - changes your skin to the respective easter egg texture.
+    Normal skins are available via the ctrl+alt+t hotkey.
 tintr (float) - sets the redness of your clothes.
     This only affects the color of future clothes, so you must set it in
     advance. It must be a value from 0 to 1.

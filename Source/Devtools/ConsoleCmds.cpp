@@ -321,11 +321,6 @@ void ch_save(const char* args)
     fclose(tfile);
 }
 
-void ch_cellar(const char*)
-{
-    Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/FurDarko.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
-}
-
 void ch_tint(const char* args)
 {
     sscanf(args, "%f%f%f", &tintr, &tintg, &tintb);
@@ -492,39 +487,14 @@ void ch_wolfie(const char*)
     set_proportion(0, "1 1 1 1");
 }
 
-void ch_wolf(const char*)
-{
-    Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/FurWolfGrey.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
-}
-
-void ch_snowwolf(const char*)
-{
-    Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/FurWolfSnow.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
-}
-
-void ch_darkwolf(const char*)
-{
-    Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/FurWolfDark.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
-}
-
 void ch_lizardwolf(const char*)
 {
     Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/FurWolfLizard.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 }
 
-void ch_white(const char*)
+void ch_darko(const char*)
 {
-    Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/FurWhite.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
-}
-
-void ch_brown(const char*)
-{
-    Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/FurBrown.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
-}
-
-void ch_black(const char*)
-{
-    Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/FurBlack.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
+    Person::players[0]->skeleton.drawmodel.textureptr.load("Textures/FurDarko.jpg", 1, &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
 }
 
 void ch_sizemin(const char*)
