@@ -28,11 +28,11 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdio.h>
 
 #if defined(WIN32) && !defined(strcasecmp)
-#define strcasecmp(a,b) stricmp(a,b)
+#define strcasecmp(a, b) stricmp(a, b)
 #endif
 
-
-struct Point {
+struct Point
+{
     short v;
     short h;
 };
@@ -40,9 +40,10 @@ struct Point {
 typedef signed char SInt8;
 typedef unsigned int UInt32;
 
-typedef struct AbsoluteTime {
-    unsigned long   hi;
-    unsigned long   lo;
+typedef struct AbsoluteTime
+{
+    unsigned long hi;
+    unsigned long lo;
 } AbsoluteTime;
 
 /* Returns time since the app started, not system start. */
@@ -50,27 +51,27 @@ AbsoluteTime UpTime();
 
 typedef long Duration;
 
-enum {
+enum
+{
     durationMicrosecond = -1,
     durationMillisecond = 1,
-    durationSecond      = 1000,
-    durationMinute      = 1000 * 60,
-    durationHour        = 1000 * 60 * 60,
-    durationDay         = 1000 * 60 * 60 * 24,
-    durationForever     = 0x7FFFFFFF,
-    durationImmediate   = 0,
+    durationSecond = 1000,
+    durationMinute = 1000 * 60,
+    durationHour = 1000 * 60 * 60,
+    durationDay = 1000 * 60 * 60 * 24,
+    durationForever = 0x7FFFFFFF,
+    durationImmediate = 0,
 };
 
 Duration AbsoluteDeltaToDuration(AbsoluteTime& a, AbsoluteTime& b);
-
 
 /* Workaround missing math stuff on MSVC
  * FIXME: Check that it is still necessary nowadays.
  */
 #ifdef _MSC_VER
-inline bool isnormal( double x)
+inline bool isnormal(double x)
 {
-    int ret = _fpclass( x);
+    int ret = _fpclass(x);
     return (ret == _FPCLASS_NN || ret == _FPCLASS_PN);
 }
 

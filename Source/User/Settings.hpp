@@ -56,5 +56,4 @@ void DefaultSettings();
 void SaveSettings();
 bool LoadSettings();
 
-
 #endif

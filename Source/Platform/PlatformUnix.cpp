@@ -53,7 +53,7 @@ static int QueryPerformanceCounter(LARGE_INTEGER* liptr)
 
 class AppTime
 {
-  public:
+public:
     AppTime()
     {
         counterRate = 1;

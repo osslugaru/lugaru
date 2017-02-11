@@ -35,9 +35,11 @@ class CampaignLevel
 {
 private:
     int width;
-    struct Position {
+    struct Position
+    {
         int x, y;
     };
+
 public:
     std::string mapname;
     std::string description;
@@ -57,8 +59,9 @@ public:
     int getEndY();
     XYZ getCenter();
     int getWidth();
-    std::istream& operator<< (std::istream& is);
-    friend std::istream& operator>> (std::istream& is, CampaignLevel& cl) {
+    std::istream& operator<<(std::istream& is);
+    friend std::istream& operator>>(std::istream& is, CampaignLevel& cl)
+    {
         return cl << is;
     }
 };

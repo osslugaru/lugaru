@@ -33,7 +33,8 @@ public:
     int attach;
     XYZ location;
     inline void setColors(GLfloat cr, GLfloat cg, GLfloat cb,
-                          GLfloat ar, GLfloat ag, GLfloat ab) {
+                          GLfloat ar, GLfloat ag, GLfloat ab)
+    {
         color[0] = cr;
         color[1] = cg;
         color[2] = cb;

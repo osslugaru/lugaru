@@ -29,7 +29,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 class AppTime
 {
-  public:
+public:
     AppTime()
     {
         counterRate = 1;

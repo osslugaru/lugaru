@@ -23,10 +23,10 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Animation/Skeleton.hpp"
 #include "Environment/Terrain.hpp"
-#include "Graphic/gamegl.hpp"
 #include "Graphic/Models.hpp"
 #include "Graphic/Sprite.hpp"
 #include "Graphic/Texture.hpp"
+#include "Graphic/gamegl.hpp"
 #include "Math/XYZ.hpp"
 #include "Objects/Person.hpp"
 
@@ -46,7 +46,8 @@ public:
     void draw();
     void doStuff(int);
 
-    int getType() {
+    int getType()
+    {
         return type;
     }
     void setType(int);

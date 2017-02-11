@@ -2,6 +2,7 @@
 BasedOnStyle:  Mozilla
 ---
 Language:                               Cpp
+AccessModifierOffset:                   -4
 AllowShortIfStatementsOnASingleLine:    false
 AlwaysBreakAfterDefinitionReturnType:   None
 AlwaysBreakAfterReturnType:             None

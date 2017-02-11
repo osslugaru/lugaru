@@ -24,9 +24,9 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Animation/Animation.hpp"
 #include "Animation/Skeleton.hpp"
 #include "Environment/Terrain.hpp"
-#include "Graphic/gamegl.hpp"
 #include "Graphic/Models.hpp"
 #include "Graphic/Sprite.hpp"
+#include "Graphic/gamegl.hpp"
 #include "Math/XYZ.hpp"
 #include "Objects/PersonType.hpp"
 #include "Objects/Weapons.hpp"
@@ -44,10 +44,12 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #define getweapontype 7
 #define pathfindtype 8
 
-struct InvalidPersonException : public exception {
-   const char * what () const throw () {
-      return "Invalid weapon number";
-   }
+struct InvalidPersonException : public exception
+{
+    const char* what() const throw()
+    {
+        return "Invalid weapon number";
+    }
 };
 
 class Person : public enable_shared_from_this<Person>
@@ -182,7 +184,6 @@ public:
     float crouchkeydowntime;
     float jumpkeydowntime;
     bool freefall;
-
 
     float turnspeed;
 
@@ -375,13 +376,14 @@ public:
     void Reverse();
     void DoDamage(float howmuch);
     void DoHead();
-    void DoMipmaps() {
+    void DoMipmaps()
+    {
         skeleton.drawmodel.textureptr.bind();
         glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, skeleton.skinsize, skeleton.skinsize, 0, GL_RGB, GL_UNSIGNED_BYTE, &skeleton.skinText[0]);
     }
 
-    int SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate, Model *model);
+    int SphereCheck(XYZ* p1, float radius, XYZ* p, XYZ* move, float* rotate, Model* model);
     int DrawSkeleton();
     void Puff(int whichlabel);
     void FootLand(bodypart whichfoot, float opacity);
@@ -390,7 +392,7 @@ public:
     void DoAnimations();
     void RagDoll(bool checkcollision);
 
-    void takeWeapon (int weaponId);
+    void takeWeapon(int weaponId);
 
     bool addClothes(const int& clothesId);
     void addClothes();

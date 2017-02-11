@@ -40,22 +40,23 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 /**> DATA STRUCTURES <**/
-class ImageRec {
+class ImageRec
+{
 public:
-    GLubyte *data; // Image Data (Up To 32 Bits)
-    GLuint bpp; // Image Color Depth In Bits Per Pixel.
+    GLubyte* data; // Image Data (Up To 32 Bits)
+    GLuint bpp;    // Image Color Depth In Bits Per Pixel.
     GLuint sizeX;
     GLuint sizeY;
     ImageRec();
     ~ImageRec();
+
 private:
     /* Make sure this class cannot be copied to avoid memory problems */
-    ImageRec(ImageRec const &);
-    ImageRec& operator=(ImageRec const &);
+    ImageRec(ImageRec const&);
+    ImageRec& operator=(ImageRec const&);
 };
 
-bool load_image(const char * fname, ImageRec & tex);
-bool save_screenshot(const char * fname);
+bool load_image(const char* fname, ImageRec& tex);
+bool save_screenshot(const char* fname);
 
 #endif
-

@@ -23,8 +23,19 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Game.hpp"
 
-struct MenuItem {
-    enum MenuItemType {NONE, LABEL, BUTTON, IMAGE, IMAGEBUTTON, MAPMARKER, MAPLINE, MAPLABEL} type;
+struct MenuItem
+{
+    enum MenuItemType
+    {
+        NONE,
+        LABEL,
+        BUTTON,
+        IMAGE,
+        IMAGEBUTTON,
+        MAPMARKER,
+        MAPLINE,
+        MAPLABEL
+    } type;
     int id;
     string text;
     Texture texture;
@@ -36,8 +47,8 @@ struct MenuItem {
     float lineendsize;
 
     MenuItem(MenuItemType _type, int _id, const string& _text, Texture _texture,
-              int _x, int _y, int _w, int _h, float _r, float _g, float _b,
-              float _linestartsize = 1, float _lineendsize = 1);
+             int _x, int _y, int _w, int _h, float _r, float _g, float _b,
+             float _linestartsize = 1, float _lineendsize = 1);
 };
 
 class Menu

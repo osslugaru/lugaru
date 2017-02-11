@@ -23,29 +23,30 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <string>
 
-enum StereoMode {
+enum StereoMode
+{
     stereoNone,
     stereoAnaglyph,             /* red/cyan */
     stereoHorizontalInterlaced, /* some 3D monitors */
     stereoVerticalInterlaced,
-    stereoHorizontalSplit,      /* cross-eyed view */
+    stereoHorizontalSplit, /* cross-eyed view */
     stereoVerticalSplit,
-    stereoOpenGL,               /* Whatever OpenGL does, if supported */
-    stereoCount                 /* must be last element */
+    stereoOpenGL, /* Whatever OpenGL does, if supported */
+    stereoCount   /* must be last element */
 };
 
-
-enum StereoSide {
+enum StereoSide
+{
     // Code multiplies by StereoSide to calculate camera offsets
-    stereoLeft   = -1,
+    stereoLeft = -1,
     stereoCenter = 0,
-    stereoRight  = 1
+    stereoRight = 1
 };
 
 extern StereoMode stereomode;
 extern StereoMode newstereomode;
 extern float stereoseparation;
-extern bool  stereoreverse;
+extern bool stereoreverse;
 
 bool CanInitStereo(StereoMode mode);
 void InitStereo(StereoMode mode);

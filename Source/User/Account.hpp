@@ -26,13 +26,15 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include <string>
 #include <vector>
 
-struct CampaignProgress {
+struct CampaignProgress
+{
     int highscore;
     float fasttime;
     int score;
     float time;
     std::vector<int> choices;
-    CampaignProgress() {
+    CampaignProgress()
+    {
         highscore = 0;
         fasttime = 0;
         score = 0;
@@ -63,52 +65,66 @@ public:
 
     // getter and setters
     int getDifficulty();
-    void setDifficulty(int i) {
+    void setDifficulty(int i)
+    {
         difficulty = i;
     };
-    const std::string& getName() {
+    const std::string& getName()
+    {
         return name;
     };
-    int getCampaignScore() {
+    int getCampaignScore()
+    {
         return campaignProgress[currentCampaign].score;
     };
-    int getCampaignChoicesMade() {
+    int getCampaignChoicesMade()
+    {
         return campaignProgress[currentCampaign].choices.size();
     };
-    int getCampaignChoice(int i) {
+    int getCampaignChoice(int i)
+    {
         return campaignProgress[currentCampaign].choices[i];
     };
-    void setCampaignScore(int s) {
+    void setCampaignScore(int s)
+    {
         campaignProgress[currentCampaign].score = s;
         if (s > campaignProgress[currentCampaign].highscore) {
             campaignProgress[currentCampaign].highscore = s;
         }
     };
-    void setCampaignFinalTime(float t) {
+    void setCampaignFinalTime(float t)
+    {
         campaignProgress[currentCampaign].time = t;
         if ((t < campaignProgress[currentCampaign].fasttime) || ((campaignProgress[currentCampaign].fasttime == 0) && (t != 0))) {
             campaignProgress[currentCampaign].fasttime = t;
         }
     };
-    float getCampaignFasttime() {
+    float getCampaignFasttime()
+    {
         return campaignProgress[currentCampaign].fasttime;
     };
-    void resetFasttime() {
+    void resetFasttime()
+    {
         campaignProgress[currentCampaign].fasttime = 0;
     };
-    int getCampaignHighScore() {
+    int getCampaignHighScore()
+    {
         return campaignProgress[currentCampaign].highscore;
     };
-    int getHighScore(int i) {
+    int getHighScore(int i)
+    {
         return highscore[i];
     };
-    float getFastTime(int i) {
+    float getFastTime(int i)
+    {
         return fasttime[i];
     };
-    int getProgress() {
+    int getProgress()
+    {
         return progress;
     };
-    std::string getCurrentCampaign() {
+    std::string getCurrentCampaign()
+    {
         return currentCampaign;
     };
     void setCurrentCampaign(const std::string& name);

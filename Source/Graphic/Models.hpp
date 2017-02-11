@@ -22,8 +22,8 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #define _MODELS_HPP_
 
 #include "Environment/Terrain.hpp"
-#include "Graphic/gamegl.hpp"
 #include "Graphic/Texture.hpp"
+#include "Graphic/gamegl.hpp"
 #include "Math/XYZ.hpp"
 #include "Utils/binio.h"
 
@@ -35,9 +35,10 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Textures List
 //
-typedef struct {
+typedef struct
+{
     long xsz, ysz;
-    GLubyte *txt;
+    GLubyte* txt;
 } ModelTexture;
 
 //
@@ -96,15 +97,15 @@ public:
     Model();
     ~Model();
     void DeleteDecal(int which);
-    void MakeDecal(decal_type atype, XYZ *where, float *size, float *opacity, float *rotation);
+    void MakeDecal(decal_type atype, XYZ* where, float* size, float* opacity, float* rotation);
     void MakeDecal(decal_type atype, XYZ where, float size, float opacity, float rotation);
     const XYZ& getTriangleVertex(unsigned triangleId, unsigned vertexId) const;
     void drawdecals(Texture shadowtexture, Texture bloodtexture, Texture bloodtexture2, Texture breaktexture);
-    int SphereCheck(XYZ *p1, float radius, XYZ *p, XYZ *move, float *rotate);
-    int SphereCheckPossible(XYZ *p1, float radius, XYZ *move, float *rotate);
-    int LineCheck(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate);
-    int LineCheckPossible(XYZ *p1, XYZ *p2, XYZ *p, XYZ *move, float *rotate);
-    int LineCheckSlidePossible(XYZ *p1, XYZ *p2, XYZ *move, float *rotate);
+    int SphereCheck(XYZ* p1, float radius, XYZ* p, XYZ* move, float* rotate);
+    int SphereCheckPossible(XYZ* p1, float radius, XYZ* move, float* rotate);
+    int LineCheck(XYZ* p1, XYZ* p2, XYZ* p, XYZ* move, float* rotate);
+    int LineCheckPossible(XYZ* p1, XYZ* p2, XYZ* p, XYZ* move, float* rotate);
+    int LineCheckSlidePossible(XYZ* p1, XYZ* p2, XYZ* move, float* rotate);
     void UpdateVertexArray();
     void UpdateVertexArrayNoTex();
     void UpdateVertexArrayNoTexNoNorm();

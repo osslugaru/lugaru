@@ -26,22 +26,22 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Environment/Lights.hpp"
 #include "Environment/Skybox.hpp"
 #include "Environment/Terrain.hpp"
-#include "Graphic/gamegl.hpp"
 #include "Graphic/Models.hpp"
 #include "Graphic/Sprite.hpp"
 #include "Graphic/Stereo.hpp"
 #include "Graphic/Text.hpp"
 #include "Graphic/Texture.hpp"
+#include "Graphic/gamegl.hpp"
 #include "Objects/Object.hpp"
 #include "Objects/Person.hpp"
 #include "Objects/Weapons.hpp"
 #include "Thirdparty/optionparser.h"
 #include "User/Account.hpp"
-#include "Utils/binio.h"
 #include "Utils/ImageIO.hpp"
+#include "Utils/binio.h"
 
-#include <fstream>
 #include <SDL.h>
+#include <fstream>
 
 #define NB_CAMPAIGN_MENU_ITEM 7
 
@@ -70,7 +70,7 @@ extern float deltah, deltav;
 extern int mousecoordh, mousecoordv;
 extern int oldmousecoordh, oldmousecoordv;
 extern float yaw, pitch;
-extern SkyBox *skybox;
+extern SkyBox* skybox;
 extern bool cameramode;
 extern bool firstLoadDone;
 
@@ -97,8 +97,8 @@ extern int musictype;
 extern XYZ mapcenter;
 extern float mapradius;
 
-extern Text *text;
-extern Text *textmono;
+extern Text* text;
+extern Text* textmono;
 extern float fps;
 
 extern bool editorenabled;
@@ -168,43 +168,69 @@ float pitchTo(XYZ start, XYZ end);
 float sq(float n);
 
 #ifndef __forceinline
-#  ifdef __GNUC__
-#    define __forceinline inline __attribute__((always_inline))
-#  endif
+#ifdef __GNUC__
+#define __forceinline inline __attribute__((always_inline))
+#endif
 #endif
 
 static __forceinline void swap_gl_buffers(void)
 {
-    extern SDL_Window *sdlwindow;
+    extern SDL_Window* sdlwindow;
     SDL_GL_SwapWindow(sdlwindow);
 
     // try to limit this to 60fps, even if vsync fails.
     Uint32 now;
     static Uint32 frameticks = 0;
     const Uint32 endticks = (frameticks + 16);
-    while ((now = SDL_GetTicks()) < endticks) { /* spin. */ }
+    while ((now = SDL_GetTicks()) < endticks) { /* spin. */
+    }
     frameticks = now;
 }
 
-enum maptypes {
-    mapkilleveryone, mapgosomewhere,
-    mapkillsomeone, mapkillmost // These two are unused
+enum maptypes
+{
+    mapkilleveryone,
+    mapgosomewhere,
+    mapkillsomeone,
+    mapkillmost // These two are unused
 };
 
-enum pathtypes {wpkeepwalking, wppause};
+enum pathtypes
+{
+    wpkeepwalking,
+    wppause
+};
 
-extern const char *pathtypenames[2];
+extern const char* pathtypenames[2];
 
-enum editortypes {typeactive, typesitting, typesittingwall, typesleeping,
-                  typedead1, typedead2, typedead3, typedead4
-                 };
+enum editortypes
+{
+    typeactive,
+    typesitting,
+    typesittingwall,
+    typesleeping,
+    typedead1,
+    typedead2,
+    typedead3,
+    typedead4
+};
 
-extern const char *editortypenames[8];
+extern const char* editortypenames[8];
 
-SDL_bool sdlEventProc(const SDL_Event &e);
+SDL_bool sdlEventProc(const SDL_Event& e);
 
-
-enum  optionIndex { UNKNOWN, VERSION, HELP, FULLSCREEN, NOMOUSEGRAB, SOUND, OPENALINFO, SHOWRESOLUTIONS, DEVTOOLS };
+enum optionIndex
+{
+    UNKNOWN,
+    VERSION,
+    HELP,
+    FULLSCREEN,
+    NOMOUSEGRAB,
+    SOUND,
+    OPENALINFO,
+    SHOWRESOLUTIONS,
+    DEVTOOLS
+};
 /* Number of options + 1 */
 const int commandLineOptionsNumber = 10;
 

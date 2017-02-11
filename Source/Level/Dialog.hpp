@@ -30,7 +30,7 @@ class DialogScene
 {
 public:
     DialogScene(FILE* tfile);
-    DialogScene(ifstream &ipstream);
+    DialogScene(ifstream& ipstream);
     void save(FILE* tfile);
 
     int location;

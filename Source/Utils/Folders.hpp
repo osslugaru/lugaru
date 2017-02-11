@@ -27,15 +27,17 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #define DATA_DIR "Data"
 #endif
 
-struct FileNotFoundException: public std::exception
+struct FileNotFoundException : public std::exception
 {
     std::string errorText;
 
-    FileNotFoundException (const std::string& filename)
-    : errorText(filename + " could not be found")
-    {}
+    FileNotFoundException(const std::string& filename)
+        : errorText(filename + " could not be found")
+    {
+    }
 
-    const char * what () const throw () {
+    const char* what() const throw()
+    {
         return errorText.c_str();
     }
 };
@@ -60,11 +62,15 @@ public:
 
     /* Returns full path for a game resource */
     static inline std::string getResourcePath(const std::string& filepath)
-    { return dataDir + '/' + filepath; }
+    {
+        return dataDir + '/' + filepath;
+    }
 
     /** Returns full path for user progress save */
     static inline std::string getUserSavePath()
-    { return getUserDataPath() + "/users"; }
+    {
+        return getUserDataPath() + "/users";
+    }
 
     static bool makeDirectory(const std::string& path);
 

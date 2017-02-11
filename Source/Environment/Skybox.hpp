@@ -21,8 +21,8 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef _SKYBOX_HPP_
 #define _SKYBOX_HPP_
 
-#include "Graphic/gamegl.hpp"
 #include "Graphic/Texture.hpp"
+#include "Graphic/gamegl.hpp"
 #include "Math/XYZ.hpp"
 #include "Math/XYZ.hpp"
 #include "Utils/ImageIO.hpp"
@@ -33,7 +33,7 @@ public:
     Texture front, left, back, right, up, down;
 
     void load(const std::string& ffront, const std::string& fleft, const std::string& fback,
-              const std::string& fright, const std::string& fup,   const std::string& fdown);
+              const std::string& fright, const std::string& fup, const std::string& fdown);
     void draw();
 
     SkyBox() {}

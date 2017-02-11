@@ -23,10 +23,10 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Environment/Lights.hpp"
 #include "Environment/Terrain.hpp"
-#include "Graphic/gamegl.hpp"
 #include "Graphic/Models.hpp"
 #include "Graphic/Sprite.hpp"
 #include "Graphic/Texture.hpp"
+#include "Graphic/gamegl.hpp"
 #include "Math/Frustum.hpp"
 #include "Math/XYZ.hpp"
 #include "Utils/ImageIO.hpp"
@@ -39,7 +39,8 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #define max_objects 300
 
-enum object_type {
+enum object_type
+{
     boxtype = 0,
     weirdtype = 1,
     spiketype = 2,
@@ -54,7 +55,6 @@ enum object_type {
     cooltype = 12,
     firetype = 13
 };
-
 
 class Object
 {
@@ -94,7 +94,7 @@ public:
     static void ComputeRadius();
     static void AddObjectsToTerrain();
     static void LoadObjectsFromFile(FILE* tfile, bool skip);
-    static void SphereCheckPossible(XYZ *p1, float radius);
+    static void SphereCheckPossible(XYZ* p1, float radius);
     static void DeleteObject(int which);
     static void MakeObject(int atype, XYZ where, float ayaw, float apitch, float ascale);
     static void Draw();
@@ -114,4 +114,3 @@ private:
 };
 
 #endif
-

@@ -25,13 +25,28 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <vector>
 
-enum bodypart {
-    head, neck,
-    leftshoulder,  leftelbow,  leftwrist,  lefthand,
-    rightshoulder, rightelbow, rightwrist, righthand,
-    abdomen, lefthip, righthip, groin,
-    leftknee,  leftankle,  leftfoot,
-    rightknee, rightankle, rightfoot
+enum bodypart
+{
+    head,
+    neck,
+    leftshoulder,
+    leftelbow,
+    leftwrist,
+    lefthand,
+    rightshoulder,
+    rightelbow,
+    rightwrist,
+    righthand,
+    abdomen,
+    lefthip,
+    righthip,
+    groin,
+    leftknee,
+    leftankle,
+    leftfoot,
+    rightknee,
+    rightankle,
+    rightfoot
 };
 
 class Joint

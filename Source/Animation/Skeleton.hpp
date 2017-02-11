@@ -24,9 +24,9 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Animation/Animation.hpp"
 #include "Animation/Joint.hpp"
 #include "Animation/Muscle.hpp"
-#include "Graphic/gamegl.hpp"
 #include "Graphic/Models.hpp"
 #include "Graphic/Sprite.hpp"
+#include "Graphic/gamegl.hpp"
 #include "Math/XYZ.hpp"
 #include "Objects/Object.hpp"
 #include "Utils/binio.h"
@@ -79,8 +79,8 @@ public:
     bool freefall;
 
     void FindForwards();
-    float DoConstraints(XYZ *coords, float *scale);
-    void DoGravity(float *scale);
+    float DoConstraints(XYZ* coords, float* scale);
+    void DoGravity(float* scale);
     void FindRotationJoint(int which);
     void FindRotationJointSameTwist(int which);
     void FindRotationMuscle(int which, int animation);
@@ -94,7 +94,6 @@ private:
     inline Joint& joint(int bodypart) { return joints[jointlabels[bodypart]]; }
     inline XYZ& jointPos(int bodypart) { return joint(bodypart).position; }
     inline XYZ& jointVel(int bodypart) { return joint(bodypart).velocity; }
-
 };
 
 #endif

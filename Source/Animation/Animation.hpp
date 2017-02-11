@@ -24,29 +24,39 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <vector>
 
-enum anim_attack_type {
-    neutral, normalattack, reversed, reversal
+enum anim_attack_type
+{
+    neutral,
+    normalattack,
+    reversed,
+    reversal
 };
 
-enum anim_height_type {
-    lowheight, middleheight, highheight
+enum anim_height_type
+{
+    lowheight,
+    middleheight,
+    highheight
 };
 
-enum animation_type {
+enum animation_type
+{
 #define DECLARE_ANIM(id, ...) id,
 #include "Animation.def"
 #undef DECLARE_ANIM
     animation_count
 };
 
-enum animation_bit_offsets {
+enum animation_bit_offsets
+{
 #define DECLARE_ANIM_BIT(bit) o_##bit,
 #include "Animation.def"
 #undef DECLARE_ANIM_BIT
     animation_bit_count
 };
 
-enum animation_bits_def {
+enum animation_bits_def
+{
 #define DECLARE_ANIM_BIT(bit) bit = 1 << o_##bit,
 #include "Animation.def"
 #undef DECLARE_ANIM_BIT
@@ -60,7 +70,7 @@ static const int animation_bits[animation_count] = {
 
 struct AnimationFrameJointInfo
 {
-    XYZ  position;
+    XYZ position;
     float twist;
     float twist2;
     bool onground;

@@ -26,7 +26,8 @@ class Model;
 
 #include "Math/XYZ.hpp"
 
-enum decal_type {
+enum decal_type
+{
     shadowdecal = 0,
     footprintdecal = 1,
     blooddecal = 2,

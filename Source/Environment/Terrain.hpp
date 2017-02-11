@@ -23,16 +23,16 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Environment/Lights.hpp"
 #include "Graphic/Decal.hpp"
-#include "Graphic/gamegl.hpp"
 #include "Graphic/Texture.hpp"
+#include "Graphic/gamegl.hpp"
 #include "Math/Frustum.hpp"
 #include "Math/XYZ.hpp"
 #include "Utils/ImageIO.hpp"
 
-#define max_terrain_size        256
-#define curr_terrain_size       size
-#define subdivision             64
-#define max_patch_elements      (max_terrain_size/subdivision)*(max_terrain_size/subdivision)*54
+#define max_terrain_size 256
+#define curr_terrain_size size
+#define subdivision 64
+#define max_patch_elements (max_terrain_size / subdivision) * (max_terrain_size / subdivision) * 54
 
 #define allfirst 0
 #define mixed 1
@@ -74,7 +74,7 @@ public:
     int numtris[subdivision][subdivision];
     int textureness[subdivision][subdivision];
 
-    GLfloat vArray[(max_patch_elements)*subdivision*subdivision];
+    GLfloat vArray[(max_patch_elements)*subdivision * subdivision];
 
     bool visible[subdivision][subdivision];
     float avgypatch[subdivision][subdivision];
@@ -91,7 +91,7 @@ public:
     void DeleteDecal(int which);
     void MakeDecal(decal_type type, XYZ where, float size, float opacity, float rotation);
     void MakeDecalLock(decal_type type, XYZ where, int whichx, int whichy, float size, float opacity, float rotation);
-    int lineTerrain(XYZ p1, XYZ p2, XYZ *p);
+    int lineTerrain(XYZ p1, XYZ p2, XYZ* p);
     float getHeight(float pointx, float pointz);
     float getOpacity(float pointx, float pointz);
     XYZ getLighting(float pointx, float pointz);

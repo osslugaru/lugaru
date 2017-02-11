@@ -31,29 +31,27 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include <string>
 
 #ifdef WIN32
-  #define WIN32_LEAN_AND_MEAN
-  #define Polygon WinPolygon
-  #include <windows.h>
-  #undef Polygon
+#define WIN32_LEAN_AND_MEAN
+#define Polygon WinPolygon
+#include <windows.h>
+#undef Polygon
 #endif
 
 #define GL_GLEXT_PROTOTYPES 1
 #ifdef __APPLE__
-  #include <OpenGL/gl.h>
-  #include <OpenGL/glu.h>
-  #include <OpenGL/glext.h>
+#include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
+#include <OpenGL/glu.h>
 #else
-  #include <GL/gl.h>
-  #include <GL/glu.h>
-  #include <GL/glext.h>
+#include <GL/gl.h>
+#include <GL/glext.h>
+#include <GL/glu.h>
 #endif
 
 using namespace std;
 
 /* !!! FIXME: until we replace logger better. --ryan. */
 #define LOGFUNC
-void LOG(const std::string &fmt, ...);
+void LOG(const std::string& fmt, ...);
 
 #endif
-
-

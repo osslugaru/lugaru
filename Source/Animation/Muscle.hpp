@@ -25,7 +25,12 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <vector>
 
-enum muscle_type {boneconnect, constraint, muscle};
+enum muscle_type
+{
+    boneconnect,
+    constraint,
+    muscle
+};
 
 class Muscle
 {

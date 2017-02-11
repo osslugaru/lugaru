@@ -23,8 +23,8 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Environment/Lights.hpp"
 #include "Environment/Terrain.hpp"
-#include "Graphic/gamegl.hpp"
 #include "Graphic/Texture.hpp"
+#include "Graphic/gamegl.hpp"
 #include "Math/Frustum.hpp"
 #include "Math/XYZ.hpp"
 #include "Objects/Object.hpp"
@@ -34,7 +34,8 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #define max_sprites 20000
 
-enum {
+enum
+{
     cloudsprite = 0,
     bloodsprite,
     flamesprite,
@@ -74,16 +75,20 @@ public:
     static void DeleteSprite(int which);
     static void MakeSprite(int atype, XYZ where, XYZ avelocity, float red, float green, float blue, float asize, float aopacity);
     static void Draw();
-    static void deleteSprites() {
+    static void deleteSprites()
+    {
         sprites.clear();
     }
-    static void setLastSpriteSpecial(int s) {
+    static void setLastSpriteSpecial(int s)
+    {
         sprites.back()->special = s;
     }
-    static void setLastSpriteSpeed(int s) {
+    static void setLastSpriteSpeed(int s)
+    {
         sprites.back()->speed = s;
     }
-    static void setLastSpriteAlivetime(float al) {
+    static void setLastSpriteAlivetime(float al)
+    {
         sprites.back()->alivetime = al;
     }
 

@@ -24,9 +24,9 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Graphic/gamegl.hpp"
 
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 
 class TextureRes
 {
@@ -49,15 +49,19 @@ public:
 
     /* Make sure TextureRes never gets copied */
     TextureRes(TextureRes const& other) = delete;
-    TextureRes & operator=(TextureRes const& other) = delete;
+    TextureRes& operator=(TextureRes const& other) = delete;
 };
 
 class Texture
 {
 private:
     std::shared_ptr<TextureRes> tex;
+
 public:
-    inline Texture(): tex(nullptr) {}
+    inline Texture()
+        : tex(nullptr)
+    {
+    }
     void load(const string& filename, bool hasMipmap);
     void load(const string& filename, bool hasMipmap, GLubyte* array, int* skinsizep);
     void bind();
