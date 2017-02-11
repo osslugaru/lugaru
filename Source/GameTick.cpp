@@ -1022,20 +1022,23 @@ void Game::ProcessInput()
         printf("Stereo separation increased to %f\n", stereoseparation);
     }
 
-    /* Console */
-    if (Input::isKeyPressed(consolekey)) {
-        console = !console;
-        if (console) {
-            OPENAL_SetFrequency(OPENAL_ALL);
-        } else {
-            freeze = 0;
-            waiting = false;
-        }
-    }
-
     /* Devtools */
-    if (devtools && !mainmenu && !console) {
-        ProcessDevInput();
+    if (devtools && !mainmenu) {
+        /* Console */
+        if (Input::isKeyPressed(consolekey)) {
+            console = !console;
+            if (console) {
+                OPENAL_SetFrequency(OPENAL_ALL);
+            } else {
+                freeze = 0;
+                waiting = false;
+            }
+        }
+
+        /* Other devtools, disabled when the console is shown */
+        if (!console) {
+            ProcessDevInput();
+        }
     }
 }
 
