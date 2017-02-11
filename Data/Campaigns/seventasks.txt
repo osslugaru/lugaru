@@ -160,3 +160,7 @@ ChooseNext: 1
 NumNext: 0
 LocationX: 400
 LocationY: 400
+
+EndText:Finally a true Seneschal!
+Your vow of silence is lifted, and your
+assassination skills are beyond question.

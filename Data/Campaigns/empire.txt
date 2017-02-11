@@ -367,3 +367,7 @@ ChooseNext: 1
 NumNext: 0
 LocationX: 130
 LocationY: 350
+
+EndText:At last, the Empire is defeated!
+While Ash, avenged, mourns the loss of Leila,
+the reconstruction of Lugaru's island begins...

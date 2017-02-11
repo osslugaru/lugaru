@@ -277,3 +277,7 @@ ChooseNext: 1
 NumNext: 0
 LocationX: 343
 LocationY: 258
+
+EndText:Congratulations!
+You beat the Temple campaign and got the right
+to propose a cool ending text upstream! :D

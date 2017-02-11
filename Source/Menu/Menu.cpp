@@ -503,9 +503,9 @@ void Menu::Load()
             addButton(numchallengelevels, "Back", 10, 10);
             break;
         case 10: {
-            addLabel(0, campaignEndText[0], 220, 330);
-            addLabel(1, campaignEndText[1], 140, 300);
-            addLabel(2, campaignEndText[2], 110, 270);
+            addLabel(0, campaignEndText[0], 80, 330);
+            addLabel(1, campaignEndText[1], 80, 300);
+            addLabel(2, campaignEndText[2], 80, 270);
             addButton(3, "Back", 10, 10);
             addLabel(4, string("Your score:         ") + to_string((int)Account::active().getCampaignScore()), 190, 200);
             addLabel(5, string("Highest score:      ") + to_string((int)Account::active().getCampaignHighScore()), 190, 180);
