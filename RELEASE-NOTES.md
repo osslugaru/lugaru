@@ -6,7 +6,60 @@ released by the OSS Lugaru team, in reverse chronological order.
 The numbers preceded by a hash (e.g. #9) reference GitLab issue numbers on
 the [OSS Lugaru repository](https://gitlab.com/osslugaru/lugaru).
 
-## Version 1.1
+## Version 1.2 - 11 February 2017
+
+Second release of the open source Lugaru project! It continues the refactoring
+work to make the old Lugaru code more modular and easier to maintain and
+extend. A particular attention was given to the development tools (in game
+editor) to improve the modability of the game.
+
+### Highlights
+
+- Keep track of and display the game's version number in the console and
+  main menu.
+- Many fixes and improvements to development tools, most of them should now
+  work as described in the documentation.
+- New monospace font for the console, more readable.
+- Configurable campaign end message.
+- Various fixes to mod levels and campaigns.
+- A lot of behind-the-scenes refactoring that should help bring more
+  interesting changes in future releases.
+
+### Detailed changes
+
+**Engine:**
+
+- Fix displaying the localized key names instead of the QWERTY ones (#62)
+- Fixed bushes appearing above ground on first level loaded
+- Add a monospace font for the console text to increase legibility (#23)
+- Devtools: improve handling of `map` command to avoid crashes (#23)
+- Devtools: prevent the `clothes` command from saving invalid paths (#59)
+  * Added `clotheslist` command to inspect player clothes
+- Devtools: reviewed and fixed conflicting hotkeys and crashes (#73, #89)
+- Devtools: fix regression from 1.1 in changing player type (wolf/rabbit) (#88)
+  * Some bindings were changed, see `Docs/DEVTOOLS.txt` for the updated list.
+- Campaign end message now configurable in the campaign definition file (#60)
+- Fix long dialog lines printed out of the dialog area (#86)
+- Lots of code refactoring and modernisation, fixed warnings
+- Many bug fixes
+
+**Game content:**
+
+- Fix incorrect number of levels in the Seven Tasks campaign file (caused a
+  crash on Win32) (#70)
+- Fix crash in "Temple of the Wind" (sventemple) and "Snowy Grotto"
+  (svengrotto) levels (#76, #79)
+- Add and fix missing black fur texture for Ash in the Empire campaign (#84)
+
+**Project:**
+
+- Applied `clang-format` code formatting to the source, using a custom
+  Mozilla-based style (#18, !14)
+- Start properly versioning the game with version number displayed in the menu
+  and console (#82, !15)
+
+
+## Version 1.1 - 14 December 2016
 
 First release of the open source Lugaru project! It contains most commits
 made from various contributors since the open sourcing in 2010, and is
