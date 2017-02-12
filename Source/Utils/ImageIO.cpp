@@ -122,7 +122,7 @@ static bool load_jpg(const char* file_name, ImageRec& tex)
     (void)jpeg_read_header(&cinfo, TRUE);
 
     cinfo.out_color_space = JCS_RGB;
-    cinfo.quantize_colors = 0;
+    cinfo.quantize_colors = FALSE;
     (void)jpeg_calc_output_dimensions(&cinfo);
     (void)jpeg_start_decompress(&cinfo);
 
