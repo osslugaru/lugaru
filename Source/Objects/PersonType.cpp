@@ -90,6 +90,7 @@ void PersonType::Load()
     types[rabbittype].animLandingHard = landhardanim;
     types[rabbittype].animFightIdle = fightidleanim;
     types[rabbittype].animBounceIdle = bounceidleanim;
+    types[rabbittype].animTalkIdle = talkidleanim;
 
     types[rabbittype].soundsAttack[0] = rabbitattacksound;
     types[rabbittype].soundsAttack[1] = rabbitattack2sound;
