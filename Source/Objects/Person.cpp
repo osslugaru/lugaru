@@ -506,7 +506,7 @@ void Person::CheckKick()
     }
 
     if (Animation::animations[victim->animTarget].height != lowheight) {
-        float damagemult = (creature == wolftype ? 2.5 : 1.) * power * power;
+        float damagemult = PersonType::types[creature].power * power * power;
         XYZ relative = velocity;
         relative.y = 0;
         Normalise(&relative);
@@ -2440,10 +2440,7 @@ void Person::DoAnimations()
             }
 
             //Move impacts
-            float damagemult = 1 * power;
-            if (creature == wolftype) {
-                damagemult = 2.5 * power;
-            }
+            float damagemult = PersonType::types[creature].power * power;
             if (hasvictim) {
                 damagemult /= victim->damagetolerance / 200;
             }

@@ -75,6 +75,8 @@ void PersonType::Load()
     types[wolftype].skins[1] = "Textures/FurWolfDark.jpg";
     types[wolftype].skins[2] = "Textures/FurWolfSnow.jpg";
 
+    types[wolftype].power = 2.5;
+
     /* Rabbit */
     types[rabbittype].proportions[0] = 1.2;
     types[rabbittype].proportions[1] = 1.05;
@@ -123,4 +125,6 @@ void PersonType::Load()
     types[rabbittype].skins[7] = "Textures/FurChocolate.jpg";
     types[rabbittype].skins[8] = "Textures/FurBlackWhite.jpg";
     types[rabbittype].skins[9] = "Textures/FurBrownWhite.jpg";
+
+    types[rabbittype].power = 1;
 }

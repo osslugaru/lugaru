@@ -57,6 +57,8 @@ public:
 
     std::vector<std::string> skins;
 
+    float power;
+
     GLubyte bloodText[512 * 512 * 3] = { 0 };
 
     PersonType();
