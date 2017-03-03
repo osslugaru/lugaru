@@ -130,30 +130,24 @@ Person::Person()
     , skiddingdelay(0)
     , deathbleeding(0)
     , tempdeltav(0)
-    ,
 
-    damagetolerance(200)
+    , damagetolerance(0)
     , damage(0)
     , permanentdamage(0)
     , superpermanentdamage(0)
     , lastcollide(0)
     , dead(0)
-    ,
 
-    jumppower(5)
+    , jumppower(5)
     , onground(false)
-    ,
 
-    wentforweapon(0)
-    ,
+    , wentforweapon(0)
 
-    calcrot(false)
-    ,
+    , calcrot(false)
 
-    facing()
-    ,
+    , facing()
 
-    bleeding(0)
+    , bleeding(0)
     , bleedx(0)
     , bleedy(0)
     , direction(0)
@@ -353,6 +347,7 @@ Person::Person()
 
     jumpclimb(false)
 {
+    damagetolerance = PersonType::types[creature].defaultDamageTolerance;
     setProportions(1, 1, 1, 1);
 }
 
@@ -435,20 +430,23 @@ Person::Person(FILE* tfile, int mapvers, unsigned i)
 
     loaded = true;
 
-    if (creature == wolftype) {
-        damagetolerance = 300;
-    }
+    damagetolerance = PersonType::types[creature].defaultDamageTolerance;
 
     if (scale < 0) {
-        if (creature == wolftype) {
-            scale = .23;
-        } else {
-            scale = .2;
-        }
+        scale = PersonType::types[creature].defaultScale;
     }
 
     oldcoords = coords;
     realoldcoords = coords;
+}
+
+void Person::changeCreatureType(person_type type)
+{
+    creature = type;
+    whichskin = 0;
+    skeletonLoad(type == rabbittype);
+    scale = PersonType::types[creature].defaultScale;
+    damagetolerance = PersonType::types[creature].defaultDamageTolerance;
 }
 
 void Person::skeletonLoad(bool clothes)

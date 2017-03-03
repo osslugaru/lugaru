@@ -1054,23 +1054,26 @@ void Game::ProcessDevInput()
             editorenabled = !editorenabled;
             if (editorenabled) {
                 Person::players[0]->damagetolerance = 100000;
+                Person::players[0]->damage = 0;
+                Person::players[0]->permanentdamage = 0;
+                Person::players[0]->superpermanentdamage = 0;
+                Person::players[0]->burnt = 0;
+                Person::players[0]->bloodloss = 0;
+                Person::players[0]->deathbleeding = 0;
             } else {
                 Person::players[0]->damagetolerance = 200;
             }
-            Person::players[0]->damage = 0; // these lines were in both if and else, but I think they would better fit in the if
-            Person::players[0]->permanentdamage = 0;
-            Person::players[0]->superpermanentdamage = 0;
-            Person::players[0]->bloodloss = 0;
-            Person::players[0]->deathbleeding = 0;
         }
 
         /* Nullify damage and give 200000 health */
         if (Input::isKeyPressed(SDL_SCANCODE_H)) {
             Person::players[0]->damagetolerance = 200000;
             Person::players[0]->damage = 0;
-            Person::players[0]->burnt = 0;
             Person::players[0]->permanentdamage = 0;
             Person::players[0]->superpermanentdamage = 0;
+            Person::players[0]->burnt = 0;
+            Person::players[0]->bloodloss = 0;
+            Person::players[0]->deathbleeding = 0;
         }
 
         /* Change environment */
@@ -1210,22 +1213,8 @@ void Game::ProcessDevInput()
             }
 
             if (closest >= 0) {
-                if (Person::players[closest]->creature == rabbittype) {
-                    Person::players[closest]->creature = wolftype;
-                    Person::players[closest]->whichskin = 0;
-                    Person::players[closest]->skeletonLoad();
-                    Person::players[closest]->scale *= 1.15;
-
-                    Person::players[closest]->damagetolerance = 300;
-                } else { // wolftype
-                    Person::players[closest]->creature = rabbittype;
-                    Person::players[closest]->whichskin = 0;
-                    Person::players[closest]->skeletonLoad(true);
-
-                    Person::players[closest]->scale /= 1.15;
-
-                    Person::players[closest]->damagetolerance = 200;
-                }
+                person_type nextType = static_cast<person_type>((Person::players[closest]->creature + 1) % PersonType::types.size());
+                Person::players[closest]->changeCreatureType(nextType);
             }
         }
 

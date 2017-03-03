@@ -76,6 +76,8 @@ void PersonType::Load()
     types[wolftype].skins[2] = "Textures/FurWolfSnow.jpg";
 
     types[wolftype].power = 2.5;
+    types[wolftype].defaultDamageTolerance = 300;
+    types[wolftype].defaultScale = .23;
 
     /* Rabbit */
     types[rabbittype].proportions[0] = 1.2;
@@ -127,4 +129,6 @@ void PersonType::Load()
     types[rabbittype].skins[9] = "Textures/FurBrownWhite.jpg";
 
     types[rabbittype].power = 1;
+    types[rabbittype].defaultDamageTolerance = 200;
+    types[rabbittype].defaultScale = .2;
 }

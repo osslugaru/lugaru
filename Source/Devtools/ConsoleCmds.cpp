@@ -470,20 +470,14 @@ void ch_cellophane(const char*)
 
 void ch_funnybunny(const char*)
 {
-    Person::players[0]->creature = rabbittype;
-    Person::players[0]->skeletonLoad(true);
-    Person::players[0]->scale = .2;
+    Person::players[0]->changeCreatureType(rabbittype);
     Person::players[0]->headless = 0;
-    Person::players[0]->damagetolerance = 200;
     set_proportion(0, "1 1 1 1");
 }
 
 void ch_wolfie(const char*)
 {
-    Person::players[0]->creature = wolftype;
-    Person::players[0]->skeletonLoad();
-    Person::players[0]->scale = .23;
-    Person::players[0]->damagetolerance = 300;
+    Person::players[0]->changeCreatureType(wolftype);
     set_proportion(0, "1 1 1 1");
 }
 
@@ -650,11 +644,7 @@ void ch_default(const char*)
     Person::players[0]->metallow = 1;
     Person::players[0]->power = 1;
     Person::players[0]->speedmult = 1;
-    if (Person::players[0]->creature == wolftype) {
-        Person::players[0]->scale = .23;
-    } else if (Person::players[0]->creature == rabbittype) {
-        Person::players[0]->scale = .2;
-    }
+    Person::players[0]->scale = PersonType::types[Person::players[0]->creature].defaultScale;
 
     Person::players[0]->setProportions(1, 1, 1, 1);
 

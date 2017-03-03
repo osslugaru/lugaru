@@ -58,6 +58,8 @@ public:
     std::vector<std::string> skins;
 
     float power;
+    unsigned int defaultDamageTolerance;
+    float defaultScale;
 
     GLubyte bloodText[512 * 512 * 3] = { 0 };
 

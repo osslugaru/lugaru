@@ -331,6 +331,8 @@ public:
     float getProportion(int part) const;
     XYZ getProportionXYZ(int part) const;
 
+    void changeCreatureType(person_type type);
+
     void CheckKick();
     void CatchFire();
     void DoBlood(float howmuch, int which);
