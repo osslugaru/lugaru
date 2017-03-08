@@ -234,7 +234,7 @@ enum optionIndex
 /* Number of options + 1 */
 const int commandLineOptionsNumber = 10;
 
-extern const option::Descriptor usage[13];
+extern const option::Descriptor usage[];
 
 extern option::Option commandLineOptions[commandLineOptionsNumber];
 extern option::Option* commandLineOptionsBuffer;
