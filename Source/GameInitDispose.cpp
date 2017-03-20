@@ -602,6 +602,8 @@ void Game::InitGame()
     Animation::loadAll();
 
     PersonType::Load();
+
+    Person::players.emplace_back(new Person());
 }
 
 void Game::LoadScreenTexture()

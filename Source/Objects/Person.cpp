@@ -72,7 +72,7 @@ extern float envsoundlife[30];
 
 extern XYZ windvector;
 
-std::vector<std::shared_ptr<Person>> Person::players(1, std::shared_ptr<Person>(new Person()));
+std::vector<std::shared_ptr<Person>> Person::players;
 
 Person::Person()
     : whichpatchx(0)
