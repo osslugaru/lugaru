@@ -840,13 +840,11 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
             } else {
                 Person::players[i]->damagetolerance = 200;
             }
-        }
 
-        Game::LoadingScreen();
+            Game::LoadingScreen();
 
-        Person::players[i]->tempanimation = Animation("Tempanim", lowheight, neutral);
+            Person::players[i]->tempanimation = Animation("Tempanim", lowheight, neutral);
 
-        if (i == 0) {
             Person::players[i]->headmorphness = 0;
             Person::players[i]->targetheadmorphness = 1;
             Person::players[i]->headmorphstart = 0;
@@ -1447,8 +1445,6 @@ void Game::ProcessDevInput()
             Person::players.back()->realoldcoords = Person::players.back()->coords;
 
             Person::players.back()->setProportions(1, 1, 1, 1);
-
-            Person::players.back()->tempanimation = Animation("Tempanim", lowheight, neutral);
 
             Person::players.back()->damagetolerance = 200;
 

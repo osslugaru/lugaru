@@ -336,16 +336,13 @@ Person::Person()
     , neckspurtdelay(0)
     , neckspurtparticledelay(0)
     , neckspurtamount(0)
-    ,
 
-    whichskin(0)
+    , whichskin(0)
     , rabbitkickragdoll(false)
-    ,
 
-    tempanimation()
-    ,
+    , tempanimation("Tempanim", lowheight, neutral)
 
-    jumpclimb(false)
+    , jumpclimb(false)
 {
     damagetolerance = PersonType::types[creature].defaultDamageTolerance;
     setProportions(1, 1, 1, 1);
