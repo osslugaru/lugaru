@@ -60,6 +60,7 @@ public:
     float power;
     unsigned int defaultDamageTolerance;
     float defaultScale;
+    bool hasClaws;
 
     GLubyte bloodText[512 * 512 * 3] = { 0 };
 

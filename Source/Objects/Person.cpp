@@ -2090,8 +2090,7 @@ void Person::DoAnimations()
                     if (victim->aitype == gethelptype) {
                         victim->DoDamage(victim->damagetolerance - victim->damage);
                     }
-                    //victim->DoDamage(30);
-                    if (creature == wolftype) {
+                    if (PersonType::types[creature].hasClaws) {
                         DoBloodBig(0, 255);
                         emit_sound_at(clawslicesound, victim->coords);
                         victim->spurt = 1;
@@ -2446,17 +2445,17 @@ void Person::DoAnimations()
                         if (id == 0) {
                             camerashake += .4;
                         }
-                        if (Random() % 2 || creature == wolftype) {
+                        if (Random() % 2 || PersonType::types[creature].hasClaws) {
                             victim->spurt = 1;
                             DoBlood(.2, 250);
-                            if (creature == wolftype) {
+                            if (PersonType::types[creature].hasClaws) {
                                 DoBloodBig(0, 250);
                             }
                         }
                         if (!Tutorial::active) {
                             emit_sound_at(heavyimpactsound, victim->coords, 128.);
                         }
-                        if (creature == wolftype) {
+                        if (PersonType::types[creature].hasClaws) {
                             emit_sound_at(clawslicesound, victim->coords, 128.);
                             victim->spurt = 1;
                             victim->DoBloodBig(2 / victim->armorhead, 175);
@@ -2484,14 +2483,14 @@ void Person::DoAnimations()
                         if (id == 0) {
                             camerashake += .4;
                         }
-                        if (Random() % 2 || creature == wolftype) {
+                        if (Random() % 2 || PersonType::types[creature].hasClaws) {
                             victim->spurt = 1;
-                            if (creature == wolftype) {
+                            if (PersonType::types[creature].hasClaws) {
                                 DoBloodBig(0, 235);
                             }
                         }
                         emit_sound_at(whooshhitsound, victim->coords);
-                        if (creature == wolftype) {
+                        if (PersonType::types[creature].hasClaws) {
                             emit_sound_at(clawslicesound, victim->coords, 128.);
                             victim->spurt = 1;
                             victim->DoBloodBig(2, 175);
@@ -2524,7 +2523,7 @@ void Person::DoAnimations()
                         if (!Tutorial::active) {
                             emit_sound_at(heavyimpactsound, victim->coords, 160.);
                         }
-                        if (creature == wolftype) {
+                        if (PersonType::types[creature].hasClaws) {
                             emit_sound_at(clawslicesound, victim->coords, 128.);
                             victim->spurt = 1;
                             victim->DoBloodBig(2 / victim->armorhead, 175);
@@ -2561,7 +2560,7 @@ void Person::DoAnimations()
                         if (!Tutorial::active) {
                             emit_sound_at(heavyimpactsound, victim->coords, 160.);
                         }
-                        if (creature == wolftype) {
+                        if (PersonType::types[creature].hasClaws) {
                             emit_sound_at(clawslicesound, victim->coords, 128.);
                             victim->spurt = 1;
                             victim->DoBloodBig(2 / victim->armorhead, 175);
@@ -3202,7 +3201,7 @@ void Person::DoAnimations()
                             if (id == 0) {
                                 camerashake += .4;
                             }
-                            if (Random() % 2 || creature == wolftype) {
+                            if (Random() % 2 || PersonType::types[creature].hasClaws) {
                                 victim->spurt = 1;
                             }
                             emit_sound_at(staffheadsound, victim->coords);
@@ -3237,7 +3236,7 @@ void Person::DoAnimations()
                             if (id == 0) {
                                 camerashake += .4;
                             }
-                            if (Random() % 2 || creature == wolftype) {
+                            if (Random() % 2 || PersonType::types[creature].hasClaws) {
                                 victim->spurt = 1;
                             }
                             emit_sound_at(staffheadsound, victim->coords);
@@ -3272,7 +3271,7 @@ void Person::DoAnimations()
                             if (id == 0) {
                                 camerashake += .4;
                             }
-                            if (Random() % 2 || creature == wolftype) {
+                            if (Random() % 2 || PersonType::types[creature].hasClaws) {
                                 victim->spurt = 1;
                             }
                             emit_sound_at(staffbodysound, victim->coords);
@@ -3345,7 +3344,7 @@ void Person::DoAnimations()
                             if (victim->howactive == typesleeping) {
                                 victim->DoDamage(damagemult * 150 / victim->protectionhead);
                             }
-                            if (creature == wolftype) {
+                            if (PersonType::types[creature].hasClaws) {
                                 emit_sound_at(clawslicesound, victim->coords, 128.);
                                 victim->spurt = 1;
                                 victim->DoBloodBig(2 / victim->armorhead, 175);
@@ -3367,7 +3366,7 @@ void Person::DoAnimations()
                             }
                             victim->Puff(abdomen);
                             victim->DoDamage(damagemult * 30 / victim->protectionhigh);
-                            if (creature == wolftype) {
+                            if (PersonType::types[creature].hasClaws) {
                                 emit_sound_at(clawslicesound, victim->coords, 128.);
                                 victim->spurt = 1;
                                 victim->DoBloodBig(2 / victim->armorhigh, 170);
@@ -3450,7 +3449,7 @@ void Person::DoAnimations()
                     if (!Tutorial::active) {
                         emit_sound_at(heavyimpactsound, victim->coords, 128.);
                     }
-                    if (creature == wolftype) {
+                    if (PersonType::types[creature].hasClaws) {
                         emit_sound_at(clawslicesound, victim->coords, 128);
                         victim->spurt = 1;
                         victim->DoBloodBig(2 / victim->armorhigh, 170);
@@ -3562,28 +3561,23 @@ void Person::DoAnimations()
                     award_bonus(id, Reversal);
 
                     bool doslice;
-                    doslice = 0;
-                    if (weaponactive != -1 || creature == wolftype) {
-                        doslice = 1;
-                    }
-                    if (creature == rabbittype && weaponactive != -1) {
-                        if (weapons[weaponids[0]].getType() == staff) {
-                            doslice = 0;
-                        }
+                    if (weaponactive == -1) {
+                        doslice = PersonType::types[creature].hasClaws;
+                    } else {
+                        doslice = (weapons[weaponids[0]].getType() != staff);
                     }
                     if (doslice) {
-                        if (weaponactive != -1) {
+                        if (weaponactive == -1) {
+                            emit_sound_at(clawslicesound, victim->coords, 128.);
+                            victim->spurt = 1;
+                            victim->DoBloodBig(2 / victim->armorhigh, 175);
+                        } else {
                             victim->DoBloodBig(2 / victim->armorhigh, 225);
                             emit_sound_at(knifeslicesound, victim->coords);
                             if (bloodtoggle && !weapons[weaponids[weaponactive]].bloody) {
                                 weapons[weaponids[weaponactive]].bloody = 1;
                             }
                             weapons[weaponids[weaponactive]].blooddrip += 3;
-                        }
-                        if (weaponactive == -1 && creature == wolftype) {
-                            emit_sound_at(clawslicesound, victim->coords, 128.);
-                            victim->spurt = 1;
-                            victim->DoBloodBig(2 / victim->armorhigh, 175);
                         }
                     }
                 }
@@ -3656,29 +3650,23 @@ void Person::DoAnimations()
                     victim->damage = victim->damagetolerance;
                     victim->permanentdamage = victim->damagetolerance - 1;
                     bool doslice;
-                    doslice = 0;
-                    if (weaponactive != -1 || creature == wolftype) {
-                        doslice = 1;
-                    }
-                    if (creature == rabbittype && weaponactive != -1) {
-                        if (weapons[weaponids[0]].getType() == staff) {
-                            doslice = 0;
-                        }
+                    if (weaponactive == -1) {
+                        doslice = PersonType::types[creature].hasClaws;
+                    } else {
+                        doslice = (weapons[weaponids[0]].getType() != staff);
                     }
                     if (doslice) {
-                        if (weaponactive != -1) {
+                        if (weaponactive == -1) {
+                            emit_sound_at(clawslicesound, victim->coords, 128.);
+                            victim->spurt = 1;
+                            victim->DoBloodBig(2, 175);
+                        } else {
                             victim->DoBloodBig(200, 225);
                             emit_sound_at(knifeslicesound, victim->coords);
                             if (bloodtoggle) {
                                 weapons[weaponids[weaponactive]].bloody = 2;
                             }
                             weapons[weaponids[weaponactive]].blooddrip += 5;
-                        }
-
-                        if (creature == wolftype && weaponactive == -1) {
-                            emit_sound_at(clawslicesound, victim->coords, 128.);
-                            victim->spurt = 1;
-                            victim->DoBloodBig(2, 175);
                         }
                     }
                     award_bonus(id, spinecrusher);
@@ -3833,28 +3821,23 @@ void Person::DoAnimations()
                         }
                     }
                     bool doslice;
-                    doslice = 0;
-                    if (weaponactive != -1 || creature == wolftype) {
-                        doslice = 1;
-                    }
-                    if (creature == rabbittype && weaponactive != -1) {
-                        if (weapons[weaponids[0]].getType() == staff) {
-                            doslice = 0;
-                        }
+                    if (weaponactive == -1) {
+                        doslice = PersonType::types[creature].hasClaws;
+                    } else {
+                        doslice = (weapons[weaponids[0]].getType() != staff);
                     }
                     if (doslice) {
-                        if (weaponactive != -1) {
+                        if (weaponactive == -1) {
+                            emit_sound_at(clawslicesound, victim->coords, 128.);
+                            victim->spurt = 1;
+                            victim->DoBloodBig(2 / victim->armorhead, 175);
+                        } else {
                             victim->DoBloodBig(2 / victim->armorhead, 225);
                             emit_sound_at(knifeslicesound, victim->coords);
                             if (bloodtoggle && !weapons[weaponids[weaponactive]].bloody) {
                                 weapons[weaponids[weaponactive]].bloody = 1;
                             }
                             weapons[weaponids[weaponactive]].blooddrip += 3;
-                        }
-                        if (weaponactive == -1 && creature == wolftype) {
-                            emit_sound_at(clawslicesound, victim->coords, 128.);
-                            victim->spurt = 1;
-                            victim->DoBloodBig(2 / victim->armorhead, 175);
                         }
                     }
 
