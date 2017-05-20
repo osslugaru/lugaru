@@ -16,7 +16,6 @@ available via your package manager (dnf, urpmi, apt, brew, etc.):
 - LibPNG
 - OpenAL Soft
 - Ogg, Vorbis and Vorbisfile
-- Zlib
 
 ## GNU/Linux
 
