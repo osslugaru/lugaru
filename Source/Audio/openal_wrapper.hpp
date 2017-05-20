@@ -32,7 +32,6 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include <AL/alc.h>
 #endif
 
-#include <ogg/ogg.h>
 #include <vorbis/vorbisfile.h>
 
 #ifdef _WIN32

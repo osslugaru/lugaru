@@ -32,13 +32,14 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include <set>
 #include <stdio.h>
 #include <string.h>
-#include <zlib.h>
 
 using namespace Game;
 
 #ifdef WIN32
 #include <shellapi.h>
 #include <windows.h>
+#else
+#include <unistd.h>
 #endif
 
 extern float multiplier;

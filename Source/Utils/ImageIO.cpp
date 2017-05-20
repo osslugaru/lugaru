@@ -26,7 +26,10 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include <jpeglib.h>
 #include <png.h>
 #include <stdio.h>
-#include <zlib.h>
+
+#ifndef WIN32
+#include <unistd.h>
+#endif
 
 /* These two are needed for screenshot */
 extern int kContextWidth;
