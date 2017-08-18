@@ -441,12 +441,12 @@ void Person::changeCreatureType(person_type type)
 {
     creature = type;
     whichskin = 0;
-    skeletonLoad(type == rabbittype);
+    skeletonLoad();
     scale = PersonType::types[creature].defaultScale;
     damagetolerance = PersonType::types[creature].defaultDamageTolerance;
 }
 
-void Person::skeletonLoad(bool clothes)
+void Person::skeletonLoad()
 {
     skeleton.id = id;
     skeleton.Load(
@@ -462,7 +462,7 @@ void Person::skeletonLoad(bool clothes)
         PersonType::types[creature].modelFileNames[6],
         PersonType::types[creature].lowModelFileName,
         PersonType::types[creature].modelClothesFileName,
-        clothes);
+        PersonType::types[creature].clothes);
 
     skeleton.drawmodel.textureptr.load(PersonType::types[creature].skins[whichskin], 1, &skeleton.skinText[0], &skeleton.skinsize);
 }

@@ -61,6 +61,7 @@ public:
     unsigned int defaultDamageTolerance;
     float defaultScale;
     bool hasClaws;
+    bool clothes;
 
     GLubyte bloodText[512 * 512 * 3] = { 0 };
 

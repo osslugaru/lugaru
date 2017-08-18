@@ -1432,7 +1432,7 @@ void Game::ProcessDevInput()
             Person::players.back()->howactive = editoractive;
             Person::players.back()->whichskin = (int)(abs(Random() % 3));
 
-            Person::players.back()->skeletonLoad(true);
+            Person::players.back()->skeletonLoad();
 
             Person::players.back()->skeleton.drawmodelclothes.textureptr.load("Textures/Belt.png", 1);
             Person::players.back()->speed = 1 + (float)(Random() % 100) / 1000;

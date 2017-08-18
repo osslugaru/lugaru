@@ -318,7 +318,7 @@ public:
     Person();
     Person(FILE*, int, unsigned);
 
-    void skeletonLoad(bool clothes = false);
+    void skeletonLoad();
 
     // convenience functions
     inline Joint& joint(int bodypart) { return skeleton.joints[skeleton.jointlabels[bodypart]]; }

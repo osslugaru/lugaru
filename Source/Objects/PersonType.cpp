@@ -79,6 +79,7 @@ void PersonType::Load()
     types[wolftype].defaultDamageTolerance = 300;
     types[wolftype].defaultScale = .23;
     types[wolftype].hasClaws = true;
+    types[wolftype].clothes = false;
 
     /* Rabbit */
     types[rabbittype].proportions[0] = 1.2;
@@ -133,4 +134,5 @@ void PersonType::Load()
     types[rabbittype].defaultDamageTolerance = 200;
     types[rabbittype].defaultScale = .2;
     types[rabbittype].hasClaws = false;
+    types[rabbittype].clothes = true;
 }
