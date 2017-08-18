@@ -6009,19 +6009,10 @@ void Person::DoStuff()
         } else if (isRun()) {
             velocity += facing * multiplier * speed * 700 * scale;
             velspeed = findLength(&velocity);
-            if (creature == rabbittype) {
-                if (velspeed > speed * 55 * scale) {
-                    velocity /= velspeed;
-                    velspeed = speed * 55 * scale;
-                    velocity *= velspeed;
-                }
-            }
-            if (creature == wolftype) {
-                if (velspeed > speed * 75 * scale) {
-                    velocity /= velspeed;
-                    velspeed = speed * 75 * scale;
-                    velocity *= velspeed;
-                }
+            if (velspeed > speed * PersonType::types[creature].maxRunSpeed * scale) {
+                velocity /= velspeed;
+                velspeed = speed * PersonType::types[creature].maxRunSpeed * scale;
+                velocity *= velspeed;
             }
             velocity.y += gravity * multiplier * 20;
             ReflectVector(&velocity, terrain.getNormal(coords.x, coords.z));

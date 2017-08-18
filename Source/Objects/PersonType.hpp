@@ -62,6 +62,7 @@ public:
     float defaultScale;
     bool hasClaws;
     bool clothes;
+    unsigned int maxRunSpeed;
 
     GLubyte bloodText[512 * 512 * 3] = { 0 };
 
