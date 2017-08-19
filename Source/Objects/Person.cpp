@@ -618,8 +618,8 @@ int Person::getIdle()
             }
         }
     }
-    if ((damage > permanentdamage || damage > damagetolerance * .8 || deathbleeding > 0) && creature != wolftype) {
-        return hurtidleanim;
+    if ((damage > permanentdamage || damage > damagetolerance * .8 || deathbleeding > 0) && PersonType::types[creature].hasAnimHurtIdle()) {
+        return PersonType::types[creature].animHurtIdle;
     }
     if (howactive == typesitting) {
         return sitanim;

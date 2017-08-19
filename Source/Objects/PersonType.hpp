@@ -44,6 +44,7 @@ public:
     animation_type animFightIdle;
     animation_type animBounceIdle;
     animation_type animTalkIdle;
+    animation_type animHurtIdle;
 
     sound_type soundsAttack[4];
     sound_type soundsTalk[2];
@@ -69,6 +70,7 @@ public:
 
     PersonType();
     bool hasAnimTalkIdle();
+    bool hasAnimHurtIdle();
 
     static std::vector<PersonType> types;
     static void Load();

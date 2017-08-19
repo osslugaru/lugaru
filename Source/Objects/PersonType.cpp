@@ -24,11 +24,17 @@ std::vector<PersonType> PersonType::types;
 PersonType::PersonType()
 {
     animTalkIdle = tempanim;
+    animHurtIdle = tempanim;
 }
 
 bool PersonType::hasAnimTalkIdle()
 {
     return (animTalkIdle != tempanim);
+}
+
+bool PersonType::hasAnimHurtIdle()
+{
+    return (animHurtIdle != tempanim);
 }
 
 void PersonType::Load()
@@ -99,6 +105,7 @@ void PersonType::Load()
     types[rabbittype].animFightIdle = fightidleanim;
     types[rabbittype].animBounceIdle = bounceidleanim;
     types[rabbittype].animTalkIdle = talkidleanim;
+    types[rabbittype].animHurtIdle = hurtidleanim;
 
     types[rabbittype].soundsAttack[0] = rabbitattacksound;
     types[rabbittype].soundsAttack[1] = rabbitattack2sound;
