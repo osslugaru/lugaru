@@ -1643,8 +1643,8 @@ void doJumpReversals()
                 Person::players[i]->skeleton.oldfree == 0 &&
                 (Person::players[i]->animTarget == jumpupanim ||
                  Person::players[k]->animTarget == jumpupanim) &&
-                (Person::players[i]->aitype == playercontrolled ||
-                 Person::players[k]->aitype == playercontrolled) &&
+                (Person::players[i]->isPlayerControlled() ||
+                 Person::players[k]->isPlayerControlled()) &&
                 ((Person::players[i]->aitype == attacktypecutoff && Person::players[i]->stunned <= 0) ||
                  (Person::players[k]->aitype == attacktypecutoff && Person::players[k]->stunned <= 0))) {
                 if (distsq(&Person::players[i]->coords, &Person::players[k]->coords) < 10 * sq((Person::players[i]->scale + Person::players[k]->scale) * 2.5) &&
@@ -1655,8 +1655,8 @@ void doJumpReversals()
                         Person::players[k]->animTarget != getupfromfrontanim &&
                         Animation::animations[Person::players[k]->animTarget].height == middleheight &&
                         normaldotproduct(Person::players[i]->velocity, Person::players[k]->coords - Person::players[i]->coords) < 0 &&
-                        ((Person::players[k]->aitype == playercontrolled && Person::players[k]->attackkeydown) ||
-                         Person::players[k]->aitype != playercontrolled)) {
+                        ((Person::players[k]->isPlayerControlled() && Person::players[k]->attackkeydown) ||
+                         !Person::players[k]->isPlayerControlled())) {
                         Person::players[i]->victim = Person::players[k];
                         Person::players[i]->velocity = 0;
                         Person::players[i]->animCurrent = jumpreversedanim;
@@ -1695,8 +1695,8 @@ void doJumpReversals()
                         Person::players[i]->animTarget != getupfromfrontanim &&
                         Animation::animations[Person::players[i]->animTarget].height == middleheight &&
                         normaldotproduct(Person::players[k]->velocity, Person::players[i]->coords - Person::players[k]->coords) < 0 &&
-                        ((Person::players[i]->aitype == playercontrolled && Person::players[i]->attackkeydown) ||
-                         Person::players[i]->aitype != playercontrolled)) {
+                        ((Person::players[i]->isPlayerControlled() && Person::players[i]->attackkeydown) ||
+                         !Person::players[i]->isPlayerControlled())) {
                         Person::players[k]->victim = Person::players[i];
                         Person::players[k]->velocity = 0;
                         Person::players[k]->animCurrent = jumpreversedanim;
@@ -1801,7 +1801,7 @@ void doAerialAcrobatics()
             for (unsigned int l = 0; l < terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz].size(); l++) {
                 unsigned int i = terrain.patchobjects[Person::players[k]->whichpatchx][Person::players[k]->whichpatchz][l];
                 if (Object::objects[i]->type != rocktype ||
-                    Object::objects[i]->scale > .5 && Person::players[k]->aitype == playercontrolled ||
+                    Object::objects[i]->scale > .5 && Person::players[k]->isPlayerControlled() ||
                     Object::objects[i]->position.y > Person::players[k]->coords.y) {
                     lowpoint = Person::players[k]->coords;
                     if (Person::players[k]->animTarget != jumpupanim &&
@@ -1823,7 +1823,7 @@ void doAerialAcrobatics()
                         tempcollide = 1;
                         //wall jumps
                         //TODO: refactor four similar blocks
-                        if (Person::players[k]->aitype == playercontrolled &&
+                        if (Person::players[k]->isPlayerControlled() &&
                             (Person::players[k]->animTarget == jumpupanim ||
                              Person::players[k]->animTarget == jumpdownanim ||
                              Person::players[k]->isFlip()) &&
@@ -1979,7 +1979,7 @@ void doAerialAcrobatics()
                             Person::players[k]->coords.y -= 1.35;
                             Person::players[k]->collide = 1;
 
-                            if ((Person::players[k]->grabdelay <= 0 || Person::players[k]->aitype != playercontrolled) &&
+                            if ((Person::players[k]->grabdelay <= 0 || !Person::players[k]->isPlayerControlled()) &&
                                 (Person::players[k]->animCurrent != climbanim &&
                                      Person::players[k]->animCurrent != hanganim &&
                                      !Person::players[k]->isWallJump() ||
@@ -2157,7 +2157,7 @@ void doAttacks()
         playerrealattackkeydown = Input::isKeyDown(attackkey);
     }
     if ((Person::players[0]->parriedrecently <= 0 ||
-         Person::players[0]->weaponactive == -1) &&
+         !Person::players[0]->hasWeapon()) &&
         (!oldattackkey ||
          (realthreat &&
           Person::players[0]->lastattack != swordslashanim &&
@@ -2189,7 +2189,7 @@ void doAttacks()
             Person::players[k]->attackkeydown = 0;
         }
         if (Person::players[k]->animTarget != rabbitrunninganim && Person::players[k]->animTarget != wolfrunninganim) {
-            if (Person::players[k]->aitype != playercontrolled) {
+            if (!Person::players[k]->isPlayerControlled()) {
                 Person::players[k]->victim = Person::players[0];
             }
             //attack key pressed
@@ -2244,7 +2244,7 @@ void doAttacks()
                      Person::players[k]->animTarget == walkanim ||
                      Person::players[k]->animTarget == sneakanim ||
                      Person::players[k]->isCrouch())) {
-                    const int attackweapon = Person::players[k]->weaponactive == -1 ? 0 : weapons[Person::players[k]->weaponids[Person::players[k]->weaponactive]].getType();
+                    const int attackweapon = (Person::players[k]->hasWeapon() ? weapons[Person::players[k]->weaponids[Person::players[k]->weaponactive]].getType() : 0);
                     //normal attacks (?)
                     Person::players[k]->hasvictim = 0;
                     if (Person::players.size() > 1) {
@@ -2271,7 +2271,7 @@ void doAttacks()
                                         Person::players[i]->animTarget != getupfromfrontanim) {
                                         Person::players[k]->victim = Person::players[i];
                                         Person::players[k]->hasvictim = 1;
-                                        if (Person::players[k]->aitype == playercontrolled) { //human player
+                                        if (Person::players[k]->isPlayerControlled()) { //human player
                                             //sweep
                                             if (distance < 2.5 * sq(Person::players[k]->scale * 5) &&
                                                 Person::players[k]->crouchkeydown &&
@@ -2657,7 +2657,7 @@ void doAttacks()
                             }
                         }
                     }
-                    if (Person::players[k]->aitype == playercontrolled) {
+                    if (Person::players[k]->isPlayerControlled()) {
                         //rabbit kick
                         if (Person::players[k]->attackkeydown &&
                             Person::players[k]->isRun() &&
@@ -2669,7 +2669,7 @@ void doAttacks()
                               Person::players[k]->victim->animTarget != getupfrombackanim &&
                               Person::players[k]->victim->animTarget != getupfromfrontanim &&
                               Animation::animations[Person::players[k]->victim->animTarget].height != lowheight &&
-                              Person::players[k]->aitype != playercontrolled && //wat???
+                              !Person::players[k]->isPlayerControlled() && //wat???
                               normaldotproduct(Person::players[k]->facing, Person::players[k]->victim->coords - Person::players[k]->coords) > 0 &&
                               Person::players[k]->rabbitkickenabled) ||
                              Person::players[k]->jumpkeydown)) {
@@ -3462,7 +3462,7 @@ void Game::Tick()
                         Person::players[i]->targetheadyaw = yaw;
                         Person::players[i]->targetheadpitch = pitch;
                     }
-                    if (i != 0 && Person::players[i]->aitype == playercontrolled && !Dialog::inDialog()) {
+                    if (i != 0 && Person::players[i]->isPlayerControlled() && !Dialog::inDialog()) {
                         if (!Animation::animations[Person::players[i]->animTarget].attack &&
                             Person::players[i]->animTarget != staggerbackhighanim &&
                             Person::players[i]->animTarget != staggerbackhardanim &&
@@ -3599,7 +3599,7 @@ void Game::Tick()
 
                     //pick up weapon
                     if (Person::players[i]->throwkeydown && !Person::players[i]->throwtogglekeydown) {
-                        if (Person::players[i]->weaponactive == -1 &&
+                        if (!Person::players[i]->hasWeapon() &&
                             Person::players[i]->num_weapons < 2 &&
                             (Person::players[i]->isIdle() ||
                              Person::players[i]->isCrouch() ||
@@ -3607,19 +3607,19 @@ void Game::Tick()
                              Person::players[i]->animTarget == rollanim ||
                              Person::players[i]->animTarget == backhandspringanim ||
                              Person::players[i]->isFlip() ||
-                             Person::players[i]->aitype != playercontrolled)) {
+                             !Person::players[i]->isPlayerControlled())) {
                             for (unsigned j = 0; j < weapons.size(); j++) {
                                 if ((weapons[j].velocity.x == 0 && weapons[j].velocity.y == 0 && weapons[j].velocity.z == 0 ||
-                                     Person::players[i]->aitype == playercontrolled) &&
+                                     Person::players[i]->isPlayerControlled()) &&
                                     weapons[j].owner == -1 &&
-                                    Person::players[i]->weaponactive == -1) {
+                                    !Person::players[i]->hasWeapon()) {
                                     if (distsqflat(&Person::players[i]->coords, &weapons[j].position) < 2) {
                                         if (distsq(&Person::players[i]->coords, &weapons[j].position) < 2) {
                                             if (Person::players[i]->isCrouch() ||
                                                 Person::players[i]->animTarget == sneakanim ||
                                                 Person::players[i]->isRun() ||
                                                 Person::players[i]->isIdle() ||
-                                                Person::players[i]->aitype != playercontrolled) {
+                                                !Person::players[i]->isPlayerControlled()) {
                                                 Person::players[i]->throwtogglekeydown = 1;
                                                 Person::players[i]->setTargetAnimation(crouchremoveknifeanim);
                                                 Person::players[i]->targetyaw = roughDirectionTo(Person::players[i]->coords, weapons[j].position);
@@ -3630,11 +3630,11 @@ void Game::Tick()
                                                 Person::players[i]->hasvictim = 0;
 
                                                 if ((weapons[j].velocity.x == 0 && weapons[j].velocity.y == 0 && weapons[j].velocity.z == 0 ||
-                                                     Person::players[i]->aitype == playercontrolled) &&
+                                                     Person::players[i]->isPlayerControlled()) &&
                                                         weapons[j].owner == -1 ||
                                                     Person::players[i]->victim &&
                                                         weapons[j].owner == int(Person::players[i]->victim->id)) {
-                                                    if (distsqflat(&Person::players[i]->coords, &weapons[j].position) < 2 && Person::players[i]->weaponactive == -1) {
+                                                    if (distsqflat(&Person::players[i]->coords, &weapons[j].position) < 2 && !Person::players[i]->hasWeapon()) {
                                                         if (distsq(&Person::players[i]->coords, &weapons[j].position) < 1 || Person::players[i]->victim) {
                                                             if (weapons[j].getType() != staff) {
                                                                 emit_sound_at(knifedrawsound, Person::players[i]->coords, 128.);
@@ -3647,7 +3647,7 @@ void Game::Tick()
                                             }
                                         } else if ((Person::players[i]->isIdle() ||
                                                     Person::players[i]->isFlip() ||
-                                                    Person::players[i]->aitype != playercontrolled) &&
+                                                    !Person::players[i]->isPlayerControlled()) &&
                                                    distsq(&Person::players[i]->coords, &weapons[j].position) < 5 &&
                                                    Person::players[i]->coords.y < weapons[j].position.y) {
                                             if (!Person::players[i]->isFlip()) {
@@ -3660,14 +3660,14 @@ void Game::Tick()
                                                 Person::players[i]->hasvictim = 0;
 
                                                 for (unsigned k = 0; k < weapons.size(); k++) {
-                                                    if (Person::players[i]->weaponactive == -1) {
+                                                    if (!Person::players[i]->hasWeapon()) {
                                                         if ((weapons[k].velocity.x == 0 && weapons[k].velocity.y == 0 && weapons[k].velocity.z == 0 ||
-                                                             Person::players[i]->aitype == playercontrolled) &&
+                                                             Person::players[i]->isPlayerControlled()) &&
                                                                 weapons[k].owner == -1 ||
                                                             Person::players[i]->victim &&
                                                                 weapons[k].owner == int(Person::players[i]->victim->id)) {
                                                             if (distsqflat(&Person::players[i]->coords, &weapons[k].position) < 3 &&
-                                                                Person::players[i]->weaponactive == -1) {
+                                                                !Person::players[i]->hasWeapon()) {
                                                                 if (weapons[k].getType() != staff) {
                                                                     emit_sound_at(knifedrawsound, Person::players[i]->coords, 128.);
                                                                 }
@@ -3689,7 +3689,7 @@ void Game::Tick()
                                 Person::players[i]->animTarget == backhandspringanim) {
                                 if (Person::players.size() > 1) {
                                     for (unsigned j = 0; j < Person::players.size(); j++) {
-                                        if (Person::players[i]->weaponactive == -1) {
+                                        if (!Person::players[i]->hasWeapon()) {
                                             if (j != i) {
                                                 if (Person::players[j]->num_weapons &&
                                                     Person::players[j]->skeleton.free &&
@@ -3790,7 +3790,7 @@ void Game::Tick()
                                 }
                             }
                         }
-                        if (Person::players[i]->weaponactive != -1 && Person::players[i]->aitype == playercontrolled) {
+                        if (Person::players[i]->hasWeapon() && Person::players[i]->isPlayerControlled()) {
                             if (weapons[Person::players[i]->weaponids[0]].getType() == knife) {
                                 if (Person::players[i]->isIdle() ||
                                     Person::players[i]->isRun() ||
@@ -3815,7 +3815,7 @@ void Game::Tick()
                                                                 Person::players[i]->targettilt2 = pitchTo(Person::players[i]->coords, Person::players[j]->coords);
                                                             }
                                                             if (Person::players[i]->isFlip()) {
-                                                                if (Person::players[i]->weaponactive != -1) {
+                                                                if (Person::players[i]->hasWeapon()) {
                                                                     Person::players[i]->throwtogglekeydown = 1;
                                                                     Person::players[i]->victim = Person::players[j];
                                                                     XYZ aim;
@@ -3841,7 +3841,7 @@ void Game::Tick()
                                 }
                             }
                         }
-                        if (Person::players[i]->weaponactive != -1 && Person::players[i]->aitype == playercontrolled) {
+                        if (Person::players[i]->hasWeapon() && Person::players[i]->isPlayerControlled()) {
                             if (Person::players[i]->isCrouch() || Person::players[i]->animTarget == sneakanim) {
                                 Person::players[i]->throwtogglekeydown = 1;
                                 XYZ tempVelocity = Person::players[i]->velocity * .2;
@@ -3866,16 +3866,16 @@ void Game::Tick()
                     }
 
                     //draw weapon
-                    if (i == 0 || !Person::players[0]->dead || (Person::players[i]->weaponactive != -1)) {
+                    if (i == 0 || !Person::players[0]->dead || (Person::players[i]->hasWeapon())) {
                         if (Person::players[i]->drawkeydown && !Person::players[i]->drawtogglekeydown ||
                             (Person::players[i]->num_weapons == 2) &&
-                                (Person::players[i]->weaponactive == -1) &&
+                                (!Person::players[i]->hasWeapon()) &&
                                 Person::players[i]->isIdle() ||
                             Person::players[0]->dead &&
-                                (Person::players[i]->weaponactive != -1) &&
+                                (Person::players[i]->hasWeapon()) &&
                                 i != 0) {
                             bool isgood = true;
-                            if (Person::players[i]->weaponactive != -1) {
+                            if (Person::players[i]->hasWeapon()) {
                                 if (weapons[Person::players[i]->weaponids[Person::players[i]->weaponactive]].getType() == staff) {
                                     isgood = false;
                                 }
@@ -3886,8 +3886,8 @@ void Game::Tick()
                                     Person::players[i]->drawtogglekeydown = 1;
                                 }
                                 if ((Person::players[i]->isIdle() ||
-                                     (Person::players[i]->aitype != playercontrolled &&
-                                      Person::players[0]->weaponactive != -1 &&
+                                     (!Person::players[i]->isPlayerControlled() &&
+                                      Person::players[0]->hasWeapon() &&
                                       Person::players[i]->isRun())) &&
                                     Person::players[i]->num_weapons &&
                                     weapons[Person::players[i]->weaponids[0]].getType() == sword) {
@@ -3903,7 +3903,7 @@ void Game::Tick()
                     }
 
                     //clean weapon
-                    if (Person::players[i]->weaponactive != -1) {
+                    if (Person::players[i]->hasWeapon()) {
                         if (Person::players[i]->isCrouch() &&
                             weapons[Person::players[i]->weaponids[Person::players[i]->weaponactive]].bloody &&
                             bloodtoggle &&
@@ -4081,7 +4081,7 @@ void Game::Tick()
                                 }
                                 Person::players[i]->frameTarget = 0;
                             }
-                            if (Person::players[i]->animTarget == hanganim /*&&(!Person::players[i]->forwardstogglekeydown||Person::players[i]->aitype!=playercontrolled)*/) {
+                            if (Person::players[i]->animTarget == hanganim /*&&(!Person::players[i]->forwardstogglekeydown||!Person::players[i]->isPlayerControlled())*/) {
                                 Person::players[i]->setTargetAnimation(climbanim);
                                 Person::players[i]->frameTarget = 1;
                                 Person::players[i]->jumpclimb = 1;
@@ -4242,7 +4242,7 @@ void Game::Tick()
                                 }
                                 if (target >= 0) {
                                     Person::players[i]->velocity.y = 1;
-                                } else if (Person::players[i]->crouchkeydown || Person::players[i]->aitype != playercontrolled) {
+                                } else if (Person::players[i]->crouchkeydown || !Person::players[i]->isPlayerControlled()) {
                                     Person::players[i]->velocity.y = 7;
                                     Person::players[i]->crouchtogglekeydown = 1;
                                 } else {
@@ -4278,7 +4278,7 @@ void Game::Tick()
                                 (((!floatjump &&
                                    !editorenabled) ||
                                   !devtools) ||
-                                 Person::players[i]->aitype != playercontrolled)) {
+                                 !Person::players[i]->isPlayerControlled())) {
                                 if (Person::players[i]->jumppower > multiplier * 6) {
                                     Person::players[i]->velocity.y += multiplier * 6;
                                     Person::players[i]->jumppower -= multiplier * 6;

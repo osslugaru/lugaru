@@ -302,7 +302,7 @@ void Tutorial::Do(float multiplier)
                 Person::players[1]->num_weapons = 1;
                 Person::players[1]->weaponids[0] = 0;
 
-                if (Person::players[0]->weaponactive != -1) {
+                if (Person::players[0]->hasWeapon()) {
                     weapons[Person::players[0]->weaponids[Person::players[0]->weaponactive]].setType(staff);
                 } else {
                     weapons[0].setType(staff);
@@ -508,7 +508,7 @@ void Tutorial::Do(float multiplier)
                 }
                 break;
             case 41:
-                if (Person::players[0]->weaponactive == -1 && Person::players[0]->num_weapons > 0) {
+                if (!Person::players[0]->hasWeapon() && Person::players[0]->num_weapons > 0) {
                     success = 1;
                 }
                 break;

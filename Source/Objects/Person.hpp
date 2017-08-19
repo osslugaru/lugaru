@@ -402,6 +402,9 @@ public:
     void doAI();
 
     bool catchKnife();
+
+    bool hasWeapon() { return (weaponactive != -1); }
+    bool isPlayerControlled() { return (aitype == playercontrolled); }
 };
 
 const int maxplayers = 10;

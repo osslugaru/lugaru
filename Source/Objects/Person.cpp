@@ -596,14 +596,14 @@ int Person::getIdle()
         if ((!victim->dead && victim->aitype != passivetype &&
              victim->aitype != searchtype && aitype != passivetype && aitype != searchtype &&
              victim->id < Person::players.size())) {
-            if ((aitype == playercontrolled && stunned <= 0 && weaponactive == -1) || pause) {
+            if ((isPlayerControlled() && (stunned <= 0) && !hasWeapon()) || pause) {
                 return PersonType::types[creature].animFightIdle;
             }
-            if (aitype == playercontrolled && stunned <= 0 && weaponactive != -1) {
+            if (isPlayerControlled() && (stunned <= 0) && hasWeapon()) {
                 if (weapons[weaponids[weaponactive]].getType() == knife) {
                     return knifefightidleanim;
                 }
-                if (weapons[weaponids[weaponactive]].getType() == sword && victim->weaponactive != -1) {
+                if (weapons[weaponids[weaponactive]].getType() == sword && victim->hasWeapon()) {
                     return swordfightidlebothanim;
                 }
                 if (weapons[weaponids[weaponactive]].getType() == sword) {
@@ -613,7 +613,7 @@ int Person::getIdle()
                     return swordfightidleanim;
                 }
             }
-            if (aitype != playercontrolled && stunned <= 0 && creature != wolftype && !pause) {
+            if (!isPlayerControlled() && (stunned <= 0) && creature != wolftype) {
                 return fightsidestep;
             }
         }
@@ -658,7 +658,7 @@ int Person::getCrouch()
  */
 int Person::getRun()
 {
-    if (superruntoggle && (weaponactive == -1)) {
+    if (superruntoggle && (!hasWeapon())) {
         return PersonType::types[creature].animRunning;
     } else {
         return PersonType::types[creature].animRun;
@@ -786,7 +786,7 @@ void Person::DoBloodBig(float howmuch, int which)
     }
 
     if (!Tutorial::active || id == 0) {
-        if (aitype != playercontrolled && howmuch > 0) {
+        if (!isPlayerControlled() && howmuch > 0) {
             // play pain sounds
             int whichsound = -1;
 
@@ -966,7 +966,7 @@ void Person::DoBloodBig(float howmuch, int which)
     deathbleeding += bleeding;
     bloodloss += bleeding * 3;
 
-    if (!Tutorial::active && aitype != playercontrolled && bloodloss > damagetolerance * 2 / 3 && bloodloss < damagetolerance && creature == rabbittype) {
+    if (!Tutorial::active && !isPlayerControlled() && bloodloss > damagetolerance * 2 / 3 && bloodloss < damagetolerance && creature == rabbittype) {
         if (abs(Random() % 2) == 0) {
             aitype = gethelptype;
             lastseentime = 12;
@@ -1175,7 +1175,7 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
     deathbleeding += bleeding;
     bloodloss += bleeding * 3;
 
-    if (!Tutorial::active && aitype != playercontrolled && bloodloss > damagetolerance * 2 / 3 && bloodloss < damagetolerance && creature == rabbittype) {
+    if (!Tutorial::active && !isPlayerControlled() && bloodloss > damagetolerance * 2 / 3 && bloodloss < damagetolerance && creature == rabbittype) {
         if (abs(Random() % 2) == 0) {
             aitype = gethelptype;
             lastseentime = 12;
@@ -1195,7 +1195,7 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
  */
 void Person::Reverse()
 {
-    if (!((victim->aitype == playercontrolled || hostiletime > 1 || staggerdelay <= 0) && victim->animTarget != jumpupanim && victim->animTarget != jumpdownanim && (!Tutorial::active || cananger) && hostile)) {
+    if (!((victim->isPlayerControlled() || hostiletime > 1 || staggerdelay <= 0) && victim->animTarget != jumpupanim && victim->animTarget != jumpdownanim && (!Tutorial::active || cananger) && hostile)) {
         return;
     }
 
@@ -1228,7 +1228,7 @@ void Person::Reverse()
         victim->animTarget = upunchreversalanim;
     }
     if (animTarget == staffhitanim && distsq(&victim->coords, &coords) < 2 && ((victim->id == 0 && victim->crouchkeydown) || Random() % 4 == 0)) {
-        if (victim->weaponactive != -1) {
+        if (victim->hasWeapon()) {
             victim->throwtogglekeydown = 1;
             XYZ tempVelocity = victim->velocity * .2;
             if (tempVelocity.x == 0) {
@@ -1255,7 +1255,7 @@ void Person::Reverse()
         victim->animTarget = staffhitreversalanim;
     }
     if (animTarget == staffspinhitanim && distsq(&victim->coords, &coords) < 2 && ((victim->id == 0 && victim->crouchkeydown) || Random() % 2 == 0)) {
-        if (victim->weaponactive != -1) {
+        if (victim->hasWeapon()) {
             victim->throwtogglekeydown = 1;
             XYZ tempVelocity = victim->velocity * .2;
             if (tempVelocity.x == 0) {
@@ -1281,7 +1281,7 @@ void Person::Reverse()
         victim->animTarget = staffspinhitreversalanim;
     }
     if (animTarget == swordslashanim && distsq(&victim->coords, &coords) < 2 && ((victim->id == 0 && victim->crouchkeydown) || Random() % 4 == 0)) {
-        if (victim->weaponactive != -1) {
+        if (victim->hasWeapon()) {
             victim->throwtogglekeydown = 1;
             XYZ tempVelocity = victim->velocity * .2;
             if (tempVelocity.x == 0) {
@@ -1307,7 +1307,7 @@ void Person::Reverse()
         victim->animTarget = swordslashreversalanim;
     }
     if (animTarget == knifeslashstartanim && distsq(&victim->coords, &coords) < 2 && (victim->id == 0 || Random() % 4 == 0)) {
-        if (victim->weaponactive != -1) {
+        if (victim->hasWeapon()) {
             victim->throwtogglekeydown = 1;
             XYZ tempVelocity = victim->velocity * .2;
             if (tempVelocity.x == 0) {
@@ -1360,7 +1360,7 @@ void Person::Reverse()
         victim->victim = this->shared_from_this();
         victim->targetyaw = targetyaw + 180;
     }
-    if ((animTarget == swordslashanim || animTarget == staffhitanim || animTarget == staffspinhitanim) && victim->weaponactive != -1) {
+    if ((animTarget == swordslashanim || animTarget == staffhitanim || animTarget == staffspinhitanim) && victim->hasWeapon()) {
         animTarget = swordslashparriedanim;
         parriedrecently = .4;
         victim->parriedrecently = 0;
@@ -1371,7 +1371,7 @@ void Person::Reverse()
         victim->targetyaw = targetyaw + 180;
 
         if (abs(Random() % 20) == 0 || weapons[victim->weaponids[victim->weaponactive]].getType() == knife) {
-            if (victim->weaponactive != -1) {
+            if (victim->hasWeapon()) {
                 if (weapons[victim->weaponids[0]].getType() == staff || weapons[weaponids[0]].getType() == staff) {
                     if (weapons[victim->weaponids[0]].getType() == staff) {
                         weapons[victim->weaponids[0]].damage += .2 + float(abs(Random() % 100) - 50) / 250;
@@ -1408,7 +1408,7 @@ void Person::Reverse()
         }
 
         if (abs(Random() % 20) == 0) {
-            if (weaponactive != -1) {
+            if (hasWeapon()) {
                 if (weapons[victim->weaponids[0]].getType() == staff || weapons[weaponids[0]].getType() == staff) {
                     if (weapons[victim->weaponids[0]].getType() == staff) {
                         weapons[victim->weaponids[0]].damage += .2 + float(abs(Random() % 100) - 50) / 250;
@@ -1493,7 +1493,7 @@ void Person::Reverse()
     velocity = 0;
     victim->velocity = 0;
 
-    if (aitype != playercontrolled) {
+    if (!isPlayerControlled()) {
         feint = 0;
         if (escapednum < 2) {
             int chances = ((difficulty == 2) ? 3 : ((difficulty == 1) ? 5 : 10));
@@ -1553,7 +1553,7 @@ void Person::DoDamage(float howmuch)
     if (aitype == passivetype && damage < damagetolerance && ((!Tutorial::active || cananger) && hostile)) {
         aitype = attacktypecutoff;
     }
-    if (!Tutorial::active && aitype != playercontrolled && damage < damagetolerance && damage > damagetolerance * 2 / 3 && creature == rabbittype) {
+    if (!Tutorial::active && !isPlayerControlled() && damage < damagetolerance && damage > damagetolerance * 2 / 3 && creature == rabbittype) {
         if (abs(Random() % 2) == 0) {
             aitype = gethelptype;
             lastseentime = 12;
@@ -1596,7 +1596,7 @@ void Person::DoDamage(float howmuch)
 
     // play sounds
     if (!Tutorial::active || id == 0) {
-        if (speechdelay <= 0 && !dead && aitype != playercontrolled) {
+        if (speechdelay <= 0 && !dead && !isPlayerControlled()) {
             int whichsound = -1;
 
             if (creature == wolftype) {
@@ -1889,7 +1889,7 @@ void Person::RagDoll(bool checkcollision)
 
         // drop weapon
         if (Random() % 2 == 0) {
-            if (weaponactive != -1 && animTarget != rabbitkickanim && num_weapons > 0) {
+            if (hasWeapon() && animTarget != rabbitkickanim && num_weapons > 0) {
                 weapons[weaponids[0]].drop(jointVel(righthand) * scale * -.3, jointVel(righthand) * scale);
                 weapons[weaponids[0]].velocity.x += .01;
                 num_weapons--;
@@ -2047,11 +2047,11 @@ void Person::DoAnimations()
         }
         if (!crouchkeydown || (isLanding() || isLandhard()) || (wasLanding() || wasLandhard())) {
             crouchtogglekeydown = 0;
-            if (aitype == playercontrolled) {
+            if (isPlayerControlled()) {
                 feint = 0;
             }
         } else {
-            if (!crouchtogglekeydown && Animation::animations[animTarget].attack == reversed && aitype == playercontrolled && (escapednum < 2 || reversaltrain)) {
+            if (!crouchtogglekeydown && Animation::animations[animTarget].attack == reversed && isPlayerControlled() && (escapednum < 2 || reversaltrain)) {
                 feint = 1;
             }
             if (!isFlip()) {
@@ -2101,19 +2101,14 @@ void Person::DoAnimations()
                 }
             }
 
-            if (!drawtogglekeydown && drawkeydown && (weaponactive == -1 || num_weapons == 1) && (targetFrame().label || (animTarget != animCurrent && animCurrent == rollanim)) && num_weapons > 0 && creature != wolftype) {
+            if (!drawtogglekeydown && drawkeydown && (!hasWeapon() || num_weapons == 1) && (targetFrame().label || (animTarget != animCurrent && animCurrent == rollanim)) && num_weapons > 0 && creature != wolftype) {
                 if (weapons[weaponids[0]].getType() == knife) {
-                    if (weaponactive == -1) {
+                    if (!hasWeapon()) {
                         weaponactive = 0;
+                        emit_sound_at(knifedrawsound, coords, 128);
                     } else if (weaponactive == 0) {
                         weaponactive = -1;
-                    }
-
-                    if (weaponactive == -1) {
                         emit_sound_at(knifesheathesound, coords);
-                    }
-                    if (weaponactive != -1) {
-                        emit_sound_at(knifedrawsound, coords, 128);
                     }
                 }
                 drawtogglekeydown = 1;
@@ -2155,7 +2150,7 @@ void Person::DoAnimations()
                             whichsound = footstepsound4;
                         }
                     }
-                    if (targetFrame().label == 4 && (weaponactive == -1 || (animTarget != knifeslashstartanim && animTarget != knifethrowanim && animTarget != crouchstabanim && animTarget != swordgroundstabanim && animTarget != knifefollowanim))) {
+                    if (targetFrame().label == 4 && (!hasWeapon() || (animTarget != knifeslashstartanim && animTarget != knifethrowanim && animTarget != crouchstabanim && animTarget != swordgroundstabanim && animTarget != knifefollowanim))) {
                         if (Animation::animations[animTarget].attack != neutral) {
                             unsigned r = abs(Random() % 3);
                             if (r == 0) {
@@ -2205,7 +2200,7 @@ void Person::DoAnimations()
                     if (animTarget != crouchstabanim && animTarget != swordgroundstabanim && animTarget != staffgroundsmashanim) {
                         if ((targetFrame().label && (targetFrame().label < 5 || targetFrame().label == 8))) {
                             int whichsound = -1;
-                            if (targetFrame().label == 4 && aitype != playercontrolled) {
+                            if (targetFrame().label == 4 && !isPlayerControlled()) {
                                 if (Animation::animations[animTarget].attack != neutral) {
                                     unsigned r = abs(Random() % 4);
                                     whichsound = PersonType::types[creature].soundsAttack[r];
@@ -2235,7 +2230,7 @@ void Person::DoAnimations()
             if (animCurrent == removeknifeanim && currentFrame().label == 5) {
                 for (unsigned i = 0; i < weapons.size(); i++) {
                     if (weapons[i].owner == -1) {
-                        if (distsqflat(&coords, &weapons[i].position) < 4 && weaponactive == -1) {
+                        if (distsqflat(&coords, &weapons[i].position) < 4 && !hasWeapon()) {
                             if (distsq(&coords, &weapons[i].position) >= 1) {
                                 if (weapons[i].getType() != staff) {
                                     emit_sound_at(knifedrawsound, coords, 128.);
@@ -2261,7 +2256,7 @@ void Person::DoAnimations()
                         }
                     }
                     if ((weapons[i].owner == -1) || (hasvictim && (weapons[i].owner == int(victim->id)) && victim->skeleton.free)) {
-                        if (willwork && distsqflat(&coords, &weapons[i].position) < 3 && weaponactive == -1) {
+                        if (willwork && distsqflat(&coords, &weapons[i].position) < 3 && !hasWeapon()) {
                             if (distsq(&coords, &weapons[i].position) < 1 || hasvictim) {
                                 bool fleshstuck = false;
                                 if (weapons[i].owner != -1) {
@@ -2335,8 +2330,9 @@ void Person::DoAnimations()
             }
 
             if (animCurrent == drawleftanim && currentFrame().label == 5) {
-                if (weaponactive == -1) {
+                if (!hasWeapon()) {
                     weaponactive = 0;
+                    emit_sound_at(knifedrawsound, coords, 128.);
                 } else if (weaponactive == 0) {
                     weaponactive = -1;
                     if (num_weapons == 2) {
@@ -2345,12 +2341,7 @@ void Person::DoAnimations()
                         weaponids[0] = weaponids[1];
                         weaponids[1] = buffer;
                     }
-                }
-                if (weaponactive == -1) {
                     emit_sound_at(knifesheathesound, coords, 128.);
-                }
-                if (weaponactive != -1) {
-                    emit_sound_at(knifedrawsound, coords, 128.);
                 }
             }
 
@@ -3017,7 +3008,7 @@ void Person::DoAnimations()
                             camerashake += .4;
                         }
 
-                        if (weaponactive != -1) {
+                        if (hasWeapon()) {
                             if (weapons[victim->weaponids[0]].getType() == staff || weapons[weaponids[0]].getType() == staff) {
                                 if (weapons[victim->weaponids[0]].getType() == staff) {
                                     weapons[victim->weaponids[0]].damage += .2 + float(abs(Random() % 100) - 50) / 250;
@@ -3037,7 +3028,7 @@ void Person::DoAnimations()
                 }
 
                 if (animCurrent == knifethrowanim && currentFrame().label == 5) {
-                    if (weaponactive != -1) {
+                    if (hasWeapon()) {
                         escapednum = 0;
                         XYZ aim;
                         aim = victim->coords + DoRotation(victim->jointPos(abdomen), 0, victim->yaw, 0) * victim->scale + victim->velocity * findDistance(&victim->coords, &coords) / 50 - (coords + DoRotation(jointPos(righthand), 0, yaw, 0) * scale);
@@ -3064,7 +3055,7 @@ void Person::DoAnimations()
                                 emit_sound_at(knifeslicesound, victim->coords);
                             }
                             //victim->jointVel(abdomen)+=relative*damagemult*200;
-                            if (Animation::animations[victim->animTarget].attack && (victim->aitype != playercontrolled || victim->animTarget == knifeslashstartanim) && (victim->creature == rabbittype || victim->deathbleeding <= 0)) {
+                            if (Animation::animations[victim->animTarget].attack && (!victim->isPlayerControlled() || victim->animTarget == knifeslashstartanim) && (victim->creature == rabbittype || victim->deathbleeding <= 0)) {
                                 if (victim->id != 0 || difficulty == 2) {
                                     victim->frameTarget = 0;
                                     victim->animTarget = staggerbackhardanim;
@@ -3074,7 +3065,7 @@ void Person::DoAnimations()
                             }
                             victim->lowreversaldelay = 0;
                             victim->highreversaldelay = 0;
-                            if (aitype != playercontrolled) {
+                            if (!isPlayerControlled()) {
                                 weaponmissdelay = .6;
                             }
 
@@ -3110,7 +3101,7 @@ void Person::DoAnimations()
                 }
                 if (animCurrent == swordslashanim && currentFrame().label == 5 && victim->animTarget != rollanim) {
                     if (distsq(&coords, &victim->coords) < (scale * 5) * (scale * 5) * 6.5 && victim->animTarget != dodgebackanim) {
-                        if (victim->weaponactive == -1 || normaldotproduct(victim->facing, victim->coords - coords) > 0 || (Random() % 2 == 0)) {
+                        if (!victim->hasWeapon() || normaldotproduct(victim->facing, victim->coords - coords) > 0 || (Random() % 2 == 0)) {
                             award_bonus(id, Slashbonus);
                             escapednum = 0;
                             if (!Tutorial::active) {
@@ -3153,7 +3144,7 @@ void Person::DoAnimations()
                                 Sprite::MakeSprite(bloodflamesprite, footpoint, footvel * 2, 1, 1, 1, .3, 1);
                             }
                         } else {
-                            if (victim->weaponactive != -1) {
+                            if (victim->hasWeapon()) {
                                 if (weapons[victim->weaponids[0]].getType() == staff || weapons[weaponids[0]].getType() == staff) {
                                     if (weapons[victim->weaponids[0]].getType() == staff) {
                                         weapons[victim->weaponids[0]].damage += .2 + float(abs(Random() % 100) - 50) / 250;
@@ -3470,7 +3461,7 @@ void Person::DoAnimations()
                 }
 
                 if ((animTarget == swordslashreversalanim || animTarget == knifeslashreversalanim || animTarget == staffhitreversalanim || animTarget == staffspinhitreversalanim) && Animation::animations[animTarget].frames[frameCurrent].label == 5) {
-                    if (victim->weaponactive != -1 && victim->num_weapons > 0) {
+                    if (victim->hasWeapon() && victim->num_weapons > 0) {
                         if (weapons[victim->weaponids[victim->weaponactive]].owner == int(victim->id)) {
                             takeWeapon(victim->weaponids[victim->weaponactive]);
                             victim->num_weapons--;
@@ -3561,13 +3552,13 @@ void Person::DoAnimations()
                     award_bonus(id, Reversal);
 
                     bool doslice;
-                    if (weaponactive == -1) {
-                        doslice = PersonType::types[creature].hasClaws;
-                    } else {
+                    if (hasWeapon()) {
                         doslice = (weapons[weaponids[0]].getType() != staff);
+                    } else {
+                        doslice = PersonType::types[creature].hasClaws;
                     }
                     if (doslice) {
-                        if (weaponactive == -1) {
+                        if (!hasWeapon()) {
                             emit_sound_at(clawslicesound, victim->coords, 128.);
                             victim->spurt = 1;
                             victim->DoBloodBig(2 / victim->armorhigh, 175);
@@ -3650,13 +3641,13 @@ void Person::DoAnimations()
                     victim->damage = victim->damagetolerance;
                     victim->permanentdamage = victim->damagetolerance - 1;
                     bool doslice;
-                    if (weaponactive == -1) {
-                        doslice = PersonType::types[creature].hasClaws;
-                    } else {
+                    if (hasWeapon()) {
                         doslice = (weapons[weaponids[0]].getType() != staff);
+                    } else {
+                        doslice = PersonType::types[creature].hasClaws;
                     }
                     if (doslice) {
-                        if (weaponactive == -1) {
+                        if (!hasWeapon()) {
                             emit_sound_at(clawslicesound, victim->coords, 128.);
                             victim->spurt = 1;
                             victim->DoBloodBig(2, 175);
@@ -3673,7 +3664,7 @@ void Person::DoAnimations()
                 }
 
                 if (hasvictim && (animCurrent == knifefollowanim || animCurrent == knifesneakattackanim) && currentFrame().label == 5) {
-                    if (weaponactive != -1 && victim->bloodloss < victim->damagetolerance) {
+                    if (hasWeapon() && victim->bloodloss < victim->damagetolerance) {
                         escapednum = 0;
                         if (animTarget == knifefollowanim) {
                             victim->DoBloodBig(200, 210);
@@ -3729,7 +3720,7 @@ void Person::DoAnimations()
                             victim->skeleton.joints[i].velocity = 0;
                         }
                     }
-                    if (weaponactive != -1 && Animation::animations[victim->animTarget].attack != reversal) {
+                    if (hasWeapon() && Animation::animations[victim->animTarget].attack != reversal) {
                         emit_sound_at(fleshstabremovesound, victim->coords);
                         if (bloodtoggle) {
                             weapons[weaponids[weaponactive]].bloody = 2;
@@ -3751,7 +3742,7 @@ void Person::DoAnimations()
                 }
 
                 if (hasvictim && (animCurrent == swordsneakattackanim) && currentFrame().label == 5) {
-                    if (weaponactive != -1 && victim->bloodloss < victim->damagetolerance) {
+                    if (hasWeapon() && victim->bloodloss < victim->damagetolerance) {
                         award_bonus(id, backstab);
 
                         escapednum = 0;
@@ -3785,7 +3776,7 @@ void Person::DoAnimations()
                     for (unsigned i = 0; i < victim->skeleton.joints.size(); i++) {
                         victim->skeleton.joints[i].velocity = 0;
                     }
-                    if (weaponactive != -1) {
+                    if (hasWeapon()) {
                         emit_sound_at(fleshstabremovesound, victim->coords);
                         if (bloodtoggle) {
                             weapons[weaponids[weaponactive]].bloody = 2;
@@ -3815,19 +3806,19 @@ void Person::DoAnimations()
                         victim->spurt = 1;
                         DoBlood(.2, 240);
                     }
-                    if (weaponactive == -1) {
+                    if (!hasWeapon()) {
                         if (!Tutorial::active) {
                             emit_sound_at(heavyimpactsound, victim->coords, 128.);
                         }
                     }
                     bool doslice;
-                    if (weaponactive == -1) {
-                        doslice = PersonType::types[creature].hasClaws;
-                    } else {
+                    if (hasWeapon()) {
                         doslice = (weapons[weaponids[0]].getType() != staff);
+                    } else {
+                        doslice = PersonType::types[creature].hasClaws;
                     }
                     if (doslice) {
-                        if (weaponactive == -1) {
+                        if (!hasWeapon()) {
                             emit_sound_at(clawslicesound, victim->coords, 128.);
                             victim->spurt = 1;
                             victim->DoBloodBig(2 / victim->armorhead, 175);
@@ -3925,8 +3916,9 @@ void Person::DoAnimations()
                     if (animCurrent == crouchdrawrightanim) {
                         animTarget = getCrouch();
                     }
-                    if (weaponactive == -1) {
+                    if (!hasWeapon()) {
                         weaponactive = 0;
+                        emit_sound_at(knifedrawsound, coords, 128.);
                     } else if (weaponactive == 0) {
                         weaponactive = -1;
                         if (num_weapons == 2) {
@@ -3935,13 +3927,7 @@ void Person::DoAnimations()
                             weaponids[0] = weaponids[1];
                             weaponids[1] = buffer;
                         }
-                    }
-
-                    if (weaponactive == -1) {
                         emit_sound_at(knifesheathesound, coords, 128.);
-                    }
-                    if (weaponactive != -1) {
-                        emit_sound_at(knifedrawsound, coords, 128.);
                     }
                 }
                 if (animCurrent == rollanim) {
@@ -4296,7 +4282,7 @@ void Person::DoAnimations()
                     animTarget = getIdle();
                     lastfeint = 0;
                 }
-                if (animCurrent == blockhighleftanim && aitype != playercontrolled) {
+                if (animCurrent == blockhighleftanim && !isPlayerControlled()) {
                     animTarget = blockhighleftstrikeanim;
                 }
                 if (animCurrent == knifeslashstartanim || animCurrent == knifethrowanim || animCurrent == swordslashanim || animCurrent == staffhitanim || animCurrent == staffgroundsmashanim || animCurrent == staffspinhitanim) {
@@ -4518,7 +4504,7 @@ void Person::DoStuff()
         targetoffset = 0;
     }
 
-    if (num_weapons == 1 && weaponactive != -1) {
+    if (num_weapons == 1 && hasWeapon()) {
         weaponstuck = -1;
     }
 
@@ -4565,7 +4551,7 @@ void Person::DoStuff()
             frameTarget = 0;
         }
     }
-    if (weaponactive == -1 && num_weapons > 0) {
+    if (!hasWeapon() && num_weapons > 0) {
         if (weapons[weaponids[0]].getType() == staff) {
             weaponactive = 0;
         }
@@ -4677,7 +4663,7 @@ void Person::DoStuff()
             deathbleeding = 0;
         }
         if (bloodloss > damagetolerance && Animation::animations[animTarget].attack == neutral) {
-            if (weaponactive != -1) {
+            if (hasWeapon()) {
                 weapons[weaponids[0]].drop(velocity * scale * -.3, velocity * scale);
                 weapons[weaponids[0]].velocity.x += .01;
                 num_weapons--;
@@ -5108,7 +5094,7 @@ void Person::DoStuff()
 
         RagDoll(0);
 
-        if (weaponactive != -1) {
+        if (hasWeapon()) {
             weapons[weaponids[0]].drop(velocity * scale * -.3, velocity * scale);
             weapons[weaponids[0]].velocity.x += .01;
             num_weapons--;
@@ -5165,7 +5151,7 @@ void Person::DoStuff()
     if (permanentdamage > damagetolerance && dead != 2) {
         DoBlood(1, 255);
 
-        if (weaponactive != -1) {
+        if (hasWeapon()) {
             weapons[weaponids[0]].drop(velocity * scale * -.3, velocity * scale);
             weapons[weaponids[0]].velocity.x += .01;
             num_weapons--;
@@ -5699,7 +5685,7 @@ void Person::DoStuff()
         if (Tutorial::active && id != 0) {
             play = 0;
         }
-        if (play && aitype != playercontrolled) {
+        if (play && !isPlayerControlled()) {
             int whichsound = -1;
             if (speechdelay <= 0) {
                 unsigned int i = abs(Random() % 4);
@@ -5885,7 +5871,7 @@ void Person::DoStuff()
             }
         }
 
-        if (weaponactive != -1) {
+        if (hasWeapon()) {
             if (weapons[weaponids[weaponactive]].getType() != staff) {
                 righthandmorphstart = 1;
                 righthandmorphend = 1;
@@ -7338,7 +7324,7 @@ bool Person::addClothes(const int& clothesId)
 
 void Person::doAI()
 {
-    if (aitype != playercontrolled && !Dialog::inDialog()) {
+    if (!isPlayerControlled() && !Dialog::inDialog()) {
         jumpclimb = 0;
         //disable movement in editor
         if (Game::editorenabled) {
@@ -8011,7 +7997,7 @@ void Person::doAI()
                 lastseentime = 12;
 
                 if (!Person::players[0]->dead && ((!Tutorial::active || cananger) && hostile)) {
-                    if (ally < 0 || weaponactive != -1 || lastchecktime <= 0) {
+                    if (ally < 0 || hasWeapon() || lastchecktime <= 0) {
                         aitype = attacktypecutoff;
                         lastseentime = 1;
                     }
@@ -8083,7 +8069,7 @@ void Person::doAI()
                     if (isIdle()) {
                         crouchkeydown = 1;
                     }
-                    if (Person::players[0]->animTarget != rabbitkickanim && Person::players[0]->weaponactive != -1) {
+                    if (Person::players[0]->animTarget != rabbitkickanim && Person::players[0]->hasWeapon()) {
                         if (weapons[Person::players[0]->weaponids[0]].getType() == knife) {
                             if (isIdle() || isCrouch() || isRun() || isFlip()) {
                                 if (abs(Random() % 2) == 0) {
@@ -8197,7 +8183,7 @@ void Person::doAI()
                 animTarget != backhandspringanim &&
                 animTarget != dodgebackanim) {
                 //draw weapon
-                if (weaponactive == -1 && num_weapons > 0) {
+                if (!hasWeapon() && num_weapons > 0) {
                     drawkeydown = Random() % 2;
                 } else {
                     drawkeydown = 0;
@@ -8216,11 +8202,11 @@ void Person::doAI()
                 lookyaw = targetyaw;
                 aiupdatedelay = .2 + fabs((float)(Random() % 100) / 1000);
 
-                if (distsq(&coords, &Person::players[0]->coords) > 5 && (Person::players[0]->weaponactive == -1 || weaponactive != -1)) {
+                if (distsq(&coords, &Person::players[0]->coords) > 5 && (!Person::players[0]->hasWeapon() || hasWeapon())) {
                     forwardkeydown = 1;
                 } else if ((distsq(&coords, &Person::players[0]->coords) > 16 ||
                             distsq(&coords, &Person::players[0]->coords) < 9) &&
-                           Person::players[0]->weaponactive != -1) {
+                           Person::players[0]->hasWeapon()) {
                     forwardkeydown = 1;
                 } else if (Random() % 6 == 0 || (creature == wolftype && Random() % 3 == 0)) {
                     forwardkeydown = 1;
@@ -8254,7 +8240,7 @@ void Person::doAI()
                     targetyaw += 90 * (whichdirection * 2 - 1);
                 }
                 //attack!!!
-                if (Random() % 2 == 0 || weaponactive != -1 || creature == wolftype) {
+                if (Random() % 2 == 0 || hasWeapon() || creature == wolftype) {
                     attackkeydown = 1;
                 } else {
                     attackkeydown = 0;
@@ -8264,7 +8250,7 @@ void Person::doAI()
                 }
 
                 //TODO: wat
-                if (aitype != playercontrolled &&
+                if (!isPlayerControlled() &&
                     (isIdle() ||
                      isCrouch() ||
                      isRun())) {
@@ -8280,9 +8266,9 @@ void Person::doAI()
                                  Person::players[j]->lastattack3 == Person::players[j]->animTarget &&
                                  (Random() % 2 == 0 || difficulty == 2) ||
                              (isIdle() || isRun()) &&
-                                 Person::players[j]->weaponactive != -1 ||
+                                 Person::players[j]->hasWeapon() ||
                              Person::players[j]->animTarget == swordslashanim &&
-                                 weaponactive != -1 ||
+                                 hasWeapon() ||
                              Person::players[j]->animTarget == staffhitanim ||
                              Person::players[j]->animTarget == staffspinhitanim)) {
                             if (distsq(&Person::players[j]->coords, &Person::players[j]->victim->coords) < 4 &&
@@ -8297,7 +8283,7 @@ void Person::doAI()
                                  Person::players[j]->animTarget == knifeslashstartanim ||
                                  Person::players[j]->animTarget == swordslashanim &&
                                      (distsq(&Person::players[j]->coords, &coords) < 2 ||
-                                      weaponactive != -1))) {
+                                      hasWeapon()))) {
                                 if (target >= 0) {
                                     target = -1;
                                 } else {
@@ -8421,6 +8407,6 @@ void Person::doAI()
 bool Person::catchKnife()
 {
     return
-        ((PersonType::types[creature].knifeCatchingType == 0) && (Random() % 2 != 0) && (weaponactive == -1) && (aitype == attacktypecutoff)) ||
-        ((PersonType::types[creature].knifeCatchingType == 1) && (Random() % 3 != 0) && (weaponactive == -1) && (isIdle() || isRun() || animTarget == walkanim));
+        ((PersonType::types[creature].knifeCatchingType == 0) && (Random() % 2 != 0) && (!hasWeapon()) && (aitype == attacktypecutoff)) ||
+        ((PersonType::types[creature].knifeCatchingType == 1) && (Random() % 3 != 0) && (!hasWeapon()) && (isIdle() || isRun() || animTarget == walkanim));
 }
