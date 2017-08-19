@@ -8417,3 +8417,10 @@ void Person::doAI()
         }
     }
 }
+
+bool Person::catchKnife()
+{
+    return
+        ((PersonType::types[creature].knifeCatchingType == 0) && (Random() % 2 != 0) && (weaponactive == -1) && (aitype == attacktypecutoff)) ||
+        ((PersonType::types[creature].knifeCatchingType == 1) && (Random() % 3 != 0) && (weaponactive == -1) && (isIdle() || isRun() || animTarget == walkanim));
+}

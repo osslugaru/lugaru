@@ -81,6 +81,7 @@ void PersonType::Load()
     types[wolftype].hasClaws = true;
     types[wolftype].clothes = false;
     types[wolftype].maxRunSpeed = 75;
+    types[wolftype].knifeCatchingType = 1;
 
     /* Rabbit */
     types[rabbittype].proportions[0] = 1.2;
@@ -137,4 +138,5 @@ void PersonType::Load()
     types[rabbittype].hasClaws = false;
     types[rabbittype].clothes = true;
     types[rabbittype].maxRunSpeed = 55;
+    types[rabbittype].knifeCatchingType = 0;
 }

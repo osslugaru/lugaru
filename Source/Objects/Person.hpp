@@ -400,6 +400,8 @@ public:
     void addClothes();
 
     void doAI();
+
+    bool catchKnife();
 };
 
 const int maxplayers = 10;

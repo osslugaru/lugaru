@@ -63,6 +63,7 @@ public:
     bool hasClaws;
     bool clothes;
     unsigned int maxRunSpeed;
+    unsigned int knifeCatchingType;
 
     GLubyte bloodText[512 * 512 * 3] = { 0 };
 

@@ -259,8 +259,7 @@ void Weapon::doStuff(int i)
                     distsq(&position, &Person::players[j]->coords) < 4 && Person::players[j]->weaponstuck == -1 &&
                     !Person::players[j]->skeleton.free && (int(j) != oldowner)) {
                     if ((Person::players[j]->aitype != attacktypecutoff || abs(Random() % 6) == 0 || (Person::players[j]->animTarget != backhandspringanim && Person::players[j]->animTarget != rollanim && Person::players[j]->animTarget != flipanim && Random() % 2 == 0)) && !missed) {
-                        if ((Person::players[j]->creature == wolftype && Random() % 3 != 0 && Person::players[j]->weaponactive == -1 && (Person::players[j]->isIdle() || Person::players[j]->isRun() || Person::players[j]->animTarget == walkanim)) ||
-                            (Person::players[j]->creature == rabbittype && Random() % 2 == 0 && Person::players[j]->aitype == attacktypecutoff && Person::players[j]->weaponactive == -1)) {
+                        if (Person::players[j]->catchKnife()) {
                             emit_sound_at(knifedrawsound, Person::players[j]->coords, 128.);
 
                             Person::players[j]->animTarget = removeknifeanim;
