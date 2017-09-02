@@ -37,8 +37,6 @@ if(LINUX)
     option(SYSTEM_INSTALL "Enable system-wide installation, with hardcoded data directory defined with CMAKE_INSTALL_DATADIR" OFF)
 endif(LINUX)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake/Modules/")
-
 
 ### Version
 
@@ -219,7 +217,8 @@ endif(APPLE)
 
 find_package(PNG REQUIRED)
 find_package(JPEG REQUIRED)
-find_package(OggVorbis REQUIRED)
+
+pkg_check_modules(VORBISFILE vorbisfile REQUIRED)
 
 include_directories(
     ${OPENAL_INCLUDE_DIR}
@@ -231,7 +230,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/Source
 )
 
-set(LUGARU_LIBS ${OPENAL_LIBRARY} ${PNG_LIBRARY} ${JPEG_LIBRARY} ${SDL2_LIBRARIES} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY} ${VORBISFILE_LIBRARY} ${PLATFORM_LIBS})
+set(LUGARU_LIBS ${OPENAL_LIBRARY} ${PNG_LIBRARY} ${JPEG_LIBRARY} ${SDL2_LIBRARIES} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY} ${VORBISFILE_LIBRARIES} ${PLATFORM_LIBS})
 
 
 ### Definitions
