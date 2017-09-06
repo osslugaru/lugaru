@@ -88,16 +88,11 @@ void Dispose()
 
     OPENAL_StopSound(OPENAL_ALL);
 
-// this is causing problems on Linux, but we'll force an _exit() a little
-//  later in the shutdown process.  --ryan.
-#if !PLATFORM_LINUX
-
     for (int i = 0; i < sounds_count; ++i) {
         OPENAL_Sample_Free(samp[i]);
     }
 
     OPENAL_Close();
-#endif
 }
 
 void Game::newGame()
