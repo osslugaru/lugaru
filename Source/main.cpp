@@ -579,7 +579,10 @@ static inline void chdirToAppPath(const char* argv0)
                 *ptr = '\0';
         }
 #endif
-        chdir(dir);
+        errno = 0;
+        if (chdir(dir) != 0) {
+            printf("Error changing dir to '%s' (%s).\n", dir, strerror(errno));
+        }
         free(dir);
     }
 }
