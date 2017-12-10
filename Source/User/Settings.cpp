@@ -76,16 +76,10 @@ void SaveSettings()
     if (newdetail > 2) {
         newdetail = 2;
     }
-    if (newscreenwidth > 3000) {
+    if (newscreenwidth < minscreenwidth || newscreenwidth > maxscreenwidth) {
         newscreenwidth = screenwidth;
     }
-    if (newscreenwidth < 0) {
-        newscreenwidth = screenwidth;
-    }
-    if (newscreenheight > 3000) {
-        newscreenheight = screenheight;
-    }
-    if (newscreenheight < 0) {
+    if (newscreenheight < minscreenheight || newscreenheight > maxscreenheight) {
         newscreenheight = screenheight;
     }
     errno = 0;
@@ -207,8 +201,14 @@ bool LoadSettings()
 
         if (!strncmp(setting, "Screenwidth", 11)) {
             ipstream >> kContextWidth;
+            if (kContextWidth < (int)minscreenwidth || kContextWidth > (int)maxscreenwidth) {
+               kContextWidth = (int)minscreenwidth;
+            }
         } else if (!strncmp(setting, "Screenheight", 12)) {
             ipstream >> kContextHeight;
+            if (kContextHeight < (int)minscreenheight || kContextHeight > (int)maxscreenheight) {
+               kContextHeight = (int)minscreenheight;
+            }
         } else if (!strncmp(setting, "Fullscreen", 10)) {
             ipstream >> fullscreen;
         } else if (!strncmp(setting, "Mouse sensitivity", 17)) {
@@ -316,10 +316,10 @@ bool LoadSettings()
     if (detail < 0) {
         detail = 0;
     }
-    if (screenwidth < 0) {
+    if (screenwidth < minscreenwidth || screenwidth > maxscreenwidth) {
         screenwidth = 1024;
     }
-    if (screenheight < 0) {
+    if (screenheight < minscreenheight || screenheight > maxscreenheight) {
         screenheight = 768;
     }
 
