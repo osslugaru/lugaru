@@ -11,7 +11,7 @@ variables:
   EXTRA_REPO_CONFIGURE_COMMAND: /bin/true
   JPEG_PACKAGE: "pkgconfig(libjpeg)"
   CMAKE_PACKAGE: "/usr/bin/cmake"
-  DEPENDENCY_PACKAGES: "pkgconfig(openal) pkgconfig(sdl2) pkgconfig(glu) pkgconfig(libpng) pkgconfig(vorbis) pkgconfig(vorbisfile) pkgconfig(ogg)"
+  DEPENDENCY_PACKAGES: "pkgconfig(openal) pkgconfig(sdl2) pkgconfig(glu) pkgconfig(libpng) pkgconfig(vorbis) pkgconfig(vorbisfile) pkgconfig(ogg) pkgconfig(jsoncpp)"
   COMMON_PACKAGES: "$COMPILER_PACKAGES $CMAKE_PACKAGE make $DEPENDENCY_PACKAGES $JPEG_PACKAGE"
 
 before_script:
