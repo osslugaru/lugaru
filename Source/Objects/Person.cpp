@@ -1010,166 +1010,165 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
         rotationpoint = 0;
         // ray testing for a tri in the character model
         whichtri = skeleton.drawmodel.LineCheck(&startpoint, &endpoint, &colpoint, &movepoint, &rotationpoint);
-        if (whichtri != -1) {
-            // low level geometry math
-            p0 = colpoint;
-            p1 = skeleton.drawmodel.getTriangleVertex(whichtri, 0);
-            p2 = skeleton.drawmodel.getTriangleVertex(whichtri, 1);
-            p3 = skeleton.drawmodel.getTriangleVertex(whichtri, 2);
-
-            bary.x = distsq(&p0, &p1);
-            bary.y = distsq(&p0, &p2);
-            bary.z = distsq(&p0, &p3);
-
-            total = bary.x + bary.y + bary.z;
-            bary.x /= total;
-            bary.y /= total;
-            bary.z /= total;
-
-            bary.x = 1 - bary.x;
-            bary.y = 1 - bary.y;
-            bary.z = 1 - bary.z;
-
-            total = bary.x + bary.y + bary.z;
-            bary.x /= total;
-            bary.y /= total;
-            bary.z /= total;
-
-            gxx.x = skeleton.drawmodel.Triangles[whichtri].gx[0];
-            gxx.y = skeleton.drawmodel.Triangles[whichtri].gx[1];
-            gxx.z = skeleton.drawmodel.Triangles[whichtri].gx[2];
-            gyy.x = skeleton.drawmodel.Triangles[whichtri].gy[0];
-            gyy.y = skeleton.drawmodel.Triangles[whichtri].gy[1];
-            gyy.z = skeleton.drawmodel.Triangles[whichtri].gy[2];
-            coordsx = skeleton.drawmodel.Triangles[whichtri].gx[0] * bary.x + skeleton.drawmodel.Triangles[whichtri].gx[1] * bary.y + skeleton.drawmodel.Triangles[whichtri].gx[2] * bary.z;
-            coordsy = skeleton.drawmodel.Triangles[whichtri].gy[0] * bary.x + skeleton.drawmodel.Triangles[whichtri].gy[1] * bary.y + skeleton.drawmodel.Triangles[whichtri].gy[2] * bary.z;
-
-            if (bleeding <= 0 && spurt) {
-                spurt = 0;
-                for (int i = 0; i < 3; i++) {
-                    // emit blood particles
-                    // FIXME: more copypaste code
-                    bloodvel = 0;
-                    if (skeleton.free) {
-                        bloodvel -= DoRotation(skeleton.forward * 10 * scale, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0);
-                        bloodvel += DoRotation(jointVel(head), ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
-                        Sprite::MakeSprite(bloodsprite, jointPos(head) * scale + coords, bloodvel, 1, 1, 1, .05, 1);
-                        Sprite::MakeSprite(bloodflamesprite, jointPos(head) * scale + coords, bloodvel, 1, 1, 1, .3, 1);
-                    } else {
-                        bloodvel.z = 10;
-                        bloodvel = DoRotation(bloodvel, ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
-                        bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0) * scale;
-                        Sprite::MakeSprite(bloodsprite, DoRotation((jointPos(head) + jointPos(neck)) / 2, 0, yaw, 0) * scale + coords, bloodvel, 1, 1, 1, .05, 1);
-                        Sprite::MakeSprite(bloodflamesprite, DoRotation((jointPos(head) + jointPos(neck)) / 2, 0, yaw, 0) * scale + coords, bloodvel, 1, 1, 1, .3, 1);
-                    }
-                }
-            }
-
-            // texture manipulation follows
-
-            int offsetx = 0, offsety = 0;
-            offsetx = (1 + coordsy) * 512 - 291;
-            offsety = coordsx * 512 - 437;
-
-            int startx = 512;
-            int starty = 512;
-            int endx = 0;
-            int endy = 0;
-            GLubyte color;
-            for (i = 0; i < 512; i++) {
-                for (j = 0; j < 512; j++) {
-                    if (PersonType::types[creature].bloodText[i * 512 * 3 + j * 3 + 0] <= which + 4 && PersonType::types[creature].bloodText[i * 512 * 3 + j * 3 + 0] >= which - 4) {
-                        if (i < startx) {
-                            startx = i;
-                        }
-                        if (j < starty) {
-                            starty = j;
-                        }
-                        if (i > endx) {
-                            endx = i;
-                        }
-                        if (j > endy) {
-                            endy = j;
-                        }
-                    }
-                }
-            }
-            startx += offsetx;
-            endx += offsetx;
-            starty += offsety;
-            endy += offsety;
-
-            if (startx < 0) {
-                startx = 0;
-            }
-            if (starty < 0) {
-                starty = 0;
-            }
-            if (endx > 512 - 1) {
-                endx = 512 - 1;
-            }
-            if (endy > 512 - 1) {
-                endy = 512 - 1;
-            }
-            if (endx < startx) {
-                endx = startx;
-            }
-            if (endy < starty) {
-                endy = starty;
-            }
-
-            startx /= realtexdetail;
-            starty /= realtexdetail;
-            endx /= realtexdetail;
-            endy /= realtexdetail;
-
-            int texdetailint = realtexdetail;
-            int where;
-            for (i = startx; i < endx; i++) {
-                for (j = starty; j < endy; j++) {
-                    if (PersonType::types[creature].bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] <= which + 4 && PersonType::types[creature].bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] >= which - 4) {
-                        color = Random() % 85 + 170;
-                        where = i * skeleton.skinsize * 3 + j * 3;
-                        if (skeleton.skinText[where + 0] > color / 2) {
-                            skeleton.skinText[where + 0] = color / 2;
-                        }
-                        skeleton.skinText[where + 1] = 0;
-                        skeleton.skinText[where + 2] = 0;
-                    } else if (PersonType::types[creature].bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] <= 160 + 4 && PersonType::types[creature].bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] >= 160 - 4) {
-                        color = Random() % 85 + 170;
-                        where = i * skeleton.skinsize * 3 + j * 3;
-                        if (skeleton.skinText[where + 0] > color / 2) {
-                            skeleton.skinText[where + 0] = color / 2;
-                        }
-                        skeleton.skinText[where + 1] = 0;
-                        skeleton.skinText[where + 2] = 0;
-                    }
-                }
-            }
-            skeleton.drawmodel.textureptr.bind();
-            DoMipmaps();
-
-            bleedy = (1 + coordsy) * 512;
-            bleedx = coordsx * 512;
-            bleedy /= realtexdetail;
-            bleedx /= realtexdetail;
-            if (bleedx < 0) {
-                bleedx = 0;
-            }
-            if (bleedy < 0) {
-                bleedy = 0;
-            }
-            if (bleedx > skeleton.skinsize - 1) {
-                bleedx = skeleton.skinsize - 1;
-            }
-            if (bleedy > skeleton.skinsize - 1) {
-                bleedy = skeleton.skinsize - 1;
-            }
-            direction = abs(Random() % 2) * 2 - 1;
-        }
         if (whichtri == -1) {
             return 0;
         }
+
+        // low level geometry math
+        p0 = colpoint;
+        p1 = skeleton.drawmodel.getTriangleVertex(whichtri, 0);
+        p2 = skeleton.drawmodel.getTriangleVertex(whichtri, 1);
+        p3 = skeleton.drawmodel.getTriangleVertex(whichtri, 2);
+
+        bary.x = distsq(&p0, &p1);
+        bary.y = distsq(&p0, &p2);
+        bary.z = distsq(&p0, &p3);
+
+        total = bary.x + bary.y + bary.z;
+        bary.x /= total;
+        bary.y /= total;
+        bary.z /= total;
+
+        bary.x = 1 - bary.x;
+        bary.y = 1 - bary.y;
+        bary.z = 1 - bary.z;
+
+        total = bary.x + bary.y + bary.z;
+        bary.x /= total;
+        bary.y /= total;
+        bary.z /= total;
+
+        gxx.x = skeleton.drawmodel.Triangles[whichtri].gx[0];
+        gxx.y = skeleton.drawmodel.Triangles[whichtri].gx[1];
+        gxx.z = skeleton.drawmodel.Triangles[whichtri].gx[2];
+        gyy.x = skeleton.drawmodel.Triangles[whichtri].gy[0];
+        gyy.y = skeleton.drawmodel.Triangles[whichtri].gy[1];
+        gyy.z = skeleton.drawmodel.Triangles[whichtri].gy[2];
+        coordsx = skeleton.drawmodel.Triangles[whichtri].gx[0] * bary.x + skeleton.drawmodel.Triangles[whichtri].gx[1] * bary.y + skeleton.drawmodel.Triangles[whichtri].gx[2] * bary.z;
+        coordsy = skeleton.drawmodel.Triangles[whichtri].gy[0] * bary.x + skeleton.drawmodel.Triangles[whichtri].gy[1] * bary.y + skeleton.drawmodel.Triangles[whichtri].gy[2] * bary.z;
+
+        if (bleeding <= 0 && spurt) {
+            spurt = 0;
+            for (int i = 0; i < 3; i++) {
+                // emit blood particles
+                // FIXME: more copypaste code
+                bloodvel = 0;
+                if (skeleton.free) {
+                    bloodvel -= DoRotation(skeleton.forward * 10 * scale, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0);
+                    bloodvel += DoRotation(jointVel(head), ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
+                    Sprite::MakeSprite(bloodsprite, jointPos(head) * scale + coords, bloodvel, 1, 1, 1, .05, 1);
+                    Sprite::MakeSprite(bloodflamesprite, jointPos(head) * scale + coords, bloodvel, 1, 1, 1, .3, 1);
+                } else {
+                    bloodvel.z = 10;
+                    bloodvel = DoRotation(bloodvel, ((float)(Random() % 100)) / 4, yaw + ((float)(Random() % 100)) / 4, 0) * scale;
+                    bloodvel += DoRotation(velocity, ((float)(Random() % 100)) / 4, ((float)(Random() % 100)) / 4, 0) * scale;
+                    Sprite::MakeSprite(bloodsprite, DoRotation((jointPos(head) + jointPos(neck)) / 2, 0, yaw, 0) * scale + coords, bloodvel, 1, 1, 1, .05, 1);
+                    Sprite::MakeSprite(bloodflamesprite, DoRotation((jointPos(head) + jointPos(neck)) / 2, 0, yaw, 0) * scale + coords, bloodvel, 1, 1, 1, .3, 1);
+                }
+            }
+        }
+
+        // texture manipulation follows
+
+        int offsetx = 0, offsety = 0;
+        offsetx = (1 + coordsy) * 512 - 291;
+        offsety = coordsx * 512 - 437;
+
+        int startx = 512;
+        int starty = 512;
+        int endx = 0;
+        int endy = 0;
+        GLubyte color;
+        for (i = 0; i < 512; i++) {
+            for (j = 0; j < 512; j++) {
+                if (PersonType::types[creature].bloodText[i * 512 * 3 + j * 3 + 0] <= which + 4 && PersonType::types[creature].bloodText[i * 512 * 3 + j * 3 + 0] >= which - 4) {
+                    if (i < startx) {
+                        startx = i;
+                    }
+                    if (j < starty) {
+                        starty = j;
+                    }
+                    if (i > endx) {
+                        endx = i;
+                    }
+                    if (j > endy) {
+                        endy = j;
+                    }
+                }
+            }
+        }
+        startx += offsetx;
+        endx += offsetx;
+        starty += offsety;
+        endy += offsety;
+
+        if (startx < 0) {
+            startx = 0;
+        }
+        if (starty < 0) {
+            starty = 0;
+        }
+        if (endx > 512 - 1) {
+            endx = 512 - 1;
+        }
+        if (endy > 512 - 1) {
+            endy = 512 - 1;
+        }
+        if (endx < startx) {
+            endx = startx;
+        }
+        if (endy < starty) {
+            endy = starty;
+        }
+
+        startx /= realtexdetail;
+        starty /= realtexdetail;
+        endx /= realtexdetail;
+        endy /= realtexdetail;
+
+        int texdetailint = realtexdetail;
+        int where;
+        for (i = startx; i < endx; i++) {
+            for (j = starty; j < endy; j++) {
+                if (PersonType::types[creature].bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] <= which + 4 && PersonType::types[creature].bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] >= which - 4) {
+                    color = Random() % 85 + 170;
+                    where = i * skeleton.skinsize * 3 + j * 3;
+                    if (skeleton.skinText[where + 0] > color / 2) {
+                        skeleton.skinText[where + 0] = color / 2;
+                    }
+                    skeleton.skinText[where + 1] = 0;
+                    skeleton.skinText[where + 2] = 0;
+                } else if (PersonType::types[creature].bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] <= 160 + 4 && PersonType::types[creature].bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] >= 160 - 4) {
+                    color = Random() % 85 + 170;
+                    where = i * skeleton.skinsize * 3 + j * 3;
+                    if (skeleton.skinText[where + 0] > color / 2) {
+                        skeleton.skinText[where + 0] = color / 2;
+                    }
+                    skeleton.skinText[where + 1] = 0;
+                    skeleton.skinText[where + 2] = 0;
+                }
+            }
+        }
+        skeleton.drawmodel.textureptr.bind();
+        DoMipmaps();
+
+        bleedy = (1 + coordsy) * 512;
+        bleedx = coordsx * 512;
+        bleedy /= realtexdetail;
+        bleedx /= realtexdetail;
+        if (bleedx < 0) {
+            bleedx = 0;
+        }
+        if (bleedy < 0) {
+            bleedy = 0;
+        }
+        if (bleedx > skeleton.skinsize - 1) {
+            bleedx = skeleton.skinsize - 1;
+        }
+        if (bleedy > skeleton.skinsize - 1) {
+            bleedy = skeleton.skinsize - 1;
+        }
+        direction = abs(Random() % 2) * 2 - 1;
     }
     bleeding = howmuch + (float)abs(Random() % 100) / 200 - .25;
     deathbleeding += bleeding;

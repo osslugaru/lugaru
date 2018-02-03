@@ -21,6 +21,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 DECLARE_COMMAND(quit)
 DECLARE_COMMAND(map)
 DECLARE_COMMAND(save)
+DECLARE_COMMAND(save_json)
 
 DECLARE_COMMAND(tint)
 DECLARE_COMMAND(tintr)

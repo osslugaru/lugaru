@@ -25,6 +25,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <stdio.h>
 #include <vector>
+#include <json/value.h>
 
 class DialogScene
 {
@@ -32,6 +33,7 @@ public:
     DialogScene(FILE* tfile);
     DialogScene(ifstream& ipstream);
     void save(FILE* tfile);
+    Json::Value save();
 
     int location;
     float color[3];
@@ -54,6 +56,7 @@ public:
     void tick(int id);
     void play();
     void save(FILE* tfile);
+    Json::Value save();
 
     int type;
     int gonethrough;
@@ -63,6 +66,7 @@ public:
 
     static void loadDialogs(FILE*);
     static void saveDialogs(FILE*);
+    static Json::Value saveDialogs();
 
     static bool inDialog() { return (indialogue != -1); }
     static Dialog& currentDialog() { return dialogs[whichdialogue]; }
