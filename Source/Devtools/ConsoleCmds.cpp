@@ -226,9 +226,7 @@ void ch_save_json(const char* args)
     map_data["map"]["skybox"]["lightg"]     = skyboxlightg;
     map_data["map"]["skybox"]["lightb"]     = skyboxlightb;
 
-    map_data["map"]["players"][0]["coords"]["x"]    = Person::players[0]->coords.x;
-    map_data["map"]["players"][0]["coords"]["y"]    = Person::players[0]->coords.y;
-    map_data["map"]["players"][0]["coords"]["z"]    = Person::players[0]->coords.z;
+    map_data["map"]["players"][0]["coords"]         = Person::players[0]->coords;
     map_data["map"]["players"][0]["yaw"]            = Person::players[0]->yaw;
     map_data["map"]["players"][0]["targetyaw"]      = Person::players[0]->targetyaw;
 
@@ -253,8 +251,6 @@ void ch_save_json(const char* args)
     map_data["map"]["players"][0]["whichskin"]  = Person::players[0]->whichskin;
     map_data["map"]["players"][0]["creature"]   = Person::players[0]->creature;
 
-    map_data["map"]["dialogs"] = Dialog::saveDialogs();
-
     for (int k = 0; k < Person::players[0]->numclothes; k++) {
         map_data["map"]["players"][0]["clothes"][k]["path"]     = Person::players[0]->clothes[k];
         map_data["map"]["players"][0]["clothes"][k]["tintr"]    = Person::players[0]->clothestintr[k];
@@ -262,49 +258,39 @@ void ch_save_json(const char* args)
         map_data["map"]["players"][0]["clothes"][k]["tintb"]    = Person::players[0]->clothestintb[k];
     }
 
+    map_data["map"]["dialogs"] = Dialog::saveDialogs();
+
     map_data["map"]["environment"] = environment;
 
     for (unsigned int k = 0; k < Object::objects.size(); k++) {
-        map_data["map"]["objects"][k]["type"]           = Object::objects[k]->type;
-        map_data["map"]["objects"][k]["yaw"]            = Object::objects[k]->yaw;
-        map_data["map"]["objects"][k]["pitch"]          = Object::objects[k]->pitch;
-        map_data["map"]["objects"][k]["scale"]          = Object::objects[k]->scale;
-        map_data["map"]["objects"][k]["position"]["x"]  = Object::objects[k]->position.x;
-        map_data["map"]["objects"][k]["position"]["y"]  = Object::objects[k]->position.y;
-        map_data["map"]["objects"][k]["position"]["z"]  = Object::objects[k]->position.z;
+        map_data["map"]["objects"][k] = *Object::objects[k];
     }
 
     for (unsigned i = 0; i < Hotspot::hotspots.size(); i++) {
         map_data["map"]["hotspots"][i]["type"] = Hotspot::hotspots[i].type;
         map_data["map"]["hotspots"][i]["size"] = Hotspot::hotspots[i].size;
         map_data["map"]["hotspots"][i]["text"] = Hotspot::hotspots[i].text;
-        map_data["map"]["hotspots"][i]["position"]["x"] = Hotspot::hotspots[i].position.x;
-        map_data["map"]["hotspots"][i]["position"]["y"] = Hotspot::hotspots[i].position.y;
-        map_data["map"]["hotspots"][i]["position"]["z"] = Hotspot::hotspots[i].position.z;
+        map_data["map"]["hotspots"][i]["position"] = Hotspot::hotspots[i].position;
     }
 
     if (Person::players.size() > maxplayers) {
         cout << "Warning: this level contains more players than allowed" << endl;
     }
     for (unsigned j = 1; j < Person::players.size(); j++) {
-        map_data["map"]["players"][j]["whichskin"] = Person::players[j]->whichskin;
-        map_data["map"]["players"][j]["creature"] = Person::players[j]->creature;
-        map_data["map"]["players"][j]["coords"]["x"]    = Person::players[j]->coords.x;
-        map_data["map"]["players"][j]["coords"]["y"]    = Person::players[j]->coords.y;
-        map_data["map"]["players"][j]["coords"]["z"]    = Person::players[j]->coords.z;
-        map_data["map"]["players"][j]["howactive"] = Person::players[j]->howactive;
-        map_data["map"]["players"][j]["scale"] = Person::players[j]->scale;
-        map_data["map"]["players"][j]["immobile"] = Person::players[j]->immobile;
-        map_data["map"]["players"][j]["yaw"] = Person::players[j]->yaw;
+        map_data["map"]["players"][j]["whichskin"]  = Person::players[j]->whichskin;
+        map_data["map"]["players"][j]["creature"]   = Person::players[j]->creature;
+        map_data["map"]["players"][j]["coords"]     = Person::players[j]->coords;
+        map_data["map"]["players"][j]["howactive"]  = Person::players[j]->howactive;
+        map_data["map"]["players"][j]["scale"]      = Person::players[j]->scale;
+        map_data["map"]["players"][j]["immobile"]   = Person::players[j]->immobile;
+        map_data["map"]["players"][j]["yaw"]        = Person::players[j]->yaw;
         for (int k = 0; k < Person::players[j]->num_weapons; k++) {
             map_data["map"]["players"][j]["weapons"][k] = weapons[Person::players[j]->weaponids[k]].getType();
         }
         if (Person::players[j]->numwaypoints < 30) {
             for (int k = 0; k < Person::players[j]->numwaypoints; k++) {
-                map_data["map"]["players"][j]["waypoints"][k]["type"] = Person::players[j]->waypointtype[k];
-                map_data["map"]["players"][j]["waypoints"][k]["x"] = Person::players[j]->waypoints[k].x;
-                map_data["map"]["players"][j]["waypoints"][k]["y"] = Person::players[j]->waypoints[k].y;
-                map_data["map"]["players"][j]["waypoints"][k]["z"] = Person::players[j]->waypoints[k].z;
+                map_data["map"]["players"][j]["waypoints"][k]["type"]   = Person::players[j]->waypointtype[k];
+                map_data["map"]["players"][j]["waypoints"][k]["pos"]    = Person::players[j]->waypoints[k];
             }
             map_data["map"]["players"][j]["waypoint"] = Person::players[j]->waypoint;
         } else {
@@ -340,17 +326,13 @@ void ch_save_json(const char* args)
     }
 
     for (int j = 0; j < numpathpoints; j++) {
-        map_data["map"]["pathpoints"][j]["x"] = pathpoint[j].x;
-        map_data["map"]["pathpoints"][j]["y"] = pathpoint[j].y;
-        map_data["map"]["pathpoints"][j]["z"] = pathpoint[j].z;
+        map_data["map"]["pathpoints"][j] = pathpoint[j];
         for (int k = 0; k < numpathpointconnect[j]; k++) {
             map_data["map"]["pathpoints"][j]["connect"][k] = pathpointconnect[j][k];
         }
     }
 
-    map_data["map"]["center"]["x"] = mapcenter.x;
-    map_data["map"]["center"]["y"] = mapcenter.y;
-    map_data["map"]["center"]["z"] = mapcenter.z;
+    map_data["map"]["center"] = mapcenter;
     map_data["map"]["radius"] = mapradius;
 
     map_file << map_data << endl;

@@ -46,6 +46,7 @@ public:
     int participantfocus;
     int participantaction;
     XYZ participantfacing[10];
+    operator Json::Value() {return save();}
 };
 
 class Dialog

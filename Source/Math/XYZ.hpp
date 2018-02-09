@@ -24,6 +24,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Graphic/gamegl.hpp"
 
 #include <math.h>
+#include <json/value.h>
 
 class XYZ
 {
@@ -35,6 +36,12 @@ public:
         : x(0.0f)
         , y(0.0f)
         , z(0.0f)
+    {
+    }
+    XYZ(Json::Value v)
+        : x(v[0].asFloat())
+        , y(v[1].asFloat())
+        , z(v[2].asFloat())
     {
     }
     inline XYZ operator+(XYZ add);
@@ -49,6 +56,8 @@ public:
     inline void operator/=(float add);
     inline void operator=(float add);
     inline bool operator==(XYZ add);
+
+    operator Json::Value();
 };
 
 inline void CrossProduct(XYZ* P, XYZ* Q, XYZ* V);

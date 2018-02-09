@@ -33,6 +33,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <memory>
 #include <vector>
+#include <json/value.h>
 //
 // Model Structures
 //
@@ -102,6 +103,8 @@ public:
     static void DoStuff();
     static int checkcollide(XYZ startpoint, XYZ endpoint);
     static int checkcollide(XYZ startpoint, XYZ endpoint, int what);
+
+    operator Json::Value();
 
 private:
     void handleFire();

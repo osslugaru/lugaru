@@ -253,3 +253,14 @@ float LineFacetd(XYZ* p1, XYZ* p2, XYZ* pa, XYZ* pb, XYZ* pc, XYZ* n, XYZ* p)
     }
     return 1;
 }
+
+XYZ::operator Json::Value()
+{
+    Json::Value xyz;
+
+    xyz[0] = x;
+    xyz[1] = y;
+    xyz[2] = z;
+
+    return xyz;
+}

@@ -234,13 +234,11 @@ Json::Value Dialog::save()
     dialog["type"] = type;
 
     for (int l = 0; l < 10; l++) {
-        dialog["participant"][l]["x"] = participantlocation[l].x;
-        dialog["participant"][l]["y"] = participantlocation[l].y;
-        dialog["participant"][l]["z"] = participantlocation[l].z;
+        dialog["participant"][l]["pos"] = participantlocation[l];
         dialog["participant"][l]["yaw"] = participantyaw[l];
     }
     for (unsigned l = 0; l < scenes.size(); l++) {
-        dialog["scenes"][l] = scenes[l].save();
+        dialog["scenes"][l] = scenes[l];
     }
 
     return dialog;
@@ -279,18 +277,14 @@ Json::Value DialogScene::save()
     dialogscene["sound"]    = sound;
     dialogscene["text"]     = text;
     dialogscene["name"]     = name;
-    dialogscene["camera"]["x"] = camera.x;
-    dialogscene["camera"]["y"] = camera.y;
-    dialogscene["camera"]["z"] = camera.z;
+    dialogscene["camera"]["pos"]    = camera;
     dialogscene["camera"]["yaw"]    = camerayaw;
     dialogscene["camera"]["pitch"]  = camerapitch;
     dialogscene["participantfocus"]     = participantfocus;
     dialogscene["participantaction"]    = participantaction;
 
     for (int m = 0; m < 10; m++) {
-        dialogscene["participantfacing"][m]["x"]    = participantfacing[m].x;
-        dialogscene["participantfacing"][m]["y"]    = participantfacing[m].y;
-        dialogscene["participantfacing"][m]["z"]    = participantfacing[m].z;
+        dialogscene["participantfacing"][m] = participantfacing[m];
     }
 
     return dialogscene;

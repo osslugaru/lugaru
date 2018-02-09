@@ -734,6 +734,18 @@ int Object::checkcollide(XYZ startpoint, XYZ endpoint, int what, float minx, flo
     return -1;
 }
 
+Object::operator Json::Value() {
+    Json::Value object;
+
+    object[0] = type;
+    object[1] = yaw;
+    object[2] = pitch;
+    object[3] = scale;
+    object[4] = position;
+
+    return object;
+}
+
 //~ Object::~Objects()
 //~ {
 //~ boxtextureptr.destroy();
