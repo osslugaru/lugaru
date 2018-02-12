@@ -8409,3 +8409,62 @@ bool Person::catchKnife()
         ((PersonType::types[creature].knifeCatchingType == 0) && (Random() % 2 != 0) && (!hasWeapon()) && (aitype == attacktypecutoff)) ||
         ((PersonType::types[creature].knifeCatchingType == 1) && (Random() % 3 != 0) && (!hasWeapon()) && (isIdle() || isRun() || animTarget == walkanim));
 }
+
+Person::operator Json::Value() {
+    Json::Value person;
+
+    person["whichskin"] = whichskin;
+    person["creature"]  = creature;
+    person["coords"]    = coords;
+    person["yaw"]       = yaw;
+    person["power"]     = power;
+    person["speedmult"] = speedmult;
+
+    if (aitype == playercontrolled) {
+        person["targetyaw"] = targetyaw;
+    } else {
+        person["howactive"] = howactive;
+        person["immobile"]  = immobile;
+        if (numwaypoints < 30) {
+            for (int k = 0; k < numwaypoints; k++) {
+                person["waypoints"][k]["type"]   = waypointtype[k];
+                person["waypoints"][k]["pos"]    = waypoints[k];
+            }
+            person["waypoint"] = waypoint;
+        } else {
+            // TODO output an error?
+            //~ numwaypoints = 0;
+            //~ waypoint = 0;
+            //~ fpackf(tfile, "Bi Bi Bi", numwaypoints, waypoint, waypoint);
+        }
+
+        // Not sure why scale and proportion are not saved for main player
+        person["scale"]     = scale;
+        for (int k = 0; k < 4; k++) {
+            person["proportions"][k]  = getProportion(k);
+        }
+    }
+
+    for (int k = 0; k < num_weapons; k++) {
+        person["weapons"][k] = weapons[weaponids[k]].getType();
+    }
+
+    person["armor"]["head"]         = armorhead;
+    person["armor"]["high"]         = armorhigh;
+    person["armor"]["low"]          = armorlow;
+    person["protection"]["head"]    = protectionhead;
+    person["protection"]["high"]    = protectionhigh;
+    person["protection"]["low"]     = protectionlow;
+    person["metal"]["head"]         = metalhead;
+    person["metal"]["high"]         = metalhigh;
+    person["metal"]["low"]          = metallow;
+
+    for (int k = 0; k < numclothes; k++) {
+        person["clothes"][k]["path"]    = clothes[k];
+        person["clothes"][k]["tintr"]   = clothestintr[k];
+        person["clothes"][k]["tintg"]   = clothestintg[k];
+        person["clothes"][k]["tintb"]   = clothestintb[k];
+    }
+
+    return person;
+}

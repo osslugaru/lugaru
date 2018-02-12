@@ -405,6 +405,8 @@ public:
 
     bool hasWeapon() { return (weaponactive != -1); }
     bool isPlayerControlled() { return (aitype == playercontrolled); }
+
+    operator Json::Value();
 };
 
 const int maxplayers = 10;

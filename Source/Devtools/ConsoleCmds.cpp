@@ -226,38 +226,6 @@ void ch_save_json(const char* args)
     map_data["map"]["skybox"]["lightg"]     = skyboxlightg;
     map_data["map"]["skybox"]["lightb"]     = skyboxlightb;
 
-    map_data["map"]["players"][0]["coords"]         = Person::players[0]->coords;
-    map_data["map"]["players"][0]["yaw"]            = Person::players[0]->yaw;
-    map_data["map"]["players"][0]["targetyaw"]      = Person::players[0]->targetyaw;
-
-    if (Person::players[0]->num_weapons > 0 && Person::players[0]->num_weapons < 5) {
-        for (int j = 0; j < Person::players[0]->num_weapons; j++) {
-            map_data["map"]["players"][0]["weapons"][j] = weapons[Person::players[0]->weaponids[j]].getType();
-        }
-    }
-
-    map_data["map"]["players"][0]["armor"]["head"]      = Person::players[0]->armorhead;
-    map_data["map"]["players"][0]["armor"]["high"]      = Person::players[0]->armorhigh;
-    map_data["map"]["players"][0]["armor"]["low"]       = Person::players[0]->armorlow;
-    map_data["map"]["players"][0]["protection"]["head"] = Person::players[0]->protectionhead;
-    map_data["map"]["players"][0]["protection"]["high"] = Person::players[0]->protectionhigh;
-    map_data["map"]["players"][0]["protection"]["low"]  = Person::players[0]->protectionlow;
-    map_data["map"]["players"][0]["metal"]["head"]      = Person::players[0]->metalhead;
-    map_data["map"]["players"][0]["metal"]["high"]      = Person::players[0]->metalhigh;
-    map_data["map"]["players"][0]["metal"]["low"]       = Person::players[0]->metallow;
-
-    map_data["map"]["players"][0]["power"]      = Person::players[0]->power;
-    map_data["map"]["players"][0]["speedmult"]  = Person::players[0]->speedmult;
-    map_data["map"]["players"][0]["whichskin"]  = Person::players[0]->whichskin;
-    map_data["map"]["players"][0]["creature"]   = Person::players[0]->creature;
-
-    for (int k = 0; k < Person::players[0]->numclothes; k++) {
-        map_data["map"]["players"][0]["clothes"][k]["path"]     = Person::players[0]->clothes[k];
-        map_data["map"]["players"][0]["clothes"][k]["tintr"]    = Person::players[0]->clothestintr[k];
-        map_data["map"]["players"][0]["clothes"][k]["tintg"]    = Person::players[0]->clothestintg[k];
-        map_data["map"]["players"][0]["clothes"][k]["tintb"]    = Person::players[0]->clothestintb[k];
-    }
-
     map_data["map"]["dialogs"] = Dialog::saveDialogs();
 
     map_data["map"]["environment"] = environment;
@@ -276,53 +244,8 @@ void ch_save_json(const char* args)
     if (Person::players.size() > maxplayers) {
         cout << "Warning: this level contains more players than allowed" << endl;
     }
-    for (unsigned j = 1; j < Person::players.size(); j++) {
-        map_data["map"]["players"][j]["whichskin"]  = Person::players[j]->whichskin;
-        map_data["map"]["players"][j]["creature"]   = Person::players[j]->creature;
-        map_data["map"]["players"][j]["coords"]     = Person::players[j]->coords;
-        map_data["map"]["players"][j]["howactive"]  = Person::players[j]->howactive;
-        map_data["map"]["players"][j]["scale"]      = Person::players[j]->scale;
-        map_data["map"]["players"][j]["immobile"]   = Person::players[j]->immobile;
-        map_data["map"]["players"][j]["yaw"]        = Person::players[j]->yaw;
-        for (int k = 0; k < Person::players[j]->num_weapons; k++) {
-            map_data["map"]["players"][j]["weapons"][k] = weapons[Person::players[j]->weaponids[k]].getType();
-        }
-        if (Person::players[j]->numwaypoints < 30) {
-            for (int k = 0; k < Person::players[j]->numwaypoints; k++) {
-                map_data["map"]["players"][j]["waypoints"][k]["type"]   = Person::players[j]->waypointtype[k];
-                map_data["map"]["players"][j]["waypoints"][k]["pos"]    = Person::players[j]->waypoints[k];
-            }
-            map_data["map"]["players"][j]["waypoint"] = Person::players[j]->waypoint;
-        } else {
-            // TODO output an error?
-            //~ Person::players[j]->numwaypoints = 0;
-            //~ Person::players[j]->waypoint = 0;
-            //~ fpackf(tfile, "Bi Bi Bi", Person::players[j]->numwaypoints, Person::players[j]->waypoint, Person::players[j]->waypoint);
-        }
-
-        map_data["map"]["players"][j]["armor"]["head"]      = Person::players[j]->armorhead;
-        map_data["map"]["players"][j]["armor"]["high"]      = Person::players[j]->armorhigh;
-        map_data["map"]["players"][j]["armor"]["low"]       = Person::players[j]->armorlow;
-        map_data["map"]["players"][j]["protection"]["head"] = Person::players[j]->protectionhead;
-        map_data["map"]["players"][j]["protection"]["high"] = Person::players[j]->protectionhigh;
-        map_data["map"]["players"][j]["protection"]["low"]  = Person::players[j]->protectionlow;
-        map_data["map"]["players"][j]["metal"]["head"]      = Person::players[j]->metalhead;
-        map_data["map"]["players"][j]["metal"]["high"]      = Person::players[j]->metalhigh;
-        map_data["map"]["players"][j]["metal"]["low"]       = Person::players[j]->metallow;
-
-        map_data["map"]["players"][j]["power"]      = Person::players[j]->power;
-        map_data["map"]["players"][j]["speedmult"]  = Person::players[j]->speedmult;
-
-        for (int k = 0; k < 4; k++) {
-            map_data["map"]["players"][j]["proportions"][k]  = Person::players[j]->getProportion(k);
-        }
-
-        for (int k = 0; k < Person::players[j]->numclothes; k++) {
-            map_data["map"]["players"][j]["clothes"][k]["path"]     = Person::players[j]->clothes[k];
-            map_data["map"]["players"][j]["clothes"][k]["tintr"]    = Person::players[j]->clothestintr[k];
-            map_data["map"]["players"][j]["clothes"][k]["tintg"]    = Person::players[j]->clothestintg[k];
-            map_data["map"]["players"][j]["clothes"][k]["tintb"]    = Person::players[j]->clothestintb[k];
-        }
+    for (unsigned j = 0; j < Person::players.size(); j++) {
+        map_data["map"]["players"][j] = *Person::players[j];
     }
 
     for (int j = 0; j < numpathpoints; j++) {
