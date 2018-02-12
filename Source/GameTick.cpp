@@ -696,11 +696,13 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
     }
 
     for (int k = 0; k < Person::players[0]->numclothes; k++) {
+        char clothespath[256];
         funpackf(tfile, "Bi", &templength);
         for (int l = 0; l < templength; l++) {
-            funpackf(tfile, "Bb", &Person::players[0]->clothes[k][l]);
+            funpackf(tfile, "Bb", &clothespath[l]);
         }
-        Person::players[0]->clothes[k][templength] = '\0';
+        clothespath[templength] = '\0';
+        Person::players[0]->clothes[k] = std::string(clothespath);
         funpackf(tfile, "Bf Bf Bf", &Person::players[0]->clothestintr[k], &Person::players[0]->clothestintg[k], &Person::players[0]->clothestintb[k]);
     }
 
@@ -1462,7 +1464,7 @@ void Game::ProcessDevInput()
 
             Person::players.back()->numclothes = Person::players[0]->numclothes;
             for (int i = 0; i < Person::players.back()->numclothes; i++) {
-                strcpy(Person::players.back()->clothes[i], Person::players[0]->clothes[i]);
+                Person::players.back()->clothes[i]      = Person::players[0]->clothes[i];
                 Person::players.back()->clothestintr[i] = Person::players[0]->clothestintr[i];
                 Person::players.back()->clothestintg[i] = Person::players[0]->clothestintg[i];
                 Person::players.back()->clothestintb[i] = Person::players[0]->clothestintb[i];

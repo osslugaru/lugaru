@@ -734,6 +734,11 @@ int Object::checkcollide(XYZ startpoint, XYZ endpoint, int what, float minx, flo
     return -1;
 }
 
+Object::Object(Json::Value value)
+    : Object(object_type(value[0].asInt()), value[4], value[1].asFloat(), value[2].asFloat(), value[3].asFloat())
+{
+}
+
 Object::operator Json::Value() {
     Json::Value object;
 

@@ -149,7 +149,7 @@ static void set_clothes(int pnum, const char* args)
     }
 
     int id = Person::players[pnum]->numclothes;
-    strncpy(Person::players[pnum]->clothes[id], buf, 64);
+    Person::players[pnum]->clothes[id]      = std::string(buf);
     Person::players[pnum]->clothestintr[id] = tintr;
     Person::players[pnum]->clothestintg[id] = tintg;
     Person::players[pnum]->clothestintb[id] = tintb;
@@ -167,7 +167,7 @@ static void list_clothes(int pnum)
     printf("Clothes from player %d:\n", pnum);
     for (int i = 0; i < Person::players[pnum]->numclothes; i++) {
         printf("%s (%f %f %f)\n",
-               Person::players[pnum]->clothes[i],
+               Person::players[pnum]->clothes[i].c_str(),
                Person::players[pnum]->clothestintr[i],
                Person::players[pnum]->clothestintg[i],
                Person::players[pnum]->clothestintb[i]);
@@ -303,7 +303,7 @@ void ch_save(const char* args)
     Dialog::saveDialogs(tfile);
 
     for (int k = 0; k < Person::players[0]->numclothes; k++) {
-        int templength = strlen(Person::players[0]->clothes[k]);
+        int templength = Person::players[0]->clothes[k].size();
         fpackf(tfile, "Bi", templength);
         for (int l = 0; l < templength; l++) {
             fpackf(tfile, "Bb", Person::players[0]->clothes[k][l]);
@@ -368,7 +368,7 @@ void ch_save(const char* args)
         if (Person::players[j]->numclothes) {
             for (int k = 0; k < Person::players[j]->numclothes; k++) {
                 int templength;
-                templength = strlen(Person::players[j]->clothes[k]);
+                templength = Person::players[j]->clothes[k].size();
                 fpackf(tfile, "Bi", templength);
                 for (int l = 0; l < templength; l++) {
                     fpackf(tfile, "Bb", Person::players[j]->clothes[k][l]);

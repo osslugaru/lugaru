@@ -416,12 +416,14 @@ Person::Person(FILE* tfile, int mapvers, unsigned i)
 
     funpackf(tfile, "Bi", &numclothes);
     for (int k = 0; k < numclothes; k++) {
+        char clothespath[256];
         int templength;
         funpackf(tfile, "Bi", &templength);
         for (int l = 0; l < templength; l++) {
-            funpackf(tfile, "Bb", &clothes[k][l]);
+            funpackf(tfile, "Bb", &clothespath[l]);
         }
-        clothes[k][templength] = '\0';
+        clothespath[templength] = '\0';
+        clothes[k] = std::string(clothespath);
         funpackf(tfile, "Bf Bf Bf", &clothestintr[k], &clothestintg[k], &clothestintb[k]);
     }
 
@@ -8408,6 +8410,88 @@ bool Person::catchKnife()
     return
         ((PersonType::types[creature].knifeCatchingType == 0) && (Random() % 2 != 0) && (!hasWeapon()) && (aitype == attacktypecutoff)) ||
         ((PersonType::types[creature].knifeCatchingType == 1) && (Random() % 3 != 0) && (!hasWeapon()) && (isIdle() || isRun() || animTarget == walkanim));
+}
+
+Person::Person(Json::Value value, int mapvers, unsigned i)
+    : Person()
+{
+    id = i;
+
+    whichskin   = value["whichskin"].asInt();
+    creature    = value["creature"].asInt();
+    coords      = value["coords"];
+    yaw         = value["yaw"].asFloat();
+    power       = value["power"].asFloat();
+    speedmult   = value["speedmult"].asFloat();
+
+    numwaypoints    = value["waypoints"].size();
+    num_weapons     = value["weapons"].size();
+    numclothes      = value["clothes"].size();
+
+    if (id == 0) {
+        targetyaw = value["targetyaw"].asFloat();
+    } else {
+        targetyaw   = yaw;
+        howactive   = value["howactive"].asInt();
+        immobile    = value["immobile"].asBool();
+        if (value["waypoints"].size() < 30) {
+            for (unsigned k = 0; k < value["waypoints"].size(); k++) {
+                waypointtype[k] = value["waypoints"][k]["type"].asInt();
+                waypoints[k]    = value["waypoints"][k]["pos"];
+            }
+            waypoint = value["waypoint"].asInt();
+            if (waypoint > int(value["waypoints"].size())) {
+                waypoint = 0;
+            }
+        } else {
+            // TODO output an error?
+            //~ numwaypoints = 0;
+            //~ waypoint = 0;
+            //~ fpackf(tfile, "Bi Bi Bi", numwaypoints, waypoint, waypoint);
+        }
+
+        // Not sure why scale and proportion are not saved for main player
+        scale = value.get("scale", -1).asInt();
+        for (int k = 0; k < 4; k++) {
+            proportions[k] = value["proportions"][k].asFloat();
+        }
+    }
+
+    if (value["weapons"].size() > 5) {
+        throw InvalidPersonException();
+    }
+    for (unsigned j = 0; j < value["weapons"].size(); j++) {
+        weaponids[j] = weapons.size();
+        weapons.push_back(Weapon(value["weapons"][j].asInt(), id));
+    }
+
+    armorhead       = value["armor"]["head"].asFloat();
+    armorhigh       = value["armor"]["high"].asFloat();
+    armorlow        = value["armor"]["low"].asFloat();
+    protectionhead  = value["protection"]["head"].asFloat();
+    protectionhigh  = value["protection"]["high"].asFloat();
+    protectionlow   = value["protection"]["low"].asFloat();
+    metalhead       = value["metal"]["head"].asFloat();
+    metalhigh       = value["metal"]["high"].asFloat();
+    metallow        = value["metal"]["low"].asFloat();
+
+    for (unsigned k = 0; k < value["clothes"].size(); k++) {
+        clothes[k]      = value["clothes"][k]["path"].asString();
+        clothestintr[k] = value["clothes"][k]["tintr"].asFloat();
+        clothestintg[k] = value["clothes"][k]["tintg"].asFloat();
+        clothestintb[k] = value["clothes"][k]["tintb"].asFloat();
+    }
+
+    loaded = true;
+
+    damagetolerance = PersonType::types[creature].defaultDamageTolerance;
+
+    if (scale < 0) {
+        scale = PersonType::types[creature].defaultScale;
+    }
+
+    oldcoords = coords;
+    realoldcoords = coords;
 }
 
 Person::operator Json::Value() {

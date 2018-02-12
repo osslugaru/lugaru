@@ -33,6 +33,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <cmath>
 #include <memory>
+#include <string>
 
 #define passivetype 0
 #define guardtype 1
@@ -248,7 +249,7 @@ public:
     bool metallow;
 
     int numclothes;
-    char clothes[10][256];
+    std::string clothes[10];
     float clothestintr[10];
     float clothestintg[10];
     float clothestintb[10];
@@ -317,6 +318,7 @@ public:
 
     Person();
     Person(FILE*, int, unsigned);
+    Person(Json::Value, int, unsigned);
 
     void skeletonLoad();
 
