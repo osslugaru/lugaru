@@ -31,6 +31,7 @@ class DialogScene
 {
 public:
     DialogScene(FILE* tfile);
+    DialogScene(Json::Value);
     DialogScene(ifstream& ipstream);
     void save(FILE* tfile);
     Json::Value save();
@@ -53,6 +54,7 @@ class Dialog
 {
 public:
     Dialog(FILE* tfile);
+    Dialog(Json::Value);
     Dialog(int type, std::string filename);
     void tick(int id);
     void play();
@@ -66,6 +68,7 @@ public:
     float participantyaw[10];
 
     static void loadDialogs(FILE*);
+    static void loadDialogs(Json::Value);
     static void saveDialogs(FILE*);
     static Json::Value saveDialogs();
 

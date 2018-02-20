@@ -96,6 +96,7 @@ public:
     static void ComputeRadius();
     static void AddObjectsToTerrain();
     static void LoadObjectsFromFile(FILE* tfile, bool skip);
+    static void LoadObjectsFromJson(Json::Value);
     static void SphereCheckPossible(XYZ* p1, float radius);
     static void DeleteObject(int which);
     static void MakeObject(int atype, XYZ where, float ayaw, float apitch, float ascale);

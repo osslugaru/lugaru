@@ -50,6 +50,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include <dirent.h>
 #include <limits>
 #include <set>
+#include <json/reader.h>
 
 using namespace std;
 using namespace Game;
@@ -491,35 +492,8 @@ bool Game::LoadLevel(int which)
     }
 }
 
-bool Game::LoadLevel(const std::string& name, bool tutorial)
+void Game::ResetBeforeLevelLoad(bool tutorial)
 {
-    const std::string level_path = Folders::getResourcePath("Maps/" + name);
-    if (!Folders::file_exists(level_path)) {
-        perror(std::string("LoadLevel: Could not open file '" + level_path).c_str());
-        return false;
-    }
-
-    int indemo; // FIXME this should be removed
-    int templength;
-    float lamefloat;
-
-    LOGFUNC;
-
-    LOG(std::string("Loading level...") + name);
-
-    if (!gameon) {
-        visibleloading = true;
-    }
-    if (stealthloading) {
-        visibleloading = false;
-    }
-    if (!stillloading) {
-        loadtime = 0;
-    }
-    gamestarted = 1;
-
-    numenvsounds = 0;
-
     Tutorial::active = tutorial;
 
     if (Tutorial::active) {
@@ -529,21 +503,11 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
         Tutorial::stagetime = 0;
         Tutorial::maxtime = 1;
     }
-    pause_sound(whooshsound);
-    pause_sound(stream_firesound);
 
-    int mapvers;
-    FILE* tfile;
-    errno = 0;
-    tfile = Folders::openMandatoryFile(level_path, "rb");
-
-    pause_sound(stream_firesound);
     scoreadded = 0;
     windialogue = false;
     hostiletime = 0;
     won = 0;
-
-    //~ Animation::animations[bounceidleanim].Load("Idle", middleheight, neutral);
 
     Dialog::dialogs.clear();
 
@@ -594,6 +558,47 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
     bonus = 0;
     gameon = 1;
     changedelay = 0;
+}
+
+bool Game::LoadLevel(const std::string& name, bool tutorial)
+{
+    const std::string level_path = Folders::getResourcePath("Maps/" + name);
+    if (!Folders::file_exists(level_path)) {
+        perror(std::string("LoadLevel: Could not open file '" + level_path).c_str());
+        return false;
+    }
+
+    int indemo; // FIXME this should be removed
+    int templength;
+    float lamefloat;
+
+    LOGFUNC;
+
+    LOG(std::string("Loading level...") + name);
+
+    if (!gameon) {
+        visibleloading = true;
+    }
+    if (stealthloading) {
+        visibleloading = false;
+    }
+    if (!stillloading) {
+        loadtime = 0;
+    }
+    gamestarted = 1;
+
+    numenvsounds = 0;
+
+    pause_sound(whooshsound);
+    pause_sound(stream_firesound);
+
+    int mapvers;
+    FILE* tfile;
+    errno = 0;
+    tfile = Folders::openMandatoryFile(level_path, "rb");
+
+    ResetBeforeLevelLoad(tutorial);
+
     if (console) {
         emit_sound_np(consolesuccesssound);
         freeze = 0;
@@ -725,13 +730,15 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
         Hotspot::hotspots.resize(numhotspots);
         for (unsigned i = 0; i < Hotspot::hotspots.size(); i++) {
             funpackf(tfile, "Bi Bf Bf Bf Bf", &Hotspot::hotspots[i].type, &Hotspot::hotspots[i].size, &Hotspot::hotspots[i].position.x, &Hotspot::hotspots[i].position.y, &Hotspot::hotspots[i].position.z);
+            char temptext[256];
             funpackf(tfile, "Bi", &templength);
             if (templength) {
                 for (int l = 0; l < templength; l++) {
-                    funpackf(tfile, "Bb", &Hotspot::hotspots[i].text[l]);
+                    funpackf(tfile, "Bb", &temptext[l]);
                 }
             }
-            Hotspot::hotspots[i].text[templength] = '\0';
+            temptext[templength] = '\0';
+            Hotspot::hotspots[i].text = std::string(temptext);
             if (Hotspot::hotspots[i].type == -111) {
                 indemo = 1;
             }
@@ -878,6 +885,231 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
             Person::players[i]->stunned = 0;
             Person::players[i]->hasvictim = 0;
             Person::players[i]->wentforweapon = 0;
+        }
+    }
+
+    Person::players[0]->aitype = playercontrolled;
+
+    if (difficulty == 1) {
+        Person::players[0]->power = 1 / .9;
+        Person::players[0]->damagetolerance = 250;
+    } else if (difficulty == 0) {
+        Person::players[0]->power = 1 / .8;
+        Person::players[0]->damagetolerance = 300;
+        Person::players[0]->armorhead *= 1.5;
+        Person::players[0]->armorhigh *= 1.5;
+        Person::players[0]->armorlow *= 1.5;
+    }
+
+    cameraloc = Person::players[0]->coords;
+    cameraloc.y += 5;
+    yaw = Person::players[0]->yaw;
+
+    hawkcoords = Person::players[0]->coords;
+    hawkcoords.y += 30;
+
+    Game::LoadingScreen();
+
+    LOG("Starting background music...");
+
+    OPENAL_StopSound(OPENAL_ALL);
+    if (ambientsound) {
+        if (environment == snowyenvironment) {
+            emit_stream_np(stream_wind);
+        } else if (environment == desertenvironment) {
+            emit_stream_np(stream_desertambient);
+        } else if (environment == grassyenvironment) {
+            emit_stream_np(stream_wind, 100.);
+        }
+    }
+    oldmusicvolume[0] = 0;
+    oldmusicvolume[1] = 0;
+    oldmusicvolume[2] = 0;
+    oldmusicvolume[3] = 0;
+
+    leveltime = 0;
+    wonleveltime = 0;
+    visibleloading = false;
+
+    return true;
+}
+
+bool Game::LoadJsonLevel(const std::string& name, bool tutorial)
+{
+    const std::string level_path = Folders::getResourcePath("Maps/" + name + ".json");
+    if (!Folders::file_exists(level_path)) {
+        perror(std::string("LoadLevel: Could not open file '" + level_path).c_str());
+        return false;
+    }
+
+    LOGFUNC;
+
+    LOG(std::string("Loading level...") + name + ".json");
+
+    if (!gameon) {
+        visibleloading = true;
+    }
+    if (stealthloading) {
+        visibleloading = false;
+    }
+    if (!stillloading) {
+        loadtime = 0;
+    }
+    gamestarted = 1;
+
+    numenvsounds = 0;
+
+    pause_sound(whooshsound);
+    pause_sound(stream_firesound);
+
+    errno = 0;
+    ifstream map_file(level_path);
+    Json::Value map_data;
+    map_file >> map_data;
+    unsigned mapvers = map_data["version"].asInt();
+
+    ResetBeforeLevelLoad(tutorial);
+
+    if (console) {
+        emit_sound_np(consolesuccesssound);
+        freeze = 0;
+        console = false;
+    }
+
+    if (!stealthloading) {
+        terrain.decals.clear();
+        Sprite::deleteSprites();
+
+        for (int i = 0; i < subdivision; i++) {
+            for (int j = 0; j < subdivision; j++) {
+                terrain.patchobjects[i][j].clear();
+            }
+        }
+        Game::LoadingScreen();
+    }
+
+    if (mapvers < 13) {
+        cerr << name << " has obsolete map version " << mapvers << endl;
+    }
+    maptype         = map_data["map"].get("type", mapkilleveryone).asInt();
+    hostile         = map_data["map"].get("hostile", 1).asInt();
+    viewdistance    = map_data["map"].get("viewdistance", 100).asFloat();
+    fadestart       = map_data["map"].get("fadestart", .6).asFloat();
+
+    skyboxtexture   = map_data["map"]["skybox"].get("texture", true).asBool();
+    skyboxr         = map_data["map"]["skybox"].get("r", 1).asFloat();
+    skyboxg         = map_data["map"]["skybox"].get("g", 1).asFloat();
+    skyboxb         = map_data["map"]["skybox"].get("b", 1).asFloat();
+    skyboxlightr    = map_data["map"]["skybox"].get("lightr", skyboxr).asFloat();
+    skyboxlightg    = map_data["map"]["skybox"].get("lightg", skyboxg).asFloat();
+    skyboxlightb    = map_data["map"]["skybox"].get("lightb", skyboxb).asFloat();
+
+    Game::LoadingScreen();
+
+    //dialogues
+    Dialog::loadDialogs(map_data["map"]["dialogs"]);
+
+    environment = map_data["map"]["environment"].asInt();
+
+    if (environment != oldenvironment) {
+        Setenvironment(environment);
+    }
+    oldenvironment = environment;
+
+    if (!stealthloading) {
+        Object::LoadObjectsFromJson(map_data["map"]["objects"]);
+    }
+
+    Hotspot::hotspots.resize(map_data["map"]["hotspots"].size());
+    for (unsigned i = 0; i < map_data["map"]["hotspots"].size(); i++) {
+        Hotspot::hotspots[i].type       = map_data["map"]["hotspots"][i]["type"].asInt();
+        Hotspot::hotspots[i].size       = map_data["map"]["hotspots"][i]["size"].asFloat();
+        Hotspot::hotspots[i].text       = map_data["map"]["hotspots"][i]["text"].asString();
+        Hotspot::hotspots[i].position   = map_data["map"]["hotspots"][i]["position"];
+    }
+
+    Game::LoadingScreen();
+
+    if (!stealthloading) {
+        Object::ComputeCenter();
+        Object::ComputeRadius();
+    }
+
+    Game::LoadingScreen();
+
+    if (map_data["map"]["players"].size() > maxplayers) {
+        cout << "Warning: this level contains more players than allowed" << endl;
+    }
+
+    XYZ playerCoords;
+    float playerYaw;
+    float playerTargetYaw;
+    if (stealthloading) {
+        playerCoords    = Person::players[0]->coords;
+        playerYaw       = Person::players[0]->yaw;
+        playerTargetYaw = Person::players[0]->targetyaw;
+    }
+    weapons.clear();
+    Person::players.clear();
+    unsigned j = 0;
+    for (unsigned i = 0; i < map_data["map"]["players"].size(); i++) {
+        try {
+            Person::players.push_back(shared_ptr<Person>(new Person(map_data["map"]["players"][i], mapvers, j)));
+            j++;
+        } catch (InvalidPersonException e) {
+            cerr << "Invalid Person found in " << name << endl;
+        }
+    }
+    if (stealthloading) {
+        Person::players[0]->coords      = playerCoords;
+        Person::players[0]->yaw         = playerYaw;
+        Person::players[0]->targetyaw   = playerTargetYaw;
+    }
+
+    Game::LoadingScreen();
+
+    numpathpoints = map_data["map"]["pathpoints"].size();
+    for (unsigned j = 0; j < map_data["map"]["pathpoints"].size(); j++) {
+        pathpoint[j] = map_data["map"]["pathpoints"][j];
+        numpathpointconnect[j] = map_data["map"]["pathpoints"][j]["connect"].size();
+        for (unsigned k = 0; k < map_data["map"]["pathpoints"][j]["connect"].size(); k++) {
+            pathpointconnect[j][k] = map_data["map"]["pathpoints"][j]["connect"][k].asInt();
+        }
+    }
+
+    Game::LoadingScreen();
+
+    mapcenter = map_data["map"]["center"];
+    mapradius = map_data["map"]["radius"].asFloat();
+
+    SetUpLighting();
+
+    if (!stealthloading) {
+        Object::AddObjectsToTerrain();
+        terrain.DoShadows();
+        Game::LoadingScreen();
+        Object::DoShadows();
+        Game::LoadingScreen();
+    }
+
+    for (unsigned i = 0; i < Person::players.size(); i++) {
+        Game::LoadingScreen();
+
+        Person::players[i]->speed = 1 + (float)(Random() % 100) / 1000;
+        if (difficulty == 0) {
+            Person::players[i]->speed -= .2;
+        }
+        if (difficulty == 1) {
+            Person::players[i]->speed -= .1;
+        }
+
+        if (i == 0) {
+            if (Person::players[i]->creature == wolftype) {
+                Person::players[i]->scale = .23;
+                Person::players[i]->damagetolerance = 300;
+            } else {
+                Person::players[i]->damagetolerance = 200;
+            }
         }
     }
 

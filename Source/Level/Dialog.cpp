@@ -43,6 +43,27 @@ void Dialog::loadDialogs(FILE* tfile)
     }
 }
 
+void Dialog::loadDialogs(Json::Value values)
+{
+    for (unsigned i = 0; i < values.size(); i++) {
+        dialogs.push_back(Dialog(values[i]));
+    }
+}
+
+Dialog::Dialog(Json::Value data)
+    : gonethrough(0)
+{
+    type = data["type"].asInt();
+
+    for (int l = 0; l < 10; l++) {
+        participantlocation[l]  = data["participant"][l]["pos"];
+        participantyaw[l]       = data["participant"][l]["yaw"].asFloat();
+    }
+    for (unsigned l = 0; l < data["scenes"].size(); l++) {
+        scenes.push_back(DialogScene(data["scenes"][l]));
+    }
+}
+
 Dialog::Dialog(FILE* tfile)
     : gonethrough(0)
 {
@@ -110,6 +131,26 @@ DialogScene::DialogScene(FILE* tfile)
     }
 
     funpackf(tfile, "Bf Bf", &camerayaw, &camerapitch);
+}
+
+DialogScene::DialogScene(Json::Value data)
+{
+    location            = data["location"].asInt();
+    color[0]            = data["color"][0].asFloat();
+    color[1]            = data["color"][1].asFloat();
+    color[2]            = data["color"][2].asFloat();
+    sound               = data["sound"].asInt();
+    text                = data["text"].asString();
+    name                = data["name"].asString();
+    camera              = data["camera"]["pos"];
+    camerayaw           = data["camera"]["yaw"].asFloat();
+    camerapitch         = data["camera"]["pitch"].asFloat();
+    participantfocus    = data["participantfocus"].asInt();
+    participantaction   = data["participantaction"].asInt();
+
+    for (int m = 0; m < 10; m++) {
+        participantfacing[m] = data["participantfacing"][m];
+    }
 }
 
 /* Load dialog from txt file, used by console */

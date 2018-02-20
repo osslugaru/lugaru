@@ -144,8 +144,10 @@ void LoadingScreen();
 int DrawGLScene(StereoSide side);
 void playdialoguescenesound();
 int findClosestPlayer();
+void ResetBeforeLevelLoad(bool tutorial);
 bool LoadLevel(int which);
 bool LoadLevel(const std::string& name, bool tutorial = false);
+bool LoadJsonLevel(const std::string& name, bool tutorial = false);
 
 void ProcessInput();
 void ProcessDevInput();

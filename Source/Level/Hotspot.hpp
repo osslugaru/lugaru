@@ -38,7 +38,7 @@ public:
     XYZ position;
     int type;
     float size;
-    char text[256] = { 0 };
+    std::string text;
 };
 
 #endif

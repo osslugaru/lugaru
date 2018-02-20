@@ -574,6 +574,19 @@ void Object::LoadObjectsFromFile(FILE* tfile, bool skip)
     }
 }
 
+void Object::LoadObjectsFromJson(Json::Value values)
+{
+    objects.clear();
+    float lastscale = 1.0f;
+    for (unsigned i = 0; i < values.size(); i++) {
+        objects.emplace_back(new Object(values[i]));
+        if ((*(objects.end()))->type == treeleavestype) {
+            (*(objects.end()))->scale = lastscale;
+        }
+        lastscale = (*(objects.end()))->scale;
+    }
+}
+
 void Object::addToTerrain(unsigned id)
 {
     if ((type != treeleavestype) && (type != bushtype) && (type != firetype)) {

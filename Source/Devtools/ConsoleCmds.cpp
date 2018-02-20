@@ -323,7 +323,7 @@ void ch_save(const char* args)
     fpackf(tfile, "Bi", Hotspot::hotspots.size());
     for (unsigned i = 0; i < Hotspot::hotspots.size(); i++) {
         fpackf(tfile, "Bi Bf Bf Bf Bf", Hotspot::hotspots[i].type, Hotspot::hotspots[i].size, Hotspot::hotspots[i].position.x, Hotspot::hotspots[i].position.y, Hotspot::hotspots[i].position.z);
-        int templength = strlen(Hotspot::hotspots[i].text);
+        int templength = Hotspot::hotspots[i].text.size();
         fpackf(tfile, "Bi", templength);
         for (int l = 0; l < templength; l++) {
             fpackf(tfile, "Bb", Hotspot::hotspots[i].text[l]);
@@ -610,8 +610,7 @@ void ch_hs(const char* args)
 
     Hotspot::hotspots.emplace_back(Person::players[0]->coords, type, size);
 
-    strcpy(Hotspot::hotspots.back().text, args + shift);
-    strcat(Hotspot::hotspots.back().text, "\n");
+    Hotspot::hotspots.back().text = std::string(args + shift);
 }
 
 void ch_dialog(const char* args)
