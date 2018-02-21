@@ -562,6 +562,10 @@ void Game::ResetBeforeLevelLoad(bool tutorial)
 
 bool Game::LoadLevel(const std::string& name, bool tutorial)
 {
+    if (LoadJsonLevel(name, tutorial)) {
+        // Try JSON loading first, binary is fallback
+        return true;
+    }
     const std::string level_path = Folders::getResourcePath("Maps/" + name);
     if (!Folders::file_exists(level_path)) {
         perror(std::string("LoadLevel: Could not open file '" + level_path).c_str());
@@ -967,6 +971,7 @@ bool Game::LoadJsonLevel(const std::string& name, bool tutorial)
     Json::Value map_data;
     map_file >> map_data;
     unsigned mapvers = map_data["version"].asInt();
+    map_file.close();
 
     ResetBeforeLevelLoad(tutorial);
 
@@ -1094,6 +1099,12 @@ bool Game::LoadJsonLevel(const std::string& name, bool tutorial)
 
     for (unsigned i = 0; i < Person::players.size(); i++) {
         Game::LoadingScreen();
+
+        Person::players[i]->skeleton.free = 0;
+
+        Person::players[i]->skeletonLoad();
+
+        Person::players[i]->addClothes();
 
         Person::players[i]->speed = 1 + (float)(Random() % 100) / 1000;
         if (difficulty == 0) {

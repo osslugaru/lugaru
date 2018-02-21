@@ -580,10 +580,10 @@ void Object::LoadObjectsFromJson(Json::Value values)
     float lastscale = 1.0f;
     for (unsigned i = 0; i < values.size(); i++) {
         objects.emplace_back(new Object(values[i]));
-        if ((*(objects.end()))->type == treeleavestype) {
-            (*(objects.end()))->scale = lastscale;
+        if (objects.back()->type == treeleavestype) {
+            objects.back()->scale = lastscale;
         }
-        lastscale = (*(objects.end()))->scale;
+        lastscale = objects.back()->scale;
     }
 }
 
