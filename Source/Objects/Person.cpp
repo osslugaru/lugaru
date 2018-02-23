@@ -8451,7 +8451,7 @@ Person::Person(Json::Value value, int mapvers, unsigned i)
         }
 
         // Not sure why scale and proportion are not saved for main player
-        scale = value.get("scale", -1).asInt();
+        scale = value.get("scale", -1).asFloat();
         for (int k = 0; k < 4; k++) {
             proportions[k] = value["proportions"][k].asFloat();
         }
