@@ -249,7 +249,7 @@ void ch_save_json(const char* args)
     }
 
     for (int j = 0; j < numpathpoints; j++) {
-        map_data["map"]["pathpoints"][j] = pathpoint[j];
+        map_data["map"]["pathpoints"][j]["pos"] = pathpoint[j];
         for (int k = 0; k < numpathpointconnect[j]; k++) {
             map_data["map"]["pathpoints"][j]["connect"][k] = pathpointconnect[j][k];
         }

@@ -1078,7 +1078,7 @@ bool Game::LoadJsonLevel(const std::string& name, bool tutorial)
 
     numpathpoints = map_data["map"]["pathpoints"].size();
     for (unsigned j = 0; j < map_data["map"]["pathpoints"].size(); j++) {
-        pathpoint[j] = map_data["map"]["pathpoints"][j];
+        pathpoint[j] = map_data["map"]["pathpoints"][j]["pos"];
         numpathpointconnect[j] = map_data["map"]["pathpoints"][j]["connect"].size();
         for (unsigned k = 0; k < map_data["map"]["pathpoints"][j]["connect"].size(); k++) {
             pathpointconnect[j][k] = map_data["map"]["pathpoints"][j]["connect"][k].asInt();
