@@ -263,6 +263,12 @@ void ch_save_json(const char* args)
     map_file.close();
 }
 
+void ch_convert_to_json(const char* args)
+{
+    ch_map(args);
+    ch_save_json(args);
+}
+
 void ch_save(const char* args)
 {
     std::string map_path = Folders::getUserDataPath() + "/Maps";

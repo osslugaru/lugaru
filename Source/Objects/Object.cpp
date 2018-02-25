@@ -579,10 +579,7 @@ void Object::LoadObjectsFromJson(Json::Value values)
     objects.clear();
     float lastscale = 1.0f;
     for (unsigned i = 0; i < values.size(); i++) {
-        objects.emplace_back(new Object(values[i]));
-        if (objects.back()->type == treeleavestype) {
-            objects.back()->scale = lastscale;
-        }
+        objects.emplace_back(new Object(values[i], lastscale));
         lastscale = objects.back()->scale;
     }
 }
@@ -747,8 +744,8 @@ int Object::checkcollide(XYZ startpoint, XYZ endpoint, int what, float minx, flo
     return -1;
 }
 
-Object::Object(Json::Value value)
-    : Object(object_type(value[0].asInt()), value[4], value[1].asFloat(), value[2].asFloat(), value[3].asFloat())
+Object::Object(Json::Value value, float lastscale)
+    : Object(object_type(value[0].asInt()), value[4], value[1].asFloat(), value[2].asFloat(), ((value[0].asInt() == treeleavestype) ? lastscale : value[3].asFloat()))
 {
 }
 
@@ -758,7 +755,13 @@ Object::operator Json::Value() {
     object[0] = type;
     object[1] = yaw;
     object[2] = pitch;
-    object[3] = scale;
+    if (type == treeleavestype) {
+        /* Store 1.0 as scale is ignored anyway for tree leaves.
+         * This avoids having random floats in the output to make sure the same map gives the same json each time. */
+        object[3] = 1.0f;
+    } else {
+        object[3] = scale;
+    }
     object[4] = position;
 
     return object;

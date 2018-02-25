@@ -935,9 +935,6 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
     wonleveltime = 0;
     visibleloading = false;
 
-    // Save json version of the binary level
-    ch_save_json(name.c_str());
-
     return true;
 }
 

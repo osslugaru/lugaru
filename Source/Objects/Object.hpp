@@ -90,7 +90,7 @@ public:
 
     Object();
     Object(object_type _type, XYZ _position, float _yaw, float _pitch, float _scale);
-    Object(Json::Value);
+    Object(Json::Value, float);
 
     static void ComputeCenter();
     static void ComputeRadius();
