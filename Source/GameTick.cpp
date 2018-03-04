@@ -728,7 +728,7 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
         int numhotspots;
         funpackf(tfile, "Bi", &numhotspots);
         if (numhotspots < 0) {
-            cerr << "Map " << name << " have an invalid number of hotspots" << endl;
+            cerr << "Map " << name << " has an invalid number of hotspots" << endl;
             numhotspots = 0;
         }
         Hotspot::hotspots.resize(numhotspots);
