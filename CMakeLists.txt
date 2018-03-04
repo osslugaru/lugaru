@@ -284,6 +284,7 @@ if(WIN32)
         set(DLL_ROOT ${CMAKE_FIND_ROOT_PATH}/bin)
         install(FILES ${DLL_ROOT}/${LIBGCC_S}
                       ${DLL_ROOT}/libjpeg-62.dll
+                      ${DLL_ROOT}/libjsoncpp.dll
                       ${DLL_ROOT}/libogg-0.dll
                       ${DLL_ROOT}/libpng16-16.dll
                       ${DLL_ROOT}/libstdc++-6.dll
