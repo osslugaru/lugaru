@@ -8412,7 +8412,7 @@ bool Person::catchKnife()
         ((PersonType::types[creature].knifeCatchingType == 1) && (Random() % 3 != 0) && (!hasWeapon()) && (isIdle() || isRun() || animTarget == walkanim));
 }
 
-Person::Person(Json::Value value, int mapvers, unsigned i)
+Person::Person(Json::Value value, int /*mapvers*/, unsigned i)
     : Person()
 {
     id = i;
