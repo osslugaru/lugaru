@@ -261,6 +261,7 @@ void ch_save_json(const char* args)
     Json::StreamWriterBuilder builder;
     // default is "All", this allows to print arrays as one line
     builder.settings_["commentStyle"]   = "None";
+    builder.settings_["precision"]      = 7;
     map_file << Json::writeString(builder, map_data);
 
     map_file.close();
