@@ -258,7 +258,10 @@ void ch_save_json(const char* args)
     map_data["map"]["center"] = mapcenter;
     map_data["map"]["radius"] = mapradius;
 
-    map_file << map_data << endl;
+    Json::StreamWriterBuilder builder;
+    // default is "All", this allows to print arrays as one line
+    builder.settings_["commentStyle"]   = "None";
+    map_file << Json::writeString(builder, map_data);
 
     map_file.close();
 }
