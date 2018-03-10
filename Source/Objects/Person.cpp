@@ -1588,7 +1588,7 @@ void Person::DoDamage(float howmuch)
         skeleton.free = 2;
         DoDamage(10000);
         RagDoll(0);
-        if (!dead && creature == wolftype) {
+        if (!dead && (creature == wolftype) && (aitype != playercontrolled)) {
             award_bonus(0, Wolfbonus);
         }
         dead = 2;
@@ -4684,7 +4684,7 @@ void Person::DoStuff()
                 }
             }
 
-            if (!dead && creature == wolftype) {
+            if (!dead && (creature == wolftype) && (aitype != playercontrolled)) {
                 award_bonus(0, Wolfbonus);
             }
             dead = 2;
@@ -5089,7 +5089,7 @@ void Person::DoStuff()
         dead = 1;
         unconscioustime = 0;
 
-        if (creature == wolftype) {
+        if ((creature == wolftype) && (aitype != playercontrolled)) {
             award_bonus(0, Wolfbonus);
         }
 
@@ -5170,7 +5170,7 @@ void Person::DoStuff()
 
         bled = 0;
 
-        if (!dead && creature == wolftype) {
+        if (!dead && (creature == wolftype) && (aitype != playercontrolled)) {
             award_bonus(0, Wolfbonus);
         }
 
