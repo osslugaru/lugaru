@@ -25,6 +25,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Graphic/Texture.hpp"
 #include "Menu/Menu.hpp"
 #include "Utils/Folders.hpp"
+#include "Utils/Input.hpp"
 
 extern float screenwidth, screenheight;
 extern float viewdistance;
@@ -599,6 +600,8 @@ void Game::InitGame()
     PersonType::Load();
 
     Person::players.emplace_back(new Person());
+
+    Input::loadGamepads();
 }
 
 void Game::LoadScreenTexture()

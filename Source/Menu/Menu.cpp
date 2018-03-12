@@ -958,16 +958,8 @@ int setKeySelected_thread(void*)
     SDL_Event evenement;
     while (scancode == -1) {
         SDL_WaitEvent(&evenement);
-        switch (evenement.type) {
-            case SDL_KEYDOWN:
-                scancode = evenement.key.keysym.scancode;
-                break;
-            case SDL_MOUSEBUTTONDOWN:
-                scancode = SDL_NUM_SCANCODES + evenement.button.button;
-                break;
-            default:
-                break;
-        }
+        Input::handleEvent(evenement);
+        scancode = Input::getScancode(evenement);
     }
     if (scancode != SDL_SCANCODE_ESCAPE) {
         fireSound();
