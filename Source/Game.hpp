@@ -149,6 +149,8 @@ bool LoadLevel(int which);
 bool LoadLevel(const std::string& name, bool tutorial = false);
 bool LoadJsonLevel(const std::string& name, bool tutorial = false);
 
+void cmd_dispatch(const string cmd);
+
 void ProcessInput();
 void ProcessDevInput();
 
@@ -231,10 +233,11 @@ enum optionIndex
     SOUND,
     OPENALINFO,
     SHOWRESOLUTIONS,
-    DEVTOOLS
+    DEVTOOLS,
+    CMD
 };
 /* Number of options + 1 */
-const int commandLineOptionsNumber = 10;
+const int commandLineOptionsNumber = 11;
 
 extern const option::Descriptor usage[];
 

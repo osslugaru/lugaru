@@ -24,6 +24,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "Graphic/gamegl.hpp"
 #include "Platform/Platform.hpp"
 #include "User/Settings.hpp"
+#include "Menu/Menu.hpp"
 #include "Version.hpp"
 
 #include <fstream>
@@ -602,6 +603,7 @@ const option::Descriptor usage[] =
       { OPENALINFO, 0, "", "openal-info", option::Arg::None, " --openal-info     Print info about OpenAL at launch." },
       { SHOWRESOLUTIONS, 0, "", "showresolutions", option::Arg::None, " --showresolutions List the resolutions found by SDL at launch." },
       { DEVTOOLS, 0, "d", "devtools", option::Arg::None, " -d, --devtools    Enable dev tools: console, level editor and debug info." },
+      { CMD, 0, "c", "command", option::Arg::Optional, " -c, --command    Run this command at game start. May be used to load a map." },
       { 0, 0, 0, 0, 0, 0 }
     };
 
@@ -679,6 +681,16 @@ int main(int argc, char** argv)
 
             bool gameDone = false;
             bool gameFocused = true;
+
+            if (commandLineOptions[CMD].count() > 0) {
+                devtools = true;
+                Menu::startChallengeLevel(1);
+                for (option::Option* opt = commandLineOptions[CMD]; opt; opt = opt->next()) {
+                    if (opt->arg && (strlen(opt->arg) > 0)) {
+                        cmd_dispatch(opt->arg);
+                    }
+                }
+            }
 
             while (!gameDone && !tryquit) {
                 if (IsFocused()) {

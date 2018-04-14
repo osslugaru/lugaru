@@ -520,6 +520,29 @@ void Menu::Load()
     }
 }
 
+void Menu::startChallengeLevel(int selected)
+{
+    fireSound();
+    flash();
+
+    startbonustotal = 0;
+
+    loading = 2;
+    loadtime = 0;
+    targetlevel = selected;
+    if (firstLoadDone) {
+        TickOnceAfter();
+    } else {
+        LoadStuff();
+    }
+    LoadLevel(selected);
+    campaign = 0;
+
+    mainmenu = 0;
+    gameon = 1;
+    pause_sound(stream_menutheme);
+}
+
 void Menu::Tick()
 {
     //escape key pressed
@@ -844,25 +867,7 @@ void Menu::Tick()
                 break;
             case 9:
                 if (selected < numchallengelevels && selected <= Account::active().getProgress()) {
-                    fireSound();
-                    flash();
-
-                    startbonustotal = 0;
-
-                    loading = 2;
-                    loadtime = 0;
-                    targetlevel = selected;
-                    if (firstLoadDone) {
-                        TickOnceAfter();
-                    } else {
-                        LoadStuff();
-                    }
-                    LoadLevel(selected);
-                    campaign = 0;
-
-                    mainmenu = 0;
-                    gameon = 1;
-                    pause_sound(stream_menutheme);
+                    startChallengeLevel(selected);
                 }
                 if (selected == numchallengelevels) {
                     fireSound();
