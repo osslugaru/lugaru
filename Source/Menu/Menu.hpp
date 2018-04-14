@@ -73,6 +73,7 @@ public:
     static void updateStereoConfigMenu();
     static void updateControlsMenu();
     static void setKeySelected();
+    static void startChallengeLevel(int selected);
 
 private:
     static void handleFadeEffect();

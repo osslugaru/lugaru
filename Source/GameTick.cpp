@@ -306,7 +306,7 @@ static int findClosestObject()
     return closest;
 }
 
-static void cmd_dispatch(const string cmd)
+void Game::cmd_dispatch(const string cmd)
 {
     int i, n_cmds = sizeof(cmd_names) / sizeof(cmd_names[0]);
 
