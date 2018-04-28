@@ -249,7 +249,7 @@ public:
     bool metallow;
 
     int numclothes;
-    std::string clothes[10];
+    std::string clothes[12];
     float clothestintr[10];
     float clothestintg[10];
     float clothestintb[10];
