@@ -36,7 +36,7 @@ build_oldgcc:
   script:
     - export CC=gcc; export CXX=g++
     - mkdir -p x86_64-linux-gnu-oldgcc oldgcc-build; cd x86_64-linux-gnu-oldgcc
-    - cmake3 .. -DCMAKE_INSTALL_PREFIX=/builds/osslugaru/lugaru/oldgcc-build
+    - cmake3 .. -DCMAKE_INSTALL_PREFIX=/builds/${CI_PROJECT_PATH}/oldgcc-build
     - make -j4; make install
   artifacts:
     expire_in: 14d
@@ -52,7 +52,7 @@ build_gcc:
   script:
     - export CC=gcc; export CXX=g++
     - mkdir -p x86_64-linux-gnu-gcc gcc-build; cd x86_64-linux-gnu-gcc
-    - cmake .. -DCMAKE_INSTALL_PREFIX=/builds/osslugaru/lugaru/gcc-build
+    - cmake .. -DCMAKE_INSTALL_PREFIX=/builds/${CI_PROJECT_PATH}/gcc-build
     - make -j4; make install
   artifacts:
     expire_in: 14d
@@ -68,7 +68,7 @@ build_clang:
   script:
     - export CC=clang; export CXX=clang++
     - mkdir -p x86_64-linux-gnu-clang clang-build; cd x86_64-linux-gnu-clang
-    - cmake .. -DCMAKE_INSTALL_PREFIX=/builds/osslugaru/lugaru/clang-build
+    - cmake .. -DCMAKE_INSTALL_PREFIX=/builds/${CI_PROJECT_PATH}/clang-build
     - make -j4; make install
   artifacts:
     expire_in: 14d
@@ -86,7 +86,7 @@ build_mingw32:
     - export PKG_CONFIG_LIBDIR="/usr/i686-w64-mingw32/sys-root/mingw/lib/pkgconfig:/usr/i686-w64-mingw32/sys-root/mingw/share/pkgconfig"
     - export PATH=/usr/i686-w64-mingw32/bin:$PATH
     - mkdir -p i686-w64-mingw32 mingw32-build; cd i686-w64-mingw32
-    - cmake .. -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-mingw32.cmake -DCMAKE_INSTALL_PREFIX=/builds/osslugaru/lugaru/mingw32-build
+    - cmake .. -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-mingw32.cmake -DCMAKE_INSTALL_PREFIX=/builds/${CI_PROJECT_PATH}/mingw32-build
     - make -j4; make install
   artifacts:
     expire_in: 14d
@@ -104,7 +104,7 @@ build_mingw64:
     - export PKG_CONFIG_LIBDIR="/usr/x86_64-w64-mingw32/sys-root/mingw/lib/pkgconfig:/usr/x86_64-w64-mingw32/sys-root/mingw/share/pkgconfig"
     - export PATH=/usr/x86_64-w64-mingw32/bin:$PATH
     - mkdir -p x86_64-w64-mingw32 mingw64-build; cd x86_64-w64-mingw32
-    - cmake .. -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-mingw64.cmake -DCMAKE_INSTALL_PREFIX=/builds/osslugaru/lugaru/mingw64-build
+    - cmake .. -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-mingw64.cmake -DCMAKE_INSTALL_PREFIX=/builds/${CI_PROJECT_PATH}/mingw64-build
     - make -j4; make install
   artifacts:
     expire_in: 14d
