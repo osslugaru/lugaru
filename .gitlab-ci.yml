@@ -1,9 +1,9 @@
 image: fedora:latest
 
 cache:
+  key: dnf-cache
   paths:
-  - /var/cache/dnf
-  - /var/cache/yum
+    - dnf-cache/
 
 variables:
   YUMDNF: dnf
@@ -17,13 +17,17 @@ variables:
 before_script:
   - $EXTRA_REPO_INST_COMMAND
   - $EXTRA_REPO_CONFIGURE_COMMAND
-  - $YUMDNF --quiet --assumeyes install $COMMON_PACKAGES
+  - $YUMDNF --setopt=cachedir=`pwd`/${YUMDNF}-cache --quiet --assumeyes install $COMMON_PACKAGES
 
 build_oldgcc:
   image: centos:7
+  cache:
+    key: yum-cache
+    paths:
+      - yum-cache/
   variables:
     YUMDNF: yum
-    EXTRA_REPO_INST_COMMAND: "yum --quiet --assumeyes install epel-release yum-utils"
+    EXTRA_REPO_INST_COMMAND: "yum --setopt=cachedir=`pwd`/yum-cache --quiet --assumeyes install epel-release yum-utils"
     EXTRA_REPO_CONFIGURE_COMMAND: "yum-config-manager --enable cr"
     JPEG_PACKAGE: "libjpeg-devel"
     CMAKE_PACKAGE: "/usr/bin/cmake3"
