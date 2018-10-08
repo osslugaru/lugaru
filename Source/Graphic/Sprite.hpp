@@ -69,7 +69,7 @@ private:
 
     static float checkdelay;
 
-    static vector<Sprite*> sprites;
+    static vector<std::unique_ptr<Sprite> > sprites;
 
 public:
     static void DeleteSprite(int which);
@@ -108,7 +108,7 @@ public:
     static Texture toothtexture;
 
     Sprite();
-    ~Sprite();
+    ~Sprite(){};
 };
 
 #endif
