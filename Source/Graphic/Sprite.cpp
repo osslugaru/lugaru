@@ -467,7 +467,7 @@ void Sprite::DeleteSprite(int i)
 void Sprite::MakeSprite(int atype, XYZ where, XYZ avelocity, float red, float green, float blue, float asize, float aopacity)
 {
     if (sprites.size() < max_sprites - 1) {
-        sprites.push_back(std::unique_ptr<Sprite>());
+        sprites.push_back(std::unique_ptr<Sprite>(new Sprite()));
         if ((atype != bloodsprite && atype != bloodflamesprite) || bloodtoggle) {
             sprites.back()->special = 0;
             sprites.back()->type = atype;
