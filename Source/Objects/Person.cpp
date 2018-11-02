@@ -423,7 +423,7 @@ Person::Person(FILE* tfile, int mapvers, unsigned i)
             funpackf(tfile, "Bb", &clothespath[l]);
         }
         clothespath[templength] = '\0';
-        clothes[k] = std::string(clothespath);
+        clothes.push_back(std::string(clothespath));
         funpackf(tfile, "Bf Bf Bf", &clothestintr[k], &clothestintg[k], &clothestintb[k]);
     }
 
@@ -8476,10 +8476,10 @@ Person::Person(Json::Value value, int /*mapvers*/, unsigned i)
     metallow        = value["metal"]["low"].asFloat();
 
     for (unsigned k = 0; k < value["clothes"].size(); k++) {
-        clothes[k]      = value["clothes"][k]["path"].asString();
-        clothestintr[k] = value["clothes"][k]["tintr"].asFloat();
-        clothestintg[k] = value["clothes"][k]["tintg"].asFloat();
-        clothestintb[k] = value["clothes"][k]["tintb"].asFloat();
+        clothes.push_back(value["clothes"][k]["path"].asString());
+        clothestintr.push_back(value["clothes"][k]["tintr"].asFloat());
+        clothestintg.push_back(value["clothes"][k]["tintg"].asFloat());
+        clothestintb.push_back(value["clothes"][k]["tintb"].asFloat());
     }
 
     loaded = true;

@@ -249,10 +249,10 @@ public:
     bool metallow;
 
     int numclothes;
-    std::string clothes[12];
-    float clothestintr[10];
-    float clothestintg[10];
-    float clothestintb[10];
+    std::vector<std::string> clothes;
+    std::vector<float> clothestintr;
+    std::vector <float> clothestintg;
+    std::vector<float> clothestintb;
 
     bool landhard;
     bool bled;
