@@ -424,6 +424,9 @@ Person::Person(FILE* tfile, int mapvers, unsigned i)
         }
         clothespath[templength] = '\0';
         clothes.push_back(std::string(clothespath));
+		clothestintr.push_back(0.0);
+		clothestintg.push_back(0.0);
+		clothestintb.push_back(0.0);
         funpackf(tfile, "Bf Bf Bf", &clothestintr[k], &clothestintg[k], &clothestintb[k]);
     }
 
