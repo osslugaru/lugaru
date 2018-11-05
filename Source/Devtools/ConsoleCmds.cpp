@@ -149,10 +149,10 @@ static void set_clothes(int pnum, const char* args)
     }
 
     int id = Person::players[pnum]->numclothes;
-    Person::players[pnum]->clothes[id]      = std::string(buf);
-    Person::players[pnum]->clothestintr[id] = tintr;
-    Person::players[pnum]->clothestintg[id] = tintg;
-    Person::players[pnum]->clothestintb[id] = tintb;
+    Person::players[pnum]->clothes.push_back(std::string(buf));
+    Person::players[pnum]->clothestintr.push_back(tintr);
+    Person::players[pnum]->clothestintg.push_back(tintg);
+    Person::players[pnum]->clothestintb.push_back(tintb);
     Person::players[pnum]->numclothes++;
 
     if (!Person::players[pnum]->addClothes(id)) {
