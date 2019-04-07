@@ -770,7 +770,7 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
         try {
             Person::players.push_back(shared_ptr<Person>(new Person(tfile, mapvers, j)));
             j++;
-        } catch (InvalidPersonException e) {
+        } catch (InvalidPersonException &e) {
             cerr << "Invalid Person found in " << name << endl;
         }
     }
@@ -1061,7 +1061,7 @@ bool Game::LoadJsonLevel(const std::string& name, bool tutorial)
         try {
             Person::players.push_back(shared_ptr<Person>(new Person(map_data["map"]["players"][i], mapvers, j)));
             j++;
-        } catch (InvalidPersonException e) {
+        } catch (InvalidPersonException &e) {
             cerr << "Invalid Person found in " << name << endl;
         }
     }
