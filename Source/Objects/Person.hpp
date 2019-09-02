@@ -248,10 +248,9 @@ public:
     bool metalhigh;
     bool metallow;
 
-    int numclothes;
     std::vector<std::string> clothes;
     std::vector<float> clothestintr;
-    std::vector <float> clothestintg;
+    std::vector<float> clothestintg;
     std::vector<float> clothestintb;
 
     bool landhard;

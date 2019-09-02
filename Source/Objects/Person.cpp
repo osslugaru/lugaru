@@ -276,9 +276,6 @@ Person::Person()
     , metallow(false)
     ,
 
-    numclothes(0)
-    ,
-
     landhard(false)
     , bled(false)
     , spurt(false)
@@ -414,6 +411,8 @@ Person::Person(FILE* tfile, int mapvers, unsigned i)
         setProportions(1, 1, 1, 1);
     }
 
+    int numclothes;
+    float tintr, tintg, tintb;
     funpackf(tfile, "Bi", &numclothes);
     for (int k = 0; k < numclothes; k++) {
         char clothespath[256];
@@ -424,10 +423,10 @@ Person::Person(FILE* tfile, int mapvers, unsigned i)
         }
         clothespath[templength] = '\0';
         clothes.push_back(std::string(clothespath));
-		clothestintr.push_back(0.0);
-		clothestintg.push_back(0.0);
-		clothestintb.push_back(0.0);
-        funpackf(tfile, "Bf Bf Bf", &clothestintr[k], &clothestintg[k], &clothestintb[k]);
+        funpackf(tfile, "Bf Bf Bf", &tintr, &tintg, &tintb);
+        clothestintr.push_back(tintr);
+        clothestintg.push_back(tintg);
+        clothestintb.push_back(tintb);
     }
 
     loaded = true;
@@ -7250,8 +7249,8 @@ void Person::takeWeapon(int weaponId)
 
 void Person::addClothes()
 {
-    if (numclothes > 0) {
-        for (int i = 0; i < numclothes; i++) {
+    if (clothes.size() > 0) {
+        for (int i = 0; i < clothes.size(); i++) {
             addClothes(i);
         }
         DoMipmaps();
@@ -8429,7 +8428,6 @@ Person::Person(Json::Value value, int /*mapvers*/, unsigned i)
 
     numwaypoints    = value["waypoints"].size();
     num_weapons     = value["weapons"].size();
-    numclothes      = value["clothes"].size();
 
     if (id == 0) {
         targetyaw = value["targetyaw"].asFloat();
@@ -8546,7 +8544,7 @@ Person::operator Json::Value() {
     person["metal"]["high"]         = metalhigh;
     person["metal"]["low"]          = metallow;
 
-    for (int k = 0; k < numclothes; k++) {
+    for (int k = 0; k < clothes.size(); k++) {
         person["clothes"][k]["path"]    = clothes[k];
         person["clothes"][k]["tintr"]   = clothestintr[k];
         person["clothes"][k]["tintg"]   = clothestintg[k];

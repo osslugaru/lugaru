@@ -686,7 +686,9 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
     funpackf(tfile, "Bf Bf Bf", &Person::players[0]->metalhead, &Person::players[0]->metalhigh, &Person::players[0]->metallow);
     funpackf(tfile, "Bf Bf", &Person::players[0]->power, &Person::players[0]->speedmult);
 
-    funpackf(tfile, "Bi", &Person::players[0]->numclothes);
+    int numclothes;
+    float tintr, tintg, tintb;
+    funpackf(tfile, "Bi", &numclothes);
 
     if (mapvers >= 9) {
         funpackf(tfile, "Bi Bi", &Person::players[0]->whichskin, &Person::players[0]->creature);
@@ -704,7 +706,11 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
         Dialog::loadDialogs(tfile);
     }
 
-    for (int k = 0; k < Person::players[0]->numclothes; k++) {
+    Person::players[0]->clothes.clear();
+    Person::players[0]->clothestintr.clear();
+    Person::players[0]->clothestintg.clear();
+    Person::players[0]->clothestintb.clear();
+    for (int k = 0; k < numclothes; k++) {
         char clothespath[256];
         funpackf(tfile, "Bi", &templength);
         for (int l = 0; l < templength; l++) {
@@ -712,10 +718,10 @@ bool Game::LoadLevel(const std::string& name, bool tutorial)
         }
         clothespath[templength] = '\0';
         Person::players[0]->clothes.push_back(std::string(clothespath));
-		Person::players[0]->clothestintr.push_back(0.0);
-		Person::players[0]->clothestintg.push_back(0.0);
-		Person::players[0]->clothestintb.push_back(0.0);
-        funpackf(tfile, "Bf Bf Bf", &Person::players[0]->clothestintr[k], &Person::players[0]->clothestintg[k], &Person::players[0]->clothestintb[k]);
+        funpackf(tfile, "Bf Bf Bf", &tintr, &tintg, &tintb);
+        Person::players[0]->clothestintr.push_back(tintr);
+        Person::players[0]->clothestintg.push_back(tintg);
+        Person::players[0]->clothestintb.push_back(tintb);
     }
 
     funpackf(tfile, "Bi", &environment);
@@ -1708,8 +1714,7 @@ void Game::ProcessDevInput()
 
             Person::players.back()->immobile = Person::players[0]->immobile;
 
-            Person::players.back()->numclothes = Person::players[0]->numclothes;
-            for (int i = 0; i < Person::players.back()->numclothes; i++) {
+            for (unsigned i = 0; i < Person::players[0]->clothes.size(); i++) {
                 Person::players.back()->clothes.push_back(Person::players[0]->clothes[i]);
                 Person::players.back()->clothestintr.push_back(Person::players[0]->clothestintr[i]);
                 Person::players.back()->clothestintg.push_back(Person::players[0]->clothestintg[i]);

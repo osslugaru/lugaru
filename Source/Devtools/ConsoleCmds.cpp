@@ -121,7 +121,10 @@ static void set_metal(int pnum, const char* args)
 
 static void set_noclothes(int pnum, const char*)
 {
-    Person::players[pnum]->numclothes = 0;
+    Person::players[pnum]->clothes.clear();
+    Person::players[pnum]->clothestintr.clear();
+    Person::players[pnum]->clothestintg.clear();
+    Person::players[pnum]->clothestintb.clear();
     Person::players[pnum]->skeleton.drawmodel.textureptr.load(
         PersonType::types[Person::players[pnum]->creature].skins[Person::players[pnum]->whichskin], 1,
         &Person::players[pnum]->skeleton.skinText[0], &Person::players[pnum]->skeleton.skinsize);
@@ -148,12 +151,11 @@ static void set_clothes(int pnum, const char* args)
         return;
     }
 
-    int id = Person::players[pnum]->numclothes;
+    int id = Person::players[pnum]->clothes.size();
     Person::players[pnum]->clothes.push_back(std::string(buf));
     Person::players[pnum]->clothestintr.push_back(tintr);
     Person::players[pnum]->clothestintg.push_back(tintg);
     Person::players[pnum]->clothestintb.push_back(tintb);
-    Person::players[pnum]->numclothes++;
 
     if (!Person::players[pnum]->addClothes(id)) {
         return;
@@ -165,7 +167,7 @@ static void set_clothes(int pnum, const char* args)
 static void list_clothes(int pnum)
 {
     printf("Clothes from player %d:\n", pnum);
-    for (int i = 0; i < Person::players[pnum]->numclothes; i++) {
+    for (unsigned i = 0; i < Person::players[pnum]->clothes.size(); i++) {
         printf("%s (%f %f %f)\n",
                Person::players[pnum]->clothes[i].c_str(),
                Person::players[pnum]->clothestintr[i],
@@ -306,13 +308,13 @@ void ch_save(const char* args)
     fpackf(tfile, "Bf Bf Bf", Person::players[0]->metalhead, Person::players[0]->metalhigh, Person::players[0]->metallow);
     fpackf(tfile, "Bf Bf", Person::players[0]->power, Person::players[0]->speedmult);
 
-    fpackf(tfile, "Bi", Person::players[0]->numclothes);
+    fpackf(tfile, "Bi", Person::players[0]->clothes.size());
 
     fpackf(tfile, "Bi Bi", Person::players[0]->whichskin, Person::players[0]->creature);
 
     Dialog::saveDialogs(tfile);
 
-    for (int k = 0; k < Person::players[0]->numclothes; k++) {
+    for (unsigned k = 0; k < Person::players[0]->clothes.size(); k++) {
         int templength = Person::players[0]->clothes[k].size();
         fpackf(tfile, "Bi", templength);
         for (int l = 0; l < templength; l++) {
@@ -374,17 +376,15 @@ void ch_save(const char* args)
         fpackf(tfile, "Bf Bf", Person::players[j]->power, Person::players[j]->speedmult);
         fpackf(tfile, "Bf Bf Bf Bf", Person::players[j]->getProportion(0), Person::players[j]->getProportion(1), Person::players[j]->getProportion(2), Person::players[j]->getProportion(3));
 
-        fpackf(tfile, "Bi", Person::players[j]->numclothes);
-        if (Person::players[j]->numclothes) {
-            for (int k = 0; k < Person::players[j]->numclothes; k++) {
-                int templength;
-                templength = Person::players[j]->clothes[k].size();
-                fpackf(tfile, "Bi", templength);
-                for (int l = 0; l < templength; l++) {
-                    fpackf(tfile, "Bb", Person::players[j]->clothes[k][l]);
-                }
-                fpackf(tfile, "Bf Bf Bf", Person::players[j]->clothestintr[k], Person::players[j]->clothestintg[k], Person::players[j]->clothestintb[k]);
+        fpackf(tfile, "Bi", Person::players[j]->clothes.size());
+        for (unsigned k = 0; k < Person::players[j]->clothes.size(); k++) {
+            int templength;
+            templength = Person::players[j]->clothes[k].size();
+            fpackf(tfile, "Bi", templength);
+            for (int l = 0; l < templength; l++) {
+                fpackf(tfile, "Bb", Person::players[j]->clothes[k][l]);
             }
+            fpackf(tfile, "Bf Bf Bf", Person::players[j]->clothestintr[k], Person::players[j]->clothestintg[k], Person::players[j]->clothestintb[k]);
         }
     }
 
@@ -727,7 +727,10 @@ void ch_default(const char*)
 
     Person::players[0]->setProportions(1, 1, 1, 1);
 
-    Person::players[0]->numclothes = 0;
+    Person::players[0]->clothes.clear();
+    Person::players[0]->clothestintr.clear();
+    Person::players[0]->clothestintg.clear();
+    Person::players[0]->clothestintb.clear();
     Person::players[0]->skeleton.drawmodel.textureptr.load(
         PersonType::types[Person::players[0]->creature].skins[Person::players[0]->whichskin], 1,
         &Person::players[0]->skeleton.skinText[0], &Person::players[0]->skeleton.skinsize);
