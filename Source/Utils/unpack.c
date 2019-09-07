@@ -22,7 +22,6 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "private.h"
 
 #include <stdlib.h>
-#include <assert.h>
 
 struct BinIOUnpackContext {
     const uint8_t *data;
@@ -110,8 +109,7 @@ void vfunpackf(FILE *file, const char *format, va_list args)
 {
     size_t n_bytes = BinIOFormatByteCount(format);
     void* buffer = malloc(n_bytes);
-    ssize_t n_read = fread(buffer, n_bytes, 1, file);
-    assert(n_read == n_bytes);
+    fread(buffer, n_bytes, 1, file);
 
     vsunpackf(buffer, format, args);
 
