@@ -7250,7 +7250,7 @@ void Person::takeWeapon(int weaponId)
 void Person::addClothes()
 {
     if (clothes.size() > 0) {
-        for (int i = 0; i < clothes.size(); i++) {
+        for (unsigned i = 0; i < clothes.size(); i++) {
             addClothes(i);
         }
         DoMipmaps();
@@ -8544,7 +8544,7 @@ Person::operator Json::Value() {
     person["metal"]["high"]         = metalhigh;
     person["metal"]["low"]          = metallow;
 
-    for (int k = 0; k < clothes.size(); k++) {
+    for (unsigned k = 0; k < clothes.size(); k++) {
         person["clothes"][k]["path"]    = clothes[k];
         person["clothes"][k]["tintr"]   = clothestintr[k];
         person["clothes"][k]["tintg"]   = clothestintg[k];
