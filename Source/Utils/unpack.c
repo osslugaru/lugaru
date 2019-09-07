@@ -111,7 +111,7 @@ void vfunpackf(FILE *file, const char *format, va_list args)
     size_t n_bytes = BinIOFormatByteCount(format);
     void* buffer = malloc(n_bytes);
     ssize_t n_read = fread(buffer, n_bytes, 1, file);
-    assert(n_read == 1);
+    assert(n_read == n_bytes);
 
     vsunpackf(buffer, format, args);
 
