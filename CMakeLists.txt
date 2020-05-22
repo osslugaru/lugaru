@@ -19,7 +19,7 @@ endif()
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE RelWithDebInfo)
-endif(NOT CMAKE_BUILD_TYPE)
+endif()
 message(STATUS "CMake build type: ${CMAKE_BUILD_TYPE}")
 
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-parentheses -pedantic --std=gnu++11 ${CMAKE_CXX_FLAGS}")
@@ -30,11 +30,11 @@ if(APPLE)
         "Minimum OS X version to target for deployment (at runtime); newer APIs weak linked. Set to empty string for default value")
     set(CMAKE_OSX_SYSROOT "/Developer/SDKs/MacOSX10.11.sdk" CACHE PATH
         "The product will be built against the headers and libraries located inside the indicated SDK.")
-endif(APPLE)
+endif()
 
 if(LINUX)
     option(SYSTEM_INSTALL "Enable system-wide installation, with hardcoded data directory defined with CMAKE_INSTALL_DATADIR" OFF)
-endif(LINUX)
+endif()
 
 
 ### Version
@@ -188,11 +188,11 @@ if(WIN32)
                        DEPENDS ${SRCDIR}/Lugaru.rc
     )
     set(LUGARU_OBJS "Lugaru.res")
-endif(WIN32)
+endif()
 
 if(APPLE)
     set(PLATFORM_LIBS "-framework Carbon -framework Cocoa -framework OpenGL -framework OpenAL")
-endif(APPLE)
+endif()
 
 
 ### Dependencies
@@ -203,16 +203,16 @@ find_package(OpenGL REQUIRED)
 if(WIN32)
     pkg_check_modules(OPENAL openal REQUIRED)
     set(OPENAL_LIBRARY ${OPENAL_LIBRARIES})
-else(WIN32)
+else()
     find_package(OpenAL REQUIRED)
-endif(WIN32)
+endif()
 
 # macOS has problems with using pkgconfig to find SDL2
 if(APPLE)
     find_package(sdl2 REQUIRED)
-else(APPLE)
+else()
     pkg_check_modules(SDL2 sdl2 REQUIRED)
-endif(APPLE)
+endif()
 
 find_package(PNG REQUIRED)
 find_package(JPEG REQUIRED)
@@ -244,29 +244,27 @@ if(WIN32)
     if(MINGW)
         # An alternative would be to use _WIN32 consistently instead of WIN32
         add_definitions(-DWIN32)
-    endif(MINGW)
-else(WIN32)
+    endif()
+else()
     add_definitions(-DPLATFORM_LINUX=1 -DPLATFORM_UNIX=1 -DBinIO_STDINT_HEADER=<stdint.h>)
-endif(WIN32)
+endif()
 
 
 ### Installation
 
 if(NOT CMAKE_INSTALL_PREFIX AND WIN32)
     set(CMAKE_INSTALL_PREFIX "C:/Lugaru")
-endif(NOT CMAKE_INSTALL_PREFIX AND WIN32)
+endif()
 
 # OS-specific installation paths
 
 set(LUGARU_DOCDIR ${CMAKE_INSTALL_PREFIX})
-if(LINUX)
-endif(LINUX)
 
 if(APPLE)
     set(LUGARU_APP_ROOT ${CMAKE_INSTALL_PREFIX}/Lugaru.app)
     set(LUGARU_BINDIR ${LUGARU_APP_ROOT}/Contents/MacOS)
     set(LUGARU_RESDIR ${LUGARU_APP_ROOT}/Contents/Resources)
-endif(APPLE)
+endif()
 
 # Actual installation instructions
 
@@ -278,7 +276,7 @@ if(WIN32)
         set(LIBGCC_S libgcc_s_sjlj-1.dll)
         if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64") # MinGW64
             set(LIBGCC_S libgcc_s_seh-1.dll)
-        endif(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+        endif()
         # FIXME: Filter out unneeded DLLs when building against some internal deps
         set(DLL_ROOT ${CMAKE_FIND_ROOT_PATH}/bin)
         install(FILES ${DLL_ROOT}/${LIBGCC_S}
@@ -294,8 +292,8 @@ if(WIN32)
                       ${DLL_ROOT}/SDL2.dll
                       ${DLL_ROOT}/zlib1.dll
                 DESTINATION ${CMAKE_INSTALL_PREFIX})
-    endif(MINGW)
-endif(WIN32)
+    endif()
+endif()
 
 if(LINUX)
     if(SYSTEM_INSTALL)
@@ -308,19 +306,19 @@ if(LINUX)
         install(FILES ${CMAKE_SOURCE_DIR}/Dist/Linux/lugaru.desktop DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications)
         install(FILES ${CMAKE_SOURCE_DIR}/Dist/Linux/lugaru.png DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/128x128/apps)
         install(FILES ${CMAKE_SOURCE_DIR}/Dist/Linux/lugaru.6 DESTINATION ${CMAKE_INSTALL_MANDIR}/man6)
-    else(SYSTEM_INSTALL)
+    else()
         message("You are building Lugaru without having enabled the SYSTEM_INSTALL option. It will default to looking for the data in the 'Data' directory next to the binary.")
         install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru DESTINATION ${CMAKE_INSTALL_PREFIX})
         install(DIRECTORY ${CMAKE_SOURCE_DIR}/Data DESTINATION ${CMAKE_INSTALL_PREFIX})
-    endif(SYSTEM_INSTALL)
-endif(LINUX)
+    endif()
+endif()
 
 if(APPLE)
     install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru DESTINATION ${LUGARU_BINDIR})
     install(DIRECTORY ${CMAKE_SOURCE_DIR}/Data DESTINATION ${LUGARU_APP_ROOT})
     install(FILES ${CMAKE_SOURCE_DIR}/Dist/OSX/Lugaru.icns DESTINATION ${LUGARU_RESDIR})
     install(FILES ${CMAKE_SOURCE_DIR}/Dist/OSX/Info.plist DESTINATION ${LUGARU_APP_ROOT}/Contents)
-endif(APPLE)
+endif()
 
 # Documentation
 
