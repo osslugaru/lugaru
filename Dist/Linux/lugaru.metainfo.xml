@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2020 OSS Lugaru contributors -->
+<!-- Originally written by Neal Gompa <ngompa13@gmail.com> -->
+<component type="desktop">
+  <id>lugaru.desktop</id>
+  <metadata_license>CC-BY-SA-4.0</metadata_license>
+  <project_license>GPL-2.0+ and CC-BY-SA-3.0</project_license>
+  <name>Lugaru HD</name>
+  <summary>Third person ninja rabbit fighting game</summary>
+  <description>
+    <p>
+      Lugaru (pronounced Loo-GAH-roo) is a cross-platform third-person action game.
+      The main character, Turner, is an anthropomorphic rebel bunny rabbit with impressive combat skills.
+    </p>
+
+    <p>
+      In his quest to find those responsible for slaughtering his village,
+      he uncovers a far-reaching conspiracy involving the corrupt leaders
+      of the rabbit republic and the starving wolves from a nearby den.
+      Turner takes it upon himself to fight against their plot and save
+      his fellow rabbits from slavery.
+    </p>
+  </description>
+  <releases>
+    <release version="1.2" date="2017-02-11">
+      <p>
+        Second release of the open source Lugaru project! It continues the refactoring
+        work to make the old Lugaru code more modular and easier to maintain and
+        extend. A particular attention was given to the development tools (in game
+        editor) to improve the modability of the game.
+      </p>
+      <p>Highlights:</p>
+      <ul>
+        <li>Keep track of and display the game's version number in the console and main menu.</li>
+        <li>
+          Many fixes and improvements to development tools, most of them should now work
+          as described in the documentation.
+        </li>
+        <li>New monospace font for the console, more readable.</li>
+        <li>Configurable campaign end message.</li>
+        <li>Various fixes to mod levels and campaigns.</li>
+        <li>
+          A lot of behind-the-scenes refactoring that should help bring more interesting changes
+          in future releases.
+        </li>
+      </ul>
+    </release>
+    <release version="1.1" date="2016-12-14">
+      <p>
+        First release of the open source Lugaru project! It contains most commits
+        made from various contributors since the open sourcing in 2010, and is
+        therefore more advanced than the preceding Lugaru HD release by Wolfire.
+      </p>
+      <p>Highlights:</p>
+      <ul>
+        <li>Multiple campaigns support, making it easier to install and play mods!</li>
+        <li>
+          These Lugaru mods are included by default as alternative to the Turner official campaign:
+          <ul>
+            <li>Temple, by Silb</li>
+            <li>Empire, by Jendraz</li>
+            <li>The Seven Tasks, by Philtron R. (albeit with some engine-related issues)</li>
+          </ul>
+        </li>
+        <li>
+          All assets (animations, textures, models, maps, sounds, etc.) of Lugaru HD
+          by Wolfire are under a free and open source license (CC-BY-SA 3.0)!
+        </li>
+        <li>
+          Window and input management ported from SDL 1.2 to SDL 2.0, improving the
+          support for modern screen resolutions and fullscreen mode, as well as
+          better input handling.
+        </li>
+      </ul>
+    </release>
+  </releases>
+  <content_rating type="oars-1.0">
+    <content_attribute id="violence-cartoon">intense</content_attribute>
+    <content_attribute id="violence-fantasy">intense</content_attribute>
+    <content_attribute id="violence-bloodshed">mild</content_attribute>
+    <content_attribute id="language-profanity">mild</content_attribute>
+  </content_rating>
+  <screenshots>
+    <screenshot type="default">
+      <image width="864" height="417">
+        https://osslugaru.gitlab.io/images/lugaru-banner.png
+      </image>
+    </screenshot>
+  </screenshots>
+  <url type="homepage">https://osslugaru.gitlab.io/</url>
+  <url type="bugtracker">https://gitlab.com/osslugaru/lugaru/issues</url>
+  <url type="contact">https://webchat.freenode.net/#lugaru</url>
+</component>
+
