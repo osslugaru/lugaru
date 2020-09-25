@@ -32,6 +32,11 @@ if(APPLE)
         "The product will be built against the headers and libraries located inside the indicated SDK.")
 endif()
 
+if(WIN32 AND MINGW)
+    # Recent mingw requires this, see https://sourceforge.net/p/mingw-w64/bugs/818/
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fstack-protector")
+endif()
+
 if(LINUX)
     option(SYSTEM_INSTALL "Enable system-wide installation, with hardcoded data directory defined with CMAKE_INSTALL_DATADIR" OFF)
 endif()
@@ -289,6 +294,7 @@ if(WIN32)
                       ${DLL_ROOT}/libjsoncpp.dll
                       ${DLL_ROOT}/libogg-0.dll
                       ${DLL_ROOT}/libpng16-16.dll
+                      ${DLL_ROOT}/libssp-0.dll
                       ${DLL_ROOT}/libstdc++-6.dll
                       ${DLL_ROOT}/libvorbis-0.dll
                       ${DLL_ROOT}/libvorbisfile-3.dll
