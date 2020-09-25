@@ -202,6 +202,8 @@ endif()
 
 ### Dependencies
 
+# TODO: Work on supporting "GLVND" instead.
+set(OpenGL_GL_PREFERENCE LEGACY)
 find_package(OpenGL REQUIRED)
 
 # Windows is funky about OpenAL detection
