@@ -272,13 +272,18 @@ if(WIN32)
     install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru.exe DESTINATION ${CMAKE_INSTALL_PREFIX})
     install(DIRECTORY ${CMAKE_SOURCE_DIR}/Data DESTINATION ${CMAKE_INSTALL_PREFIX})
     if(MINGW)
+        set(DLL_ROOT ${CMAKE_FIND_ROOT_PATH}/bin)
+        # We need the shared libgcc, but it can have different names based on arch/config/version.
+        # Ideally we'd check what our deps and lugaru.exe actually require, but for now it's a hack.
         # Based off Mageia/Fedora MinGW toolchain, might not work on other distros or Windows
-        set(LIBGCC_S libgcc_s_sjlj-1.dll)
-        if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64") # MinGW64
+        if(EXISTS ${DLL_ROOT}/libgcc_s_seh-1.dll)
             set(LIBGCC_S libgcc_s_seh-1.dll)
+        elseif(EXISTS ${DLL_ROOT}/libgcc_s_dw2-1.dll)
+            set(LIBGCC_S libgcc_s_dw2-1.dll)
+        elseif(EXISTS ${DLL_ROOT}/libgcc_s_sjlj-1.dll)
+            set(LIBGCC_S libgcc_s_sjlj-1.dll)
         endif()
         # FIXME: Filter out unneeded DLLs when building against some internal deps
-        set(DLL_ROOT ${CMAKE_FIND_ROOT_PATH}/bin)
         install(FILES ${DLL_ROOT}/${LIBGCC_S}
                       ${DLL_ROOT}/libjpeg-62.dll
                       ${DLL_ROOT}/libjsoncpp.dll
