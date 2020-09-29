@@ -9,10 +9,9 @@ variables:
   YUMDNF: dnf
   EXTRA_REPO_INST_COMMAND: /bin/true
   EXTRA_REPO_CONFIGURE_COMMAND: /bin/true
-  JPEG_PACKAGE: "pkgconfig(libjpeg)"
   CMAKE_PACKAGE: "/usr/bin/cmake"
-  DEPENDENCY_PACKAGES: "pkgconfig(openal) pkgconfig(sdl2) pkgconfig(glu) pkgconfig(libpng) pkgconfig(vorbis) pkgconfig(vorbisfile) pkgconfig(ogg) pkgconfig(jsoncpp)"
-  COMMON_PACKAGES: "$COMPILER_PACKAGES $CMAKE_PACKAGE make $DEPENDENCY_PACKAGES $JPEG_PACKAGE"
+  DEPENDENCY_PACKAGES: "pkgconfig(openal) pkgconfig(sdl2) pkgconfig(glu) pkgconfig(libpng) pkgconfig(libjpeg) pkgconfig(vorbis) pkgconfig(vorbisfile) pkgconfig(ogg) pkgconfig(jsoncpp)"
+  COMMON_PACKAGES: "$COMPILER_PACKAGES $CMAKE_PACKAGE make $DEPENDENCY_PACKAGES"
 
 before_script:
   - $EXTRA_REPO_INST_COMMAND
@@ -20,7 +19,7 @@ before_script:
   - $YUMDNF --setopt=cachedir=`pwd`/${YUMDNF}-cache --quiet --assumeyes install $COMMON_PACKAGES
 
 build_oldgcc:
-  image: centos:7
+  image: centos:8
   cache:
     key: yum-cache
     paths:
@@ -28,8 +27,7 @@ build_oldgcc:
   variables:
     YUMDNF: yum
     EXTRA_REPO_INST_COMMAND: "yum --setopt=cachedir=`pwd`/yum-cache --quiet --assumeyes install epel-release yum-utils"
-    EXTRA_REPO_CONFIGURE_COMMAND: "yum-config-manager --enable cr"
-    JPEG_PACKAGE: "libjpeg-devel"
+    EXTRA_REPO_CONFIGURE_COMMAND: "yum-config-manager --enable PowerTools"
     CMAKE_PACKAGE: "/usr/bin/cmake3"
     COMPILER_PACKAGES: "gcc gcc-c++"
   stage: build
