@@ -148,7 +148,7 @@ const char* Input::keyToChar(unsigned short i)
     } else if (i == MOUSEBUTTON_X2) {
         return "mouse button 5";
     } else {
-        return "unknown";
+        return SDL_GameControllerGetStringForButton(SDL_GameControllerButton(i - SDL_NUM_SCANCODES - 6));
     }
 }
 
