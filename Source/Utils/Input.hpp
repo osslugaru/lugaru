@@ -36,7 +36,8 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 class Input
 {
 protected:
-    static const int KEYMAX = SDL_NUM_SCANCODES + 6 + SDL_CONTROLLER_BUTTON_MAX;
+    static const int KEYMAX = SDL_NUM_SCANCODES + 6 + SDL_CONTROLLER_BUTTON_MAX + 2 * SDL_CONTROLLER_AXIS_MAX;
+    static const int AXIS_THRESHOLD = 10;
     static SDL_GameController* controller;
     static int joyid;
     static bool keyDown[Input::KEYMAX];

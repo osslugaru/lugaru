@@ -42,8 +42,20 @@ void Input::Tick()
     if (controller) {
         for (int i = 0; i < SDL_CONTROLLER_BUTTON_MAX; i++) {
             int j = SDL_NUM_SCANCODES + 6 + i;
-            keyPressed[j] = !keyDown[j] && SDL_GameControllerGetButton(controller, SDL_GameControllerButton(i));
-            keyDown[j] = SDL_GameControllerGetButton(controller, SDL_GameControllerButton(i));
+            bool pressed = SDL_GameControllerGetButton(controller, SDL_GameControllerButton(i));
+            keyPressed[j] = !keyDown[j] && pressed;
+            keyDown[j] = pressed;
+        }
+        for (int i = 0; i < SDL_CONTROLLER_AXIS_MAX; i++) {
+            Sint16 state = SDL_GameControllerGetAxis(controller, SDL_GameControllerAxis(i));
+            bool negative = (state < -Input::AXIS_THRESHOLD);
+            bool positive = (state > Input::AXIS_THRESHOLD);
+            int j = SDL_NUM_SCANCODES + 6 + SDL_CONTROLLER_BUTTON_MAX + 2 * i;
+            keyPressed[j] = !keyDown[j] && positive;
+            keyDown[j] = positive;
+            j++;
+            keyPressed[j] = !keyDown[j] && negative;
+            keyDown[j] = negative;
         }
     }
 }
@@ -111,6 +123,13 @@ int Input::getScancode(SDL_Event evenement)
         case SDL_CONTROLLERBUTTONDOWN:
             return SDL_NUM_SCANCODES + 6 + evenement.cbutton.button;
             break;
+        case SDL_CONTROLLERAXISMOTION:
+            if (evenement.caxis.value > Input::AXIS_THRESHOLD) {
+                return SDL_NUM_SCANCODES + 6 + SDL_CONTROLLER_BUTTON_MAX + 2 * evenement.caxis.axis;
+            } else if (evenement.caxis.value < -Input::AXIS_THRESHOLD) {
+                return SDL_NUM_SCANCODES + 6 + SDL_CONTROLLER_BUTTON_MAX + 2 * evenement.caxis.axis + 1;
+            }
+            break;
         default:
             break;
     }
@@ -147,8 +166,10 @@ const char* Input::keyToChar(unsigned short i)
         return "mouse button 4";
     } else if (i == MOUSEBUTTON_X2) {
         return "mouse button 5";
-    } else {
+    } else if (i < SDL_NUM_SCANCODES + 6 + SDL_CONTROLLER_BUTTON_MAX) {
         return SDL_GameControllerGetStringForButton(SDL_GameControllerButton(i - SDL_NUM_SCANCODES - 6));
+    } else {
+        return SDL_GameControllerGetStringForAxis(SDL_GameControllerAxis((i - SDL_NUM_SCANCODES - 6 - SDL_CONTROLLER_BUTTON_MAX) / 2));
     }
 }
 
