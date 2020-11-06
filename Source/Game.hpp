@@ -39,6 +39,7 @@ along with Lugaru.  If not, see <http://www.gnu.org/licenses/>.
 #include "User/Account.hpp"
 #include "Utils/ImageIO.hpp"
 #include "Utils/binio.h"
+#include "Utils/Keys.hpp"
 
 #include <SDL.h>
 #include <fstream>
@@ -130,9 +131,6 @@ extern int targetlevel;
 extern float changedelay;
 
 extern bool waiting;
-
-extern unsigned short crouchkey, jumpkey, forwardkey, backkey, leftkey, rightkey, drawkey, throwkey, attackkey;
-extern unsigned short consolekey;
 
 void newGame();
 void deleteGame();

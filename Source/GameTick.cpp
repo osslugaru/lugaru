@@ -1212,7 +1212,7 @@ void Game::ProcessInput()
 
     /* Challenge mode */
     if (!campaign && !mainmenu) {
-        if ((Input::isKeyPressed(jumpkey) || Input::isKeyPressed(SDL_SCANCODE_SPACE))) {
+        if ((Input::isKeyPressed(Keys::jump) || Input::isKeyPressed(SDL_SCANCODE_SPACE))) {
             if (winfreeze) {
                 winfreeze = 0;
             }
@@ -1277,7 +1277,7 @@ void Game::ProcessInput()
     /* Devtools */
     if (devtools && !mainmenu) {
         /* Console */
-        if (Input::isKeyPressed(consolekey)) {
+        if (Input::isKeyPressed(Keys::console)) {
             console = !console;
             if (console) {
                 OPENAL_SetFrequency(OPENAL_ALL);
@@ -2397,7 +2397,7 @@ void doAttacks()
     static int randattack;
     static bool playerrealattackkeydown = 0;
 
-    if (!Input::isKeyDown(attackkey)) {
+    if (!Input::isKeyDown(Keys::attack)) {
         oldattackkey = 0;
     }
     if (oldattackkey) {
@@ -2407,7 +2407,7 @@ void doAttacks()
         playerrealattackkeydown = 0;
     }
     if (!oldattackkey) {
-        playerrealattackkeydown = Input::isKeyDown(attackkey);
+        playerrealattackkeydown = Input::isKeyDown(Keys::attack);
     }
     if ((Person::players[0]->parriedrecently <= 0 ||
          !Person::players[0]->hasWeapon()) &&
@@ -2417,9 +2417,9 @@ void doAttacks()
           Person::players[0]->lastattack != knifeslashstartanim &&
           Person::players[0]->lastattack != staffhitanim &&
           Person::players[0]->lastattack != staffspinhitanim))) {
-        Person::players[0]->attackkeydown = Input::isKeyDown(attackkey);
+        Person::players[0]->attackkeydown = Input::isKeyDown(Keys::attack);
     }
-    if (Input::isKeyDown(attackkey) &&
+    if (Input::isKeyDown(Keys::attack) &&
         !oldattackkey &&
         !Person::players[0]->backkeydown) {
         for (unsigned k = 0; k < Person::players.size(); k++) {
@@ -3388,14 +3388,14 @@ void Game::Tick()
 
             //control keys
             if (!Dialog::inDialog()) {
-                Person::players[0]->forwardkeydown = Input::isKeyDown(forwardkey);
-                Person::players[0]->leftkeydown = Input::isKeyDown(leftkey);
-                Person::players[0]->backkeydown = Input::isKeyDown(backkey);
-                Person::players[0]->rightkeydown = Input::isKeyDown(rightkey);
-                Person::players[0]->jumpkeydown = Input::isKeyDown(jumpkey);
-                Person::players[0]->crouchkeydown = Input::isKeyDown(crouchkey);
-                Person::players[0]->drawkeydown = Input::isKeyDown(drawkey);
-                Person::players[0]->throwkeydown = Input::isKeyDown(throwkey);
+                Person::players[0]->forwardkeydown = Input::isKeyDown(Keys::forward);
+                Person::players[0]->leftkeydown = Input::isKeyDown(Keys::left);
+                Person::players[0]->backkeydown = Input::isKeyDown(Keys::back);
+                Person::players[0]->rightkeydown = Input::isKeyDown(Keys::right);
+                Person::players[0]->jumpkeydown = Input::isKeyDown(Keys::jump);
+                Person::players[0]->crouchkeydown = Input::isKeyDown(Keys::crouch);
+                Person::players[0]->drawkeydown = Input::isKeyDown(Keys::draw);
+                Person::players[0]->throwkeydown = Input::isKeyDown(Keys::throwk);
             } else {
                 Person::players[0]->forwardkeydown = 0;
                 Person::players[0]->leftkeydown = 0;
@@ -3425,22 +3425,22 @@ void Game::Tick()
 
                     flatfacing = DoRotation(flatfacing, 0, -yaw, 0);
 
-                    if (Input::isKeyDown(forwardkey)) {
+                    if (Input::isKeyDown(Keys::forward)) {
                         viewer += facing * multiplier * 4;
                     }
-                    if (Input::isKeyDown(backkey)) {
+                    if (Input::isKeyDown(Keys::back)) {
                         viewer -= facing * multiplier * 4;
                     }
-                    if (Input::isKeyDown(leftkey)) {
+                    if (Input::isKeyDown(Keys::left)) {
                         viewer += DoRotation(flatfacing * multiplier, 0, 90, 0) * 4;
                     }
-                    if (Input::isKeyDown(rightkey)) {
+                    if (Input::isKeyDown(Keys::right)) {
                         viewer += DoRotation(flatfacing * multiplier, 0, -90, 0) * 4;
                     }
-                    if (Input::isKeyDown(jumpkey)) {
+                    if (Input::isKeyDown(Keys::jump)) {
                         viewer.y += multiplier * 4;
                     }
-                    if (Input::isKeyDown(crouchkey)) {
+                    if (Input::isKeyDown(Keys::crouch)) {
                         viewer.y -= multiplier * 4;
                     }
                     if (Input::isKeyPressed(SDL_SCANCODE_1) ||
@@ -3573,7 +3573,7 @@ void Game::Tick()
                     yaw = Dialog::currentScene().camerayaw;
                     pitch = Dialog::currentScene().camerapitch;
                     if (Dialog::dialoguetime > 0.5) {
-                        if (Input::isKeyPressed(attackkey)) {
+                        if (Input::isKeyPressed(Keys::attack)) {
                             Dialog::indialogue++;
                             if (Dialog::indialogue < int(Dialog::currentDialog().scenes.size())) {
                                 if (Dialog::currentScene().sound != 0) {
@@ -3664,7 +3664,7 @@ void Game::Tick()
                      (Input::isKeyDown(SDL_SCANCODE_K) &&
                       Input::isKeyDown(SDL_SCANCODE_LALT) &&
                       devtools) ||
-                 (Input::isKeyDown(jumpkey) &&
+                 (Input::isKeyDown(Keys::jump) &&
                   !respawnkeydown &&
                   !oldattackkey &&
                   Person::players[0]->dead))) {
@@ -3672,7 +3672,7 @@ void Game::Tick()
                 loading = 1;
                 leveltime = 5;
             }
-            respawnkeydown = Input::isKeyDown(jumpkey);
+            respawnkeydown = Input::isKeyDown(Keys::jump);
 
             static bool movekey;
 

@@ -129,6 +129,7 @@ set(LUGARU_SRCS
     ${SRCDIR}/Utils/Folders.cpp
     ${SRCDIR}/Utils/ImageIO.cpp
     ${SRCDIR}/Utils/Input.cpp
+    ${SRCDIR}/Utils/Keys.cpp
     ${SRCDIR}/Utils/pack.c
     ${SRCDIR}/Utils/private.c
     ${SRCDIR}/Utils/unpack.c
@@ -178,6 +179,7 @@ set(LUGARU_H
     ${SRCDIR}/Utils/Folders.hpp
     ${SRCDIR}/Utils/ImageIO.hpp
     ${SRCDIR}/Utils/Input.hpp
+    ${SRCDIR}/Utils/Keys.hpp
     ${SRCDIR}/Utils/private.h
     ${SRCDIR}/Game.hpp
     ${SRCDIR}/Tutorial.hpp

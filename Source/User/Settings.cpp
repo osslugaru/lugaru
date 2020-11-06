@@ -54,16 +54,16 @@ void DefaultSettings()
     ambientsound = 1;
     devtools = 0;
 
-    crouchkey = SDL_SCANCODE_LSHIFT;
-    jumpkey = SDL_SCANCODE_SPACE;
-    leftkey = SDL_SCANCODE_A;
-    forwardkey = SDL_SCANCODE_W;
-    backkey = SDL_SCANCODE_S;
-    rightkey = SDL_SCANCODE_D;
-    drawkey = SDL_SCANCODE_E;
-    throwkey = SDL_SCANCODE_Q;
-    attackkey = MOUSEBUTTON_LEFT;
-    consolekey = SDL_SCANCODE_GRAVE;
+    Keys::crouch = SDL_SCANCODE_LSHIFT;
+    Keys::jump = SDL_SCANCODE_SPACE;
+    Keys::left = SDL_SCANCODE_A;
+    Keys::forward = SDL_SCANCODE_W;
+    Keys::back = SDL_SCANCODE_S;
+    Keys::right = SDL_SCANCODE_D;
+    Keys::draw = SDL_SCANCODE_E;
+    Keys::throwk = SDL_SCANCODE_Q;
+    Keys::attack = MOUSEBUTTON_LEFT;
+    Keys::console = SDL_SCANCODE_GRAVE;
 
     newdetail = detail;
 }
@@ -140,25 +140,25 @@ void SaveSettings()
     opstream << "\nVolume:\n";
     opstream << volume;
     opstream << "\nForward key:\n";
-    opstream << forwardkey;
+    opstream << Keys::forward;
     opstream << "\nBack key:\n";
-    opstream << backkey;
+    opstream << Keys::back;
     opstream << "\nLeft key:\n";
-    opstream << leftkey;
+    opstream << Keys::left;
     opstream << "\nRight key:\n";
-    opstream << rightkey;
+    opstream << Keys::right;
     opstream << "\nJump key:\n";
-    opstream << jumpkey;
+    opstream << Keys::jump;
     opstream << "\nCrouch key:\n";
-    opstream << crouchkey;
+    opstream << Keys::crouch;
     opstream << "\nDraw key:\n";
-    opstream << drawkey;
+    opstream << Keys::draw;
     opstream << "\nThrow key:\n";
-    opstream << throwkey;
+    opstream << Keys::throwk;
     opstream << "\nAttack key:\n";
-    opstream << attackkey;
+    opstream << Keys::attack;
     opstream << "\nConsole key:\n";
-    opstream << consolekey;
+    opstream << Keys::console;
     opstream << "\nDamage bar:\n";
     opstream << showdamagebar;
     opstream << "\nStereoMode:\n";
@@ -261,25 +261,25 @@ bool LoadSettings()
         } else if (!strncmp(setting, "Volume", 6)) {
             ipstream >> volume;
         } else if (!strncmp(setting, "Forward key", 11)) {
-            ipstream >> forwardkey;
+            ipstream >> Keys::forward;
         } else if (!strncmp(setting, "Back key", 8)) {
-            ipstream >> backkey;
+            ipstream >> Keys::back;
         } else if (!strncmp(setting, "Left key", 8)) {
-            ipstream >> leftkey;
+            ipstream >> Keys::left;
         } else if (!strncmp(setting, "Right key", 9)) {
-            ipstream >> rightkey;
+            ipstream >> Keys::right;
         } else if (!strncmp(setting, "Jump key", 8)) {
-            ipstream >> jumpkey;
+            ipstream >> Keys::jump;
         } else if (!strncmp(setting, "Crouch key", 10)) {
-            ipstream >> crouchkey;
+            ipstream >> Keys::crouch;
         } else if (!strncmp(setting, "Draw key", 8)) {
-            ipstream >> drawkey;
+            ipstream >> Keys::draw;
         } else if (!strncmp(setting, "Throw key", 9)) {
-            ipstream >> throwkey;
+            ipstream >> Keys::throwk;
         } else if (!strncmp(setting, "Attack key", 10)) {
-            ipstream >> attackkey;
+            ipstream >> Keys::attack;
         } else if (!strncmp(setting, "Console key", 11)) {
-            ipstream >> consolekey;
+            ipstream >> Keys::console;
         } else if (!strncmp(setting, "Damage bar", 10)) {
             ipstream >> showdamagebar;
         } else if (!strncmp(setting, "StereoMode", 10)) {

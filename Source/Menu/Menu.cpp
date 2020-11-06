@@ -342,17 +342,17 @@ void Menu::updateStereoConfigMenu()
 
 void Menu::updateControlsMenu()
 {
-    setText(0, (string) "Forwards: " + (keyselect == 0 ? "_" : Input::keyToChar(forwardkey)));
-    setText(1, (string) "Back: " + (keyselect == 1 ? "_" : Input::keyToChar(backkey)));
-    setText(2, (string) "Left: " + (keyselect == 2 ? "_" : Input::keyToChar(leftkey)));
-    setText(3, (string) "Right: " + (keyselect == 3 ? "_" : Input::keyToChar(rightkey)));
-    setText(4, (string) "Crouch: " + (keyselect == 4 ? "_" : Input::keyToChar(crouchkey)));
-    setText(5, (string) "Jump: " + (keyselect == 5 ? "_" : Input::keyToChar(jumpkey)));
-    setText(6, (string) "Draw: " + (keyselect == 6 ? "_" : Input::keyToChar(drawkey)));
-    setText(7, (string) "Throw: " + (keyselect == 7 ? "_" : Input::keyToChar(throwkey)));
-    setText(8, (string) "Attack: " + (keyselect == 8 ? "_" : Input::keyToChar(attackkey)));
+    setText(0, (string) "Forwards: " + (keyselect == 0 ? "_" : Input::keyToChar(Keys::forward)));
+    setText(1, (string) "Back: " + (keyselect == 1 ? "_" : Input::keyToChar(Keys::back)));
+    setText(2, (string) "Left: " + (keyselect == 2 ? "_" : Input::keyToChar(Keys::left)));
+    setText(3, (string) "Right: " + (keyselect == 3 ? "_" : Input::keyToChar(Keys::right)));
+    setText(4, (string) "Crouch: " + (keyselect == 4 ? "_" : Input::keyToChar(Keys::crouch)));
+    setText(5, (string) "Jump: " + (keyselect == 5 ? "_" : Input::keyToChar(Keys::jump)));
+    setText(6, (string) "Draw: " + (keyselect == 6 ? "_" : Input::keyToChar(Keys::draw)));
+    setText(7, (string) "Throw: " + (keyselect == 7 ? "_" : Input::keyToChar(Keys::throwk)));
+    setText(8, (string) "Attack: " + (keyselect == 8 ? "_" : Input::keyToChar(Keys::attack)));
     if (devtools) {
-        setText(9, (string) "Console: " + (keyselect == 9 ? "_" : Input::keyToChar(consolekey)));
+        setText(9, (string) "Console: " + (keyselect == 9 ? "_" : Input::keyToChar(Keys::console)));
     }
 }
 
@@ -965,34 +965,34 @@ int setKeySelected_thread(void*)
         fireSound();
         switch (keyselect) {
             case 0:
-                forwardkey = scancode;
+                Keys::forward = scancode;
                 break;
             case 1:
-                backkey = scancode;
+                Keys::back = scancode;
                 break;
             case 2:
-                leftkey = scancode;
+                Keys::left = scancode;
                 break;
             case 3:
-                rightkey = scancode;
+                Keys::right = scancode;
                 break;
             case 4:
-                crouchkey = scancode;
+                Keys::crouch = scancode;
                 break;
             case 5:
-                jumpkey = scancode;
+                Keys::jump = scancode;
                 break;
             case 6:
-                drawkey = scancode;
+                Keys::draw = scancode;
                 break;
             case 7:
-                throwkey = scancode;
+                Keys::throwk = scancode;
                 break;
             case 8:
-                attackkey = scancode;
+                Keys::attack = scancode;
                 break;
             case 9:
-                consolekey = scancode;
+                Keys::console = scancode;
                 break;
             default:
                 break;
