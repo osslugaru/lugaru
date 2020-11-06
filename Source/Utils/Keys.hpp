@@ -34,6 +34,10 @@ public:
     static unsigned short throwk;
     static unsigned short attack;
     static unsigned short console;
+    static unsigned short camright;
+    static unsigned short camleft;
+    static unsigned short camup;
+    static unsigned short camdown;
 };
 
 #endif

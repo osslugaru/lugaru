@@ -325,7 +325,6 @@ bool SetUp()
 
 static void DoMouse()
 {
-
     if (mainmenu || ((abs(deltah) < 10 * realmultiplier * 1000) && (abs(deltav) < 10 * realmultiplier * 1000))) {
         deltah *= usermousesensitivity;
         deltav *= usermousesensitivity;
@@ -423,6 +422,16 @@ void DoUpdate()
     multiplier /= (float)count;
 
     DoMouse();
+
+    if (Input::isKeyDown(Keys::camleft)) {
+        deltah -= 10;
+    } else if (Input::isKeyDown(Keys::camright)) {
+        deltah += 10;
+    } else if (Input::isKeyDown(Keys::camdown)) {
+        deltav -= 10;
+    } else if (Input::isKeyDown(Keys::camup)) {
+        deltav += 10;
+    }
 
     TickOnce();
 

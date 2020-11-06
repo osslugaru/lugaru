@@ -64,6 +64,10 @@ void DefaultSettings()
     Keys::throwk = SDL_SCANCODE_Q;
     Keys::attack = MOUSEBUTTON_LEFT;
     Keys::console = SDL_SCANCODE_GRAVE;
+    Keys::camright  = SDL_NUM_SCANCODES + 6 + SDL_CONTROLLER_BUTTON_MAX + 2 * SDL_CONTROLLER_AXIS_RIGHTX;
+    Keys::camleft   = SDL_NUM_SCANCODES + 6 + SDL_CONTROLLER_BUTTON_MAX + 2 * SDL_CONTROLLER_AXIS_RIGHTX + 1;
+    Keys::camup     = SDL_NUM_SCANCODES + 6 + SDL_CONTROLLER_BUTTON_MAX + 2 * SDL_CONTROLLER_AXIS_RIGHTY;
+    Keys::camdown   = SDL_NUM_SCANCODES + 6 + SDL_CONTROLLER_BUTTON_MAX + 2 * SDL_CONTROLLER_AXIS_RIGHTY + 1;
 
     newdetail = detail;
 }

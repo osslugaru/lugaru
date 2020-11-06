@@ -30,3 +30,7 @@ unsigned short Keys::draw = 0;
 unsigned short Keys::throwk = 0;
 unsigned short Keys::attack = 0;
 unsigned short Keys::console = 0;
+unsigned short Keys::camright = 0;
+unsigned short Keys::camleft = 0;
+unsigned short Keys::camup = 0;
+unsigned short Keys::camdown = 0;
